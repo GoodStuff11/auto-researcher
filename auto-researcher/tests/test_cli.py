@@ -196,3 +196,71 @@ def test_run_fetch_records_new_fetch_into_store(tmp_path):
     assert loaded["fetch_status"]["status"] == "open_access"
     paper_dir = store_root / "papers" / store.safe_paper_id("arxiv:2")
     assert (paper_dir / "fulltext.pdf").read_bytes() == b"%PDF-bytes"
+
+
+def test_run_store_record_scores_merges_into_candidates(tmp_path):
+    from auto_researcher.cli import run_store_record_scores
+    from auto_researcher.store import load_query, record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "my-topic", "Has X?", [_paper("arxiv:1", "Paper One")])
+
+    run_store_record_scores(store_root, "my-topic", [{"id": "arxiv:1", "relevance": 8, "reason": "on-topic"}])
+
+    loaded = load_query(store_root, "my-topic")
+    assert loaded["candidates"][0]["relevance"] == 8
+
+
+def test_run_store_record_synthesis_writes_relevant_ids_and_synthesis(tmp_path):
+    from auto_researcher.cli import run_store_record_synthesis
+    from auto_researcher.store import load_query, record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "my-topic", "Has X?", [_paper("arxiv:1", "Paper One")])
+
+    run_store_record_synthesis(store_root, "my-topic", ["arxiv:1"], "# Answer\n\nYes.")
+
+    loaded = load_query(store_root, "my-topic")
+    assert loaded["relevant_ids"] == ["arxiv:1"]
+    assert loaded["synthesis"] == "# Answer\n\nYes."
+
+
+def test_run_store_show_prints_query_json(tmp_path, capsys):
+    from auto_researcher.cli import run_store_show
+    from auto_researcher.store import record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "my-topic", "Has X?", [_paper("arxiv:1", "Paper One")])
+
+    run_store_show(store_root, "my-topic")
+
+    printed = json.loads(capsys.readouterr().out)
+    assert printed["question"] == "Has X?"
+    assert printed["candidates"][0]["id"] == "arxiv:1"
+
+
+def test_run_store_show_paper_prints_paper_json(tmp_path, capsys):
+    from auto_researcher.cli import run_store_show_paper
+    from auto_researcher.store import upsert_paper
+
+    store_root = tmp_path / "store"
+    upsert_paper(store_root, _paper("arxiv:1", "Paper One"))
+
+    run_store_show_paper(store_root, "arxiv:1")
+
+    printed = json.loads(capsys.readouterr().out)
+    assert printed["title"] == "Paper One"
+
+
+def test_run_store_list_prints_all_queries(tmp_path, capsys):
+    from auto_researcher.cli import run_store_list
+    from auto_researcher.store import record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "topic-a", "Question A?", [_paper("arxiv:1", "Paper One")])
+    record_query(store_root, "topic-b", "Question B?", [_paper("arxiv:2", "Paper Two")])
+
+    run_store_list(store_root)
+
+    printed = json.loads(capsys.readouterr().out)
+    assert {q["topic_slug"] for q in printed} == {"topic-a", "topic-b"}

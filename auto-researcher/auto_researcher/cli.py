@@ -140,6 +140,28 @@ def run_fetch(
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
 
 
+def run_store_record_scores(store_root: Path, topic: str, scores: List[dict]) -> None:
+    store.record_scores(store_root, topic, scores)
+
+
+def run_store_record_synthesis(
+    store_root: Path, topic: str, relevant_ids: List[str], synthesis_md: str
+) -> None:
+    store.record_synthesis(store_root, topic, relevant_ids, synthesis_md)
+
+
+def run_store_show(store_root: Path, topic: str) -> None:
+    print(json.dumps(store.load_query(store_root, topic), indent=2))
+
+
+def run_store_show_paper(store_root: Path, paper_id: str) -> None:
+    print(json.dumps(store.load_paper(store_root, paper_id), indent=2))
+
+
+def run_store_list(store_root: Path) -> None:
+    print(json.dumps(store.list_queries(store_root), indent=2))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="auto_researcher")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -148,18 +170,67 @@ def main() -> None:
     search_p.add_argument("--query", action="append", required=True, dest="queries")
     search_p.add_argument("--limit", type=int, default=25)
     search_p.add_argument("--out", type=Path, required=True)
+    search_p.add_argument("--topic", required=True)
+    search_p.add_argument("--question", required=True)
+    search_p.add_argument("--store-root", type=Path, default=Path("store"))
 
     fetch_p = sub.add_parser("fetch")
     fetch_p.add_argument("--in", type=Path, required=True, dest="candidates_path")
     fetch_p.add_argument("--ids", required=True)
     fetch_p.add_argument("--out-dir", type=Path, required=True)
     fetch_p.add_argument("--cookies", type=Path, default=Path(".cookies.txt"))
+    fetch_p.add_argument("--store-root", type=Path, default=Path("store"))
+
+    store_p = sub.add_parser("store")
+    store_sub = store_p.add_subparsers(dest="store_command", required=True)
+
+    rs_p = store_sub.add_parser("record-scores")
+    rs_p.add_argument("--topic", required=True)
+    rs_p.add_argument("--scores", type=Path, required=True)
+    rs_p.add_argument("--store-root", type=Path, default=Path("store"))
+
+    rsyn_p = store_sub.add_parser("record-synthesis")
+    rsyn_p.add_argument("--topic", required=True)
+    rsyn_p.add_argument("--relevant-ids", required=True)
+    rsyn_p.add_argument("--synthesis", type=Path, required=True)
+    rsyn_p.add_argument("--store-root", type=Path, default=Path("store"))
+
+    show_p = store_sub.add_parser("show")
+    show_p.add_argument("--topic", required=True)
+    show_p.add_argument("--store-root", type=Path, default=Path("store"))
+
+    show_paper_p = store_sub.add_parser("show-paper")
+    show_paper_p.add_argument("--id", required=True, dest="paper_id")
+    show_paper_p.add_argument("--store-root", type=Path, default=Path("store"))
+
+    list_p = store_sub.add_parser("list")
+    list_p.add_argument("--store-root", type=Path, default=Path("store"))
 
     args = parser.parse_args()
     if args.command == "search":
-        run_search(args.queries, args.limit, args.out)
+        run_search(
+            args.queries, args.limit, args.out,
+            topic=args.topic, question=args.question, store_root=args.store_root,
+        )
     elif args.command == "fetch":
-        run_fetch(args.candidates_path, args.ids.split(","), args.out_dir, args.cookies)
+        run_fetch(
+            args.candidates_path, args.ids.split(","), args.out_dir, args.cookies,
+            store_root=args.store_root,
+        )
+    elif args.command == "store":
+        if args.store_command == "record-scores":
+            scores = json.loads(args.scores.read_text())
+            run_store_record_scores(args.store_root, args.topic, scores)
+        elif args.store_command == "record-synthesis":
+            run_store_record_synthesis(
+                args.store_root, args.topic, args.relevant_ids.split(","), args.synthesis.read_text()
+            )
+        elif args.store_command == "show":
+            run_store_show(args.store_root, args.topic)
+        elif args.store_command == "show-paper":
+            run_store_show_paper(args.store_root, args.paper_id)
+        elif args.store_command == "list":
+            run_store_list(args.store_root)
 
 
 if __name__ == "__main__":
