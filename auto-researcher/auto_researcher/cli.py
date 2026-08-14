@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from typing import Callable, List
 
+from . import store
 from .cookies import CookieStore
 from .dedup import dedupe
 from .fetch import fetch_full_text
@@ -35,7 +36,14 @@ def _run_source(name: str, call: Callable[[], List[Paper]]) -> List[Paper]:
         return []
 
 
-def run_search(queries: List[str], limit: int, out_path: Path) -> None:
+def run_search(
+    queries: List[str],
+    limit: int,
+    out_path: Path,
+    topic: str | None = None,
+    question: str | None = None,
+    store_root: Path = Path("store"),
+) -> None:
     papers: List[Paper] = []
     for query in queries:
         papers.extend(_run_source("arxiv", lambda: search_arxiv(query, limit=limit)))
@@ -75,6 +83,11 @@ def run_search(queries: List[str], limit: int, out_path: Path) -> None:
 
     deduped = dedupe(papers)
     out_path.write_text(json.dumps([_paper_to_dict(p) for p in deduped], indent=2))
+
+    if topic:
+        for p in deduped:
+            store.upsert_paper(store_root, p)
+        store.record_query(store_root, topic, question or "", deduped)
 
 
 def run_fetch(
