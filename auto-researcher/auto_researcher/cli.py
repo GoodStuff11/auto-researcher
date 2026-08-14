@@ -91,7 +91,11 @@ def run_search(
 
 
 def run_fetch(
-    candidates_path: Path, ids: List[str], out_dir: Path, cookies_path: Path
+    candidates_path: Path,
+    ids: List[str],
+    out_dir: Path,
+    cookies_path: Path,
+    store_root: Path = Path("store"),
 ) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     candidates = json.loads(candidates_path.read_text())
@@ -104,6 +108,16 @@ def run_fetch(
         if item["id"] not in id_set:
             continue
         paper = Paper(**item)
+        store.upsert_paper(store_root, paper)
+
+        if store.has_fulltext(store_root, paper.id):
+            cached = store.load_paper(store_root, paper.id)
+            manifest[paper.id] = cached["fetch_status"]["status"]
+            if cached.get("fulltext"):
+                safe_name = store.safe_paper_id(paper.id)
+                (out_dir / f"{safe_name}.txt").write_text(cached["fulltext"])
+            continue
+
         try:
             result = fetch_full_text(paper, cookie_store, email=email)
         except Exception as exc:  # noqa: BLE001 - a single paper's fetch failure must not abort the batch
@@ -112,11 +126,17 @@ def run_fetch(
                 file=sys.stderr,
             )
             manifest[paper.id] = "unavailable"
+            store.record_fulltext(store_root, paper.id, text=None, status="unavailable")
             continue
+
         manifest[paper.id] = result.status
         if result.text:
-            safe_name = paper.id.replace(":", "_").replace("/", "_")
+            safe_name = store.safe_paper_id(paper.id)
             (out_dir / f"{safe_name}.txt").write_text(result.text)
+        store.record_fulltext(
+            store_root, paper.id, text=result.text, status=result.status,
+            source_url=paper.oa_pdf_url or paper.landing_url, pdf_bytes=result.pdf_bytes,
+        )
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
 
 

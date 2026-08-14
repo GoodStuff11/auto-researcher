@@ -132,7 +132,7 @@ def test_run_fetch_marks_failing_paper_unavailable_without_crashing(tmp_path):
         return FullTextResult(paper.id, "open_access", "some text")
 
     with patch("auto_researcher.cli.fetch_full_text", side_effect=fake_fetch_full_text):
-        run_fetch(candidates_path, ["arxiv:1", "arxiv:2"], out_dir, cookies_path)
+        run_fetch(candidates_path, ["arxiv:1", "arxiv:2"], out_dir, cookies_path, store_root=tmp_path / "store")
 
     manifest = json.loads((out_dir / "manifest.json").read_text())
     assert manifest["arxiv:1"] == "unavailable"
@@ -140,3 +140,59 @@ def test_run_fetch_marks_failing_paper_unavailable_without_crashing(tmp_path):
 
     assert (out_dir / "arxiv_2.txt").read_text() == "some text"
     assert not (out_dir / "arxiv_1.txt").exists()
+
+
+def test_run_fetch_reuses_cached_fulltext_without_calling_fetch_full_text(tmp_path):
+    from auto_researcher import store
+
+    candidates = [
+        {
+            "id": "arxiv:1", "title": "Paper One", "authors": [], "year": 2021,
+            "venue": None, "abstract": None, "doi": None, "arxiv_id": "1",
+            "source": "test", "oa_pdf_url": None, "landing_url": None,
+        }
+    ]
+    candidates_path = tmp_path / "candidates.json"
+    candidates_path.write_text(json.dumps(candidates))
+    out_dir = tmp_path / "out"
+    store_root = tmp_path / "store"
+
+    store.upsert_paper(store_root, Paper(**candidates[0]))
+    store.record_fulltext(store_root, "arxiv:1", text="cached text", status="open_access")
+
+    with patch("auto_researcher.cli.fetch_full_text") as mock_fetch:
+        run_fetch(candidates_path, ["arxiv:1"], out_dir, tmp_path / "missing-cookies.txt", store_root=store_root)
+
+    mock_fetch.assert_not_called()
+    manifest = json.loads((out_dir / "manifest.json").read_text())
+    assert manifest["arxiv:1"] == "open_access"
+    assert (out_dir / "arxiv_1.txt").read_text() == "cached text"
+
+
+def test_run_fetch_records_new_fetch_into_store(tmp_path):
+    from auto_researcher import store
+    from auto_researcher.fetch import FullTextResult
+
+    candidates = [
+        {
+            "id": "arxiv:2", "title": "Paper Two", "authors": [], "year": 2021,
+            "venue": None, "abstract": None, "doi": None, "arxiv_id": "2",
+            "source": "test", "oa_pdf_url": "https://example.com/2.pdf", "landing_url": None,
+        }
+    ]
+    candidates_path = tmp_path / "candidates.json"
+    candidates_path.write_text(json.dumps(candidates))
+    out_dir = tmp_path / "out"
+    store_root = tmp_path / "store"
+
+    with patch(
+        "auto_researcher.cli.fetch_full_text",
+        return_value=FullTextResult("arxiv:2", "open_access", "fresh text", b"%PDF-bytes"),
+    ):
+        run_fetch(candidates_path, ["arxiv:2"], out_dir, tmp_path / "missing-cookies.txt", store_root=store_root)
+
+    loaded = store.load_paper(store_root, "arxiv:2")
+    assert loaded["fulltext"] == "fresh text"
+    assert loaded["fetch_status"]["status"] == "open_access"
+    paper_dir = store_root / "papers" / store.safe_paper_id("arxiv:2")
+    assert (paper_dir / "fulltext.pdf").read_bytes() == b"%PDF-bytes"
