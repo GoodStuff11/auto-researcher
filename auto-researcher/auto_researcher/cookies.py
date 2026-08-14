@@ -16,7 +16,10 @@ class CookieStore:
     def is_fresh(self, domain: str) -> bool:
         now = time.time()
         for cookie in self.jar:
-            if domain in cookie.domain and cookie.expires and cookie.expires > now:
+            cookie_domain = cookie.domain.lstrip(".")
+            if domain != cookie_domain and not domain.endswith("." + cookie_domain):
+                continue
+            if not cookie.expires or cookie.expires > now:
                 return True
         return False
 

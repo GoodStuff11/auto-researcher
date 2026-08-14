@@ -84,6 +84,7 @@ def run_fetch(
     candidates = json.loads(candidates_path.read_text())
     id_set = set(ids)
     cookie_store = CookieStore(cookies_path) if cookies_path.exists() else None
+    email = os.environ.get("CROSSREF_MAILTO")
 
     manifest = {}
     for item in candidates:
@@ -91,7 +92,7 @@ def run_fetch(
             continue
         paper = Paper(**item)
         try:
-            result = fetch_full_text(paper, cookie_store)
+            result = fetch_full_text(paper, cookie_store, email=email)
         except Exception as exc:  # noqa: BLE001 - a single paper's fetch failure must not abort the batch
             print(
                 f"warning: fetch failed for {paper.id}, marking unavailable: {exc}",

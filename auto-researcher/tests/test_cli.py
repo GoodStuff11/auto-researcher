@@ -85,7 +85,7 @@ def test_run_fetch_marks_failing_paper_unavailable_without_crashing(tmp_path):
     out_dir = tmp_path / "out"
     cookies_path = tmp_path / "cookies.txt"
 
-    def fake_fetch_full_text(paper, cookie_store=None):
+    def fake_fetch_full_text(paper, cookie_store=None, email=None):
         if paper.id == "arxiv:1":
             raise RuntimeError("network exploded")
         return FullTextResult(paper.id, "open_access", "some text")
