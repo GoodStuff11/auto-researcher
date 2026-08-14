@@ -86,6 +86,33 @@ def test_fetch_full_text_extracts_text_from_pdf_response():
     assert not result.text.startswith("%PDF")
 
 
+def test_fetch_full_text_captures_raw_pdf_bytes():
+    paper = _paper(oa_pdf_url="https://arxiv.org/pdf/1234.5678")
+    pdf_bytes = _minimal_pdf_bytes()
+    fake_resp = MagicMock(
+        status_code=200,
+        content=pdf_bytes,
+        headers={"content-type": "application/pdf"},
+    )
+    fake_resp.text = pdf_bytes.decode("latin-1")
+    with patch("auto_researcher.fetch.request_with_retry", return_value=fake_resp):
+        result = fetch_full_text(paper)
+    assert result.pdf_bytes == pdf_bytes
+
+
+def test_fetch_full_text_html_response_has_no_pdf_bytes():
+    paper = _paper(oa_pdf_url="https://example.com/oa-landing")
+    fake_resp = MagicMock(
+        status_code=200,
+        content=b"<html>full text here</html>",
+        text="full text here",
+        headers={"content-type": "text/html; charset=utf-8"},
+    )
+    with patch("auto_researcher.fetch.request_with_retry", return_value=fake_resp):
+        result = fetch_full_text(paper)
+    assert result.pdf_bytes is None
+
+
 def test_fetch_full_text_html_open_access_still_uses_response_text():
     paper = _paper(oa_pdf_url="https://example.com/oa-landing")
     fake_resp = MagicMock(

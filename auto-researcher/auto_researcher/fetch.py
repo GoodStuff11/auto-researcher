@@ -20,6 +20,7 @@ class FullTextResult:
     paper_id: str
     status: str  # "open_access", "proxy", "unavailable"
     text: Optional[str] = None
+    pdf_bytes: Optional[bytes] = None
 
 
 def to_proxy_url(url: str) -> str:
@@ -57,7 +58,8 @@ def fetch_full_text(
         if resp.status_code == 200:
             text = _extract_text(resp)
             if text is not None:
-                return FullTextResult(paper.id, "open_access", text)
+                pdf_bytes = resp.content if _is_pdf_response(resp) else None
+                return FullTextResult(paper.id, "open_access", text, pdf_bytes)
 
     if paper.landing_url and cookie_store is not None:
         proxy_url = to_proxy_url(paper.landing_url)
@@ -69,6 +71,7 @@ def fetch_full_text(
             if resp.status_code == 200:
                 text = _extract_text(resp)
                 if text is not None:
-                    return FullTextResult(paper.id, "proxy", text)
+                    pdf_bytes = resp.content if _is_pdf_response(resp) else None
+                    return FullTextResult(paper.id, "proxy", text, pdf_bytes)
 
     return FullTextResult(paper.id, "unavailable", None)
