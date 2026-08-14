@@ -2,5 +2,6 @@
 .env
 .cookies.txt
 reports/
+store/
 __pycache__/
 *.pyc
