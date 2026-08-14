@@ -114,6 +114,7 @@ const synthesis = await agent(
 return {
   synthesis,
   extracts: validExtracts,
+  scores: Object.values(scoreById),
   totalCandidates: candidates.length,
   totalRanked: ranked.length,
 }
