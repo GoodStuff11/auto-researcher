@@ -95,3 +95,85 @@ def load_paper(root: Path, paper_id: str) -> Optional[dict]:
         result["fetch_status"] = json.loads(status_path.read_text())
 
     return result
+
+
+def _query_dir(root: Path, topic_slug: str) -> Path:
+    return Path(root) / "queries" / topic_slug
+
+
+def record_query(root: Path, topic_slug: str, question: str, candidates: List[Paper]) -> None:
+    query_dir = _query_dir(root, topic_slug)
+    query_dir.mkdir(parents=True, exist_ok=True)
+
+    (query_dir / "question.txt").write_text(question)
+    (query_dir / "candidates.json").write_text(
+        json.dumps([_paper_to_dict(p) for p in candidates], indent=2)
+    )
+
+    created_path = query_dir / "created_at.txt"
+    if not created_path.exists():
+        created_path.write_text(_now())
+    (query_dir / "updated_at.txt").write_text(_now())
+
+
+def record_scores(root: Path, topic_slug: str, scores: List[dict]) -> None:
+    query_dir = _query_dir(root, topic_slug)
+    candidates_path = query_dir / "candidates.json"
+    candidates = json.loads(candidates_path.read_text())
+
+    score_by_id = {s["id"]: s for s in scores}
+    for c in candidates:
+        s = score_by_id.get(c["id"])
+        if s:
+            c["relevance"] = s.get("relevance")
+            c["reason"] = s.get("reason")
+
+    candidates_path.write_text(json.dumps(candidates, indent=2))
+    (query_dir / "updated_at.txt").write_text(_now())
+
+
+def record_synthesis(root: Path, topic_slug: str, relevant_ids: List[str], synthesis_md: str) -> None:
+    query_dir = _query_dir(root, topic_slug)
+    query_dir.mkdir(parents=True, exist_ok=True)
+    (query_dir / "relevant_ids.json").write_text(json.dumps(relevant_ids, indent=2))
+    (query_dir / "synthesis.md").write_text(synthesis_md)
+    (query_dir / "updated_at.txt").write_text(_now())
+
+
+def load_query(root: Path, topic_slug: str) -> Optional[dict]:
+    query_dir = _query_dir(root, topic_slug)
+    question_path = query_dir / "question.txt"
+    if not question_path.exists():
+        return None
+
+    result: dict = {"topic_slug": topic_slug, "question": question_path.read_text()}
+
+    candidates_path = query_dir / "candidates.json"
+    result["candidates"] = json.loads(candidates_path.read_text()) if candidates_path.exists() else []
+
+    relevant_path = query_dir / "relevant_ids.json"
+    result["relevant_ids"] = json.loads(relevant_path.read_text()) if relevant_path.exists() else []
+
+    synthesis_path = query_dir / "synthesis.md"
+    result["synthesis"] = synthesis_path.read_text() if synthesis_path.exists() else None
+
+    return result
+
+
+def list_queries(root: Path) -> List[dict]:
+    queries_dir = Path(root) / "queries"
+    if not queries_dir.exists():
+        return []
+
+    result = []
+    for slug_dir in sorted(queries_dir.iterdir()):
+        question_path = slug_dir / "question.txt"
+        if not question_path.exists():
+            continue
+        created_path = slug_dir / "created_at.txt"
+        result.append({
+            "topic_slug": slug_dir.name,
+            "question": question_path.read_text(),
+            "created_at": created_path.read_text() if created_path.exists() else None,
+        })
+    return result

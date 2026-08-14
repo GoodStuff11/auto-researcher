@@ -82,3 +82,63 @@ def test_load_paper_includes_fulltext_and_status_once_fetched(tmp_path):
     loaded = load_paper(tmp_path, paper.id)
     assert loaded["fulltext"] == "full text"
     assert loaded["fetch_status"]["status"] == "proxy"
+
+
+from auto_researcher.store import list_queries, load_query, record_query, record_scores, record_synthesis
+
+
+def test_record_query_then_load_query_round_trips(tmp_path):
+    papers = [_paper(id="arxiv:1", title="Paper One"), _paper(id="arxiv:2", title="Paper Two")]
+    record_query(tmp_path, "fermion-sign-nqs", "Has X been done?", papers)
+
+    loaded = load_query(tmp_path, "fermion-sign-nqs")
+    assert loaded["question"] == "Has X been done?"
+    assert [c["id"] for c in loaded["candidates"]] == ["arxiv:1", "arxiv:2"]
+    assert loaded["relevant_ids"] == []
+    assert loaded["synthesis"] is None
+
+
+def test_record_scores_merges_relevance_into_existing_candidates(tmp_path):
+    papers = [_paper(id="arxiv:1", title="Paper One"), _paper(id="arxiv:2", title="Paper Two")]
+    record_query(tmp_path, "fermion-sign-nqs", "Has X been done?", papers)
+
+    record_scores(tmp_path, "fermion-sign-nqs", [
+        {"id": "arxiv:1", "relevance": 9, "reason": "directly on-topic"},
+        {"id": "arxiv:2", "relevance": 1, "reason": "unrelated"},
+    ])
+
+    loaded = load_query(tmp_path, "fermion-sign-nqs")
+    by_id = {c["id"]: c for c in loaded["candidates"]}
+    assert by_id["arxiv:1"]["relevance"] == 9
+    assert by_id["arxiv:1"]["reason"] == "directly on-topic"
+    assert by_id["arxiv:2"]["relevance"] == 1
+
+
+def test_record_synthesis_writes_relevant_ids_and_synthesis(tmp_path):
+    papers = [_paper(id="arxiv:1", title="Paper One")]
+    record_query(tmp_path, "fermion-sign-nqs", "Has X been done?", papers)
+
+    record_synthesis(tmp_path, "fermion-sign-nqs", ["arxiv:1"], "# Direct answer\n\nYes, partially.")
+
+    loaded = load_query(tmp_path, "fermion-sign-nqs")
+    assert loaded["relevant_ids"] == ["arxiv:1"]
+    assert loaded["synthesis"] == "# Direct answer\n\nYes, partially."
+
+
+def test_load_query_returns_none_for_unknown_slug(tmp_path):
+    assert load_query(tmp_path, "never-ran-this") is None
+
+
+def test_list_queries_lists_every_recorded_query(tmp_path):
+    record_query(tmp_path, "topic-a", "Question A?", [_paper(id="arxiv:1")])
+    record_query(tmp_path, "topic-b", "Question B?", [_paper(id="arxiv:2")])
+
+    listed = list_queries(tmp_path)
+    slugs = {q["topic_slug"] for q in listed}
+    assert slugs == {"topic-a", "topic-b"}
+    by_slug = {q["topic_slug"]: q for q in listed}
+    assert by_slug["topic-a"]["question"] == "Question A?"
+
+
+def test_list_queries_empty_before_any_query_recorded(tmp_path):
+    assert list_queries(tmp_path) == []
