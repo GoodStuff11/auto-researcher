@@ -40,13 +40,11 @@ skill, using its stored record instead of rerunning the search from scratch.
      ```
      If `fulltext` is present in the output, read and discuss it directly.
    - If it was only in `candidates` (found but never read in depth), offer
-     to fetch and read it now:
+     to fetch and read it now. Write the `candidates` array from step 2 to
+     `/tmp/candidates.json` first, then run:
      ```bash
-     .venv/bin/python -m auto_researcher fetch --in <(python3 -c "import json,sys; print(json.dumps(json.load(open('/dev/stdin'))['candidates']))" < /tmp/query.json) --ids "<paper-id>" --out-dir /tmp/fulltext --cookies .cookies.txt
+     .venv/bin/python -m auto_researcher fetch --in /tmp/candidates.json --ids "<paper-id>" --out-dir /tmp/fulltext --cookies .cookies.txt
      ```
-     (simpler in practice: write the `candidates` array from step 2 to
-     `/tmp/candidates.json` first, then run
-     `fetch --in /tmp/candidates.json --ids "<paper-id>" --out-dir /tmp/fulltext --cookies .cookies.txt`)
      This call persists the result into the store automatically — it will
      never need to be fetched again, even for a completely different
      future question. Read `/tmp/fulltext/<safe-id>.txt` and discuss it.
