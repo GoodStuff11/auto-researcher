@@ -198,6 +198,34 @@ def test_run_fetch_records_new_fetch_into_store(tmp_path):
     assert (paper_dir / "fulltext.pdf").read_bytes() == b"%PDF-bytes"
 
 
+def test_run_fetch_filters_extra_keys_from_store_show_enriched_candidates(tmp_path):
+    from auto_researcher.fetch import FullTextResult
+
+    candidates = [
+        {
+            "id": "arxiv:1", "title": "Paper One", "authors": [], "year": 2021,
+            "venue": None, "abstract": None, "doi": None, "arxiv_id": "1",
+            "source": "test", "oa_pdf_url": None, "landing_url": None,
+            "relevance": 8, "reason": "on-topic",
+        }
+    ]
+    candidates_path = tmp_path / "candidates.json"
+    candidates_path.write_text(json.dumps(candidates))
+    out_dir = tmp_path / "out"
+    cookies_path = tmp_path / "cookies.txt"
+    store_root = tmp_path / "store"
+
+    with patch(
+        "auto_researcher.cli.fetch_full_text",
+        return_value=FullTextResult("arxiv:1", "open_access", "some text"),
+    ):
+        run_fetch(candidates_path, ["arxiv:1"], out_dir, cookies_path, store_root=store_root)
+
+    manifest = json.loads((out_dir / "manifest.json").read_text())
+    assert manifest["arxiv:1"] == "open_access"
+    assert (out_dir / "arxiv_1.txt").read_text() == "some text"
+
+
 def test_run_store_record_scores_merges_into_candidates(tmp_path):
     from auto_researcher.cli import run_store_record_scores
     from auto_researcher.store import load_query, record_query

@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import sys
+from dataclasses import fields
 from pathlib import Path
 from typing import Callable, List
 
@@ -17,6 +18,8 @@ from .search.core import search_core
 from .search.crossref import search_crossref
 from .search.openalex import search_openalex
 from .search.semantic_scholar import search_semantic_scholar
+
+_PAPER_FIELDS = {f.name for f in fields(Paper)}
 
 
 def _paper_to_dict(p: Paper) -> dict:
@@ -107,7 +110,7 @@ def run_fetch(
     for item in candidates:
         if item["id"] not in id_set:
             continue
-        paper = Paper(**item)
+        paper = Paper(**{k: v for k, v in item.items() if k in _PAPER_FIELDS})
         store.upsert_paper(store_root, paper)
 
         if store.has_fulltext(store_root, paper.id):
