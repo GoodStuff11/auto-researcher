@@ -68,7 +68,8 @@ blocks a run.
 question
   -> generate 4-8 search query variants (adjacent fields, synonyms,
      alternate phrasings — done by the skill, not the CLI)
-  -> CLI `search`: queries all configured sources per variant, dedupes
+  -> CLI `search`: queries all configured sources per variant, dedupes,
+     persists every candidate + this query's record to the local store
      -> candidates.json (title/authors/year/venue/abstract/DOI/links,
         no full text yet)
   -> [Workflow] Score phase: batched agent calls score title+abstract
@@ -79,8 +80,9 @@ question
      organized by theme, with explicit gaps
   -> CLI `fetch` (optional, for papers flagged critical but abstract-only):
      fetches full text (OA link, then Unpaywall, then Cornell proxy,
-     else stays abstract-only) -> re-run Score/Read/Synthesize with the
-     added text
+     else stays abstract-only) - checks the local store first and never
+     refetches a paper already retrieved for any past question ->
+     re-run Score/Read/Synthesize with the added text
   -> report written to auto-researcher/reports/YYYY-MM-DD-<topic-slug>.md
      (gitignored — local output, not part of the repo)
 ```
@@ -93,6 +95,8 @@ question
 .venv/bin/python -m auto_researcher search \
   --query "neural quantum states fermionic sign problem" \
   --query "neural network wavefunction fermion sign problem" \
+  --topic nqs-sign-problem \
+  --question "Have neural quantum states been applied to the fermionic sign problem?" \
   --limit 40 \
   --out candidates.json
 ```
@@ -101,8 +105,13 @@ question
   on the question. Runs against every configured source *per query*, so
   N queries × ~5 sources each contributing up to `--limit` results before
   dedup.
+- `--topic` (required) - a short slug identifying this question; also
+  names its record under `store/queries/<topic>/`.
+- `--question` (required) - the literal research question, stored
+  verbatim alongside the record for later reference.
 - `--limit` (default 25) — max results requested per source, per query.
 - `--out` (required) — path to write the deduped candidate list as JSON.
+- `--store-root` (default `store`) - where the local store lives.
 
 Behavior:
 - Runs arXiv and Semantic Scholar unconditionally (no key required);
@@ -112,6 +121,10 @@ Behavior:
   sources succeeded. A run never hard-fails because of one source.
 - Results are deduped across sources: exact match on DOI/arXiv ID first,
   fuzzy title+year match as a fallback (`auto_researcher/dedup.py`).
+- In addition to writing `--out`, every candidate found is persisted into
+  the global paper cache (`store/papers/`) and this query's own record
+  (`store/queries/<topic>/`), enabling future fetches to check the cache
+  and reruns to skip re-searching the same question.
 
 Output JSON shape (one object per deduped paper):
 ```json
@@ -141,6 +154,11 @@ Output JSON shape (one object per deduped paper):
 - `--cookies` (default `.cookies.txt`) — Netscape-format cookie file for
   the Cornell proxy fallback. Missing/expired cookies degrade that paper
   to abstract-only rather than failing the run.
+- `--store-root` (default `store`) — where the local store lives.
+
+Before fetching, each requested id is checked against the local store
+(`store/papers/<id>/fulltext.txt`) - a paper already fetched for any
+past question is served from disk instantly, never refetched.
 
 Fetch priority order per paper, first success wins:
 1. Direct open-access link (`oa_pdf_url` from arXiv/CORE/OpenAlex/S2).
@@ -162,6 +180,39 @@ through this priority order rather than storing garbage.
 - `auto_researcher.dedup.dedupe(papers, title_similarity_threshold=0.92) -> List[Paper]`
 - `auto_researcher.cookies.CookieStore(cookies_path)` — `.is_fresh(domain)`, `.as_requests_cookies()`
 - `auto_researcher.fetch.fetch_full_text(paper, cookie_store=None, email=None) -> FullTextResult`
+
+## Persistent local store
+
+Everything `search` and `fetch` touch is cached under
+`auto-researcher/store/` (gitignored - local data, not repo content):
+
+- `store/papers/<safe-id>/` - one directory per paper ever seen, with
+  `meta.json`, `abstract.txt` (if available), and once fetched,
+  `fulltext.txt` + `fulltext.pdf` (if the source was a PDF) +
+  `fetch_status.json`. A paper is fetched at most once, ever, regardless
+  of how many different questions later reference it.
+- `store/queries/<topic-slug>/` - one directory per research question
+  ever run, with `question.txt`, `candidates.json` (every candidate
+  found, with relevance score/reason once scored), `relevant_ids.json`
+  (which candidates were read in depth), and `synthesis.md` (the final
+  answer).
+
+New CLI subcommands expose this to the skill layer for anything that
+requires an LLM step the CLI itself can't do:
+
+```bash
+auto_researcher store record-scores --topic <slug> --scores <path-to-json>
+auto_researcher store record-synthesis --topic <slug> --relevant-ids id1,id2 --synthesis <path-to-md>
+auto_researcher store show --topic <slug>        # prints the full query record as JSON
+auto_researcher store show-paper --id <paper-id>  # prints one paper's cached record as JSON
+auto_researcher store list                        # prints every stored query (slug, question, created_at)
+```
+
+To revisit a past question long after the original run - reread a
+specific paper, ask something the synthesis didn't cover, or fetch a
+candidate that wasn't read the first time - use the `research-followup`
+skill (`.claude/skills/research-followup/SKILL.md`) rather than rerunning
+`research-question` from scratch.
 
 ## Full workflow (via the Claude Code skill)
 
@@ -189,6 +240,10 @@ You can also drive the two layers manually:
 3. Optionally run `auto_researcher fetch` on the papers the synthesis
    flagged as important but abstract-only, attach the fetched text as
    `full_text_excerpt` on those candidate objects, and re-run step 2.
+
+Every run's full record is saved to `store/queries/<topic-slug>/` — see
+'Persistent local store' above to revisit it later without rerunning the
+search.
 
 ## Error handling / guarantees
 
