@@ -194,8 +194,9 @@ Everything `search` and `fetch` touch is cached under
 - `store/queries/<topic-slug>/` - one directory per research question
   ever run, with `question.txt`, `candidates.json` (every candidate
   found, with relevance score/reason once scored), `relevant_ids.json`
-  (which candidates were read in depth), and `synthesis.md` (the final
-  answer).
+  (which candidates were read in depth), `synthesis.md` (the final
+  answer), and `created_at.txt`/`updated_at.txt` (bookkeeping timestamps,
+  also surfaced by `store list`).
 
 New CLI subcommands expose this to the skill layer for anything that
 requires an LLM step the CLI itself can't do:
@@ -232,12 +233,17 @@ abstract-only papers and re-synthesizes, then writes the report to
 
 You can also drive the two layers manually:
 
-1. Run `auto_researcher search` yourself (see above) to get `candidates.json`.
+1. Run `auto_researcher search --topic <slug> --question "..."` yourself
+   (see above) to get `candidates.json` (also persisted to the store).
 2. Ask Claude Code to run the `Workflow` tool with
    `scriptPath: .claude/workflows/research-synthesis.js` and
    `args: {"question": "...", "candidates": <the JSON array from step 1>}`.
-   Returns `{synthesis, extracts, totalCandidates, totalRanked}`.
-3. Optionally run `auto_researcher fetch` on the papers the synthesis
+   Returns `{synthesis, extracts, scores, totalCandidates, totalRanked}`.
+3. Persist the result: write `scores` to a file and run
+   `auto_researcher store record-scores --topic <slug> --scores <path>`,
+   then write the relevant candidate ids and `synthesis` and run
+   `auto_researcher store record-synthesis --topic <slug> --relevant-ids id1,id2 --synthesis <path>`.
+4. Optionally run `auto_researcher fetch` on the papers the synthesis
    flagged as important but abstract-only, attach the fetched text as
    `full_text_excerpt` on those candidate objects, and re-run step 2.
 
@@ -268,10 +274,12 @@ cd auto-researcher
 .venv/bin/pytest -v
 ```
 
-36 unit tests across the search adapters, dedup, cookies, fetch, and CLI —
-all against mocked HTTP responses. The Workflow/skill layer has no
-automated tests (subagent orchestration isn't unit-testable); it's
-validated by live dry-runs against real questions.
+61 unit tests across the search adapters, dedup, cookies, fetch, the local
+store, and the CLI — all against mocked HTTP responses and `tmp_path`-isolated
+filesystem state. The Workflow/skill layer has no automated tests (subagent
+orchestration isn't unit-testable); it's validated by live dry-runs against
+real questions, including the full search → score → read → synthesize →
+persist → follow-up sequence.
 
 ## Explicitly out of scope
 
