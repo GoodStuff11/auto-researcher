@@ -11,8 +11,8 @@ Two layers:
 - **`auto_researcher/`** — a plain Python package. Talks to search APIs,
   normalizes results, dedupes, fetches full text. Makes zero LLM calls, so
   it costs nothing beyond the (free) API keys below.
-- **`.claude/workflows/research-synthesis.js`** + **`.claude/skills/research-question/SKILL.md`**
-  — a Claude Code Workflow and skill that do the LLM-requiring work
+- **`.claude/workflows/research-synthesis.js`** + skills in `.claude/skills/`
+  — Claude Code Workflow and skills that do the LLM-requiring work
   (query generation, relevance scoring, reading, synthesis) inside a Claude
   Code session, using Claude Code subagents rather than a separately
   metered API key.
@@ -42,25 +42,236 @@ No key is required for **arXiv** or **CrossRef** search, or for **Unpaywall**
 full-text lookups (Unpaywall just requires `CROSSREF_MAILTO` to be set, reused
 as its contact email).
 
-### Paywalled full text (optional)
+### Paywalled full text: setting up `.cookies.txt` (optional)
 
-For papers behind IEEE Xplore / ACM DL / ScienceDirect etc., accessed via
-Cornell's library proxy:
+Papers behind a publisher paywall (IEEE Xplore, ACM DL, ScienceDirect, etc.)
+with no open-access copy can still be fetched through Cornell's library
+proxy, if you give the tool a valid, logged-in session cookie for it. This
+is entirely optional — a paper with no OA link and no fresh proxy cookie is
+just marked `unavailable` (abstract-only); it never blocks a run.
 
-1. Log into the Cornell library proxy in a normal browser.
-2. Export cookies for the relevant domains (e.g.
-   `ieeexplore-ieee-org.proxy.library.cornell.edu`) to a `cookies.txt` file
-   (Netscape format) using a browser extension such as "Get cookies.txt
-   LOCALLY".
-3. `scp cookies.txt` to `auto-researcher/.cookies.txt` (already
-   `.gitignore`d).
-4. Re-export whenever a run reports a paper as `unavailable` that you
-   expected to be proxy-accessible — these sessions typically last hours,
-   not days.
+**What you need:** a `cookies.txt` file in the Netscape cookie format
+(one cookie per line, tab-separated: `domain, include_subdomains, path,
+secure, expiry, name, value`) placed at `auto-researcher/.cookies.txt`.
+This is a plain file, not a browser session — the tool reads it once per
+run and sends the cookies as headers, it never drives a real browser.
 
-This is entirely optional. A paper with no open-access link and no fresh
-proxy cookie is simply marked `unavailable` (abstract-only) — it never
-blocks a run.
+Step by step:
+
+1. **Log into the Cornell library proxy in a normal desktop browser** —
+   go to a Cornell library-proxied link (e.g. through
+   `https://library.cornell.edu`, search for a paywalled article and click
+   through to it) and complete the Cornell NetID + Duo 2FA login when
+   prompted. This is unavoidably interactive; there's no headless/scripted
+   way to pass Duo (see "Explicitly out of scope" below).
+
+2. **Visit at least one page on each publisher domain you care about,
+   through the proxy**, so the session cookie actually gets set for that
+   domain. The proxied domain looks like the original with
+   `.proxy.library.cornell.edu` appended, e.g.:
+   - `ieeexplore-ieee-org.proxy.library.cornell.edu`
+   - `www-sciencedirect-com.proxy.library.cornell.edu`
+   - `dl-acm-org.proxy.library.cornell.edu`
+
+   If you only ever need one publisher, one visit is enough; the cookie
+   file only needs to cover domains you'll actually fetch from.
+
+3. **Export cookies to a file** using a browser extension that writes the
+   Netscape format — e.g. "Get cookies.txt LOCALLY" (Chrome/Firefox). Open
+   the extension while on the proxied page and export/download
+   `cookies.txt`. Don't hand-edit this file; the format is picky about tab
+   separation.
+
+4. **Copy it to the machine running `auto-researcher`**, naming it exactly
+   `.cookies.txt` in the `auto-researcher/` directory:
+   ```bash
+   scp cookies.txt <user>@<host>:/path/to/research/auto-researcher/.cookies.txt
+   ```
+   It's already listed in `.gitignore` — never commit it (it's a live
+   authenticated session for your Cornell account). Consider
+   `chmod 600 auto-researcher/.cookies.txt` since it grants proxy access
+   to anyone who can read it.
+
+5. **Use it.** Both the `fetch` CLI command and the skills pass
+   `--cookies .cookies.txt` by default (relative to `auto-researcher/`) —
+   nothing else to configure.
+
+6. **Re-export when it goes stale.** Cornell proxy sessions typically last
+   hours, not days. You'll know it's stale when a run reports a paper you
+   expected to be proxy-accessible as `unavailable` instead — that's the
+   signal to repeat steps 1–4. There's no separate "check freshness"
+   command; the tool discovers staleness by trying the fetch and getting
+   a login redirect/failure, then degrades that paper to abstract-only.
+
+#### Covering multiple publishers in one `.cookies.txt`
+
+A single `.cookies.txt` can hold cookies for as many proxied publisher
+domains as you like at once — `CookieStore` (`auto_researcher/cookies.py`)
+loads the whole file into one cookie jar and, per fetch, picks out whatever
+cookies match the domain being requested. There's no per-publisher
+configuration; you only need to get all the relevant cookies into that one
+file. Two ways to do that:
+
+- **Easiest: export your whole browser's cookie jar at once**, not just the
+  current tab. Most cookie-export extensions have an "export all cookies"
+  mode as well as a "current site only" one (in "Get cookies.txt LOCALLY",
+  this is a toggle in the extension popup, not the default). Do this after
+  visiting the proxy login page for every publisher you need (step 2 above)
+  — one export at the end captures all of them in a single valid file, and
+  you can skip the merge step below entirely.
+
+- **If your extension only exports the current tab's domain**, visit and
+  export each publisher separately (step 2, then step 3, once per
+  publisher), then merge the resulting files by concatenating their cookie
+  lines into one `.cookies.txt`:
+  ```bash
+  # keep the header + cookie lines from the first file, then append only
+  # the cookie lines (skip the "# Netscape..." / "# This is a generated
+  # file" comment lines) from every subsequent export
+  cat ieee-cookies.txt > .cookies.txt
+  grep -v '^#' sciencedirect-cookies.txt >> .cookies.txt
+  grep -v '^#' acm-cookies.txt >> .cookies.txt
+  ```
+  Order doesn't matter and duplicate domains aren't a problem — each cookie
+  line is independent and `CookieStore` matches by domain per-request.
+
+Either way, once merged, re-run the test below — it should report `True`
+for every domain you added.
+
+#### Testing whether your `.cookies.txt` works
+
+There's no CLI subcommand for this (it's a rare enough operation not to
+warrant one) — a short inline check confirms both that the file parses and
+that a given domain's session is actually live:
+
+```bash
+cd auto-researcher
+.venv/bin/python3 -c "
+from pathlib import Path
+from auto_researcher.cookies import CookieStore
+from auto_researcher.fetch import to_proxy_url
+from auto_researcher.http_utils import request_with_retry
+
+cs = CookieStore(Path('.cookies.txt'))
+
+# swap in a real paywalled article URL from the publisher you're testing
+test_url = 'https://www.nature.com/articles/<some-article-id>'
+proxy_url = to_proxy_url(test_url)
+
+resp = request_with_retry('GET', proxy_url, cookies=cs.as_requests_cookies())
+print('status:', resp.status_code, '| stayed on proxy domain:', resp.url == proxy_url)
+"
+```
+
+`status: 200` with `stayed on proxy domain: True` means the session is
+live — a request through the proxy without a valid cookie gets bounced off
+the proxy hostname back to the original publisher domain instead (test this
+by rerunning `request_with_retry` without the `cookies=` argument for
+comparison), so "stayed on proxy domain" is the reliable signal, not just
+the status code — a paywalled article can still return 200 to a logged-out
+request for its (paywalled) landing page.
+
+If the script raises `LoadError: '.cookies.txt' does not look like a
+Netscape format cookies file`, the file is empty, corrupt, or was
+hand-edited incorrectly — re-export it from scratch (step 3 above).
+
+**If you get `status: 403` with a body containing `Just a moment...`**, that's
+a Cloudflare bot challenge, not a cookie problem — some publisher platforms
+(e.g. `journals.aps.org`) sit behind Cloudflare and block plain HTTP clients
+by their request fingerprint before your cookies are ever checked. This
+tool's HTTP layer (`request_with_retry` in `auto_researcher/http_utils.py`)
+already sends a browser-like `User-Agent` for exactly this reason, so a
+correctly-loaded, still-fresh cookie should get through; if you still see
+the challenge page, the site's Cloudflare tier is likely doing deeper
+fingerprinting (TLS/JS) that a plain `requests` call can't satisfy — that
+publisher will stay `unavailable` via the proxy path regardless of cookie
+freshness, and the paper falls back to OA/abstract-only.
+
+## Usage
+
+The intended way to use this tool is through Claude Code skills — you
+generally never need to type Python commands yourself. Three entry points,
+depending on what you're doing:
+
+### Starting a new research question
+
+```
+/research-question "Has anyone applied neural quantum states to the fermionic sign problem?"
+```
+
+Runs `.claude/skills/research-question/SKILL.md`. Drives the whole pipeline
+end-to-end: generates query variants, runs `search`, calls the
+`research-synthesis` Workflow to score/read/synthesize the candidate pool,
+optionally runs `fetch` to deepen on the most important abstract-only papers
+and re-synthesizes, then writes a report to `auto-researcher/reports/` and
+gives you the direct answer in chat. Everything is persisted to the store
+along the way — see "What gets generated" below.
+
+### Following up on a question you already asked
+
+```
+/research-followup "what did we find about the J1-J2 model specifically?"
+```
+or naming a topic slug directly if you remember it. Runs
+`.claude/skills/research-followup/SKILL.md`. Loads the stored record for a
+past question — synthesis, full candidate list with scores, which papers
+were read in depth — and answers against it *without* re-searching. Can, on
+request, fetch and read one specific paper that was found but never read
+the first time, or fold it into the record permanently. This is the right
+tool for "dig deeper into paper X" or "did the original search cover Z?" —
+it's cheap because it makes no new search-API calls unless you explicitly
+ask it to fetch something.
+
+### Driving it manually (no skill)
+
+Useful for scripting, debugging, or a one-off `search`/`fetch` outside the
+skill flow. Both CLI subcommands and the Workflow can be invoked directly;
+see "Python commands run at each stage" below for exact syntax. In short:
+
+1. Run `auto_researcher search` yourself to get `candidates.json`.
+2. Ask Claude Code to run the `Workflow` tool with
+   `scriptPath: .claude/workflows/research-synthesis.js` and
+   `args: {"question": "...", "candidates": <the JSON array from step 1>}`.
+3. Persist the result with `auto_researcher store record-scores` and
+   `auto_researcher store record-synthesis`.
+4. Optionally `auto_researcher fetch` the papers flagged important-but-
+   abstract-only, attach the text, and re-run step 2.
+
+This is exactly what the `research-question` skill does on your behalf —
+drive it by hand only when you need to change something the skill doesn't
+expose (e.g. a custom scoring prompt, or debugging one stage in isolation).
+
+## What gets generated: the persistent local store
+
+Everything `search` and `fetch` touch is cached under
+`auto-researcher/store/` (gitignored — local data, not repo content):
+
+- `store/papers/<safe-id>/` — one directory per paper ever seen, with
+  `meta.json`, `abstract.txt` (if available), and once fetched,
+  `fulltext.txt` + `fulltext.pdf` (if the source was a PDF) +
+  `fetch_status.json`. A paper is fetched at most once, ever, regardless
+  of how many different questions later reference it.
+- `store/queries/<topic-slug>/` — one directory per research question ever
+  run, with `question.txt`, `candidates.json` (every candidate found, with
+  relevance score/reason once scored), `relevant_ids.json` (which
+  candidates were read in depth), `synthesis.md` (the final answer), and
+  `created_at.txt`/`updated_at.txt` (bookkeeping timestamps, also surfaced
+  by `store list`).
+
+Reports are also written per run to
+`auto-researcher/reports/YYYY-MM-DD-<topic-slug>.md` (also gitignored —
+local output, not part of the repo) — the human-readable version of a
+query's store record, with the answer up top and a full bibliography.
+
+CLI subcommands exposing the store to the skill layer:
+
+```bash
+auto_researcher store record-scores --topic <slug> --scores <path-to-json>
+auto_researcher store record-synthesis --topic <slug> --relevant-ids id1,id2 --synthesis <path-to-md>
+auto_researcher store show --topic <slug>        # prints the full query record as JSON
+auto_researcher store show-paper --id <paper-id>  # prints one paper's cached record as JSON
+auto_researcher store list                        # prints every stored query (slug, question, created_at)
+```
 
 ## Architecture
 
@@ -84,10 +295,14 @@ question
      refetches a paper already retrieved for any past question ->
      re-run Score/Read/Synthesize with the added text
   -> report written to auto-researcher/reports/YYYY-MM-DD-<topic-slug>.md
-     (gitignored — local output, not part of the repo)
 ```
 
-## Python package interface
+Everything left of the Workflow arrow is plain, testable Python
+(`auto_researcher/`) with no LLM involvement and no metered API cost beyond
+the free keys above. Everything at/after the Workflow arrow runs as Claude
+Code subagents inside your session — no separate LLM billing.
+
+## Python commands run at each stage
 
 ### `auto_researcher search`
 
@@ -105,13 +320,13 @@ question
   on the question. Runs against every configured source *per query*, so
   N queries × ~5 sources each contributing up to `--limit` results before
   dedup.
-- `--topic` (required) - a short slug identifying this question; also
+- `--topic` (required) — a short slug identifying this question; also
   names its record under `store/queries/<topic>/`.
-- `--question` (required) - the literal research question, stored
+- `--question` (required) — the literal research question, stored
   verbatim alongside the record for later reference.
 - `--limit` (default 25) — max results requested per source, per query.
 - `--out` (required) — path to write the deduped candidate list as JSON.
-- `--store-root` (default `store`) - where the local store lives.
+- `--store-root` (default `store`) — where the local store lives.
 
 Behavior:
 - Runs arXiv and Semantic Scholar unconditionally (no key required);
@@ -136,6 +351,17 @@ Output JSON shape (one object per deduped paper):
 }
 ```
 
+### The `research-synthesis` Workflow
+
+Not a Python command — invoked as a Claude Code `Workflow` tool call with
+`scriptPath: .claude/workflows/research-synthesis.js` and
+`args: {"question": "...", "candidates": [...]}`. Scores every candidate's
+title+abstract against the question, reads the top ~50 in parallel
+subagents, and synthesizes their extracts into one answer. Returns
+`{synthesis, extracts, scores, totalCandidates, totalRanked}` — write
+`scores` and `synthesis` to files and hand them to the `store` subcommands
+below.
+
 ### `auto_researcher fetch`
 
 ```bash
@@ -152,12 +378,13 @@ Output JSON shape (one object per deduped paper):
 - `--out-dir` (required) — directory for `<safe-id>.txt` files plus a
   `manifest.json` mapping each id to its fetch status.
 - `--cookies` (default `.cookies.txt`) — Netscape-format cookie file for
-  the Cornell proxy fallback. Missing/expired cookies degrade that paper
-  to abstract-only rather than failing the run.
+  the Cornell proxy fallback (see Setup above for how to produce this).
+  Missing/expired cookies degrade that paper to abstract-only rather than
+  failing the run.
 - `--store-root` (default `store`) — where the local store lives.
 
 Before fetching, each requested id is checked against the local store
-(`store/papers/<id>/fulltext.txt`) - a paper already fetched for any
+(`store/papers/<id>/fulltext.txt`) — a paper already fetched for any
 past question is served from disk instantly, never refetched.
 
 Fetch priority order per paper, first success wins:
@@ -172,6 +399,12 @@ through this priority order rather than storing garbage.
 
 `manifest.json` shape: `{"<paper-id>": "open_access" | "proxy" | "unavailable"}`
 
+### `auto_researcher store ...`
+
+See "What gets generated" above for the four subcommands
+(`record-scores`, `record-synthesis`, `show`, `show-paper`, `list`) and the
+on-disk shape they read/write.
+
 ### Library modules (if scripting against the package directly)
 
 - `auto_researcher.models.Paper` / `make_id(doi, arxiv_id, title, year)`
@@ -180,76 +413,6 @@ through this priority order rather than storing garbage.
 - `auto_researcher.dedup.dedupe(papers, title_similarity_threshold=0.92) -> List[Paper]`
 - `auto_researcher.cookies.CookieStore(cookies_path)` — `.is_fresh(domain)`, `.as_requests_cookies()`
 - `auto_researcher.fetch.fetch_full_text(paper, cookie_store=None, email=None) -> FullTextResult`
-
-## Persistent local store
-
-Everything `search` and `fetch` touch is cached under
-`auto-researcher/store/` (gitignored - local data, not repo content):
-
-- `store/papers/<safe-id>/` - one directory per paper ever seen, with
-  `meta.json`, `abstract.txt` (if available), and once fetched,
-  `fulltext.txt` + `fulltext.pdf` (if the source was a PDF) +
-  `fetch_status.json`. A paper is fetched at most once, ever, regardless
-  of how many different questions later reference it.
-- `store/queries/<topic-slug>/` - one directory per research question
-  ever run, with `question.txt`, `candidates.json` (every candidate
-  found, with relevance score/reason once scored), `relevant_ids.json`
-  (which candidates were read in depth), `synthesis.md` (the final
-  answer), and `created_at.txt`/`updated_at.txt` (bookkeeping timestamps,
-  also surfaced by `store list`).
-
-New CLI subcommands expose this to the skill layer for anything that
-requires an LLM step the CLI itself can't do:
-
-```bash
-auto_researcher store record-scores --topic <slug> --scores <path-to-json>
-auto_researcher store record-synthesis --topic <slug> --relevant-ids id1,id2 --synthesis <path-to-md>
-auto_researcher store show --topic <slug>        # prints the full query record as JSON
-auto_researcher store show-paper --id <paper-id>  # prints one paper's cached record as JSON
-auto_researcher store list                        # prints every stored query (slug, question, created_at)
-```
-
-To revisit a past question long after the original run - reread a
-specific paper, ask something the synthesis didn't cover, or fetch a
-candidate that wasn't read the first time - use the `research-followup`
-skill (`.claude/skills/research-followup/SKILL.md`) rather than rerunning
-`research-question` from scratch.
-
-## Full workflow (via the Claude Code skill)
-
-The intended way to use this tool is inside a Claude Code session, via the
-skill at `.claude/skills/research-question/SKILL.md`:
-
-```
-/research-question "Has anyone applied neural quantum states to the fermionic sign problem?"
-```
-
-This drives the whole pipeline above end-to-end: generates query variants,
-runs `search`, calls the `research-synthesis` Workflow
-(`.claude/workflows/research-synthesis.js`) to score/read/synthesize the
-candidate pool, optionally runs `fetch` to deepen on the most important
-abstract-only papers and re-synthesizes, then writes the report to
-`auto-researcher/reports/` and gives you the direct answer in chat.
-
-You can also drive the two layers manually:
-
-1. Run `auto_researcher search --topic <slug> --question "..."` yourself
-   (see above) to get `candidates.json` (also persisted to the store).
-2. Ask Claude Code to run the `Workflow` tool with
-   `scriptPath: .claude/workflows/research-synthesis.js` and
-   `args: {"question": "...", "candidates": <the JSON array from step 1>}`.
-   Returns `{synthesis, extracts, scores, totalCandidates, totalRanked}`.
-3. Persist the result: write `scores` to a file and run
-   `auto_researcher store record-scores --topic <slug> --scores <path>`,
-   then write the relevant candidate ids and `synthesis` and run
-   `auto_researcher store record-synthesis --topic <slug> --relevant-ids id1,id2 --synthesis <path>`.
-4. Optionally run `auto_researcher fetch` on the papers the synthesis
-   flagged as important but abstract-only, attach the fetched text as
-   `full_text_excerpt` on those candidate objects, and re-run step 2.
-
-Every run's full record is saved to `store/queries/<topic-slug>/` — see
-'Persistent local store' above to revisit it later without rerunning the
-search.
 
 ## Error handling / guarantees
 
