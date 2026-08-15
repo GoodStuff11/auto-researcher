@@ -1,11 +1,22 @@
 from __future__ import annotations
 
-from typing import List
+import re
+from typing import List, Optional
 
 from ..http_utils import request_with_retry
 from ..models import Paper, make_id
 
 BASE_URL = "https://api.crossref.org/works"
+
+_TAG_RE = re.compile(r"<[^>]+>")
+
+
+def _clean_abstract(raw: Optional[str]) -> Optional[str]:
+    """CrossRef abstracts, when present, are JATS XML (e.g. "<jats:p>...</jats:p>")."""
+    if not raw:
+        return None
+    text = _TAG_RE.sub("", raw).strip()
+    return text or None
 
 
 def search_crossref(query: str, mailto: str, limit: int = 25) -> List[Paper]:
@@ -43,7 +54,7 @@ def search_crossref(query: str, mailto: str, limit: int = 25) -> List[Paper]:
                 authors=authors,
                 year=year,
                 venue=venue,
-                abstract=None,
+                abstract=_clean_abstract(item.get("abstract")),
                 doi=doi,
                 arxiv_id=None,
                 source="crossref",

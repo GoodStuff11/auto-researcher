@@ -31,3 +31,27 @@ def test_search_crossref_parses_results():
     assert p.venue == "Journal of Computation"
     assert p.doi == "10.1000/crossref-sample"
     assert p.landing_url == "https://doi.org/10.1000/crossref-sample"
+    assert p.abstract is None
+
+
+def test_search_crossref_extracts_jats_abstract():
+    response = {
+        "message": {
+            "items": [
+                {
+                    "title": ["Paper With Abstract"],
+                    "author": [{"given": "Ada", "family": "Lovelace"}],
+                    "published": {"date-parts": [[2020]]},
+                    "container-title": ["Journal of Computation"],
+                    "DOI": "10.1000/crossref-abstract",
+                    "URL": "https://doi.org/10.1000/crossref-abstract",
+                    "abstract": "<jats:p>This paper studies <jats:italic>things</jats:italic>.</jats:p>",
+                }
+            ]
+        }
+    }
+    fake_resp = MagicMock(status_code=200)
+    fake_resp.json.return_value = response
+    with patch("auto_researcher.search.crossref.request_with_retry", return_value=fake_resp):
+        papers = search_crossref("sample query", mailto="you@example.com", limit=5)
+    assert papers[0].abstract == "This paper studies things."
