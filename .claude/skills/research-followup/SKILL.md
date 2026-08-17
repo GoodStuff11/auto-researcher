@@ -40,8 +40,21 @@ skill, using its stored record instead of rerunning the search from scratch.
      ```
      If `fulltext` is present in the output, read and discuss it directly.
    - If it was only in `candidates` (found but never read in depth), offer
-     to fetch and read it now. Write the `candidates` array from step 2 to
-     `/tmp/candidates.json` first, then run:
+     to fetch and read it now. If the paper has no OA PDF link, check proxy
+     access before assuming it's usable — cookies expire in hours and a
+     stale `.cookies.txt` shouldn't silently produce an abstract-only result:
+     ```bash
+     .venv/bin/python -m auto_researcher cookies status --domains <paper's landing_url domain>
+     ```
+     If that comes back `false`, **ask the user** (`AskUserQuestion`) how to
+     proceed rather than fetching straight away and letting it degrade
+     quietly: automated refresh (`auto_researcher cookies refresh --domains ...`
+     — safe to try first, it only opens a browser when one's actually
+     available and otherwise prints manual instructions), manual export per
+     `auto-researcher/README.md`, or skip and stay abstract-only. Once
+     resolved (or if the paper already has an OA link and none of this is
+     needed), write the `candidates` array from step 2 to
+     `/tmp/candidates.json` and run:
      ```bash
      .venv/bin/python -m auto_researcher fetch --in /tmp/candidates.json --ids "<paper-id>" --out-dir /tmp/fulltext --cookies .cookies.txt
      ```
@@ -74,3 +87,7 @@ skill, using its stored record instead of rerunning the search from scratch.
   and even then only for a paper not already cached.
 - If `store list` returns nothing, no `research-question` run has happened
   yet on this machine — there's nothing to follow up on.
+- Proxy cookies are always temporary (a few hours) regardless of how they
+  were collected — never assume an existing `.cookies.txt` is still good;
+  check with `cookies status` and ask the user before a fetch silently
+  degrades to abstract-only for lack of a fresh one.

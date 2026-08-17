@@ -9,7 +9,7 @@ export const meta = {
   ],
 }
 
-const { question, candidates } = args
+const { question, candidates, maxRead = 50 } = args
 
 phase('Score')
 
@@ -57,12 +57,21 @@ for (const result of scoredBatches.filter(Boolean)) {
   }
 }
 
-const ranked = candidates
+const qualified = candidates
   .filter(p => scoreById[p.id] && scoreById[p.id].relevance >= 5)
   .sort((a, b) => scoreById[b.id].relevance - scoreById[a.id].relevance)
-  .slice(0, 50)
 
-log(`${ranked.length} papers selected out of ${candidates.length} candidates`)
+const ranked = qualified.slice(0, maxRead)
+
+if (qualified.length > ranked.length) {
+  log(
+    `${ranked.length} of ${qualified.length} papers scoring >=5/10 relevance were read in depth ` +
+    `(capped at maxRead=${maxRead}); ${qualified.length - ranked.length} scored relevant but were ` +
+    `NOT read this pass — report this gap, don't drop it silently.`
+  )
+} else {
+  log(`${ranked.length} papers selected out of ${candidates.length} candidates`)
+}
 
 phase('Read')
 
@@ -94,6 +103,31 @@ phase('Synthesize')
 
 const validExtracts = extracts.filter(Boolean)
 
+function paperLink(paper) {
+  if (paper.oa_pdf_url) return paper.oa_pdf_url
+  if (paper.doi) return `https://doi.org/${paper.doi}`
+  if (paper.landing_url) return paper.landing_url
+  if (paper.arxiv_id) return `https://arxiv.org/abs/${paper.arxiv_id}`
+  return null
+}
+
+// Citation numbers are assigned here, in ranked (relevance) order, and are
+// the single source of truth for numbering — the report step reuses this
+// exact list so inline [n] markers line up with the bibliography.
+const citations = validExtracts.map((e, i) => ({
+  n: i + 1,
+  id: e.id,
+  title: e.paper.title,
+  authors: e.paper.authors,
+  year: e.paper.year,
+  venue: e.paper.venue,
+  link: paperLink(e.paper),
+}))
+
+const citationKey = citations
+  .map(c => `[${c.n}] id=${c.id} — ${(c.authors || []).slice(0, 3).join(', ')} (${c.year || 'n.d.'}) — link: ${c.link || '(no link available)'}`)
+  .join('\n')
+
 const synthesis = await agent(
   `Question: "${question}"\n\nBased on these paper extracts, write a synthesis answering the ` +
   `question directly. Structure your response as:\n\n` +
@@ -101,10 +135,18 @@ const synthesis = await agent(
   `level and why.\n` +
   `2. What's been done, organized by approach or theme.\n` +
   `3. Explicit gaps: what the question asks that nothing in this set addresses.\n\n` +
+  `Citation rule: every claim that draws on a specific paper below must carry an inline citation ` +
+  `right after the claim, formatted as a markdown link whose visible text is the bracketed number ` +
+  `and whose target is that paper's link, e.g. "the J1-J2 model is hard to learn [3](${citations[0]?.link || 'https://example.com'})". ` +
+  `Use the exact number and link given for that paper in the citation key below — do not invent ` +
+  `numbers or links, and if a paper has "(no link available)" just cite the bare number "[n]" with ` +
+  `no link for that one. A claim can carry multiple citations, e.g. "...[2](...)[5](...)". Do not ` +
+  `add a references/bibliography section yourself — that is appended separately after your text.\n\n` +
+  `Citation key (number → paper, for your reference only, do not print this list):\n${citationKey}\n\n` +
   `Extracts:\n` +
   JSON.stringify(
-    validExtracts.map(e => ({
-      id: e.id, summary: e.summary, approach: e.approach, relation: e.relation_to_question,
+    validExtracts.map((e, i) => ({
+      n: i + 1, id: e.id, summary: e.summary, approach: e.approach, relation: e.relation_to_question,
     })),
     null, 2
   ),
@@ -115,6 +157,9 @@ return {
   synthesis,
   extracts: validExtracts,
   scores: Object.values(scoreById),
+  citations,
   totalCandidates: candidates.length,
   totalRanked: ranked.length,
+  totalQualified: qualified.length,
+  unreadQualifiedIds: qualified.slice(ranked.length).map(p => p.id),
 }

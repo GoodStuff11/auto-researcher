@@ -1,4 +1,5 @@
 import json
+import time
 from unittest.mock import patch
 
 from auto_researcher.cli import run_fetch, run_search
@@ -278,6 +279,50 @@ def test_run_store_show_paper_prints_paper_json(tmp_path, capsys):
 
     printed = json.loads(capsys.readouterr().out)
     assert printed["title"] == "Paper One"
+
+
+def test_run_cookies_status_true_for_domain_with_fresh_proxy_cookie(tmp_path):
+    from auto_researcher.cli import run_cookies_status
+
+    cookies_path = tmp_path / "cookies.txt"
+    cookies_path.write_text(
+        "# Netscape HTTP Cookie File\n"
+        f".proxy.library.cornell.edu\tTRUE\t/\tTRUE\t{int(time.time()) + 3600}\tsession\tabc\n"
+    )
+
+    result = run_cookies_status(["ieeexplore.ieee.org", "dl.acm.org"], cookies_path)
+
+    assert result == {"ieeexplore.ieee.org": True, "dl.acm.org": True}
+
+
+def test_run_cookies_status_false_when_cookies_file_missing(tmp_path):
+    from auto_researcher.cli import run_cookies_status
+
+    result = run_cookies_status(["ieeexplore.ieee.org"], tmp_path / "missing.txt")
+
+    assert result == {"ieeexplore.ieee.org": False}
+
+
+def test_run_cookies_refresh_prints_manual_instructions_without_local_browser(tmp_path, capsys):
+    from auto_researcher.cli import run_cookies_refresh
+
+    with patch("auto_researcher.cli.is_local_browser_available", return_value=False):
+        run_cookies_refresh(["ieeexplore.ieee.org"], tmp_path / "cookies.txt")
+
+    out = capsys.readouterr().out
+    assert "No local browser is available" in out
+    assert "ieeexplore-ieee-org.proxy.library.cornell.edu" in out
+
+
+def test_run_cookies_refresh_delegates_to_interactive_flow_with_local_browser(tmp_path):
+    from auto_researcher.cli import run_cookies_refresh
+
+    with patch("auto_researcher.cli.is_local_browser_available", return_value=True), patch(
+        "auto_researcher.cli.refresh_cookies_interactive"
+    ) as mock_refresh:
+        run_cookies_refresh(["ieeexplore.ieee.org"], tmp_path / "cookies.txt")
+
+    mock_refresh.assert_called_once_with(["ieeexplore.ieee.org"], tmp_path / "cookies.txt")
 
 
 def test_run_store_list_prints_all_queries(tmp_path, capsys):

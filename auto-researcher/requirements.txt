@@ -1,3 +1,8 @@
 requests>=2.31
 pypdf>=5.0
 pytest>=8.0
+
+# Optional — only needed for `auto_researcher cookies refresh` (automated
+# proxy login when a local browser is available). Install with:
+#   pip install playwright && playwright install chromium
+# playwright>=1.40

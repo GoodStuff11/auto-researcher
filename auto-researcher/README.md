@@ -97,11 +97,44 @@ Step by step:
    nothing else to configure.
 
 6. **Re-export when it goes stale.** Cornell proxy sessions typically last
-   hours, not days. You'll know it's stale when a run reports a paper you
-   expected to be proxy-accessible as `unavailable` instead — that's the
-   signal to repeat steps 1–4. There's no separate "check freshness"
-   command; the tool discovers staleness by trying the fetch and getting
-   a login redirect/failure, then degrades that paper to abstract-only.
+   hours, not days — cookies collected either manually or via the automated
+   flow below are equally temporary, so this is never a one-time setup step.
+   Check freshness for the domains you need before relying on it:
+   ```bash
+   .venv/bin/python -m auto_researcher cookies status --domains ieeexplore.ieee.org,dl.acm.org
+   ```
+   prints `true`/`false` per domain without making any network request (it
+   only checks the cookie's stored expiry). `false` means repeat steps 1–4
+   (or run the automated refresh below) before fetching from that domain.
+
+#### Automated refresh (when a local browser is available)
+
+Manually exporting cookies through a browser extension every few hours is
+tedious. `auto_researcher cookies refresh` automates everything *except* the
+NetID + Duo tap itself — it opens a real, visible browser tab per publisher
+domain, waits for you to log in, and saves the resulting session cookies
+straight to `.cookies.txt`:
+
+```bash
+.venv/bin/pip install playwright && .venv/bin/playwright install chromium  # one-time
+.venv/bin/python -m auto_researcher cookies refresh --domains ieeexplore.ieee.org,dl.acm.org
+```
+
+It only runs this way when it can plausibly show you a browser window —
+`is_local_browser_available()` (`auto_researcher/browser_login.py`) checks
+for an SSH session (`SSH_CONNECTION`/`SSH_TTY`) or a headless Linux display
+(no `DISPLAY`/`WAYLAND_DISPLAY`) and, if either applies, prints the manual
+instructions above instead of trying to launch a browser that can't be seen.
+This means it's genuinely a no-op over an SSH-only research server — the
+manual export/`scp` flow above is still how you get cookies onto a headless
+machine; the automated path is for when you're running `auto_researcher`
+directly on your own desktop.
+
+Since cookies always expire regardless of how they were collected, the
+`research-question` and `research-followup` skills check
+`cookies status` before any `fetch` and ask you how to refresh (automated,
+manual, or skip and stay abstract-only) rather than assuming an old
+`.cookies.txt` is still good.
 
 #### Covering multiple publishers in one `.cookies.txt`
 
@@ -140,9 +173,10 @@ for every domain you added.
 
 #### Testing whether your `.cookies.txt` works
 
-There's no CLI subcommand for this (it's a rare enough operation not to
-warrant one) — a short inline check confirms both that the file parses and
-that a given domain's session is actually live:
+`cookies status` (above) confirms the file parses and a cookie for the
+domain hasn't *expired*, but that's a local check — it can't tell you the
+session was actually revoked server-side. For that, a short inline check
+makes a real request through the proxy:
 
 ```bash
 cd auto-researcher
@@ -448,8 +482,11 @@ persist → follow-up sequence.
 
 - Google Scholar (no official API, ToS risk) and PubMed (not relevant to
   this tool's target fields) are not sources.
-- No headless/automated login to Cornell SSO — blocked by Duo 2FA; manual
-  cookie export/import is the deliberate workaround for the SSH-only,
-  no-browser environment this tool runs in.
+- No way to script past Duo 2FA itself — that's the point of 2FA. When a
+  real display is available (`auto_researcher cookies refresh`), a visible
+  browser automates the login *flow* but still requires you to tap Duo
+  yourself; over SSH or on a headless machine, manual cookie export/import
+  (see above) is the deliberate fallback, since there's no way to show you
+  a browser window to log into in the first place.
 - No separate metered LLM API billing — all reasoning happens via Claude
   Code subagents/Workflow within an existing session.

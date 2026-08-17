@@ -8,10 +8,13 @@ from dataclasses import fields
 from pathlib import Path
 from typing import Callable, List
 
+from urllib.parse import urlsplit
+
 from . import store
+from .browser_login import is_local_browser_available, print_manual_instructions, refresh_cookies_interactive
 from .cookies import CookieStore
 from .dedup import dedupe
-from .fetch import fetch_full_text
+from .fetch import fetch_full_text, to_proxy_url
 from .models import Paper
 from .search.arxiv import search_arxiv
 from .search.core import search_core
@@ -143,6 +146,22 @@ def run_fetch(
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
 
 
+def run_cookies_status(domains: List[str], cookies_path: Path) -> dict:
+    cookie_store = CookieStore(cookies_path) if cookies_path.exists() else None
+    result = {}
+    for domain in domains:
+        proxy_domain = urlsplit(to_proxy_url(f"https://{domain}/")).netloc
+        result[domain] = bool(cookie_store and cookie_store.is_fresh(proxy_domain))
+    return result
+
+
+def run_cookies_refresh(domains: List[str], cookies_path: Path) -> None:
+    if not is_local_browser_available():
+        print_manual_instructions(domains, cookies_path)
+        return
+    refresh_cookies_interactive(domains, cookies_path)
+
+
 def run_store_record_scores(store_root: Path, topic: str, scores: List[dict]) -> None:
     store.record_scores(store_root, topic, scores)
 
@@ -184,6 +203,17 @@ def main() -> None:
     fetch_p.add_argument("--cookies", type=Path, default=Path(".cookies.txt"))
     fetch_p.add_argument("--store-root", type=Path, default=Path("store"))
 
+    cookies_p = sub.add_parser("cookies")
+    cookies_sub = cookies_p.add_subparsers(dest="cookies_command", required=True)
+
+    cookies_status_p = cookies_sub.add_parser("status")
+    cookies_status_p.add_argument("--domains", required=True)
+    cookies_status_p.add_argument("--cookies", type=Path, default=Path(".cookies.txt"))
+
+    cookies_refresh_p = cookies_sub.add_parser("refresh")
+    cookies_refresh_p.add_argument("--domains", required=True)
+    cookies_refresh_p.add_argument("--cookies", type=Path, default=Path(".cookies.txt"))
+
     store_p = sub.add_parser("store")
     store_sub = store_p.add_subparsers(dest="store_command", required=True)
 
@@ -220,6 +250,11 @@ def main() -> None:
             args.candidates_path, args.ids.split(","), args.out_dir, args.cookies,
             store_root=args.store_root,
         )
+    elif args.command == "cookies":
+        if args.cookies_command == "status":
+            print(json.dumps(run_cookies_status(args.domains.split(","), args.cookies), indent=2))
+        elif args.cookies_command == "refresh":
+            run_cookies_refresh(args.domains.split(","), args.cookies)
     elif args.command == "store":
         if args.store_command == "record-scores":
             scores = json.loads(args.scores.read_text())
