@@ -337,3 +337,163 @@ def test_run_store_list_prints_all_queries(tmp_path, capsys):
 
     printed = json.loads(capsys.readouterr().out)
     assert {q["topic_slug"] for q in printed} == {"topic-a", "topic-b"}
+
+
+def test_run_store_list_ids_prints_ids_only(tmp_path, capsys):
+    from auto_researcher.cli import run_store_list_ids
+    from auto_researcher.store import record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "my-topic", "Has X?", [_paper("arxiv:1", "One"), _paper("arxiv:2", "Two")])
+
+    run_store_list_ids(store_root, "my-topic")
+
+    assert json.loads(capsys.readouterr().out) == ["arxiv:1", "arxiv:2"]
+
+
+def test_run_store_get_candidates_returns_only_requested_ids(tmp_path, capsys):
+    from auto_researcher.cli import run_store_get_candidates
+    from auto_researcher.store import record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "my-topic", "Has X?", [_paper("arxiv:1", "One"), _paper("arxiv:2", "Two")])
+
+    run_store_get_candidates(store_root, "my-topic", ["arxiv:2"])
+
+    printed = json.loads(capsys.readouterr().out)
+    assert [c["id"] for c in printed] == ["arxiv:2"]
+
+
+def test_run_store_unscored_excludes_already_scored_papers(tmp_path, capsys):
+    from auto_researcher.cli import run_store_append_score, run_store_unscored
+    from auto_researcher.store import record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "my-topic", "Has X?", [_paper("arxiv:1", "One"), _paper("arxiv:2", "Two")])
+    run_store_append_score(store_root, "my-topic", "arxiv:1", 8, 5, "on-topic")
+
+    run_store_unscored(store_root, "my-topic", None)
+
+    printed = json.loads(capsys.readouterr().out)
+    assert [c["id"] for c in printed] == ["arxiv:2"]
+
+
+def test_run_store_append_score_then_scores_json_round_trips(tmp_path, capsys):
+    from auto_researcher.cli import run_store_append_score, run_store_scores
+    from auto_researcher.store import record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "my-topic", "Has X?", [_paper("arxiv:1", "One")])
+    run_store_append_score(store_root, "my-topic", "arxiv:1", 9, 7, "core paper")
+
+    run_store_scores(store_root, "my-topic", None, None, "relevance", None, "json")
+
+    printed = json.loads(capsys.readouterr().out)
+    assert printed == [{"id": "arxiv:1", "relevance": 9, "read_priority": 7, "reason": "core paper"}]
+
+
+def test_run_store_scores_table_format_is_human_readable(tmp_path, capsys):
+    from auto_researcher.cli import run_store_append_score, run_store_scores
+    from auto_researcher.store import record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "my-topic", "Has X?", [_paper("arxiv:1", "One")])
+    run_store_append_score(store_root, "my-topic", "arxiv:1", 9, 7, "core paper")
+
+    run_store_scores(store_root, "my-topic", None, None, "relevance", None, "table")
+
+    printed = capsys.readouterr().out
+    assert "arxiv:1" in printed
+    assert "core paper" in printed
+    assert "[" not in printed  # not JSON
+
+
+def test_run_store_chunk_paper_then_paper_chunks_round_trips(tmp_path, capsys):
+    from auto_researcher.cli import run_store_chunk_paper, run_store_paper_chunks
+    from auto_researcher.store import safe_paper_id, upsert_paper
+
+    store_root = tmp_path / "store"
+    upsert_paper(store_root, _paper("arxiv:1", "One"))
+    paper_dir = store_root / "papers" / safe_paper_id("arxiv:1")
+    (paper_dir / "fulltext.txt").write_text(" ".join(f"w{i}" for i in range(1500)))
+
+    run_store_chunk_paper(store_root, "arxiv:1", 1000)
+    chunked = json.loads(capsys.readouterr().out)
+    assert [c["n"] for c in chunked] == [1, 2]
+
+    run_store_paper_chunks(store_root, "arxiv:1")
+    listed = json.loads(capsys.readouterr().out)
+    assert listed == chunked
+
+
+def test_run_store_append_note_then_paper_notes_round_trips(tmp_path, capsys):
+    from auto_researcher.cli import run_store_append_note, run_store_paper_notes
+    from auto_researcher.store import upsert_paper
+
+    store_root = tmp_path / "store"
+    upsert_paper(store_root, _paper("arxiv:1", "One"))
+
+    run_store_append_note(store_root, "arxiv:1", 1, "Key insight from chunk 1.")
+    run_store_paper_notes(store_root, "arxiv:1")
+
+    printed = capsys.readouterr().out
+    assert "Key insight from chunk 1." in printed
+
+
+def test_run_fetch_topic_mode(tmp_path):
+    from auto_researcher.fetch import FullTextResult
+    from auto_researcher.store import load_paper, record_query, record_scores
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "topic-fetch", "What is X?", [_paper("arxiv:1", "Paper 1")])
+    record_scores(store_root, "topic-fetch", [{"id": "arxiv:1", "relevance": 9, "read_priority": 8}])
+
+    with patch(
+        "auto_researcher.cli.fetch_full_text",
+        return_value=FullTextResult("arxiv:1", "open_access", "paper 1 full text"),
+    ):
+        run_fetch(topic="topic-fetch", min_read_priority=7.0, store_root=store_root)
+
+    loaded = load_paper(store_root, "arxiv:1")
+    assert loaded["fulltext"] == "paper 1 full text"
+
+
+def test_run_store_summary_and_bibliography_cli(tmp_path, capsys):
+    from auto_researcher.cli import run_store_append_score, run_store_bibliography, run_store_summary
+    from auto_researcher.store import record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "my-topic", "Has X?", [_paper("arxiv:1", "One")])
+    run_store_append_score(store_root, "my-topic", "arxiv:1", 9, 8, "core paper")
+
+    run_store_summary(store_root, "my-topic", fmt="json")
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["total_candidates"] == 1
+    assert summary["deep_read_count"] == 1
+
+    run_store_bibliography(store_root, "my-topic", fmt="json")
+    bib = json.loads(capsys.readouterr().out)
+    assert len(bib) == 1
+    assert bib[0]["id"] == "arxiv:1"
+
+
+def test_run_store_generate_report_cli(tmp_path, capsys):
+    from auto_researcher.cli import run_store_append_score, run_store_generate_report
+    from auto_researcher.store import record_query
+
+    store_root = tmp_path / "store"
+    record_query(store_root, "my-topic", "Has X?", [_paper("arxiv:1", "One")])
+    run_store_append_score(store_root, "my-topic", "arxiv:1", 9, 8, "core paper")
+
+    out_file = tmp_path / "report.md"
+    ans_file = tmp_path / "answer.txt"
+    ans_file.write_text("Direct answer.")
+    syn_file = tmp_path / "syn.txt"
+    syn_file.write_text("Synthesis body.")
+
+    run_store_generate_report(
+        store_root, "my-topic", out_path=out_file, direct_answer_path=ans_file, synthesis_path=syn_file
+    )
+    assert out_file.exists()
+    assert "Direct answer." in out_file.read_text()
+

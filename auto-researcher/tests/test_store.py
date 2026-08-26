@@ -1,9 +1,22 @@
 import json
+from pathlib import Path
+
+import pytest
 
 from auto_researcher.models import Paper
 from auto_researcher.store import (
+    append_paper_note,
+    append_score,
+    chunk_paper,
+    get_candidates_by_ids,
+    get_paper_notes,
+    get_unscored_ids,
     has_fulltext,
+    list_candidate_ids,
+    list_chunks,
+    list_scores,
     load_paper,
+    load_scores,
     record_fulltext,
     safe_paper_id,
     upsert_paper,
@@ -142,3 +155,155 @@ def test_list_queries_lists_every_recorded_query(tmp_path):
 
 def test_list_queries_empty_before_any_query_recorded(tmp_path):
     assert list_queries(tmp_path) == []
+
+
+def test_list_candidate_ids_and_get_candidates_by_ids(tmp_path):
+    papers = [_paper(id="arxiv:1", title="Paper One"), _paper(id="arxiv:2", title="Paper Two")]
+    record_query(tmp_path, "topic-a", "Question?", papers)
+
+    assert list_candidate_ids(tmp_path, "topic-a") == ["arxiv:1", "arxiv:2"]
+    fetched = get_candidates_by_ids(tmp_path, "topic-a", ["arxiv:2"])
+    assert [c["id"] for c in fetched] == ["arxiv:2"]
+
+
+def test_append_score_then_load_scores_keeps_latest_per_id(tmp_path):
+    papers = [_paper(id="arxiv:1"), _paper(id="arxiv:2")]
+    record_query(tmp_path, "topic-a", "Question?", papers)
+
+    append_score(tmp_path, "topic-a", "arxiv:1", relevance=6, read_priority=2, reason="ok")
+    append_score(tmp_path, "topic-a", "arxiv:2", relevance=1, read_priority=0, reason="unrelated")
+    append_score(tmp_path, "topic-a", "arxiv:1", relevance=9, read_priority=8, reason="re-scored higher")
+
+    scores = load_scores(tmp_path, "topic-a")
+    assert scores["arxiv:1"] == {
+        "id": "arxiv:1", "relevance": 9, "read_priority": 8, "reason": "re-scored higher",
+    }
+    assert scores["arxiv:2"]["relevance"] == 1
+
+
+def test_get_unscored_ids_excludes_scored_papers(tmp_path):
+    papers = [_paper(id="arxiv:1"), _paper(id="arxiv:2"), _paper(id="arxiv:3")]
+    record_query(tmp_path, "topic-a", "Question?", papers)
+    append_score(tmp_path, "topic-a", "arxiv:2", relevance=5)
+
+    assert get_unscored_ids(tmp_path, "topic-a") == ["arxiv:1", "arxiv:3"]
+    assert get_unscored_ids(tmp_path, "topic-a", limit=1) == ["arxiv:1"]
+
+
+def test_list_scores_filters_and_sorts(tmp_path):
+    papers = [_paper(id=f"arxiv:{i}") for i in range(3)]
+    record_query(tmp_path, "topic-a", "Question?", papers)
+    append_score(tmp_path, "topic-a", "arxiv:0", relevance=9, read_priority=2)
+    append_score(tmp_path, "topic-a", "arxiv:1", relevance=3, read_priority=8)
+    append_score(tmp_path, "topic-a", "arxiv:2", relevance=1, read_priority=0)
+
+    by_relevance = list_scores(tmp_path, "topic-a", min_relevance=3)
+    assert [s["id"] for s in by_relevance] == ["arxiv:0", "arxiv:1"]
+
+    by_read_priority = list_scores(tmp_path, "topic-a", sort_by="read_priority", top=1)
+    assert [s["id"] for s in by_read_priority] == ["arxiv:1"]
+
+
+def test_load_query_merges_scores_jsonl_into_candidates(tmp_path):
+    papers = [_paper(id="arxiv:1")]
+    record_query(tmp_path, "topic-a", "Question?", papers)
+    append_score(tmp_path, "topic-a", "arxiv:1", relevance=7, read_priority=9, reason="core")
+
+    loaded = load_query(tmp_path, "topic-a")
+    candidate = loaded["candidates"][0]
+    assert candidate["relevance"] == 7
+    assert candidate["read_priority"] == 9
+    assert candidate["reason"] == "core"
+
+
+def test_chunk_paper_splits_fulltext_into_word_bounded_files(tmp_path):
+    paper = _paper(id="arxiv:1")
+    upsert_paper(tmp_path, paper)
+    paper_dir = tmp_path / "papers" / safe_paper_id("arxiv:1")
+    (paper_dir / "fulltext.txt").write_text(" ".join(f"word{i}" for i in range(2500)))
+
+    index = chunk_paper(tmp_path, "arxiv:1", chunk_words=1000)
+
+    assert [c["n"] for c in index] == [1, 2, 3]
+    assert index[0]["word_count"] == 1000
+    assert index[2]["word_count"] == 500
+    assert Path(index[0]["path"]).read_text().split()[0] == "word0"
+    assert list_chunks(tmp_path, "arxiv:1") == index
+
+
+def test_chunk_paper_raises_when_no_fulltext_stored(tmp_path):
+    paper = _paper(id="arxiv:1")
+    upsert_paper(tmp_path, paper)
+    with pytest.raises(FileNotFoundError):
+        chunk_paper(tmp_path, "arxiv:1")
+
+
+def test_append_paper_note_then_get_paper_notes_accumulates(tmp_path):
+    paper = _paper(id="arxiv:1")
+    upsert_paper(tmp_path, paper)
+
+    assert get_paper_notes(tmp_path, "arxiv:1") is None
+
+    append_paper_note(tmp_path, "arxiv:1", 1, "First insight.")
+    append_paper_note(tmp_path, "arxiv:1", 2, "Second insight.")
+
+    notes = get_paper_notes(tmp_path, "arxiv:1")
+    assert "## Chunk 1" in notes
+    assert "First insight." in notes
+    assert "## Chunk 2" in notes
+    assert "Second insight." in notes
+
+
+def test_get_topic_summary_and_build_bibliography(tmp_path):
+    from auto_researcher.store import build_bibliography, get_topic_summary
+
+    papers = [
+        _paper(id="arxiv:1", title="Paper 1"),
+        _paper(id="arxiv:2", title="Paper 2"),
+        _paper(id="arxiv:3", title="Paper 3"),
+    ]
+    for p in papers:
+        upsert_paper(tmp_path, p)
+    record_query(tmp_path, "test-topic", "What is X?", papers)
+    append_score(tmp_path, "test-topic", "arxiv:1", relevance=9, read_priority=8, reason="key")
+    append_score(tmp_path, "test-topic", "arxiv:2", relevance=6, read_priority=3, reason="medium")
+
+    summary = get_topic_summary(tmp_path, "test-topic", min_relevance=5.0, min_read_priority=7.0)
+    assert summary["total_candidates"] == 3
+    assert summary["total_scored"] == 2
+    assert summary["unscored_count"] == 1
+    assert summary["unscored_ids"] == ["arxiv:3"]
+    assert summary["qualified_count"] == 2
+    assert summary["deep_read_count"] == 1
+    assert summary["deep_read_ids"] == ["arxiv:1"]
+
+    bib = build_bibliography(tmp_path, "test-topic", max_read=2)
+    assert len(bib) == 2
+    assert bib[0]["id"] == "arxiv:1"
+    assert bib[0]["read_status"] == "abstract_only"
+
+
+def test_generate_report_markdown(tmp_path):
+    from auto_researcher.store import generate_report_markdown
+
+    papers = [_paper(id="arxiv:1", title="Paper 1")]
+    upsert_paper(tmp_path, papers[0])
+    record_query(tmp_path, "test-topic", "What is X?", papers)
+    append_score(tmp_path, "test-topic", "arxiv:1", relevance=9, read_priority=8, reason="key")
+
+    md = generate_report_markdown(
+        root=tmp_path,
+        topic_slug="test-topic",
+        direct_answer="Direct answer here.",
+        synthesis_body="Synthesis text here.",
+        references=[{"n": 1, "authors": ["A. Author"], "year": 2024, "title": "Paper 1", "link": "https://arxiv.org/abs/arxiv:1"}],
+        gaps_body="Explicit gaps here.",
+    )
+
+    assert "# What is X?" in md
+    assert "## Direct answer" in md
+    assert "Direct answer here." in md
+    assert "## References" in md
+    assert "[1] A. Author (2024)" in md
+    assert "## Bibliography" in md
+

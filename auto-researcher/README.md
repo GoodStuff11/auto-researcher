@@ -262,14 +262,19 @@ Useful for scripting, debugging, or a one-off `search`/`fetch` outside the
 skill flow. Both CLI subcommands and the Workflow can be invoked directly;
 see "Python commands run at each stage" below for exact syntax. In short:
 
-1. Run `auto_researcher search` yourself to get `candidates.json`.
+1. Run `auto_researcher search --topic <slug> ...` yourself — this persists
+   every candidate to `store/queries/<slug>/candidates.json`.
 2. Ask Claude Code to run the `Workflow` tool with
    `scriptPath: .claude/workflows/research-synthesis.js` and
-   `args: {"question": "...", "candidates": <the JSON array from step 1>}`.
-3. Persist the result with `auto_researcher store record-scores` and
-   `auto_researcher store record-synthesis`.
-4. Optionally `auto_researcher fetch` the papers flagged important-but-
-   abstract-only, attach the text, and re-run step 2.
+   `args: {"question": "...", "topicSlug": "<slug>"}` — no candidates array;
+   the workflow reads everything it needs from the store itself, in small
+   batches, via the `auto_researcher store ...` CLI helpers below.
+3. Persist the result with `auto_researcher store record-synthesis` (scores
+   are already durably in `store/queries/<slug>/scores.jsonl` — the
+   workflow appended them incrementally as it scored, via
+   `store append-score`, so there's no separate "persist scores" step).
+4. Optionally re-run step 2 with a higher `maxRead`, or use
+   `research-followup` to chunk-and-read one specific paper more closely.
 
 This is exactly what the `research-question` skill does on your behalf —
 drive it by hand only when you need to change something the skill doesn't
@@ -284,10 +289,18 @@ Everything `search` and `fetch` touch is cached under
   `meta.json`, `abstract.txt` (if available), and once fetched,
   `fulltext.txt` + `fulltext.pdf` (if the source was a PDF) +
   `fetch_status.json`. A paper is fetched at most once, ever, regardless
-  of how many different questions later reference it.
+  of how many different questions later reference it. Once a paper is
+  chunked for a deep read, it also gets `chunks/chunk_0001.txt`,
+  `chunks/chunk_0002.txt`, ... plus `chunks/index.json` (word-bounded
+  pieces of `fulltext.txt`, small enough to read one at a time), and
+  `notes.md` — the running, chunk-by-chunk distillation of that paper's
+  insights, appended to as each chunk is read rather than ever holding the
+  whole paper in one context window.
 - `store/queries/<topic-slug>/` — one directory per research question ever
-  run, with `question.txt`, `candidates.json` (every candidate found, with
-  relevance score/reason once scored), `relevant_ids.json` (which
+  run, with `question.txt`, `candidates.json` (every candidate found),
+  `scores.jsonl` (one JSON line appended per scored candidate —
+  `{id, relevance, read_priority, reason}`; a paper scored twice just has
+  two lines, and readers take the last one), `relevant_ids.json` (which
   candidates were read in depth), `synthesis.md` (the final answer), and
   `created_at.txt`/`updated_at.txt` (bookkeeping timestamps, also surfaced
   by `store list`).
@@ -300,11 +313,29 @@ query's store record, with the answer up top and a full bibliography.
 CLI subcommands exposing the store to the skill layer:
 
 ```bash
-auto_researcher store record-scores --topic <slug> --scores <path-to-json>
+# Candidates
+auto_researcher store list-ids --topic <slug>                     # just the ids — cheap to hand to an orchestrator
+auto_researcher store get-candidates --topic <slug> --ids id1,id2  # title/abstract/etc for specific ids only
+
+# Scoring — one paper (or small batch) at a time, never the whole pool
+auto_researcher store unscored --topic <slug> [--limit N]          # next N candidates with no score yet
+auto_researcher store append-score --topic <slug> --id <id> --relevance <0-10> --read-priority <0-10> --reason "..."
+auto_researcher store scores --topic <slug> [--min-relevance N] [--min-read-priority N] [--sort-by relevance|read_priority] [--top N] [--format table|json]
+
+# Full-text deep reads — chunked so a whole paper is never loaded at once
+auto_researcher store chunk-paper --id <paper-id> [--chunk-words N]  # splits cached fulltext.txt into chunk files
+auto_researcher store paper-chunks --id <paper-id>                  # re-lists an existing chunk index
+auto_researcher store append-note --id <paper-id> --chunk N --note "..."
+auto_researcher store paper-notes --id <paper-id>                   # the accumulated distillation
+
+# Synthesis / inspection
 auto_researcher store record-synthesis --topic <slug> --relevant-ids id1,id2 --synthesis <path-to-md>
-auto_researcher store show --topic <slug>        # prints the full query record as JSON
+auto_researcher store show --topic <slug>         # prints the full query record as JSON
 auto_researcher store show-paper --id <paper-id>  # prints one paper's cached record as JSON
 auto_researcher store list                        # prints every stored query (slug, question, created_at)
+
+# Legacy batch scoring (still works; the Workflow uses append-score instead)
+auto_researcher store record-scores --topic <slug> --scores <path-to-json>
 ```
 
 ## Architecture
@@ -317,24 +348,35 @@ question
      persists every candidate + this query's record to the local store
      -> candidates.json (title/authors/year/venue/abstract/DOI/links,
         no full text yet)
-  -> [Workflow] Score phase: batched agent calls score title+abstract
-     against the question -> top ~50 selected
-  -> [Workflow] Read phase: one agent per selected paper, extracting
-     findings relevant to the question
+  -> [Workflow] Discover phase: one subagent lists every candidate id from
+     the store (ids only — the pool itself never passes through the
+     orchestrator's context)
+  -> [Workflow] Score phase: small batches of ids -> subagent fetches their
+     abstracts via `get-candidates`, scores each on two axes (relevance,
+     read_priority), appends each score immediately via `append-score`
+     -> top ~50 by relevance selected
+  -> [Workflow] Prepare/Read-chunks phase: candidates scoring high on
+     read_priority get their full text fetched (open-access only) and
+     split into word-bounded chunks; one subagent per chunk reads it and
+     appends a distilled note — a paper is never loaded whole into one
+     context window, however long it is
+  -> [Workflow] Extract phase: one subagent per paper synthesizes its
+     accumulated notes (deep-read papers) or its abstract (everyone else)
+     into what's relevant to the question
   -> [Workflow] Synthesize phase: merges extracts into a direct answer,
      organized by theme, with explicit gaps
-  -> CLI `fetch` (optional, for papers flagged critical but abstract-only):
-     fetches full text (OA link, then Unpaywall, then Cornell proxy,
-     else stays abstract-only) - checks the local store first and never
-     refetches a paper already retrieved for any past question ->
-     re-run Score/Read/Synthesize with the added text
   -> report written to auto-researcher/reports/YYYY-MM-DD-<topic-slug>.md
 ```
 
 Everything left of the Workflow arrow is plain, testable Python
 (`auto_researcher/`) with no LLM involvement and no metered API cost beyond
 the free keys above. Everything at/after the Workflow arrow runs as Claude
-Code subagents inside your session — no separate LLM billing.
+Code subagents inside your session — no separate LLM billing. Every phase
+inside the Workflow works through the `auto_researcher store ...` CLI
+helpers above, so no single subagent call ever holds more than a handful of
+abstracts or one paper-chunk — this is what lets the same workflow scale
+from a dozen candidates to thousands without anyone hitting a context-size
+wall.
 
 ## Python commands run at each stage
 
@@ -389,12 +431,30 @@ Output JSON shape (one object per deduped paper):
 
 Not a Python command — invoked as a Claude Code `Workflow` tool call with
 `scriptPath: .claude/workflows/research-synthesis.js` and
-`args: {"question": "...", "candidates": [...]}`. Scores every candidate's
-title+abstract against the question, reads the top ~50 in parallel
-subagents, and synthesizes their extracts into one answer. Returns
-`{synthesis, extracts, scores, totalCandidates, totalRanked}` — write
-`scores` and `synthesis` to files and hand them to the `store` subcommands
-below.
+`args: {"question": "...", "topicSlug": "<slug>"}` (optional: `storeRoot`,
+`cwd`, `maxRead`, `scoreBatchSize`, `readPriorityThreshold`, `chunkWords` —
+see the script's top-of-file destructuring for defaults). No candidates
+array is passed in — every phase (Discover, Score, Select, Prepare deep
+reads, Read chunks, Extract, Synthesize) pulls what it needs from the store
+via the `auto_researcher store ...` CLI helpers, in small batches, so the
+candidate pool never needs to fit in any one subagent's context, let alone
+the orchestrator's.
+
+Two scores are recorded per candidate: **relevance** (is this on-topic) and
+**read_priority** (would the full paper, not just its abstract, meaningfully
+change the answer). Candidates scoring `read_priority >= readPriorityThreshold`
+(default 7) get a full-text deep read: fetch (open-access only — no proxy
+prompt; a paper needing proxy access is reported in `fetchFailedDeepReadIds`
+and falls back to abstract-only) → chunk → one subagent per chunk appends a
+note → one subagent per paper synthesizes the accumulated notes into an
+extract. Everyone else is extracted from their abstract directly.
+
+Returns
+`{synthesis, extracts, citations, deepReadIds, fetchFailedDeepReadIds, totalCandidates, totalScored, unscoredIds, totalRanked, totalQualified, unreadQualifiedIds}`
+— write `synthesis` (plus a References section built from `citations`) to a
+file and hand it to `store record-synthesis` below. Scores never need
+separate persistence — the Score phase already appended each one to
+`scores.jsonl` via `append-score` as it went.
 
 ### `auto_researcher fetch`
 
@@ -435,9 +495,11 @@ through this priority order rather than storing garbage.
 
 ### `auto_researcher store ...`
 
-See "What gets generated" above for the four subcommands
-(`record-scores`, `record-synthesis`, `show`, `show-paper`, `list`) and the
-on-disk shape they read/write.
+See "What gets generated" above for the full subcommand list
+(`list-ids`, `get-candidates`, `unscored`, `append-score`, `scores`,
+`chunk-paper`, `paper-chunks`, `append-note`, `paper-notes`,
+`record-synthesis`, `show`, `show-paper`, `list`, plus the legacy
+`record-scores`) and the on-disk shape they read/write.
 
 ### Library modules (if scripting against the package directly)
 
