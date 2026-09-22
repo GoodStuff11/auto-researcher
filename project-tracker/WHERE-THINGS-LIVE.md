@@ -35,7 +35,7 @@ to §7.
 | What is still owed, by whom? | `HANDOFF.md` §7, and the ClickUp list *Fermion Sign Tasks* (`901307841677`) |
 | What did we decide, and what is still open? | The dashboard above |
 | What was said in a meeting? | Circleback |
-| How do I rebuild the dashboard? | `REGENERATE-DASHBOARD.md` |
+| How do I rebuild the dashboard? | `./dashboard update` (`dashboard/README.md`) |
 
 ## Links
 
