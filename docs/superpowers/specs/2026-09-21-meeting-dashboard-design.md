@@ -125,13 +125,20 @@ its follow-ups forward.
 
 ### `flags`
 
-`id`, `text`, `first_seen`, `resolved`. Populated from §7.1. Disagreements are listed, never
-auto-resolved — this mirrors the existing convention and is deliberate.
+`key`, `text`, `first_seen`, `resolved`, `ordinal`. Populated from §7.1. Disagreements are
+listed, never auto-resolved — this mirrors the existing convention and is deliberate. `key` is a
+short hash of the disagreement's headline, not its §7.1 number: the list is hand-numbered, so
+inserting an entry renumbers everything below it, and a positional key would rewrite each later
+flag's text under an older flag's key while never proposing the genuinely new one. `ordinal`
+keeps the §7.1 number for display.
 
 ### `changelog`
 
-`id`, `ts`, `entity`, `entity_id`, `field`, `old`, `new`, `actor`. Append-only. This is the sole
-input to `pending-changes.md`.
+`id`, `ts`, `entity`, `entity_id`, `field`, `old`, `new`, `actor`. Append-only. A local audit
+trail: deliberately not exported to `dashboard.json`, and deliberately **not** the input to
+`pending-changes.md`. What is owed to §7 is derived from the store's own state — a reverted
+closure, an overridden reopening, a decision row — which is simpler than replaying a log and
+cannot fall behind it. The log answers "what happened to this item, and when".
 
 ### `meta`
 
@@ -173,7 +180,15 @@ JSON — which is what makes a fresh clone usable.
 - `PATCH /api/decisions/<id>`
 
 Every mutation runs in a single SQLite transaction that also appends to `changelog` and rewrites
-`dashboard.json`. There is no save button and no unsaved state.
+`dashboard.json`. There is no save button: agenda resolutions, follow-ups and "resolved by" are
+written through as they are typed (debounced) and again on blur.
+
+One field is an exception, and it is documented rather than implied away: the note typed when
+closing a question has no route and no column until `POST /api/questions/<id>/state` carries it,
+so it is held in the tab. It survives any other interaction on the board, including a failed
+close, but not a reload. Whether a half-typed closing note should be persisted — a `draft_note`
+column, or a per-question draft endpoint — is a question for the group, not a gap to paper over
+in the README.
 
 ## UI
 
@@ -204,6 +219,7 @@ For a human with no agent involved, documented at the top of `README.md`:
 
 ```
 ./dashboard serve             # serve the current database, no sync
+./dashboard meeting 2026-09-21  # record that a meeting happened, for the staleness counter
 ```
 
 Under VS Code Remote-SSH the port is forwarded automatically and the printed `http://127.0.0.1:8765`
