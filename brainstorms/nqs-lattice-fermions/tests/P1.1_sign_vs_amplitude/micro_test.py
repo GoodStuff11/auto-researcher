@@ -26,34 +26,69 @@ For one doped 2D Hubbard cluster (t, t', U) it
                     reshape(W2 tanh(W1 x + b1) + b2), amplitude det(Phi_up(n)[occ_up])
                     * det(Phi_dn(n)[occ_dn]) (optionally times the Jastrow factor, see
                     --nnbf-jastrow); optimised by SR with exact gradient.
-3. for each variational state psi_theta computes the sign/amplitude error budget:
-     s_theta(n) = sgn psi_theta(n),
-     E_sign  = min_{a >= 0} a^T K a / a^T a with K = S H S, S = diag(s_theta)
-              (best energy reachable with the sign structure of psi_theta and
-              optimal non-negative amplitudes; computed by L-BFGS-B with bounds from
-              several starts, so it is an UPPER estimate of the true constrained min),
+3. Hard-Core check (reporting only, does not change the verdict): from the same ED
+   (lowest max(3, --n-ed-states) levels of the fixed-(N_up, N_dn) sector) it reports
+   E_0, E_1, E_2, the gap Delta_1 = E_1 - E_0 per site in units of t (Delta_1/(V t)),
+   and the d-wave pair correlation Pd(psi) = mean_{b: d(b,b0) >= r_min} eta_b P(b0, b)
+   (eta_b = +1 for x-bonds, -1 for y-bonds) for the E_0 and E_1 eigenvectors. If
+   Delta_1/(V t) < 0.02 it prints "near-degenerate competitor present".
+4. for each variational state psi_theta computes the sign/amplitude error budget:
+     s_theta(n) = sgn psi_theta(n),  K = S H S,  S = diag(s_theta),
+     E_sign  = min_{a >= 0} a^T K a / a^T a (best energy reachable with the sign
+              structure of psi_theta and optimal non-negative amplitudes; the exact
+              value is not computable in general, so it is BRACKETED):
+     E_FN    = self-consistent ten Haaf lattice fixed-node energy for s_theta
+              (PRB 51, 13039): the sign-violating off-diagonals K_ij > 0 are deleted and
+              moved to the diagonal, K_ii += sum_j K_ij g_j/g_i; the lowest eigenvector
+              phi >= 0 of this stoquastic H_eff is iterated as the next guide g, starting
+              from g = 1, for --fn-iters iterations (g floored at --fn-floor * max g); the
+              lowest iterate is kept. s_theta*phi is feasible and E_FN >= <H>_{s phi} >=
+              E_sign, so E_FN (and <H>_{FN}, stored as E_FN_var) is a RIGOROUS upper bound,
+     L-BFGS-B with bounds a >= 0 from four starts: |psi_theta| ("abs_theta"), |psi_0|
+              ("abs_exact"), uniform + 1% noise ("uniform"), |phi_FN| ("abs_fixed_node");
+              each result is a feasible value, hence also an upper bound,
+     E_sign_up = min(all L-BFGS-B results, E_FN, E_FN_var) (rigorous UPPER bound on E_sign;
+              E_sign_src says which estimate won), stored also as "E_sign",
+     spread  = (max - min of the L-BFGS-B energies of the starts that report convergence)
+              / dE_tot (all four starts are used if fewer than two converged),
      E_stoq  = lowest eigenvalue of K with its positive off-diagonal elements deleted
               (a rigorous LOWER bound on E_sign, since a^T K_+ a >= 0 for a >= 0),
-     dE_tot  = E_theta - E_0,  dE_sign = E_sign - E_0,  dE_amp = E_theta - E_sign,
-     f_E     = dE_sign / dE_tot  (sign fraction of the energy error),
-     f_E_lo  = max(0, E_stoq - E_0) / dE_tot (rigorous lower bound on the sign fraction),
+     dE_tot  = E_theta - E_0,  dE_sign = E_sign_up - E_0,  dE_amp = E_theta - E_sign_up,
+     f_E_up  = dE_sign / dE_tot (rigorous UPPER bound on the sign fraction; also "f_E"),
+     f_E_lo  = max(0, E_stoq - E_0) / dE_tot (rigorous LOWER bound on the sign fraction),
+     f_E_FN  = (E_FN - E_0) / dE_tot (reported separately),
      pairing: singlet bond-pair correlations P(b0, b) = <Delta_b0^dag Delta_b>,
               Delta_b = (c_{j dn} c_{i up} - c_{j up} c_{i dn})/sqrt(2) for nearest-
               neighbour bond b=(i,j), reference bond b0 = x-bond at site 0, evaluated
-              for psi_0, psi_theta and the sign-constrained optimum a* s_theta;
+              for psi_0, psi_theta and the sign-constrained optimum a* s_theta (a* = the
+              minimiser behind E_sign_up);
               eC_tot = max_{b: dist >= r_min} |P_theta - P_0|,
               eC_sign = max_{b: dist >= r_min} |P_{a* s_theta} - P_0|,
               f_C = eC_sign / eC_tot,
      sign-mismatch weight w = sum_{n: s_theta s_0 = -1} |psi_0(n)|^2 (after global sign
      alignment), and the "hybrid swap" energies E[s_theta |psi_0|], E[s_0 |psi_theta|].
-   An optimizer calibration is also run once: the sign-constrained minimisation with
-   the EXACT signs s_0 started from uniform amplitudes must return E_0 (reported as
-   calib_err = E_sign(s_0) - E_0; a value above 1e-3 * dE_tot of the best NNBF flags
-   L-BFGS-B local-minimum trouble).
+   An optimizer calibration is also run once: the L-BFGS-B sign-constrained minimisation
+   with the EXACT signs s_0 started from uniform amplitudes must return E_0; calib_err =
+   E_sign(s_0) - E_0.
 
-Decision metric (pre-committed, see P1.1_sign_vs_amplitude.md):
-   M = f_E of the widest NNBF state. PASS (sign binding) if M >= 0.6 on every instance,
-   FAIL (amplitude binding) if M <= 0.3 on every instance, AMBIGUOUS otherwise.
+Decision rule (pre-committed, see P1.1_sign_vs_amplitude.md), applied to the WIDEST
+NNBF (last entry of --widths) of each instance, in this order:
+   AMBIGUOUS  if calib_err > 1e-3 * dE_tot (calibration flag; overrides everything),
+   PASS       (sign binding) if f_E_up >= 0.6 AND spread < 0.05,
+   AMBIGUOUS  if f_E_up >= 0.6 but spread >= 0.05,
+   FAIL       (amplitude binding) if f_E_up <= 0.3 (conservative: f_E_up is an upper bound),
+   AMBIGUOUS  otherwise (0.3 < f_E_up < 0.6).
+   Global verdict (--aggregate): PASS if every instance is PASS, FAIL if every instance is
+   FAIL, AMBIGUOUS otherwise.
+Width-trend tie-break (pre-committed action for AMBIGUOUS): with w_n, w_w the smallest
+   and largest entries of --widths (8 and 128 in production),
+     rate_sign = dE_sign(w_n)/dE_sign(w_w),  rate_amp = dE_amp(w_n)/dE_amp(w_w);
+   the component with the SMALLER rate (slower decay with width) is declared binding; if
+   max(rate)/min(rate) < 1.5 the decision is "RERUN on 4x4 with 5 up / 5 down". The
+   tie-break is computed and logged for every instance with >= 2 widths. In --aggregate,
+   for a global AMBIGUOUS, each AMBIGUOUS instance gets its tie-break; if all of them name
+   the same component that component is declared binding, otherwise (any RERUN, a
+   disagreement, or an AMBIGUOUS instance run with a single width, which has no trend) the line "TIE-BREAK DECISION: RERUN on 4x4 with 5 up / 5 down" is printed.
 
 Usage
 -----
@@ -81,7 +116,9 @@ Options (all optional)
                      -t'_ij; t'=0 disables diagonal bonds.
   --U FLOAT          On-site repulsion (default 8.0).
   --widths LIST      Comma-separated NNBF hidden widths (default "8,32,128"); the LAST
-                     entry defines M. Empty string "" skips NNBF.
+                     entry defines M and the verdict, the smallest and largest entries
+                     define the width-trend tie-break. Empty string "" skips NNBF (no
+                     verdict is then produced).
   --nnbf-jastrow {0,1}  1 multiplies NNBF by the same Jastrow factor as the foil
                      (default 0, plain NNBF as in Luo & Clark).
   --sr-iters INT     SR iterations per variational state (default 1500).
@@ -93,7 +130,14 @@ Options (all optional)
                      lower it to save memory.
   --lbfgs-iters INT  Max L-BFGS-B iterations per start in the sign-constrained
                      minimisation (default 4000).
-  --n-ed-states INT  Number of lowest eigenpairs computed by Lanczos (default 3).
+  --fn-iters INT     Self-consistent guide iterations of the ten Haaf fixed-node solve
+                     (default 10; 0 = single solve with guide g = 1). Each iteration is
+                     one lowest-eigenpair solve of a D x D sparse matrix.
+  --fn-floor FLOAT   Guide floor: g is replaced by max(g, fn_floor * max g) before
+                     forming g_j/g_i (default 1e-3). Any positive guide gives a valid
+                     upper bound; the floor only avoids huge diagonal shifts.
+  --n-ed-states INT  Number of lowest eigenpairs computed by Lanczos (default 3; values
+                     below 3 are raised to 3, the Hard-Core check needs E_0, E_1, E_2).
   --degeneracy-tol FLOAT  Energy window for a degenerate ground manifold (default 1e-8).
   --r-min FLOAT      Minimal bond-centre distance used in the pairing error (default 1.5).
   --seed INT         RNG seed (default 1234).
@@ -105,17 +149,26 @@ Options (all optional)
                      U=0 ED; two-site Hubbard analytic energy; NNBF gradient versus finite
                      differences) and exits (default 0). The checks also run at the start
                      of every normal run, which aborts with exit code 2 if they fail.
-  --aggregate DIR    If given, do no computation: read every results/*.json in DIR that
-                     contains "M" and print the per-instance M, f_E_lo, f_C of the widest
-                     NNBF and the GLOBAL verdict (PASS if every M >= 0.6, FAIL if every
-                     M <= 0.3, AMBIGUOUS otherwise). Default "" (off).
+  --aggregate DIR    If given, do no computation: read every *.json in DIR that contains
+                     "M" (finished runs), re-derive each instance verdict from the stored
+                     widest-NNBF budget with the decision rule above (including the
+                     calibration flag), print f_E_up, f_E_lo, f_E_FN, spread, f_C, dE_tot,
+                     calib_err, the Hard-Core gap / d-wave line and the width-trend rates
+                     per instance, the GLOBAL verdict, and for a global AMBIGUOUS the
+                     tie-break decision. Default "" (off).
 
 Outputs
 -------
-  JSON with keys: "params", "ed" (E0 list, gap, degenerate flag), "calib_err",
-  "states" -> {name: {E, dE_tot, E_sign, E_stoq, dE_sign, dE_amp, f_E, f_E_lo,
-  E_hyb_signtheta_ampexact, E_hyb_signexact_amptheta, w_sign, eC_tot, eC_sign, f_C,
-  n_params, sign_starts}}, "M", "verdict_instance".
+  JSON with keys: "params", "ed" (levels, degeneracy), "hard_core" (levels3, gap,
+  gap_per_site, Pd_E0, Pd_E1, competitor_flag), "calib_err",
+  "states" -> {name: {E, E0, dE_tot, E_sign_up (= E_sign), E_sign_src, E_lbfgsb, E_FN,
+  E_FN_var, fn_history, f_E_FN, E_stoq, dE_sign, dE_amp, f_E_up (= f_E), f_E_lo, spread,
+  n_converged, E_hyb_signtheta_ampexact, E_hyb_signexact_amptheta, w_sign, eC_tot,
+  eC_sign, f_C, P0, Ptheta, Psign, n_params, sign_starts = [[start, E, nit, converged]]}},
+  and, when --widths is non-empty, "M" (= "M_up" = f_E_up of the widest NNBF), "M_lo"
+  (its f_E_lo), "spread", "verdict_instance", "verdict_reason", and (>= 2 widths)
+  "tiebreak" {w_narrow, w_wide, rate_sign, rate_amp, decision}. The JSON is rewritten
+  after every state, so a killed run leaves partial results (without "M").
   Progress is printed to stdout (redirected to the Slurm log by submit_test.sbatch).
 """
 import argparse
@@ -129,7 +182,7 @@ from math import comb
 import numpy as np
 import scipy.sparse as sp
 from scipy.optimize import minimize
-from scipy.sparse.linalg import eigsh
+from scipy.sparse.linalg import ArpackNoConvergence, eigsh
 
 INSTANCES = {
     0: dict(Lx=4, Ly=3, bcx="pbc", bcy="pbc", nup=5, ndn=5, U=8.0, tp=-0.25),
@@ -137,6 +190,15 @@ INSTANCES = {
     2: dict(Lx=4, Ly=3, bcx="pbc", bcy="pbc", nup=5, ndn=5, U=4.0, tp=-0.25),
     3: dict(Lx=2, Ly=2, bcx="obc", bcy="obc", nup=1, ndn=1, U=4.0, tp=0.0),
 }
+
+
+# pre-committed decision constants (see P1.1_sign_vs_amplitude.md, Stage 4)
+PASS_F, FAIL_F = 0.6, 0.3   # thresholds on f_E_up of the widest NNBF
+SPREAD_TOL = 0.05           # max-min of converged L-BFGS-B energies / dE_tot for PASS
+CALIB_TOL = 1e-3            # calibration error / dE_tot above which -> AMBIGUOUS
+TIE_FACTOR = 1.5            # width-trend rates within this factor -> RERUN
+COMP_TOL = 0.02             # Delta_1 / V below this (units of t) -> competitor flag
+RERUN_MSG = "RERUN on 4x4 with 5 up / 5 down"
 
 
 def log(msg):
@@ -317,6 +379,18 @@ class Hubbard:
             vecs.append(np.asarray(M).ravel())
         v0 = vecs[self.ib0]
         return np.array([v0 @ v for v in vecs])
+
+    def dwave(self, psi):
+        """d-wave long-range pair correlation: mean over bonds b with d(b, b0) >= r_min of
+        eta_b P(b0, b), eta = +1 for x-bonds, -1 for y-bonds (b0 is an x-bond).
+        Returns nan if there are no pairing operators or no such bonds."""
+        if not self.pair_ops or not self.pair_mask.any():
+            return float("nan")
+        P = self.pairing(psi)
+        eta = np.array([1.0 if b[2] == "x" else -1.0 for b in self.pair_bonds])
+        if self.pair_bonds[self.ib0][2] != "x":
+            eta = -eta
+        return float(np.mean((eta * P)[self.pair_mask]))
 
 
 # ----------------------------------------------------------------------------- ED
@@ -578,10 +652,61 @@ def sign_constrained_min(K, starts, maxiter):
         r = minimize(fg, a0, jac=True, method="L-BFGS-B",
                      bounds=[(0.0, None)] * len(a0),
                      options=dict(maxiter=maxiter, ftol=1e-15, gtol=1e-12, maxcor=30))
-        res_all.append((name, float(r.fun), int(r.nit)))
+        res_all.append((name, float(r.fun), int(r.nit), bool(r.success)))
         if r.fun < best[0]:
             best = (float(r.fun), r.x / np.linalg.norm(r.x))
     return best[0], best[1], res_all
+
+
+def _lowest(A, v0=None):
+    """Lowest eigenpair of a symmetric sparse matrix (dense for small D)."""
+    if A.shape[0] <= 400:
+        w, U = np.linalg.eigh(A.toarray())
+        return w[:1], U[:, :1]
+    try:
+        return eigsh(A, k=1, which="SA", tol=1e-9, v0=v0, maxiter=50000)
+    except ArpackNoConvergence as e:
+        if len(e.eigenvalues):
+            return e.eigenvalues, e.eigenvectors
+        return eigsh(A, k=2, which="SA", tol=1e-8, maxiter=100000)
+
+
+def fixed_node(K, iters, floor):
+    """Self-consistent ten Haaf lattice fixed-node state for the sign gauge K = S H S
+    (ten Haaf et al., PRB 51, 13039, 1995; logic copied from P1.2 micro_test.py).
+
+    Sign-violating off-diagonals (K_ij > 0) are deleted and moved to the diagonal as
+    K_ii += sum_j K_ij g_j / g_i, with guide g. The lowest eigenvector phi >= 0 of this
+    stoquastic H_eff has the signs s, so s*phi is a feasible point of the sign-constrained
+    problem and E_FN = lambda_min(H_eff) >= <H>_{s phi} >= E_sign(s) (AM-GM on each
+    deleted pair). Iteration 0 uses g = 1; each later iteration uses g = phi of the
+    previous step, with g floored at floor * max(g). Returns (E_FN, <H>_{FN}, phi, list)
+    where E_FN and phi belong to the iterate with the lowest E_FN.
+    """
+    Kc = K.tocoo()
+    off = Kc.row != Kc.col
+    r, c, v = Kc.row[off], Kc.col[off], Kc.data[off]
+    diag = K.diagonal()
+    bad = v > 0
+    Hk = sp.csr_matrix((v[~bad], (r[~bad], c[~bad])), shape=K.shape)
+    rb, cb, vb = r[bad], c[bad], v[bad]
+    D = K.shape[0]
+    g = np.ones(D)
+    v0 = None
+    best = (np.inf, None)
+    hist = []
+    for _ in range(iters + 1):
+        gg = np.maximum(g, floor * g.max())
+        d = diag + np.bincount(rb, weights=vb * gg[cb] / gg[rb], minlength=D)
+        w, U = _lowest((Hk + sp.diags(d)).tocsr(), v0)
+        g = np.abs(U[:, 0]); g /= np.linalg.norm(g)
+        v0 = g
+        hist.append(float(w[0]))
+        if w[0] < best[0]:
+            best = (float(w[0]), g.copy())
+    phi = best[1]
+    E_var = float(phi @ (K @ phi))
+    return best[0], E_var, phi, hist
 
 
 def stoq_bound(K):
@@ -615,11 +740,20 @@ def budget(model, psi_t, W, Vv, deg, args, rng):
     s_0 = np.where(p0 >= 0, 1.0, -1.0)
     S = sp.diags(s_t)
     K = (S @ H @ S).tocsr()
-    uni = np.ones(model.D) + 0.01 * rng.random(model.D)
-    E_sign, a_star, starts = sign_constrained_min(
-        K, [("abs_theta", psi_t), ("abs_exact", p0), ("uniform", uni)], args.lbfgs_iters)
-    E_stoq = stoq_bound(K)
     dE = Et - E0
+    # ten Haaf self-consistent fixed node for the sign s_theta (feasible point, upper bound)
+    E_FN, E_FN_var, phi_fn, fn_hist = fixed_node(K, args.fn_iters, args.fn_floor)
+    uni = np.ones(model.D) + 0.01 * rng.random(model.D)
+    E_lb, a_lb, starts = sign_constrained_min(
+        K, [("abs_theta", psi_t), ("abs_exact", p0), ("uniform", uni), ("abs_fixed_node", phi_fn)],
+        args.lbfgs_iters)
+    # E_sign_up = min over every feasible estimate (all L-BFGS-B starts, E_FN, <H>_FN)
+    cands = [(E_lb, a_lb, "lbfgsb"), (E_FN_var, phi_fn, "fixed_node_var"), (E_FN, phi_fn, "fixed_node")]
+    E_sign_up, a_star, src = min(cands, key=lambda z: z[0])
+    conv = [e for (_, e, _, ok) in starts if ok]
+    pool = conv if len(conv) >= 2 else [e for (_, e, _, _) in starts]
+    spread = (max(pool) - min(pool)) / dE if dE > 0 else float("nan")
+    E_stoq = stoq_bound(K)
     E_h1, _, _ = energy(H, s_t * np.abs(p0))
     E_h2, _, _ = energy(H, s_0 * np.abs(psi_t))
     w_sign = float(np.sum(p0[s_t * s_0 < 0] ** 2))
@@ -629,15 +763,51 @@ def budget(model, psi_t, W, Vv, deg, args, rng):
         eC_tot = float(np.max(np.abs(Pt - P0)[msk])); eC_sign = float(np.max(np.abs(Ps - P0)[msk]))
     else:
         eC_tot = eC_sign = float("nan")
-    return dict(E=Et, E0=E0, dE_tot=dE, E_sign=E_sign, E_stoq=E_stoq,
-                dE_sign=E_sign - E0, dE_amp=Et - E_sign,
-                f_E=(E_sign - E0) / dE if dE > 0 else float("nan"),
+    f_up = (E_sign_up - E0) / dE if dE > 0 else float("nan")
+    return dict(E=Et, E0=E0, dE_tot=dE, E_sign_up=E_sign_up, E_sign_src=src, E_sign=E_sign_up,
+                E_lbfgsb=E_lb, E_FN=E_FN, E_FN_var=E_FN_var, fn_history=fn_hist,
+                f_E_FN=(E_FN - E0) / dE if dE > 0 else float("nan"),
+                E_stoq=E_stoq, dE_sign=E_sign_up - E0, dE_amp=Et - E_sign_up,
+                f_E_up=f_up, f_E=f_up,
                 f_E_lo=max(0.0, E_stoq - E0) / dE if dE > 0 else float("nan"),
+                spread=spread, n_converged=len(conv),
                 E_hyb_signtheta_ampexact=E_h1, E_hyb_signexact_amptheta=E_h2,
                 w_sign=w_sign, eC_tot=eC_tot, eC_sign=eC_sign,
                 f_C=eC_sign / eC_tot if eC_tot > 0 else float("nan"),
                 P0=P0.tolist(), Ptheta=Pt.tolist(), Psign=Ps.tolist(),
                 sign_starts=starts)
+
+
+def instance_verdict(st, calib_err):
+    """Pre-committed per-instance verdict from the widest-NNBF budget `st`.
+    Returns (verdict, reason)."""
+    dE, f_up, spr = st["dE_tot"], st["f_E_up"], st["spread"]
+    if not (dE > 0) or not np.isfinite(f_up):
+        return "AMBIGUOUS", "dE_tot <= 0 or f_E_up undefined"
+    if calib_err > CALIB_TOL * dE:
+        return "AMBIGUOUS", f"calibration error {calib_err:.2e} > {CALIB_TOL:g}*dE_tot"
+    if f_up >= PASS_F:
+        if spr < SPREAD_TOL:
+            return "PASS", f"f_E_up >= {PASS_F} and spread < {SPREAD_TOL}"
+        return "AMBIGUOUS", f"f_E_up >= {PASS_F} but multi-start spread {spr:.3f} >= {SPREAD_TOL}"
+    if f_up <= FAIL_F:
+        return "FAIL", f"f_E_up <= {FAIL_F} (rigorous upper bound)"
+    return "AMBIGUOUS", f"{FAIL_F} < f_E_up < {PASS_F}"
+
+
+def width_tiebreak(states, widths):
+    """Width-trend tie-break: rate_X = dE_X(narrowest)/dE_X(widest) for X in {sign, amp};
+    the smaller rate (slower decay) is binding; rates within a factor TIE_FACTOR -> RERUN."""
+    tiny = 1e-14
+    wa, wb = min(widths), max(widths)
+    a, b = states[f"nnbf_{wa}"], states[f"nnbf_{wb}"]
+    r_s = max(a["dE_sign"], tiny) / max(b["dE_sign"], tiny)
+    r_a = max(a["dE_amp"], tiny) / max(b["dE_amp"], tiny)
+    if max(r_s, r_a) / min(r_s, r_a) < TIE_FACTOR:
+        dec = "RERUN"
+    else:
+        dec = "sign" if r_s < r_a else "amplitude"
+    return dict(w_narrow=wa, w_wide=wb, rate_sign=r_s, rate_amp=r_a, decision=dec)
 
 
 # ----------------------------------------------------------------------------- checks
@@ -705,6 +875,8 @@ def parse_args(argv=None):
     ap.add_argument("--sr-samples", type=int, default=2000)
     ap.add_argument("--chunk", type=int, default=65536)
     ap.add_argument("--lbfgs-iters", type=int, default=4000)
+    ap.add_argument("--fn-iters", type=int, default=10)
+    ap.add_argument("--fn-floor", type=float, default=1e-3)
     ap.add_argument("--n-ed-states", type=int, default=3)
     ap.add_argument("--degeneracy-tol", type=float, default=1e-8)
     ap.add_argument("--r-min", type=float, default=1.5)
@@ -714,6 +886,8 @@ def parse_args(argv=None):
     ap.add_argument("--checks-only", type=int, choices=[0, 1], default=0)
     ap.add_argument("--aggregate", type=str, default="")
     a = ap.parse_args(argv)
+    if a.n_ed_states < 3:
+        a.n_ed_states = 3  # the competing-state check needs E_0, E_1, E_2
     if a.instance >= 0:
         for k, v in INSTANCES[a.instance].items():
             setattr(a, k, v)
@@ -726,21 +900,49 @@ def parse_args(argv=None):
 
 
 def aggregate(d):
+    """Re-derive every instance verdict from the stored budgets, print the global verdict
+    and, if AMBIGUOUS, the width-trend tie-break."""
     import glob
-    Ms = []
+    rows = []
     for f in sorted(glob.glob(os.path.join(d, "*.json"))):
         r = json.load(open(f))
         if "M" not in r:
             continue
-        w = r["params"]["width_list"][-1]
-        st = r["states"][f"nnbf_{w}"]
-        Ms.append(r["M"])
-        print(f"{os.path.basename(f)}: M={r['M']:.4f} f_E_lo={st['f_E_lo']:.4f} f_C={st['f_C']:.4f} "
-              f"dE_tot={st['dE_tot']:.5f} calib_err={r['calib_err']:.2e}")
-    if not Ms:
+        wl = r["params"]["width_list"]
+        st = r["states"][f"nnbf_{wl[-1]}"]
+        v, why = instance_verdict(st, r["calib_err"])
+        tb = width_tiebreak(r["states"], wl) if len(wl) >= 2 else None
+        rows.append((os.path.basename(f), v, tb))
+        hc = r.get("hard_core", {})
+        print(f"{os.path.basename(f)}: f_E_up={st['f_E_up']:.4f} f_E_lo={st['f_E_lo']:.4f} "
+              f"f_E_FN={st['f_E_FN']:.4f} spread={st['spread']:.2e} f_C={st['f_C']:.4f} "
+              f"dE_tot={st['dE_tot']:.5f} calib_err={r['calib_err']:.2e} -> {v} ({why})")
+        if hc:
+            print(f"    Delta1/V={hc['gap_per_site']:.4f} t  Pd(E0)={hc['Pd_E0']:.3e} "
+                  f"Pd(E1)={hc['Pd_E1']:.3e}{'  near-degenerate competitor present' if hc['competitor_flag'] else ''}")
+        if tb:
+            print(f"    width trend {tb['w_narrow']}->{tb['w_wide']}: rate_sign={tb['rate_sign']:.3f} "
+                  f"rate_amp={tb['rate_amp']:.3f} -> {tb['decision']}")
+    if not rows:
         print("no finished results"); return 1
-    v = "PASS" if min(Ms) >= 0.6 else ("FAIL" if max(Ms) <= 0.3 else "AMBIGUOUS")
-    print(f"GLOBAL VERDICT over {len(Ms)} instance(s): {v}")
+    vs = [v for _, v, _ in rows]
+    g = "PASS" if all(v == "PASS" for v in vs) else ("FAIL" if all(v == "FAIL" for v in vs) else "AMBIGUOUS")
+    print(f"GLOBAL VERDICT over {len(rows)} instance(s): {g}")
+    if g == "AMBIGUOUS":
+        decs = []
+        for name, v, tb in rows:
+            if v != "AMBIGUOUS":
+                continue
+            dec = tb["decision"] if tb else "RERUN"
+            decs.append(dec)
+            print(f"  tie-break {name}: {'sign' if dec == 'sign' else dec} "
+                  f"{'binding' if dec in ('sign', 'amplitude') else ''}".rstrip())
+        if all(x == "sign" for x in decs):
+            print("TIE-BREAK DECISION: sign binding")
+        elif all(x == "amplitude" for x in decs):
+            print("TIE-BREAK DECISION: amplitude binding")
+        else:
+            print(f"TIE-BREAK DECISION: {RERUN_MSG}")
     return 0
 
 
@@ -764,13 +966,22 @@ def main(argv=None):
     W, Vv, deg = solve_ed(m, args.n_ed_states, args.degeneracy_tol, args.seed)
     log(f"ED levels {W.tolist()}  ground degeneracy {deg}")
     res = dict(params=vars(args), ed=dict(levels=W.tolist(), degeneracy=deg), states={})
+    # Hard-Core check: competing low-lying state in the same (N_up, N_dn) sector
+    gap = float(W[1] - W[0]) if len(W) > 1 else float("nan")
+    hc = dict(levels3=W[:3].tolist(), gap=gap, gap_per_site=gap / (m.V * args.t),
+              Pd_E0=m.dwave(Vv[:, 0]), Pd_E1=m.dwave(Vv[:, 1]) if len(W) > 1 else float("nan"))
+    hc["competitor_flag"] = bool(hc["gap_per_site"] < COMP_TOL)
+    res["hard_core"] = hc
+    log(f"hard-core check: E0..E2 = {hc['levels3']}  Delta1/V = {hc['gap_per_site']:.4f} t  "
+        f"Pd(E0) = {hc['Pd_E0']:.3e}  Pd(E1) = {hc['Pd_E1']:.3e}"
+        + ("  near-degenerate competitor present" if hc["competitor_flag"] else ""))
     # optimizer calibration with exact signs
     p0 = Vv[:, 0]
     S0 = sp.diags(np.where(p0 >= 0, 1.0, -1.0))
     Ec, _, _ = sign_constrained_min((S0 @ m.H @ S0).tocsr(),
                                     [("uniform", np.ones(m.D) + 0.01 * rng.random(m.D))],
                                     args.lbfgs_iters)
-    res["calib_err"] = Ec - W[0]
+    res["calib_err"] = float(Ec - W[0])
     log(f"calibration: E_sign(s_0) from uniform start - E0 = {res['calib_err']:.3e}")
 
     Pu, Pd = uhf_orbitals(m, args.seed)
@@ -790,17 +1001,31 @@ def main(argv=None):
         b["n_params"] = a.n_params()
         res["states"][name] = b
         log(f"{name:>10s}: dE_tot={b['dE_tot']:.5f} dE_sign={b['dE_sign']:.5f} "
-            f"dE_amp={b['dE_amp']:.5f} f_E={b['f_E']:.3f} f_E_lo={b['f_E_lo']:.3f} "
+            f"dE_amp={b['dE_amp']:.5f} f_E_up={b['f_E_up']:.3f} f_E_lo={b['f_E_lo']:.3f} "
+            f"f_E_FN={b['f_E_FN']:.3f} spread={b['spread']:.2e} src={b['E_sign_src']} "
             f"w_sign={b['w_sign']:.3e} eC_tot={b['eC_tot']:.3e} eC_sign={b['eC_sign']:.3e} "
             f"f_C={b['f_C']:.3f}")
         os.makedirs(os.path.dirname(args.out), exist_ok=True)
         with open(args.out, "w") as fh:
             json.dump(res, fh, indent=1, default=float)
     if args.width_list:
-        M = res["states"][f"nnbf_{args.width_list[-1]}"]["f_E"]
-        res["M"] = M
-        res["verdict_instance"] = "PASS" if M >= 0.6 else ("FAIL" if M <= 0.3 else "AMBIGUOUS")
-        log(f"M = f_E(nnbf_{args.width_list[-1]}) = {M:.4f} -> instance verdict {res['verdict_instance']}")
+        wl = args.width_list
+        st = res["states"][f"nnbf_{wl[-1]}"]
+        res["M"] = res["M_up"] = st["f_E_up"]
+        res["M_lo"] = st["f_E_lo"]
+        res["spread"] = st["spread"]
+        v, why = instance_verdict(st, res["calib_err"])
+        res["verdict_instance"], res["verdict_reason"] = v, why
+        log(f"M_up = f_E_up(nnbf_{wl[-1]}) = {st['f_E_up']:.4f}  M_lo = f_E_lo = {st['f_E_lo']:.4f}  "
+            f"f_E_FN = {st['f_E_FN']:.4f}  spread = {st['spread']:.2e}  "
+            f"calib_err/dE_tot = {res['calib_err'] / st['dE_tot']:.2e}")
+        log(f"instance verdict {v} ({why})")
+        if len(wl) >= 2:
+            tb = width_tiebreak(res["states"], wl)
+            res["tiebreak"] = tb
+            log(f"width trend {tb['w_narrow']}->{tb['w_wide']}: rate_sign = {tb['rate_sign']:.3f}  "
+                f"rate_amp = {tb['rate_amp']:.3f} -> {tb['decision']}"
+                + (f" ({RERUN_MSG})" if tb["decision"] == "RERUN" else " binding"))
     with open(args.out, "w") as fh:
         json.dump(res, fh, indent=1, default=float)
     log(f"wrote {args.out}")
