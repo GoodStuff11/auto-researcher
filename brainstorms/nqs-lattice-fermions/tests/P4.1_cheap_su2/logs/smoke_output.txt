@@ -1,0 +1,18 @@
+[S=0] 2x3 torus Ne=4 dim=225 E0=-6.70374254 <S^2>_ED=-6.84e-18
+  agp   P=  52 E=-4.513405  <S^2>-S(S+1)=-1.14e-18 [PASS]  grad rel.err=1.5e-10 [PASS]
+  r1    P= 248 E=-4.028277  <S^2>-S(S+1)=+1.46e-17 [PASS]  grad rel.err=5.5e-09 [PASS]
+  r1x   P= 323 E=-4.369112  <S^2>-S(S+1)=-7.40e-18 [PASS]  grad rel.err=3.1e-10 [PASS]
+  foil  P=  52 E=-4.086800  <S^2>-S(S+1)=-2.29e-17 [PASS]  grad rel.err=1.3e-08 [PASS]
+  r2    P= 248 E=-4.101325  <S^2>-S(S+1)=+1.75e-17 [PASS]  grad rel.err=4.8e-09 [PASS]
+[S=1] 2x3 torus Ne=4 dim=120 E0=-7.05219632 <S^2>_ED=2.00e+00
+  agp   P=  64 E=-5.243667  <S^2>-S(S+1)=-2.22e-16 [PASS]  grad rel.err=2.5e-10 [PASS]
+  r1    P= 260 E=-5.107303  <S^2>-S(S+1)=+0.00e+00 [PASS]  grad rel.err=1.2e-09 [PASS]
+  r1x   P= 335 E=-5.113883  <S^2>-S(S+1)=-2.22e-16 [PASS]  grad rel.err=1.0e-09 [PASS]
+  foil  P=  64 E=-5.134360  <S^2>-S(S+1)=+0.00e+00 [PASS]  grad rel.err=1.1e-10 [PASS]
+  r2    P= 260 E=-5.181089  <S^2>-S(S+1)=+0.00e+00 [PASS]  grad rel.err=2.0e-09 [PASS]
+  opt foil : E=-6.68618765 eps=2.62e-03 (170 it, 0.7s)
+  opt agp  : E=-6.63954724 eps=9.58e-03 (125 it, 0.1s)
+  opt r1   : E=-6.70358294 eps=2.38e-05 (300 it, 0.5s)
+  opt r1x  : E=-6.70364723 eps=1.42e-05 (300 it, 0.9s)
+  opt r2   : E=-6.70373806 eps=6.69e-07 (300 it, 1.5s)
+SMOKE PASS

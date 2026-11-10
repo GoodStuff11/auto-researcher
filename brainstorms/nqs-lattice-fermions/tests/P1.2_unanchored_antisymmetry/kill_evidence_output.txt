@@ -1,0 +1,6 @@
+J/t= 100.0  min_f W(Marshall * f(holes)) = 0.0001
+J/t=  10.0  min_f W(Marshall * f(holes)) = 0.0100
+J/t=   2.0  min_f W(Marshall * f(holes)) = 0.1954
+J/t=   0.4  min_f W(Marshall * f(holes)) = 0.3415
+orbital gap e_N - e_(N-1) = 0.1681
+configs=396 unknowns=79  sign is quadratic GF(2) polynomial: False
