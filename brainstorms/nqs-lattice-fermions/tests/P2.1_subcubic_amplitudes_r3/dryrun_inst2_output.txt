@@ -25,3 +25,10 @@
 [14:16:33] instance 2 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 7, 'ndn': 7, 'tp': -0.25, 'J': 0.4} D=411840 arm=sk1 seed=11
 [14:16:40] projected sector dimensions: dim range(P_chi) = 51540, dim range(P_S P_chi) = 6540
 [14:16:40] ED levels [-9.168195367798639, -9.033127354434868, -9.033127354434848, -8.992627241798054] deg 1; |G|=8 chi(psi_0)={'My': 1, 'Mx': 1, 'D': -1}; S(psi_0)=0 (7 s)
+[14:16:51] arm sk1: {'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 6, 'Ha': 31} n_params=2000 target=1990 proj=chi calib=5.25e-11 init |P psi|/|psi|=3.550e-01
+[14:17:00] sk1: it     0  E = -7.28416905  |f| = 8.53e-01  (8.59 s/step)
+[14:17:19] sk1: it     2  E = -7.37764739  |f| = 9.43e-01  (9.38 s/step)
+[14:18:03] sk1 [P]: dE_tot=1.62888 dE_sign=0.57880 f_E=0.355 eC=3.43e-03 spread=0.0e+00 S2=5.652 ov0=0.017 (39 s)
+[14:18:43] sk1 [P_S]: dE_tot=1.42629 dE_sign=0.46713 f_E=0.328 eC=3.29e-03 spread=1.8e-11 S2=0.000 ov0=0.058 (40 s)
+[14:18:46] sk1 sampled: E_exact=-7.539 mean=-7.544 stderr=0.0951 z=0.04527 var_mc=1.638 var_ex=1.959 kurt_ex=5.862e+04 tail_share=0.1033 max_dev_sigma=4.592 accept=0.1203 n=300 per_amp_check=2.616e-16 (2 s)
+[14:18:46] wrote /tmp/p21r3_dry/inst2_sk1_s11.json

@@ -1,0 +1,88 @@
+H2 6-31G** R=1.4: E_RHF=-1.131284 (lit. -1.13128); H4 ring: ERI symmetry err=1.1e-16, min eig(ERI)=-1.0e-15, rotation invariance |dE|=3.4e-12
+  exact incremental ratio err: full=8.9e-15 window=2.7e-15; window-keyed ratio err: WIB (must be ~0)=3.1e-15, full-input surrogate (nonzero)=1.0e+01; gradient rel err: full=1.9e-10 window=2.9e-10
+  unbiasedness (20000 draws, one row): SS z=1.42  PFCV z=1.04   (9.0s)
+SMOKE CHECKS PASS
+
+=== H4 ring R=2.8 6-31G** active K=5 M=10 dim=100 E_RHF=-1.909344 E_FCI=-2.032496 Ecorr=-123.2 mHa gap=0.0071 HF wt=0.469 frustr=0.102 p-MOs=1 mean p-weight(external MOs)=1.000 window K_W=4 nnz/row=28 (build 0.8s)
+  seed=0 NNBFJ dE=   0.022 mHa Var(EL)=6.37e-05 <|C|>=28 <keys>=28.1 (multi 0.0) ELchk=4.4e-16 KEYX-EXACT max=3.8e-03 |W1_ext|=0.755 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.11 SCREEN=0.953 SS=0.986 PFCV=1.29
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.01 SCREEN=0.564 SS=0.594 PFCV=1.15
+      SCREEN eps=0.01 K=0 bias=-0.0022+-0.0023 mHa top1%share=0.66
+      SS     eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.67
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.67
+  seed=0 WIBJ  dE=   0.049 mHa Var(EL)=1.25e-04 <|C|>=28 <keys>=28.1 (multi 0.0) ELchk=4.4e-16 KEYX-EXACT max=4.4e-16 |W1_ext|=0 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=1.09
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1
+  seed=0 SHRJ  dE=   0.094 mHa Var(EL)=2.12e-04 <|C|>=28 <keys>=28.1 (multi 0.0) ELchk=8.9e-16 KEYX-EXACT max=5.5e-04 |W1_ext|=0.0195 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.1 PFCV=1.29
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1 PFCV=1.15
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.57
+  seed=1 NNBFJ dE=   0.129 mHa Var(EL)=3.21e-04 <|C|>=28 <keys>=28.2 (multi 0.0) ELchk=8.9e-16 KEYX-EXACT max=7.8e-03 |W1_ext|=1.21 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.1 SCREEN=0.949 SS=0.982 PFCV=1.28
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1 SCREEN=0.569 SS=0.598 PFCV=1.21
+      SCREEN eps=0.01 K=0 bias=-0.0040+-0.0018 mHa top1%share=0.81
+      SS     eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.81
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.81
+  seed=1 WIBJ  dE=   0.408 mHa Var(EL)=1.31e-03 <|C|>=28 <keys>=28.2 (multi 0.0) ELchk=8.9e-16 KEYX-EXACT max=4.4e-16 |W1_ext|=0 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=1.09
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1
+  seed=1 SHRJ  dE=   0.456 mHa Var(EL)=1.75e-03 <|C|>=28 <keys>=28.2 (multi 0.0) ELchk=8.9e-16 KEYX-EXACT max=3.1e-05 |W1_ext|=0.0222 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.1 PFCV=1.29
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1 PFCV=1.16
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.75
+  seed=2 NNBFJ dE=   0.082 mHa Var(EL)=2.05e-04 <|C|>=28 <keys>=28.2 (multi 0.0) ELchk=8.9e-16 KEYX-EXACT max=1.7e-02 |W1_ext|=0.962 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.18 SCREEN=0.949 SS=0.97 PFCV=1.27
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.08 SCREEN=0.578 SS=0.608 PFCV=1.62
+      SCREEN eps=0.01 K=0 bias=-0.0103+-0.0056 mHa top1%share=0.65
+      SS     eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.66
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.66
+  seed=2 WIBJ  dE=   0.022 mHa Var(EL)=6.63e-05 <|C|>=28 <keys>=28.2 (multi 0.0) ELchk=1.3e-15 KEYX-EXACT max=4.4e-16 |W1_ext|=0 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=1.09
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1
+  seed=2 SHRJ  dE=   0.169 mHa Var(EL)=4.53e-04 <|C|>=28 <keys>=28.2 (multi 0.0) ELchk=8.9e-16 KEYX-EXACT max=1.3e-04 |W1_ext|=0.0206 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.1 PFCV=1.29
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1 PFCV=1.16
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.52
+
+=== H4 ring R=2.8 6-31G** active K=7 M=14 dim=441 E_RHF=-1.909344 E_FCI=-2.034686 Ecorr=-125.3 mHa gap=0.0072 HF wt=0.471 frustr=0.106 p-MOs=3 mean p-weight(external MOs)=0.995 window K_W=4 nnz/row=71 (build 0.9s)
+  seed=0 NNBFJ dE=   2.353 mHa Var(EL)=1.11e-03 <|C|>=72 <keys>=44.1 (multi 17.9) ELchk=1.3e-15 KEYX-EXACT max=1.5e-02 |W1_ext|=0.977 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.48 SCREEN=0.924 SS=0.976 PFCV=1.61
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.1 SCREEN=0.466 SS=0.478 PFCV=1.38
+      SCREEN eps=0.01 K=0 bias=0.0077+-0.0070 mHa top1%share=0.97
+      SS     eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.97
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.97
+  seed=0 WIBJ  dE=   0.586 mHa Var(EL)=2.22e-03 <|C|>=72 <keys>=44.2 (multi 17.9) ELchk=8.9e-16 KEYX-EXACT max=4.4e-16 |W1_ext|=0 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=1.4
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.04
+  seed=0 SHRJ  dE=   2.880 mHa Var(EL)=1.89e-03 <|C|>=72 <keys>=44.1 (multi 17.9) ELchk=2.7e-15 KEYX-EXACT max=3.1e-03 |W1_ext|=0.094 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.4 PFCV=1.62
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.04 PFCV=1.11
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.69
+  seed=1 NNBFJ dE=   2.750 mHa Var(EL)=8.65e-04 <|C|>=72 <keys>=44.3 (multi 17.9) ELchk=1.8e-15 KEYX-EXACT max=2.4e-02 |W1_ext|=0.876 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.54 SCREEN=0.934 SS=0.986 PFCV=1.62
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.13 SCREEN=0.471 SS=0.481 PFCV=1.58
+      SCREEN eps=0.01 K=0 bias=0.0310+-0.0044 mHa top1%share=0.57
+      SS     eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.57
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.57
+  seed=1 WIBJ  dE=   0.715 mHa Var(EL)=2.35e-03 <|C|>=72 <keys>=44.3 (multi 17.8) ELchk=1.8e-15 KEYX-EXACT max=0.0e+00 |W1_ext|=0 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=1.41
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.04
+  seed=1 SHRJ  dE=   2.358 mHa Var(EL)=2.48e-03 <|C|>=72 <keys>=44.3 (multi 17.9) ELchk=1.3e-15 KEYX-EXACT max=9.8e-03 |W1_ext|=0.121 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.4 PFCV=1.63
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.04 PFCV=1.12
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.90
+  seed=2 NNBFJ dE=   2.683 mHa Var(EL)=8.39e-04 <|C|>=72 <keys>=44.3 (multi 17.9) ELchk=1.8e-15 KEYX-EXACT max=1.7e-02 |W1_ext|=0.835 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.36 SCREEN=0.923 SS=0.977 PFCV=1.62
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.01 SCREEN=0.47 SS=0.484 PFCV=0.906
+      SCREEN eps=0.01 K=0 bias=0.0137+-0.0068 mHa top1%share=0.58
+      SS     eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.58
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.58
+  seed=2 WIBJ  dE=   2.769 mHa Var(EL)=1.41e-03 <|C|>=72 <keys>=44.3 (multi 17.9) ELchk=1.8e-15 KEYX-EXACT max=4.4e-16 |W1_ext|=0 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=1.4
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.04
+  seed=2 SHRJ  dE=   2.564 mHa Var(EL)=2.04e-03 <|C|>=72 <keys>=44.3 (multi 17.9) ELchk=1.8e-15 KEYX-EXACT max=8.6e-03 |W1_ext|=0.121 (train 0s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.4 PFCV=1.63
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.03 PFCV=1.14
+      PFCV   eps=0 K=16 bias=0.0000+-0.0000 mHa top1%share=0.50
+[smoke-scale verdict logic, H4 only, not decisive] R3.1: {"verdict": "FAIL", "wall_clock": {"verdict": "FAIL", "M_by_K": {"5": 2.01, "7": 2.806}}, "op_count": {"verdict": "FAIL", "M_by_K": {"5": 3.487, "7": 4.444}}}
+[smoke-scale verdict logic, H4 only, not decisive] R3.2: {"verdict": "FAIL", "wall_clock": {"verdict": "FAIL", "M_by_K": {"5": 1.349, "7": 1.738}}, "op_count": {"verdict": "FAIL", "M_by_K": {"5": 2.125, "7": 2.968}}}

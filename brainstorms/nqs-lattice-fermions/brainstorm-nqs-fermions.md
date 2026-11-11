@@ -165,7 +165,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | CRITIC (round 3) | nothing | per-leaf critic |
 | P4.1 | MUTATE (round 3) | nothing | round-3 worker |
-| P4.2 | MUTATE (round 3) | nothing | round-3 worker |
+| P4.2 | CRITIC (round 3) | nothing | per-leaf critic |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
 * **P3.2 round 3: first Hard-Core-scale same-irrep competitor (2026-11-11)**:

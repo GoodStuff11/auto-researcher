@@ -314,8 +314,6 @@ def eri_prims(pr, chunk=64):
     p, P, Eh, htuv = pr["p"], pr["P"], pr["Eh"], pr["htuv"]
     sign = np.array([(-1) ** (t + u + v) for (t, u, v) in htuv])
     Ek = Eh * sign[None]
-    nh = len(htuv)
-    comb = {}
     G = np.zeros((npair, npair))
     for s0 in range(0, npair, chunk):
         s1 = min(npair, s0 + chunk)
@@ -618,7 +616,6 @@ class Ansatz:
         n_pairs = 0
         if len(m_idx):
             mk, minv = np.unique(inv[m_idx], return_inverse=True)
-            nm = len(mk)
             pos = np.full(M, -1); pos[occ_n] = np.arange(N)
             rm, ad = rem[m_idx], add[m_idx]
             # occupied rows of Phi_k for every multi-term key: A_k (N x N)
@@ -706,7 +703,6 @@ def analyse_state(net, th, ham, samples_codes, args, rng, wcode, win_idx, arm):
     """Run every estimator on every sample; return per-sample values and times."""
     P = net.unpack(th)
     M, N = net.M, net.N
-    B = len(samples_codes)
     res = {"EXACT": [], "KEYX": []}
     tim = {"row": [], "EXACT": [], "KEY": []}
     ops = {"row": [], "EXACT": [], "KEY": []}

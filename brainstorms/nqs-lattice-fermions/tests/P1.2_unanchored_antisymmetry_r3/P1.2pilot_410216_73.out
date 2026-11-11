@@ -32,3 +32,4 @@
 [14:09:26] calibration E_sign(s_0) - E0 = 9.24e-14
 [14:09:26] arm ctrl_PS: width 32, n_params 4887, SR shift 0.01
 [14:09:34] ctrl_PS: it     0  E = -6.65813741  |f| = 2.46e+00  (8.56 s/step)
+[14:16:49] ctrl_PS: it    50  E = -8.00615542  |f| = 2.25e-01  (8.69 s/step)
