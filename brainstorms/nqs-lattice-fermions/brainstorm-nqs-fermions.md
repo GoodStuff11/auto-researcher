@@ -166,6 +166,29 @@ Under the Persistence Mandate, every leaf except P1.1 was re-run through the Sta
 | **P4.1** | SURVIVED (via Mutation) | PCG: $P_SP_K e^{J(c)}\det f_c$ with $f_c=B_1(c)f_0B_2(c)^{\mathsf T}$, exact $S$; SCF: spin–charge factorised SU(2)-MPS at $\mathcal{O}(LD^3)$ | Whether a projected charge-conditioned Gaussian replaces the spin Jastrow's correlations, and whether exact $S$ lowers $E_{\mathrm{sign}}$; PCG is not below projection cost | $4\times3$ at $t'=-0.25$ and $-0.33$; spin-resolved NNBF at matched parameters and an mVMC-like foil with doublon–holon correlator |
 | **P4.2** | SURVIVED (via Mutation) | MFNG: pair kernels as size-independent momentum-space neural fields with a charge-only local backflow; active probing on the seed-disagreement set | The source cannot identify the backflow: 218 parameters fit the 560-state source exactly | $t$–$t'$–$J$ $4\times2\to4\times4$ (1.68M states); size-transferred foil and from-scratch training at the same budget |
 
+* **Round-2 critic verdict (2026-11-11, two independent referees, 40 objections, 31 Major)**:
+    * **Systemic flaw**: no round-2 test has a symmetry-projected control. On the $4+4$ instance projection removes 77% of the NNBF sign error, so the claimed gains may be cheap symmetry restoration. Several controls are also crippled:
+        * the P1.3 null restarts from the same broken-symmetry UHF;
+        * P3.2 trains unprojected branches, so its "same-sector" design collapses back onto the cross-sector triplet;
+        * the P4.1 NNBF control lacks $P_S$.
+    * **Stale Hard-Core claims**: P1.2, P2.1 and P3.1 still cite the retracted same-sector competitor, and their code keys the competitor clause to it.
+    * **Gate 0 relabels**:
+        * P2.1 split-capacity HFDS is HFDS times a Jastrow (Liu–Clark; HFPS; lrux).
+        * P3.2 2R-SS/2R-SA is multi-determinant Slater–Jastrow–backflow (Brown, Trail, López Ríos & Needs, arXiv:1011.4343) plus state-averaged VMC.
+        * P4.1 PCG is mVMC with Tocchio backflow and generalized parameters; it is also not below projection cost.
+        * P1.3 FCD is SCF metadynamics with a cap.
+        * P3.1 A-Ritz's $\hat\delta$ is algebraically the killed two-point Lanczos extrapolation (in $\sigma$ rather than $\sigma^2$).
+    * **Mechanism failures**:
+        * P3.1's $\kappa>0$ set is a set of local-energy outliers, triggered by amplitude error near nodes, so it is not a sign witness.
+        * P3.2's cross-overlap terms are hidden by exact sums and carry the killed NOCI variance at the crossing. Its in-sector gap $0.273t$ is about $20\times$ the Hard-Core scale, so it is not near-degenerate.
+        * P4.1 SCF stalls at $\epsilon=2.4\times10^{-2}$ on a 400-state cluster where every other arm is exact.
+        * P4.2's source is fitted exactly, so the transferred state is an arbitrary point on a solution manifold, and the code lets one seed decide. P4.2's real Minimal Contrast Foil, a Jastrow–BCS optimized at the target, is absent. Prior art arXiv:2505.00233 may already do lattice pairing-NQS size transfer.
+        * P2.2 has no legitimate survivor. R2.0 is a revived round-1 kill whose PASS rests on a hybrid cost model ($\kappa$ from $N=20$, variances from $N=4$); R2.4 and R2.5 meet FAIL on their own pre-checks.
+    * **Routes the critics did not break**: P1.2 FRD's novelty (no prior art found), and P2.1 SK-LR (shared-reference low-rank multi-determinant). Both still need a projected control and a test on the competitor instance.
+    * **Decision (orchestrator)**: every round-2 status above is downgraded to **Under Mutation (round 3 pending)**, except P1.2 FRD and P2.1 SK-LR, which are **CONDITIONAL (projected control required)**. Round 3 is gated on the critical-path test **P1.1-P**, a re-run of P1.1 with symmetry-projected NNBF. If projection removes most of the sign error on all three instances, the sign branch and most claimed gains are symmetry problems, and round 3 must start from projected baselines. If a large sign fraction survives projection, P1.1's conclusion stands on firmer ground.
+    * **New global anti-patterns**:
+        * Any NQS comparison on a cluster whose mean-field start breaks symmetry, made without a projected control arm.
+        * Any variational decision or witness validated only by exact sums, when it needs cross-terms or ratios that are heavy-tailed under sampling.
 * **New finding (P1.3)**: on the $4+4$ instance, most of the NNBF sign error is symmetry contamination; see the qualification under the P1.1 result.
 * **Correction (P3.2)**: P1.1's competitor is not same-sector; see the correction under the P1.1 result.
 * **New anti-patterns (round 2)**:
