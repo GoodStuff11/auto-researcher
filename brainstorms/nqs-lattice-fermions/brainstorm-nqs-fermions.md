@@ -161,7 +161,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.2 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410216 (3 tasks: projected control, one per instance) |
 | P1.3 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410199 (9 tasks: c1 instance, PSaf/PSfs/PScdw, 3 seeds) |
 | P2.1 | SUBMITTED (control pilot); both routes Gate 0 restated, test fixes pending | full test blocked on pilot (premise: projected NNBF sign error at least 0.01t) | Slurm 410988 (3 tasks) |
-| P2.2 | CRITIC (round 3; no survivor, 2 conditional candidates) | nothing | per-leaf critic |
+| P2.2 | MUTATE (round 4) | nothing | round-4 worker (key-wise Cholesky/THC contraction) |
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | SUBMITTED (control pilot); AT killed, SO-EC conditional | full test blocked on pilot regime (NO-TARGET / NO-ROOM / INTRINSIC-BIAS / GO) | Slurm 410917 (width 8, inner 4 targets) |
 | P4.1 | MUTATE (round 3) | nothing | round-3 worker |
@@ -183,6 +183,15 @@ Each leaf advances on its own as soon as it returns: lint, then its own critic, 
         * Curvature/susceptibility, Gate 1.
         * Berry phase, Gates 2 and 3.
         * In-irrep zero-variance extrapolation, Gate 0 (mVMC practice).
+* **P2.2 round-3 per-leaf critic (10 objections, 6 Major)**:
+    * **The test could not PASS globally.** The H8 key/term ratio is 0.55.
+    * **ED-sized symmetric rings cannot show the $M$-scaling.**
+    * **WIBJ only changes the prefactor.** It is active-space backflow times a Jastrow, and its 2×2 minors are the standard table trick.
+    * **PFCV is a relabel of R2.0.**
+    * **The ΔE tolerance looks tuned after the fact.**
+    * **The controls lack the truncated local energy** (arXiv:2502.18843) and HCI-style heat-bath sampling.
+    * **The proposed Cholesky "infinite-variance" anti-pattern is rejected.** The correct statement is the support condition $\mathrm{supp}(L_\gamma\psi)\subseteq\mathrm{supp}(\psi)$.
+    * **Action.** Not submitted; sent to round-4 mutation with the critic's direction: a key-wise AFQMC-type contraction (Cholesky/THC) of the external-excitation sum, at about $\mathcal{O}(N_{\mathrm{key}}N_\gamma NM)$, under a Jastrow factorizable across the window boundary. The test has two parts: ED-free scaling at $K=50$–$200$, and accuracy on genuinely multireference instances (HF weight below 0.6).
 * **Cross-leaf finding (2026-11-11): the error left after projection is amplitude-borne.** P1.1-P width-8 budgets on both $5+5$ tori, trained with projection (3 seeds): $\Delta E_{\mathrm{tot}}=0.9$–$20\times10^{-4}$, $\Delta E_{\mathrm{sign}}\le5\times10^{-5}$, $f_E=0.004$–$0.023$, wrong-sign weight $10^{-8}$–$10^{-6}$. The $4+4$ instance is complete and SYMMETRY-DOMINATED; the widest width on $5+5$ is still running. P2.1's critic, reading the P1.2 pilot's interim logs, finds the same on the 4×3 OBC and cylinder clusters. Consequences:
     * On ED-sized Hubbard clusters, symmetry-projected NNBF has essentially no sign error. What remains is amplitude error. P1.1's original "sign is binding" result was symmetry contamination.
     * Every leaf whose premise is "projected NQS keeps a sign error" (P1.2, P1.3, P2.1's premise gate, part of P3.1) is very likely NO-TARGET at ED size. The premise pilots will confirm or refute this per leaf.
