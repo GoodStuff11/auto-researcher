@@ -16,3 +16,4 @@
 [14:04:13] P1.3 r3 CHECKS PASSED
 [14:04:34] instance c1 D=245025 E0=-12.52238081 sector levels [-12.522380813875937, -12.288216667552941, -11.93075646006079] gap_in=0.23416 chi={'Ty': 1, 'Tx': 1, 'My': 1, 'Mx': 1} S=0 same_sector=[True, True, True] (21s)
 [14:04:36]   PSfs: it 0 E=-8.010495
+[14:07:42]   PSfs: it 100 E=-12.392999

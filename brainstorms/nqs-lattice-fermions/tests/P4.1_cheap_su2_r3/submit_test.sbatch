@@ -4,7 +4,7 @@
 # against the PROJECTED control nnbf_SG (spin-resolved NNBF trained as P_G P_S phi), the exact-S
 # charge-input control che (Che arXiv:2608.22925 family, P_G P_S), nnbf_G (P_G only), the sqrvb0
 # ablation (uncoupled spinon pairing) and the mVMC-like foil (P_G P_S).
-# Instance: 4x3 CYLINDER (x periodic, y open) Hubbard, N_up = N_dn = 4, U = 8, t' = -0.25 (dim 245025), SIGN HALF ONLY.
+# Instance: 4x3 OPEN cluster (OBC in x and y) Hubbard, N_up = N_dn = 4, U = 8, t' = -0.25 (dim 245025), SIGN HALF ONLY.
 # Array 0-20: arm = task / 3 in (sqrvb sqrvb0 scf nnbf_SG nnbf_G che foil), seed = task % 3.
 # Budget: every arm gets the same L-BFGS iteration cap (2000) and the same 20 h safety cap;
 # see logs/timing_output.txt for the measured cost per iteration (scf is the slowest arm).
@@ -30,5 +30,5 @@ ARM=${ARMS[$((ID / 3))]}
 SEED=$((ID % 3))
 cd "$DIR"
 $PY -u micro_test.py --mode run --Lx 4 --Ly 3 --Ne 8 --U 8 --tp -0.25 \
-    --bc-y obc --ansatz "$ARM" --seed "$SEED" --nnbf-hidden 16 --mps-mult 2,2,1,1 \
+    --bc-x obc --bc-y obc --ansatz "$ARM" --seed "$SEED" --nnbf-hidden 16 --mps-mult 2,2,1,1 \
     --maxiter 2000 --max-hours 20 --chunk 16384 --lbfgs-iters 4000 --fn-iters 10 --fn-floor 1e-3

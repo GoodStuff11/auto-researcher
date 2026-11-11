@@ -16,7 +16,8 @@ together contain every C4v orbit of the target grid. Default: the 4x2 torus (gri
 16 for the 4x2 alone (round 2). (A y-twisted 4x2 was tried first and dropped: its doubled
 y-hops cancel, the hole number per leg is conserved and the mirror-even pair field cannot pair
 across legs, so its odd-per-leg configurations are unrepresentable.) MFNG is trained JOINTLY
-on all source clusters with an L2 (minimum-norm) penalty lam*|theta|^2 and best-of-K restarts
+on all source clusters with an L2 (minimum-norm) penalty lam*|theta_AS|^2 on the antisymmetric (field +
+backflow) parameters theta_AS, and best-of-K restarts
 selected by the source loss, so (i) every target momentum orbit of every pair kernel is pinned
 by source data, and (ii) the source optimum is selected by norm and source loss, not by one
 seed. At the target the copied state is projected onto the ground-state
@@ -177,6 +178,7 @@ _M1, _M2, _M4, _H01 = (U64(0x5555555555555555), U64(0x3333333333333333),
                        U64(0x0F0F0F0F0F0F0F0F), U64(0x0101010101010101))
 T0 = time.time()
 GUARD_TOL, CALIB_TOL, COMP_TOL = 1e-4, 1e-3, 0.005
+MAX_STEP = 0.5                         # SR trust region on |lr * d|
 PREM_EPS, PREM_SIGN = 1e-3, 1e-3      # premise gates P1 (t/site above converged) and P2 (sign excess t/site)
 ROLES = ("transfer", "foil", "scratch")
 
@@ -754,15 +756,17 @@ def reduced(cl, th, chunk, need_grad):
     return E, n2, g, S
 
 
-def optimise(clusters, th, steps, lr, shift, chunk, tag, lam=0.0, mask=None, Eref=None):
+def optimise(clusters, th, steps, lr, shift, chunk, tag, lam=0.0, mask=None, Eref=None, pen=None):
     """Exact-sum (projected) SR on L = sum_c E_c/V_c + lam |theta|^2 over the clusters, with
-    backtracking. mask: boolean vector of trainable parameters (None = all)."""
+    backtracking. mask: boolean vector of trainable parameters (None = all); pen: boolean vector
+    of penalised parameters (None = all)."""
     th = th.copy()
     P = len(th)
+    pw = np.ones(P) if pen is None else pen.astype(float)
     idx = np.arange(P) if mask is None else np.nonzero(mask)[0]
 
     def loss_grad(t_, need):
-        Es, L, g, S = [], lam * float(t_ @ t_), 2 * lam * t_, np.zeros((P, P))
+        Es, L, g, S = [], lam * float((pw * t_) @ t_), 2 * lam * pw * t_, np.zeros((P, P))
         for cl in clusters:
             r = reduced(cl, t_, chunk, need)
             Es.append(r[0]); L += r[0] / cl.V
@@ -780,11 +784,16 @@ def optimise(clusters, th, steps, lr, shift, chunk, tag, lam=0.0, mask=None, Ere
         Sr = Ss + shift * np.diag(np.diag(Ss)) + 1e-6 * max(1e-12, np.diag(Ss).max()) * np.eye(len(idx))
         d = np.zeros(P)
         d[idx] = np.linalg.solve(Sr, g[idx])
+        nd_ = np.linalg.norm(d)
+        if nd_ > MAX_STEP / lr0:                 # trust region: |lr0 d| <= MAX_STEP
+            d *= MAX_STEP / (lr0 * nd_)
+        if g @ d <= 0:                           # not a descent direction: fall back to the gradient
+            d = np.zeros(P); d[idx] = g[idx] * MAX_STEP / (lr0 * max(1e-300, np.linalg.norm(g[idx])))
         tried = 0
         while True:
             tn = th - lr * d
             Ln, Esn, _, _ = loss_grad(tn, False)
-            if (np.isfinite(Ln) and Ln <= L + 1e-13) or tried >= 6:
+            if (np.isfinite(Ln) and Ln <= L + 1e-13) or tried >= 12:
                 break
             lr *= 0.5; tried += 1
         if np.isfinite(Ln) and Ln <= L + 1e-13:
@@ -1020,12 +1029,15 @@ def train_source(args, src, C, lam, seed, tag):
     # has seed-dependent basins (pre-check: 4x2 relerr 1e-4 to 8e-2 at fixed settings)
     best = None
     losses = []
+    # the min-norm penalty acts on the antisymmetric (field + backflow) parameters only: theta = 0
+    # is a critical point of the log-cosh Jastrow, and penalising it collapses the Jastrow there
+    pen = ~clusters[0].net.jas_mask
     for r in range(args.src_restarts):
         th0 = clusters[0].net.init(np.random.default_rng(1000 + 100 * seed + r), dens, args.t, args.tp_sel,
                                    args.delta0, args.eta)
         th_r, Es_r, _ = optimise(clusters, th0, args.steps_src, args.lr, args.diag_shift, args.chunk,
-                                 f"{tag} restart {r}", lam=lam, Eref=[s["E0"] for s in src])
-        L = sum(e / cl.V for e, cl in zip(Es_r, clusters)) + lam * float(th_r @ th_r)
+                                 f"{tag} restart {r}", lam=lam, Eref=[s["E0"] for s in src], pen=pen)
+        L = sum(e / cl.V for e, cl in zip(Es_r, clusters)) + lam * float((pen * th_r) @ th_r)
         losses.append(L)
         if best is None or L < best[0]:
             best = (L, th_r, Es_r)

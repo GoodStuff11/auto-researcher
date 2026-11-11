@@ -23,8 +23,9 @@ the global ground-state sector. On the path the in-irrep gap reaches its minimum
 (c > 0, label B) and a near-Neel state (c < 0, label A), and they swap at t'_c. The gap to
 the third irrep level is ~0.67 t. t'_c is recomputed at run time (bounded minimisation of
 the ED gap) and stored.
-  Targets: t' = t'_c + d, d in --targets (default +-0.0005, +-0.002, +-0.005, +-0.02;
-           in-irrep gaps ~0.003 to 0.1 t).
+  Targets: t' = t'_c + d, d in --targets (default +-0.0002, +-0.0005, +-0.002, +-0.005,
+           +-0.02; in-irrep gaps ~0.0014 to 0.1 t; a target whose |c(E0)| < tau is "mixed" and
+           excluded from CW/DEC).
   Snapshot points: t' = t'_c + d, d in --snaps (default +-0.03, +-0.05, +-0.08; gaps ~0.15
            to 0.4 t, i.e. far from the crossing).
 
@@ -73,7 +74,7 @@ projected state is the identity, so the post-hoc numbers reported are the spin o
 Pre-committed decision rule (--aggregate; per width W, over seeds S_W, needs >= 3 seeds)
 ------------------------------------------------------------------------------------
   eps(t)  = median over seeds of min_X [E(branch X at t) - E0(t)]   (projected control error)
-  hard(t) = eps(t) >= gap(t)/2                                      (PREMISE gate)
+  hard(t) = eps(t) >= gap(t)/2 and truth(t) not mixed               (PREMISE gate)
   Valid width: >= 3 hard targets, and >= 4 of 6 snapshot points certified in the median seed,
                and each order block non-empty in every seed. Otherwise the width reports
                PREMISE-FAIL (projected R0+ decides by construction, or no snapshots).
@@ -94,13 +95,19 @@ Usage
 -----
   python3 micro_test.py [options]
 Options
-  --width INT        NNBF hidden width (default 32).
+  --width INT        NNBF hidden width (default 4).
   --seed INT         Seed (default 1234): UHF noise seed, NNBF init seed + width (+7 for B),
                      SR sampling default_rng(seed); MC replicas default_rng(seed + 999).
-  --task-id INT      If >= 0 overrides --width/--seed: width = (8, 32)[t // 3],
-                     seed = (1234, 2345, 3456)[t % 3] (array 0-5). Default -1.
+  --task-id INT      If >= 0 overrides --width/--seed: width = (2, 4, 8)[t // 3],
+                     seed = (1234, 2345, 3456)[t % 3] (array 0-8). Default -1.
+                     The widths are DELIBERATELY NARROW: the projected sector dimension
+                     dim range(P_S P_chi) = 1618 here, and a projected NNBF whose parameter
+                     count is not well below it is essentially exact (P1.1-P: width 32,
+                     4064 parameters, dE = 3e-5 on the isotropic 4+4 torus). Widths 2/4/8
+                     have 434/676/1160 parameters, i.e. sector-dimension-to-parameter ratios
+                     3.7/2.4/1.4. Every arm (control and routes) uses the same width.
   --ty FLOAT         t_y of the path (default 1.11394).  --U FLOAT (default 8).
-  --targets LIST     Offsets d from t'_c (default "-0.02,-0.005,-0.002,-0.0005,0.0005,0.002,0.005,0.02").
+  --targets LIST     Offsets d from t'_c (default "-0.02,-0.005,-0.002,-0.0005,-0.0002,0.0002,0.0005,0.002,0.005,0.02").
   --snaps LIST       Snapshot offsets (default "-0.08,-0.05,-0.03,0.03,0.05,0.08").
   --sr-iters INT     Projected SR steps per branch (default 1000).
   --sr-lr FLOAT      (default 0.05)  --sr-shift FLOAT (default 1e-3)
@@ -373,7 +380,12 @@ def run(args):
         sys.exit(2)
     if args.checks_only:
         return
-    res = dict(args=vars(args), tpc=inst.tpc, gapmin=inst.gapmin, targets=[], snaps=[])
+    npar = P.Ansatz(inst.m, *uhf_pattern(inst.m, "neel", args.seed), "nnbf", width=args.width).n_params()
+    res = dict(args=vars(args), tpc=inst.tpc, gapmin=inst.gapmin, targets=[], snaps=[],
+               sector_dim=inst.cl.dS, spacegroup_irrep_dim=inst.cl.dB, n_params=npar,
+               dim_over_params=inst.cl.dS / npar)
+    log(f"projected sector dim range(P_S P_chi) = {inst.cl.dS} (space-group irrep {inst.cl.dB}); "
+        f"NNBF width {args.width}: {npar} parameters; ratio {inst.cl.dS / npar:.2f}")
     dump = lambda: json.dump(res, open(args.out, "w"), indent=1)
     rngmc = np.random.default_rng(args.seed + 999)
     # snapshots
@@ -470,7 +482,9 @@ def aggregate(d):
         by_w.setdefault(r["args"]["width"], []).append(r)
     verdict = {"EC": [], "AT": []}
     for W, runs in sorted(by_w.items()):
-        print(f"=== width {W}: seeds {[r['args']['seed'] for r in runs]}")
+        print(f"=== width {W}: seeds {[r['args']['seed'] for r in runs]}  sector dim "
+              f"{runs[0].get('sector_dim')}  n_params {runs[0].get('n_params')}  ratio "
+              f"{runs[0].get('dim_over_params', float('nan')):.2f}")
         if len(runs) < 3:
             print("  INCOMPLETE (< 3 seeds)")
             continue
@@ -479,7 +493,7 @@ def aggregate(d):
         for i, dd in enumerate(ds):
             eps = np.median([min(r["targets"][i]["branches"][X]["dE"] for X in "AB") for r in runs])
             gap = runs[0]["targets"][i]["ed"]["gap"]
-            h = eps >= gap / 2
+            h = bool(eps >= gap / 2 and runs[0]["targets"][i]["truth"] != "U")
             hard.append(h)
             print(f"  target d={dd:+.4f} gap={gap:.4f} eps_med={eps:.2e} hard={h} truth={runs[0]['targets'][i]['truth']} "
                   + " ".join(f"{k}:{''.join(r['targets'][i]['dec'][k] for r in runs)}" for k in ("R0P", "EC", "AT", "ECor", "ATor")))
@@ -488,9 +502,11 @@ def aggregate(d):
         nh = int(sum(hard))
         print(f"  hard targets {nh}/{len(ds)}; certified snapshots (median) {ncert}/{len(runs[0]['snaps'])}; both blocks {blocks}")
         if nh < 3 or ncert < 4 or not blocks:
-            print("  PREMISE-FAIL at this width")
+            why = ("easy: fewer than 3 targets with projected control error >= gap/2" if nh < 3 else
+                   "snapshots: uncertified or one order block empty")
+            print(f"  PREMISE-FAIL at this width ({why})")
             for X in verdict:
-                verdict[X].append("PREMISE-FAIL")
+                verdict[X].append("PREMISE-FAIL:" + ("easy" if nh < 3 else "snapshots"))
             continue
 
         def rates(arm, sampled=False):
@@ -529,8 +545,10 @@ def aggregate(d):
             verdict[X].append(v)
             print(f"  {X}: CW={cw:.3f} DEC={dc:.3f} | sampled CW={cws:.3f} DEC={dcs:.3f} flip={fl:.3f} -> {v}")
     for X, vs in verdict.items():
-        if vs and all(v == "PREMISE-FAIL" for v in vs):
-            g = "PREMISE-FAIL (projected NQS resolves the instance; route untested)"
+        if vs and all(v.startswith("PREMISE-FAIL") for v in vs):
+            g = ("PREMISE-FAIL (projected NQS resolves the instance at every width; route untested)"
+                 if all(v.endswith("easy") for v in vs) else
+                 "PREMISE-FAIL (see per-width reasons; route untested)")
         elif "PASS" in vs and "FAIL" not in vs:
             g = "PASS"
         elif "FAIL" in vs:
@@ -543,12 +561,12 @@ def aggregate(d):
 # ============================================================================ cli
 def parse_args(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("--width", type=int, default=32)
+    ap.add_argument("--width", type=int, default=4)
     ap.add_argument("--seed", type=int, default=1234)
     ap.add_argument("--task-id", type=int, default=-1)
     ap.add_argument("--ty", type=float, default=1.11394)
     ap.add_argument("--U", type=float, default=8.0)
-    ap.add_argument("--targets", default="-0.02,-0.005,-0.002,-0.0005,0.0005,0.002,0.005,0.02")
+    ap.add_argument("--targets", default="-0.02,-0.005,-0.002,-0.0005,-0.0002,0.0002,0.0005,0.002,0.005,0.02")
     ap.add_argument("--snaps", default="-0.08,-0.05,-0.03,0.03,0.05,0.08")
     ap.add_argument("--sr-iters", type=int, default=1000)
     ap.add_argument("--sr-lr", type=float, default=0.05)
@@ -565,7 +583,7 @@ def parse_args(argv=None):
     ap.add_argument("--aggregate", default="")
     a = ap.parse_args(argv)
     if a.task_id >= 0:
-        a.width = (8, 32)[a.task_id // 3]
+        a.width = (2, 4, 8)[a.task_id // 3]
         a.seed = (1234, 2345, 3456)[a.task_id % 3]
     sub = "results"
     if a.smoke:

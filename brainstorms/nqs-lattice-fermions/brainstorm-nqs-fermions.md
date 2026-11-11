@@ -162,12 +162,28 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.3 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410199 (9 tasks: c1 instance, PSaf/PSfs/PScdw, 3 seeds) |
 | P2.1 | MUTATE (round 3) | nothing | round-3 worker |
 | P2.2 | MUTATE (round 3) | nothing | round-3 worker |
-| P3.1 | CRITIC (round 3) | nothing | per-leaf critic |
+| P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | MUTATE (round 3) | nothing | round-3 worker |
 | P4.1 | MUTATE (round 3) | nothing | round-3 worker |
 | P4.2 | MUTATE (round 3) | nothing | round-3 worker |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
+* **P3.1 round-3 per-leaf critic (12 objections, 8 Major)**:
+    * **Gate 0, both routes.**
+        * ZR is the Assaraf–Caffarel zero-bias correction with a learned $\psi'$ (physics/0310035; Toulouse, Assaraf & Umrigar 0705.0721), and also a dual-weighted-residual estimate (Cancès, Dusson, Kemlin & Levitt 2111.01470). It needs one extra NQS per observable, which contradicts the leaf's "cheap information" premise. The round-2 kill "zero-variance, zero-bias estimators reduce variance, not bias" was factually wrong; that log entry is corrected here.
+        * ECC's regressor $c=\langle(H-E)(A-a)\rangle$ is the first Lanczos moment, so it inherits the killed route's blindness ($\propto\Delta$) to low-energy competitors.
+    * **The tangent-space lemma** is correct but standard (the Brillouin/stationarity condition).
+    * **No real target exists.**
+        * Projected converged states have near-zero pair error, so the scored population would be step-30/100 snapshots (high-$\omega$ error), where one Lanczos step wins trivially.
+        * The score filter selects exactly the states where first-order expansions fail.
+        * At scale, $\mathrm{Var}(A)\sim1/V$ while the infidelity tends to 1, so the expansion has no small parameter.
+        * The test covers neither half of the Hard Core.
+    * **ZR's sampling is unrealistic.** Its scale factor and training use exact sums. Sampling with $N_s/D\approx0.2$–$0.4$ i.i.d. nearly enumerates the support.
+    * **Action.**
+        * The 36-task job is held. A 6-task exact-quantities target pilot runs as job 410398: converged projected NNBF of widths 1, 2 and 4 plus the projected foil, 1500 steps, one seed per instance.
+        * Go criterion: at least 2 instances with at least 3 converged finals at $\lvert\delta\rvert\ge0.02\lvert a_0\rvert$, on which ZRO tracks at least 70% and L1 tracks fewer than 90%.
+        * Otherwise NO-GO, and P3.1 is re-scoped to larger sampled systems or a same-irrep near-degenerate instance.
+        * Round-4 mutation of both routes waits on this, because it decides whether any target exists at ED size.
 * **P1.2 round-3 per-leaf critic (12 objections, 6 Major)**:
     * **Premise gate likely fails.** What sets how close a projected NNBF gets to exact is the ratio $\dim\mathrm{range}(P_SP_\chi)/(\text{parameters})$, not $\lvert G\rvert$. The exact sector dimensions are:
 

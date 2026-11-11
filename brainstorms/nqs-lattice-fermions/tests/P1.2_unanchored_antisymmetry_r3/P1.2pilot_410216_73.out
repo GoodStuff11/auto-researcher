@@ -1,0 +1,34 @@
+[14:06:09] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[14:06:09] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[14:06:09] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[14:06:09] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[14:06:09] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[14:06:09] check gradient: analytic 3.2455640501e-01  finite-diff 3.2455640531e-01
+[14:06:09] ALL CHECKS PASSED
+[14:06:09] check kinetic edges 3x2 N=(2,2): max|K y - H_off y| = 3.55e-15
+[14:06:09] check kinetic edges 2x3 N=(2,1): max|K y - H_off y| = 1.33e-15
+[14:06:09] check exchange edges 2-site singlet: R = [-1.0000000000000004, -0.9999999999999996] (expect -1 each)
+[14:06:09] check exchange edges 4-ring: sum<S+S-+h.c.>/2 = -1.3333  from ED sum<S.S>-<SzSz> = -1.3332 (leading order in t/U)
+[14:06:09] check FRD-K gradient: analytic 7.8455276843e-01  finite-diff 7.8455276914e-01  |O-vs-grad| 2.2e-15  P=229
+[14:06:09] check FRD-X gradient: analytic -4.5582141315e-02  finite-diff -4.5582141173e-02  |O-vs-grad| 2.7e-15  P=229
+[14:06:09] ALL R2 CHECKS PASSED
+[14:06:09] check 3x2 obc/obc |G|=4 chi={'My': -1, 'Mx': -1} S=1: [H,U_g] 1.7e-16 idem 6.4e-17 sym 0.0e+00 [P,H] 9.7e-17 <psi0|P psi0> 1.000000000000 P_S idem 1.5e-16 [P_S,P_chi] 1.5e-16 ||P_S P_chi psi0 - psi0|| 1.9e-15
+[14:06:09] check 3x2 pbc/obc |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0: [H,U_g] 2.2e-16 idem 2.2e-16 sym 3.8e-18 [P,H] 9.1e-17 <psi0|P psi0> 1.000000000000 P_S idem 5.7e-17 [P_S,P_chi] 1.9e-16 ||P_S P_chi psi0 - psi0|| 9.0e-16
+[14:06:09] check 4x2 pbc/obc |G|=16 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0: [H,U_g] 2.1e-16 idem 2.4e-16 sym 1.1e-17 [P,H] 8.6e-17 <psi0|P psi0> 1.000000000000 P_S idem 1.1e-16 [P_S,P_chi] 2.2e-16 ||P_S P_chi psi0 - psi0|| 1.4e-14
+[14:06:09] check projected gradient ctrl mode G: analytic -4.0402149816e-01  finite-diff -4.0402149759e-01
+[14:06:09] check projected gradient ctrl mode GS: analytic -9.8589095888e-01  finite-diff -9.8589095954e-01
+[14:06:09] check projected O_chi ctrl: max rel err vs finite-diff 1.5e-10
+[14:06:09] check projected gradient frdK mode G: analytic 1.5285102345e-01  finite-diff 1.5285102339e-01
+[14:06:09] check projected gradient frdK mode GS: analytic 3.6382273822e-01  finite-diff 3.6382273816e-01
+[14:06:09] check projected O_chi frdK: max rel err vs finite-diff 1.7e-10
+[14:06:09] check projected gradient frdX mode G: analytic -9.6898651377e-02  finite-diff -9.6898651325e-02
+[14:06:09] check projected gradient frdX mode GS: analytic 8.7065227230e-03  finite-diff 8.7065230581e-03
+[14:06:09] check projected O_chi frdX: max rel err vs finite-diff 1.3e-10
+[14:06:10] check parameter match instance 0: ctrl H=32 P=4073; frdK H=47 P=4064; frdX H=47 P=4064
+[14:06:10] check parameter match instance 1: ctrl H=32 P=4070; frdK H=40 P=4054; frdX H=40 P=4054
+[14:06:11] check parameter match instance 2: ctrl H=32 P=4887; frdK H=55 P=4862; frdX H=55 P=4862
+[14:06:11] ALL R3 CHECKS PASSED
+[14:08:00] instance 2 {'Lx': 6, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 5, 'ndn': 5, 'U': 8.0, 'tp': -0.25} D=627264 |G|=24 chi={'Tx': 1, 'My': 1, 'Mx': -1} S=1 E0=-8.04814986 gap(fixed N)=0.0242 in-sector gap=0.2593
+[14:09:26] calibration E_sign(s_0) - E0 = 9.24e-14
+[14:09:26] arm ctrl_PS: width 32, n_params 4887, SR shift 0.01
+[14:09:34] ctrl_PS: it     0  E = -6.65813741  |f| = 2.46e+00  (8.56 s/step)

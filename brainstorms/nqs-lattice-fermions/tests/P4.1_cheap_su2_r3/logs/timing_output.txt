@@ -1,8 +1,8 @@
-[14:02:45] instance L4x3obc_N8_U8_tp-0.25_G: dim=245025 nC=28314 |G|=16 (built in 0.1s)
-[14:02:48]   sqrvb   P= 2218 hidden=  5 P_S=0  E(init)=-2.07089  energy+grad 2.1s
-[14:02:50]   sqrvb0  P= 2149 hidden=  8 P_S=0  E(init)=-2.49924  energy+grad 2.0s
-[14:03:18]   scf     P= 2176 hidden=  9 P_S=0  E(init)=-3.69903  energy+grad 27.9s
-[14:03:24]   nnbf_SG P= 2205 hidden= 16 P_S=1  E(init)=-8.79662  energy+grad 5.3s
-[14:03:28]   nnbf_G  P= 2205 hidden= 16 P_S=0  E(init)=-8.36575  energy+grad 4.0s
-[14:03:35]   che     P= 2205 hidden= 16 P_S=1  E(init)=-8.79382  energy+grad 6.6s
-[14:03:38]   foil    P=  221 hidden=  0 P_S=1  E(init)=-8.25427  energy+grad 3.7s
+[14:07:46] instance L4x3xobcyobc_N8_U8_tp-0.25_G: dim=245025 nC=28314 |G|=4 (built in 0.1s)
+[14:07:48]   sqrvb   P= 2218 hidden=  5 P_S=0  E(init)=-1.62013  energy+grad 2.1s
+[14:07:51]   sqrvb0  P= 2149 hidden=  8 P_S=0  E(init)=-1.42197  energy+grad 2.1s
+[14:08:21]   scf     P= 2176 hidden=  9 P_S=0  E(init)=-0.57435  energy+grad 30.1s
+[14:08:26]   nnbf_SG P= 2205 hidden= 16 P_S=1  E(init)=-7.81604  energy+grad 5.4s
+[14:08:31]   nnbf_G  P= 2205 hidden= 16 P_S=0  E(init)=-7.63300  energy+grad 4.5s
+[14:08:35]   che     P= 2205 hidden= 16 P_S=1  E(init)=-7.80527  energy+grad 3.9s
+[14:08:37]   foil    P=  221 hidden=  0 P_S=1  E(init)=-7.22779  energy+grad 2.0s

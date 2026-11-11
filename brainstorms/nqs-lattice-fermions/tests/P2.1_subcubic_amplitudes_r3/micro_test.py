@@ -131,7 +131,7 @@ chain, and its per-sample equivalent is the sweep.
 
 Usage
 -----
-  python3 micro_test.py --mode train --task ID [options]   one Slurm array task (0..125)
+  python3 micro_test.py --mode train --task ID [options]   one Slurm array task (0..116)
   python3 micro_test.py --mode cost [--sizes 12,16,20,24,28,32] [--brute-max 32]
   python3 micro_test.py --mode aggregate [--results DIR]
   python3 micro_test.py --mode smoke                        correctness checks + tiny pipeline
@@ -140,7 +140,7 @@ Usage
 Options
 -------
   --mode {train,cost,aggregate,smoke,time}  What to run (default smoke).
-  --task INT        Array index 0..125 for --mode train: instance = task // 42,
+  --task INT        Array index 0..116 for --mode train: instance = task // 39,
                     arm = ARM_LIST[(task % 42) // 3], seed = SEEDS[task % 3] with
                     ARM_LIST = nnbf, mdnnbf, hf1, hf4, sk1, sk2, sjnet, agpj, agh4, skagp,
                     nnbf_PS, sk1_PS, nnbf_U, sk1_U and SEEDS = 11, 22, 33. Explicit
@@ -189,17 +189,17 @@ from tj_core import (TJ, LRAnsatz, LRCarried, SpaceGroup, connections, dwave_bcs
                      eloc_brute, eloc_fast_agp)
 import scipy.sparse as sp  # noqa: E402
 
-INSTANCES = {0: dict(Lx=4, Ly=3, bcx="pbc", bcy="pbc", nup=5, ndn=5, tp=-0.25, J=0.4),
-             1: dict(Lx=4, Ly=4, bcx="pbc", bcy="pbc", nup=7, ndn=7, tp=-0.25, J=0.4),
-             2: dict(Lx=4, Ly=4, bcx="pbc", bcy="obc", nup=7, ndn=7, tp=-0.25, J=0.4),
+INSTANCES = {0: dict(Lx=4, Ly=4, bcx="obc", bcy="obc", nup=6, ndn=6, tp=-0.25, J=0.4),
+             1: dict(Lx=4, Ly=4, bcx="pbc", bcy="obc", nup=6, ndn=6, tp=-0.25, J=0.4),
+             2: dict(Lx=4, Ly=4, bcx="obc", bcy="obc", nup=7, ndn=7, tp=-0.25, J=0.4),
              9: dict(Lx=3, Ly=2, bcx="pbc", bcy="obc", nup=2, ndn=2, tp=-0.25, J=0.4)}
-ARM_LIST = ["nnbf", "mdnnbf", "hf1", "hf4", "sk1", "sk2", "sjnet", "agpj", "agh4", "skagp",
+ARM_LIST = ["nnbf", "hf1", "hf4", "sk1", "sk2", "sjnet", "agpj", "agh4", "skagp",
             "nnbf_PS", "sk1_PS", "nnbf_U", "sk1_U"]
+NARM = len(ARM_LIST)
 SEEDS = [11, 22, 33]
 UHF_SEED, F0_SEED = 1234, 1234
 ARM_DEF = {
     "nnbf": dict(mode="full", K=1, free=None, proj="chi"),
-    "mdnnbf": dict(mode="full", K="K", free="Hs", shared_ref=False, proj="chi"),
     "hf1": dict(mode="lr", K=1, r=1, free="Ha", proj="chi"),
     "hf4": dict(mode="lr", K=1, r=4, free="Ha", proj="chi"),
     "sk1": dict(mode="lr", K="K", r=1, free="Ha", proj="chi"),
@@ -281,7 +281,7 @@ def sector_dims(m, sg, S0):
     dS = float("nan")
     if S0 == 0 and m.ndn > 0:
         m1 = TJ(m.Lx, m.Ly, m.bcx, m.bcy, m.nup + 1, m.ndn - 1, m.t, m.tp, m.J, build_H=False)
-        g1 = SpaceGroup(m1, diag=(sg.G != len([e for e in sg.elems if e[4] == 0])))
+        g1 = SpaceGroup(m1, diag=any(e[4] == 1 for e in sg.elems))
         assert [tuple(e) for e in g1.elems] == [tuple(e) for e in sg.elems]
         dS = d0 - dchi(m1, g1)
     return d0, dS
@@ -449,6 +449,8 @@ def train_task(args):
     sg, gen = build_symmetry(m, psi0)
     S2_0 = m.S2_expect(psi0)
     S0 = float(round(0.5 * (np.sqrt(1 + 4 * S2_0) - 1)))
+    dim_chi, dim_S_chi = sector_dims(m, sg, S0)
+    log(f"projected sector dimensions: dim range(P_chi) = {dim_chi:.0f}, dim range(P_S P_chi) = {dim_S_chi:.0f}")
     log(f"ED levels {W.tolist()} deg {deg}; |G|={sg.G} chi(psi_0)={gen}; S(psi_0)={S0:g} ({time.time() - t0:.0f} s)")
     rng_b = np.random.default_rng(args.seed + 1000003)
     S0m = sp.diags(np.where(psi0 >= 0, 1.0, -1.0))
@@ -504,7 +506,7 @@ def train_task(args):
     return dict(params={k: v for k, v in vars(args).items()}, instance=args.instance, arm=args.arm,
                 seed=args.seed, proj=proj, arm_kwargs=kw, n_params=ans.n_params(), P_target=target,
                 ed_levels=W.tolist(), degeneracy=deg, irrep=gen, G=sg.G, S_psi0=S0, calib_err=calib,
-                init_proj_ratio=init_ratio, budgets=budgets, sampled=sampled, t_sr=t_sr, s_per_step=sps)
+                init_proj_ratio=init_ratio, dim_chi=dim_chi, dim_S_chi=dim_S_chi, budgets=budgets, sampled=sampled, t_sr=t_sr, s_per_step=sps)
 
 
 # ============================================================================ cost check
@@ -632,6 +634,16 @@ def run_checks(seed):
     log(f"check smoke t-J: D={m.D} herm {e_herm:.1e} [H,S2] {e_s2:.1e} [H,U_g] {e_g:.1e} (|G|={sg.G}, chi={gen}) "
         f"P_chi idem {e_idem:.1e} P_chi psi0-psi0 {e_p0:.1e} P_S idem {e_ps:.1e} [P_S,P_chi] {e_comm:.1e}")
     ok &= max(e_herm, e_s2, e_g, e_idem, e_p0, e_ps, e_comm) < 1e-10
+    # S^+ commutes with U_g (needed by sector_dims), and sector_dims equals the projector rank
+    m1 = TJ(m.Lx, m.Ly, m.bcx, m.bcy, m.nup + 1, m.ndn - 1, m.t, m.tp, m.J, build_H=False)
+    g1 = SpaceGroup(m1, diag=any(e[4] == 1 for e in sg.elems))
+    e_sp = max(np.linalg.norm(m.Sp @ sg.apply(v, k) - g1.apply(m.Sp @ v, k)) for k in range(sg.G))
+    d0, dS = sector_dims(m, sg, S0)
+    Pd = np.column_stack([m.spin_project(sg.project(e), S0) for e in np.eye(m.D)])
+    rk_c = np.linalg.matrix_rank(np.column_stack([sg.project(e) for e in np.eye(m.D)]), 1e-8)
+    rk_s = np.linalg.matrix_rank(Pd, 1e-8)
+    log(f"check [S+,U_g] {e_sp:.1e}; sector dims: chi {d0:.1f} (rank {rk_c}), S=0 & chi {dS:.1f} (rank {rk_s})")
+    ok &= e_sp < 1e-10 and abs(d0 - rk_c) < 1e-6 and abs(dS - rk_s) < 1e-6
     refs = references(m)
     iu, idd = m.iu_id()
     nn = m.nn
@@ -739,12 +751,15 @@ def aggregate(d):
     insts = sorted(k for k in R if k in (0, 1, 2, 9))
     ref = {}
     for I in insts:
-        rs = min(_med(vals(I, "nnbf", "dE_sign")), _med(vals(I, "mdnnbf", "dE_sign")))
-        rt = min(_med(vals(I, "nnbf", "dE_tot")), _med(vals(I, "mdnnbf", "dE_tot")))
-        rsS = min(_med(vals(I, "nnbf", "dE_sign", "P_S")), _med(vals(I, "mdnnbf", "dE_sign", "P_S")))
+        rs = _med(vals(I, "nnbf", "dE_sign"))
+        rt = _med(vals(I, "nnbf", "dE_tot"))
+        rsS = _med(vals(I, "nnbf", "dE_sign", "P_S"))
         ref[I] = (rs, rt, rsS)
         Ns = INSTANCES[I]["nup"]
-        print(f"instance {I} {INSTANCES[I]}: Ref_sign={rs:.5f} Ref_tot={rt:.5f} Ref_sign(P_S)={rsS:.5f}")
+        anyr = next(iter(next(iter(R[I].values())).values()))
+        print(f"instance {I} {INSTANCES[I]}: Ref_sign={rs:.5f} Ref_tot={rt:.5f} Ref_sign(P_S)={rsS:.5f} "
+              f"dim(P_chi)={anyr.get('dim_chi', float('nan')):.0f} dim(P_S P_chi)={anyr.get('dim_S_chi', float('nan')):.0f} "
+              f"P_target={anyr.get('P_target')}")
         tab = {}
         for arm in ARM_LIST:
             if arm not in R.get(I, {}):
@@ -785,12 +800,12 @@ def aggregate(d):
     print("premise gate (Ref_sign >= %.3g t): " % PREMISE_REF + ", ".join(
         f"instance {I}: Ref_sign={ref[I][0]:.4g} -> {'counts' if counted[I] else 'DOES NOT COUNT'}" for I in insts))
     smoke = insts == [9]
-    primary = [I for I in insts if (I in (1, 2) or smoke) and (counted[I] or smoke)]
+    primary = [I for I in insts if (I in (0, 1, 2) or smoke) and (counted[I] or smoke)]
     for name, rt_ in ROUTES.items():
         arm, rk, pm, g2 = rt_["arm"], rt_["rank"], rt_["premise"], rt_["gate2"]
-        need = (arm, rk, pm, g2, "nnbf", "mdnnbf")
+        need = (arm, rk, pm, g2, "nnbf")
         if not primary:
-            v = "UNINFORMATIVE (no N_sigma=7 instance passes the premise gate)"
+            v = "UNINFORMATIVE (no instance passes the premise gate)"
             out["routes"][name] = dict(verdict=v)
             print(f"ROUTE {name} ({arm}) VERDICT: {v}")
             continue
@@ -814,14 +829,13 @@ def aggregate(d):
             q["oracle"] = orc
             q["v"] = T1[arm].get("var_ex", float("nan")) / T1["nnbf"].get("var_ex", float("nan"))
             q["z"] = T1[arm].get("z", float("nan"))
-            # size trend against the small instance, only if the small instance itself counts
-            if 0 in insts and counted.get(0) and arm in out["instances"][0]:
-                T0 = out["instances"][0]
-                q["rho_s0"], q["rho_t0"] = T0[arm]["rho_s"], T0[arm]["rho_t"]
-                q["trend"] = q["rho_s"] - q["rho_s0"]
+            # filling trend at fixed r on the same 4x4 OBC lattice: instance 2 (N_sigma = 7) minus
+            # instance 0 (N_sigma = 6); evaluated on instance 2 only, and only if both count
+            if I == 2 and counted.get(0) and arm in out["instances"].get(0, {}):
+                q["trend"] = q["rho_s"] - out["instances"][0][arm]["rho_s"]
             else:
-                q["rho_s0"] = q["rho_t0"] = q["trend"] = None   # not evaluable: reported, not gating
-            g = sum((guard(J_, a) for J_ in {I} for a in (arm, rk, "nnbf", "mdnnbf")), [])
+                q["trend"] = None
+            g = guard(I, arm) + guard(I, rk) + guard(I, "nnbf")
             q["guards"] = g
             tr = q["trend"]
             fail = (q["beta"] < BITE or q["rho_s"] >= RHO_S_FAIL or q["rho_t"] >= RHO_T_FAIL
@@ -831,8 +845,7 @@ def aggregate(d):
                     or q["v"] >= V_FAIL or q["z"] > Z_FAIL)
             pas = (not g and q["beta"] >= BITE and q["rho_s"] <= RHO_S_PASS and q["rho_t"] <= RHO_T_PASS
                    and q["sigma"] <= RANK_PASS and q["dominance"] >= DOM_PASS and q["gamma"] <= GAMMA_PASS
-                   and (tr is None or (tr <= TREND_PASS and q["rho_s0"] <= RHO_S_PASS
-                                       and q["rho_t0"] <= RHO_T_PASS))
+                   and (tr is None or tr <= TREND_PASS)
                    and q["rho_s_PS"] <= SPIN_PASS and (orc is None or orc <= SPIN_PASS)
                    and q["v"] <= V_PASS and q["z"] <= Z_PASS)
             t = "FAIL" if fail else ("PASS" if pas else "AMBIGUOUS")
@@ -884,8 +897,8 @@ def parse_args(argv=None):
     ap.add_argument("--arm", default="")
     ap.add_argument("--seed", type=int, default=-1)
     ap.add_argument("--K", type=int, default=4)
-    ap.add_argument("--hs-sign", type=int, default=64)
-    ap.add_argument("--match-width", type=int, default=128)
+    ap.add_argument("--hs-sign", type=int, default=6)
+    ap.add_argument("--match-width", type=int, default=6)
     ap.add_argument("--sr-iters", type=int, default=1500)
     ap.add_argument("--sr-lr", type=float, default=0.05)
     ap.add_argument("--sr-shift", type=float, default=1e-3)
@@ -905,12 +918,12 @@ def parse_args(argv=None):
     ap.add_argument("--overwrite", type=int, choices=[0, 1], default=0)
     a = ap.parse_args(argv)
     if a.task >= 0:
-        if a.task > 125:
-            ap.error("--task must be in 0..125")
+        if a.task > 116:
+            ap.error("--task must be in 0..116")
         if a.instance < 0:
-            a.instance = a.task // 42
+            a.instance = a.task // (3 * NARM)
         if not a.arm:
-            a.arm = ARM_LIST[(a.task % 42) // 3]
+            a.arm = ARM_LIST[(a.task % (3 * NARM)) // 3]
         if a.seed < 0:
             a.seed = SEEDS[a.task % 3]
     if a.seed < 0:

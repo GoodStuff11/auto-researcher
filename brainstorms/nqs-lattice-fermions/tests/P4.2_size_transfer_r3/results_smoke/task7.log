@@ -9,33 +9,34 @@
 [     0.1s] selftest(a) spinless 2x2[tw 1pi,1pi] N_f=1: E_ED=0.0000000000 band=-0.0000000000 OK
 [     0.1s] selftest(a) spinless 2x2[tw 1pi,1pi] N_f=3: E_ED=0.0000000000 band=0.0000000000 OK
 [     0.1s] selftest(a) spinless t8 N_f=1: E_ED=-3.0000000000 band=-3.0000000000 grid (units of pi) [(0.0, 0.0), (0.0, 1.0), (0.5, 0.5), (0.5, 1.5), (1.0, 0.0), (1.0, 1.0), (1.5, 0.5), (1.5, 1.5)] OK
-[     0.2s] selftest(a) spinless t8 N_f=3: E_ED=-5.0000000000 band=-5.0000000000 grid (units of pi) [(0.0, 0.0), (0.0, 1.0), (0.5, 0.5), (0.5, 1.5), (1.0, 0.0), (1.0, 1.0), (1.5, 0.5), (1.5, 1.5)] OK
+[     0.1s] selftest(a) spinless t8 N_f=3: E_ED=-5.0000000000 band=-5.0000000000 grid (units of pi) [(0.0, 0.0), (0.0, 1.0), (0.5, 0.5), (0.5, 1.5), (1.0, 0.0), (1.0, 1.0), (1.5, 0.5), (1.5, 1.5)] OK
 [     0.2s] selftest(b) t-J 4x2 dim=560 hermitian OK
 [     0.2s] selftest(c) 4x2 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=3.6e-15 OK
 [     0.3s] selftest(d) 4x2 log-derivative max rel err over 122 params = 1.63e-09 OK
-[     0.4s] selftest(b) t-J t8 dim=560 hermitian OK
-[     0.4s] selftest(c) t8 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=4.4e-15 OK
-[     0.5s] selftest(d) t8 log-derivative max rel err over 122 params = 4.32e-09 OK
-[     0.6s] selftest(e) 4x4 N_e=2: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 9 of 240), GS gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': 1.0}, GS weight in its irrep=1.000000000000 OK
-[     0.7s] selftest(e) 4x2 N_e=4: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 57 of 420), GS gens={'Tx': -1.0, 'Ty': 1.0, 'Mx': -1.0, 'My': 1.0}, GS weight in its irrep=nan OK
-[     0.7s] selftest(f) S^2 on 2x2 N_e=2: symmetric, spectrum [0.0, 2.0] OK
-[     0.7s] selftest(f) S^2 on 2x2 N_e=4: symmetric, spectrum [-0.0, 2.0, 6.0] OK
-[     0.8s] selftest(g) projected-energy gradient vs finite differences max rel err 2.79e-10; metric PSD OK
-[     0.8s] selftest(h) [report] complete coverage: sources ['4x2', 't8'] cover 16 of 16 4x4 momenta on C4v orbits (first source alone: 12 of 16)
-[     0.8s] SELFTEST PASSED
-[     1.4s] instance t'=0.25 J=0.4: E0=-12.81808701 E1=-12.79277607 <S2>=-2.91e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
-[     1.5s] target 4x4 t'=0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=105 E0=-12.81808701 (full -12.81808701) gap/V=2.3863e-01 no same-irrep competitor below 0.005 t/site: sign half only
-[     1.5s] calibration: E_sign(exact signs) - E0 = 3.553e-15; Pd(E0)=8.3002e-03
-[     2.1s]   [scrL] step 1/20 E=-8.68369554 lr=0.0275 relerr=3.225e-01
-[     2.6s]   [scrL] step 3/20 E=-11.05933811 lr=0.0333 relerr=1.372e-01
-[     3.1s]   [scrL] step 5/20 E=-12.22468880 lr=0.0403 relerr=4.629e-02
-[     3.6s]   [scrL] step 7/20 E=-12.74537881 lr=0.0487 relerr=5.672e-03
-[     4.1s]   [scrL] step 9/20 E=-12.81061084 lr=0.0589 relerr=5.833e-04
-[     4.8s]   [scrL] step 11/20 E=-12.81584951 lr=0.0357 relerr=1.746e-04
-[     5.3s]   [scrL] step 13/20 E=-12.81688053 lr=0.0432 relerr=9.412e-05
-[     5.8s]   [scrL] step 15/20 E=-12.81721959 lr=0.0522 relerr=6.767e-05
-[     6.4s]   [scrL] step 17/20 E=-12.81743650 lr=0.0632 relerr=5.075e-05
-[     6.9s]   [scrL] step 19/20 E=-12.81761309 lr=0.0764 relerr=3.697e-05
-[     7.1s]   [scrL] step 20/20 E=-12.81769074 lr=0.0841 relerr=3.091e-05
-[     7.2s] arm scrL     : E=-12.81769074 eps=2.4767e-05 (raw 2.0228e-01, irrep weight 0.395) A/V=2.2204e-16 sign-agree=1.0000 Pd=8.2801e-03 fid=1.0000
-[     7.2s] done (results_smoke/task7.json)
+[     0.3s] selftest(b) t-J t8 dim=560 hermitian OK
+[     0.3s] selftest(c) t8 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=4.4e-15 OK
+[     0.4s] selftest(d) t8 log-derivative max rel err over 122 params = 4.32e-09 OK
+[     0.5s] selftest(e) 4x4 N_e=2: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 9 of 240), GS gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': 1.0}, GS weight in its irrep=1.000000000000 OK
+[     0.5s] selftest(e) 4x2 N_e=4: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 57 of 420), GS gens={'Tx': -1.0, 'Ty': 1.0, 'Mx': -1.0, 'My': 1.0}, GS weight in its irrep=nan OK
+[     0.6s] selftest(f) S^2 on 2x2 N_e=2: symmetric, spectrum [0.0, 2.0] OK
+[     0.6s] selftest(f) S^2 on 2x2 N_e=4: symmetric, spectrum [-0.0, 2.0, 6.0] OK
+[     0.6s] selftest(g) projected-energy gradient vs finite differences max rel err 2.79e-10; metric PSD OK
+[     0.7s] selftest(h) [report] complete coverage: sources ['4x2', 't8'] cover 16 of 16 4x4 momenta on C4v orbits (first source alone: 12 of 16)
+[     0.7s] SELFTEST PASSED
+[     1.2s] instance t'=0.25 J=0.4: E0=-12.81808701 E1=-12.79277607 <S2>=-2.91e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
+[     1.2s] target 4x4 t'=0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=105 E0=-12.81808701 (full -12.81808701) gap/V=2.3863e-01 no same-irrep competitor below 0.005 t/site: sign half only
+[     1.2s] projected-sector dimension 105 / route parameters 122 = 0.9
+[     1.2s] calibration: E_sign(exact signs) - E0 = 3.553e-15; Pd(E0)=8.3002e-03
+[     1.8s]   [scrL] step 1/20 E=-8.68369554 lr=0.0275 relerr=3.225e-01
+[     2.3s]   [scrL] step 3/20 E=-11.05933811 lr=0.0333 relerr=1.372e-01
+[     2.9s]   [scrL] step 5/20 E=-12.22468880 lr=0.0403 relerr=4.629e-02
+[     3.4s]   [scrL] step 7/20 E=-12.74537881 lr=0.0487 relerr=5.672e-03
+[     3.9s]   [scrL] step 9/20 E=-12.81061084 lr=0.0589 relerr=5.833e-04
+[     4.5s]   [scrL] step 11/20 E=-12.81584951 lr=0.0357 relerr=1.746e-04
+[     5.1s]   [scrL] step 13/20 E=-12.81688053 lr=0.0432 relerr=9.412e-05
+[     5.6s]   [scrL] step 15/20 E=-12.81721959 lr=0.0522 relerr=6.767e-05
+[     6.2s]   [scrL] step 17/20 E=-12.81743650 lr=0.0632 relerr=5.075e-05
+[     6.7s]   [scrL] step 19/20 E=-12.81761309 lr=0.0764 relerr=3.697e-05
+[     6.9s]   [scrL] step 20/20 E=-12.81769074 lr=0.0841 relerr=3.091e-05
+[     7.1s] arm scrL     : E=-12.81769074 eps=2.4767e-05 (raw 2.0228e-01, irrep weight 0.395) A/V=2.2204e-16 sign-agree=1.0000 Pd=8.2801e-03 fid=1.0000
+[     7.1s] done (results_smoke/task7.json)

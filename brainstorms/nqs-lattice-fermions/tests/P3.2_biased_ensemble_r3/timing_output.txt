@@ -1,0 +1,3 @@
+width 2 n_params 434: 2.08 s per projected SR step
+width 4 n_params 676: 2.19 s per projected SR step
+width 8 n_params 1160: 2.04 s per projected SR step

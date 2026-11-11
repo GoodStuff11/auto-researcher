@@ -1,0 +1,6 @@
+=== width 4: seeds [1234, 1234, 1234]  sector dim 1618  n_params 676  ratio 2.39
+  target d=+0.0020 gap=0.0102 eps_med=1.26e+00 hard=True truth=A R0P:BBB EC:BBB AT:BBB ECor:AAA ATor:AAA
+  hard targets 1/1; certified snapshots (median) 0/2; both blocks False
+  PREMISE-FAIL at this width (easy: fewer than 3 targets with projected control error >= gap/2)
+GLOBAL VERDICT EC: PREMISE-FAIL (projected NQS resolves the instance at every width; route untested)  (per width: ['PREMISE-FAIL:easy'])
+GLOBAL VERDICT AT: PREMISE-FAIL (projected NQS resolves the instance at every width; route untested)  (per width: ['PREMISE-FAIL:easy'])

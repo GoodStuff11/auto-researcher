@@ -50,7 +50,10 @@ Metric
 For each estimator X on state s: per-sample estimates Ehat_X(n) on B
 samples; C_X = s^2_X * t_X, with s^2_X the empirical per-sample variance
 and t_X the measured mean wall time per sample (row generation included,
-single thread).  Tunable estimators (SCREEN eps; SS and PFCV eps, K) are
+single thread), and var_X = Var_pi(E_L) + (s^2_X - s^2_EXACT): the exact
+pi-variance of the state plus the estimator's variance increment measured by
+genuine sampling, paired on the same samples (sampled E_L is heavy-tailed).
+Tunable estimators (SCREEN eps; SS and PFCV eps, K) are
 selected on the first half of the samples and evaluated on the second
 half.  Control cost C_ctrl = min(C_EXACT, C_SS, C_SCREEN[admissible]) on
 the NNBFJ state of the same seed.
@@ -63,7 +66,8 @@ Verdict (pre-committed; computed by --aggregate)
 ------------------------------------------------
 Per route, per N in {6, 8}, with K_min, K_max the smallest/largest active
 spaces run:
-  dE_ok      median dE_route(K_max) <= max(1.6 mHa, 1.25 * median dE_NNBFJ(K_max))
+  dE_ok      median dE_route(K_max) <= max(1.25 * dE_NNBFJ, dE_NNBFJ + 0.5 mHa)
+             (medians over seeds at K_max)
   PASS       dE_ok and M(K_max) <= 0.5 and M(K_max) < M(K_min)
   FAIL       not dE_ok, or M(K_max) >= 1
   AMBIGUOUS  otherwise.  Pre-committed action: rerun N = 6 with
@@ -76,7 +80,8 @@ same-sector competitors are not examined: SIGN HALF ONLY.
 Command-line options
 --------------------
 --n-atoms INT          H atoms in the ring = N electrons (even, >= 2). Default 6.
---n-active INT [...]   Active-space sizes K (lowest RHF MOs kept; K <= #AOs).
+--n-active INT [...]   Active-space sizes K: the N valence MOs, then p-type
+                       virtual MOs by energy, then the rest (K <= #AOs).
                        Default 8 10 12 14.
 --bond-length FLOAT    H-H distance in bohr (> 0). Default 2.8.
 --window INT           K_W, window size in spatial MOs (>= N/2). Default: N.
@@ -95,10 +100,12 @@ Command-line options
                        a tiny H4 run (< 30 s).
 --aggregate DIR        Read every results_*.json in DIR and print the verdict.
 """
+import os
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")  # single-thread timings (set before numpy import)
 import argparse
 import glob
 import json
-import os
 import time
 from itertools import combinations
 
@@ -146,9 +153,9 @@ def parse_args(argv=None):
     if min(a.k_grid) < 1 or min(a.eps_grid) < 0:
         ap.error("--k-grid >= 1, --eps-grid >= 0")
     if a.smoke:
-        a.n_atoms, a.n_active, a.window, a.hidden, a.maxiter = 4, [6, 8], 4, 8, 200
-        a.seeds, a.n_samples, a.arms = [0, 1, 2], 200, ARMS
-        a.k_grid, a.eps_grid = [1, 4, 16], [0.0, 1e-2]
+        a.n_atoms, a.n_active, a.window, a.hidden, a.maxiter = 4, [5, 7], 4, 8, 200
+        a.maxiter, a.seeds, a.n_samples, a.arms = 120, [0, 1, 2], 100, ARMS
+        a.k_grid, a.eps_grid, a.eps_screen = [1, 16], [0.0, 1e-2], [1e-4, 1e-3, 1e-2]
     if a.out is None:
         tag = "smoke" if a.smoke else f"N{a.n_atoms}_K{'-'.join(map(str, a.n_active))}_{'-'.join(a.arms)}"
         a.out = os.path.join(HERE, f"results_{tag}.json")
@@ -574,42 +581,57 @@ class Ansatz:
         A = P["Phi0"][occ_j] + np.einsum("bknh,bh->bkn", P["W2r"][occ_j], hid)
         return np.linalg.det(A) / st["detA"] * np.exp(self.jastrow_delta(P, st, rem, add))
 
-    def ratio_key(self, P, st, codes_j, rem, add, wcode, win_idx):
-        """Window-keyed ratio: the backflow is evaluated once per distinct window
-        occupation n'_W with the external input frozen at n; every term then
-        costs a 2x2 Green's-function minor.  Exact when mask = window (WIBJ);
-        the frozen-external-input surrogate otherwise (PFCV)."""
-        keys, inv = np.unique(codes_j & wcode, return_inverse=True)
+    def ratio_key(self, P, st, codes_j, rem, add, occ_j, wcode, win_idx):
+        """Window-keyed ratio.  The backflow input is the window occupation of n'
+        with the external input frozen at n, so all connected n' sharing a window
+        change share one backflow evaluation.  Keys with a single term are
+        evaluated as one incremental amplitude (N occupied rows, O(N^2 h + N^3));
+        keys with several terms (excitations into external orbitals) build
+        Phi_k once (O(M N h + N^3)) and each term costs a 2x2 Green's-function
+        minor of G_k = Phi_k A_k^{-1} plus an O(1) Jastrow ratio.  Exact when
+        mask = window (WIBJ, R3.1); the frozen-external-input surrogate
+        otherwise (PFCV, R3.2)."""
+        N, M = self.N, self.M
+        keys, inv, cnt = np.unique(codes_j & wcode, return_inverse=True, return_counts=True)
         bits = ((keys[:, None] >> win_idx[None]) & 1).astype(float)
         X = np.repeat(st["x"][None], len(keys), 0)
         X[:, win_idx] = 2 * bits - 1
-        Z = X @ P["W1m"].T + P["b1"]
-        Phi = P["Phi0"][None] + (np.tanh(Z) @ P["W2"].T).reshape(-1, self.M, self.N)
+        T = np.tanh(X @ P["W1m"].T + P["b1"])
         occ_n = st["occ"]
-        A = Phi[:, occ_n, :]
-        Ainv = np.linalg.inv(A)
-        dk = np.linalg.det(A)
-        N = self.N
-        pos = np.full(self.M, -1); pos[occ_n] = np.arange(N)
-        ki = pos[rem[:, 0]]; a = add[:, 0]
-        d2 = rem[:, 1] >= 0
-        # rows a (and b) of G_k = Phi_k A_k^{-1}
-        ga = np.einsum("tn,tnc->tc", Phi[inv, a, :], Ainv[inv])
-        r = ga[np.arange(len(a)), ki].copy()
-        if d2.any():
-            t2 = np.nonzero(d2)[0]
-            kj = pos[rem[t2, 1]]; b = add[t2, 1]
-            gb = np.einsum("tn,tnc->tc", Phi[inv[t2], b, :], Ainv[inv[t2]])
-            r[t2] = ga[t2, ki[t2]] * gb[np.arange(len(t2)), kj] - ga[t2, kj] * gb[np.arange(len(t2)), ki[t2]]
-        L = np.repeat(occ_n[None], len(rem), 0)
-        L[np.arange(len(rem)), ki] = a
-        if d2.any():
-            L[t2, kj] = b
-        par = np.zeros(len(rem), np.int64)
-        for p_ in range(N):
-            for q_ in range(p_ + 1, N):
-                par += L[:, p_] > L[:, q_]
-        return r * (1 - 2 * (par & 1)) * dk[inv] / st["detA"] * np.exp(self.jastrow_delta(P, st, rem, add)), len(keys)
+        r = np.empty(len(rem))
+        single = cnt[inv] == 1
+        s_idx = np.nonzero(single)[0]
+        if len(s_idx):
+            A1 = P["Phi0"][occ_j[s_idx]] + np.einsum("bknh,bh->bkn", P["W2r"][occ_j[s_idx]], T[inv[s_idx]])
+            r[s_idx] = np.linalg.det(A1) / st["detA"]
+        m_idx = np.nonzero(~single)[0]
+        if len(m_idx):
+            mk, minv = np.unique(inv[m_idx], return_inverse=True)
+            Phi = P["Phi0"][None] + (T[mk] @ P["W2"].T).reshape(-1, M, N)
+            A = Phi[:, occ_n, :]
+            Ainv = np.linalg.inv(A)
+            dk = np.linalg.det(A)
+            pos = np.full(M, -1); pos[occ_n] = np.arange(N)
+            rm, ad = rem[m_idx], add[m_idx]
+            ki = pos[rm[:, 0]]; a = ad[:, 0]
+            nt = len(m_idx); ar = np.arange(nt)
+            ga = np.einsum("tn,tnc->tc", Phi[minv, a, :], Ainv[minv])
+            rr = ga[ar, ki].copy()
+            d2 = rm[:, 1] >= 0
+            L = np.repeat(occ_n[None], nt, 0)
+            L[ar, ki] = a
+            if d2.any():
+                t2 = np.nonzero(d2)[0]
+                kj = pos[rm[t2, 1]]; b = ad[t2, 1]
+                gb = np.einsum("tn,tnc->tc", Phi[minv[t2], b, :], Ainv[minv[t2]])
+                rr[t2] = ga[t2, ki[t2]] * gb[np.arange(len(t2)), kj] - ga[t2, kj] * gb[np.arange(len(t2)), ki[t2]]
+                L[t2, kj] = b
+            par = np.zeros(nt, np.int64)
+            for p_ in range(N):
+                for q_ in range(p_ + 1, N):
+                    par += L[:, p_] > L[:, q_]
+            r[m_idx] = rr * (1 - 2 * (par & 1)) * dk[minv] / st["detA"]
+        return r * np.exp(self.jastrow_delta(P, st, rem, add)), len(keys), int((cnt > 1).sum())
 
 
 def decode(codes, M, N):
@@ -687,14 +709,14 @@ def analyse_state(net, th, ham, samples_codes, args, rng, wcode, win_idx, arm):
         t1b = time.perf_counter()
         ex = est_exact(net, P, st, row, occ_j)
         t2 = time.perf_counter()
-        rk, nk = net.ratio_key(P, st, row["code"], row["rem"], row["add"], wcode, win_idx)
+        rk, nk, nkm = net.ratio_key(P, st, row["code"], row["rem"], row["add"], occ_j, wcode, win_idx)
         y = row["h"] * rk
         kx = row["Hnn"] + y.sum()
         t3 = time.perf_counter()
         tset = t1b - t1
         tim["row"].append(t1 - t0 + tset); tim["EXACT"].append(t2 - t1b); tim["KEY"].append(t3 - t2)
         res["EXACT"].append(ex); res["KEYX"].append(kx)
-        nkeys.append(nk); ncon.append(len(row["h"]))
+        nkeys.append((nk, nkm)); ncon.append(len(row["h"]))
         for c in cfg:
             s0 = time.perf_counter()
             if c[0] == "SCREEN":
@@ -710,18 +732,26 @@ def analyse_state(net, th, ham, samples_codes, args, rng, wcode, win_idx, arm):
     return res, tim, np.array(nkeys), np.array(ncon), cfg
 
 
-def costs(res, tim, cfg, args):
-    """C = s^2 * t on the second half; tunables selected on the first half."""
+def costs(res, tim, cfg, args, V_pi):
+    """C = var_X * t_X on the second half; tunables selected on the first half.
+    var_X = Var_pi(E_L) (exact, from the full state) + [s^2_X - s^2_EXACT], the
+    increment measured by genuine sampling, paired on the same samples (the
+    sampled E_L itself is heavy-tailed, so unpaired sample variances would let
+    a handful of near-node samples decide cross-state ratios)."""
     B = len(res["EXACT"]); h1, h2 = slice(0, B // 2), slice(B // 2, B)
     trow = tim["row"]
     out = {}
 
+    def var(vals, sl):
+        v = V_pi + np.var(vals[sl], ddof=1) - np.var(res["EXACT"][sl], ddof=1)
+        return float(max(v, 1e-3 * V_pi))
+
     def C(vals, t, sl):
-        return float(np.var(vals[sl], ddof=1) * np.mean(t[sl]))
-    out["EXACT"] = {"C": C(res["EXACT"], trow + tim["EXACT"], h2), "var": float(np.var(res["EXACT"][h2], ddof=1)),
+        return var(vals, sl) * float(np.mean(t[sl]))
+    out["EXACT"] = {"C": C(res["EXACT"], trow + tim["EXACT"], h2), "var": V_pi, "sample_var_E_L": float(np.var(res["EXACT"][h2], ddof=1)),
                     "t": float(np.mean((trow + tim["EXACT"])[h2]))}
     out["EXACT_norow"] = {"C": C(res["EXACT"], tim["EXACT"], h2)}
-    out["KEYX"] = {"C": C(res["KEYX"], trow + tim["KEY"], h2), "var": float(np.var(res["KEYX"][h2], ddof=1)),
+    out["KEYX"] = {"C": C(res["KEYX"], trow + tim["KEY"], h2), "var": var(res["KEYX"], h2),
                    "t": float(np.mean((trow + tim["KEY"])[h2])),
                    "max_dev_from_exact": float(np.max(np.abs(res["KEYX"] - res["EXACT"])))}
     out["KEYX_norow"] = {"C": C(res["KEYX"], tim["KEY"], h2)}
@@ -746,7 +776,7 @@ def costs(res, tim, cfg, args):
         dev = vals[h2] - vals[h2].mean()
         top = np.sort(dev ** 2)[::-1]
         out[fam] = {"C": C(vals, trow + tim[c] + extra, h2), "C_norow": C(vals, tim[c] + extra, h2),
-                    "eps": c[1], "K": c[2], "var": float(np.var(vals[h2], ddof=1)),
+                    "eps": c[1], "K": c[2], "var": var(vals, h2),
                     "t": float(np.mean((trow + tim[c] + extra)[h2])),
                     "bias": float(d.mean()), "bias_se": float(d.std(ddof=1) / np.sqrt(B)),
                     "top1pct_var_share": float(top[:max(1, len(top) // 100)].sum() / max(top.sum(), 1e-300))}
@@ -757,19 +787,26 @@ def costs(res, tim, cfg, args):
 # Instance and driver
 # ----------------------------------------------------------------------------
 def build_instance(n_atoms, R, K_act):
+    """H_n ring, 6-31G** (s, s, p per H), RHF.  Active space of K_act MOs:
+    the n_atoms valence MOs (the 1s-derived band, lowest in energy), then the
+    virtual MOs with Mulliken p weight > 0.5 in order of energy, then the
+    remaining MOs in order of energy.  No core is frozen (every occupied MO is
+    active), so the active Hamiltonian is h_act = C^T h C, g_act = (CCCC) g."""
     X = geometry(n_atoms, R, "ring")
     S, hao, Gao, enuc, lab = integrals(X, H631GSS)
     nocc = n_atoms // 2
     Cm, Eel, eps = rhf(S, hao, Gao, nocc)
     if K_act > Cm.shape[1]:
         raise ValueError(f"K_act={K_act} > number of MOs {Cm.shape[1]}")
-    C = Cm[:, :K_act]
+    isp = np.array([l == 1 for (_, l) in lab])
+    pw_all = (Cm * (S @ Cm))[isp].sum(0)
+    rest = np.arange(n_atoms, Cm.shape[1])
+    order = np.concatenate([np.arange(n_atoms), rest[pw_all[rest] > 0.5], rest[pw_all[rest] <= 0.5]])
+    C = Cm[:, order[:K_act]]
     h = C.T @ hao @ C
     g = np.einsum("pqrs,pa,qb,rc,sd->abcd", Gao, C, C, C, C, optimize=True)
-    isp = np.array([l == 1 for (_, l) in lab])
-    mull = (C * (S @ C))  # Mulliken populations per AO and MO
-    p_weight = float(mull[isp, nocc:].sum(0).mean()) if K_act > nocc else 0.0
-    return h, g, enuc, Eel + enuc, p_weight, float(eps[K_act - 1] if K_act <= len(eps) else np.nan)
+    p_weight = float(pw_all[order[n_atoms:K_act]].mean()) if K_act > n_atoms else 0.0
+    return h, g, enuc, Eel + enuc, p_weight, int((pw_all[order[:K_act]] > 0.5).sum())
 
 
 def train(net, H, occ, oi, maxiter):
@@ -781,7 +818,7 @@ def train(net, H, occ, oi, maxiter):
 def run_instance(K, args):
     t0 = time.time()
     N = args.n_atoms; nocc = N // 2
-    h, g, enuc, Erhf, pw, _ = build_instance(N, args.bond_length, K)
+    h, g, enuc, Erhf, pw, npmo = build_instance(N, args.bond_length, K)
     ham = SQHam(h, g, enuc, K, N)
     codes, occ, oi = build_space(K, nocc, nocc)
     H = build_hamiltonian(ham, codes, oi)
@@ -798,10 +835,10 @@ def run_instance(K, args):
     win_idx = np.nonzero(win)[0]; wcode = int(sum(1 << int(p) for p in win_idx))
     print(f"\n=== H{N} ring R={args.bond_length} 6-31G** active K={K} M={M} dim={len(codes)} "
           f"E_RHF={Erhf:.6f} E_FCI={E0:.6f} Ecorr={1e3*(E0-Erhf):.1f} mHa gap={w2[1]-E0:.4f} HF wt={hfw:.3f} "
-          f"frustr={frustr:.3f} p-weight(virt)={pw:.3f} window K_W={KW} nnz/row={H.nnz/len(codes):.0f} "
+          f"frustr={frustr:.3f} p-MOs={npmo} mean p-weight(external MOs)={pw:.3f} window K_W={KW} nnz/row={H.nnz/len(codes):.0f} "
           f"(build {time.time()-t0:.1f}s)", flush=True)
     out = {"K": K, "M": M, "N": N, "dim": len(codes), "E_FCI": float(E0), "E_RHF": float(Erhf),
-           "HF_weight": hfw, "frustrated_fraction": frustr, "p_weight_virtual": pw, "K_W": KW,
+           "HF_weight": hfw, "frustrated_fraction": frustr, "p_weight_external": pw, "n_p_MOs": npmo, "K_W": KW,
            "gap": float(w2[1] - E0), "runs": []}
     Phi0 = np.zeros((M, N)); Phi0[:K, :nocc] = np.eye(K)[:, :nocc]; Phi0[K:, nocc:] = Phi0[:K, :nocc]
     for seed in args.seeds:
@@ -822,16 +859,17 @@ def run_instance(K, args):
             topt = time.time() - t1
             res, tim, nk, nc, cfg = analyse_state(net, th, ham, samp, args, srng, wcode, win_idx, arm)
             elchk = float(np.max(np.abs(res["EXACT"] - EL[np.searchsorted(codes, samp)])))
-            cst = costs(res, tim, cfg, args)
+            cst = costs(res, tim, cfg, args, varx)
             run = {"seed": seed, "arm": arm, "dE_mHa": 1e3 * (Ev - E0), "var_exact": varx, "EL_check": elchk,
-                   "mean_keys": float(nk.mean()), "mean_conn": float(nc.mean()), "costs": cst,
+                   "mean_keys": float(nk[:, 0].mean()), "mean_multi_keys": float(nk[:, 1].mean()), "mean_conn": float(nc.mean()), "costs": cst,
                    "W1_ext_norm": float(np.linalg.norm(net.unpack(th)["W1"][:, ~win])),
                    "t_train_s": topt, "t_analyse_s": time.time() - t1 - topt}
             out["runs"].append(run)
             ce = cst["EXACT"]["C"]
-            line = " ".join(f"{k}={v['C']/ce:.3g}" for k, v in cst.items() if "C" in v and not k.endswith("norow"))
+            line = " ".join(f"{'KEYX' if (k == 'KEYX' and arm == 'WIBJ') else ('PFDET(biased)' if k == 'KEYX' else k)}"
+                            f"={v['C']/ce:.3g}" for k, v in cst.items() if "C" in v and not k.endswith("norow"))
             print(f"  seed={seed} {arm:5s} dE={run['dE_mHa']:8.3f} mHa Var(EL)={varx:.2e} <|C|>={nc.mean():.0f} "
-                  f"<keys>={nk.mean():.1f} ELchk={elchk:.1e} KEYX-EXACT max={cst['KEYX']['max_dev_from_exact']:.1e} "
+                  f"<keys>={nk[:, 0].mean():.1f} (multi {nk[:, 1].mean():.1f}) ELchk={elchk:.1e} KEYX-EXACT max={cst['KEYX']['max_dev_from_exact']:.1e} "
                   f"|W1_ext|={run['W1_ext_norm']:.3g} (train {topt:.0f}s)\n      C/C_EXACT(own state): {line}",
                   flush=True)
             for fam in ("SCREEN", "SS", "PFCV"):
@@ -885,7 +923,7 @@ def verdict_for(insts_by_K, route):
                   "dE_ctrl": float(np.median([r["dE_NNBFJ"] for r in rows])), "n_seeds": len(rows)}
     kmin, kmax = Ks[0], Ks[-1]
     m = med[kmax]
-    dE_ok = m["dE"] <= max(1.6, 1.25 * m["dE_ctrl"])
+    dE_ok = m["dE"] <= max(1.25 * m["dE_ctrl"], m["dE_ctrl"] + 0.5)
     if not dE_ok or m["M"] >= 1:
         v = "FAIL"
     elif m["M"] <= 0.5 and m["M"] < med[kmin]["M"] and len(Ks) > 1:
@@ -955,7 +993,7 @@ def smoke_checks(args):
         row = ham.row(codes[n], oi[n]); j = np.searchsorted(codes, row["code"])
         st = net.setup(P, oi[n])
         rx = net.ratio_exact(P, st, row["rem"], row["add"], decode(row["code"], M, 4))
-        rk, _ = net.ratio_key(P, st, row["code"], row["rem"], row["add"], wcode, win_idx)
+        rk = net.ratio_key(P, st, row["code"], row["rem"], row["add"], decode(row["code"], M, 4), wcode, win_idx)[0]
         errs[name] = (float(np.max(np.abs(rx - psi[j] / psi[n]))), float(np.max(np.abs(rk - psi[j] / psi[n]))))
         idx = rng.choice(th.size, 12, replace=False); gn = []
         _, ga = net.energy_grad(th, Hs, occ, oi)
@@ -973,7 +1011,7 @@ def smoke_checks(args):
     th = net.theta0 + 0.2 * rng.standard_normal(net.theta0.size); P = net.unpack(th)
     n = 5; row = ham.row(codes[n], oi[n]); occ_j = decode(row["code"], M, 4); st = net.setup(P, oi[n])
     ex = est_exact(net, P, st, row, occ_j)
-    rk, _ = net.ratio_key(P, st, row["code"], row["rem"], row["add"], wcode, win_idx); y = row["h"] * rk
+    rk = net.ratio_key(P, st, row["code"], row["rem"], row["add"], decode(row["code"], M, 4), wcode, win_idx)[0]; y = row["h"] * rk
     vs = np.array([est_ss(net, P, st, row, occ_j, 1e-2, 4, rng) for _ in range(20000)])
     vp = np.array([est_pfcv(net, P, st, row, occ_j, y, 1e-2, 4, rng) for _ in range(20000)])
     zs = abs(vs.mean() - ex) / (vs.std() / np.sqrt(len(vs)))

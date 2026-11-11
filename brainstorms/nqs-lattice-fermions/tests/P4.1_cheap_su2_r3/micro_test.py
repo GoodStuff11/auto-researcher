@@ -8,12 +8,17 @@ Shared physics core (lattice, Hubbard sector, ED helpers, observables, P1.1 sign
 NNBF / AGP / SCF arms, L-BFGS driver) is r2_micro_test.py in this folder: a verbatim copy of
 tests/P4.1_cheap_su2_r2/micro_test.py. Nothing is imported across folders.
 
-Instance (default) : 4x3 CYLINDER (periodic along x, open along y; --bc-y obc), Hubbard,
-                     N_up = N_dn = 4, U = 8, t' = -0.25, dim 245025 (the lower-symmetry geometry
-                     P1.2 round 3 uses). Chosen because on the 4x3 TORUS the projected NNBF control
-                     is within ~1e-5 of E_0 (P1.1-P interim), so accuracy cannot discriminate there.
+Instance (default) : 4x3 OPEN cluster (--bc-x obc --bc-y obc), Hubbard, N_up = N_dn = 4, U = 8,
+                     t' = -0.25, dim 245025, space group {1, Mx, My, MxMy}. Chosen because the
+                     lever for accuracy discrimination is dim range(P_S P_G) / (control parameter
+                     count): 1618 / ~4000 on the 4x3 torus (projected NNBF within ~1e-5 of E_0,
+                     P1.1-P interim), 4663 / 2205 on the 4x3 cylinder, 17905 / 2205 = 8.1 on this
+                     open cluster (sector dimensions from the P1.2 critic).
                      SIGN HALF OF THE HARD CORE ONLY (no same-sector competitor is claimed).
-                     --bc-y pbc reproduces the round-2 torus.
+                     --bc-x pbc --bc-y obc = cylinder; --bc-x pbc --bc-y pbc = round-2 torus.
+PRIMARY CLAIM      : per-amplitude cost of exact S (--mode cost), measured on the implemented
+                     single-configuration algorithms. The accuracy comparison is secondary and
+                     guarded by a premise gate.
 Symmetry           : every arm is trained as psi = P_G P_S phi or P_G phi, where
                      P_G = (1/|G|) sum_g chi(g) U_g over the space group (x-translations x
                      {1, Mx, My, MxMy}; |G| = 16 on the 4x3 cylinder, 48 on the 4x3 torus),
@@ -80,7 +85,8 @@ Usage
 
 Lattice / model options:
   --Lx INT (4)  --Ly INT (3)  lattice, both >= 2; x is always periodic
-  --bc-y {obc, pbc} (obc)  boundary along y: obc = cylinder (default), pbc = torus
+  --bc-x {obc, pbc} (obc)  boundary along x (translations only along periodic directions)
+  --bc-y {obc, pbc} (obc)  boundary along y
   --Ne INT (8)      even, S^z = 0, target S = 0
   --U FLOAT (8.0)   on-site repulsion (t = 1)
   --tp FLOAT (-0.25) diagonal hopping t'
@@ -117,7 +123,7 @@ nSG = nnbf_SG):
   FAIL      : not g1, or not g_cost, or m(eps_R) >= m(eps_nSG), or m(eps_R) >= m(eps_che).
   UNINFORMATIVE (premise gate) : not FAIL and m(eps_nSG) < 1e-4 (the projected control leaves no
               measurable error, so accuracy cannot discriminate). Pre-committed action: rerun on a
-              6x2 ladder (--Lx 6 --Ly 2 --bc-y obc --Ne 10) and report the cost claim alone.
+              6x2 ladder (--Lx 6 --Ly 2 --bc-x obc --bc-y obc --Ne 10) and report the cost claim alone.
   AMBIGUOUS : otherwise (or < 3 seeds, or a capped run). Pre-committed action: rerun the array on
               P1.1 instance 0 (--Ne 10, dim 627264); promote R only if it is not FAIL there and
               m(dE_sign_R) < m(dE_sign_nSG) on both instances; otherwise KILL R.
@@ -149,20 +155,23 @@ log = R.log
 
 # ============================================================================ geometry
 class CylLattice(R.Lattice):
-    """Lx x Ly lattice, periodic along x; along y periodic (bc_y = "pbc", the round-2 torus) or
-    open (bc_y = "obc": cylinder). Same attributes as R.Lattice (T, mask, nn, xy, shift);
-    shift() always wraps (it is only used for displacement-averaged observables and for the
-    x-translations of the space group)."""
+    """Lx x Ly lattice with boundary bc_x, bc_y in {"pbc", "obc"} along each direction
+    (pbc/pbc = round-2 torus, pbc/obc = cylinder, obc/obc = open cluster). Same attributes as
+    R.Lattice (T, mask, nn, xy, shift); shift() always wraps (it is only used for
+    displacement-averaged observables and for translations along periodic directions)."""
 
-    def __init__(self, Lx, Ly, tp, bc_y="obc"):
-        self.Lx, self.Ly, self.L, self.bc_y = Lx, Ly, Lx * Ly, bc_y
+    def __init__(self, Lx, Ly, tp, bc_y="obc", bc_x="pbc"):
+        self.Lx, self.Ly, self.L, self.bc_x, self.bc_y = Lx, Ly, Lx * Ly, bc_x, bc_y
         L = self.L
+
+        def inside(i, dx, dy):
+            x, y = self.xy(i)
+            return (bc_x == "pbc" or 0 <= x + dx < Lx) and (bc_y == "pbc" or 0 <= y + dy < Ly)
         self.T = np.zeros((L, L))
         for i in range(L):
-            x, y = self.xy(i)
             for (dx, dy, amp) in [(1, 0, 1.0), (-1, 0, 1.0), (0, 1, 1.0), (0, -1, 1.0),
                                   (1, 1, tp), (1, -1, tp), (-1, 1, tp), (-1, -1, tp)]:
-                if bc_y == "obc" and not (0 <= y + dy < Ly):
+                if not inside(i, dx, dy):
                     continue
                 j = self.shift(i, dx, dy)
                 if j != i:
@@ -170,19 +179,16 @@ class CylLattice(R.Lattice):
         self.T = 0.5 * (self.T + self.T.T)
         self.mask = np.zeros((L, L), bool)
         for i in range(L):
-            x, y = self.xy(i)
             for dx in (-1, 0, 1):
                 for dy in (-1, 0, 1):
-                    if bc_y == "obc" and not (0 <= y + dy < Ly):
-                        continue
-                    self.mask[i, self.shift(i, dx, dy)] = True
+                    if inside(i, dx, dy):
+                        self.mask[i, self.shift(i, dx, dy)] = True
         self.nn = [sorted({self.shift(i, dx, dy) for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]
-                           if not (bc_y == "obc" and not (0 <= self.xy(i)[1] + dy < Ly))} - {i})
-                   for i in range(L)]
+                           if inside(i, dx, dy)} - {i}) for i in range(L)]
 
 
-def make_sector(Lx, Ly, Ne, U, tp, bc_y):
-    return R.Sector(CylLattice(Lx, Ly, tp, bc_y), Ne // 2, Ne // 2, U)
+def make_sector(Lx, Ly, Ne, U, tp, bc_y, bc_x="pbc"):
+    return R.Sector(CylLattice(Lx, Ly, tp, bc_y, bc_x), Ne // 2, Ne // 2, U)
 
 
 # ============================================================================ space group
@@ -192,12 +198,15 @@ def space_group(sec):
     out = []
     for c in (0, 1):
         for d in (0, 1):
-            for a in range(lat.Lx):
+            for a in (range(lat.Lx) if getattr(lat, "bc_x", "pbc") == "pbc" else [0]):
                 for b in (range(lat.Ly) if getattr(lat, "bc_y", "pbc") == "pbc" else [0]):
                     p = np.empty(lat.L, dtype=np.int64)
                     for i in range(lat.L):
                         x, y = lat.xy(i)
-                        x2 = (-x) % lat.Lx if c else x
+                        if getattr(lat, "bc_x", "pbc") == "pbc":
+                            x2 = (-x) % lat.Lx if c else x
+                        else:
+                            x2 = lat.Lx - 1 - x if c else x
                         if getattr(lat, "bc_y", "pbc") == "pbc":
                             y2 = (-y) % lat.Ly if d else y
                         else:
@@ -616,6 +625,7 @@ def parse_args(argv=None):
     p.add_argument("--U", type=float, default=8.0)
     p.add_argument("--tp", type=float, default=-0.25)
     p.add_argument("--bc-y", default="obc", choices=["obc", "pbc"], dest="bc_y")
+    p.add_argument("--bc-x", default="obc", choices=["obc", "pbc"], dest="bc_x")
     p.add_argument("--ansatz", default="sqrvb", choices=ARMS)
     p.add_argument("--nnbf-hidden", type=int, default=16, dest="nnbf_hidden")
     p.add_argument("--mps-mult", default="2,2,1,1", dest="mps_mult")
@@ -641,7 +651,7 @@ def parse_args(argv=None):
     if a.Lx < 2 or a.Ly < 2 or a.Ne % 2 or not (2 <= a.Ne <= 2 * L - 2):
         p.error("invalid lattice / Ne")
     if a.tag is None:
-        a.tag = f"L{a.Lx}x{a.Ly}{a.bc_y}_N{a.Ne}_U{a.U:g}_tp{a.tp:g}_G"
+        a.tag = f"L{a.Lx}x{a.Ly}x{a.bc_x}y{a.bc_y}_N{a.Ne}_U{a.U:g}_tp{a.tp:g}_G"
     return a
 
 
@@ -674,19 +684,20 @@ def smoke(a):
     ov = np.sum(sg.project(P0) * P0)
     c1 = max(idem, sym, comm, scomm) < 1e-12 and abs(ov - 1) < 1e-10
     ok &= c1
-    sc = make_sector(4, 2, 4, 6.0, -0.3, "obc")
-    gc = SG(sc)
-    Pc, Ec, sc2, lc, _ = ground_state(sc, gc)
-    Xc = rng.standard_normal(sc.shape)
-    PXc = gc.project(Xc)
-    ec = max(np.abs(gc.project(PXc) - PXc).max(), np.abs(gc.project(sc.H(Xc)) - sc.H(PXc)).max(),
-             np.abs(sc.projS(0)(PXc) - gc.project(sc.projS(0)(Xc))).max(),
-             max(np.abs(sc.H(gc.apply(Xc, k)) - gc.apply(sc.H(Xc), k)).max() for k in range(gc.G)))
-    oc = np.sum(gc.project(Pc) * Pc)
-    cc_ = ec < 1e-12 and abs(oc - 1) < 1e-10
-    ok &= cc_
-    print(f"4x2 cylinder (y open) Ne=4 dim={sc.dim} |G|={gc.G} irrep={lc}: max(P_G idem, [P_G,H], [P_G,P_S], "
-          f"[U_g,H]) = {ec:.1e}, <psi0|P_G|psi0>={oc:.12f} [{'PASS' if cc_ else 'FAIL'}]")
+    for name, bcx in (("4x2 cylinder (y open)", "pbc"), ("4x2 open cluster", "obc")):
+        sc = make_sector(4, 2, 4, 6.0, -0.3, "obc", bcx)
+        gc = SG(sc)
+        Pc, Ec, sc2, lc, _ = ground_state(sc, gc)
+        Xc = rng.standard_normal(sc.shape)
+        PXc = gc.project(Xc)
+        ec = max(np.abs(gc.project(PXc) - PXc).max(), np.abs(gc.project(sc.H(Xc)) - sc.H(PXc)).max(),
+                 np.abs(sc.projS(0)(PXc) - gc.project(sc.projS(0)(Xc))).max(),
+                 max(np.abs(sc.H(gc.apply(Xc, k)) - gc.apply(sc.H(Xc), k)).max() for k in range(gc.G)))
+        oc = np.sum(gc.project(Pc) * Pc)
+        cc_ = ec < 1e-12 and abs(oc - 1) < 1e-10
+        ok &= cc_
+        print(f"{name} Ne=4 dim={sc.dim} |G|={gc.G} irrep={lc}: max(P_G idem, [P_G,H], [P_G,P_S], "
+              f"[U_g,H]) = {ec:.1e}, <psi0|P_G|psi0>={oc:.12f} [{'PASS' if cc_ else 'FAIL'}]")
     print(f"2x3 Ne=6 U=6 t'=-0.3 dim={sec.dim} |G|={sg.G} irrep={lam}: E0={E0:.8f} <S^2>={s20:.1e}; "
           f"P_G idem {idem:.1e} sym {sym:.1e} [P_G,H] {comm:.1e} [P_G,P_S] {scomm:.1e} "
           f"<psi0|P_G|psi0>={ov:.12f} [{'PASS' if c1 else 'FAIL'}]")
@@ -775,7 +786,7 @@ def smoke(a):
 
 def timing(a):
     t0 = time.time()
-    sec = make_sector(a.Lx, a.Ly, a.Ne, a.U, a.tp, a.bc_y)
+    sec = make_sector(a.Lx, a.Ly, a.Ne, a.U, a.tp, a.bc_y, a.bc_x)
     sg = SG(sec)
     log(f"instance {a.tag}: dim={sec.dim} nC={sec.nC} |G|={sg.G} (built in {time.time() - t0:.1f}s)")
     for kind in ARMS:
@@ -882,7 +893,7 @@ def run(a):
         print(f"exists: {out}  (use --overwrite)")
         return
     t0 = time.time()
-    sec = make_sector(a.Lx, a.Ly, a.Ne, a.U, a.tp, a.bc_y)
+    sec = make_sector(a.Lx, a.Ly, a.Ne, a.U, a.tp, a.bc_y, a.bc_x)
     sg = SG(sec)
     P0, E0, s20, lam, (P1, E1, s21) = ground_state(sec, sg)
     L = sec.lat.L

@@ -195,5 +195,9 @@
    ]
   }
  ],
- "wall_s": 69.77075409889221
+ "sector_dim": 1618,
+ "spacegroup_irrep_dim": 5214,
+ "n_params": 676,
+ "dim_over_params": 2.393491124260355,
+ "wall_s": 67.76235818862915
 }
