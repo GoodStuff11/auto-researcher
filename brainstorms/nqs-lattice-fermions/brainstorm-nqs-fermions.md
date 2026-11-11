@@ -164,7 +164,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P2.2 | SUBMITTED (large-K accuracy pilot); CGK conditional | full test blocked on pilot and on fixes | Slurm 411919 (H4, 8–12 orbitals per shell) |
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | SUBMITTED (control pilot); AT killed, SO-EC conditional | full test blocked on pilot regime (NO-TARGET / NO-ROOM / INTRINSIC-BIAS / GO) | Slurm 410917 (width 8, inner 4 targets) |
-| P4.1 | CRITIC (round 4) | nothing | per-leaf critic; Slurm 411494 (diagnostic pilot), 411996 (tabular AGP fit) |
+| P4.1 | BLOCKED (fix-then-submit) | Slurm 411996 (tabular AGP fit: premise for KAGP) and 411494 (charge-only vs spin-resolved: headroom for sfb) | none |
 | P4.2 | SUBMITTED (zero-shot pilot); 3.2 merged into 3.1 as diagnostic | full test blocked on pilot (spread and sector-pick kills) and on fixes | Slurm 410960 (3 tasks) |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
@@ -183,6 +183,16 @@ Each leaf advances on its own as soon as it returns: lint, then its own critic, 
         * Curvature/susceptibility, Gate 1.
         * Berry phase, Gates 2 and 3.
         * In-irrep zero-variance extrapolation, Gate 0 (mVMC practice).
+* **P4.1 round-4 per-leaf critic (10 objections, 7 Major)**:
+    * **The #P-hardness result is correct but folklore-level.** An exponential sum over a circuit-computable $g$ is #P-hard by definition (cf. RBM normalisation, Long & Servedio). It is restated as "worst-case hardness plus a polynomial subclass, linear-$S^z$ features at $r=\mathcal{O}(1)$"; "dichotomy" and "theorem in both directions" are withdrawn.
+    * **`sfb` is narrow.** Its single feature is the staggered magnetisation of the singly occupied sites, close kin to multi-component projected Hartree–Fock (PHF/ResHF), and it adds 16 parameters.
+    * **KAGP is incremental.** It is Tocchio with $K>1$, and Gate 0 must cover multi-determinant NNBF (arXiv:2510.26906) and arXiv:2608.12465.
+    * **The completeness count is local.** Full Jacobian rank does not imply that $\psi_0$ is reachable.
+    * **The premise gate tests a tabular ceiling, not the trained capacity**, and `report()` does not enforce its premises.
+    * **The thresholds are below seed noise**, and the initialisation is asymmetric between arms.
+    * **Action.** Fix-then-submit, blocked on two jobs:
+        * 411996 (tabular AGP fit). If $\epsilon_{\mathrm{tab}}(K{=}1)<10^{-4}$, or $<0.5\,m(\epsilon_{\mathrm{tocchio}})$, KAGP goes back to mutation.
+        * 411494 (che vs nnbf_SG). If charge-only matches spin-resolved after projection, `sfb` has no headroom.
 * **P2.2 round-4 per-leaf critic (10 objections, 6 Major)**:
     * **The pre-check was tautological.** At $K=8$ there is one external orbital per shell, so CGK equals NNBFJ, and $v$ is training noise. The honest $M_{\mathrm{op}}\approx0.54$ would be AMBIGUOUS.
     * **Accuracy is tested at no more than 3 orbitals per shell; cost is certified at 16–64.** The information lost is exactly the dynamic pair correlation that grows with the basis. This is the known failure mode of externally contracted MRCI.

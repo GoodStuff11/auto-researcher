@@ -13,3 +13,10 @@
   seed=1 CGK   dE=   1.093 mHa Var(EL)=2.20e-03 KEYX-EL max=2.2e-13 ops(KEYX/EXACT, ED size)=0.392 (train 79s)
   seed=1 WIBJ  dE=   0.021 mHa Var(EL)=1.06e-04 KEYX-EL max=5.1e-15 ops(KEYX/EXACT, ED size)=0.264 (train 71s)
   seed=2 NNBFJ dE=   0.360 mHa Var(EL)=1.74e-03 KEYX-EL max=6.2e-15 ops(KEYX/EXACT, ED size)=1.764 (train 73s)
+      SCREEN exact bias (mHa): 1e-06:-0.0000 1e-05:-0.0000 0.0001:0.0000 0.0003:0.0011 0.001:0.0012 0.003:-0.0110
+      TRUNC batch bias (mHa): 1000:1.1870+-0.2031 4000:0.2331+-0.0410 16000:0.1854+-0.0132
+      SS selected (half A) eps=0.001 K=64 inc ratio (half B)=0.000
+  seed=2 CGK   dE=   1.101 mHa Var(EL)=2.13e-03 KEYX-EL max=3.2e-12 ops(KEYX/EXACT, ED size)=0.392 (train 81s)
+  seed=2 WIBJ  dE=   0.355 mHa Var(EL)=1.73e-03 KEYX-EL max=4.7e-15 ops(KEYX/EXACT, ED size)=0.264 (train 73s)
+
+=== [A] H4 distorted chain R=4.4 d=0.25 K=16 dim=14400 E_RHF=-1.767174 E_FCI=-1.985652 HF wt=0.493 frustr=0.195 nnz/row=1023 (18.9s)
