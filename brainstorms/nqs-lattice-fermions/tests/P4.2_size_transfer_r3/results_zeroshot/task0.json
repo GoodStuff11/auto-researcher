@@ -1,0 +1,82 @@
+{
+ "params": {
+  "task_id": 0,
+  "role": "transfer",
+  "seed": 0,
+  "sources": "4x2,t8",
+  "tgt": "4x4",
+  "holes_tgt": 4,
+  "t": 1.0,
+  "instances": "-0.25:0.4,-0.25:0.6,0.25:0.4,-0.1:0.4,0.0:0.4",
+  "channels": 2,
+  "field_hidden": 8,
+  "bf_hidden": 4,
+  "jas_hidden": 4,
+  "delta0": 0.3,
+  "eta": 0.1,
+  "lam": 0.001,
+  "src_restarts": 4,
+  "steps_src": 800,
+  "budget": 0,
+  "steps_long": 0,
+  "lr": 0.05,
+  "diag_shift": 0.01,
+  "fn_iters": 6,
+  "fn_floor": 0.001,
+  "lbfgs_iters": 3000,
+  "r_min": 2.0,
+  "void_tol": 0.05,
+  "chunk": 50000,
+  "out": "results_zeroshot/task0.json",
+  "aggregate": "",
+  "selftest": false,
+  "timing": false,
+  "tp_sel": -0.25,
+  "J_sel": 0.4
+ },
+ "arms": {},
+ "role": "transfer",
+ "seed": 0,
+ "instance_scan": [
+  {
+   "tp": -0.25,
+   "J": 0.4,
+   "E0": -13.934101772250582,
+   "E1": -13.741062145375773,
+   "gen_expect": {
+    "Tx": 1.0000000000000004,
+    "Ty": 1.0000000000000004,
+    "Mx": 1.0000000000000004,
+    "My": 1.0000000000000002,
+    "D": -1.0000000000000002
+   },
+   "S2": -7.259842903510276e-18,
+   "one_d_irrep": true,
+   "K0": true,
+   "nondegenerate": true,
+   "accepted": true
+  }
+ ],
+ "target": {
+  "tp": -0.25,
+  "J": 0.4,
+  "irrep": {
+   "Tx": 1,
+   "Ty": 1,
+   "Mx": 1,
+   "My": 1,
+   "D": -1
+  },
+  "n_irrep": 13070,
+  "dim": 1681680,
+  "npar": 122,
+  "sector_dim_per_param": 107.1311475409836,
+  "E0": -13.934101772250472,
+  "E0_full": -13.934101772250582,
+  "E1_irrep": -13.711631560814,
+  "gap_per_site": 0.013904388214779462,
+  "competitor": false,
+  "Pd_E0": 0.004848315656736595,
+  "calib_err": 5.329070518200751e-15
+ }
+}

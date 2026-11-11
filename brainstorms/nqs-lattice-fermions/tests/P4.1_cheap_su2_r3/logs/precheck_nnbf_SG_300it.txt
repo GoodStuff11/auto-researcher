@@ -2,3 +2,4 @@
 [14:15:58] arm nnbf_SG: 2205 parameters, hidden 16, P_S=1, P_G on
 [14:19:21]   iter    50  E_best = -9.3537019162  (3.4 min)
 [14:22:10]   iter   100  E_best = -9.3580975725  (6.2 min)
+[14:25:09]   iter   150  E_best = -9.3593418478  (9.2 min)

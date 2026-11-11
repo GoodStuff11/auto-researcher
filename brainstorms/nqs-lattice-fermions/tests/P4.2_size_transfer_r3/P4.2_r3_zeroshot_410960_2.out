@@ -1,0 +1,25 @@
+[     0.0s] selftest(a) spinless 4x4 N_f=1: E_ED=-3.0000000000 band=-3.0000000000 OK
+[     0.1s] selftest(a) spinless 4x4 N_f=3: E_ED=-7.0000000000 band=-7.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2 N_f=1: E_ED=-3.0000000000 band=-3.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2 N_f=3: E_ED=-7.0000000000 band=-7.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2[tw 0pi,1pi] N_f=1: E_ED=-2.0000000000 band=-2.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2[tw 0pi,1pi] N_f=3: E_ED=-4.0000000000 band=-4.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,0pi] N_f=1: E_ED=-2.0000000000 band=-2.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,0pi] N_f=3: E_ED=-2.0000000000 band=-2.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,1pi] N_f=1: E_ED=0.0000000000 band=-0.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,1pi] N_f=3: E_ED=0.0000000000 band=0.0000000000 OK
+[     0.1s] selftest(a) spinless t8 N_f=1: E_ED=-3.0000000000 band=-3.0000000000 grid (units of pi) [(0.0, 0.0), (0.0, 1.0), (0.5, 0.5), (0.5, 1.5), (1.0, 0.0), (1.0, 1.0), (1.5, 0.5), (1.5, 1.5)] OK
+[     0.2s] selftest(a) spinless t8 N_f=3: E_ED=-5.0000000000 band=-5.0000000000 grid (units of pi) [(0.0, 0.0), (0.0, 1.0), (0.5, 0.5), (0.5, 1.5), (1.0, 0.0), (1.0, 1.0), (1.5, 0.5), (1.5, 1.5)] OK
+[     0.2s] selftest(b) t-J 4x2 dim=560 hermitian OK
+[     0.2s] selftest(c) 4x2 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=3.6e-15 OK
+[     0.4s] selftest(d) 4x2 log-derivative max rel err over 122 params = 1.63e-09 OK
+[     0.4s] selftest(b) t-J t8 dim=560 hermitian OK
+[     0.4s] selftest(c) t8 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=4.4e-15 OK
+[     0.6s] selftest(d) t8 log-derivative max rel err over 122 params = 4.32e-09 OK
+[     0.7s] selftest(e) 4x4 N_e=2: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 9 of 240), GS gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': 1.0}, GS weight in its irrep=1.000000000000 OK
+[     0.7s] selftest(e) 4x2 N_e=4: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 57 of 420), GS gens={'Tx': -1.0, 'Ty': 1.0, 'Mx': -1.0, 'My': 1.0}, GS weight in its irrep=nan OK
+[     0.8s] selftest(f) S^2 on 2x2 N_e=2: symmetric, spectrum [0.0, 2.0] OK
+[     0.8s] selftest(f) S^2 on 2x2 N_e=4: symmetric, spectrum [-0.0, 2.0, 6.0] OK
+[     0.9s] selftest(g) projected-energy gradient vs finite differences max rel err 2.79e-10; metric PSD OK
+[     0.9s] selftest(h) [report] complete coverage: sources ['4x2', 't8'] cover 16 of 16 4x4 momenta on C4v orbits (first source alone: 12 of 16)
+[     0.9s] SELFTEST PASSED

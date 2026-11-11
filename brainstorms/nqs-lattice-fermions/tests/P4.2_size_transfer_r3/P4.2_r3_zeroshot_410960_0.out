@@ -1,0 +1,53 @@
+[     0.0s] selftest(a) spinless 4x4 N_f=1: E_ED=-3.0000000000 band=-3.0000000000 OK
+[     0.1s] selftest(a) spinless 4x4 N_f=3: E_ED=-7.0000000000 band=-7.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2 N_f=1: E_ED=-3.0000000000 band=-3.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2 N_f=3: E_ED=-7.0000000000 band=-7.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2[tw 0pi,1pi] N_f=1: E_ED=-2.0000000000 band=-2.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2[tw 0pi,1pi] N_f=3: E_ED=-4.0000000000 band=-4.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,0pi] N_f=1: E_ED=-2.0000000000 band=-2.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,0pi] N_f=3: E_ED=-2.0000000000 band=-2.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,1pi] N_f=1: E_ED=0.0000000000 band=-0.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,1pi] N_f=3: E_ED=0.0000000000 band=0.0000000000 OK
+[     0.1s] selftest(a) spinless t8 N_f=1: E_ED=-3.0000000000 band=-3.0000000000 grid (units of pi) [(0.0, 0.0), (0.0, 1.0), (0.5, 0.5), (0.5, 1.5), (1.0, 0.0), (1.0, 1.0), (1.5, 0.5), (1.5, 1.5)] OK
+[     0.1s] selftest(a) spinless t8 N_f=3: E_ED=-5.0000000000 band=-5.0000000000 grid (units of pi) [(0.0, 0.0), (0.0, 1.0), (0.5, 0.5), (0.5, 1.5), (1.0, 0.0), (1.0, 1.0), (1.5, 0.5), (1.5, 1.5)] OK
+[     0.2s] selftest(b) t-J 4x2 dim=560 hermitian OK
+[     0.2s] selftest(c) 4x2 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=3.6e-15 OK
+[     0.3s] selftest(d) 4x2 log-derivative max rel err over 122 params = 1.63e-09 OK
+[     0.3s] selftest(b) t-J t8 dim=560 hermitian OK
+[     0.3s] selftest(c) t8 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=4.4e-15 OK
+[     0.4s] selftest(d) t8 log-derivative max rel err over 122 params = 4.32e-09 OK
+[     0.4s] selftest(e) 4x4 N_e=2: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 9 of 240), GS gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': 1.0}, GS weight in its irrep=1.000000000000 OK
+[     0.5s] selftest(e) 4x2 N_e=4: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 57 of 420), GS gens={'Tx': -1.0, 'Ty': 1.0, 'Mx': -1.0, 'My': 1.0}, GS weight in its irrep=nan OK
+[     0.5s] selftest(f) S^2 on 2x2 N_e=2: symmetric, spectrum [0.0, 2.0] OK
+[     0.5s] selftest(f) S^2 on 2x2 N_e=4: symmetric, spectrum [-0.0, 2.0, 6.0] OK
+[     0.5s] selftest(g) projected-energy gradient vs finite differences max rel err 2.79e-10; metric PSD OK
+[     0.5s] selftest(h) [report] complete coverage: sources ['4x2', 't8'] cover 16 of 16 4x4 momenta on C4v orbits (first source alone: 12 of 16)
+[     0.5s] SELFTEST PASSED
+[    96.4s] instance t'=-0.25 J=0.4: E0=-13.93410177 E1=-13.74106215 <S2>=-7.26e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
+[   103.6s] target 4x4 t'=-0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=13070 E0=-13.93410177 (full -13.93410177) gap/V=1.3904e-02 no same-irrep competitor below 0.005 t/site: sign half only
+[   103.6s] projected-sector dimension 13070 / route parameters 122 = 107.1
+[   103.6s] calibration: E_sign(exact signs) - E0 = 5.329e-15; Pd(E0)=4.8483e-03
+[   103.7s] source clusters: 4x2 E0=-8.28182066, t8 E0=-7.08027574
+[   103.7s]   [route TCMN restart 0] step 1/800 E=-4.01558753,-0.02252992 lr=0.055 relerr=5.151e-01,9.968e-01
+[   104.9s]   [route TCMN restart 0] step 81/800 E=-8.21734368,-7.08025932 lr=0.0958 relerr=7.785e-03,2.320e-06
+[   106.1s]   [route TCMN restart 0] step 161/800 E=-8.26134393,-7.08026512 lr=0.0958 relerr=2.472e-03,1.500e-06
+[   107.3s]   [route TCMN restart 0] step 241/800 E=-8.26434932,-7.08027019 lr=0.0958 relerr=2.110e-03,7.842e-07
+[   108.5s]   [route TCMN restart 0] step 321/800 E=-8.26551759,-7.08027081 lr=0.0958 relerr=1.969e-03,6.972e-07
+[   109.7s]   [route TCMN restart 0] step 401/800 E=-8.26617765,-7.08027143 lr=0.0958 relerr=1.889e-03,6.098e-07
+[   110.8s]   [route TCMN restart 0] step 481/800 E=-8.26658730,-7.08027198 lr=0.192 relerr=1.839e-03,5.313e-07
+[   112.0s]   [route TCMN restart 0] step 561/800 E=-8.26688187,-7.08027274 lr=0.0958 relerr=1.804e-03,4.247e-07
+[   113.2s]   [route TCMN restart 0] step 641/800 E=-8.26709775,-7.08027239 lr=0.0856 relerr=1.778e-03,4.740e-07
+[   114.4s]   [route TCMN restart 0] step 721/800 E=-8.26727109,-7.08027293 lr=0.107 relerr=1.757e-03,3.975e-07
+[   115.6s]   [route TCMN restart 0] step 800/800 E=-8.26740169,-7.08027068 lr=0.0975 relerr=1.741e-03,7.155e-07
+[   115.6s]   [route TCMN restart 1] step 1/800 E=-5.50173112,1.62613642 lr=0.055 relerr=3.357e-01,1.230e+00
+[   116.8s]   [route TCMN restart 1] step 81/800 E=-7.69814852,-7.08027574 lr=0.0974 relerr=7.048e-02,1.232e-10
+[   118.0s]   [route TCMN restart 1] step 161/800 E=-7.69824454,-7.08027572 lr=0.0975 relerr=7.046e-02,3.779e-09
+[   119.2s]   [route TCMN restart 1] step 241/800 E=-7.69827355,-7.08027573 lr=0.0975 relerr=7.046e-02,1.695e-09
+[   120.4s]   [route TCMN restart 1] step 321/800 E=-7.69828763,-7.08027574 lr=0.0975 relerr=7.046e-02,4.066e-12
+[   121.6s]   [route TCMN restart 1] step 401/800 E=-7.69829619,-7.08027574 lr=0.0933 relerr=7.046e-02,2.285e-10
+[   122.8s]   [route TCMN restart 1] step 481/800 E=-7.69830171,-7.08027573 lr=0.0933 relerr=7.046e-02,1.536e-09
+[   124.0s]   [route TCMN restart 1] step 561/800 E=-7.69830566,-7.08027574 lr=0.0934 relerr=7.046e-02,9.164e-10
+[   125.2s]   [route TCMN restart 1] step 641/800 E=-7.69830857,-7.08027574 lr=0.0934 relerr=7.046e-02,7.026e-11
+[   126.4s]   [route TCMN restart 1] step 721/800 E=-7.69831089,-7.08027572 lr=0.187 relerr=7.046e-02,3.096e-09
+[   127.6s]   [route TCMN restart 1] step 800/800 E=-7.69831268,-7.08027574 lr=0.0849 relerr=7.046e-02,9.182e-11
+[   127.6s]   [route TCMN restart 2] step 1/800 E=-6.75401959,-5.45381524 lr=0.055 relerr=1.845e-01,2.297e-01

@@ -160,7 +160,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.1-P | RESULT on instance 1 (SYMMETRY-DOMINATED); instances 0 and 2 running | nothing | Slurm 407525 (17 tasks left) |
 | P1.2 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410216 (3 tasks: projected control, one per instance) |
 | P1.3 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410199 (9 tasks: c1 instance, PSaf/PSfs/PScdw, 3 seeds) |
-| P2.1 | CRITIC (round 3) | nothing | per-leaf critic |
+| P2.1 | SUBMITTED (control pilot); both routes Gate 0 restated, test fixes pending | full test blocked on pilot (premise: projected NNBF sign error at least 0.01t) | Slurm 410988 (3 tasks) |
 | P2.2 | MUTATE (round 3) | nothing | round-3 worker |
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | SUBMITTED (control pilot); AT killed, SO-EC conditional | full test blocked on pilot regime (NO-TARGET / NO-ROOM / INTRINSIC-BIAS / GO) | Slurm 410917 (width 8, inner 4 targets) |
@@ -183,6 +183,22 @@ Each leaf advances on its own as soon as it returns: lint, then its own critic, 
         * Curvature/susceptibility, Gate 1.
         * Berry phase, Gates 2 and 3.
         * In-irrep zero-variance extrapolation, Gate 0 (mVMC practice).
+* **Cross-leaf finding (2026-11-11): the error left after projection is amplitude-borne.** P1.1-P width-8 budgets on both $5+5$ tori, trained with projection (3 seeds): $\Delta E_{\mathrm{tot}}=0.9$–$20\times10^{-4}$, $\Delta E_{\mathrm{sign}}\le5\times10^{-5}$, $f_E=0.004$–$0.023$, wrong-sign weight $10^{-8}$–$10^{-6}$. The $4+4$ instance is complete and SYMMETRY-DOMINATED; the widest width on $5+5$ is still running. P2.1's critic, reading the P1.2 pilot's interim logs, finds the same on the 4×3 OBC and cylinder clusters. Consequences:
+    * On ED-sized Hubbard clusters, symmetry-projected NNBF has essentially no sign error. What remains is amplitude error. P1.1's original "sign is binding" result was symmetry contamination.
+    * Every leaf whose premise is "projected NQS keeps a sign error" (P1.2, P1.3, P2.1's premise gate, part of P3.1) is very likely NO-TARGET at ED size. The premise pilots will confirm or refute this per leaf.
+    * The live question moves to sizes beyond ED: does a nodal error appear when the projected sector dimension greatly exceeds what the network can represent (P1.1's size-transfer gap)? Testing that needs sampled VMC with an independent reference (AFQMC or DMRG) on lattices of $6\times6$ or more, a different and more expensive test.
+* **P2.1 round-3 per-leaf critic (12 objections, 8 Major)**:
+    * **Gate 0, SK-LR.** It is HFDS with $K$ blocks and a frozen hidden block, linearised at $r=1$. Equivalently it is a neural-CI singles expansion with the Clark et al. table method, and its per-ratio cost is the lrux kernel.
+    * **SK-AGP.** It does not fix the HFPS $\mathcal{O}(N^3)$ barrier, because no sweep is implemented.
+    * **"The restriction bites" is false.** $\det(A_0+\phi c^{\mathsf T})=\det A_0+c^{\mathsf T}\mathrm{adj}(A_0)\phi$ with an unrestricted $c(\mathbf{n})$, so a rank-1 term already represents an arbitrary scalar times the reference.
+    * **The control is handicapped.** NNBF has no Jastrow while the route arms do.
+    * **The rank dominance test is weak.** Unpaired, $P\approx0.20$ under the null.
+    * **Cost timings are interpreter-dominated.**
+    * **The verdict can rest on a single instance.**
+    * **Action.** The 118-task array is held. A control-only pilot runs as job 410988 (the nnbf arm, seed 11, three instances). Pre-committed rule:
+        * if projected $\Delta E_{\mathrm{sign}}<0.003t$ on instances 0 and 1, the verdict is NO-TARGET and P2.1 goes back to mutation (no width halving);
+        * if it is at least $0.01t$ on both, apply fixes 3, 5 and 6 and the Gate 0 restatements, then submit;
+        * otherwise run 2 more seeds first.
 * **P4.2 round-3 per-leaf critic (11 objections, 5 Major)**:
     * **Prior art.** The critic confirmed the worker: arXiv:2505.00233 keeps the lattice size fixed, and no lattice-fermion NQS size transfer is published. Gate 0 must still cite and distinguish arXiv:2606.17045 (single-hole, exactly solvable, local-rule size transfer) and arXiv:2512.11962 (a $t$–$V$ foundation NQS conditioned on Hamiltonian parameters).
     * **Route 3.2 is a relabel.** Freezing the determinant and refitting a Jastrow is standard fixed-node practice, and its sign verdict is decided by route 3.1's zero-shot object. It is merged into 3.1 as a diagnostic, which leaves P4.2 with one survivor.

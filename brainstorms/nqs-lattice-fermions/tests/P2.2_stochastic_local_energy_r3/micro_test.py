@@ -13,8 +13,10 @@ R3.1 WIBJ   Window-input backflow x all-orbital Jastrow (an ansatz whose EXACT
             the backflow network sees only the occupations n_W of the window
             W (the lowest K_W spatial MOs, both spins; K_W = N by default),
             Phi is M x N over ALL orbitals, and
-            J(n) = exp(sum_p u_p n_p + sum_{p<q} v_pq n_p n_q) over all
-            spin-orbitals.  All connected n' that share the same window
+            J(n) = exp(sum_p u_p n_p + sum_{p<q} v_pq n_p n_q + a.tanh(W_J x + b_J))
+            over all spin-orbitals (pair plus neural Jastrow, width h_J = 32;
+            its ratio costs O(h_J) per term).  Every arm, controls included,
+            carries the same Jastrow.  All connected n' that share the same window
             change share Phi(n'_W): the local energy is exact with one
             backflow evaluation per distinct window key (at most
             ~N^2 W_v^2 / 4 keys, independent of M) plus O(1) arithmetic per
@@ -56,14 +58,17 @@ pi-variance of the state plus the estimator's variance increment measured by
 genuine sampling, paired on the same samples (sampled E_L is heavy-tailed).
 Tunable estimators (SCREEN eps; SS and PFCV eps, K) are
 selected on the first half of the samples and evaluated on the second
-half.  Control cost C_ctrl = min(C_EXACT, C_SS, C_SCREEN[admissible]) on
+half.  A tunable configuration is admissible only if the variance increment
+is estimable: on the selection half, the top 1% of samples carry <= 50% of
+sum (inc - mean inc)^2, inc = Ehat_X - E_L (applied to routes and controls
+alike; heavy-tailed draws would otherwise look cheap by luck).  Control cost C_ctrl = min(C_EXACT, C_SS, C_SCREEN[admissible]) on
 the NNBFJ state of the same seed.
   M_R3.1 = C_KEYX(WIBJ) / C_ctrl(NNBFJ)
   M_R3.2 = C_PFCV(NNBFJ) / C_ctrl(NNBFJ)
 Two cost models, both on this instance and this N: (a) measured single-thread
 wall-clock per sample; (b) operation count of the kernels the code executes
-(exact amplitude N^2 h + 4h + N^3; multi-term window key M h + N^2 h + 2 N^3
-plus N h per distinct added row; per-term minor 2.5 N^2 + 10; row generation 30 per term; per-sample setup).
+(exact amplitude N^2 h + 4h + N^3 + 6 h_J; multi-term window key M h + N^2 h + 2 N^3
+plus N h per distinct added row; per-term minor 2.5 N^2 + 10 + 6 h_J; row generation 30 per term; per-sample setup).
 (b) removes Python overhead, which dominates wall-clock at ED-feasible sizes.
 plus dE_X = E_var - E_FCI for every arm.  Seeds: --seeds (default 3);
 per-instance values are medians over seeds of the per-seed (paired) ratios.
@@ -495,22 +500,25 @@ def ground_states(H, k=2):
 # NNBF-Jastrow ansatz with an input mask (window) and per-sample kernels
 # ----------------------------------------------------------------------------
 class Ansatz:
-    """psi(n) = exp(u.n + sum_{p<q} v_pq n_p n_q) * det Phi(x)[occ n],
+    """psi(n) = exp(u.n + sum_{p<q} v_pq n_p n_q + a.tanh(Wj x + bj)) * det Phi(x)[occ n],
+    (pair Jastrow plus a one-hidden-layer neural Jastrow of width hj on ALL
+    spin-orbitals; its ratio costs O(hj) per connected term),
     Phi(x) = Phi0 + reshape(W2 tanh(W1 (mask * x) + b1)), x = 2n - 1.
     mask = window (WIBJ) or all ones (NNBFJ, SHRJ).  pen_mask/mu: external-
     input shrinkage mu * ||W1[:, pen_mask]||^2 added to the objective."""
 
-    def __init__(self, M, N, hidden, Phi0, scale, rng, in_mask, pen_mask=None, mu=0.0):
-        self.M, self.N, self.Hh = M, N, hidden
+    def __init__(self, M, N, hidden, Phi0, scale, rng, in_mask, pen_mask=None, mu=0.0, hj=32):
+        self.M, self.N, self.Hh, self.hj = M, N, hidden, hj
         self.mask = in_mask.astype(float)
         self.pen = np.zeros(M, bool) if pen_mask is None else pen_mask
         self.mu = mu
         self.iu = np.triu_indices(M, 1)
         self.shapes = [("Phi0", (M, N)), ("W2", (M * N, hidden)), ("W1", (hidden, M)), ("b1", (hidden,)),
-                       ("u", (M,)), ("v", (len(self.iu[0]),))]
+                       ("u", (M,)), ("v", (len(self.iu[0]),)), ("Wj", (hj, M)), ("bj", (hj,)), ("aj", (hj,))]
         init = {"Phi0": Phi0, "W2": scale * rng.standard_normal((M * N, hidden)),
                 "W1": scale * rng.standard_normal((hidden, M)) * self.mask[None],
-                "b1": np.zeros(hidden), "u": np.zeros(M), "v": np.zeros(len(self.iu[0]))}
+                "b1": np.zeros(hidden), "u": np.zeros(M), "v": np.zeros(len(self.iu[0])),
+                "Wj": scale * rng.standard_normal((hj, M)), "bj": np.zeros(hj), "aj": scale * rng.standard_normal(hj)}
         self.theta0 = np.concatenate([init[k].ravel() for k, _ in self.shapes])
 
     def unpack(self, th):
@@ -529,11 +537,12 @@ class Ansatz:
         Phi = P["Phi0"][None] + (hid @ P["W2"].T).reshape(-1, self.M, self.N)
         A = np.take_along_axis(Phi, occ_idx[:, :, None], axis=1)
         o = occ.astype(float)
-        logJ = o @ P["u"] + 0.5 * np.einsum("bp,bp->b", o @ P["V"], o)
-        return np.linalg.det(A) * np.exp(logJ), (Phi, A, hid, x, P, o)
+        tj = np.tanh(x @ P["Wj"].T + P["bj"])
+        logJ = o @ P["u"] + 0.5 * np.einsum("bp,bp->b", o @ P["V"], o) + tj @ P["aj"]
+        return np.linalg.det(A) * np.exp(logJ), (Phi, A, hid, x, P, o, tj)
 
     def energy_grad(self, th, H, occ, occ_idx):
-        psi, (Phi, A, hid, x, P, o) = self.amplitudes(th, occ, occ_idx)
+        psi, (Phi, A, hid, x, P, o, tj) = self.amplitudes(th, occ, occ_idx)
         nrm = psi @ psi
         Hpsi = H @ psi
         E = psi @ Hpsi / nrm
@@ -550,6 +559,10 @@ class Ansatz:
         g["b1"] = dz.sum(0)
         g["u"] = o.T @ cp
         g["v"] = (o.T @ (o * cp[:, None]))[self.iu]
+        g["aj"] = tj.T @ cp
+        dzj = cp[:, None] * (1 - tj ** 2) * P["aj"][None]
+        g["Wj"] = dzj.T @ x
+        g["bj"] = dzj.sum(0)
         pen = 0.0
         if self.mu > 0 and self.pen.any():
             W1p = P["W1"][:, self.pen]
@@ -564,7 +577,8 @@ class Ansatz:
         Phi = P["Phi0"] + (P["W2"] @ np.tanh(z)).reshape(self.M, self.N)
         A = Phi[occ_n]
         o = (x + 1) / 2
-        return {"x": x, "z": z, "detA": np.linalg.det(A), "f": P["V"] @ o, "occ": occ_n}
+        return {"x": x, "z": z, "detA": np.linalg.det(A), "f": P["V"] @ o, "occ": occ_n,
+                "zj": P["Wj"] @ x + P["bj"]}
 
     def jastrow_delta(self, P, st, rem, add):
         u, V, f = P["u"], P["V"], st["f"]
@@ -573,6 +587,10 @@ class Ansatz:
         d2 = rem[:, 1] >= 0
         j, b = rem[d2, 1], add[d2, 1]
         d[d2] += u[b] - u[j] + f[b] - f[j] + V[a[d2], b] + V[i[d2], j] - V[b, i[d2]] - V[a[d2], j] - V[b, j]
+        WjT = P["Wj"].T
+        dzj = 2 * (WjT[a] - WjT[i])
+        dzj[d2] += 2 * (WjT[b] - WjT[j])
+        d += (np.tanh(st["zj"][None] + dzj) - np.tanh(st["zj"])[None]) @ P["aj"]
         return d
 
     def ratio_exact(self, P, st, rem, add, occ_j):
@@ -707,7 +725,8 @@ def analyse_state(net, th, ham, samples_codes, args, rng, wcode, win_idx, arm):
     tim = {"row": [], "EXACT": [], "KEY": []}
     ops = {"row": [], "EXACT": [], "KEY": []}
     h_ = net.Hh
-    f_amp = N * N * h_ + 4 * h_ + N ** 3  # one exact incremental amplitude
+    hj_ = net.hj
+    f_amp = N * N * h_ + 4 * h_ + N ** 3 + 6 * hj_  # one exact incremental amplitude (incl. Jastrow)
     cfg = []
     if arm == "NNBFJ":
         cfg += [("SCREEN", e, 0) for e in args.eps_screen]
@@ -736,10 +755,10 @@ def analyse_state(net, th, ham, samples_codes, args, rng, wcode, win_idx, arm):
         res["EXACT"].append(ex); res["KEYX"].append(kx)
         nkeys.append((nk, nkm)); ncon.append(len(row["h"]))
         nc_ = len(row["h"]); n_single = nk - nkm
-        ops["row"].append(30 * nc_ + M * h_ + M * N * h_ + N ** 3)
+        ops["row"].append(30 * nc_ + M * h_ + M * N * h_ + N ** 3 + M * hj_)
         ops["EXACT"].append(nc_ * f_amp)
         ops["KEY"].append(n_single * f_amp + nkm * (M * h_ + N * N * h_ + 2 * N ** 3) + npair * N * h_
-                          + (nc_ - n_single) * (2.5 * N * N + 10))
+                          + (nc_ - n_single) * (2.5 * N * N + 10 + 6 * hj_))
         for c in cfg:
             s0 = time.perf_counter()
             if c[0] == "SCREEN":
@@ -792,6 +811,10 @@ def costs(res, tim, cfg, args, V_pi):
                 bias = float(d.mean()); se = float(d.std(ddof=1) / np.sqrt(B))
                 if abs(bias) + 2 * se > args.bias_tol:
                     continue
+            inc = (vals - res["EXACT"])[h1]
+            inc = (inc - inc.mean()) ** 2
+            if inc.sum() > 0 and np.sort(inc)[::-1][:max(1, len(inc) // 100)].sum() / inc.sum() > 0.5:
+                continue  # increment variance not estimable (top 1% of samples carry > 50%)
             c1 = C(vals, trow + tim[c] + extra, h1)
             if best is None or c1 < best[0]:
                 best = (c1, c)
@@ -800,7 +823,7 @@ def costs(res, tim, cfg, args, V_pi):
         c = best[1]; extra = tim["KEY"] if fam == "PFCV" else 0.0
         vals = res[c]
         d = vals - res["EXACT"]
-        dev = vals[h2] - vals[h2].mean()
+        dev = d[h2] - d[h2].mean()
         top = np.sort(dev ** 2)[::-1]
         out[fam] = {"C": C(vals, trow + tim[c] + extra, h2), "C_norow": C(vals, tim[c] + extra, h2),
                     "eps": c[1], "K": c[2], "var": var(vals, h2),
