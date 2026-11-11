@@ -1,0 +1,6 @@
+E0 -12.042903805575666 E_UHF -9.780723941407862
+{'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1} wt=0.0614 Evar=-10.48259 FN=-11.47396 correct=True
+{'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': -1} wt=0.0308 Evar=-9.46737 FN=-10.73635 correct=False
+{'Tx': -1, 'Ty': 1, 'Mx': 1, 'My': 1} wt=0.0466 Evar=-9.66323 FN=-10.42673 correct=False
+{'Tx': -1, 'Ty': 1, 'Mx': 1, 'My': -1} wt=0.0300 Evar=-8.92873 FN=-9.77185 correct=False
+fn_correct True var_correct True selected E_sign-E0=0.11122 E_FN-E0=0.21143

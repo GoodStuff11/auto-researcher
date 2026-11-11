@@ -62,6 +62,7 @@ Primary field-consensus source: Rigo, Wurst, Nutakki, Schmitt & Kennes, *Neural 
 | C10 | Validation | Symmetry enforcement versus expressivity and optimization stability (SU(2), point group, momentum) | Review §5.2 |
 | C11 | Asymptotic | Finite-size scaling and size transfer: each $L$ is retrained from scratch; boundary artifacts mimic physics | Review §3.2 (stripe crossover was a boundary effect) |
 | C12 | Asymptotic | Dynamics and spectral functions: tVMC ill-defined; parameter gap between time evolution ($10^3$ to $10^5$) and ground state ($10^6$) | Review §5.3; Sinibaldi et al. Quantum 7, 1131 |
+
 ### Pass 2: Bottleneck Audit
 | ID | Blocking test | Root or symptom | Field consensus | Outcome |
 | :--- | :--- | :--- | :--- | :--- |
@@ -77,6 +78,7 @@ Primary field-consensus source: Rigo, Wurst, Nutakki, Schmitt & Kennes, *Neural 
 | C10 | Blocks C3 (sector mixing) and C11 | Root | Explicit (review §5.2) | **Keep → P4** |
 | C11 | Blocks thermodynamic-limit claims | Symptom of C4 plus C10 | Explicit (review §3.2) | Merge into P4 |
 | C12 | Blocks nothing in the ground-state tree | Separate problem; downstream of sign/phase learning (C1) | Explicit (review §5.3) | **Pruned**: ground-state reliability comes first, and NQS dynamics at useful sizes is not low-compute today |
+
 ### Final Tree
 **P1 — Sign structure beyond mean-field nodal bias.**
 * *Statement*: Fermionic NQS get their antisymmetry from determinant, Pfaffian or backflow layers whose nodal structure is anchored to a mean-field orbital set, and optimization does not reliably escape that anchor.
@@ -156,14 +158,18 @@ Global verdict **PASS** on all three pre-committed $4\times3$ PBC clusters ($t'=
 | Instance | $\Delta E_{\mathrm{tot}}$ (NNBF $H{=}128$) | $f_E^{\mathrm{up}}$ | $f_C$ | $r_{\mathrm{sign}}$ | $r_{\mathrm{amp}}$ | $\Delta_1/V$ | Foil (SJ) $f_E^{\mathrm{up}}$ |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | $N_\uparrow=N_\downarrow=5$, $U=8$ | 0.166 | 0.607 | 0.71 | 1.64 | 3.40 | $0.032t$ | 0.33 |
-| $N_\uparrow=N_\downarrow=4$, $U=8$ | 0.099 | 0.772 | 0.93 | 1.18 | 4.92 | $0.007t$ (near-degenerate competitor) | 0.31 |
+| $N_\uparrow=N_\downarrow=4$, $U=8$ | 0.099 | 0.772 | 0.93 | 1.18 | 4.92 | $0.007t$ (but $E_1$ is a triplet at another momentum; see correction) | 0.31 |
 | $N_\uparrow=N_\downarrow=5$, $U=4$ | 0.048 | 0.652 | 0.76 | 1.22 | 3.78 | $0.033t$ | 0.24 |
 
 * **Reading**: making the backflow network wider cuts the amplitude error by a factor of 3.4 to 4.9, but the sign error only by 1.2 to 1.6. As a result the sign fraction rises with width, from 0.38–0.45 at $H=8$ to 0.61–0.77 at $H=128$. The sign also carries 71–93% of the pairing-correlation error. The foil is the opposite: 67–76% of its error is amplitude.
 * **Caveats**:
     * The rigorous lower bound $f_E^{\mathrm{lo}}$ is 0 on every instance, so the PASS rests on the multi-start upper estimate. All four starts, including the fixed-node one, agree to $10^{-13}$.
     * The first instance passes only narrowly (0.607).
-    * Only the $N_\uparrow=N_\downarrow=4$ instance has a same-sector near-degenerate competitor.
+    * **Qualification (2026-11-11, from the P1.3 round-2 pre-diagnostic)**: on the $N_\uparrow=N_\downarrow=4$ instance most of the NNBF sign error is symmetry contamination inherited from the broken-symmetry UHF start, not an intrinsic nodal error. P1.1's NNBF is unprojected.
+        * Evidence: a width-32 NNBF after 400 plain-SR steps has $E_{\mathrm{sign}}-E_0=0.084$ and overlap $0.27$ with $\psi_0$. Projecting it onto $\psi_0$'s irrep (translations and mirrors) lowers $E_{\mathrm{sign}}-E_0$ to $0.019$, a 77% reduction (`tests/P1.3_wrong_sign_basins_r2/results_prediag_S400.log`).
+        * Error character differs by instance. On this instance the wrong-sign weight is high ($w\approx0.20$ at every width, inherited from UHF's 0.32). The two $5+5$ instances have low-weight, near-node errors ($w=0.006$–$0.03$).
+        * Consequence: the largest P1.1 sign fraction (0.772) is inflated by missing symmetry projection. The PASS should be re-read as resting mainly on the two $5+5$ instances (0.607 and 0.652), whose sign errors are near-node. Re-running P1.1 with irrep-projected NNBF is the clean check.
+    * **Correction (2026-11-11, from the P3.2 round-2 ED sector analysis)**: none of the three instances has a same-sector competitor. P1.1's flag used the lowest excitation within the fixed-$(N_\uparrow,N_\downarrow)$ space. On the $N_\uparrow=N_\downarrow=4$ instance that excitation is a spin triplet ($\langle\hat{S}^2\rangle=2$) at momentum $(\pi,\pm2\pi/3)$, $0.086t$ above $E_0$. Inside the ground-state sector ($K=0$, both mirrors even, $S=0$) the next level is $0.515t$ up. P1.1 therefore tests the sign half of the Hard Core only. A genuine same-sector avoided crossing exists on the same cluster when $t'$ is swept: the in-sector gap reaches a minimum of $0.273t$ between $t'=-0.33$ and $-0.31$, where a $d$-wave/short-range-AF state and a period-4 stripe exchange character. P3.2 round 2 uses that crossing.
     * Transfer to $8\times8$ is untested; this remains P1.1's sharpest gap.
 * **Consequence**: the sign-structure branch (P1.2, P1.3) targets the binding error of NQS on these clusters. Network width is not the lever for that error.
 ### Node-level structural results (independent of the routes)
@@ -264,7 +270,7 @@ The two conditional leaves wait for redesign before they spend compute:
         * the kills that cited it were re-audited, and none rests on the floor alone;
         * new candidate P2.2′ recorded;
         * the charge-only lemma is relabelled as standard.
-    * Accepted, not yet fixed: the competing-order half of the Hard Core is missing from most tests (item 23). P1.1 now reports the same-sector gap. Every future test must show a same-sector near-degenerate competitor, or say that it tests only the sign half.
+    * Accepted, not yet fixed: the competing-order half of the Hard Core is missing from most tests (item 23). P1.1 now reports the lowest gap in the fixed-$(N_\uparrow,N_\downarrow)$ space, which is not a same-sector gap (see the correction under the P1.1 result). Every future test must show a same-sector near-degenerate competitor, or say that it tests only the sign half.
     * Accepted, partly addressed: sign metrics are not commensurate across leaves (item 25). P1.1 reports both $E_{\mathrm{sign}}$ and $E_{\mathrm{FN}}$, so P1.3 can adopt either.
     * Critical-path test submitted: P1.1 as Slurm array job 329057 (partition `kim`, tasks 0–2, 24 h limit), after the orchestrator reproduced the patched smoke test ($f_E^{\mathrm{up}}=0.1407$, calibration error $4\times10^{-12}\,\Delta E_{\mathrm{tot}}$). Read the verdict with `python3 micro_test.py --aggregate results` in `tests/P1.1_sign_vs_amplitude/`.
     * 2026-11-11: P1.1 job 329057 finished. All three tasks completed with exit code 0; global verdict PASS (see P1.1 decisive-test result above).

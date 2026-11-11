@@ -1,0 +1,23 @@
+[10:53:55] t'=-0.250 ED sector: E0=-9.142995 E1=-8.509437 gap=0.6336 c0=-0.1235 c1=+0.1801 Pd0=+2.57e-02 Pd1=+1.43e-02 global E0=-9.142995 valid=True
+[10:53:55] check projector idempotent 4.4e-16  [P,H] 4.6e-16
+[10:53:57] check sector E0 -9.1429947424 vs dense lowest sector-singlet -9.1429947424
+[10:53:58] check SS gradient analytic -8.43680015e+00 finite-diff -8.43680015e+00
+[10:53:58] check SA gradient analytic 3.77605850e+01 finite-diff 3.77605850e+01
+[10:53:58] ALL CHECKS PASSED
+[10:53:58] reference A: E=-7.52748 c=-0.3119 Pd=+1.69e-02
+[10:53:58] reference B: E=-7.89291 c=+0.4739 Pd=+2.29e-02
+[10:53:58] t'=-0.250 H=4 s=1234 R0p: E-E0=1.24991 c=+0.4736 (truth c0=-0.1235) fid=0.0096 decision=B wall=0.8s
+[10:53:59] t'=-0.250 H=4 s=1234 SS: E-E0=1.18531 c=+0.3591 (truth c0=-0.1235) fid=0.0258 decision=B wall=1.0s
+[10:54:00] t'=-0.250 H=4 s=1234 SA: E-E0=1.18531 c=+0.3591 (truth c0=-0.1235) fid=0.0258 decision=B wall=0.4s
+# ED sweep: t'  E0  gap  c(E0)  c(E1)  Pd(E0)  Pd(E1)  sector=global
+  -0.250 -9.142995 0.6336 -0.1235 +0.1801 +2.57e-02 +1.43e-02 True
+# instance: t' width seed truth | arm: decision c E-E0 fid
+  -0.250 H=  4 s=1234 truth=A | R0p: B c=+0.4736 dE=1.2499 fid=0.010 wall=1s | SA: B c=+0.3591 dE=1.1853 fid=0.026 wall=0s | SS: B c=+0.3591 dE=1.1853 fid=0.026 wall=1s
+# R0p  CW=1.000 DEC=1.000 MAE_c=0.5971 mean_wall=0.8s n=1 n_nonmixed=1
+# SA   CW=1.000 DEC=1.000 MAE_c=0.4826 mean_wall=0.4s n=1 n_nonmixed=1
+# SS   CW=1.000 DEC=1.000 MAE_c=0.4826 mean_wall=1.0s n=1 n_nonmixed=1
+# instance validity (c(E0) changes sign across grid, sector = global): INVALID
+# VERDICT SS: INVALID-INSTANCE
+# VERDICT SA: INVALID-INSTANCE
+[10:54:00] total wall 5.1s
+wall 5.43 s
