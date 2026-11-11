@@ -163,7 +163,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P2.1 | CRITIC (round 3) | nothing | per-leaf critic |
 | P2.2 | MUTATE (round 3) | nothing | round-3 worker |
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
-| P3.2 | CRITIC (round 3) | nothing | per-leaf critic |
+| P3.2 | SUBMITTED (control pilot); AT killed, SO-EC conditional | full test blocked on pilot regime (NO-TARGET / NO-ROOM / INTRINSIC-BIAS / GO) | Slurm 410917 (width 8, inner 4 targets) |
 | P4.1 | MUTATE (round 3) | nothing | round-3 worker |
 | P4.2 | CRITIC (round 3) | nothing | per-leaf critic |
 
@@ -183,6 +183,25 @@ Each leaf advances on its own as soon as it returns: lint, then its own critic, 
         * Curvature/susceptibility, Gate 1.
         * Berry phase, Gates 2 and 3.
         * In-irrep zero-variance extrapolation, Gate 0 (mVMC practice).
+* **P3.2 round-3 per-leaf critic (12 objections, 9 Major)**. The critic computed the oracle cases from exact ED snapshots.
+    * **AT is killed.**
+        * Even with exact snapshots it commits the wrong decision at $d=-0.0002$. The two diabats have unequal curvature ($d^2E/dt'^2pprox-14$ vs $-10$), which gives a differential transport bias of about $2.1\times10^{-3}$, above the $1.4\times10^{-3}$ gap.
+        * It is also the variational principle plus a zero-step warm-start (hysteresis) protocol, and it falls under the leaf's own $2\times2$ lemma.
+    * **SO-EC is conditional.**
+        * It is exact on all 10 targets with ED snapshots, but its signal lives in an overlap eigendirection of about $4\times10^{-6}$, roughly $30\times$ below the sampling standard error at $2\times10^4$ draws.
+        * Shared ansatz bias passes through the Ritz solve, so it can only beat the control where the control's branches cross over at the target.
+        * Multi-vector EC near avoided crossings already exists (Frame et al. 1711.07090; review 2310.19419); the new element is only the split by measured order.
+    * **Test defects.**
+        * The R0P control is cold-started; a warm-started R0P-warm control is needed.
+        * The snapshot-certification gate is inverted: it certifies branch collapse.
+        * The sampled arm still trains on exact forces.
+        * The aggregator does not check target lists.
+    * **Instance verified, as a methods instance only.** It is a genuine same-irrep near-degeneracy with the correct 48-element group, but the two "orders" are spin textures forced by the odd $L_y=3$ (stripe at $(\pi/2,0)$ vs a Néel state at $(\pi,\pm2\pi/3)$, equal $P_d$). It is not stripe vs $d$-wave, and no physics transfer may be claimed from it.
+    * **Action.** The 9-task array is held. A control-only pilot runs as job 410917: width 8, seed 1234, the 4 inner targets, about 5.4 h, output in `results_pilot/`. Pre-committed regimes:
+        * **NO-TARGET**: drop width 8.
+        * **NO-ROOM**: the R0P control is correct everywhere, so the array is a guaranteed FAIL and is not submitted.
+        * **INTRINSIC-BIAS**: add R0P-warm and fix the certification gate first.
+        * **GO**, only if the control's branches cross over: apply the fixes, then run the array.
 * **P3.1 round-3 per-leaf critic (12 objections, 8 Major)**:
     * **Gate 0, both routes.**
         * ZR is the Assaraf–Caffarel zero-bias correction with a learned $\psi'$ (physics/0310035; Toulouse, Assaraf & Umrigar 0705.0721), and also a dual-weighted-residual estimate (Cancès, Dusson, Kemlin & Levitt 2111.01470). It needs one extra NQS per observable, which contradicts the leaf's "cheap information" premise. The round-2 kill "zero-variance, zero-bias estimators reduce variance, not bias" was factually wrong; that log entry is corrected here.
