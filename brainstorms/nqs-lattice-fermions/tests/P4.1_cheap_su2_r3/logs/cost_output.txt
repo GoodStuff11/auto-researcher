@@ -1,0 +1,7 @@
+Lx= 6 L= 36 Ne= 32 N_q= 9: per amplitude  sqrvb     178.1 us  scf     103.8 us  che(LU-reused GL)     108.5 us  naive quadrature     280.1 us
+Lx= 8 L= 64 Ne= 56 N_q=15: per amplitude  sqrvb      98.7 us  scf     170.3 us  che(LU-reused GL)     229.4 us  naive quadrature     630.5 us
+Lx=12 L=144 Ne=126 N_q=32: per amplitude  sqrvb     369.7 us  scf     438.7 us  che(LU-reused GL)    1098.9 us  naive quadrature    3420.2 us
+Lx=16 L=256 Ne=224 N_q=57: per amplitude  sqrvb    1137.3 us  scf     878.7 us  che(LU-reused GL)    4310.7 us  naive quadrature   20173.5 us
+Lx=20 L=400 Ne=350 N_q=88: per amplitude  sqrvb    3854.1 us  scf    1719.6 us  che(LU-reused GL)   15516.4 us  naive quadrature  118768.6 us
+log-log slopes in N_e over the three largest sizes: sqrvb 2.28  scf 1.33  che 2.58  quad 3.45
+(numpy per-call overhead dominates at small N_e, hence the fit over the largest sizes only)

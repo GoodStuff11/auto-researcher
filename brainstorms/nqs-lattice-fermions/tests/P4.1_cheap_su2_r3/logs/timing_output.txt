@@ -1,0 +1,8 @@
+[13:57:34] instance L4x3_N8_U8_tp-0.25_G: dim=245025 nC=28314 |G|=48 (built in 0.1s)
+[13:57:36]   sqrvb   P= 2218 hidden=  5 P_S=0  E(init)=+3.34227  energy+grad 2.2s
+[13:57:39]   sqrvb0  P= 2149 hidden=  8 P_S=0  E(init)=+3.60393  energy+grad 2.3s
+[13:58:12]   scf     P= 2176 hidden=  9 P_S=0  E(init)=+0.10129  energy+grad 32.5s
+[13:58:18]   nnbf_SG P= 2205 hidden= 16 P_S=1  E(init)=-11.10615  energy+grad 6.0s
+[13:58:23]   nnbf_G  P= 2205 hidden= 16 P_S=0  E(init)=-10.59359  energy+grad 4.2s
+[13:58:29]   che     P= 2205 hidden= 16 P_S=1  E(init)=-11.11654  energy+grad 6.2s
+[13:58:33]   foil    P=  221 hidden=  0 P_S=1  E(init)=-10.94705  energy+grad 3.6s

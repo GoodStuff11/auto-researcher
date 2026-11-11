@@ -1,0 +1,223 @@
+[13:49:33] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[13:49:33] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[13:49:33] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[13:49:33] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[13:49:33] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[13:49:33] check gradient: analytic 3.2455640501e-01  finite-diff 3.2455640531e-01
+[13:49:33] ALL CHECKS PASSED
+[13:49:33] check kinetic edges 3x2 N=(2,2): max|K y - H_off y| = 3.55e-15
+[13:49:33] check kinetic edges 2x3 N=(2,1): max|K y - H_off y| = 1.33e-15
+[13:49:33] check exchange edges 2-site singlet: R = [-1.0000000000000004, -0.9999999999999996] (expect -1 each)
+[13:49:33] check exchange edges 4-ring: sum<S+S-+h.c.>/2 = -1.3333  from ED sum<S.S>-<SzSz> = -1.3332 (leading order in t/U)
+[13:49:33] check FRD-K gradient: analytic 7.8455276843e-01  finite-diff 7.8455276914e-01  |O-vs-grad| 2.2e-15  P=229
+[13:49:33] check FRD-X gradient: analytic -4.5582141315e-02  finite-diff -4.5582141173e-02  |O-vs-grad| 2.7e-15  P=229
+[13:49:33] ALL R2 CHECKS PASSED
+[13:49:33] check 3x2 obc/obc |G|=4 chi={'My': -1, 'Mx': -1} S=1: [H,U_g] 1.7e-16 idem 6.4e-17 sym 0.0e+00 [P,H] 9.7e-17 <psi0|P psi0> 1.000000000000 P_S idem 1.5e-16 [P_S,P_chi] 1.5e-16 ||P_S P_chi psi0 - psi0|| 1.5e-15
+[13:49:33] check 3x2 pbc/obc |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0: [H,U_g] 2.2e-16 idem 2.2e-16 sym 3.8e-18 [P,H] 9.1e-17 <psi0|P psi0> 1.000000000000 P_S idem 5.7e-17 [P_S,P_chi] 1.9e-16 ||P_S P_chi psi0 - psi0|| 7.9e-16
+[13:49:33] check 4x2 pbc/obc |G|=16 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0: [H,U_g] 2.1e-16 idem 2.4e-16 sym 1.1e-17 [P,H] 8.6e-17 <psi0|P psi0> 1.000000000000 P_S idem 1.1e-16 [P_S,P_chi] 2.2e-16 ||P_S P_chi psi0 - psi0|| 1.4e-14
+[13:49:33] check projected gradient ctrl mode G: analytic -4.0402149816e-01  finite-diff -4.0402149759e-01
+[13:49:33] check projected gradient ctrl mode GS: analytic -9.8589095888e-01  finite-diff -9.8589095954e-01
+[13:49:33] check projected O_chi ctrl: max rel err vs finite-diff 1.5e-10
+[13:49:33] check projected gradient frdK mode G: analytic 1.5285102345e-01  finite-diff 1.5285102339e-01
+[13:49:33] check projected gradient frdK mode GS: analytic 3.6382273822e-01  finite-diff 3.6382273816e-01
+[13:49:33] check projected O_chi frdK: max rel err vs finite-diff 1.7e-10
+[13:49:33] check projected gradient frdX mode G: analytic -9.6898651377e-02  finite-diff -9.6898651325e-02
+[13:49:33] check projected gradient frdX mode GS: analytic 8.7065227230e-03  finite-diff 8.7065230581e-03
+[13:49:33] check projected O_chi frdX: max rel err vs finite-diff 1.3e-10
+[13:49:34] check parameter match instance 0: ctrl H=32 P=4073; frdK H=47 P=4064; frdX H=47 P=4064
+[13:49:34] check parameter match instance 1: ctrl H=32 P=4070; frdK H=40 P=4054; frdX H=40 P=4054
+[13:49:35] check parameter match instance 2: ctrl H=32 P=4887; frdK H=55 P=4862; frdX H=55 P=4862
+[13:49:35] ALL R3 CHECKS PASSED
+[13:49:35] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:35] calibration E_sign(s_0) - E0 = 7.11e-15
+[13:49:35] arm ctrl_PS: width 4, n_params 199, SR shift 0.01
+[13:49:35] ctrl_PS: it     0  E = -5.21717541  |f| = 2.92e+00  (0.01 s/step)
+[13:49:35] ctrl_PS: it    39  E = -5.62649366  |f| = 5.80e-04  (0.01 s/step)
+[13:49:35] ctrl_PS   PS: dE_tot=0.00000 dE_sign=0.00000 f_E=0.000 w_sign=1.286e-32 S2=0.000 spread=2.5e-09
+[13:49:35] ctrl_PS sampled arm: sigma2=1.074e+01 kurt=1.700e+01 share_El=6.672e-02 share_O=1.504e-02 tail_El=2.304e+01 tail_O=6.015e+00 eta=2.556e+00 n_samples=4.000e+02
+[13:49:35] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_ctrl_PS_s1234_sh0.01.json
+[13:49:35] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:35] calibration E_sign(s_0) - E0 = 7.11e-15
+[13:49:35] arm frdK_PS: width 3, n_params 186, SR shift 0.01
+[13:49:35] frdK_PS: it     0  E = -5.21990117  |f| = 1.86e+00  (0.05 s/step)
+[13:49:37] frdK_PS: it    39  E = -5.62648629  |f| = 5.00e-04  (0.05 s/step)
+[13:49:37] frdK_PS   PS: dE_tot=0.00001 dE_sign=0.00000 f_E=0.000 w_sign=4.167e-32 S2=0.000 spread=1.0e-10 flip_weight=0.0000
+[13:49:37] frdK_PS  abl: dE_tot=0.06892 dE_sign=0.00000 f_E=0.000 w_sign=3.557e-32 S2=0.000 spread=5.2e-14
+[13:49:38] frdK_PS sampled arm: sigma2=4.814e-01 kurt=2.290e+03 share_El=3.807e-01 share_O=4.009e-02 tail_El=9.410e+01 tail_O=1.603e+01 eta=2.572e+00 n_samples=4.000e+02
+[13:49:38] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdK_PS_s1234_sh0.01.json
+[13:49:38] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:38] calibration E_sign(s_0) - E0 = 7.11e-15
+[13:49:38] arm frdX_PS: width 3, n_params 186, SR shift 0.01
+[13:49:38] frdX_PS: it     0  E = -5.21870142  |f| = 1.79e+00  (0.02 s/step)
+[13:49:39] frdX_PS: it    39  E = -5.62635042  |f| = 8.25e-04  (0.03 s/step)
+[13:49:39] frdX_PS   PS: dE_tot=0.00014 dE_sign=0.00000 f_E=0.000 w_sign=2.259e-32 S2=0.000 spread=5.7e-11 flip_weight=0.0000
+[13:49:39] frdX_PS  abl: dE_tot=0.00222 dE_sign=0.00000 f_E=0.000 w_sign=1.029e-32 S2=0.000 spread=3.2e-12
+[13:49:39] frdX_PS sampled arm: sigma2=3.396e-01 kurt=3.168e+02 share_El=2.025e-01 share_O=2.975e-02 tail_El=8.391e+01 tail_O=1.190e+01 eta=2.346e+00 n_samples=4.000e+02
+[13:49:39] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdX_PS_s1234_sh0.01.json
+[13:49:39] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:39] calibration E_sign(s_0) - E0 = 7.11e-15
+[13:49:39] arm ctrl_U: width 4, n_params 199, SR shift 0.01
+[13:49:39] ctrl_U: it     0  E = -4.24915663  |f| = 1.12e+00
+[13:49:39] ctrl_U: it    39  E = -5.45446059  |f| = 3.28e-01
+[13:49:39] ctrl_U    U: dE_tot=0.09492 dE_sign=0.01737 f_E=0.183 w_sign=4.072e-03 S2=0.101 spread=3.7e-14
+[13:49:39] ctrl_U   UG: dE_tot=0.01397 dE_sign=0.00209 f_E=0.149 w_sign=4.988e-04 S2=0.003 spread=3.8e-13
+[13:49:39] ctrl_U  UGS: dE_tot=0.01117 dE_sign=0.00000 f_E=0.000 w_sign=1.781e-32 S2=0.000 spread=4.0e-13
+[13:49:39] ctrl_U sampled arm: sigma2=5.114e-01 kurt=3.329e+05 share_El=4.402e-01 share_O=3.313e-01 tail_El=7.701e+01 tail_O=1.325e+02 eta=7.007e+00 n_samples=4.000e+02
+[13:49:39] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_ctrl_U_s1234_sh0.01.json
+[13:49:39] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:39] calibration E_sign(s_0) - E0 = 7.11e-15
+[13:49:39] arm frdK_U: width 3, n_params 186, SR shift 0.01
+[13:49:39] frdK_U: it     0  E = -4.25026151  |f| = 6.46e-01
+[13:49:40] frdK_U: it    39  E = -5.37071224  |f| = 4.78e-01
+[13:49:40] frdK_U    U: dE_tot=0.13591 dE_sign=0.04736 f_E=0.349 w_sign=1.192e-02 S2=0.069 spread=1.3e-14 flip_weight=0.0000
+[13:49:40] frdK_U   UG: dE_tot=0.06663 dE_sign=0.00476 f_E=0.071 w_sign=3.531e-04 S2=0.005 spread=2.1e-13 flip_weight=0.0002
+[13:49:40] frdK_U  UGS: dE_tot=0.06162 dE_sign=0.00000 f_E=0.000 w_sign=1.318e-32 S2=0.000 spread=5.8e-14 flip_weight=0.0001
+[13:49:40] frdK_U sampled arm: sigma2=9.164e-01 kurt=4.715e+04 share_El=6.451e-01 share_O=4.361e-02 tail_El=2.672e+01 tail_O=1.745e+01 eta=6.685e+00 n_samples=4.000e+02
+[13:49:40] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdK_U_s1234_sh0.01.json
+[13:49:40] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:40] calibration E_sign(s_0) - E0 = 7.11e-15
+[13:49:40] arm frdX_U: width 3, n_params 186, SR shift 0.01
+[13:49:40] frdX_U: it     0  E = -4.25057706  |f| = 6.43e-01
+[13:49:40] frdX_U: it    39  E = -5.35237093  |f| = 5.14e-01
+[13:49:40] frdX_U    U: dE_tot=0.19051 dE_sign=0.04473 f_E=0.235 w_sign=1.254e-02 S2=0.211 spread=4.7e-15 flip_weight=0.0000
+[13:49:40] frdX_U   UG: dE_tot=0.04818 dE_sign=0.00000 f_E=0.000 w_sign=1.577e-32 S2=0.001 spread=9.2e-14 flip_weight=0.0000
+[13:49:40] frdX_U  UGS: dE_tot=0.04648 dE_sign=0.00000 f_E=0.000 w_sign=2.301e-32 S2=0.000 spread=9.6e-14 flip_weight=0.0000
+[13:49:40] frdX_U sampled arm: sigma2=8.201e-01 kurt=4.439e+03 share_El=5.067e-01 share_O=4.503e-02 tail_El=4.094e+01 tail_O=1.801e+01 eta=6.064e+00 n_samples=4.000e+02
+[13:49:40] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdX_U_s1234_sh0.01.json
+[13:49:40] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:40] calibration E_sign(s_0) - E0 = 7.99e-15
+[13:49:40] arm ctrl_PS: width 4, n_params 199, SR shift 0.01
+[13:49:40] ctrl_PS: it     0  E = -5.22144942  |f| = 2.88e+00  (0.01 s/step)
+[13:49:41] ctrl_PS: it    39  E = -5.62013491  |f| = 1.15e-01  (0.01 s/step)
+[13:49:41] ctrl_PS   PS: dE_tot=0.00440 dE_sign=0.00000 f_E=0.000 w_sign=1.513e-32 S2=0.000 spread=1.8e-12
+[13:49:41] ctrl_PS sampled arm: sigma2=1.306e+01 kurt=1.309e+01 share_El=3.985e-02 share_O=2.288e-02 tail_El=1.430e+01 tail_O=9.153e+00 eta=4.095e+00 n_samples=4.000e+02
+[13:49:41] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_ctrl_PS_s2345_sh0.01.json
+[13:49:41] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:41] calibration E_sign(s_0) - E0 = 7.99e-15
+[13:49:41] arm frdK_PS: width 3, n_params 186, SR shift 0.01
+[13:49:41] frdK_PS: it     0  E = -5.21959738  |f| = 1.88e+00  (0.05 s/step)
+[13:49:43] frdK_PS: it    39  E = -5.62649427  |f| = 3.00e-04  (0.05 s/step)
+[13:49:43] frdK_PS   PS: dE_tot=0.00000 dE_sign=0.00000 f_E=0.000 w_sign=3.741e-32 S2=0.000 spread=2.0e-09 flip_weight=0.0000
+[13:49:43] frdK_PS  abl: dE_tot=0.00484 dE_sign=0.00000 f_E=0.000 w_sign=3.261e-32 S2=0.000 spread=3.7e-13
+[13:49:43] frdK_PS sampled arm: sigma2=3.029e-01 kurt=1.876e+03 share_El=2.987e-01 share_O=2.926e-02 tail_El=7.195e+01 tail_O=1.170e+01 eta=4.491e+00 n_samples=4.000e+02
+[13:49:43] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdK_PS_s2345_sh0.01.json
+[13:49:43] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:43] calibration E_sign(s_0) - E0 = 7.99e-15
+[13:49:43] arm frdX_PS: width 3, n_params 186, SR shift 0.01
+[13:49:43] frdX_PS: it     0  E = -5.21827377  |f| = 1.79e+00  (0.02 s/step)
+[13:49:44] frdX_PS: it    39  E = -5.62648762  |f| = 2.30e-03  (0.03 s/step)
+[13:49:44] frdX_PS   PS: dE_tot=0.00001 dE_sign=0.00000 f_E=0.000 w_sign=1.757e-32 S2=0.000 spread=3.3e-09 flip_weight=0.0000
+[13:49:44] frdX_PS  abl: dE_tot=0.10545 dE_sign=0.00000 f_E=0.000 w_sign=1.142e-32 S2=0.000 spread=5.9e-14
+[13:49:44] frdX_PS sampled arm: sigma2=1.351e+01 kurt=7.636e+00 share_El=2.035e-02 share_O=1.344e-02 tail_El=1.615e+01 tail_O=5.377e+00 eta=4.286e+00 n_samples=4.000e+02
+[13:49:44] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdX_PS_s2345_sh0.01.json
+[13:49:44] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:44] calibration E_sign(s_0) - E0 = 7.99e-15
+[13:49:44] arm ctrl_U: width 4, n_params 199, SR shift 0.01
+[13:49:44] ctrl_U: it     0  E = -4.25173887  |f| = 1.08e+00
+[13:49:44] ctrl_U: it    39  E = -5.46034800  |f| = 2.87e-01
+[13:49:44] ctrl_U    U: dE_tot=0.13679 dE_sign=0.02810 f_E=0.205 w_sign=8.377e-03 S2=0.212 spread=2.6e-14
+[13:49:44] ctrl_U   UG: dE_tot=0.01028 dE_sign=0.00000 f_E=0.000 w_sign=1.189e-32 S2=0.001 spread=9.5e-13
+[13:49:45] ctrl_U  UGS: dE_tot=0.00722 dE_sign=0.00000 f_E=0.000 w_sign=2.550e-33 S2=0.000 spread=6.2e-13
+[13:49:45] ctrl_U sampled arm: sigma2=5.929e-01 kurt=1.996e+04 share_El=3.591e-01 share_O=3.597e-01 tail_El=1.633e+01 tail_O=1.439e+02 eta=9.236e+00 n_samples=4.000e+02
+[13:49:45] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_ctrl_U_s2345_sh0.01.json
+[13:49:45] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:45] calibration E_sign(s_0) - E0 = 7.99e-15
+[13:49:45] arm frdK_U: width 3, n_params 186, SR shift 0.01
+[13:49:45] frdK_U: it     0  E = -4.25041052  |f| = 6.67e-01
+[13:49:45] frdK_U: it    39  E = -5.40868335  |f| = 6.17e-01
+[13:49:45] frdK_U    U: dE_tot=0.12941 dE_sign=0.04550 f_E=0.352 w_sign=1.254e-02 S2=0.084 spread=2.1e-14 flip_weight=0.0000
+[13:49:45] frdK_U   UG: dE_tot=0.06635 dE_sign=0.00000 f_E=0.000 w_sign=1.074e-32 S2=0.001 spread=1.2e-13 flip_weight=0.0000
+[13:49:45] frdK_U  UGS: dE_tot=0.06285 dE_sign=0.00000 f_E=0.000 w_sign=2.893e-32 S2=0.000 spread=2.4e-13 flip_weight=0.0000
+[13:49:45] frdK_U sampled arm: sigma2=6.936e-01 kurt=9.968e+03 share_El=6.174e-01 share_O=2.309e-02 tail_El=2.653e+01 tail_O=9.236e+00 eta=4.739e+00 n_samples=4.000e+02
+[13:49:45] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdK_U_s2345_sh0.01.json
+[13:49:45] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:45] calibration E_sign(s_0) - E0 = 7.99e-15
+[13:49:45] arm frdX_U: width 3, n_params 186, SR shift 0.01
+[13:49:45] frdX_U: it     0  E = -4.25025668  |f| = 6.41e-01
+[13:49:45] frdX_U: it    39  E = -5.36155230  |f| = 5.57e-01
+[13:49:45] frdX_U    U: dE_tot=0.17946 dE_sign=0.04933 f_E=0.275 w_sign=1.290e-02 S2=0.228 spread=2.0e-14 flip_weight=0.0000
+[13:49:45] frdX_U   UG: dE_tot=0.04232 dE_sign=0.00000 f_E=0.000 w_sign=4.354e-32 S2=0.000 spread=2.1e-13 flip_weight=0.0000
+[13:49:45] frdX_U  UGS: dE_tot=0.04140 dE_sign=0.00000 f_E=0.000 w_sign=1.781e-32 S2=0.000 spread=5.4e-13 flip_weight=0.0000
+[13:49:46] frdX_U sampled arm: sigma2=6.652e-01 kurt=1.691e+04 share_El=5.326e-01 share_O=2.349e-02 tail_El=1.283e+02 tail_O=9.395e+00 eta=5.227e+00 n_samples=4.000e+02
+[13:49:46] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdX_U_s2345_sh0.01.json
+[13:49:46] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:46] calibration E_sign(s_0) - E0 = 4.44e-15
+[13:49:46] arm ctrl_PS: width 4, n_params 199, SR shift 0.01
+[13:49:46] ctrl_PS: it     0  E = -5.22494012  |f| = 2.97e+00  (0.01 s/step)
+[13:49:46] ctrl_PS: it    39  E = -5.62640198  |f| = 1.94e-02  (0.01 s/step)
+[13:49:46] ctrl_PS   PS: dE_tot=0.00006 dE_sign=0.00000 f_E=0.000 w_sign=1.007e-32 S2=0.000 spread=1.2e-10
+[13:49:46] ctrl_PS sampled arm: sigma2=1.991e+01 kurt=3.808e+00 share_El=9.911e-03 share_O=1.746e-02 tail_El=7.041e+00 tail_O=6.984e+00 eta=2.803e+00 n_samples=4.000e+02
+[13:49:46] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_ctrl_PS_s3456_sh0.01.json
+[13:49:46] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:46] calibration E_sign(s_0) - E0 = 4.44e-15
+[13:49:46] arm frdK_PS: width 3, n_params 186, SR shift 0.01
+[13:49:46] frdK_PS: it     0  E = -5.21878067  |f| = 1.86e+00  (0.06 s/step)
+[13:49:48] frdK_PS: it    39  E = -5.62649457  |f| = 4.29e-04  (0.06 s/step)
+[13:49:48] frdK_PS   PS: dE_tot=0.00000 dE_sign=0.00000 f_E=0.000 w_sign=3.266e-32 S2=0.000 spread=5.3e-09 flip_weight=0.0000
+[13:49:48] frdK_PS  abl: dE_tot=0.12353 dE_sign=0.00912 f_E=0.074 w_sign=7.062e-04 S2=0.000 spread=4.3e-14
+[13:49:49] frdK_PS sampled arm: sigma2=1.792e+01 kurt=5.233e+00 share_El=2.214e-02 share_O=2.340e-02 tail_El=1.829e+01 tail_O=9.361e+00 eta=2.890e+00 n_samples=4.000e+02
+[13:49:49] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdK_PS_s3456_sh0.01.json
+[13:49:49] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:49] calibration E_sign(s_0) - E0 = 4.44e-15
+[13:49:49] arm frdX_PS: width 3, n_params 186, SR shift 0.01
+[13:49:49] frdX_PS: it     0  E = -5.21813768  |f| = 1.80e+00  (0.05 s/step)
+[13:49:50] frdX_PS: it    39  E = -5.62629015  |f| = 3.34e-03  (0.03 s/step)
+[13:49:50] frdX_PS   PS: dE_tot=0.00021 dE_sign=0.00000 f_E=0.000 w_sign=2.902e-32 S2=0.000 spread=2.6e-11 flip_weight=0.0000
+[13:49:50] frdX_PS  abl: dE_tot=0.00829 dE_sign=0.00000 f_E=0.000 w_sign=3.503e-32 S2=0.000 spread=3.2e-13
+[13:49:50] frdX_PS sampled arm: sigma2=2.984e+00 kurt=1.028e+02 share_El=2.166e-01 share_O=7.555e-02 tail_El=1.200e+02 tail_O=3.022e+01 eta=3.584e+00 n_samples=4.000e+02
+[13:49:50] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdX_PS_s3456_sh0.01.json
+[13:49:50] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:50] calibration E_sign(s_0) - E0 = 4.44e-15
+[13:49:50] arm ctrl_U: width 4, n_params 199, SR shift 0.01
+[13:49:50] ctrl_U: it     0  E = -4.25172005  |f| = 1.03e+00
+[13:49:50] ctrl_U: it    39  E = -5.53498608  |f| = 2.42e-01
+[13:49:50] ctrl_U    U: dE_tot=0.07866 dE_sign=0.01996 f_E=0.254 w_sign=5.363e-03 S2=0.108 spread=6.8e-14
+[13:49:50] ctrl_U   UG: dE_tot=0.01014 dE_sign=0.00516 f_E=0.509 w_sign=3.547e-04 S2=0.001 spread=1.4e-12
+[13:49:50] ctrl_U  UGS: dE_tot=0.00935 dE_sign=0.00516 f_E=0.552 w_sign=3.547e-04 S2=0.000 spread=8.6e-13
+[13:49:50] ctrl_U sampled arm: sigma2=3.993e-01 kurt=3.026e+07 share_El=5.394e-01 share_O=9.629e-02 tail_El=5.249e+01 tail_O=3.851e+01 eta=4.937e+00 n_samples=4.000e+02
+[13:49:50] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_ctrl_U_s3456_sh0.01.json
+[13:49:50] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:50] calibration E_sign(s_0) - E0 = 4.44e-15
+[13:49:50] arm frdK_U: width 3, n_params 186, SR shift 0.01
+[13:49:50] frdK_U: it     0  E = -4.25046958  |f| = 6.74e-01
+[13:49:51] frdK_U: it    39  E = -5.26044619  |f| = 1.22e+00
+[13:49:51] frdK_U    U: dE_tot=0.15474 dE_sign=0.04969 f_E=0.321 w_sign=1.228e-02 S2=0.030 spread=2.9e-14 flip_weight=0.0000
+[13:49:51] frdK_U   UG: dE_tot=0.09599 dE_sign=0.00664 f_E=0.069 w_sign=1.654e-03 S2=0.001 spread=3.7e-14 flip_weight=0.0000
+[13:49:51] frdK_U  UGS: dE_tot=0.09373 dE_sign=0.00664 f_E=0.071 w_sign=1.654e-03 S2=0.000 spread=3.8e-14 flip_weight=0.0000
+[13:49:51] frdK_U sampled arm: sigma2=1.038e+00 kurt=1.333e+06 share_El=5.945e-01 share_O=7.274e-02 tail_El=3.521e+02 tail_O=2.910e+01 eta=2.055e+01 n_samples=4.000e+02
+[13:49:51] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdK_U_s3456_sh0.01.json
+[13:49:51] instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3} D=225 |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 E0=-5.62649583 gap(fixed N)=0.6823 in-sector gap=2.8871
+[13:49:51] calibration E_sign(s_0) - E0 = 4.44e-15
+[13:49:51] arm frdX_U: width 3, n_params 186, SR shift 0.01
+[13:49:51] frdX_U: it     0  E = -4.25018804  |f| = 6.42e-01
+[13:49:51] frdX_U: it    39  E = -5.41620626  |f| = 3.60e-01
+[13:49:51] frdX_U    U: dE_tot=0.20072 dE_sign=0.04351 f_E=0.217 w_sign=1.162e-02 S2=0.212 spread=8.8e-15 flip_weight=0.0000
+[13:49:51] frdX_U   UG: dE_tot=0.03546 dE_sign=0.00000 f_E=0.000 w_sign=1.815e-32 S2=0.001 spread=1.3e-13 flip_weight=0.0005
+[13:49:51] frdX_U  UGS: dE_tot=0.03365 dE_sign=0.00000 f_E=0.000 w_sign=4.011e-32 S2=0.000 spread=2.1e-13 flip_weight=0.0004
+[13:49:51] frdX_U sampled arm: sigma2=8.408e-01 kurt=7.690e+04 share_El=3.926e-01 share_O=9.356e-02 tail_El=1.096e+01 tail_O=3.743e+01 eta=3.465e+00 n_samples=4.000e+02
+[13:49:51] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke/inst3_frdX_U_s3456_sh0.01.json
+P1.2 r3 aggregate: SIGN HALF ONLY (no same-sector competitor at the Hard-Core scale is claimed)
+pre-committed: informative iff med dE_sign(ctrl_PS) >= 0.01; per route X on informative instances: FAIL if rho_sign >= 0.9 or rho_tot > 1.1 or a sampled tail share (E_loc or O) of X is > 0.5 and > 2.0x the control's; PASS if guards & rho_sign <= 0.7 & rho_tot <= 1.0 & paired sign wins >= 2/3 of seeds & rho_vote <= 0.8 & sampling ok; else AMBIGUOUS
+
+instance 3 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'U': 8.0, 'tp': -0.3}  |G|=12 chi={'Tx': 1, 'My': 1, 'Mx': 1} S=0 in-sector gap=2.8871 (0.4812/site)  seeds=[1234, 2345, 3456]
+   ctrl_PS   PS: dE_sign med 0.00000 [min 0.00000, max 0.00000]  dE_tot med 0.00006  w_sign 1.286e-32  flip_weight nan  P=199
+   frdK_PS   PS: dE_sign med 0.00000 [min 0.00000, max 0.00000]  dE_tot med 0.00000  w_sign 3.741e-32  flip_weight 0.0000  P=186
+   frdK_PS  abl: dE_sign med 0.00000 [min 0.00000, max 0.00912]  dE_tot med 0.06892  w_sign 3.557e-32  flip_weight nan  P=186
+   frdX_PS   PS: dE_sign med 0.00000 [min 0.00000, max 0.00000]  dE_tot med 0.00014  w_sign 2.259e-32  flip_weight 0.0000  P=186
+   frdX_PS  abl: dE_sign med 0.00000 [min 0.00000, max 0.00000]  dE_tot med 0.00829  w_sign 1.142e-32  flip_weight nan  P=186
+    ctrl_U    U: dE_sign med 0.01996 [min 0.01737, max 0.02810]  dE_tot med 0.09492  w_sign 5.363e-03  flip_weight nan  P=199
+    ctrl_U   UG: dE_sign med 0.00209 [min 0.00000, max 0.00516]  dE_tot med 0.01028  w_sign 3.547e-04  flip_weight nan  P=199
+    ctrl_U  UGS: dE_sign med 0.00000 [min 0.00000, max 0.00516]  dE_tot med 0.00935  w_sign 1.781e-32  flip_weight nan  P=199
+    frdK_U    U: dE_sign med 0.04736 [min 0.04550, max 0.04969]  dE_tot med 0.13591  w_sign 1.228e-02  flip_weight 0.0000  P=186
+    frdK_U   UG: dE_sign med 0.00476 [min 0.00000, max 0.00664]  dE_tot med 0.06663  w_sign 3.531e-04  flip_weight 0.0000  P=186
+    frdK_U  UGS: dE_sign med 0.00000 [min 0.00000, max 0.00664]  dE_tot med 0.06285  w_sign 2.893e-32  flip_weight 0.0000  P=186
+    frdX_U    U: dE_sign med 0.04473 [min 0.04351, max 0.04933]  dE_tot med 0.19051  w_sign 1.254e-02  flip_weight 0.0000  P=186
+    frdX_U   UG: dE_sign med 0.00000 [min 0.00000, max 0.00000]  dE_tot med 0.04232  w_sign 1.815e-32  flip_weight 0.0000  P=186
+    frdX_U  UGS: dE_sign med 0.00000 [min 0.00000, max 0.00000]  dE_tot med 0.04140  w_sign 2.301e-32  flip_weight 0.0000  P=186
+  premise: med dE_sign(ctrl_PS) = 0.00000 -> NOT informative (projected control leaves no sign error to repair)
+  [frdK] rho_sign=1.000 rho_tot=0.022 paired wins 1/3 (need 2) rho_vote=0.667 tail share E_loc 0.299 (ctrl 0.040) O 0.029 (ctrl 0.017) [kurt ratio 143.29, eta ratio 1.03] guards=OK -> FAIL (instance not informative: not counted)
+           diag unprojected arms: rho_sign U=2.372  post-hoc P_chi=2.281  post-hoc P_S P_chi=1.000
+  [frdX] rho_sign=0.500 rho_tot=2.393 paired wins 2/3 (need 2) rho_vote=0.500 tail share E_loc 0.202 (ctrl 0.040) O 0.030 (ctrl 0.017) [kurt ratio 7.85, eta ratio 1.28] guards=OK -> FAIL (instance not informative: not counted)
+           diag unprojected arms: rho_sign U=2.241  post-hoc P_chi=0.000  post-hoc P_S P_chi=0.667
+ROUTE frdK: NO-TARGET (0 informative instance(s) < 2: the projected control leaves < 0.01 t sign error, so there is nothing for a sign-repair layer to fix at ED size)
+ROUTE frdX: NO-TARGET (0 informative instance(s) < 2: the projected control leaves < 0.01 t sign error, so there is nothing for a sign-repair layer to fix at ED size)

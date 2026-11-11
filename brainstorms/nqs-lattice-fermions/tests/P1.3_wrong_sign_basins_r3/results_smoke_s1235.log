@@ -1,0 +1,62 @@
+[13:51:29] args: {"instance": "smoke", "arm": "all", "task_id": -1, "seed": 1235, "width": 8, "budget": 60, "warmup": 10, "cycles": 1, "relax": 4, "null_k": 3, "probe_at": 20, "probe": 10, "lam": 2.0, "pretrain": 10, "acc_samples": 500, "final_window": 5, "sr_lr": 0.05, "sr_shift": 0.001, "sr_samples": 200, "chunk": 65536, "o_chunk": 256, "fn_iters": 2, "fn_floor": 0.001, "lbfgs_iters": 500, "min_seeds": 5, "out": "results_smoke/smoke_s1235.json", "overwrite": 1, "checks_only": 0, "aggregate": ""}
+[13:51:29] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[13:51:29] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[13:51:29] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[13:51:29] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[13:51:29] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[13:51:29] check gradient: analytic 2.3827536205e-01  finite-diff 2.3827536211e-01
+[13:51:29] ALL CHECKS PASSED
+[13:51:30] check smoke instance: E0=-8.9361601979 sector levels [-8.93616, -6.774781, -5.923371] chi={'Ty': 1, 'Tx': -1, 'My': 1, 'Mx': -1} S=0 same_sector=[True, True, True]
+[13:51:30] check P_S P_chi: idempotent 6.0e-16 symmetric 8.2e-19 [P,H] 4.7e-17
+[13:51:30] check P_S P_chi energy gradient: analytic -6.3688989900e-02 fd -6.3688990970e-02
+[13:51:30] check projected fidelity gradient: analytic -9.2191024529e-02 fd -9.2191024537e-02
+[13:51:30] check sampled energy -8.653562 +- 0.020472 vs exact -8.634204
+[13:51:30] check sampled fidelity 0.18111 +- 0.00918 vs exact 0.17694
+[13:51:30] check sampled 1-RDM: tr up 2.000000 (N_up=2) max dev from exact 4.783e-03
+[13:51:30] P1.3 r3 CHECKS PASSED
+[13:51:31] instance smoke D=4356 E0=-8.93616020 sector levels [-8.93616019787955, -6.7747812082463215, -5.923370835054876] gap_in=2.16138 chi={'Ty': 1, 'Tx': -1, 'My': 1, 'Mx': -1} S=0 same_sector=[True, True, True] (1s)
+[13:51:31]   U: it 0 E=-8.458301
+[13:51:40] ARM U: steps=60 e_var=0.28452 e_sign=0.04280 ov=[0.5023, 0.0017, 0.0002] trapped=False S2=1.03e+00 (10s)
+[13:51:40] ARM U->P: e_var=0.01954 e_sign=0.00003 ov=[0.9941, 0.0033, 0.0004]
+[13:51:40]   PSaf: it 0 E=-8.598716
+[13:51:44] ARM PSaf: steps=60 e_var=0.21826 e_sign=0.00328 ov=[0.9778, 0.0059, 0.0004] trapped=False S2=2.12e-32 (4s)
+[13:51:45]   PSfs: it 0 E=-5.437708
+[13:51:49] ARM PSfs: steps=60 e_var=0.13587 e_sign=0.00431 ov=[0.9816, 0.0052, 0.004] trapped=False S2=6.53e-32 (5s)
+[13:51:49]   PScdw: it 0 E=-8.598716
+[13:51:53] ARM PScdw: steps=60 e_var=0.24945 e_sign=0.00003 ov=[0.9739, 0.0079, 0.0] trapped=False S2=3.82e-32 (4s)
+[13:51:53]   PW0 pre: it 0 E=-8.598716
+[13:51:54]   PW0: it 0 E=-8.132138
+[13:51:58] ARM PW0: steps=60 e_var=0.05346 e_sign=0.00000 ov=[0.996, 0.0, 0.0003] trapped=False S2=3.54e-32 (5s)
+[13:51:58]   PW1 pre: it 0 E=-8.598716
+[13:51:59]   PW1: it 0 E=-5.842249
+[13:52:06] ARM PW1: steps=60 e_var=0.14047 e_sign=0.00000 ov=[0.9565, 0.0374, 0.0] trapped=False S2=3.76e-32 (8s)
+[13:52:06]   N0: it 0 E=-5.437708
+[13:52:07]   N1: it 0 E=-7.567388
+[13:52:08]   N2: it 0 E=-7.580087
+[13:52:09]   accept: start0=-6.74622+-0.23649(ex -6.99541) start1=-6.89953+-0.23958(ex -6.95570) start2=-6.29999+-0.29242(ex -6.79713) -> start0 (exact: start0)
+[13:52:09]   N: it 0 E=-6.995410
+[13:52:13] ARM N: steps=60 e_var=0.34117 e_sign=0.00536 ov=[0.9428, 0.0318, 0.0034] trapped=False S2=2.70e-32 (6s)
+[13:52:13]   A: it 0 E=-8.598716
+[13:52:14]   A stay: it 0 E=-7.490022
+[13:52:15]   A sno: it 0 E=4.194426
+[13:52:15]   A swap_u: it 0 E=1.760990
+[13:52:15]   A swap_d: it 0 E=1.795442
+[13:52:16]   A swap_ud: it 0 E=4.796426
+[13:52:16]   accept: stay=-8.05216+-0.17719(ex -7.81211) sno=-4.87725+-0.26035(ex -4.85245) swap_u=-7.08051+-0.22329(ex -7.07006) swap_d=-1.63496+-0.30210(ex -1.25919) swap_ud=-4.55089+-0.23460(ex -4.87865) -> stay (exact: stay)
+[13:52:16]   A: it 0 E=-7.812111
+[13:52:23] ARM A: steps=60 e_var=0.38766 e_sign=0.00094 ov=[0.9054, 0.0419, 0.0388] trapped=False S2=2.97e-32 (11s)
+[13:52:24]   O a: it 0 E=-8.598716
+[13:52:27]   O probe: it 0 E=-7.593249
+[13:52:28]   O a relax: it 0 E=-7.792076
+[13:52:29]   O b relax: it 0 E=-8.366960
+[13:52:29]   accept: a=-8.10455+-0.13743(ex -7.97491) b=-7.93913+-0.17798(ex -8.10082) -> a (exact: b)
+[13:52:29]   O: it 0 E=-7.974906
+[13:52:33] ARM O: steps=60 e_var=0.41270 e_sign=0.00709 ov=[0.9542, 0.0068, 0.0] trapped=False S2=4.24e-32 (9s)
+[13:52:33]   O a: it 0 E=-8.598716
+[13:52:34]   O probe: it 0 E=-7.593249
+[13:52:35]   O a relax: it 0 E=-7.792076
+[13:52:36]   O b relax: it 0 E=-6.929368
+[13:52:36]   accept: a=-8.10455+-0.13743(ex -7.97491) b=-7.93151+-0.15555(ex -7.86554) -> a (exact: a)
+[13:52:37]   O: it 0 E=-7.974906
+[13:52:50] ARM O0: steps=60 e_var=0.41270 e_sign=0.00709 ov=[0.9542, 0.0068, 0.0] trapped=False S2=4.24e-32 (17s)
+[13:52:50] wrote results_smoke/smoke_s1235.json

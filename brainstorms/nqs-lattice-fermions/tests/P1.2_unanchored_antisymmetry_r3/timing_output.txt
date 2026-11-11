@@ -1,0 +1,36 @@
+[13:50:53] timing_ctrl_PS: it     0  E = -7.70638742  |f| = 3.68e+00  (4.34 s/step)
+[13:50:56] timing_ctrl_PS: it     1  E = -4.86855311  |f| = 1.03e+01  (3.66 s/step)
+[13:50:57] TIMING instance 0 ctrl_PS: 4.00 s/step (width 32, P=4073)
+[13:51:06] timing_frdK_PS: it     0  E = -7.71250122  |f| = 1.75e+00  (8.81 s/step)
+[13:51:13] timing_frdK_PS: it     1  E = -7.58953604  |f| = 3.05e+00  (8.14 s/step)
+[13:51:15] TIMING instance 0 frdK_PS: 9.03 s/step (width 47, P=4064)
+[13:51:19] timing_frdX_PS: it     0  E = -7.71535299  |f| = 1.59e+00  (4.09 s/step)
+[13:51:26] timing_frdX_PS: it     1  E = -7.89235349  |f| = 1.91e+00  (5.37 s/step)
+[13:51:28] TIMING instance 0 frdX_PS: 6.20 s/step (width 47, P=4064)
+[13:51:34] timing_ctrl_U: it     0  E = -7.20152207  |f| = 2.24e+00
+[13:51:38] timing_ctrl_U: it     1  E = -1.83960415  |f| = 1.23e+01
+[13:51:39] TIMING instance 0 ctrl_U: 5.49 s/step (width 32, P=4073)
+[13:51:44] timing_frdK_U: it     0  E = -7.20381043  |f| = 1.16e+00
+[13:51:49] timing_frdK_U: it     1  E = -7.64619431  |f| = 1.14e+00
+[13:51:50] TIMING instance 0 frdK_U: 5.74 s/step (width 47, P=4064)
+[13:51:54] timing_frdX_U: it     0  E = -7.20546375  |f| = 1.07e+00
+[13:51:59] timing_frdX_U: it     1  E = -7.61963009  |f| = 8.01e-01
+[13:52:00] TIMING instance 0 frdX_U: 4.96 s/step (width 47, P=4064)
+[13:54:52] timing_ctrl_PS: it     0  E = -6.65813741  |f| = 2.46e+00  (8.59 s/step)
+[13:55:02] timing_ctrl_PS: it     1  E = -2.37242385  |f| = 1.89e+01  (9.35 s/step)
+[13:55:04] TIMING instance 2 ctrl_PS: 10.35 s/step (width 32, P=4887)
+[13:55:33] timing_frdK_PS: it     0  E = -6.66209672  |f| = 9.63e-01  (28.92 s/step)
+[13:55:59] timing_frdK_PS: it     1  E = -6.80971062  |f| = 1.19e+00  (27.39 s/step)
+[13:56:04] TIMING instance 2 frdK_PS: 30.23 s/step (width 55, P=4862)
+[13:56:18] timing_frdX_PS: it     0  E = -6.66075710  |f| = 8.99e-01  (13.90 s/step)
+[13:56:32] timing_frdX_PS: it     1  E = -6.76506210  |f| = 1.17e+00  (13.79 s/step)
+[13:56:36] TIMING instance 2 frdX_PS: 15.58 s/step (width 55, P=4862)
+[13:56:44] timing_ctrl_U: it     0  E = -6.34555126  |f| = 1.50e+00
+[13:56:53] timing_ctrl_U: it     1  E = 1.17557691  |f| = 1.43e+01
+[13:56:55] TIMING instance 2 ctrl_U: 9.65 s/step (width 32, P=4887)
+[13:57:09] timing_frdK_U: it     0  E = -6.35399174  |f| = 5.98e-01
+[13:57:22] timing_frdK_U: it     1  E = -6.65613137  |f| = 7.95e-01
+[13:57:26] TIMING instance 2 frdK_U: 15.63 s/step (width 55, P=4862)
+[13:57:36] timing_frdX_U: it     0  E = -6.35371362  |f| = 5.85e-01
+[13:57:46] timing_frdX_U: it     1  E = -6.65426904  |f| = 6.76e-01
+[13:57:49] TIMING instance 2 frdX_U: 11.57 s/step (width 55, P=4862)

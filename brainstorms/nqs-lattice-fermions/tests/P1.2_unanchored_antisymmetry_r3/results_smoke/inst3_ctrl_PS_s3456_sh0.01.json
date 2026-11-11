@@ -1,0 +1,135 @@
+{
+ "params": {
+  "task_id": -1,
+  "instance": 3,
+  "seed": 3456,
+  "arm": "ctrl_PS",
+  "sr_shift": 0.01,
+  "ctrl_width": 4,
+  "sr_iters": 40,
+  "sr_lr": 0.05,
+  "sr_samples": 150,
+  "chunk": 65536,
+  "o_chunk": 16,
+  "lbfgs_iters": 400,
+  "fn_iters": 3,
+  "fn_floor": 0.001,
+  "nb_diag": 2,
+  "ns_diag": 200,
+  "out_dir": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results_smoke",
+  "overwrite": 1,
+  "mode": "run",
+  "aggregate": "",
+  "final": 0
+ },
+ "instance": 3,
+ "arm": "ctrl_PS",
+ "route": "ctrl",
+ "pmode": "PS",
+ "seed": 3456,
+ "shift": 0.01,
+ "width": 4,
+ "n_params": 199,
+ "ed_levels": [
+  -5.626495825504258,
+  -4.944174688230718,
+  -4.944174688230716
+ ],
+ "hard_core": {
+  "levels3": [
+   -5.626495825504258,
+   -4.944174688230718,
+   -4.944174688230716
+  ],
+  "gap_fixedN": 0.68232113727354,
+  "irrep": {
+   "Tx": 1,
+   "My": 1,
+   "Mx": 1
+  },
+  "S_psi0": 0.0,
+  "G": 12,
+  "in_sector_levels": [
+   -5.626495825504353,
+   -2.739403432773405
+  ],
+  "in_sector_gap": 2.887092392730948,
+  "in_sector_gap_per_site": 0.481182065455158,
+  "note": "sign half only: no same-sector competitor at the Hard-Core scale is claimed"
+ },
+ "calib_err": 4.440892098500626e-15,
+ "train_seconds": 0.37099218368530273,
+ "budgets": {
+  "PS": {
+   "E": -5.626436940236032,
+   "E0": -5.626495825504258,
+   "dE_tot": 5.888526822594997e-05,
+   "E_sign_up": -5.626495825504256,
+   "E_sign_src": "lbfgsb",
+   "E_sign": -5.626495825504256,
+   "E_lbfgsb": -5.626495825504256,
+   "E_FN": -5.614811574675564,
+   "E_FN_var": -5.617554686215477,
+   "fn_history": [
+    -4.888463037531808,
+    -5.558587644213298,
+    -5.603071844436656,
+    -5.614811574675564
+   ],
+   "f_E_FN": 198.4240062193588,
+   "E_stoq": -6.411954088738685,
+   "dE_sign": 1.7763568394002505e-15,
+   "dE_amp": 5.8885268224173615e-05,
+   "f_E_up": 3.016640482275044e-11,
+   "f_E": 3.016640482275044e-11,
+   "f_E_lo": 0.0,
+   "spread": 1.2066561929100177e-10,
+   "n_converged": 4,
+   "E_hyb_signtheta_ampexact": -5.626495825504256,
+   "E_hyb_signexact_amptheta": -5.626436940236032,
+   "w_sign": 1.0070534884286301e-32,
+   "eC_tot": 7.813861145792439e-05,
+   "eC_sign": 3.469446951953614e-18,
+   "f_C": 4.440118511476008e-14,
+   "sign_starts": [
+    [
+     "abs_theta",
+     -5.626495825504255,
+     13,
+     true
+    ],
+    [
+     "abs_exact",
+     -5.626495825504256,
+     0,
+     true
+    ],
+    [
+     "uniform",
+     -5.626495825504251,
+     35,
+     true
+    ],
+    [
+     "abs_fixed_node",
+     -5.626495825504249,
+     25,
+     true
+    ]
+   ],
+   "S2": 2.0914236625502524e-32,
+   "ov0": 0.9999859818206371
+  }
+ },
+ "E_select": -5.626436940236032,
+ "sampled": {
+  "sigma2": 19.90598744786159,
+  "kurt": 3.8075084992389545,
+  "share_El": 0.009911288531867365,
+  "share_O": 0.017460689261069876,
+  "tail_El": 7.040582309577974,
+  "tail_O": 6.984275704427951,
+  "eta": 2.802811535843494,
+  "n_samples": 400
+ }
+}

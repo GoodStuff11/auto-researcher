@@ -1,0 +1,5 @@
+2x3 Ne=6 U=6 t'=-0.3 dim=400 E0=-6.43831205
+mult=(2, 2, 1, 1) hidden=8 maxiter=150 P=960 D=13 eps=7.19e-03 iters=150 (7s)
+mult=(2, 2, 1, 1) hidden=8 maxiter=3000 P=960 D=13 eps=1.79e-15 iters=370 (14s)
+mult=(4, 4, 2, 2) hidden=8 maxiter=3000 P=3230 D=26 eps=3.72e-15 iters=473 (57s)
+mult=(2, 2, 1, 1) hidden=32 maxiter=3000 P=3288 D=13 eps=1.66e-15 iters=425 (20s)

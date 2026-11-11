@@ -1,0 +1,16 @@
+[13:50:33] args: {"instance": "smoke", "arm": "all", "task_id": -1, "seed": 1234, "width": 8, "budget": 60, "warmup": 10, "cycles": 1, "relax": 4, "null_k": 3, "probe_at": 20, "probe": 10, "lam": 2.0, "pretrain": 10, "acc_samples": 500, "final_window": 5, "sr_lr": 0.05, "sr_shift": 0.001, "sr_samples": 200, "chunk": 65536, "o_chunk": 256, "fn_iters": 2, "fn_floor": 0.001, "lbfgs_iters": 500, "min_seeds": 5, "out": "results_smoke/smoke_s1234.json", "overwrite": 1, "checks_only": 0, "aggregate": ""}
+[13:50:33] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[13:50:33] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[13:50:33] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[13:50:33] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[13:50:33] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[13:50:33] check gradient: analytic 3.2455640501e-01  finite-diff 3.2455640531e-01
+[13:50:33] ALL CHECKS PASSED
+[13:50:34] check smoke instance: E0=-8.9361601979 sector levels [-8.93616, -6.774781, -5.923371] chi={'Ty': 1, 'Tx': -1, 'My': 1, 'Mx': -1} S=0 same_sector=[True, True, True]
+[13:50:34] check P_S P_chi: idempotent 5.4e-16 symmetric 2.5e-19 [P,H] 4.3e-17
+[13:50:34] check P_S P_chi energy gradient: analytic 3.3139912112e-02 fd 3.3139913036e-02
+[13:50:34] check projected fidelity gradient: analytic -1.2876031273e-02 fd -1.2876031304e-02
+[13:50:34] check sampled energy -8.562766 +- 0.026046 vs exact -8.570935
+[13:50:34] check sampled fidelity 0.23556 +- 0.00975 vs exact 0.24812
+[13:50:34] check sampled 1-RDM: tr up 2.000000 (N_up=2) max dev from exact 6.485e-03
+[13:50:34] P1.3 r3 CHECKS PASSED

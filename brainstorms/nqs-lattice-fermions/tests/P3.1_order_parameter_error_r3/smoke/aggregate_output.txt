@@ -1,0 +1,45 @@
+===== mode exact =====
+instance 3: states 30, scored 15 over 3 seeds; a0=+1.06301e-02; ECC a0_hat=+1.07542e-02; ZV a0_hat=+1.06026e-02
+         F_P n=3 med delta=-4.76e-05 ov0=0.99058 med ratio dhat/delta: ECC=-1.31 ZR=+0.88 ZRO=+0.87 L1=+2.82 SMA=+1.71  omega_k=22.768  ZR capture=0.98
+        F_PS n=3 med delta=-2.50e-05 ov0=0.99957 med ratio dhat/delta: ECC=-0.61 ZR=+1.08 ZRO=+1.08 L1=+1.46 SMA=+0.83  omega_k=10.550  ZR capture=1.00
+       PS_w8 n=3 med delta=+1.81e-04 ov0=0.98217 med ratio dhat/delta: ECC=+1.91 ZR=+1.97 ZRO=+1.95 L1=+1.36 SMA=+1.87  omega_k=24.358  ZR capture=0.99
+    PS_w8@10 n=3 med delta=+3.13e-04 ov0=0.94309 med ratio dhat/delta: ECC=+3.23 ZR=+2.09 ZRO=+2.20 L1=+1.57 SMA=+3.57  omega_k=41.256  ZR capture=1.00
+        P_w2 n=3 med delta=+5.26e-04 ov0=0.94824 med ratio dhat/delta: ECC=+1.02 ZR=+1.46 ZRO=+1.68 L1=+1.30 SMA=+0.99  omega_k=13.012  ZR capture=0.88
+     P_w2@10 n=3 med delta=+1.79e-03 ov0=0.82465 med ratio dhat/delta: ECC=+1.02 ZR=+1.85 ZRO=+2.16 L1=+1.45 SMA=+1.08  omega_k=13.023  ZR capture=0.97
+        P_w8 n=3 med delta=+4.11e-04 ov0=0.96894 med ratio dhat/delta: ECC=+0.90 ZR=+1.29 ZRO=+1.48 L1=+1.09 SMA=+0.84  omega_k=11.515  ZR capture=0.94
+     P_w8@10 n=3 med delta=+2.13e-03 ov0=0.80371 med ratio dhat/delta: ECC=+1.00 ZR=+2.79 ZRO=+1.99 L1=+1.38 SMA=+1.19  omega_k=12.767  ZR capture=nan
+       UP_w8 n=3 med delta=+2.74e-04 ov0=0.98128 med ratio dhat/delta: ECC=+0.67 ZR=+1.13 ZRO=+1.27 L1=+1.22 SMA=+0.62  omega_k=8.503  ZR capture=0.91  [reported]
+        U_w8 n=3 med delta=-1.25e-02 ov0=0.24330 med ratio dhat/delta: ECC=-0.12 ZR=+0.45 ZRO=-7.46 L1=-0.19 SMA=-0.23  omega_k=-1.576  ZR capture=1.64  [reported]
+arm   M      G      Cov(NNBF)  spearman  n_scored   (units=3)
+ECC  0.800  0.067  1.000      +0.868    15
+ZR   0.667  0.000  1.000      +0.921    15
+SD   0.167  0.000  1.000      +0.750    15
+ZV   0.750  0.133  1.000      +0.700    15
+L1   1.000  0.000  1.000      +0.886    15
+SMA  0.800  0.067  1.000      +0.864    15
+KR2  1.000  0.000  1.000      +0.950    15
+ZRO  0.600  0.000  1.000      +0.904    15
+===== mode mc =====
+instance 3: states 30, scored 15 over 3 seeds; a0=+1.06301e-02; ECC a0_hat=+1.07567e-02; ZV a0_hat=+1.05318e-02
+         F_P n=3 med delta=-4.76e-05 ov0=0.99058 med ratio dhat/delta: ECC=-1.18 ZR=+0.14 ZRO=+0.87 L1=+2.82 SMA=+1.71  omega_k=22.768  ZR capture=0.98
+        F_PS n=3 med delta=-2.50e-05 ov0=0.99957 med ratio dhat/delta: ECC=+0.46 ZR=-1.81 ZRO=+1.08 L1=+1.46 SMA=+0.83  omega_k=10.550  ZR capture=1.00
+       PS_w8 n=3 med delta=+1.81e-04 ov0=0.98217 med ratio dhat/delta: ECC=+2.01 ZR=+1.78 ZRO=+1.95 L1=+1.36 SMA=+1.87  omega_k=24.358  ZR capture=0.99
+    PS_w8@10 n=3 med delta=+3.13e-04 ov0=0.94309 med ratio dhat/delta: ECC=+3.52 ZR=+2.48 ZRO=+2.20 L1=+1.57 SMA=+3.57  omega_k=41.256  ZR capture=1.00
+        P_w2 n=3 med delta=+5.26e-04 ov0=0.94824 med ratio dhat/delta: ECC=+1.11 ZR=+1.56 ZRO=+1.68 L1=+1.30 SMA=+0.99  omega_k=13.012  ZR capture=0.88
+     P_w2@10 n=3 med delta=+1.79e-03 ov0=0.82465 med ratio dhat/delta: ECC=+1.01 ZR=+1.89 ZRO=+2.16 L1=+1.45 SMA=+1.08  omega_k=13.023  ZR capture=0.97
+        P_w8 n=3 med delta=+4.11e-04 ov0=0.96894 med ratio dhat/delta: ECC=+0.67 ZR=+1.06 ZRO=+1.48 L1=+1.09 SMA=+0.84  omega_k=11.515  ZR capture=0.94
+     P_w8@10 n=3 med delta=+2.13e-03 ov0=0.80371 med ratio dhat/delta: ECC=+1.03 ZR=+2.90 ZRO=+1.99 L1=+1.38 SMA=+1.19  omega_k=12.767  ZR capture=nan
+       UP_w8 n=3 med delta=+2.74e-04 ov0=0.98128 med ratio dhat/delta: ECC=+1.03 ZR=+1.51 ZRO=+1.27 L1=+1.22 SMA=+0.62  omega_k=8.503  ZR capture=0.91  [reported]
+        U_w8 n=3 med delta=-1.25e-02 ov0=0.24330 med ratio dhat/delta: ECC=-0.12 ZR=+0.29 ZRO=-7.46 L1=-0.19 SMA=-0.23  omega_k=-1.576  ZR capture=1.64  [reported]
+arm   M      G      Cov(NNBF)  spearman  n_scored   (units=3)
+ECC  0.800  0.067  1.000      +0.818    15
+ZR   0.667  0.000  1.000      +0.921    15
+SD   0.000  0.000  1.000      +0.821    15
+ZV   0.800  0.133  1.000      +0.679    15
+L1   1.000  0.000  1.000      +0.886    15
+SMA  0.800  0.067  1.000      +0.864    15
+KR2  1.000  0.000  1.000      +0.950    15
+ZRO  0.600  0.000  1.000      +0.904    15
+ECC: M=0.800 vs best control L1 M=1.000; paired median Delta=-0.200 [90% -0.333,+0.000] wins/losses 0/2; per-instance 3:-0.20; G=0.067 Cov=1.000 -> FAIL
+ZR: M=0.667 vs best control L1 M=1.000; paired median Delta=-0.333 [90% -0.400,-0.250] wins/losses 0/3; per-instance 3:-0.33; G=0.000 Cov=1.000 -> FAIL (premise: oracle first-order response does not track)
+VERDICT (mc mode): ECC (route 3.1) = FAIL;  ZR (route 3.2) = FAIL (premise: oracle first-order response does not track)

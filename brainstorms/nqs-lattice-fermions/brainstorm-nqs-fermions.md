@@ -157,9 +157,9 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | Leaf | State | Blocked on | Running job / agent |
 | :--- | :--- | :--- | :--- |
 | P1.1 | RESULT (PASS, qualified) | nothing | none |
-| P1.1-P | SUBMITTED | nothing | Slurm 407525 (18 tasks) |
-| P1.2 | MUTATE (round 3) | nothing (P1.1-P verdict changes interpretation only; broadcast on arrival) | round-3 worker |
-| P1.3 | MUTATE (round 3) | nothing (as for P1.2) | round-3 worker |
+| P1.1-P | RESULT on instance 1 (SYMMETRY-DOMINATED); instances 0 and 2 running | nothing | Slurm 407525 (17 tasks left) |
+| P1.2 | CRITIC (round 3) | nothing | per-leaf critic |
+| P1.3 | CRITIC (round 3) | nothing | per-leaf critic |
 | P2.1 | MUTATE (round 3) | nothing | round-3 worker |
 | P2.2 | MUTATE (round 3) | nothing | round-3 worker |
 | P3.1 | MUTATE (round 3) | nothing | round-3 worker |
@@ -231,6 +231,20 @@ Global verdict **PASS** on all three pre-committed $4\times3$ PBC clusters ($t'=
 * **Caveats**:
     * The rigorous lower bound $f_E^{\mathrm{lo}}$ is 0 on every instance, so the PASS rests on the multi-start upper estimate. All four starts, including the fixed-node one, agree to $10^{-13}$.
     * The first instance passes only narrowly (0.607).
+    * **P1.1-P interim result (2026-11-11, job 407525; instance 1 complete, instances 0 and 2 running)**: on $N_\uparrow=N_\downarrow=4$, width 32, medians over 3 seeds:
+
+| Arm | $\Delta E_{\mathrm{tot}}$ | $\Delta E_{\mathrm{sign}}$ | $f_E$ | $f_C$ | overlap with $\psi_0$ |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| U (unprojected, P1.1 protocol) | 0.119 | 0.082 | 0.69 | 0.91 | 0.28 |
+| U→P (post-hoc space-group projection) | 0.072 | 0.016 | 0.23 | 0.30 | 0.92 |
+| P (trained with projection) | $3\times10^{-5}$ | $<10^{-5}$ | 0.002 | 0.07 | 1.000 |
+| P with exact $P_S$ | $1\times10^{-5}$ | $<10^{-5}$ | 0.001 | 0.04 | 1.000 |
+
+  On this instance the pre-committed rule returns **SYMMETRY-DOMINATED**, and the width-32 U arm reproduces P1.1 to within 1%. Interim logs on the two $5+5$ instances show projected width-8 training ending within $3\times10^{-3}$ ($U=8$) and $3\times10^{-4}$ ($U=4$) of $E_0$; the final verdict awaits their budgets.
+  * **Consequence (domino)**: on 4×3 PBC clusters the "sign is the binding error" conclusion is a symmetry-contamination effect. A symmetry-projected NNBF leaves essentially no sign error. Any route tested there against a projected control has nothing to improve.
+  * **Broadcast**: sent to the running round-3 workers (P2.1, P3.1, P3.2, P4.1, P4.2). They are to add premise gates and move to instances where the projected control keeps measurable error, such as lower-symmetry clusters or larger sampled systems.
+  * **New anti-pattern**: testing a sign layer, basin escape or error estimator on clusters where the symmetry-projected control is already near-exact.
+  * **Remaining live question**: does any nodal error survive projection where projection is weaker (open or cylinder boundaries, ladders) or the system is larger (P1.1's size-transfer gap)?
     * **Qualification (2026-11-11, from the P1.3 round-2 pre-diagnostic)**: on the $N_\uparrow=N_\downarrow=4$ instance most of the NNBF sign error is symmetry contamination inherited from the broken-symmetry UHF start, not an intrinsic nodal error. P1.1's NNBF is unprojected.
         * Evidence: a width-32 NNBF after 400 plain-SR steps has $E_{\mathrm{sign}}-E_0=0.084$ and overlap $0.27$ with $\psi_0$. Projecting it onto $\psi_0$'s irrep (translations and mirrors) lowers $E_{\mathrm{sign}}-E_0$ to $0.019$, a 77% reduction (`tests/P1.3_wrong_sign_basins_r2/results_prediag_S400.log`).
         * Error character differs by instance. On this instance the wrong-sign weight is high ($w\approx0.20$ at every width, inherited from UHF's 0.32). The two $5+5$ instances have low-weight, near-node errors ($w=0.006$–$0.03$).

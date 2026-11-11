@@ -1,0 +1,10 @@
+# Interactive node kim-compute-04, 8 threads, load average 90 on 20 CPUs (shared with other agents);
+# instance c1 (D=245025), NNBF width 32, P_S P_chi projected SR step:
+proj step 8.47s
+proj step 7.33s
+proj step 10.48s
+accept per state 0.76s
+# Component breakdown in the same contended session: amplitudes 0.46s, P_chi 0.11s, P_S 0.02s,
+# exact force 1.09s, projected O_P for 2000 samples 1.28s.
+# Uncontended production reference: P1.1-P job 407525 (16 CPUs, kim) ran projected SR of width-32
+# NNBF on this D at 1.64 s/step (P1.1P_proj_407525_7.out). The P_S factor adds ~0.02 s.
