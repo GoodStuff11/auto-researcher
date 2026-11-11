@@ -8,7 +8,7 @@
 #   sfb (Route 4.1: charge NNBF + one sublattice spin feature, exact S by bucketing), nnbf_SG (control).
 # Array 0-14: arm = task / 3, seed = task % 3. Run the pilot first (seed 0 of every arm):
 #   sbatch --array=0,3,6,9,12 submit_test.sbatch      then the rest:  sbatch --array=1,2,4,5,7,8,10,11,13,14 submit_test.sbatch
-# Requires results/psi0_L4x3xobcobc_N10_U8_tp-0.25.npz from submit_agp.sbatch (job 411774); otherwise each task
+# Requires results/psi0_L4x3xobcobc_N10_U8_tp-0.25.npz from submit_agp.sbatch (job 411996); otherwise each task
 # recomputes ED (~minutes). Measured energy+gradient: 4.9 s (tocchio) ... 11.8 s (sfb) on 8 CPUs
 # (logs/timing_output.txt) -> <= ~7.5 h for 2000 L-BFGS iterations.
 # Afterwards (login node): python3 r4_test.py --mode report --Ne 10

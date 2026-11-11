@@ -65,7 +65,9 @@ Usage
            per-c tabular families tocchio K = 1, K = 2 and projected UHF (che tabular) to psi_0's spin
            factor chi_c; reports per-N_s medians / minima, the weighted infidelity
            1 - sum_c p_c F_c and the energy error of the assembled tabular state. --agp-restarts (3),
-           --agp-maxiter (3000), --agp-families (tocchio1,tocchio2,puhf). Writes
+           --agp-maxiter (3000), --agp-families (tocchio1,tocchio2,puhf), --agp-min-Ns (0): groups with
+           N_s below it are not fitted and count as F_c = 1 (only valid where --mode dims shows local
+           completeness of every family, i.e. N_s <= 6). Writes
            <outdir>/agp_<tag>.json. Slurm (submit_agp.sbatch) for the 4x3 open clusters.
   run    : train ONE arm (--ansatz in tocchio, kagp2, che, sfb, nnbf_SG) with P_G (and P_S where the
            arm needs it) on the production instance, L-BFGS with exact gradient, --maxiter (2000),
@@ -681,8 +683,11 @@ def agp(a):
         row = dict(Ns=Ns, nc=int(S.shape[0]), nc_weighted=int(keep.sum()), weight=float(pc.sum()),
                    singlet_dim=catalan(gdat["m"]), orbit=int(S.shape[1]))
         for f in fams:
-            if S.shape[1] == 1 or keep.sum() == 0:
+            if S.shape[1] == 1 or keep.sum() == 0 or Ns < a.agp_min_Ns:
+                # orbit of size 1, no weight, or N_s below --agp-min-Ns (locally complete by --mode dims):
+                # chi itself is used (F_c = 1); row["skipped"] records it
                 Fc = np.ones(S.shape[0]); w = chi.copy()
+                row["skipped"] = bool(Ns < a.agp_min_Ns and S.shape[1] > 1)
             else:
                 Fc = np.ones(S.shape[0]); w = chi.copy()
                 # split by number of occupied sites (doublon count fixed by N_s at fixed N_e, so one block)
@@ -882,6 +887,7 @@ def parse_args(argv=None):
     p.add_argument("--sfb-max-Lx", type=int, default=6, dest="sfb_max_Lx")
     p.add_argument("--agp-restarts", type=int, default=3, dest="agp_restarts")
     p.add_argument("--agp-maxiter", type=int, default=3000, dest="agp_maxiter")
+    p.add_argument("--agp-min-Ns", type=int, default=0, dest="agp_min_Ns")
     p.add_argument("--agp-families", default="tocchio1,tocchio2,puhf", dest="agp_families")
     p.add_argument("--outdir", default=os.path.join(here, "results"))
     p.add_argument("--tag", default=None)

@@ -3,7 +3,7 @@
 # For the 4x3 OPEN cluster (U = 8, t' = -0.25) at N_e = 8, 10, 12 (4+4, 5+5, 6+6): ED psi_0 (cached in
 # results/psi0_*.npz), then per charge configuration the best fidelity of the tabular families
 # tocchio K = 1 (one symmetric pairing per c = Tocchio / SQ-RVB class), K = 2 (Route 4.2) and projected UHF
-# (Che class). Output: results/agp_<tag>.json and logs/agp_<jobid>.out. Login-node smoke:
+# (Che class); groups with N_s <= 6 are locally complete for every family (--mode dims) and skipped. Output: results/agp_<tag>.json and logs/agp_<jobid>.out. Login-node smoke:
 #   python3 r4_test.py --mode agp --Lx 4 --Ly 2 --Ne 6 --outdir results_smoke   (11 s)
 #SBATCH --job-name=P4.1_agp_r4
 #SBATCH --partition=kim
@@ -19,7 +19,7 @@ DIR=/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-latti
 PY=/share/apps/software/anaconda3/bin/python3
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK} OPENBLAS_NUM_THREADS=${SLURM_CPUS_PER_TASK} MKL_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 cd "$DIR"
-for NE in 8 10 12; do
+for NE in 10 8 12; do
   $PY -u r4_test.py --mode agp --Lx 4 --Ly 3 --Ne $NE --U 8 --tp -0.25 --bc-x obc --bc-y obc \
-      --agp-restarts 3 --agp-maxiter 3000
+      --agp-restarts 3 --agp-maxiter 3000 --agp-min-Ns 8
 done

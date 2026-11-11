@@ -2,3 +2,4 @@
 [15:23:16]   N_s= 2 tocchio1 : 7888 configs, median F=1.000000000000 min F=1.000000 (3s)
 [15:23:18]   N_s= 2 tocchio2 : 7888 configs, median F=1.000000000000 min F=1.000000 (2s)
 [15:23:26]   N_s= 2 puhf     : 7888 configs, median F=1.000000000000 min F=1.000000 (8s)
+[15:38:54]   N_s= 4 tocchio1 : 13860 configs, median F=1.000000000000 min F=1.000000 (927s)

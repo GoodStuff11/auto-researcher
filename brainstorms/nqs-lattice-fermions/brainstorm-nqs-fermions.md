@@ -164,7 +164,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P2.2 | SUBMITTED (large-K accuracy pilot); CGK conditional | full test blocked on pilot and on fixes | Slurm 411919 (H4, 8–12 orbitals per shell) |
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | SUBMITTED (control pilot); AT killed, SO-EC conditional | full test blocked on pilot regime (NO-TARGET / NO-ROOM / INTRINSIC-BIAS / GO) | Slurm 410917 (width 8, inner 4 targets) |
-| P4.1 | MUTATE (round 4) + SUBMITTED (diagnostic pilot) | nothing | round-4 worker; Slurm 411494 (9 tasks: charge-only vs spin-resolved, exactly projected) |
+| P4.1 | CRITIC (round 4) | nothing | per-leaf critic; Slurm 411494 (diagnostic pilot), 411996 (tabular AGP fit) |
 | P4.2 | SUBMITTED (zero-shot pilot); 3.2 merged into 3.1 as diagnostic | full test blocked on pilot (spread and sector-pick kills) and on fixes | Slurm 410960 (3 tasks) |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
