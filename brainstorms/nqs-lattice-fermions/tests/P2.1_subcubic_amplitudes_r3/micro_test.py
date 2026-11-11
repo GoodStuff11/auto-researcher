@@ -269,6 +269,24 @@ def build_symmetry(m, psi0):
     raise RuntimeError("psi_0 not in a 1-D irrep of the abelian subgroup")
 
 
+def sector_dims(m, sg, S0):
+    """Exact dimensions of range(P_chi) (character sum (1/|G|) sum_g chi_g tr U_g) and of
+    range(P_S P_chi) for S = S0 = |S_z| = 0: d(S=0, chi) = d(chi, S_z=0) - d(chi, S_z=1), using
+    the (N_up+1, N_dn-1) sector with the same group elements and characters (valid because S^+
+    commutes with every U_g, checked in run_checks)."""
+    def dchi(model, group):
+        tr = [float(np.sum((group.inv[k] == np.arange(model.D)) * group.sinv[k])) for k in range(group.G)]
+        return float(np.dot(sg.chi, tr) / group.G)
+    d0 = dchi(m, sg)
+    dS = float("nan")
+    if S0 == 0 and m.ndn > 0:
+        m1 = TJ(m.Lx, m.Ly, m.bcx, m.bcy, m.nup + 1, m.ndn - 1, m.t, m.tp, m.J, build_H=False)
+        g1 = SpaceGroup(m1, diag=(sg.G != len([e for e in sg.elems if e[4] == 0])))
+        assert [tuple(e) for e in g1.elems] == [tuple(e) for e in sg.elems]
+        dS = d0 - dchi(m1, g1)
+    return d0, dS
+
+
 def references(m):
     Pu, Pd = uhf_orbitals(m, UHF_SEED)
     F0 = dwave_bcs_F(m, seed=F0_SEED)

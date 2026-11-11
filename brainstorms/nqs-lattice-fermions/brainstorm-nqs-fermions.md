@@ -179,7 +179,7 @@ Each leaf advances on its own as soon as it returns: lint, then its own critic, 
 | $4\times3$ cylinder | 4663 | 1.15 |
 | $6\times2$ ladder | 11920 | 2.4 |
 
-      At ratio 2.9 the projected control already sat about $1000\times$ below $0.01t$, so at most one instance is likely to be informative.
+* At ratio 2.9 the projected control already sat about $1000\times$ below $0.01t$, so at most one instance is likely to be informative.
     * **FRD vs control is confounded.** FRD sits on a backflow-free Slater–Jastrow base while the control is NNBF. The decisive contrast should be NNBF×FRD vs NNBF.
     * **The adoption barrier is never tested.** That barrier is SR instability through zero crossings under *sampled* force; every arm trains with the exact force.
     * **The heavy-tail gate cannot fire.** The FRD $E_{\mathrm{loc}}$ kurtosis is $143\times$ the control's, yet the arm passes.
