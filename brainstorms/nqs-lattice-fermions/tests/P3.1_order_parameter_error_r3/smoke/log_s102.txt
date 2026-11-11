@@ -1,42 +1,44 @@
-[13:54:56] args: {"instance": 3, "seed": 102, "task_id": -1, "sr_iters": 30, "snaps": "10", "sr_lr": 0.05, "sr_shift": 0.001, "sr_samples": 200, "chunk": 65536, "o_chunk": 256, "r_min": 1.0, "populations": "P_w2,P_w8,PS_w8,F_P,F_PS,U_w8", "mc_samples": 4000, "n_boot": 40, "zr_width": 8, "zr_steps": 40, "zr_lr": 0.02, "minres_tol": 1e-08, "out": "smoke/inst3_s102.json", "overwrite": 1, "checks_only": 0, "aggregate": "", "include_smoke": 0, "pop_list": ["P_w2", "P_w8", "PS_w8", "F_P", "F_PS", "U_w8"], "snap_list": [10]}
-[13:54:56] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
-[13:54:56] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
-[13:54:56] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
-[13:54:56] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
-[13:54:56] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
-[13:54:56] check gradient: analytic 2.5214028438e-01  finite-diff 2.5214028465e-01
-[13:54:56] ALL CHECKS PASSED
-[13:54:57] check projector P: idempotent 4.6e-16 [Pi,H] 6.4e-17 ||Pi psi0 - psi0|| 1.2e-14
-[13:54:57] check projector PS: idempotent 5.1e-16 [Pi,H] 2.7e-17 ||Pi psi0 - psi0|| 1.2e-14
-[13:54:58] check A: hermitian 9.6e-20 vs bond sum 2.7e-20 [A,U_g] 2.8e-16 [A,S2] 1.0e-17
-[13:54:58] check per-sample E_loc, A_loc, (HA psi)_loc vs indexed full vectors: max rel err 1.2e-15
-[13:54:58] check Cov(E_loc,A_loc) = <(H-E)psi|(A-a)psi>: -4.138788411278e-02 vs -4.138788411278e-02
-[13:54:58] check first-order response formula eps=0.01: delta -6.609883e-05 oracle -6.500668e-05
-[13:54:58] check first-order response formula eps=0.001: delta -6.708953e-06 oracle -6.698020e-06
-[13:54:58] check response gradient: analytic -7.4176576441e-02 finite-diff -7.4176576881e-02
-[13:54:58] P3.1-r3 CHECKS PASSED
-[13:54:58] instance 3 V=9 N=(3,3) D=7056; A has 234 bond pairs
-[13:54:59] ED [-9.461243604601368, -9.089695606342087, -9.01679491511852]; irrep {'Ty': 1, 'Tx': 1, 'My': -1, 'Mx': -1}; S(psi0)=2; a0=+1.063009e-02
-[13:54:59] P_w2: it     0  E = -8.01091201  |f| = 1.19e+00
-[13:55:02] P_w2: it    29  E = -8.82565294  |f| = 1.03e+00
-[13:55:03]    P_w2@10: a=+7.49040e-03 delta=+3.140e-03 (lin +4.354e-03) ov0=0.74167 S2=5.19e+00 c=-2.098e-02 [mc -2.016e-02+-1.4e-03; 2-sided -1.975e-02+-1.3e-03] | L1 +4.03e-03 SMA +4.00e-03 KR2 +6.04e-03 ZRO +1.05e-02 ZR +6.87e-02 [mc +6.92e-02+-1.7e-03; 2-sided +6.76e-02] capt 4.14 (1s)
-[13:55:06]       P_w2: a=+9.86069e-03 delta=+7.694e-04 (lin +1.192e-03) ov0=0.92427 S2=5.72e+00 c=-4.952e-03 [mc -5.006e-03+-7.7e-04; 2-sided -4.829e-03+-3.4e-04] | L1 +9.96e-04 SMA +7.62e-04 KR2 +1.04e-03 ZRO +1.38e-03 ZR +1.12e-03 [mc +1.20e-03+-1.5e-04; 2-sided +1.10e-03] capt 0.76 (3s)
-[13:55:06] P_w8: it     0  E = -8.01747593  |f| = 2.27e+00
-[13:55:08] P_w8: it    29  E = -9.20255780  |f| = 6.05e-01
-[13:55:11]    P_w8@10: a=+8.87880e-03 delta=+1.751e-03 (lin +2.727e-03) ov0=0.87988 S2=5.63e+00 c=-1.183e-02 [mc -1.374e-02+-9.8e-04; 2-sided -1.265e-02+-7.6e-04] | L1 +2.59e-03 SMA +2.08e-03 KR2 +2.92e-03 ZRO +3.48e-03 ZR +2.39e-03 [mc +2.83e-03+-3.1e-04; 2-sided +2.49e-03] capt 0.64 (2s)
-[13:55:13]       P_w8: a=+1.02250e-02 delta=+4.051e-04 (lin +5.650e-04) ov0=0.96894 S2=5.87e+00 c=-2.332e-03 [mc -1.743e-03+-5.8e-04; 2-sided -1.513e-03+-8.6e-04] | L1 +4.42e-04 SMA +3.40e-04 KR2 +4.75e-04 ZRO +5.99e-04 ZR +5.23e-04 [mc +3.16e-04+-1.4e-04; 2-sided +4.29e-04] capt 0.94 (2s)
-[13:55:13] PS_w8: it     0  E = -8.99389691  |f| = 1.92e+00
-[13:55:16] PS_w8: it    29  E = -9.00998718  |f| = 1.77e+00
-[13:55:18]   PS_w8@10: a=+1.03167e-02 delta=+3.134e-04 (lin +6.500e-04) ov0=0.94309 S2=6.00e+00 c=-6.464e-03 [mc -7.070e-03+-1.2e-03; 2-sided -9.037e-03+-3.3e-03] | L1 +6.02e-04 SMA +1.12e-03 KR2 +6.17e-04 ZRO +6.88e-04 ZR +6.55e-04 [mc +7.76e-04+-1.8e-04; 2-sided +1.15e-03] capt 1.00 (3s)
-[13:55:21]      PS_w8: a=+1.05852e-02 delta=+4.484e-05 (lin +1.361e-04) ov0=0.98217 S2=6.00e+00 c=-1.744e-03 [mc -4.905e-04+-7.1e-04; 2-sided -2.293e-03+-2.6e-04] | L1 +1.39e-04 SMA +2.79e-04 KR2 +1.46e-04 ZRO +1.35e-04 ZR +1.22e-04 [mc +2.15e-06+-1.4e-04; 2-sided +1.91e-04] capt 0.98 (3s)
-[13:55:21] F_P: it     0  E = -8.00819898  |f| = 1.90e+00
-[13:55:23] F_P: it    29  E = -9.37339736  |f| = 4.04e-01
-[13:55:25]        F_P: a=+1.06834e-02 delta=-5.331e-05 (lin -1.279e-05) ov0=0.99058 S2=5.96e+00 c=+6.776e-04 [mc +5.900e-04+-4.5e-04; 2-sided +6.543e-04+-1.8e-04] | L1 -2.34e-04 SMA -1.02e-04 KR2 -4.20e-05 ZRO -1.19e-05 ZR -9.84e-06 [mc +9.59e-05+-1.0e-04; 2-sided +5.14e-06] capt 0.98 (2s)
-[13:55:26] F_PS: it     0  E = -8.99245167  |f| = 2.02e+00
-[13:55:28] F_PS: it    29  E = -9.45437265  |f| = 1.16e-01
-[13:55:30]       F_PS: a=+1.06295e-02 delta=+6.013e-07 (lin +3.933e-06) ov0=0.99963 S2=6.00e+00 c=+7.460e-05 [mc +4.252e-04+-3.5e-04; 2-sided -5.422e-05+-3.7e-05] | L1 -1.62e-05 SMA -1.13e-05 KR2 -5.56e-07 ZRO +3.95e-06 ZR +5.14e-06 [mc -1.11e-04+-8.9e-05; 2-sided +2.19e-05] capt 1.00 (2s)
-[13:55:30] U_w8: it     0  E = -7.64622074  |f| = 1.62e+00
-[13:55:33] U_w8: it    29  E = -8.62633144  |f| = 1.02e+00
-[13:55:35]       U_w8: a=+2.31120e-02 delta=-1.248e-02 (lin -1.248e-02) ov0=0.24587 S2=2.58e+00 c=-9.837e-03 [mc -9.761e-03+-1.5e-03; 2-sided -6.767e-03+-2.1e-03] | L1 +2.39e-03 SMA +2.84e-03 KR2 +4.88e-03 ZRO +4.38e-02 ZR -5.62e-03 [mc -3.65e-03+-2.9e-03; 2-sided +1.30e-03] capt 1.64 (2s)
-[13:55:37]      UP_w8: a=+1.03558e-02 delta=+2.743e-04 (lin +3.413e-04) ov0=0.98565 S2=5.95e+00 c=-1.166e-03 [mc -1.431e-03+-6.4e-04; 2-sided -1.336e-03+-1.1e-04] | L1 +2.78e-04 SMA +1.70e-04 KR2 +2.89e-04 ZRO +3.50e-04 ZR +3.09e-04 [mc +4.15e-04+-9.8e-05; 2-sided +3.37e-04] capt 0.84 (2s)
-[13:55:37] wrote smoke/inst3_s102.json (39s)
+[14:01:17] args: {"instance": 6, "seed": 102, "task_id": -1, "sr_iters": 30, "snaps": "10", "sr_lr": 0.05, "sr_shift": 0.001, "sr_samples": 200, "chunk": 65536, "o_chunk": 256, "r_min": 1.0, "populations": "P_w2,P_w8,PS_w8,F_P,F_PS,U_w8", "mc_samples": 4000, "n_boot": 40, "zr_width": 8, "zr_steps": 40, "zr_lr": 0.02, "minres_tol": 1e-08, "out": "smoke/inst6_s102.json", "overwrite": 1, "checks_only": 0, "aggregate": "", "include_smoke": 0, "min_target_inst": 2, "pop_list": ["P_w2", "P_w8", "PS_w8", "F_P", "F_PS", "U_w8"], "snap_list": [10]}
+[14:01:17] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[14:01:17] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[14:01:17] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[14:01:17] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[14:01:17] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[14:01:18] check gradient: analytic 2.5214028438e-01  finite-diff 2.5214028465e-01
+[14:01:18] ALL CHECKS PASSED
+[14:01:18] check group 3x2 obc/obc: |G|=4 max ||[H,U_g]v|| 2.0e-14
+[14:01:18] check group 3x2 pbc/obc: |G|=12 max ||[H,U_g]v|| 2.5e-14
+[14:01:18] check projector P: idempotent 4.6e-16 [Pi,H] 6.4e-17 ||Pi psi0 - psi0|| 1.2e-14
+[14:01:18] check projector PS: idempotent 5.1e-16 [Pi,H] 2.7e-17 ||Pi psi0 - psi0|| 1.2e-14
+[14:01:18] check A: hermitian 9.6e-20 vs bond sum 2.7e-20 [A,U_g] 2.8e-16 [A,S2] 1.0e-17
+[14:01:18] check per-sample E_loc, A_loc, (HA psi)_loc vs indexed full vectors: max rel err 1.2e-15
+[14:01:18] check Cov(E_loc,A_loc) = <(H-E)psi|(A-a)psi>: -4.138788411278e-02 vs -4.138788411278e-02
+[14:01:18] check first-order response formula eps=0.01: delta -6.609883e-05 oracle -6.500668e-05
+[14:01:18] check first-order response formula eps=0.001: delta -6.708953e-06 oracle -6.698020e-06
+[14:01:19] check response gradient: analytic -7.4176576441e-02 finite-diff -7.4176576881e-02
+[14:01:19] P3.1-r3 CHECKS PASSED
+[14:01:19] instance 6 V=9 N=(3,3) D=7056; A has 234 bond pairs
+[14:01:19] ED [-9.461243604601368, -9.089695606342087, -9.01679491511852]; |G|=36; irrep {'Ty': 1, 'Tx': 1, 'My': -1, 'Mx': -1}; S(psi0)=2; a0=+1.063009e-02; [H,U_g] 3.0e-16 [A,U_g] 2.0e-16 ||P_S P_chi psi0 - psi0|| 1.2e-14
+[14:01:19] P_w2: it     0  E = -8.01091201  |f| = 1.19e+00
+[14:01:21] P_w2: it    29  E = -8.82565294  |f| = 1.03e+00
+[14:01:22]    P_w2@10: a=+7.49040e-03 delta=+3.140e-03 (lin +4.354e-03) ov0=0.74167 S2=5.19e+00 c=-2.098e-02 [mc -2.016e-02+-1.4e-03; 2-sided -1.975e-02+-1.3e-03] | L1 +4.03e-03 SMA +4.00e-03 KR2 +6.04e-03 ZRO +1.05e-02 ZR +6.87e-02 [mc +6.92e-02+-1.7e-03; 2-sided +6.76e-02] capt 4.14 (1s)
+[14:01:23]       P_w2: a=+9.86069e-03 delta=+7.694e-04 (lin +1.192e-03) ov0=0.92427 S2=5.72e+00 c=-4.952e-03 [mc -5.006e-03+-7.7e-04; 2-sided -4.829e-03+-3.4e-04] | L1 +9.96e-04 SMA +7.62e-04 KR2 +1.04e-03 ZRO +1.38e-03 ZR +1.12e-03 [mc +1.20e-03+-1.5e-04; 2-sided +1.10e-03] capt 0.76 (1s)
+[14:01:24] P_w8: it     0  E = -8.01747593  |f| = 2.27e+00
+[14:01:25] P_w8: it    29  E = -9.20255780  |f| = 6.05e-01
+[14:01:26]    P_w8@10: a=+8.87880e-03 delta=+1.751e-03 (lin +2.727e-03) ov0=0.87988 S2=5.63e+00 c=-1.183e-02 [mc -1.374e-02+-9.8e-04; 2-sided -1.265e-02+-7.6e-04] | L1 +2.59e-03 SMA +2.08e-03 KR2 +2.92e-03 ZRO +3.48e-03 ZR +2.39e-03 [mc +2.83e-03+-3.1e-04; 2-sided +2.49e-03] capt 0.64 (1s)
+[14:01:27]       P_w8: a=+1.02250e-02 delta=+4.051e-04 (lin +5.650e-04) ov0=0.96894 S2=5.87e+00 c=-2.332e-03 [mc -1.743e-03+-5.8e-04; 2-sided -1.513e-03+-8.6e-04] | L1 +4.42e-04 SMA +3.40e-04 KR2 +4.75e-04 ZRO +5.99e-04 ZR +5.23e-04 [mc +3.16e-04+-1.4e-04; 2-sided +4.29e-04] capt 0.94 (1s)
+[14:01:27] PS_w8: it     0  E = -8.99389691  |f| = 1.92e+00
+[14:01:28] PS_w8: it    29  E = -9.00998718  |f| = 1.77e+00
+[14:01:29]   PS_w8@10: a=+1.03167e-02 delta=+3.134e-04 (lin +6.500e-04) ov0=0.94309 S2=6.00e+00 c=-6.464e-03 [mc -7.070e-03+-1.2e-03; 2-sided -9.037e-03+-3.3e-03] | L1 +6.02e-04 SMA +1.12e-03 KR2 +6.17e-04 ZRO +6.88e-04 ZR +6.55e-04 [mc +7.76e-04+-1.8e-04; 2-sided +1.15e-03] capt 1.00 (1s)
+[14:01:30]      PS_w8: a=+1.05852e-02 delta=+4.484e-05 (lin +1.361e-04) ov0=0.98217 S2=6.00e+00 c=-1.744e-03 [mc -4.905e-04+-7.1e-04; 2-sided -2.293e-03+-2.6e-04] | L1 +1.39e-04 SMA +2.79e-04 KR2 +1.46e-04 ZRO +1.35e-04 ZR +1.22e-04 [mc +2.15e-06+-1.4e-04; 2-sided +1.91e-04] capt 0.98 (1s)
+[14:01:30] F_P: it     0  E = -8.00819898  |f| = 1.90e+00
+[14:01:31] F_P: it    29  E = -9.37339736  |f| = 4.04e-01
+[14:01:32]        F_P: a=+1.06834e-02 delta=-5.331e-05 (lin -1.279e-05) ov0=0.99058 S2=5.96e+00 c=+6.776e-04 [mc +5.900e-04+-4.5e-04; 2-sided +6.543e-04+-1.8e-04] | L1 -2.34e-04 SMA -1.02e-04 KR2 -4.20e-05 ZRO -1.19e-05 ZR -9.84e-06 [mc +9.59e-05+-1.0e-04; 2-sided +5.14e-06] capt 0.98 (1s)
+[14:01:32] F_PS: it     0  E = -8.99245167  |f| = 2.02e+00
+[14:01:33] F_PS: it    29  E = -9.45437265  |f| = 1.16e-01
+[14:01:34]       F_PS: a=+1.06295e-02 delta=+6.013e-07 (lin +3.933e-06) ov0=0.99963 S2=6.00e+00 c=+7.460e-05 [mc +4.252e-04+-3.5e-04; 2-sided -5.422e-05+-3.7e-05] | L1 -1.62e-05 SMA -1.13e-05 KR2 -5.56e-07 ZRO +3.95e-06 ZR +5.14e-06 [mc -1.11e-04+-8.9e-05; 2-sided +2.19e-05] capt 1.00 (1s)
+[14:01:34] U_w8: it     0  E = -7.64622074  |f| = 1.62e+00
+[14:01:34] U_w8: it    29  E = -8.62633144  |f| = 1.02e+00
+[14:01:36]       U_w8: a=+2.31120e-02 delta=-1.248e-02 (lin -1.248e-02) ov0=0.24587 S2=2.58e+00 c=-9.837e-03 [mc -9.761e-03+-1.5e-03; 2-sided -6.767e-03+-2.1e-03] | L1 +2.39e-03 SMA +2.84e-03 KR2 +4.88e-03 ZRO +4.38e-02 ZR -5.62e-03 [mc -3.65e-03+-2.9e-03; 2-sided +1.30e-03] capt 1.64 (1s)
+[14:01:37]      UP_w8: a=+1.03558e-02 delta=+2.743e-04 (lin +3.413e-04) ov0=0.98565 S2=5.95e+00 c=-1.166e-03 [mc -1.431e-03+-6.4e-04; 2-sided -1.336e-03+-1.1e-04] | L1 +2.78e-04 SMA +1.70e-04 KR2 +2.89e-04 ZRO +3.50e-04 ZR +3.09e-04 [mc +4.15e-04+-9.8e-05; 2-sided +3.37e-04] capt 0.84 (1s)
+[14:01:37] wrote smoke/inst6_s102.json (18s)

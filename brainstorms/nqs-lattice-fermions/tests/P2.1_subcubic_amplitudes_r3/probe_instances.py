@@ -15,8 +15,9 @@ Usage
   python3 probe_instances.py [--which LIST] [--k INT] [--tp FLOAT] [--J FLOAT]
 Options
 -------
-  --which LIST  comma-separated instance labels from {I0, I1, I2}: I0 = 4x3 PBC 5+5 (2 holes),
-                I1 = 4x4 PBC 7+7 (2 holes), I2 = 4x4 PBC 6+6 (4 holes). Default I0,I1.
+  --which LIST  comma-separated labels from {I0, I1, I2, I3}: I0 = 4x3 PBC 5+5 (2 holes),
+                I1 = 4x4 PBC 7+7 (2 holes), I2 = 4x4 cylinder (PBC x, OBC y) 7+7 (2 holes),
+                I3 = 4x4 PBC 6+6 (4 holes). Default I0,I1.
   --k INT       number of Lanczos levels (default 6).
   --tp FLOAT    next-nearest hopping t' (default -0.25). --J FLOAT exchange J (default 0.4).
 Output: printed to stdout only.
@@ -32,7 +33,8 @@ from scipy.sparse.linalg import eigsh
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from tj_core import TJ, SpaceGroup  # noqa: E402
 
-CASES = {"I0": (4, 3, 5, 5), "I1": (4, 4, 7, 7), "I2": (4, 4, 6, 6)}
+CASES = {"I0": (4, 3, 5, 5, "pbc", "pbc"), "I1": (4, 4, 7, 7, "pbc", "pbc"),
+         "I2": (4, 4, 7, 7, "pbc", "obc"), "I3": (4, 4, 6, 6, "pbc", "pbc")}
 
 
 def parse_args(argv=None):
@@ -47,9 +49,9 @@ def parse_args(argv=None):
 def main(argv=None):
     a = parse_args(argv)
     for lab in a.which.split(","):
-        Lx, Ly, nu, nd = CASES[lab]
+        Lx, Ly, nu, nd, bx, by = CASES[lab]
         t0 = time.time()
-        m = TJ(Lx, Ly, "pbc", "pbc", nu, nd, 1.0, a.tp, a.J)
+        m = TJ(Lx, Ly, bx, by, nu, nd, 1.0, a.tp, a.J)
         m.spin_setup()
         t1 = time.time()
         w, v = eigsh(m.H, k=a.k, which="SA", tol=1e-12, v0=np.random.default_rng(0).standard_normal(m.D))

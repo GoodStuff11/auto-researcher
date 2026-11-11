@@ -1,0 +1,2 @@
+[     0.2s] target 4x4 dim=1681680 (H, sector isometry and ED are not timed here)
+[     1.8s] chunk=50000: grad pass 1.13s, value pass 0.41s; full grad+value ~52s, value-only ~14s per pass (npar=122, foil 62)

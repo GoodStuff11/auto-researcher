@@ -1,0 +1,2 @@
+[14:03:06] instance 1 D=411840 ED+group 20s |G|=64 chi={'Ty': -1, 'Tx': 1, 'My': -1, 'Mx': 1} deg=2
+[14:03:39] nnbf: n_params=33344 (target 33344) kw={'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 128, 'Ha': 0}: one SR step 32.78s

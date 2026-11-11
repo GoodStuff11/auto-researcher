@@ -1,0 +1,105 @@
+[     0.0s] selftest(a) spinless 4x4 N_f=1: E_ED=-3.0000000000 band=-3.0000000000 OK
+[     0.1s] selftest(a) spinless 4x4 N_f=3: E_ED=-7.0000000000 band=-7.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2 N_f=1: E_ED=-3.0000000000 band=-3.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2 N_f=3: E_ED=-7.0000000000 band=-7.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2[tw 0pi,1pi] N_f=1: E_ED=-2.0000000000 band=-2.0000000000 OK
+[     0.1s] selftest(a) spinless 4x2[tw 0pi,1pi] N_f=3: E_ED=-4.0000000000 band=-4.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,0pi] N_f=1: E_ED=-2.0000000000 band=-2.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,0pi] N_f=3: E_ED=-2.0000000000 band=-2.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,1pi] N_f=1: E_ED=0.0000000000 band=-0.0000000000 OK
+[     0.1s] selftest(a) spinless 2x2[tw 1pi,1pi] N_f=3: E_ED=0.0000000000 band=0.0000000000 OK
+[     0.1s] selftest(a) spinless t8 N_f=1: E_ED=-3.0000000000 band=-3.0000000000 grid (units of pi) [(0.0, 0.0), (0.0, 1.0), (0.5, 0.5), (0.5, 1.5), (1.0, 0.0), (1.0, 1.0), (1.5, 0.5), (1.5, 1.5)] OK
+[     0.1s] selftest(a) spinless t8 N_f=3: E_ED=-5.0000000000 band=-5.0000000000 grid (units of pi) [(0.0, 0.0), (0.0, 1.0), (0.5, 0.5), (0.5, 1.5), (1.0, 0.0), (1.0, 1.0), (1.5, 0.5), (1.5, 1.5)] OK
+[     0.2s] selftest(b) t-J 4x2 dim=560 hermitian OK
+[     0.2s] selftest(c) 4x2 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=3.6e-15 OK
+[     0.3s] selftest(d) 4x2 log-derivative max rel err over 122 params = 1.63e-09 OK
+[     0.3s] selftest(b) t-J t8 dim=560 hermitian OK
+[     0.3s] selftest(c) t8 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=4.4e-15 OK
+[     0.5s] selftest(d) t8 log-derivative max rel err over 122 params = 4.32e-09 OK
+[     0.5s] selftest(e) 4x4 N_e=2: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 9 of 240), GS gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': 1.0}, GS weight in its irrep=1.000000000000 OK
+[     0.6s] selftest(e) 4x2 N_e=4: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 57 of 420), GS gens={'Tx': -1.0, 'Ty': 1.0, 'Mx': -1.0, 'My': 1.0}, GS weight in its irrep=nan OK
+[     0.6s] selftest(f) S^2 on 2x2 N_e=2: symmetric, spectrum [0.0, 2.0] OK
+[     0.6s] selftest(f) S^2 on 2x2 N_e=4: symmetric, spectrum [-0.0, 2.0, 6.0] OK
+[     0.7s] selftest(g) projected-energy gradient vs finite differences max rel err 2.79e-10; metric PSD OK
+[     0.7s] selftest(h) [report] complete coverage: sources ['4x2', 't8'] cover 16 of 16 4x4 momenta on C4v orbits (first source alone: 12 of 16)
+[     0.7s] SELFTEST PASSED
+[     1.2s] instance t'=0.25 J=0.4: E0=-12.81808701 E1=-12.79277607 <S2>=-2.91e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
+[     1.2s] target 4x4 t'=0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=105 E0=-12.81808701 (full -12.81808701) gap/V=2.3863e-01 no same-irrep competitor below 0.005 t/site: sign half only
+[     1.2s] calibration: E_sign(exact signs) - E0 = 3.553e-15; Pd(E0)=8.3002e-03
+[     1.3s] source clusters: 4x2 E0=-8.94622016, t8 E0=-8.82547408
+[     1.3s]   [route TCMN] step 1/100 E=-3.19358218,-0.47222890 lr=0.055 relerr=6.430e-01,9.465e-01
+[     1.3s]   [route TCMN] step 11/100 E=-8.90691920,-8.64593412 lr=0.0178 relerr=4.393e-03,2.034e-02
+[     1.4s]   [route TCMN] step 21/100 E=-8.94621450,-8.82547300 lr=0.0463 relerr=6.328e-07,1.221e-07
+[     1.4s]   [route TCMN] step 31/100 E=-8.94621825,-8.82547326 lr=0.12 relerr=2.140e-07,9.326e-08
+[     1.5s]   [route TCMN] step 41/100 E=-8.94620499,-8.82546156 lr=0.11 relerr=1.696e-06,1.418e-06
+[     1.5s]   [route TCMN] step 51/100 E=-8.94621687,-8.82547014 lr=0.0713 relerr=3.676e-07,4.461e-07
+[     1.5s]   [route TCMN] step 61/100 E=-8.94620768,-8.82544974 lr=0.0925 relerr=1.395e-06,2.757e-06
+[     1.6s]   [route TCMN] step 71/100 E=-8.94621674,-8.82546288 lr=0.12 relerr=3.827e-07,1.269e-06
+[     1.6s]   [route TCMN] step 81/100 E=-8.94621529,-8.82546814 lr=0.0778 relerr=5.449e-07,6.726e-07
+[     1.7s]   [route TCMN] step 91/100 E=-8.94621700,-8.82546431 lr=0.101 relerr=3.533e-07,1.107e-06
+[     1.7s]   [route TCMN] step 100/100 E=-8.94620863,-8.82547193 lr=0.119 relerr=1.289e-06,2.441e-07
+[     1.7s] source route TCMN: E=['-8.94620863', '-8.82547193'] relerr=['1.29e-06', '2.44e-07'] npar=122 null-dim(S)=115 |theta|=3.200
+[     1.7s]   [foil TCMN] step 1/100 E=-0.00238446,-1.64006654 lr=0.055 relerr=9.997e-01,8.142e-01
+[     1.8s]   [foil TCMN] step 11/100 E=-3.99947022,-0.00000432 lr=0.143 relerr=5.529e-01,1.000e+00
+[     1.8s]   [foil TCMN] step 21/100 E=-4.19497291,0.00086458 lr=0.00145 relerr=5.311e-01,1.000e+00
+[     1.8s]   [foil TCMN] step 31/100 E=-4.88293700,0.00103997 lr=0.00375 relerr=4.542e-01,1.000e+00
+[     1.9s]   [foil TCMN] step 41/100 E=-5.51177894,0.00107734 lr=0.00972 relerr=3.839e-01,1.000e+00
+[     1.9s]   [foil TCMN] step 51/100 E=-5.62819952,0.00107987 lr=0.0252 relerr=3.709e-01,1.000e+00
+[     1.9s]   [foil TCMN] step 61/100 E=-5.62893526,0.00106835 lr=0.0654 relerr=3.708e-01,1.000e+00
+[     2.0s]   [foil TCMN] step 71/100 E=-5.62893526,0.00103982 lr=0.17 relerr=3.708e-01,1.000e+00
+[     2.0s]   [foil TCMN] step 81/100 E=-5.62893526,0.00099385 lr=0.2 relerr=3.708e-01,1.000e+00
+[     2.0s]   [foil TCMN] step 91/100 E=-5.62893526,0.00097082 lr=0.107 relerr=3.708e-01,1.000e+00
+[     2.1s]   [foil TCMN] step 100/100 E=-5.62893475,0.00095138 lr=0.126 relerr=3.708e-01,1.000e+00
+[     2.1s] source foil TCMN: E=['-5.62893475', '0.00095138'] relerr=['3.71e-01', '1.00e+00'] npar=62 null-dim(S)=60 |theta|=13.929
+[     2.1s]   [route r2-style] step 1/100 E=-5.38331129 lr=0.055 relerr=3.983e-01
+[     2.1s]   [route r2-style] step 11/100 E=-8.94622016 lr=0.0713 relerr=3.985e-11
+[     2.1s]   [route r2-style] step 21/100 E=-8.94622016 lr=0.0925 relerr=1.986e-16
+[     2.2s]   [route r2-style] step 31/100 E=-8.94622016 lr=0.06 relerr=3.971e-15
+[     2.2s]   [route r2-style] step 41/100 E=-8.94622016 lr=0.0778 relerr=3.435e-14
+[     2.2s]   [route r2-style] step 51/100 E=-8.94622016 lr=0.101 relerr=5.758e-15
+[     2.2s]   [route r2-style] step 61/100 E=-8.94622016 lr=0.0654 relerr=1.986e-16
+[     2.2s]   [route r2-style] step 71/100 E=-8.94622016 lr=0.0848 relerr=4.944e-14
+[     2.2s]   [route r2-style] step 81/100 E=-8.94622016 lr=0.11 relerr=1.310e-14
+[     2.3s]   [route r2-style] step 91/100 E=-8.94622016 lr=0.0713 relerr=2.184e-15
+[     2.3s]   [route r2-style] step 100/100 E=-8.94622016 lr=0.0841 relerr=4.031e-14
+[     2.3s] source route r2-style: E=['-8.94622016'] relerr=['4.03e-14'] npar=122 null-dim(S)=118 |theta|=7.666
+[     2.4s] zero-shot sector rule: picked {"D": -1, "Mx": 1, "My": 1, "Tx": 1, "Ty": 1} (ED irrep {'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1}) -> correct
+[     2.5s] <S^2> of the transferred state = -1.99e-18
+[     2.5s] arm tr0      : E=-7.22874689 eps=3.4933e-01 (raw 3.8903e-01, irrep weight 0.569) A/V=2.0277e-02 sign-agree=0.9379 Pd=1.6819e-02 fid=0.4311
+[     2.6s] arm tr0_r2   : E=-9.62747250 eps=1.9941e-01 (raw 2.4263e-01, irrep weight 0.558) sign-agree=0.8579 Pd=1.3125e-02 fid=0.5682
+[     2.6s] arm foil_tr  : E=0.00003826 eps=8.0113e-01 (raw 8.0113e-01, irrep weight 0.751) A/V=3.5905e-01 sign-agree=-0.0711 Pd=1.4592e-26 fid=0.0259
+[     3.0s]   [trB] step 1/5 E=-10.66158406 lr=0.055 relerr=1.682e-01
+[     3.1s]   [trB] step 2/5 E=-12.53000199 lr=0.0605 relerr=2.247e-02
+[     3.3s]   [trB] step 3/5 E=-12.54729888 lr=0.0666 relerr=2.113e-02
+[     3.5s]   [trB] step 4/5 E=-12.61547851 lr=0.0732 relerr=1.581e-02
+[     3.6s]   [trB] step 5/5 E=-12.79062028 lr=0.0805 relerr=2.143e-03
+[     3.7s] arm trB      : E=-12.79062028 eps=1.7167e-03 (raw 4.9895e-02, irrep weight 0.852) A/V=5.8921e-05 sign-agree=0.9999 Pd=8.1397e-03 fid=0.9975
+[     4.1s]   [fstB] step 1/5 E=-7.22997287 lr=0.0138 relerr=4.360e-01
+[     4.2s]   [fstB] step 2/5 E=-7.30532884 lr=0.0151 relerr=4.301e-01
+[     4.6s]   [fstB] step 3/5 E=-7.30683930 lr=0.00026 relerr=4.300e-01
+[     4.8s]   [fstB] step 4/5 E=-7.30717841 lr=7.15e-05 relerr=4.299e-01
+[     5.0s]   [fstB] step 5/5 E=-7.30863006 lr=7.86e-05 relerr=4.298e-01
+[     5.1s] arm fstB     : E=-7.30863006 eps=3.4434e-01 (raw 3.8289e-01, irrep weight 0.572) A/V=2.0277e-02 sign-agree=0.9379 Pd=1.6826e-02 fid=0.4361
+[     5.4s]   [scrB] step 1/5 E=-7.21932837 lr=0.055 relerr=4.368e-01
+[     5.5s]   [scrB] step 2/5 E=-9.48766066 lr=0.0605 relerr=2.598e-01
+[     5.7s]   [scrB] step 3/5 E=-11.43604970 lr=0.0666 relerr=1.078e-01
+[     5.9s]   [scrB] step 4/5 E=-12.00158012 lr=0.0366 relerr=6.370e-02
+[     6.0s]   [scrB] step 5/5 E=-12.65345834 lr=0.0403 relerr=1.284e-02
+[     6.1s] arm scrB     : E=-12.65345834 eps=1.0289e-02 (raw 5.2912e-02, irrep weight 0.863) A/V=1.5293e-04 sign-agree=0.9995 Pd=1.0112e-02 fid=0.9827
+[     6.4s]   [trL] step 1/15 E=-12.80993782 lr=0.055 relerr=6.358e-04
+[     6.6s]   [trL] step 2/15 E=-12.81231596 lr=0.0605 relerr=4.502e-04
+[     6.7s]   [trL] step 3/15 E=-12.81261913 lr=0.0666 relerr=4.266e-04
+[     6.9s]   [trL] step 4/15 E=-12.81275978 lr=0.0732 relerr=4.156e-04
+[     7.1s]   [trL] step 5/15 E=-12.81288144 lr=0.0805 relerr=4.061e-04
+[     7.2s]   [trL] step 6/15 E=-12.81299344 lr=0.0886 relerr=3.974e-04
+[     7.4s]   [trL] step 7/15 E=-12.81310611 lr=0.0974 relerr=3.886e-04
+[     7.6s]   [trL] step 8/15 E=-12.81320768 lr=0.107 relerr=3.807e-04
+[     7.7s]   [trL] step 9/15 E=-12.81320811 lr=0.118 relerr=3.806e-04
+[     7.9s]   [trL] step 10/15 E=-12.81336767 lr=0.0648 relerr=3.682e-04
+[     8.1s]   [trL] step 11/15 E=-12.81344501 lr=0.0713 relerr=3.621e-04
+[     8.3s]   [trL] step 12/15 E=-12.81349054 lr=0.0785 relerr=3.586e-04
+[     8.5s]   [trL] step 13/15 E=-12.81351514 lr=0.0863 relerr=3.567e-04
+[     8.7s]   [trL] step 14/15 E=-12.81360927 lr=0.0475 relerr=3.493e-04
+[     8.8s]   [trL] step 15/15 E=-12.81363779 lr=0.0522 relerr=3.471e-04
+[     8.9s] arm trL      : E=-12.81363779 eps=2.7808e-04 (raw 3.7698e-02, irrep weight 0.886) sign-agree=1.0000 Pd=8.2724e-03 fid=0.9995
+[     8.9s] done (results_smoke/task2.json)

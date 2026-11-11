@@ -6,7 +6,7 @@ P3.1 round-3 decisive test: order-parameter error of SYMMETRY-PROJECTED variatio
 Question
 --------
 Given a symmetry-projected, SR-trained variational state psi (NNBF or the Slater-Jastrow
-foil) of a doped 4x3 Hubbard torus, can a cheap estimator predict the residual error
+foil) of a doped Hubbard cluster (4x3 open, 4x3 cylinder, 6x2 ladder, 4x3 tori), can a cheap estimator predict the residual error
 delta = a_0 - a_psi of the long-range d-wave pair correlation a = <A>, better than current
 practice (seed spread, zero-variance extrapolation, one Lanczos step)?
 
@@ -54,7 +54,8 @@ Controls (estimators; same states, same samples)
 State populations (one Slurm task = one instance x one seed)
 ------------------------------------------------------------
 All from the UHF start of that seed (P1.1 protocol), exact-force SR (P1.1 settings,
---sr-iters steps), space group G = translations x {1, Mx, My, MxMy} (|G| = 48 on 4x3),
+--sr-iters steps), space group G = translations along periodic directions x {1, Mx, My,
+MxMy} (|G| = 4 open 4x3, 16 cylinder 4x3, 24 ladder 6x2, 48 torus 4x3),
 P_chi = projector on psi_0's 1-D irrep, P_S = Loewdin projector on psi_0's total spin.
   P_w2@<it>, P_w2        projected SR (psi = P_chi psi_theta) NNBF width 2, snapshots at the
                          iterations in --snaps plus the final (best-energy) state
@@ -90,9 +91,14 @@ Metric and pre-committed decision rule (implemented in --aggregate)
   Delta_X = median_u [T_X(u) - T_B(u)] (paired), with a seed-unit bootstrap 90% interval;
   G_X     = pooled false-certificate fraction over scored states;
   Cov_X   = trusted fraction of scored projected-NNBF states.
-  Premise guards (else AMBIGUOUS): every instance has >= MIN_SCORED scored states spread
-  over >= 3 seeds. ZR additionally needs the oracle ZRO to track >= ZRO_MIN of scored
-  states (first-order formula valid); otherwise ZR is "FAIL (premise)".
+  Residual-size premise gate (NO-TARGET): an instance has a target iff it has
+  >= MIN_SCORED (6) scored states over >= 3 seeds, of which >= MIN_FINAL (3) are final
+  (best-energy, not snapshot) states. Instances without a target are printed with the median
+  |delta|/|a0| of their final states and excluded; the verdict metrics are recomputed on the
+  target instances only. If fewer than MIN_TARGET_INST (2) instances have a target, both
+  routes are NO-TARGET (states already exact: no pass is possible).
+  ZR additionally needs the oracle ZRO to track >= ZRO_MIN of scored states (first-order
+  formula valid); otherwise ZR is "FAIL (premise)".
   PASS    : M_X >= 0.5 and Delta_X >= 0.2 and G_X <= 0.10 and Cov_X >= 0.5 and the
             per-instance median of T_X(u) - T_B(u) is > 0 on EVERY instance.
   FAIL    : M_X < 0.3 or Delta_X < 0.05 or G_X > 0.20.
@@ -106,16 +112,21 @@ Metric and pre-committed decision rule (implemented in --aggregate)
 Usage
 -----
   python3 micro_test.py [options]
-  --instance K      0, 1, 2 or 3 (default 1). All t=1, t'=-0.25, PBC:
-                      0 : 4x3, N_up=N_dn=5, U=8 (D=627264)
-                      1 : 4x3, N_up=N_dn=4, U=8 (D=245025)
-                      2 : 4x3, N_up=N_dn=5, U=4 (D=627264)
-                      3 : 3x3, N_up=N_dn=3, U=8 (D=7056; smoke only, never in a verdict)
+  --instance K      0..6 (default 1). All t=1, t'=-0.25:
+                      0 : 4x3 open x open,  N_up=N_dn=4, U=8 (D=245025, |G|=4,  S=0)
+                      1 : 4x3 periodic x open (cylinder), 4+4, U=8 (D=245025, |G|=16, S=0)
+                      2 : 6x2 periodic x open (ladder), 5+5, U=8 (D=627264, |G|=24, S=1)
+                      3 : 4x3 torus, 5+5, U=8 (D=627264, |G|=48)
+                      4 : 4x3 torus, 4+4, U=8 (D=245025, |G|=48)
+                      5 : 4x3 torus, 5+5, U=4 (D=627264, |G|=48)
+                      6 : 3x3 torus, 3+3, U=8 (D=7056; smoke only, never in a verdict)
+                    Irreps and in-sector gaps of 0-2 are from P1.2 round 3's probe; every run
+                    re-checks [H,U_g], [A,U_g] and P_S P_chi psi_0 = psi_0 and aborts otherwise.
   --seed INT        Trajectory seed (default 101). UHF noise uses seed, NNBF init seed+width
                     (+1000 for the PS arm, +2000 for foils), SR sampling default_rng(seed),
                     MC default_rng(seed+7).
   --task-id INT     If >= 0, OVERRIDES --instance and --seed: instance = t // 6,
-                    seed = SEEDS[t % 6] with SEEDS = (101, 102, 103, 104, 105, 106); t in 0..17.
+                    seed = SEEDS[t % 6] with SEEDS = (101, 102, 103, 104, 105, 106); t in 0..35.
   --sr-iters INT    SR steps per trained state (default 400). Short on purpose: projected
                     SR is nearly exact on these 12-site clusters after ~1500 steps (P1.1-P),
                     and the population must cover the error range that projected NQS have
@@ -137,7 +148,9 @@ Usage
   --overwrite {0,1} Default 0.
   --checks-only {0,1}  Run correctness checks only.
   --aggregate DIR   No computation: apply the decision rule to every inst*_s*.json in DIR.
-  --include-smoke {0,1}  Aggregate also instance 3 (smoke only; default 0).
+  --include-smoke {0,1}  Aggregate also instance 6 (smoke only; default 0).
+  --min-target-inst INT  Minimum number of target instances for a verdict (default 2, the
+                    pre-committed value; 1 is used only to exercise the rule on the smoke run).
 
 Outputs: JSON with per-state records (exact and MC quantities for every arm) and timing.
 """
@@ -156,11 +169,19 @@ import p11_core as P
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 INSTANCES = {
-    0: dict(Lx=4, Ly=3, bcx="pbc", bcy="pbc", nup=5, ndn=5, U=8.0, tp=-0.25),
-    1: dict(Lx=4, Ly=3, bcx="pbc", bcy="pbc", nup=4, ndn=4, U=8.0, tp=-0.25),
-    2: dict(Lx=4, Ly=3, bcx="pbc", bcy="pbc", nup=5, ndn=5, U=4.0, tp=-0.25),
-    3: dict(Lx=3, Ly=3, bcx="pbc", bcy="pbc", nup=3, ndn=3, U=8.0, tp=-0.25),
+    # lower-symmetry clusters (P1.2 round 3; irreps and in-sector gaps from its probe)
+    0: dict(Lx=4, Ly=3, bcx="obc", bcy="obc", nup=4, ndn=4, U=8.0, tp=-0.25),
+    1: dict(Lx=4, Ly=3, bcx="pbc", bcy="obc", nup=4, ndn=4, U=8.0, tp=-0.25),
+    2: dict(Lx=6, Ly=2, bcx="pbc", bcy="obc", nup=5, ndn=5, U=8.0, tp=-0.25),
+    # the three P1.1 tori
+    3: dict(Lx=4, Ly=3, bcx="pbc", bcy="pbc", nup=5, ndn=5, U=8.0, tp=-0.25),
+    4: dict(Lx=4, Ly=3, bcx="pbc", bcy="pbc", nup=4, ndn=4, U=8.0, tp=-0.25),
+    5: dict(Lx=4, Ly=3, bcx="pbc", bcy="pbc", nup=5, ndn=5, U=4.0, tp=-0.25),
+    # smoke only
+    6: dict(Lx=3, Ly=3, bcx="pbc", bcy="pbc", nup=3, ndn=3, U=8.0, tp=-0.25),
 }
+N_PROD = 6
+SMOKE = 6
 SEEDS = (101, 102, 103, 104, 105, 106)
 REPORTED = ("U_w8", "UP_w8")
 # pre-committed constants
@@ -168,25 +189,37 @@ SCORE_REL = 0.02
 TRUST_SE = 0.5
 C_SIG = 2.0
 MIN_SCORED = 6
+MIN_FINAL = 3
+MIN_TARGET_INST = 2
 ZRO_MIN = 0.7
 PASS_M, PASS_D, PASS_G, PASS_COV = 0.5, 0.2, 0.10, 0.5
 FAIL_M, FAIL_D, FAIL_G = 0.3, 0.05, 0.20
 log = P.log
 
 
-# ============================================================================ symmetry (copied from P1.1-P)
+# ============================================================================ symmetry (copied from P1.2 r3 / P1.1-P)
 def group(model):
+    """Space-group elements T^(a,b) M^(c,d); translations only along periodic directions,
+    mirrors x -> -x (periodic) or x -> L-1-x (open). Copied from P1.2 round 3."""
     Lx, Ly, V = model.Lx, model.Ly, model.V
+    ax = range(Lx) if model.bcx == "pbc" else range(1)
+    ay = range(Ly) if model.bcy == "pbc" else range(1)
     out = []
     for c in (0, 1):
         for d in (0, 1):
-            for a in range(Lx):
-                for b in range(Ly):
+            for a in ax:
+                for b in ay:
                     p = np.empty(V, dtype=np.int64)
                     for y in range(Ly):
                         for x in range(Lx):
-                            x2 = (-x) % Lx if c else x
-                            y2 = (-y) % Ly if d else y
+                            if c:
+                                x2 = (-x) % Lx if model.bcx == "pbc" else Lx - 1 - x
+                            else:
+                                x2 = x
+                            if d:
+                                y2 = (-y) % Ly if model.bcy == "pbc" else Ly - 1 - y
+                            else:
+                                y2 = y
                             x2, y2 = (x2 + a) % Lx, (y2 + b) % Ly
                             p[x + Lx * y] = x2 + Lx * y2
                     out.append(((a, b, c, d), p))
@@ -246,7 +279,7 @@ class SpaceGroup:
                 for k, e in enumerate(self.elems) if e in self.GEN}
 
     def set_irrep(self, lam):
-        self.chi = np.array([lam["Tx"] ** a * lam["Ty"] ** b * lam["Mx"] ** c * lam["My"] ** d
+        self.chi = np.array([lam.get("Tx", 1) ** a * lam.get("Ty", 1) ** b * lam["Mx"] ** c * lam["My"] ** d
                              for (a, b, c, d) in self.elems], float)
 
     def irrep_of(self, psi0):
@@ -645,9 +678,17 @@ def _minres_has_rtol():
 # ============================================================================ checks
 def run_checks(seed):
     ok = P.run_checks(seed)
-    c = INSTANCES[3]
+    c = INSTANCES[SMOKE]
     m = P.Hubbard(c["Lx"], c["Ly"], c["bcx"], c["bcy"], c["nup"], c["ndn"], 1.0, c["tp"], c["U"])
     m.pair_setup(1.0)
+    # open and cylinder group operators commute with H (lower-symmetry production clusters)
+    for (Lx, Ly, bcx, bcy) in [(3, 2, "obc", "obc"), (3, 2, "pbc", "obc")]:
+        mm = P.Hubbard(Lx, Ly, bcx, bcy, 2, 2, 1.0, -0.25, 8.0)
+        sgo = SpaceGroup(mm)
+        vv = np.random.default_rng(seed).standard_normal(mm.D)
+        e_c = max(np.linalg.norm(sgo.apply(mm.H @ vv, k) - mm.H @ sgo.apply(vv, k)) for k in range(sgo.G))
+        log(f"check group {Lx}x{Ly} {bcx}/{bcy}: |G|={sgo.G} max ||[H,U_g]v|| {e_c:.1e}")
+        ok &= e_c < 1e-10
     W, Vv, deg = P.solve_ed(m, 3, 1e-8, seed)
     psi0 = Vv[:, 0]
     sg = SpaceGroup(m)
@@ -770,9 +811,18 @@ def run(args):
     spn = Spin(m)
     S0 = float(round(0.5 * (np.sqrt(1 + 4 * spn.expect(psi0)) - 1)))
     a0 = float(psi0 @ Aop.apply(psi0))
-    log(f"ED {W.tolist()}; irrep {lam}; S(psi0)={S0:g}; a0={a0:+.6e}")
+    # instance checks: H and A commute with every group element; psi0 is in the irrep
+    vv = np.random.default_rng(args.seed).standard_normal(m.D)
+    hv, av = np.linalg.norm(m.H @ vv), np.linalg.norm(Aop.apply(vv))
+    e_h = max(np.linalg.norm(sg.apply(m.H @ vv, k) - m.H @ sg.apply(vv, k)) for k in range(sg.G)) / hv
+    e_a = max(np.linalg.norm(sg.apply(Aop.apply(vv), k) - Aop.apply(sg.apply(vv, k))) for k in range(sg.G)) / av
+    e_p = float(np.linalg.norm(Projector(sg, spn, S0, "PS")(psi0) - psi0))
+    log(f"ED {W.tolist()}; |G|={sg.G}; irrep {lam}; S(psi0)={S0:g}; a0={a0:+.6e}; "
+        f"[H,U_g] {e_h:.1e} [A,U_g] {e_a:.1e} ||P_S P_chi psi0 - psi0|| {e_p:.1e}")
+    if max(e_h, e_a, e_p) > 1e-8:
+        raise RuntimeError("symmetry checks failed on this instance")
     res = dict(params={k: v for k, v in vars(args).items()}, instance=args.instance, seed=args.seed,
-               ed=W.tolist(), irrep=lam, S0=S0, a0=a0, states=[], timing={})
+               ed=W.tolist(), irrep=lam, G=sg.G, S0=S0, a0=a0, states=[], timing={})
 
     def dump():
         with open(args.out, "w") as fh:
@@ -956,7 +1006,7 @@ def aggregate(d, include_smoke=False):
     by_inst = {}
     for f in files:
         r = json.load(open(f))
-        if r["instance"] == 3 and not include_smoke:
+        if r["instance"] == SMOKE and not include_smoke:
             continue
         for s in r["states"]:
             s["instance"], s["seed"] = r["instance"], r["seed"]
@@ -992,14 +1042,30 @@ def aggregate(d, include_smoke=False):
         if mode != "mc":
             continue
         # verdict (mc mode)
-        B = max(CONTROLS, key=lambda a: (met[a]["M"], -CONTROLS.index(a)))
-        insts = sorted(by_inst)
-        guard_ok = True
-        for K in insts:
+        # premise gate on the size of the residual (NO-TARGET): an instance has a target iff it
+        # has >= MIN_SCORED scored states over >= 3 seeds, of which >= MIN_FINAL are final
+        # (best-energy, not snapshot) states. Verdicts use target instances only.
+        insts = []
+        for K in sorted(by_inst):
             sc = [r for r in rows_all if r["scored"] and r["state"]["instance"] == K]
-            if len(sc) < MIN_SCORED or len({r["state"]["seed"] for r in sc}) < 3:
-                guard_ok = False
-                print(f"guard: instance {K} has {len(sc)} scored states -> premise not met")
+            nfin = sum("@" not in r["state"]["label"] for r in sc)
+            fin_err = [abs(r["state"]["delta"]) / abs(r["state"]["a0"]) for r in rows_all
+                       if r["state"]["instance"] == K and not r["state"]["reported"] and "@" not in r["state"]["label"]]
+            ok_t = len(sc) >= MIN_SCORED and len({r["state"]["seed"] for r in sc}) >= 3 and nfin >= MIN_FINAL
+            print(f"target gate: instance {K}: scored {len(sc)} (final {nfin}); median |delta|/|a0| of final "
+                  f"states {np.median(fin_err) if fin_err else float('nan'):.2e} -> {'TARGET' if ok_t else 'NO-TARGET'}")
+            if ok_t:
+                insts.append(K)
+        guard_ok = len(insts) >= MIN_TARGET_INST
+        rows_t = [r for r in rows_all if r["state"]["instance"] in insts]
+        if rows_t:
+            T, met, units = metrics(rows_t)
+            print(f"verdict metrics on target instances {insts} (units={len(units)}):")
+            for a in ARMS:
+                print(f"{a:4s} M={met[a]['M']:.3f} G={met[a]['G']:.3f} Cov={met[a]['Cov']:.3f}")
+        else:
+            units = []
+        B = max(CONTROLS, key=lambda a: (met[a]["M"], -CONTROLS.index(a)))
         for X in ROUTES:
             diffs = np.array([T[X][u] - T[B][u] for u in units])
             Dm = float(np.median(diffs)) if len(diffs) else float("nan")
@@ -1008,7 +1074,7 @@ def aggregate(d, include_smoke=False):
             per_inst = {K: float(np.median([T[X][u] - T[B][u] for u in units if u[0] == K])) if any(u[0] == K for u in units) else float("nan") for K in insts}
             x = met[X]
             if not guard_ok:
-                v = "AMBIGUOUS (premise: too few scored states)"
+                v = f"NO-TARGET (fewer than {MIN_TARGET_INST} instances with a non-trivial residual)"
             elif X == "ZR" and met["ZRO"]["M"] < ZRO_MIN:
                 v = "FAIL (premise: oracle first-order response does not track)"
             elif x["M"] >= PASS_M and Dm >= PASS_D and x["G"] <= PASS_G and x["Cov"] >= PASS_COV and all(v_ > 0 for v_ in per_inst.values()):
@@ -1029,7 +1095,7 @@ def aggregate(d, include_smoke=False):
 # ============================================================================ main
 def parse_args(argv=None):
     ap = argparse.ArgumentParser(description="P3.1 round-3 decisive test (see module docstring)")
-    ap.add_argument("--instance", type=int, default=1, choices=[0, 1, 2, 3])
+    ap.add_argument("--instance", type=int, default=1, choices=sorted(INSTANCES))
     ap.add_argument("--seed", type=int, default=101)
     ap.add_argument("--task-id", type=int, default=-1)
     ap.add_argument("--sr-iters", type=int, default=400)
@@ -1052,10 +1118,11 @@ def parse_args(argv=None):
     ap.add_argument("--checks-only", type=int, choices=[0, 1], default=0)
     ap.add_argument("--aggregate", type=str, default="")
     ap.add_argument("--include-smoke", type=int, choices=[0, 1], default=0)
+    ap.add_argument("--min-target-inst", type=int, default=2)
     a = ap.parse_args(argv)
     if a.task_id >= 0:
-        if a.task_id > 17:
-            ap.error("--task-id must be in 0..17")
+        if a.task_id > 6 * N_PROD - 1:
+            ap.error(f"--task-id must be in 0..{6 * N_PROD - 1}")
         a.instance = a.task_id // 6
         a.seed = SEEDS[a.task_id % 6]
     a.pop_list = [p.strip() for p in a.populations.split(",") if p.strip()]
@@ -1068,6 +1135,8 @@ def parse_args(argv=None):
 def main(argv=None):
     args = parse_args(argv)
     if args.aggregate:
+        global MIN_TARGET_INST
+        MIN_TARGET_INST = args.min_target_inst
         return aggregate(args.aggregate, bool(args.include_smoke))
     log("args: " + json.dumps({k: v for k, v in vars(args).items()}))
     if not run_checks(args.seed):

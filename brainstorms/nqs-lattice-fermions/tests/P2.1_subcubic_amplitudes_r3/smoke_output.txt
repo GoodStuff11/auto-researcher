@@ -1,0 +1,362 @@
+[14:02:24] check two-site t-J singlet energy -0.400000000000 (exact -J = -0.4)
+[14:02:24] check smoke t-J: D=90 herm 0.0e+00 [H,S2] 6.2e-16 [H,U_g] 1.8e-16 (|G|=12, chi={'Tx': 1, 'My': 1, 'Mx': 1}) P_chi idem 1.6e-16 P_chi psi0-psi0 2.3e-15 P_S idem 2.5e-16 [P_S,P_chi] 7.0e-17
+[14:02:24] check grad [full K=2, proj=none]: analytic 1.6347412409e-01 fd 1.6347412424e-01
+[14:02:24] check grad [full K=2, proj=chi]: analytic 4.2260904623e-01 fd 4.2260904620e-01; O_P vs fd 3.1e-10; per-amplitude psi_P 2.7e-16
+[14:02:24] check grad [full K=2, proj=spin_chi]: analytic 3.4049877222e-01 fd 3.4049877251e-01
+[14:02:24] check grad [lr K=3 r=2, proj=none]: analytic 2.1384765990e-01 fd 2.1384765958e-01
+[14:02:24] check grad [lr K=3 r=2, proj=chi]: analytic -5.1420733391e-02 fd -5.1420733449e-02; O_P vs fd 2.9e-10; per-amplitude psi_P 1.4e-16
+[14:02:24] check grad [lr K=3 r=2, proj=spin_chi]: analytic -9.3599571631e-02 fd -9.3599571649e-02
+[14:02:24] check fast E_loc == (H psi)/psi on all 90 configs [lr K=3 r=2]: fast 1.0e-13 brute 3.0e-15
+[14:02:24] check grad [lr r=0, proj=none]: analytic -4.6063970933e-02 fd -4.6063970860e-02
+[14:02:24] check grad [lr r=0, proj=chi]: analytic 7.7334867530e-02 fd 7.7334867399e-02; O_P vs fd 1.1e-10; per-amplitude psi_P 1.5e-16
+[14:02:24] check grad [lr r=0, proj=spin_chi]: analytic 1.6387010039e-02 fd 1.6387009527e-02
+[14:02:24] check fast E_loc == (H psi)/psi on all 90 configs [lr r=0]: fast 1.5e-15 brute 3.8e-16
+[14:02:24] check grad [agp K=3 r=2, proj=none]: analytic -3.8712711326e-01 fd -3.8712711325e-01
+[14:02:24] check grad [agp K=3 r=2, proj=chi]: analytic -8.7960467650e-01 fd -8.7960467621e-01; O_P vs fd 2.5e-10; per-amplitude psi_P 0.0e+00
+[14:02:24] check grad [agp K=3 r=2, proj=spin_chi]: analytic -9.0237464023e-01 fd -9.0237464079e-01
+[14:02:24] check fast E_loc == (H psi)/psi on all 90 configs [agp K=3 r=2]: fast 1.1e-13 brute 1.0e-15
+[14:02:24] check grad [agp r=0, proj=none]: analytic -1.2201696100e-01 fd -1.2201696098e-01
+[14:02:24] check grad [agp r=0, proj=chi]: analytic -6.7121716739e-02 fd -6.7121716185e-02; O_P vs fd 8.4e-10; per-amplitude psi_P 1.9e-16
+[14:02:24] check grad [agp r=0, proj=spin_chi]: analytic -7.6474683795e-02 fd -7.6474683031e-02
+[14:02:25] check fast E_loc == (H psi)/psi on all 90 configs [agp r=0]: fast 6.3e-14 brute 5.3e-16
+[14:02:25] check 6x6 sweep: 21/200 accepted, drift 8.8e-15, carried E_loc vs brute 1.2e-15
+[14:02:25] ALL CHECKS PASSED
+[14:02:25] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=nnbf seed=11
+[14:02:25] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:25] arm nnbf: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 8, 'Ha': 0} n_params=344 target=344 proj=chi calib=2.66e-15 init |P psi|/|psi|=4.531e-01
+[14:02:25] nnbf: it     0  E = -5.15969141  |f| = 7.80e-01  (0.00 s/step)
+[14:02:25] nnbf: it    19  E = -4.87533115  |f| = 8.31e-01  (0.00 s/step)
+[14:02:25] nnbf [P]: dE_tot=0.04003 dE_sign=-0.00000 f_E=-0.000 eC=1.63e-03 spread=4.4e-14 S2=0.020 ov0=0.988 (0 s)
+[14:02:25] nnbf [P_S]: dE_tot=0.02878 dE_sign=-0.00000 f_E=-0.000 eC=2.02e-03 spread=9.3e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:25] nnbf sampled: E_exact=-5.16 mean=-5.164 stderr=0.02085 z=0.1875 var_mc=0.147 var_ex=0.1489 kurt_ex=6.073 tail_share=0.05225 max_dev_sigma=2.195 accept=0.4156 n=400 per_amp_check=1.626e-16 (0 s)
+[14:02:25] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=nnbf seed=22
+[14:02:25] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:25] arm nnbf: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 8, 'Ha': 0} n_params=344 target=344 proj=chi calib=8.88e-16 init |P psi|/|psi|=4.538e-01
+[14:02:25] nnbf: it     0  E = -5.15851528  |f| = 8.20e-01  (0.00 s/step)
+[14:02:25] nnbf: it    19  E = -5.15343666  |f| = 2.60e-01  (0.00 s/step)
+[14:02:25] nnbf [P]: dE_tot=0.03429 dE_sign=0.00000 f_E=0.000 eC=1.09e-02 spread=2.6e-14 S2=0.012 ov0=0.991 (0 s)
+[14:02:25] nnbf [P_S]: dE_tot=0.02147 dE_sign=-0.00000 f_E=-0.000 eC=9.88e-03 spread=4.1e-14 S2=0.000 ov0=0.994 (0 s)
+[14:02:25] nnbf sampled: E_exact=-5.165 mean=-5.179 stderr=0.01779 z=0.7657 var_mc=0.1266 var_ex=0.1577 kurt_ex=21.52 tail_share=0.6613 max_dev_sigma=5.67 accept=0.3911 n=400 per_amp_check=3.109e-16 (0 s)
+[14:02:25] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=nnbf seed=33
+[14:02:25] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:25] arm nnbf: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 8, 'Ha': 0} n_params=344 target=344 proj=chi calib=0.00e+00 init |P psi|/|psi|=4.538e-01
+[14:02:25] nnbf: it     0  E = -5.16075643  |f| = 7.52e-01  (0.00 s/step)
+[14:02:25] nnbf: it    19  E = -4.81930164  |f| = 7.06e-01  (0.00 s/step)
+[14:02:25] nnbf [P]: dE_tot=0.03896 dE_sign=-0.00000 f_E=-0.000 eC=1.88e-03 spread=2.3e-14 S2=0.018 ov0=0.988 (0 s)
+[14:02:25] nnbf [P_S]: dE_tot=0.02902 dE_sign=-0.00000 f_E=-0.000 eC=2.28e-03 spread=6.1e-14 S2=-0.000 ov0=0.991 (0 s)
+[14:02:25] nnbf sampled: E_exact=-5.161 mean=-5.136 stderr=0.02156 z=1.141 var_mc=0.1438 var_ex=0.1472 kurt_ex=5.916 tail_share=0.05025 max_dev_sigma=2.191 accept=0.3861 n=400 per_amp_check=1.62e-16 (0 s)
+[14:02:25] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=mdnnbf seed=11
+[14:02:25] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:25] arm mdnnbf: {'mode': 'full', 'K': 4, 'r': 0, 'shared_ref': False, 'Hs': 1, 'Ha': 0} n_params=305 target=344 proj=chi calib=2.66e-15 init |P psi|/|psi|=4.548e-01
+[14:02:25] mdnnbf: it     0  E = -5.16450115  |f| = 2.51e-01  (0.01 s/step)
+[14:02:25] mdnnbf: it    19  E = -5.11630113  |f| = 2.48e-01  (0.01 s/step)
+[14:02:25] mdnnbf [P]: dE_tot=0.03522 dE_sign=-0.00000 f_E=-0.000 eC=1.77e-03 spread=5.0e-14 S2=0.014 ov0=0.989 (0 s)
+[14:02:25] mdnnbf [P_S]: dE_tot=0.02730 dE_sign=-0.00000 f_E=-0.000 eC=2.42e-03 spread=3.3e-14 S2=0.000 ov0=0.992 (0 s)
+[14:02:25] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=mdnnbf seed=22
+[14:02:25] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:25] arm mdnnbf: {'mode': 'full', 'K': 4, 'r': 0, 'shared_ref': False, 'Hs': 1, 'Ha': 0} n_params=305 target=344 proj=chi calib=8.88e-16 init |P psi|/|psi|=4.565e-01
+[14:02:25] mdnnbf: it     0  E = -5.16106212  |f| = 2.55e-01  (0.01 s/step)
+[14:02:25] mdnnbf: it    19  E = -5.08600342  |f| = 4.32e-01  (0.01 s/step)
+[14:02:25] mdnnbf [P]: dE_tot=0.01448 dE_sign=0.00000 f_E=0.000 eC=1.81e-03 spread=1.8e-13 S2=0.006 ov0=0.998 (0 s)
+[14:02:25] mdnnbf [P_S]: dE_tot=0.00358 dE_sign=-0.00000 f_E=-0.000 eC=1.36e-03 spread=2.5e-13 S2=0.000 ov0=1.000 (0 s)
+[14:02:25] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=mdnnbf seed=33
+[14:02:25] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:25] arm mdnnbf: {'mode': 'full', 'K': 4, 'r': 0, 'shared_ref': False, 'Hs': 1, 'Ha': 0} n_params=305 target=344 proj=chi calib=0.00e+00 init |P psi|/|psi|=4.546e-01
+[14:02:25] mdnnbf: it     0  E = -5.15962770  |f| = 2.59e-01  (0.01 s/step)
+[14:02:25] mdnnbf: it    19  E = -5.07414927  |f| = 3.55e-01  (0.01 s/step)
+[14:02:25] mdnnbf [P]: dE_tot=0.04009 dE_sign=-0.00000 f_E=-0.000 eC=1.26e-03 spread=1.1e-13 S2=0.019 ov0=0.988 (0 s)
+[14:02:26] mdnnbf [P_S]: dE_tot=0.02952 dE_sign=-0.00000 f_E=-0.000 eC=1.76e-03 spread=6.0e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:26] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=hf1 seed=11
+[14:02:26] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:26] arm hf1: {'mode': 'lr', 'K': 1, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 18} n_params=343 target=344 proj=chi calib=2.66e-15 init |P psi|/|psi|=4.538e-01
+[14:02:26] hf1: it     0  E = -5.16073382  |f| = 4.10e-01  (0.00 s/step)
+[14:02:26] hf1: it    19  E = -4.70551224  |f| = 1.03e+00  (0.00 s/step)
+[14:02:26] hf1 [P]: dE_tot=0.03899 dE_sign=-0.00000 f_E=-0.000 eC=1.73e-03 spread=4.6e-14 S2=0.019 ov0=0.988 (0 s)
+[14:02:26] hf1 [P_S]: dE_tot=0.02873 dE_sign=-0.00000 f_E=-0.000 eC=2.20e-03 spread=9.3e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:26] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=hf1 seed=22
+[14:02:26] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:26] arm hf1: {'mode': 'lr', 'K': 1, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 18} n_params=343 target=344 proj=chi calib=8.88e-16 init |P psi|/|psi|=4.540e-01
+[14:02:26] hf1: it     0  E = -5.16088858  |f| = 4.55e-01  (0.01 s/step)
+[14:02:26] hf1: it    19  E = -4.08609624  |f| = 1.88e+00  (0.00 s/step)
+[14:02:26] hf1 [P]: dE_tot=0.03883 dE_sign=-0.00000 f_E=-0.000 eC=1.77e-03 spread=2.3e-14 S2=0.018 ov0=0.988 (0 s)
+[14:02:26] hf1 [P_S]: dE_tot=0.02873 dE_sign=-0.00000 f_E=-0.000 eC=2.22e-03 spread=1.2e-13 S2=0.000 ov0=0.991 (0 s)
+[14:02:26] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=hf1 seed=33
+[14:02:26] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:26] arm hf1: {'mode': 'lr', 'K': 1, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 18} n_params=343 target=344 proj=chi calib=0.00e+00 init |P psi|/|psi|=4.535e-01
+[14:02:26] hf1: it     0  E = -5.16061838  |f| = 4.25e-01  (0.00 s/step)
+[14:02:26] hf1: it    19  E = -4.18998178  |f| = 2.76e+00  (0.00 s/step)
+[14:02:26] hf1 [P]: dE_tot=0.03910 dE_sign=-0.00000 f_E=-0.000 eC=1.70e-03 spread=9.1e-14 S2=0.018 ov0=0.988 (0 s)
+[14:02:26] hf1 [P_S]: dE_tot=0.02891 dE_sign=-0.00000 f_E=-0.000 eC=2.08e-03 spread=6.1e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:26] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=hf4 seed=11
+[14:02:26] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:26] arm hf4: {'mode': 'lr', 'K': 1, 'r': 4, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=343 target=344 proj=chi calib=2.66e-15 init |P psi|/|psi|=4.534e-01
+[14:02:26] hf4: it     0  E = -5.16193712  |f| = 5.17e-01  (0.00 s/step)
+[14:02:26] hf4: it    19  E = -4.15453533  |f| = 2.49e+00  (0.00 s/step)
+[14:02:26] hf4 [P]: dE_tot=0.03778 dE_sign=-0.00000 f_E=-0.000 eC=1.53e-03 spread=7.1e-14 S2=0.018 ov0=0.989 (0 s)
+[14:02:26] hf4 [P_S]: dE_tot=0.02791 dE_sign=-0.00000 f_E=-0.000 eC=1.96e-03 spread=1.9e-13 S2=0.000 ov0=0.992 (0 s)
+[14:02:26] hf4 sampled: E_exact=-5.162 mean=-5.172 stderr=0.01976 z=0.5031 var_mc=0.1333 var_ex=0.1402 kurt_ex=7.51 tail_share=0.06099 max_dev_sigma=2.188 accept=0.4072 n=400 per_amp_check=3.243e-16 (0 s)
+[14:02:26] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=hf4 seed=22
+[14:02:26] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:26] arm hf4: {'mode': 'lr', 'K': 1, 'r': 4, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=343 target=344 proj=chi calib=8.88e-16 init |P psi|/|psi|=4.535e-01
+[14:02:26] hf4: it     0  E = -5.15968810  |f| = 6.64e-01  (0.00 s/step)
+[14:02:26] hf4: it    19  E = -3.95313576  |f| = 2.04e+00  (0.00 s/step)
+[14:02:26] hf4 [P]: dE_tot=0.04003 dE_sign=-0.00000 f_E=-0.000 eC=1.70e-03 spread=6.7e-14 S2=0.019 ov0=0.988 (0 s)
+[14:02:26] hf4 [P_S]: dE_tot=0.02933 dE_sign=-0.00000 f_E=-0.000 eC=2.09e-03 spread=9.1e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:26] hf4 sampled: E_exact=-5.16 mean=-5.16 stderr=0.02367 z=0.01017 var_mc=0.1396 var_ex=0.1486 kurt_ex=6.958 tail_share=0.05632 max_dev_sigma=2.222 accept=0.3911 n=400 per_amp_check=1.624e-16 (0 s)
+[14:02:26] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=hf4 seed=33
+[14:02:26] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:26] arm hf4: {'mode': 'lr', 'K': 1, 'r': 4, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=343 target=344 proj=chi calib=0.00e+00 init |P psi|/|psi|=4.536e-01
+[14:02:26] hf4: it     0  E = -5.16171370  |f| = 5.22e-01  (0.01 s/step)
+[14:02:26] hf4: it    19  E = -3.64169682  |f| = 1.55e+00  (0.01 s/step)
+[14:02:26] hf4 [P]: dE_tot=0.03801 dE_sign=-0.00000 f_E=-0.000 eC=1.61e-03 spread=2.3e-14 S2=0.018 ov0=0.989 (0 s)
+[14:02:26] hf4 [P_S]: dE_tot=0.02783 dE_sign=-0.00000 f_E=-0.000 eC=2.04e-03 spread=9.6e-14 S2=0.000 ov0=0.992 (0 s)
+[14:02:26] hf4 sampled: E_exact=-5.162 mean=-5.142 stderr=0.02011 z=0.9672 var_mc=0.1276 var_ex=0.1417 kurt_ex=6.337 tail_share=0.05443 max_dev_sigma=2.189 accept=0.3839 n=400 per_amp_check=1.622e-16 (0 s)
+[14:02:26] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk1 seed=11
+[14:02:26] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:26] arm sk1: {'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=347 target=344 proj=chi calib=2.66e-15 init |P psi|/|psi|=4.537e-01
+[14:02:26] sk1: it     0  E = -5.16076958  |f| = 3.91e-01  (0.01 s/step)
+[14:02:27] sk1: it    19  E = -5.09561064  |f| = 5.21e-01  (0.01 s/step)
+[14:02:27] sk1 [P]: dE_tot=0.03895 dE_sign=-0.00000 f_E=-0.000 eC=1.68e-03 spread=1.1e-13 S2=0.018 ov0=0.988 (0 s)
+[14:02:27] sk1 [P_S]: dE_tot=0.02876 dE_sign=-0.00000 f_E=-0.000 eC=2.13e-03 spread=1.2e-13 S2=0.000 ov0=0.991 (0 s)
+[14:02:27] sk1 sampled: E_exact=-5.161 mean=-5.173 stderr=0.01995 z=0.6263 var_mc=0.1378 var_ex=0.1448 kurt_ex=7.242 tail_share=0.05861 max_dev_sigma=2.195 accept=0.4144 n=400 per_amp_check=1.623e-16 (0 s)
+[14:02:27] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk1 seed=22
+[14:02:27] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:27] arm sk1: {'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=347 target=344 proj=chi calib=8.88e-16 init |P psi|/|psi|=4.537e-01
+[14:02:27] sk1: it     0  E = -5.16088060  |f| = 3.81e-01  (0.01 s/step)
+[14:02:27] sk1: it    19  E = -5.17601935  |f| = 1.49e-01  (0.01 s/step)
+[14:02:27] sk1 [P]: dE_tot=0.02370 dE_sign=-0.00000 f_E=-0.000 eC=1.04e-02 spread=7.5e-14 S2=0.021 ov0=0.992 (0 s)
+[14:02:27] sk1 [P_S]: dE_tot=0.01218 dE_sign=-0.00000 f_E=-0.000 eC=9.28e-03 spread=2.2e-13 S2=0.000 ov0=0.996 (0 s)
+[14:02:27] sk1 sampled: E_exact=-5.176 mean=-5.179 stderr=0.01464 z=0.2123 var_mc=0.06085 var_ex=0.07174 kurt_ex=27.48 tail_share=0.684 max_dev_sigma=6.183 accept=0.4022 n=400 per_amp_check=4.781e-16 (0 s)
+[14:02:27] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk1 seed=33
+[14:02:27] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:27] arm sk1: {'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=347 target=344 proj=chi calib=0.00e+00 init |P psi|/|psi|=4.538e-01
+[14:02:27] sk1: it     0  E = -5.16123869  |f| = 3.88e-01  (0.01 s/step)
+[14:02:27] sk1: it    19  E = -4.99498514  |f| = 6.75e-01  (0.01 s/step)
+[14:02:27] sk1 [P]: dE_tot=0.03848 dE_sign=-0.00000 f_E=-0.000 eC=1.68e-03 spread=9.2e-14 S2=0.018 ov0=0.988 (0 s)
+[14:02:27] sk1 [P_S]: dE_tot=0.02843 dE_sign=-0.00000 f_E=-0.000 eC=2.15e-03 spread=9.4e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:27] sk1 sampled: E_exact=-5.161 mean=-5.142 stderr=0.02025 z=0.9306 var_mc=0.1284 var_ex=0.1432 kurt_ex=7.217 tail_share=0.05889 max_dev_sigma=2.19 accept=0.3839 n=400 per_amp_check=6.488e-16 (0 s)
+[14:02:27] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk2 seed=11
+[14:02:27] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:27] arm sk2: {'mode': 'lr', 'K': 4, 'r': 2, 'shared_ref': True, 'Hs': 3, 'Ha': 4} n_params=347 target=344 proj=chi calib=2.66e-15 init |P psi|/|psi|=4.537e-01
+[14:02:27] sk2: it     0  E = -5.16090891  |f| = 3.81e-01  (0.01 s/step)
+[14:02:27] sk2: it    19  E = -5.08222639  |f| = 4.28e-01  (0.01 s/step)
+[14:02:27] sk2 [P]: dE_tot=0.03881 dE_sign=-0.00000 f_E=-0.000 eC=1.67e-03 spread=6.9e-14 S2=0.018 ov0=0.988 (0 s)
+[14:02:27] sk2 [P_S]: dE_tot=0.02862 dE_sign=-0.00000 f_E=-0.000 eC=2.12e-03 spread=9.3e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:27] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk2 seed=22
+[14:02:27] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:27] arm sk2: {'mode': 'lr', 'K': 4, 'r': 2, 'shared_ref': True, 'Hs': 3, 'Ha': 4} n_params=347 target=344 proj=chi calib=8.88e-16 init |P psi|/|psi|=4.536e-01
+[14:02:27] sk2: it     0  E = -5.16076437  |f| = 3.67e-01  (0.01 s/step)
+[14:02:28] sk2: it    19  E = -5.10531613  |f| = 3.02e-01  (0.01 s/step)
+[14:02:28] sk2 [P]: dE_tot=0.03896 dE_sign=-0.00000 f_E=-0.000 eC=1.66e-03 spread=1.1e-13 S2=0.019 ov0=0.988 (0 s)
+[14:02:28] sk2 [P_S]: dE_tot=0.02867 dE_sign=-0.00000 f_E=-0.000 eC=2.10e-03 spread=9.3e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:28] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk2 seed=33
+[14:02:28] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:28] arm sk2: {'mode': 'lr', 'K': 4, 'r': 2, 'shared_ref': True, 'Hs': 3, 'Ha': 4} n_params=347 target=344 proj=chi calib=0.00e+00 init |P psi|/|psi|=4.537e-01
+[14:02:28] sk2: it     0  E = -5.16108001  |f| = 3.63e-01  (0.01 s/step)
+[14:02:28] sk2: it    19  E = -4.91149821  |f| = 6.59e-01  (0.01 s/step)
+[14:02:28] sk2 [P]: dE_tot=0.03066 dE_sign=-0.00000 f_E=-0.000 eC=2.39e-03 spread=1.2e-13 S2=0.018 ov0=0.990 (0 s)
+[14:02:28] sk2 [P_S]: dE_tot=0.02099 dE_sign=-0.00000 f_E=-0.000 eC=3.32e-03 spread=0.0e+00 S2=0.000 ov0=0.993 (0 s)
+[14:02:28] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sjnet seed=11
+[14:02:28] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:28] arm sjnet: {'mode': 'lr', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 23} n_params=346 target=344 proj=chi calib=2.66e-15 init |P psi|/|psi|=4.537e-01
+[14:02:28] sjnet: it     0  E = -5.16087613  |f| = 3.89e-01  (0.00 s/step)
+[14:02:28] sjnet: it    19  E = -5.05329232  |f| = 4.33e-01  (0.00 s/step)
+[14:02:28] sjnet [P]: dE_tot=0.03884 dE_sign=-0.00000 f_E=-0.000 eC=1.67e-03 spread=4.6e-14 S2=0.018 ov0=0.988 (0 s)
+[14:02:28] sjnet [P_S]: dE_tot=0.02865 dE_sign=-0.00000 f_E=-0.000 eC=2.12e-03 spread=9.3e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:28] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sjnet seed=22
+[14:02:28] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:28] arm sjnet: {'mode': 'lr', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 23} n_params=346 target=344 proj=chi calib=8.88e-16 init |P psi|/|psi|=4.537e-01
+[14:02:28] sjnet: it     0  E = -5.16087613  |f| = 4.09e-01  (0.00 s/step)
+[14:02:28] sjnet: it    19  E = -3.95316290  |f| = 2.26e+00  (0.00 s/step)
+[14:02:28] sjnet [P]: dE_tot=0.03884 dE_sign=-0.00000 f_E=-0.000 eC=1.67e-03 spread=6.9e-14 S2=0.018 ov0=0.988 (0 s)
+[14:02:28] sjnet [P_S]: dE_tot=0.02865 dE_sign=-0.00000 f_E=-0.000 eC=2.12e-03 spread=9.3e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:28] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sjnet seed=33
+[14:02:28] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:28] arm sjnet: {'mode': 'lr', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 23} n_params=346 target=344 proj=chi calib=0.00e+00 init |P psi|/|psi|=4.537e-01
+[14:02:28] sjnet: it     0  E = -5.16087613  |f| = 4.03e-01  (0.00 s/step)
+[14:02:28] sjnet: it    19  E = -1.63668938  |f| = 3.52e+00  (0.00 s/step)
+[14:02:28] sjnet [P]: dE_tot=0.03884 dE_sign=-0.00000 f_E=-0.000 eC=1.67e-03 spread=6.9e-14 S2=0.018 ov0=0.988 (0 s)
+[14:02:28] sjnet [P_S]: dE_tot=0.02865 dE_sign=-0.00000 f_E=-0.000 eC=2.12e-03 spread=9.3e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:28] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=agpj seed=11
+[14:02:28] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:28] arm agpj: {'mode': 'agp', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 22} n_params=344 target=344 proj=chi calib=2.66e-15 init |P psi|/|psi|=9.670e-01
+[14:02:28] agpj: it     0  E = -3.92429829  |f| = 4.88e+00  (0.00 s/step)
+[14:02:28] agpj: it    19  E = -5.08140201  |f| = 3.46e-01  (0.00 s/step)
+[14:02:28] agpj [P]: dE_tot=0.03827 dE_sign=-0.00000 f_E=-0.000 eC=1.05e-02 spread=7.0e-14 S2=0.034 ov0=0.987 (0 s)
+[14:02:28] agpj [P_S]: dE_tot=0.01988 dE_sign=-0.00000 f_E=-0.000 eC=8.79e-03 spread=1.8e-13 S2=0.000 ov0=0.993 (0 s)
+[14:02:28] agpj sampled: E_exact=-5.161 mean=-5.183 stderr=0.01544 z=1.38 var_mc=0.0884 var_ex=0.1211 kurt_ex=21.16 tail_share=0.7081 max_dev_sigma=5.39 accept=0.4094 n=400 per_amp_check=1.634e-16 (0 s)
+[14:02:28] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=agpj seed=22
+[14:02:28] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:28] arm agpj: {'mode': 'agp', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 22} n_params=344 target=344 proj=chi calib=8.88e-16 init |P psi|/|psi|=9.670e-01
+[14:02:28] agpj: it     0  E = -3.92429829  |f| = 4.89e+00  (0.00 s/step)
+[14:02:28] agpj: it    19  E = -4.91174714  |f| = 9.39e-01  (0.00 s/step)
+[14:02:28] agpj [P]: dE_tot=0.13605 dE_sign=-0.00000 f_E=-0.000 eC=2.94e-02 spread=2.0e-14 S2=0.030 ov0=0.972 (0 s)
+[14:02:28] agpj [P_S]: dE_tot=0.09898 dE_sign=-0.00000 f_E=-0.000 eC=2.73e-02 spread=3.6e-14 S2=0.000 ov0=0.980 (0 s)
+[14:02:28] agpj sampled: E_exact=-5.064 mean=-5.044 stderr=0.0487 z=0.3945 var_mc=0.7474 var_ex=0.7344 kurt_ex=4.296 tail_share=2.637e-33 max_dev_sigma=2.551 accept=0.4267 n=400 per_amp_check=3.39e-16 (0 s)
+[14:02:28] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=agpj seed=33
+[14:02:28] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:28] arm agpj: {'mode': 'agp', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 22} n_params=344 target=344 proj=chi calib=0.00e+00 init |P psi|/|psi|=9.670e-01
+[14:02:28] agpj: it     0  E = -3.92429829  |f| = 4.89e+00  (0.00 s/step)
+[14:02:28] agpj: it    19  E = -5.06686492  |f| = 5.36e-01  (0.00 s/step)
+[14:02:28] agpj [P]: dE_tot=0.08678 dE_sign=-0.00000 f_E=-0.000 eC=3.27e-02 spread=2.0e-14 S2=0.006 ov0=0.970 (0 s)
+[14:02:28] agpj [P_S]: dE_tot=0.08296 dE_sign=-0.00000 f_E=-0.000 eC=3.25e-02 spread=1.1e-14 S2=0.000 ov0=0.971 (0 s)
+[14:02:29] agpj sampled: E_exact=-5.113 mean=-5.097 stderr=0.03344 z=0.4618 var_mc=0.2925 var_ex=0.2553 kurt_ex=6.401 tail_share=1.799e-32 max_dev_sigma=3.391 accept=0.4006 n=400 per_amp_check=3.087e-16 (0 s)
+[14:02:29] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=agh4 seed=11
+[14:02:29] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:29] arm agh4: {'mode': 'agp', 'K': 1, 'r': 4, 'shared_ref': True, 'Hs': 3, 'Ha': 11} n_params=349 target=344 proj=chi calib=2.66e-15 init |P psi|/|psi|=9.672e-01
+[14:02:29] agh4: it     0  E = -3.92438711  |f| = 6.33e+00  (0.00 s/step)
+[14:02:29] agh4: it    19  E = -5.19110131  |f| = 6.39e-02  (0.01 s/step)
+[14:02:29] agh4 [P]: dE_tot=0.00777 dE_sign=-0.00000 f_E=-0.000 eC=4.19e-03 spread=2.3e-13 S2=0.006 ov0=0.998 (0 s)
+[14:02:29] agh4 [P_S]: dE_tot=0.00278 dE_sign=-0.00000 f_E=-0.000 eC=3.80e-03 spread=6.4e-13 S2=0.000 ov0=0.999 (0 s)
+[14:02:29] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=agh4 seed=22
+[14:02:29] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:29] arm agh4: {'mode': 'agp', 'K': 1, 'r': 4, 'shared_ref': True, 'Hs': 3, 'Ha': 11} n_params=349 target=344 proj=chi calib=8.88e-16 init |P psi|/|psi|=9.657e-01
+[14:02:29] agh4: it     0  E = -3.92877240  |f| = 7.73e+00  (0.01 s/step)
+[14:02:29] agh4: it    19  E = -5.14561734  |f| = 2.00e-01  (0.01 s/step)
+[14:02:29] agh4 [P]: dE_tot=0.02696 dE_sign=-0.00000 f_E=-0.000 eC=1.50e-02 spread=1.6e-13 S2=0.007 ov0=0.993 (0 s)
+[14:02:29] agh4 [P_S]: dE_tot=0.02053 dE_sign=-0.00000 f_E=-0.000 eC=1.45e-02 spread=1.7e-13 S2=0.000 ov0=0.994 (0 s)
+[14:02:29] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=agh4 seed=33
+[14:02:29] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:29] arm agh4: {'mode': 'agp', 'K': 1, 'r': 4, 'shared_ref': True, 'Hs': 3, 'Ha': 11} n_params=349 target=344 proj=chi calib=0.00e+00 init |P psi|/|psi|=9.676e-01
+[14:02:29] agh4: it     0  E = -3.92389264  |f| = 6.08e+00  (0.01 s/step)
+[14:02:29] agh4: it    19  E = -5.09505511  |f| = 3.31e-01  (0.00 s/step)
+[14:02:29] agh4 [P]: dE_tot=0.00463 dE_sign=-0.00000 f_E=-0.000 eC=3.50e-03 spread=5.7e-13 S2=0.002 ov0=0.999 (0 s)
+[14:02:29] agh4 [P_S]: dE_tot=0.00201 dE_sign=-0.00000 f_E=-0.000 eC=3.31e-03 spread=1.8e-12 S2=0.000 ov0=1.000 (0 s)
+[14:02:29] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=skagp seed=11
+[14:02:29] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:29] arm skagp: {'mode': 'agp', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 10} n_params=339 target=344 proj=chi calib=2.66e-15 init |P psi|/|psi|=9.672e-01
+[14:02:29] skagp: it     0  E = -3.92456384  |f| = 5.00e+00  (0.01 s/step)
+[14:02:29] skagp: it    19  E = -5.19527806  |f| = 5.71e-02  (0.01 s/step)
+[14:02:29] skagp [P]: dE_tot=0.00327 dE_sign=-0.00000 f_E=-0.000 eC=3.93e-03 spread=5.4e-13 S2=0.000 ov0=0.999 (0 s)
+[14:02:29] skagp [P_S]: dE_tot=0.00313 dE_sign=-0.00000 f_E=-0.000 eC=3.92e-03 spread=1.4e-12 S2=0.000 ov0=0.999 (0 s)
+[14:02:29] skagp sampled: E_exact=-5.196 mean=-5.201 stderr=0.008648 z=0.4965 var_mc=0.01726 var_ex=0.01854 kurt_ex=14.09 tail_share=1.421e-30 max_dev_sigma=4.317 accept=0.36 n=400 per_amp_check=3.133e-16 (0 s)
+[14:02:29] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=skagp seed=22
+[14:02:29] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:29] arm skagp: {'mode': 'agp', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 10} n_params=339 target=344 proj=chi calib=8.88e-16 init |P psi|/|psi|=9.671e-01
+[14:02:29] skagp: it     0  E = -3.92849832  |f| = 5.23e+00  (0.01 s/step)
+[14:02:29] skagp: it    19  E = -5.18793800  |f| = 6.87e-02  (0.01 s/step)
+[14:02:29] skagp [P]: dE_tot=0.00692 dE_sign=-0.00000 f_E=-0.000 eC=7.26e-03 spread=1.0e-12 S2=0.001 ov0=0.998 (0 s)
+[14:02:29] skagp [P_S]: dE_tot=0.00624 dE_sign=-0.00000 f_E=-0.000 eC=7.20e-03 spread=2.8e-13 S2=0.000 ov0=0.998 (0 s)
+[14:02:29] skagp sampled: E_exact=-5.193 mean=-5.166 stderr=0.01214 z=2.186 var_mc=0.0398 var_ex=0.02707 kurt_ex=17.66 tail_share=0.4536 max_dev_sigma=5.901 accept=0.3722 n=400 per_amp_check=3.111e-16 (0 s)
+[14:02:29] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=skagp seed=33
+[14:02:29] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:29] arm skagp: {'mode': 'agp', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 10} n_params=339 target=344 proj=chi calib=0.00e+00 init |P psi|/|psi|=9.671e-01
+[14:02:29] skagp: it     0  E = -3.92266535  |f| = 4.99e+00  (0.01 s/step)
+[14:02:30] skagp: it    19  E = -5.19182716  |f| = 5.16e-02  (0.00 s/step)
+[14:02:30] skagp [P]: dE_tot=0.00529 dE_sign=-0.00000 f_E=-0.000 eC=4.34e-03 spread=3.4e-13 S2=0.000 ov0=0.999 (0 s)
+[14:02:30] skagp [P_S]: dE_tot=0.00448 dE_sign=-0.00000 f_E=-0.000 eC=4.30e-03 spread=4.0e-13 S2=0.000 ov0=0.999 (0 s)
+[14:02:30] skagp sampled: E_exact=-5.194 mean=-5.201 stderr=0.008393 z=0.7795 var_mc=0.02684 var_ex=0.03483 kurt_ex=10.64 tail_share=8.035e-32 max_dev_sigma=4.934 accept=0.3833 n=400 per_amp_check=3.152e-16 (0 s)
+[14:02:30] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=nnbf_PS seed=11
+[14:02:30] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:30] arm nnbf_PS: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 8, 'Ha': 0} n_params=344 target=344 proj=spin_chi calib=2.66e-15 init |P psi|/|psi|=4.523e-01
+[14:02:30] nnbf_PS: it     0  E = -5.17094396  |f| = 4.99e-01  (0.00 s/step)
+[14:02:30] nnbf_PS: it    19  E = -5.13249764  |f| = 6.39e-01  (0.00 s/step)
+[14:02:30] nnbf_PS [PS]: dE_tot=0.02789 dE_sign=-0.00000 f_E=-0.000 eC=3.69e-03 spread=3.2e-14 S2=0.000 ov0=0.991 (0 s)
+[14:02:30] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=nnbf_PS seed=22
+[14:02:30] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:30] arm nnbf_PS: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 8, 'Ha': 0} n_params=344 target=344 proj=spin_chi calib=8.88e-16 init |P psi|/|psi|=4.531e-01
+[14:02:30] nnbf_PS: it     0  E = -5.16961736  |f| = 5.40e-01  (0.00 s/step)
+[14:02:30] nnbf_PS: it    19  E = -4.87470358  |f| = 8.60e-01  (0.00 s/step)
+[14:02:30] nnbf_PS [PS]: dE_tot=0.03010 dE_sign=-0.00000 f_E=-0.000 eC=2.23e-03 spread=1.5e-13 S2=0.000 ov0=0.991 (0 s)
+[14:02:30] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=nnbf_PS seed=33
+[14:02:30] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:30] arm nnbf_PS: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 8, 'Ha': 0} n_params=344 target=344 proj=spin_chi calib=0.00e+00 init |P psi|/|psi|=4.531e-01
+[14:02:30] nnbf_PS: it     0  E = -5.17070383  |f| = 4.76e-01  (0.00 s/step)
+[14:02:30] nnbf_PS: it    19  E = -5.11273156  |f| = 5.21e-01  (0.00 s/step)
+[14:02:30] nnbf_PS [PS]: dE_tot=0.01769 dE_sign=-0.00000 f_E=-0.000 eC=9.12e-03 spread=2.0e-13 S2=0.000 ov0=0.994 (0 s)
+[14:02:30] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk1_PS seed=11
+[14:02:30] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:30] arm sk1_PS: {'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=347 target=344 proj=spin_chi calib=2.66e-15 init |P psi|/|psi|=4.530e-01
+[14:02:30] sk1_PS: it     0  E = -5.17095583  |f| = 2.35e-01  (0.01 s/step)
+[14:02:30] sk1_PS: it    19  E = -4.54365328  |f| = 1.80e+00  (0.01 s/step)
+[14:02:30] sk1_PS [PS]: dE_tot=0.02876 dE_sign=-0.00000 f_E=-0.000 eC=2.13e-03 spread=1.2e-13 S2=0.000 ov0=0.991 (0 s)
+[14:02:30] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk1_PS seed=22
+[14:02:30] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:30] arm sk1_PS: {'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=347 target=344 proj=spin_chi calib=8.88e-16 init |P psi|/|psi|=4.530e-01
+[14:02:30] sk1_PS: it     0  E = -5.17104790  |f| = 2.43e-01  (0.01 s/step)
+[14:02:30] sk1_PS: it    19  E = -5.10812843  |f| = 6.66e-01  (0.01 s/step)
+[14:02:30] sk1_PS [PS]: dE_tot=0.00435 dE_sign=-0.00000 f_E=-0.000 eC=5.85e-03 spread=1.0e-12 S2=0.000 ov0=0.998 (0 s)
+[14:02:30] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk1_PS seed=33
+[14:02:30] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:30] arm sk1_PS: {'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=347 target=344 proj=spin_chi calib=0.00e+00 init |P psi|/|psi|=4.531e-01
+[14:02:30] sk1_PS: it     0  E = -5.17128820  |f| = 2.45e-01  (0.01 s/step)
+[14:02:31] sk1_PS: it    19  E = -4.13028406  |f| = 2.54e+00  (0.01 s/step)
+[14:02:31] sk1_PS [PS]: dE_tot=0.02843 dE_sign=-0.00000 f_E=-0.000 eC=2.15e-03 spread=2.5e-13 S2=0.000 ov0=0.991 (0 s)
+[14:02:31] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=nnbf_U seed=11
+[14:02:31] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:31] arm nnbf_U: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 8, 'Ha': 0} n_params=344 target=344 proj=none calib=2.66e-15 init |P psi|/|psi|=1.000e+00
+[14:02:31] nnbf_U: it     0  E = -4.21610244  |f| = 1.56e+00  (0.00 s/step)
+[14:02:31] nnbf_U: it    19  E = -4.87863510  |f| = 5.24e-01  (0.00 s/step)
+[14:02:31] nnbf_U [U]: dE_tot=0.20064 dE_sign=0.02537 f_E=0.126 eC=4.95e-02 spread=4.4e-15 S2=0.195 ov0=0.906 (0 s)
+[14:02:31] nnbf_U [UP]: dE_tot=0.01618 dE_sign=-0.00000 f_E=-0.000 eC=7.16e-04 spread=1.1e-13 S2=0.002 ov0=0.995 (0 s)
+[14:02:31] nnbf_U [UP_S]: dE_tot=0.01268 dE_sign=-0.00000 f_E=-0.000 eC=7.71e-04 spread=2.1e-13 S2=0.000 ov0=0.996 (0 s)
+[14:02:31] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=nnbf_U seed=22
+[14:02:31] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:31] arm nnbf_U: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 8, 'Ha': 0} n_params=344 target=344 proj=none calib=8.88e-16 init |P psi|/|psi|=1.000e+00
+[14:02:31] nnbf_U: it     0  E = -4.21849226  |f| = 1.61e+00  (0.00 s/step)
+[14:02:31] nnbf_U: it    19  E = -4.81699893  |f| = 5.20e-01  (0.00 s/step)
+[14:02:31] nnbf_U [U]: dE_tot=0.26514 dE_sign=0.02266 f_E=0.085 eC=2.81e-02 spread=2.3e-14 S2=0.154 ov0=0.887 (0 s)
+[14:02:31] nnbf_U [UP]: dE_tot=0.03556 dE_sign=-0.00000 f_E=-0.000 eC=3.41e-03 spread=5.0e-14 S2=0.008 ov0=0.991 (0 s)
+[14:02:31] nnbf_U [UP_S]: dE_tot=0.01573 dE_sign=-0.00000 f_E=-0.000 eC=4.59e-03 spread=1.7e-13 S2=0.000 ov0=0.994 (0 s)
+[14:02:31] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=nnbf_U seed=33
+[14:02:31] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:31] arm nnbf_U: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 8, 'Ha': 0} n_params=344 target=344 proj=none calib=0.00e+00 init |P psi|/|psi|=1.000e+00
+[14:02:31] nnbf_U: it     0  E = -4.21702575  |f| = 1.52e+00  (0.00 s/step)
+[14:02:31] nnbf_U: it    19  E = -4.68867265  |f| = 5.93e-01  (0.00 s/step)
+[14:02:31] nnbf_U [U]: dE_tot=0.32652 dE_sign=0.02294 f_E=0.070 eC=1.29e-02 spread=5.4e-15 S2=0.157 ov0=0.897 (0 s)
+[14:02:31] nnbf_U [UP]: dE_tot=0.04180 dE_sign=-0.00000 f_E=-0.000 eC=1.01e-02 spread=2.1e-14 S2=0.009 ov0=0.987 (0 s)
+[14:02:31] nnbf_U [UP_S]: dE_tot=0.03425 dE_sign=-0.00000 f_E=-0.000 eC=1.08e-02 spread=7.8e-14 S2=0.000 ov0=0.989 (0 s)
+[14:02:31] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk1_U seed=11
+[14:02:31] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:31] arm sk1_U: {'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=347 target=344 proj=none calib=2.66e-15 init |P psi|/|psi|=1.000e+00
+[14:02:31] sk1_U: it     0  E = -4.21921468  |f| = 7.82e-01  (0.00 s/step)
+[14:02:31] sk1_U: it    19  E = -4.69998811  |f| = 6.78e-01  (0.00 s/step)
+[14:02:31] sk1_U [U]: dE_tot=0.42472 dE_sign=0.05973 f_E=0.141 eC=9.83e-02 spread=1.3e-14 S2=0.380 ov0=0.699 (0 s)
+[14:02:31] sk1_U [UP]: dE_tot=0.06131 dE_sign=-0.00000 f_E=-0.000 eC=7.93e-03 spread=1.4e-14 S2=0.024 ov0=0.985 (0 s)
+[14:02:31] sk1_U [UP_S]: dE_tot=0.04260 dE_sign=-0.00000 f_E=-0.000 eC=7.84e-03 spread=2.1e-14 S2=0.000 ov0=0.989 (0 s)
+[14:02:31] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk1_U seed=22
+[14:02:31] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:31] arm sk1_U: {'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=347 target=344 proj=none calib=8.88e-16 init |P psi|/|psi|=1.000e+00
+[14:02:31] sk1_U: it     0  E = -4.21894241  |f| = 8.22e-01  (0.00 s/step)
+[14:02:31] sk1_U: it    19  E = -4.68276274  |f| = 8.87e-01  (0.00 s/step)
+[14:02:31] sk1_U [U]: dE_tot=0.34437 dE_sign=0.06574 f_E=0.191 eC=4.42e-02 spread=5.2e-15 S2=0.301 ov0=0.815 (0 s)
+[14:02:31] sk1_U [UP]: dE_tot=0.05881 dE_sign=-0.00000 f_E=-0.000 eC=1.41e-02 spread=7.6e-14 S2=0.013 ov0=0.983 (0 s)
+[14:02:31] sk1_U [UP_S]: dE_tot=0.04658 dE_sign=-0.00000 f_E=-0.000 eC=1.52e-02 spread=5.7e-14 S2=0.000 ov0=0.986 (0 s)
+[14:02:31] instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=90 arm=sk1_U seed=33
+[14:02:31] ED levels [-5.199719696078513, -4.691476076031286, -4.691476076031282, -4.500000000000001] deg 1; |G|=12 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (0 s)
+[14:02:31] arm sk1_U: {'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 3, 'Ha': 12} n_params=347 target=344 proj=none calib=0.00e+00 init |P psi|/|psi|=1.000e+00
+[14:02:31] sk1_U: it     0  E = -4.21927674  |f| = 8.40e-01  (0.00 s/step)
+[14:02:31] sk1_U: it    19  E = -4.83460091  |f| = 4.73e-01  (0.00 s/step)
+[14:02:31] sk1_U [U]: dE_tot=0.32182 dE_sign=0.05548 f_E=0.172 eC=5.89e-02 spread=1.9e-14 S2=0.153 ov0=0.838 (0 s)
+[14:02:31] sk1_U [UP]: dE_tot=0.03868 dE_sign=-0.00000 f_E=-0.000 eC=1.15e-02 spread=6.9e-14 S2=0.007 ov0=0.990 (0 s)
+[14:02:31] sk1_U [UP_S]: dE_tot=0.02873 dE_sign=-0.00000 f_E=-0.000 eC=1.21e-02 spread=2.8e-13 S2=0.000 ov0=0.992 (0 s)
+[14:02:31] cost[lr] L=  6 Ne=  32 setup=3.151e-04 T_E=1.033e-03 sweep=2.851e-03 brute=3.468e-03 eps=5.0e-15 drift=4.7e-15
+[14:02:31] cost[lr] L=  8 Ne=  56 setup=4.032e-04 T_E=1.469e-03 sweep=4.132e-03 brute=1.610e-02 eps=8.6e-15 drift=1.4e-14
+[14:02:31] cost[lr] L= 10 Ne=  88 setup=6.562e-04 T_E=2.155e-03 sweep=7.753e-03 brute=5.259e-02 eps=1.3e-15 drift=3.6e-14
+[14:02:31] cost[lr] slopes setup=0.71 E=0.72 sweep=0.98 brute=2.69 eps=8.6e-15 drift=3.6e-14 -> AMBIGUOUS
+[14:02:31] cost[agp] L=  6 Ne=  32 setup=1.366e-04 T_E=9.682e-04 sweep=nan brute=1.930e-03 eps=1.2e-14 drift=0.0e+00
+[14:02:31] cost[agp] L=  8 Ne=  56 setup=1.810e-04 T_E=1.327e-03 sweep=nan brute=7.647e-03 eps=2.4e-16 drift=0.0e+00
+[14:02:32] cost[agp] L= 10 Ne=  88 setup=2.207e-04 T_E=2.017e-03 sweep=nan brute=2.730e-02 eps=9.9e-15 drift=0.0e+00
+[14:02:32] cost[agp] slopes setup=0.48 E=0.72 sweep=nan brute=2.61 eps=1.2e-14 drift=0.0e+00 -> AMBIGUOUS
+instance 9 {'Lx': 3, 'Ly': 2, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4}: Ref_sign=-0.00000 Ref_tot=0.03522 Ref_sign(P_S)=-0.00000
+      nnbf n=3 dE_sign=-0.00000 dE_tot=0.03896 rho_s=1.000 rho_t=1.106 spread=-1.00 f_E=-0.000 r/N=1.00 rho_s(P_S)=1.000 var_ex=0.1489 z=0.77 kurt=6.07 tail=0.052 amp_chk=3.1e-16
+    mdnnbf n=3 dE_sign=-0.00000 dE_tot=0.03522 rho_s=1.000 rho_t=1.000 spread=-1.00 f_E=-0.000 r/N=1.00 rho_s(P_S)=1.000
+       hf1 n=3 dE_sign=-0.00000 dE_tot=0.03899 rho_s=1.000 rho_t=1.107 spread=-0.50 f_E=-0.000 r/N=0.50 rho_s(P_S)=2.000
+       hf4 n=3 dE_sign=-0.00000 dE_tot=0.03801 rho_s=1.000 rho_t=1.079 spread=-0.50 f_E=-0.000 r/N=2.00 rho_s(P_S)=2.000 var_ex=0.1417 z=0.50 kurt=6.96 tail=0.056 amp_chk=3.2e-16
+       sk1 n=3 dE_sign=-0.00000 dE_tot=0.03848 rho_s=1.000 rho_t=1.093 spread=-0.00 f_E=-0.000 r/N=0.50 rho_s(P_S)=2.000 var_ex=0.1432 z=0.63 kurt=7.24 tail=0.059 amp_chk=6.5e-16
+       sk2 n=3 dE_sign=-0.00000 dE_tot=0.03881 rho_s=1.000 rho_t=1.102 spread=-0.50 f_E=-0.000 r/N=1.00 rho_s(P_S)=2.000
+     sjnet n=3 dE_sign=-0.00000 dE_tot=0.03884 rho_s=1.000 rho_t=1.103 spread=-0.00 f_E=-0.000 r/N=0.00 rho_s(P_S)=3.000
+      agpj n=3 dE_sign=-0.00000 dE_tot=0.08678 rho_s=1.000 rho_t=2.464 spread=-0.00 f_E=-0.000 r/N=0.00 rho_s(P_S)=2.000 var_ex=0.2553 z=0.46 kurt=6.4 tail=0.000 amp_chk=3.4e-16
+      agh4 n=3 dE_sign=-0.00000 dE_tot=0.00777 rho_s=1.000 rho_t=0.221 spread=-0.50 f_E=-0.000 r/N=2.00 rho_s(P_S)=2.000
+     skagp n=3 dE_sign=-0.00000 dE_tot=0.00529 rho_s=1.000 rho_t=0.150 spread=-1.00 f_E=-0.000 r/N=0.50 rho_s(P_S)=2.000 var_ex=0.02707 z=0.78 kurt=14.1 tail=0.000 amp_chk=3.2e-16
+   nnbf_PS n=3 dE_sign=-0.00000 dE_tot=0.02789 rho_s=1.000 rho_t=0.792 spread=-0.50 f_E=-0.000 r/N=1.00
+    sk1_PS n=3 dE_sign=-0.00000 dE_tot=0.02843 rho_s=1.000 rho_t=0.807 spread=-0.50 f_E=-0.000 r/N=0.50
+    nnbf_U n=3 dE_sign=0.02294 dE_tot=0.26514 rho_s=-12912495240496.000 rho_t=7.529 spread=0.12 f_E=0.085 r/N=1.00 UP: dE_sign=-0.00000
+     sk1_U n=3 dE_sign=0.05973 dE_tot=0.34437 rho_s=-33624526869081.000 rho_t=9.778 spread=0.17 f_E=0.172 r/N=0.50 UP: dE_sign=-0.00000
+cost check: {'lr': 'AMBIGUOUS', 'agp': 'AMBIGUOUS'} slopes {'lr': {'setup': 0.7140343115524352, 'E': 0.7229401456354972, 'sweep': 0.9762904978197592, 'brute': 2.6898015040295813}, 'agp': {'setup': 0.4752425685774473, 'E': 0.7192497347576415, 'sweep': nan, 'brute': 2.6129753504126128}}
+premise gate (Ref_sign >= 0.01 t): instance 9: Ref_sign=-1.776e-15 -> DOES NOT COUNT
+ROUTE 3.1 (sk1) instance 9: beta=1.000 rho_s=1.000 rho_t=1.093 sigma=1.000 gamma=1.000 rho_s_PS=2.000 dominance=3 oracle=1.000 v=0.962 z=0.626 rho_s0=None rho_t0=None trend=None guards=[] -> REDUNDANT
+ROUTE 3.1 (sk1) cost=AMBIGUOUS VERDICT: FAIL (REDUNDANT: the rank-restricted single term already matches the control)
+ROUTE 3.2 (skagp) instance 9: beta=1.000 rho_s=1.000 rho_t=0.150 sigma=1.000 gamma=1.000 rho_s_PS=2.000 dominance=4 oracle=None v=0.182 z=0.779 rho_s0=None rho_t0=None trend=None guards=[] -> REDUNDANT
+ROUTE 3.2 (skagp) cost=AMBIGUOUS VERDICT: FAIL (REDUNDANT: the rank-restricted single term already matches the control)
+[14:02:32] smoke total 7.3 s

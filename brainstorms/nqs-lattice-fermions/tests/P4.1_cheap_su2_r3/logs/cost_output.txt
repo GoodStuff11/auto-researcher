@@ -1,7 +1,11 @@
-Lx= 6 L= 36 Ne= 32 N_q= 9: per amplitude  sqrvb     178.1 us  scf     103.8 us  che(LU-reused GL)     108.5 us  naive quadrature     280.1 us
-Lx= 8 L= 64 Ne= 56 N_q=15: per amplitude  sqrvb      98.7 us  scf     170.3 us  che(LU-reused GL)     229.4 us  naive quadrature     630.5 us
-Lx=12 L=144 Ne=126 N_q=32: per amplitude  sqrvb     369.7 us  scf     438.7 us  che(LU-reused GL)    1098.9 us  naive quadrature    3420.2 us
-Lx=16 L=256 Ne=224 N_q=57: per amplitude  sqrvb    1137.3 us  scf     878.7 us  che(LU-reused GL)    4310.7 us  naive quadrature   20173.5 us
-Lx=20 L=400 Ne=350 N_q=88: per amplitude  sqrvb    3854.1 us  scf    1719.6 us  che(LU-reused GL)   15516.4 us  naive quadrature  118768.6 us
-log-log slopes in N_e over the three largest sizes: sqrvb 2.28  scf 1.33  che 2.58  quad 3.45
+Lx= 6 L= 36 Ne= 32 N_q= 9: per amplitude  sqrvb     338.1 us  scf     126.7 us  che(LU-reused GL)     119.2 us  naive quadrature     282.4 us
+Lx= 8 L= 64 Ne= 56 N_q=15: per amplitude  sqrvb      98.1 us  scf     175.6 us  che(LU-reused GL)     230.7 us  naive quadrature     640.1 us
+Lx=12 L=144 Ne=126 N_q=32: per amplitude  sqrvb     507.1 us  scf     721.1 us  che(LU-reused GL)    1569.8 us  naive quadrature    3883.7 us
+Lx=16 L=256 Ne=224 N_q=57: per amplitude  sqrvb    1868.0 us  scf    1958.2 us  che(LU-reused GL)    6350.7 us  naive quadrature   24988.1 us
+Lx=20 L=400 Ne=350 N_q=88: per amplitude  sqrvb    4557.6 us  scf    3434.4 us  che(LU-reused GL)   21380.9 us  naive quadrature  138079.2 us
+spin-resolved NNBF exact P_S by orbit sum: L= 12 Ne= 10 orbit=    252 per amplitude       3552.1 us
+spin-resolved NNBF exact P_S by orbit sum: L= 16 Ne= 14 orbit=   3432 per amplitude      53964.4 us
+spin-resolved NNBF exact P_S by orbit sum: L= 20 Ne= 18 orbit=  48620 per amplitude     920205.1 us
+spin-resolved NNBF exact P_S by orbit sum: L= 24 Ne= 20 orbit= 184756 per amplitude    3953502.3 us
+log-log slopes in N_e over the three largest sizes: sqrvb 2.15  scf 1.54  che 2.55  quad 3.48
 (numpy per-call overhead dominates at small N_e, hence the fit over the largest sizes only)

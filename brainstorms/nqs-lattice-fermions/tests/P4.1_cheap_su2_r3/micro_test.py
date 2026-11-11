@@ -8,13 +8,17 @@ Shared physics core (lattice, Hubbard sector, ED helpers, observables, P1.1 sign
 NNBF / AGP / SCF arms, L-BFGS driver) is r2_micro_test.py in this folder: a verbatim copy of
 tests/P4.1_cheap_su2_r2/micro_test.py. Nothing is imported across folders.
 
-Instance (default) : P1.1 instance 1, 4x3 PBC Hubbard, N_up = N_dn = 4, U = 8, t' = -0.25,
-                     dim 245025. SIGN HALF OF THE HARD CORE ONLY: psi_0 (S=0, trivial irrep) has
-                     no same-sector competitor (next in-sector level 0.515 t above).
+Instance (default) : 4x3 CYLINDER (periodic along x, open along y; --bc-y obc), Hubbard,
+                     N_up = N_dn = 4, U = 8, t' = -0.25, dim 245025 (the lower-symmetry geometry
+                     P1.2 round 3 uses). Chosen because on the 4x3 TORUS the projected NNBF control
+                     is within ~1e-5 of E_0 (P1.1-P interim), so accuracy cannot discriminate there.
+                     SIGN HALF OF THE HARD CORE ONLY (no same-sector competitor is claimed).
+                     --bc-y pbc reproduces the round-2 torus.
 Symmetry           : every arm is trained as psi = P_G P_S phi or P_G phi, where
-                     P_G = (1/|G|) sum_g chi(g) U_g over the full space group (translations x
-                     {1, Mx, My, MxMy}, |G| = 48 on 4x3), chi = psi_0's real 1-D irrep (read from
-                     ED and asserted), and P_S = exact Loewdin projector onto S = 0.
+                     P_G = (1/|G|) sum_g chi(g) U_g over the space group (x-translations x
+                     {1, Mx, My, MxMy}; |G| = 16 on the 4x3 cylinder, 48 on the 4x3 torus),
+                     chi = psi_0's real 1-D irrep (psi_0 from a symmetry-free Lanczos of
+                     H + 5 S^2, irrep read and asserted), and P_S = exact Loewdin projector onto S = 0.
 
 Arms (--ansatz)
 ---------------
@@ -75,7 +79,8 @@ Usage
              otherwise the route is AMBIGUOUS); prints the table and the verdict.
 
 Lattice / model options:
-  --Lx INT (4)  --Ly INT (3)  torus, both >= 2
+  --Lx INT (4)  --Ly INT (3)  lattice, both >= 2; x is always periodic
+  --bc-y {obc, pbc} (obc)  boundary along y: obc = cylinder (default), pbc = torus
   --Ne INT (8)      even, S^z = 0, target S = 0
   --U FLOAT (8.0)   on-site repulsion (t = 1)
   --tp FLOAT (-0.25) diagonal hopping t'
@@ -110,6 +115,9 @@ nSG = nnbf_SG):
   PASS      : g1, g_cost, g_mech, g2, m(eps_R) <= 0.8 m(eps_nSG),
               m(dE_sign_R) <= 0.8 m(dE_sign_nSG), m(eps_R) < m(eps_che), m(eps_R) <= 0.5 m(eps_foil).
   FAIL      : not g1, or not g_cost, or m(eps_R) >= m(eps_nSG), or m(eps_R) >= m(eps_che).
+  UNINFORMATIVE (premise gate) : not FAIL and m(eps_nSG) < 1e-4 (the projected control leaves no
+              measurable error, so accuracy cannot discriminate). Pre-committed action: rerun on a
+              6x2 ladder (--Lx 6 --Ly 2 --bc-y obc --Ne 10) and report the cost claim alone.
   AMBIGUOUS : otherwise (or < 3 seeds, or a capped run). Pre-committed action: rerun the array on
               P1.1 instance 0 (--Ne 10, dim 627264); promote R only if it is not FAIL there and
               m(dE_sign_R) < m(dE_sign_nSG) on both instances; otherwise KILL R.
@@ -135,7 +143,46 @@ ROUTES = ["sqrvb", "scf"]
 SPROJ = {"sqrvb": False, "sqrvb0": False, "scf": False, "nnbf_SG": True, "nnbf_G": False,
          "che": True, "foil": True}
 EXACT = {"sqrvb", "sqrvb0", "scf", "nnbf_SG", "che", "foil"}
+PREMISE_EPS = 1e-4  # premise gate: m(eps_nnbf_SG) must be >= this for accuracy to discriminate
 log = R.log
+
+
+# ============================================================================ geometry
+class CylLattice(R.Lattice):
+    """Lx x Ly lattice, periodic along x; along y periodic (bc_y = "pbc", the round-2 torus) or
+    open (bc_y = "obc": cylinder). Same attributes as R.Lattice (T, mask, nn, xy, shift);
+    shift() always wraps (it is only used for displacement-averaged observables and for the
+    x-translations of the space group)."""
+
+    def __init__(self, Lx, Ly, tp, bc_y="obc"):
+        self.Lx, self.Ly, self.L, self.bc_y = Lx, Ly, Lx * Ly, bc_y
+        L = self.L
+        self.T = np.zeros((L, L))
+        for i in range(L):
+            x, y = self.xy(i)
+            for (dx, dy, amp) in [(1, 0, 1.0), (-1, 0, 1.0), (0, 1, 1.0), (0, -1, 1.0),
+                                  (1, 1, tp), (1, -1, tp), (-1, 1, tp), (-1, -1, tp)]:
+                if bc_y == "obc" and not (0 <= y + dy < Ly):
+                    continue
+                j = self.shift(i, dx, dy)
+                if j != i:
+                    self.T[i, j] += amp
+        self.T = 0.5 * (self.T + self.T.T)
+        self.mask = np.zeros((L, L), bool)
+        for i in range(L):
+            x, y = self.xy(i)
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    if bc_y == "obc" and not (0 <= y + dy < Ly):
+                        continue
+                    self.mask[i, self.shift(i, dx, dy)] = True
+        self.nn = [sorted({self.shift(i, dx, dy) for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]
+                           if not (bc_y == "obc" and not (0 <= self.xy(i)[1] + dy < Ly))} - {i})
+                   for i in range(L)]
+
+
+def make_sector(Lx, Ly, Ne, U, tp, bc_y):
+    return R.Sector(CylLattice(Lx, Ly, tp, bc_y), Ne // 2, Ne // 2, U)
 
 
 # ============================================================================ space group
@@ -146,12 +193,15 @@ def space_group(sec):
     for c in (0, 1):
         for d in (0, 1):
             for a in range(lat.Lx):
-                for b in range(lat.Ly):
+                for b in (range(lat.Ly) if getattr(lat, "bc_y", "pbc") == "pbc" else [0]):
                     p = np.empty(lat.L, dtype=np.int64)
                     for i in range(lat.L):
                         x, y = lat.xy(i)
                         x2 = (-x) % lat.Lx if c else x
-                        y2 = (-y) % lat.Ly if d else y
+                        if getattr(lat, "bc_y", "pbc") == "pbc":
+                            y2 = (-y) % lat.Ly if d else y
+                        else:
+                            y2 = lat.Ly - 1 - y if d else y
                         p[i] = ((x2 + a) % lat.Lx) * lat.Ly + (y2 + b) % lat.Ly
                     iu, su = sec.up.perm(p)
                     idd, sd = sec.dn.perm(p)
@@ -184,9 +234,10 @@ class SG:
                     raise RuntimeError(f"psi_0 not in a real 1-D irrep: {self.GEN[e]} -> {v}")
                 lam[self.GEN[e]] = int(round(v))
         self.lam = lam
+        lam = {k: lam.get(k, 1) for k in ("Tx", "Ty", "Mx", "My")}
         self.chi = np.array([lam["Tx"] ** a * lam["Ty"] ** b * lam["Mx"] ** c * lam["My"] ** d
                              for (a, b, c, d), _ in self.el], float)
-        return lam
+        return self.lam
 
     def project(self, P):
         out = np.zeros_like(P)
@@ -196,11 +247,24 @@ class SG:
 
 
 def ground_state(sec, sg, mu=5.0):
-    """psi_0: lowest state of H + mu S^2 in the K = 0 sector, then its irrep is read and set."""
-    gs = R.exact_states(sec, 1, mu=mu, k=2)
-    P0, E0, s20 = gs[0]
+    """psi_0: lowest state of H + mu S^2 in the whole fixed-(N_up, N_dn) space (no symmetry
+    assumed; S > 0 states are pushed up by mu S(S+1)); its space-group irrep is then read from
+    the generators (asserted real 1-D) and set in sg. Also returns the next level."""
+    shp = sec.shape
+    op = R.LinearOperator((sec.dim, sec.dim), dtype=float,
+                          matvec=lambda x: (sec.H(x.reshape(shp)) + mu * sec.S2(x.reshape(shp))).ravel())
+    w, v = R.eigsh(op, k=2, which="SA", v0=np.random.default_rng(1).standard_normal(sec.dim), tol=1e-11)
+    o = np.argsort(w)
+    out = []
+    for kk in o:
+        P = v[:, kk].reshape(shp)
+        nrm = np.sum(P * P)
+        out.append((P / np.sqrt(nrm), float(np.sum(P * sec.H(P)) / nrm), float(np.sum(P * sec.S2(P)) / nrm)))
+    P0, E0, s20 = out[0]
+    if abs(s20) > 1e-8 or out[1][1] + mu * out[1][2] - E0 < 1e-6:
+        raise RuntimeError(f"psi_0 not a non-degenerate singlet: <S^2>={s20}, levels {w}")
     lam = sg.set_irrep(P0)
-    return P0 / np.sqrt(np.sum(P0 * P0)), E0, s20, lam, gs[1]
+    return P0, E0, s20, lam, out[1]
 
 
 # ============================================================================ new arm: SQ-RVB
@@ -451,6 +515,49 @@ def scf_single(nU, nD, Psi0, G, W0, Uw, Wh, bh, lvec, rv):
     return dc * (v @ rv)
 
 
+def sord_single(nU, nD):
+    """site-major -> up-then-down operator-order sign: (-1)^{sum_j nD_j #{i > j: nU_i = 1}}."""
+    above = np.cumsum(nU[::-1])[::-1] - nU
+    return 1.0 - 2.0 * (int(np.sum(nD * above)) % 2)
+
+
+def nnbf_orbit_single(p, nU, nD, L, Nu, Nd):
+    """<x|P_{S=0}|phi_nnbf> for a SPIN-RESOLVED NNBF (no J; J is charge-only and factors out) by
+    the exact orbit sum: in the site-major product basis
+    <sigma|P_0|sigma'> = (-1)^k k! (m-k)! / (m+1)!, m = N_s / 2, k = half the Hamming distance
+    between sigma and sigma' on the N_s singly occupied sites (from Loewdin's
+    P_0 = sum_j (-1)^j (S^-)^j (S^+)^j / (j! (j+1)!) summed over intermediate states). The sum runs over all
+    binom(N_s, N_s/2) spin arrangements of the singles with the charge fixed, each one NNBF
+    forward pass + 2 determinants: exponential in N_s. Batched over the orbit."""
+    from itertools import combinations
+    from math import factorial
+    sing = np.nonzero((nU + nD) == 1)[0]
+    m = int(np.sum(nU * (1 - nD)))
+    upset = set(np.nonzero(nU * (1 - nD))[0].tolist())
+    dbl = (nU * nD).astype(int)
+    orb = []
+    for ups in combinations(sing.tolist(), m):
+        u = dbl.copy(); d = dbl.copy()
+        u[list(ups)] = 1
+        d[[i for i in sing.tolist() if i not in ups]] = 1
+        k = m - len(upset & set(ups))
+        orb.append((u, d, (-1.0) ** k * factorial(k) * factorial(m - k) / factorial(m + 1)))
+    U = np.array([o[0] for o in orb]); D = np.array([o[1] for o in orb]); w = np.array([o[2] for o in orb])
+    x = np.concatenate([U, D], 1).astype(float) * 2 - 1
+    h = np.tanh(x @ p["W1"] + p["b1"])
+    out = h @ p["W2"] + p["b2"] + p["P0"]
+    B = len(w)
+    Ou = out[:, :L * Nu].reshape(B, L, Nu)
+    Od = out[:, L * Nu:].reshape(B, L, Nd)
+    ru = np.nonzero(U)[1].reshape(B, Nu)
+    rd = np.nonzero(D)[1].reshape(B, Nd)
+    au = np.take_along_axis(Ou, ru[:, :, None], axis=1)
+    ad = np.take_along_axis(Od, rd[:, :, None], axis=1)
+    so = np.array([sord_single(U[b], D[b]) for b in range(B)])
+    val = np.linalg.det(au) * np.linalg.det(ad) * so
+    return sord_single(nU, nD) * float(np.sum(w * val)), B
+
+
 # ============================================================================ state
 class State:
     """psi = P_G [P_S] phi_theta; exact energy and gradient (P_G, P_S symmetric, commuting)."""
@@ -508,6 +615,7 @@ def parse_args(argv=None):
     p.add_argument("--Ne", type=int, default=8)
     p.add_argument("--U", type=float, default=8.0)
     p.add_argument("--tp", type=float, default=-0.25)
+    p.add_argument("--bc-y", default="obc", choices=["obc", "pbc"], dest="bc_y")
     p.add_argument("--ansatz", default="sqrvb", choices=ARMS)
     p.add_argument("--nnbf-hidden", type=int, default=16, dest="nnbf_hidden")
     p.add_argument("--mps-mult", default="2,2,1,1", dest="mps_mult")
@@ -533,7 +641,7 @@ def parse_args(argv=None):
     if a.Lx < 2 or a.Ly < 2 or a.Ne % 2 or not (2 <= a.Ne <= 2 * L - 2):
         p.error("invalid lattice / Ne")
     if a.tag is None:
-        a.tag = f"L{a.Lx}x{a.Ly}_N{a.Ne}_U{a.U:g}_tp{a.tp:g}_G"
+        a.tag = f"L{a.Lx}x{a.Ly}{a.bc_y}_N{a.Ne}_U{a.U:g}_tp{a.tp:g}_G"
     return a
 
 
@@ -551,7 +659,7 @@ def fd_check(st, th, n=8, h=1e-5, seed=11):
 def smoke(a):
     t0 = time.time()
     ok = True
-    sec = R.make_sector(2, 3, 6, 6.0, -0.3)
+    sec = make_sector(2, 3, 6, 6.0, -0.3, "pbc")
     sg = SG(sec)
     Hs = sec.Hsparse()
     P0, E0, s20, lam, _ = ground_state(sec, sg)
@@ -566,6 +674,19 @@ def smoke(a):
     ov = np.sum(sg.project(P0) * P0)
     c1 = max(idem, sym, comm, scomm) < 1e-12 and abs(ov - 1) < 1e-10
     ok &= c1
+    sc = make_sector(4, 2, 4, 6.0, -0.3, "obc")
+    gc = SG(sc)
+    Pc, Ec, sc2, lc, _ = ground_state(sc, gc)
+    Xc = rng.standard_normal(sc.shape)
+    PXc = gc.project(Xc)
+    ec = max(np.abs(gc.project(PXc) - PXc).max(), np.abs(gc.project(sc.H(Xc)) - sc.H(PXc)).max(),
+             np.abs(sc.projS(0)(PXc) - gc.project(sc.projS(0)(Xc))).max(),
+             max(np.abs(sc.H(gc.apply(Xc, k)) - gc.apply(sc.H(Xc), k)).max() for k in range(gc.G)))
+    oc = np.sum(gc.project(Pc) * Pc)
+    cc_ = ec < 1e-12 and abs(oc - 1) < 1e-10
+    ok &= cc_
+    print(f"4x2 cylinder (y open) Ne=4 dim={sc.dim} |G|={gc.G} irrep={lc}: max(P_G idem, [P_G,H], [P_G,P_S], "
+          f"[U_g,H]) = {ec:.1e}, <psi0|P_G|psi0>={oc:.12f} [{'PASS' if cc_ else 'FAIL'}]")
     print(f"2x3 Ne=6 U=6 t'=-0.3 dim={sec.dim} |G|={sg.G} irrep={lam}: E0={E0:.8f} <S^2>={s20:.1e}; "
           f"P_G idem {idem:.1e} sym {sym:.1e} [P_G,H] {comm:.1e} [P_G,P_S] {scomm:.1e} "
           f"<psi0|P_G|psi0>={ov:.12f} [{'PASS' if c1 else 'FAIL'}]")
@@ -624,11 +745,21 @@ def smoke(a):
         ref = phi[k] / (arm._order_sign(slice(k, k + 1))[0] * cc["expJ"][sec.cidx[k]])
         val = scf_single(nU, nD, pp["Psi0"], arm.G, pp["W0"], pp["Uw"], pp["A"], pp["a"], arm.lvec, rv)
         e4 = max(e4, abs(val - ref) / np.abs(phi).max())
-    c4 = max(e1, e2, e3, e4) < 1e-10
+    arm = build_arm(sec, "nnbf_SG", 3, 2, (1, 1, 1, 1))
+    th = arm.theta0 + 0.1 * np.random.default_rng(10).standard_normal(arm.nparam)
+    pp = arm.unpack(th)
+    pp["jv"] = 0.0 * pp["jv"]
+    th = arm.pack(pp)
+    proj = sec.projS(0)(arm.forward(th, 4096)[0]).ravel()
+    e5 = 0.0
+    for k in np.random.default_rng(11).choice(sec.dim, 40, replace=False):
+        nU, nD = sec.up.bits[sec.iu[k]].astype(int), sec.dn.bits[sec.id[k]].astype(int)
+        e5 = max(e5, abs(nnbf_orbit_single(pp, nU, nD, sec.lat.L, sec.Nu, sec.Nd)[0] - proj[k]) / np.abs(proj).max())
+    c4 = max(e1, e2, e3, e4, e5) < 1e-10
     ok &= c4
     print(f"  per-amplitude: sqrvb_single vs batched {e1:.1e}; che_single (N_q={len(nodes[0])}) vs full-vector "
           f"P_S {e2:.1e}; quad_single vs full-vector P_S {e3:.1e}; scf_single vs batched {e4:.1e} "
-          f"[{'PASS' if c4 else 'FAIL'}]")
+          f"nnbf_orbit_single vs full-vector P_S {e5:.1e} [{'PASS' if c4 else 'FAIL'}]")
     sb = R.sign_budget(Hs, P0.ravel(), P0.ravel(), E0, argparse.Namespace(fn_iters=3, fn_floor=1e-3, lbfgs_iters=500))
     sok = abs(sb["E_sign_up"] - E0) < 1e-8
     ok &= sok
@@ -644,7 +775,7 @@ def smoke(a):
 
 def timing(a):
     t0 = time.time()
-    sec = R.make_sector(a.Lx, a.Ly, a.Ne, a.U, a.tp)
+    sec = make_sector(a.Lx, a.Ly, a.Ne, a.U, a.tp, a.bc_y)
     sg = SG(sec)
     log(f"instance {a.tag}: dim={sec.dim} nC={sec.nC} |G|={sg.G} (built in {time.time() - t0:.1f}s)")
     for kind in ARMS:
@@ -704,6 +835,25 @@ def cost(a):
         print(f"Lx={Lx:2d} L={L:3d} Ne={Ne:3d} N_q={row['Nq']:2d}: per amplitude  sqrvb {row['t_sqrvb_us']:9.1f} us  "
               f"scf {row['t_scf_us']:9.1f} us  che(LU-reused GL) {row['t_che_us']:9.1f} us  "
               f"naive quadrature {row['t_quad_us']:9.1f} us", flush=True)
+    orbit = []
+    for (Lx, Ly) in [(4, 3), (4, 4), (5, 4), (6, 4)]:
+        L = Lx * Ly
+        Ne = 2 * int(round(7 * L / 16))
+        Nu = Nd = Ne // 2
+        H = 8
+        pn = dict(P0=rng.standard_normal(L * Ne) / np.sqrt(L), W1=rng.standard_normal((2 * L, H)) * 0.3,
+                  b1=np.zeros(H), W2=0.01 * rng.standard_normal((H, L * Ne)), b2=np.zeros(L * Ne))
+        ts, ns = [], []
+        for _ in range(3):
+            sites = rng.permutation(L)
+            nU = np.zeros(L, int); nD = np.zeros(L, int)
+            nU[sites[:Nu]] = 1; nD[sites[Nu:Nu + Nd]] = 1  # no doublons: the largest orbit
+            t = time.perf_counter()
+            _, B = nnbf_orbit_single(pn, nU, nD, L, Nu, Nd)
+            ts.append(time.perf_counter() - t); ns.append(B)
+        orbit.append(dict(L=L, Ne=Ne, orbit=int(np.median(ns)), t_orbit_us=1e6 * float(np.median(ts))))
+        print(f"spin-resolved NNBF exact P_S by orbit sum: L={L:3d} Ne={Ne:3d} orbit={orbit[-1]['orbit']:7d} "
+              f"per amplitude {orbit[-1]['t_orbit_us']:12.1f} us", flush=True)
     big = res[-3:]
     ne = np.log([r["Ne"] for r in big])
     slopes = {k: float(np.polyfit(ne, np.log([r[f"t_{k}_us"] for r in big]), 1)[0])
@@ -711,7 +861,7 @@ def cost(a):
     print("log-log slopes in N_e over the three largest sizes: " + "  ".join(f"{k} {v:.2f}" for k, v in slopes.items()))
     print("(numpy per-call overhead dominates at small N_e, hence the fit over the largest sizes only)")
     with open(os.path.join(a.outdir, "cost.json"), "w") as fh:
-        json.dump(dict(rows=res, slopes=slopes), fh, indent=1)
+        json.dump(dict(rows=res, slopes=slopes, orbit=orbit), fh, indent=1)
 
 
 def sampled_eloc(sec, psi, n, seed):
@@ -732,7 +882,7 @@ def run(a):
         print(f"exists: {out}  (use --overwrite)")
         return
     t0 = time.time()
-    sec = R.make_sector(a.Lx, a.Ly, a.Ne, a.U, a.tp)
+    sec = make_sector(a.Lx, a.Ly, a.Ne, a.U, a.tp, a.bc_y)
     sg = SG(sec)
     P0, E0, s20, lam, (P1, E1, s21) = ground_state(sec, sg)
     L = sec.lat.L
@@ -830,15 +980,18 @@ def report(a):
         g2 = r["med"]["dCs"] <= n["med"]["dCs"] and r["med"]["dPd"] <= n["med"]["dPd"] + 1e-4
         mE, mS = r["med"]["eps"] / n["med"]["eps"], r["med"]["dE_sign"] / n["med"]["dE_sign"]
         mC, mF = r["med"]["eps"] / ch["med"]["eps"], r["med"]["eps"] / fo["med"]["eps"]
+        prem = n["med"]["eps"] >= PREMISE_EPS
         if (not g1) or (not gc) or mE >= 1.0 or mC >= 1.0:
             v = "FAIL"
+        elif not prem:
+            v = "UNINFORMATIVE"
         elif few or capped:
             v = "AMBIGUOUS"
         elif g2 and gm and mE <= 0.8 and mS <= 0.8 and mC < 1.0 and mF <= 0.5:
             v = "PASS"
         else:
             v = "AMBIGUOUS"
-        verdicts[Rn] = dict(M_E=mE, M_sign=mS, M_che=mC, M_foil=mF, g1=g1, g_cost=gc, g_mech=gm, g2=g2,
+        verdicts[Rn] = dict(M_E=mE, M_sign=mS, M_che=mC, M_foil=mF, premise=prem, g1=g1, g_cost=gc, g_mech=gm, g2=g2,
                             few_seeds=few, capped=capped, verdict=v)
         print(f"{Rn}: M_E={mE:.3f} M_sign={mS:.3f} M_che={mC:.3f} M_foil={mF:.3f} g1={g1} g_cost={gc} "
               f"g_mech={gm} g2={g2} -> {v}")

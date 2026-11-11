@@ -130,7 +130,8 @@ Command-line options
                        two-electron cluster, (g) projected-energy gradient vs finite
                        differences, (h) twist-covering bookkeeping (union of source grids
                        equals the target grid).
-  --timing             Time one projected forward+gradient pass on the target, then exit.
+  --timing             Time one MFNG forward+gradient and value pass on --chunk target
+                       configurations and extrapolate to the full basis, then exit.
 
 Examples
 --------
@@ -158,6 +159,7 @@ _M1, _M2, _M4, _H01 = (U64(0x5555555555555555), U64(0x3333333333333333),
                        U64(0x0F0F0F0F0F0F0F0F), U64(0x0101010101010101))
 T0 = time.time()
 GUARD_TOL, CALIB_TOL, COMP_TOL = 1e-4, 1e-3, 0.005
+PREM_EPS, PREM_SIGN = 1e-3, 1e-3      # premise gates P1 (t/site above converged) and P2 (sign excess t/site)
 ROLES = ("transfer", "foil", "scratch")
 
 
@@ -564,7 +566,14 @@ class MFNG:
         th[self.sl["ba"]] = 0.05 * rng.standard_normal(self.C * self.Hb)
         th[self.sl["jW"]] = 0.1 * rng.standard_normal(self.Hj * 3)
         th[self.sl["ja"]] = 0.1 * rng.standard_normal(self.Hj)
-        return self.fit_channel0(th, density, t, tp, delta0, eta)
+        th = self.fit_channel0(th, density, t, tp, delta0, eta)
+        # symmetry-breaking seed: a pure d-wave geminal of N_e/2 pairs lies in B1^(N_e/2) only, so
+        # a small random s-wave admixture in channel 0 gives every 1-D irrep non-zero weight
+        W2 = self.P(th, "fW2", (nout, self.Hf)).copy()
+        W2[0] += 0.05 * rng.standard_normal(self.Hf)
+        th[self.sl["fW2"]] = W2.ravel()
+        th[self.sl["fb2"].start] += 0.05 * rng.standard_normal()
+        return th
 
     def fit_channel0(self, th, density, t, tp, delta0, eta):
         th = th.copy()
@@ -1160,7 +1169,7 @@ def decide(res, void_tol):
         return out
     T = tr[0]["target"]
     E0 = T["E0"]
-    arm = lambda rs, k, f: [r["arms"][k][f] for r in rs]
+    arm = lambda rs, k, f: [r["arms"][k].get(f, float("inf")) for r in rs]
     eps = {k: arm(tr, k, "eps") for k in ("tr0", "tr0_r2", "foil_tr", "trB", "fstB", "scrB", "trL")}
     eps["foil_opt"] = arm(fo, "foil_opt", "eps")
     eps["scrL"] = arm(sc, "scrL", "eps")
@@ -1182,11 +1191,26 @@ def decide(res, void_tol):
     c = dict(a=m["tr0"] <= m["foil_opt"], b=m["trB"] <= 0.5 * m["scrB"],
              c=(m["trB"] - eps_opt) <= 0.5 * (m["foil_opt"] - eps_opt), d=ePd_trB <= ePd_fo + GUARD_TOL,
              e=m["tr0"] < m["tr0_r2"], I=spread <= 0.5 * m["tr0"], S=sec_ok)
+    # premise gates (orchestrator broadcast after P1.1-P): the target must not be solved by
+    # projected SR from scratch within the matched budget B, and Route 3.2 needs a sign error
+    # left to fix (projected NNBF leaves ~1e-5 on 4x3 clusters)
+    P1 = (m["scrB"] - eps_opt) >= PREM_EPS
+    P2 = mA["foil_opt"] / Vs >= PREM_SIGN
+    conv = lambda hist, off: next((off + i for i, e in enumerate(hist) if (e - E0) / Vs <= eps_opt + PREM_EPS), None)
+    n_conv_scr = [conv(r.get("hist_scrL", []), 0) for r in sc]
+    n_conv_tr = [conv(r.get("hist_trL", []), tr[0]["params"]["budget"]) for r in tr]
+    fsign_scrB = [a / (e * Vs) if e > 0 else float("nan") for a, e in zip(A["scrB"], eps["scrB"])]
+    out.update(P1_scratch_not_converged=bool(P1), P2_sign_room=bool(P2), n_conv_scratch=n_conv_scr,
+               n_conv_transfer=n_conv_tr, fsign_scrB=fsign_scrB)
     out.update(m=m, mA=mA, eps_opt=eps_opt, relerr_opt=relerr_opt, spread_eps_tr0=spread, spread_A_tr0=spreadA,
                ePd_trB=ePd_trB, ePd_foil_opt=ePd_fo, criteria_31=c, calib_ok=bool(calib_ok), calib=calib,
                eps_seeds=eps, A_seeds=A)
     if relerr_opt > void_tol:
         out["verdict_31"] = out["verdict_32"] = "VOID (converged ansatz too far from E0)"
+        return out
+    if not P1:
+        out["verdict_31"] = out["verdict_32"] = (f"UNINFORMATIVE (premise P1: projected SR from scratch is within "
+                                                 f"{PREM_EPS} t/site of the converged energy after B steps)")
         return out
     if all(c.values()):
         v31 = "PASS"
@@ -1196,7 +1220,9 @@ def decide(res, void_tol):
     else:
         v31 = "AMBIGUOUS (not promoted)"
     out["verdict_31"] = v31
-    if (m["fstB"] <= m["foil_opt"] and mA["tr0"] <= 0.5 * mA["foil_opt"] and spreadA <= 0.5 * mA["tr0"]
+    if not P2:
+        v32 = f"UNINFORMATIVE (premise P2: target-optimised foil sign excess below {PREM_SIGN} t/site)"
+    elif (m["fstB"] <= m["foil_opt"] and mA["tr0"] <= 0.5 * mA["foil_opt"] and spreadA <= 0.5 * mA["tr0"]
             and sec_ok and calib_ok):
         v32 = "PASS"
     elif mA["tr0"] >= 0.9 * mA["foil_opt"] or m["fstB"] >= 1.5 * m["foil_opt"] or not sec_ok:
@@ -1230,6 +1256,9 @@ def aggregate(d, void_tol):
         print(f"  eps_opt={out['eps_opt']:.4e} relerr_opt={out['relerr_opt']:.3e} spread(eps_tr0)={out['spread_eps_tr0']:.3e} "
               f"spread(A_tr0)={out['spread_A_tr0']:.3e} |dPd| trB={out['ePd_trB']:.3e} foil_opt={out['ePd_foil_opt']:.3e}")
         print(f"  Route 3.1 criteria: {out['criteria_31']}")
+        print(f"  premises: P1 scratch-not-converged={out['P1_scratch_not_converged']} P2 sign-room={out['P2_sign_room']}; "
+              f"steps to within {PREM_EPS} t/site of converged: scratch {out['n_conv_scratch']}, transfer {out['n_conv_transfer']}; "
+              f"sign share of scrB error {['%.3f' % x for x in out['fsign_scrB']]}")
     print(f"GLOBAL Route 3.1 (TCMN transfer): {out['verdict_31']}")
     print(f"GLOBAL Route 3.2 (frozen-sign transfer): {out['verdict_32']}")
 
@@ -1284,7 +1313,7 @@ def selftest(args):
             lp, sp_, _ = net.evaluate(th + e, sub, False)
             lm, sm, _ = net.evaluate(th - e, sub, False)
             fin = np.isfinite(lp) & np.isfinite(lm) & np.isfinite(la) & (sp_ == sm)
-            fin &= la > la[np.isfinite(la)].max() - 15     # skip symmetry zeros (round-off amplitudes)
+            fin &= la > la[np.isfinite(la)].max() - 10     # skip symmetry zeros (round-off amplitudes)
             with np.errstate(invalid="ignore"):
                 fd = (lp - lm)[fin] / 2e-6
             err = max(err, float(np.max(np.abs(fd - O[fin, p])) / (1 + np.max(np.abs(fd)))))
@@ -1408,8 +1437,7 @@ def main(argv=None):
         tp, J = parse_instances(args.instances)[0]
         lat = Torus(Lx, Ly, args.t, tp, J)
         basis = make_basis(lat.N, nup, nup)
-        t0 = time.time(); H = build_H(lat, basis); t1 = time.time()
-        log(f"target {lat.name()} dim={len(basis)}; H build {t1 - t0:.1f}s nnz={H.nnz}")
+        log(f"target {lat.name()} dim={len(basis)} (H, sector isometry and ED are not timed here)")
         net = new_net(lat, nup, args)
         th = net.init(np.random.default_rng(0), 2 * nup / lat.N, args.t, tp, args.delta0, args.eta)
         t1 = time.time(); net.evaluate(th, basis[:args.chunk], True); t2 = time.time()

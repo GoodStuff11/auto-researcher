@@ -1,5 +1,5 @@
 ===== mode exact =====
-instance 3: states 30, scored 15 over 3 seeds; a0=+1.06301e-02; ECC a0_hat=+1.07542e-02; ZV a0_hat=+1.06026e-02
+instance 6: states 30, scored 15 over 3 seeds; a0=+1.06301e-02; ECC a0_hat=+1.07542e-02; ZV a0_hat=+1.06026e-02
          F_P n=3 med delta=-4.76e-05 ov0=0.99058 med ratio dhat/delta: ECC=-1.31 ZR=+0.88 ZRO=+0.87 L1=+2.82 SMA=+1.71  omega_k=22.768  ZR capture=0.98
         F_PS n=3 med delta=-2.50e-05 ov0=0.99957 med ratio dhat/delta: ECC=-0.61 ZR=+1.08 ZRO=+1.08 L1=+1.46 SMA=+0.83  omega_k=10.550  ZR capture=1.00
        PS_w8 n=3 med delta=+1.81e-04 ov0=0.98217 med ratio dhat/delta: ECC=+1.91 ZR=+1.97 ZRO=+1.95 L1=+1.36 SMA=+1.87  omega_k=24.358  ZR capture=0.99
@@ -20,7 +20,7 @@ SMA  0.800  0.067  1.000      +0.864    15
 KR2  1.000  0.000  1.000      +0.950    15
 ZRO  0.600  0.000  1.000      +0.904    15
 ===== mode mc =====
-instance 3: states 30, scored 15 over 3 seeds; a0=+1.06301e-02; ECC a0_hat=+1.07567e-02; ZV a0_hat=+1.05318e-02
+instance 6: states 30, scored 15 over 3 seeds; a0=+1.06301e-02; ECC a0_hat=+1.07567e-02; ZV a0_hat=+1.05318e-02
          F_P n=3 med delta=-4.76e-05 ov0=0.99058 med ratio dhat/delta: ECC=-1.18 ZR=+0.14 ZRO=+0.87 L1=+2.82 SMA=+1.71  omega_k=22.768  ZR capture=0.98
         F_PS n=3 med delta=-2.50e-05 ov0=0.99957 med ratio dhat/delta: ECC=+0.46 ZR=-1.81 ZRO=+1.08 L1=+1.46 SMA=+0.83  omega_k=10.550  ZR capture=1.00
        PS_w8 n=3 med delta=+1.81e-04 ov0=0.98217 med ratio dhat/delta: ECC=+2.01 ZR=+1.78 ZRO=+1.95 L1=+1.36 SMA=+1.87  omega_k=24.358  ZR capture=0.99
@@ -40,6 +40,16 @@ L1   1.000  0.000  1.000      +0.886    15
 SMA  0.800  0.067  1.000      +0.864    15
 KR2  1.000  0.000  1.000      +0.950    15
 ZRO  0.600  0.000  1.000      +0.904    15
-ECC: M=0.800 vs best control L1 M=1.000; paired median Delta=-0.200 [90% -0.333,+0.000] wins/losses 0/2; per-instance 3:-0.20; G=0.067 Cov=1.000 -> FAIL
-ZR: M=0.667 vs best control L1 M=1.000; paired median Delta=-0.333 [90% -0.400,-0.250] wins/losses 0/3; per-instance 3:-0.33; G=0.000 Cov=1.000 -> FAIL (premise: oracle first-order response does not track)
-VERDICT (mc mode): ECC (route 3.1) = FAIL;  ZR (route 3.2) = FAIL (premise: oracle first-order response does not track)
+target gate: instance 6: scored 15 (final 7); median |delta|/|a0| of final states 1.70e-02 -> TARGET
+verdict metrics on target instances [6] (units=3):
+ECC  M=0.800 G=0.067 Cov=1.000
+ZR   M=0.667 G=0.000 Cov=1.000
+SD   M=0.000 G=0.000 Cov=1.000
+ZV   M=0.800 G=0.133 Cov=1.000
+L1   M=1.000 G=0.000 Cov=1.000
+SMA  M=0.800 G=0.067 Cov=1.000
+KR2  M=1.000 G=0.000 Cov=1.000
+ZRO  M=0.600 G=0.000 Cov=1.000
+ECC: M=0.800 vs best control L1 M=1.000; paired median Delta=-0.200 [90% -0.333,+0.000] wins/losses 0/2; per-instance 6:-0.20; G=0.067 Cov=1.000 -> NO-TARGET (fewer than 2 instances with a non-trivial residual)
+ZR: M=0.667 vs best control L1 M=1.000; paired median Delta=-0.333 [90% -0.400,-0.250] wins/losses 0/3; per-instance 6:-0.33; G=0.000 Cov=1.000 -> NO-TARGET (fewer than 2 instances with a non-trivial residual)
+VERDICT (mc mode): ECC (route 3.1) = NO-TARGET (fewer than 2 instances with a non-trivial residual);  ZR (route 3.2) = NO-TARGET (fewer than 2 instances with a non-trivial residual)

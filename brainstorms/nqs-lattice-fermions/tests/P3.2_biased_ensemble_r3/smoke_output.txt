@@ -1,0 +1,5 @@
+[14:03:43] instance: 4x3 PBC 4+4 U=8.0 t_y=1.11394; t'_c=-0.470482 min gap 1.001e-03 (19s); irrep dim 1618
+[14:03:46] check [H(t_y=1.11394),U_g] max 3.3e-16; projector idempotent 6.4e-16; [P,H] 7.2e-17
+[14:03:48] check projected gradient (anisotropic H): analytic 9.2216478947e-01 FD 9.2216478986e-01
+[14:03:49] check MC mixture S_01 0.998416 vs exact 0.998345 (1.0 standard errors)
+[14:03:49] P3.2-r3 CHECKS PASSED

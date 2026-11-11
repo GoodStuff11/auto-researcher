@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Login-node timing of the expensive operations of micro_test.py on one production instance.
 
-Usage: python3 time_ops.py [--instance K]   (K in 0, 1, 2; default 0, the D = 627264 cluster)
+Usage: python3 time_ops.py [--instance K]   (K in 0..5; default 3, the D = 627264 torus)
 Prints: model/group/spin build times, one A and one H application, one P_S P_chi projection,
 one projected SR step (P and PS arms, width 8), and one response-network Adam step plus its
 final evaluation. Output is recorded in timing_output.txt and used for the sbatch estimate.
@@ -18,7 +18,7 @@ import p11_core as P
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--instance", type=int, default=0, choices=[0, 1, 2])
+    ap.add_argument("--instance", type=int, default=3, choices=[0, 1, 2, 3, 4, 5])
     k = ap.parse_args().instance
     t = time.time(); m = T.make_model(k); m.pair_setup(1.5); A = T.PairOp(m, 1.5)
     print(f"instance {k} D={m.D}: model {time.time() - t:.1f}s")

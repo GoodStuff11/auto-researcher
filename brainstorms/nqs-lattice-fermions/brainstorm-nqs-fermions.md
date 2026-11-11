@@ -159,15 +159,25 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.1 | RESULT (PASS, qualified) | nothing | none |
 | P1.1-P | RESULT on instance 1 (SYMMETRY-DOMINATED); instances 0 and 2 running | nothing | Slurm 407525 (17 tasks left) |
 | P1.2 | CRITIC (round 3) | nothing | per-leaf critic |
-| P1.3 | CRITIC (round 3) | nothing | per-leaf critic |
+| P1.3 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410199 (9 tasks: c1 instance, PSaf/PSfs/PScdw, 3 seeds) |
 | P2.1 | MUTATE (round 3) | nothing | round-3 worker |
 | P2.2 | MUTATE (round 3) | nothing | round-3 worker |
-| P3.1 | MUTATE (round 3) | nothing | round-3 worker |
+| P3.1 | CRITIC (round 3) | nothing | per-leaf critic |
 | P3.2 | MUTATE (round 3) | nothing | round-3 worker |
 | P4.1 | MUTATE (round 3) | nothing | round-3 worker |
 | P4.2 | MUTATE (round 3) | nothing | round-3 worker |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
+* **P1.3 round-3 per-leaf critic (12 objections, 9 Major)**:
+    * **Premise.** It is close to certainly false at ED size. The projected trivial-irrep sector of $4+4$ on 12 sites has about $1.5\times10^3$ dimensions, against about $4\times10^3$ NNBF parameters.
+    * **OCP fails Gate 0.** It is SCF metadynamics / deflation, the family already killed as FCD (Thom & Head-Gordon 2008; variational quantum deflation; arXiv:2605.30944 combines projection with an orthogonality penalty). It also cannot escape a diabatic (mixed) basin.
+    * **The PW1 trap test is uninformative** (an exact competitor eigenstate is a saddle, not a minimum), and it wrongly vetoes cold-run evidence.
+    * **The sampled-fidelity gate is cosmetic**: training uses the exact fidelity gradient.
+    * **The coarse gap scan missed real crossings.** Same-symmetry degeneracies have codimension 2, so exact in-sector crossings are generic in the $(t',U)$ plane. A refined 2D search could reach the Hard-Core scale; this was forwarded to the running P3.2 worker.
+    * **Action.** The full 120-task job is held. Only the critic's 9-task premise pilot runs (job 410199), with a pre-committed rule:
+        * if all 9 runs end with $e_{\mathrm{var}}\le0.05\Delta$ and overlap with $\psi_0\ge0.9$, the premise is falsified at ED size and the P1.3 route search closes at these sizes;
+        * if any run ends trapped at $e_{\mathrm{var}}\ge0.25\Delta$ with a flat energy, the full test is first fixed (items 2, 3, 4, 6, 7) and then run on a refined smaller-gap instance;
+        * otherwise the pilot extends to 6 seeds.
 ### Round 2 — Mutation & Replenishment Synthesis (2026-11-11)
 Under the Persistence Mandate, every leaf except P1.1 was re-run through the Stage 3.3 mutation and replenishment loop, with the round-1 critic objections as binding constraints. Every leaf now has at least two routes that pass all four gates in the worker's own audit; P2.2 has three. None has yet been through the round-2 critic, and no round-2 decisive test has been submitted.
 

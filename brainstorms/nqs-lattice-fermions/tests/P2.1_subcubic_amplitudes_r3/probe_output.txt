@@ -1,4 +1,4 @@
-I0: 4x3 N=(5,5) t'=-0.25 J=0.4 D=16632 build 0.2s ED 11.3s
+I0: 4x3 N=(5,5) t'=-0.25 J=0.4 D=16632 build 0.1s ED 0.2s
   group |G|=48 (diag=True) psi_0 characters {'Ty': 1, 'Tx': 1, 'My': 1, 'Mx': 1}
   level 0: E=-9.76608243  E-E0=0.00000  <S2>=0.0000  irrep weight=1.0000
   level 1: E=-9.38050270  E-E0=0.38558  <S2>=0.0000  irrep weight=0.0000
@@ -6,7 +6,7 @@ I0: 4x3 N=(5,5) t'=-0.25 J=0.4 D=16632 build 0.2s ED 11.3s
   level 3: E=-9.35764447  E-E0=0.40844  <S2>=2.0000  irrep weight=0.0000
   level 4: E=-9.23819897  E-E0=0.52788  <S2>=2.0000  irrep weight=0.0000
   level 5: E=-9.23819897  E-E0=0.52788  <S2>=2.0000  irrep weight=0.0000
-I1: 4x4 N=(7,7) t'=-0.25 J=0.4 D=411840 build 6.9s ED 30.5s
+I1: 4x4 N=(7,7) t'=-0.25 J=0.4 D=411840 build 3.9s ED 11.5s
   group diag=True: psi_0 not in a 1-D irrep of this group: |chi| range [0.000, 1.000]
   group diag=False: psi_0 not in a 1-D irrep of this group: |chi| range [0.997, 1.000]
   level 0: E=-11.01677762  E-E0=0.00000  <S2>=0.0000  irrep weight=nan
@@ -15,3 +15,11 @@ I1: 4x4 N=(7,7) t'=-0.25 J=0.4 D=411840 build 6.9s ED 30.5s
   level 3: E=-10.83628332  E-E0=0.18049  <S2>=0.0000  irrep weight=nan
   level 4: E=-10.78723936  E-E0=0.22954  <S2>=2.0000  irrep weight=nan
   level 5: E=-10.78723936  E-E0=0.22954  <S2>=2.0000  irrep weight=nan
+I2: 4x4 N=(7,7) t'=-0.25 J=0.4 D=411840 build 3.0s ED 8.4s
+  group |G|=16 (diag=True) psi_0 characters {'Tx': -1, 'My': 1, 'Mx': -1}
+  level 0: E=-10.29692822  E-E0=0.00000  <S2>=0.0000  irrep weight=1.0000
+  level 1: E=-10.11708190  E-E0=0.17985  <S2>=2.0000  irrep weight=0.0000
+  level 2: E=-10.01887577  E-E0=0.27805  <S2>=0.0000  irrep weight=0.0000
+  level 3: E=-9.96621577  E-E0=0.33071  <S2>=0.0000  irrep weight=0.0000
+  level 4: E=-9.95914444  E-E0=0.33778  <S2>=2.0000  irrep weight=0.0000
+  level 5: E=-9.89026397  E-E0=0.40666  <S2>=0.0000  irrep weight=0.0000

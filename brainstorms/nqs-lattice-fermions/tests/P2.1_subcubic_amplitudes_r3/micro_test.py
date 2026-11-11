@@ -131,7 +131,7 @@ chain, and its per-sample equivalent is the sweep.
 
 Usage
 -----
-  python3 micro_test.py --mode train --task ID [options]   one Slurm array task (0..83)
+  python3 micro_test.py --mode train --task ID [options]   one Slurm array task (0..125)
   python3 micro_test.py --mode cost [--sizes 12,16,20,24,28,32] [--brute-max 32]
   python3 micro_test.py --mode aggregate [--results DIR]
   python3 micro_test.py --mode smoke                        correctness checks + tiny pipeline
@@ -140,7 +140,7 @@ Usage
 Options
 -------
   --mode {train,cost,aggregate,smoke,time}  What to run (default smoke).
-  --task INT        Array index 0..83 for --mode train: instance = task // 42,
+  --task INT        Array index 0..125 for --mode train: instance = task // 42,
                     arm = ARM_LIST[(task % 42) // 3], seed = SEEDS[task % 3] with
                     ARM_LIST = nnbf, mdnnbf, hf1, hf4, sk1, sk2, sjnet, agpj, agh4, skagp,
                     nnbf_PS, sk1_PS, nnbf_U, sk1_U and SEEDS = 11, 22, 33. Explicit
@@ -191,6 +191,7 @@ import scipy.sparse as sp  # noqa: E402
 
 INSTANCES = {0: dict(Lx=4, Ly=3, bcx="pbc", bcy="pbc", nup=5, ndn=5, tp=-0.25, J=0.4),
              1: dict(Lx=4, Ly=4, bcx="pbc", bcy="pbc", nup=7, ndn=7, tp=-0.25, J=0.4),
+             2: dict(Lx=4, Ly=4, bcx="pbc", bcy="obc", nup=7, ndn=7, tp=-0.25, J=0.4),
              9: dict(Lx=3, Ly=2, bcx="pbc", bcy="obc", nup=2, ndn=2, tp=-0.25, J=0.4)}
 ARM_LIST = ["nnbf", "mdnnbf", "hf1", "hf4", "sk1", "sk2", "sjnet", "agpj", "agh4", "skagp",
             "nnbf_PS", "sk1_PS", "nnbf_U", "sk1_U"]
@@ -219,6 +220,7 @@ SPIN_PASS, V_PASS, Z_PASS = 1.15, 2.0, 4.0
 RHO_S_FAIL, RHO_T_FAIL, RANK_FAIL, GAMMA_FAIL, TREND_FAIL, SPIN_FAIL, V_FAIL, Z_FAIL = \
     1.30, 1.40, 1.0, 0.85, 0.25, 1.30, 4.0, 6.0
 BITE = 1.3
+PREMISE_REF = 0.01   # an instance counts only if the projected control's median dE_sign >= 0.01 t
 CALIB_TOL, SPREAD_TOL = 1e-3, 0.05
 EPS_C, SLOPE_E, SLOPE_SW, BRUTE_GUARD = 1e-8, 2.4, 3.3, 3.3
 EPS_CF, SLOPE_EF, SLOPE_SWF = 1e-6, 2.8, 3.8
@@ -716,7 +718,7 @@ def aggregate(d):
             msgs.append(f"{arm}: {len(rr)} seeds")
         return msgs
 
-    insts = sorted(k for k in R if k in (0, 1, 9))
+    insts = sorted(k for k in R if k in (0, 1, 2, 9))
     ref = {}
     for I in insts:
         rs = min(_med(vals(I, "nnbf", "dE_sign")), _med(vals(I, "mdnnbf", "dE_sign")))
@@ -759,50 +761,79 @@ def aggregate(d):
     if os.path.exists(cf):
         cost = json.load(open(cf))
         print(f"cost check: {cost['verdict']} slopes {cost['slopes']}")
-    prod = [I for I in (0, 1) if I in R]
-    big = 1 if 1 in R else (prod[-1] if prod else (9 if 9 in R else None))
-    small = 0 if (0 in R and big == 1) else big
+    # premise gate: an instance counts only if the projected control leaves a measurable sign error
+    counted = {I: bool(ref[I][0] >= PREMISE_REF) for I in insts}
+    out["counted"] = counted
+    print("premise gate (Ref_sign >= %.3g t): " % PREMISE_REF + ", ".join(
+        f"instance {I}: Ref_sign={ref[I][0]:.4g} -> {'counts' if counted[I] else 'DOES NOT COUNT'}" for I in insts))
+    smoke = insts == [9]
+    primary = [I for I in insts if (I in (1, 2) or smoke) and (counted[I] or smoke)]
     for name, rt_ in ROUTES.items():
         arm, rk, pm, g2 = rt_["arm"], rt_["rank"], rt_["premise"], rt_["gate2"]
-        if big is None or any(a not in R.get(big, {}) for a in (arm, rk, pm, g2, "nnbf", "mdnnbf")):
+        need = (arm, rk, pm, g2, "nnbf", "mdnnbf")
+        if not primary:
+            v = "UNINFORMATIVE (no N_sigma=7 instance passes the premise gate)"
+            out["routes"][name] = dict(verdict=v)
+            print(f"ROUTE {name} ({arm}) VERDICT: {v}")
+            continue
+        if any(a not in R.get(I, {}) for I in primary for a in need):
             out["routes"][name] = dict(verdict="INCOMPLETE")
             print(f"ROUTE {name} ({arm}) VERDICT: INCOMPLETE")
             continue
-        T1, T0 = out["instances"][big], out["instances"][small]
-        q = dict(beta=T1[pm]["rho_s"], rho_s1=T1[arm]["rho_s"], rho_t1=T1[arm]["rho_t"],
-                 rho_s0=T0[arm]["rho_s"], rho_t0=T0[arm]["rho_t"],
-                 sigma=T1[arm]["dE_sign"] / T1[rk]["dE_sign"],
-                 gamma=T1[arm]["dE_sign"] / T1[g2]["dE_sign"],
-                 trend=T1[arm]["rho_s"] - T0[arm]["rho_s"], rho_s_PS=T1[arm].get("rho_s_PS", float("nan")))
-        a_s, r_s = vals(big, arm, "dE_sign"), vals(big, rk, "dE_sign")
-        q["dominance"] = int(sum(x < y for x in a_s for y in r_s))
-        if rt_["oracle"] and all(o in R.get(big, {}) for o in rt_["oracle"]):
-            q["oracle"] = _med(vals(big, rt_["oracle"][0], "dE_sign")) / _med(vals(big, rt_["oracle"][1], "dE_sign"))
-        else:
-            q["oracle"] = float("nan") if rt_["oracle"] else None
-        q["v"] = T1[arm].get("var_ex", float("nan")) / T1["nnbf"].get("var_ex", float("nan"))
-        q["z"] = T1[arm].get("z", float("nan"))
         cv = cost["verdict"][rt_["cost"]] if cost else "MISSING"
-        q["cost"] = cv
-        g = sum((guard(I, a) for I in {big, small} for a in (arm, rk, "nnbf", "mdnnbf")), [])
-        q["guards"] = g
-        orc = q["oracle"]
-        fail = (q["beta"] < BITE or q["rho_s1"] >= RHO_S_FAIL or q["rho_t1"] >= RHO_T_FAIL
-                or q["sigma"] >= RANK_FAIL or q["gamma"] >= GAMMA_FAIL or q["trend"] >= TREND_FAIL
-                or (orc is not None and np.isfinite(orc) and orc >= SPIN_FAIL)
-                or q["v"] >= V_FAIL or q["z"] > Z_FAIL or cv == "FAIL")
-        pas = (not g and q["beta"] >= BITE and max(q["rho_s1"], q["rho_s0"]) <= RHO_S_PASS
-               and max(q["rho_t1"], q["rho_t0"]) <= RHO_T_PASS and q["sigma"] <= RANK_PASS
-               and q["dominance"] >= DOM_PASS and q["gamma"] <= GAMMA_PASS and q["trend"] <= TREND_PASS
-               and q["rho_s_PS"] <= SPIN_PASS and (orc is None or orc <= SPIN_PASS)
-               and q["v"] <= V_PASS and q["z"] <= Z_PASS and cv == "PASS")
-        v = "FAIL" if fail else ("PASS" if pas else "AMBIGUOUS")
-        if q["beta"] < BITE:
-            v = "FAIL (REDUNDANT: restriction does not bite)"
-        out["routes"][name] = dict(verdict=v, **q)
-        print(f"ROUTE {name} ({arm}): " + " ".join(f"{k}={v_:.3f}" if isinstance(v_, float) else f"{k}={v_}"
-                                                    for k, v_ in q.items()))
-        print(f"ROUTE {name} ({arm}) VERDICT: {v}")
+        tags, per = [], {}
+        for I in primary:
+            T1 = out["instances"][I]
+            q = dict(beta=T1[pm]["rho_s"], rho_s=T1[arm]["rho_s"], rho_t=T1[arm]["rho_t"],
+                     sigma=T1[arm]["dE_sign"] / T1[rk]["dE_sign"], gamma=T1[arm]["dE_sign"] / T1[g2]["dE_sign"],
+                     rho_s_PS=T1[arm].get("rho_s_PS", float("nan")))
+            a_s, r_s = vals(I, arm, "dE_sign"), vals(I, rk, "dE_sign")
+            q["dominance"] = int(sum(x < y for x in a_s for y in r_s))
+            orc = None
+            if rt_["oracle"]:
+                orc = (_med(vals(I, rt_["oracle"][0], "dE_sign")) / _med(vals(I, rt_["oracle"][1], "dE_sign"))
+                       if all(o in R.get(I, {}) for o in rt_["oracle"]) else float("nan"))
+            q["oracle"] = orc
+            q["v"] = T1[arm].get("var_ex", float("nan")) / T1["nnbf"].get("var_ex", float("nan"))
+            q["z"] = T1[arm].get("z", float("nan"))
+            # size trend against the small instance, only if the small instance itself counts
+            if 0 in insts and counted.get(0) and arm in out["instances"][0]:
+                T0 = out["instances"][0]
+                q["rho_s0"], q["rho_t0"] = T0[arm]["rho_s"], T0[arm]["rho_t"]
+                q["trend"] = q["rho_s"] - q["rho_s0"]
+            else:
+                q["rho_s0"] = q["rho_t0"] = q["trend"] = None   # not evaluable: reported, not gating
+            g = sum((guard(J_, a) for J_ in {I} for a in (arm, rk, "nnbf", "mdnnbf")), [])
+            q["guards"] = g
+            tr = q["trend"]
+            fail = (q["beta"] < BITE or q["rho_s"] >= RHO_S_FAIL or q["rho_t"] >= RHO_T_FAIL
+                    or q["sigma"] >= RANK_FAIL or q["gamma"] >= GAMMA_FAIL
+                    or (tr is not None and tr >= TREND_FAIL)
+                    or (orc is not None and np.isfinite(orc) and orc >= SPIN_FAIL)
+                    or q["v"] >= V_FAIL or q["z"] > Z_FAIL)
+            pas = (not g and q["beta"] >= BITE and q["rho_s"] <= RHO_S_PASS and q["rho_t"] <= RHO_T_PASS
+                   and q["sigma"] <= RANK_PASS and q["dominance"] >= DOM_PASS and q["gamma"] <= GAMMA_PASS
+                   and (tr is None or (tr <= TREND_PASS and q["rho_s0"] <= RHO_S_PASS
+                                       and q["rho_t0"] <= RHO_T_PASS))
+                   and q["rho_s_PS"] <= SPIN_PASS and (orc is None or orc <= SPIN_PASS)
+                   and q["v"] <= V_PASS and q["z"] <= Z_PASS)
+            t = "FAIL" if fail else ("PASS" if pas else "AMBIGUOUS")
+            if q["beta"] < BITE:
+                t = "REDUNDANT"
+            tags.append(t)
+            per[I] = dict(tag=t, **q)
+            print(f"ROUTE {name} ({arm}) instance {I}: " + " ".join(
+                f"{k}={v_:.3f}" if isinstance(v_, float) else f"{k}={v_}" for k, v_ in q.items()) + f" -> {t}")
+        if any(t == "REDUNDANT" for t in tags):
+            v = "FAIL (REDUNDANT: the rank-restricted single term already matches the control)"
+        elif any(t == "FAIL" for t in tags) or cv == "FAIL":
+            v = "FAIL"
+        elif all(t == "PASS" for t in tags) and cv == "PASS":
+            v = "PASS"
+        else:
+            v = "AMBIGUOUS"
+        out["routes"][name] = dict(verdict=v, cost=cv, per_instance=per)
+        print(f"ROUTE {name} ({arm}) cost={cv} VERDICT: {v}")
     with open(os.path.join(d, "aggregate.json"), "w") as fh:
         json.dump(out, fh, indent=1, default=float)
     return 0
@@ -831,7 +862,7 @@ def parse_args(argv=None):
     ap = argparse.ArgumentParser(description="P2.1 round-3 test (see module docstring)")
     ap.add_argument("--mode", choices=["train", "cost", "aggregate", "smoke", "time"], default="smoke")
     ap.add_argument("--task", type=int, default=-1)
-    ap.add_argument("--instance", type=int, default=-1, choices=[-1, 0, 1, 9])
+    ap.add_argument("--instance", type=int, default=-1, choices=[-1, 0, 1, 2, 9])
     ap.add_argument("--arm", default="")
     ap.add_argument("--seed", type=int, default=-1)
     ap.add_argument("--K", type=int, default=4)
@@ -856,8 +887,8 @@ def parse_args(argv=None):
     ap.add_argument("--overwrite", type=int, choices=[0, 1], default=0)
     a = ap.parse_args(argv)
     if a.task >= 0:
-        if a.task > 83:
-            ap.error("--task must be in 0..83")
+        if a.task > 125:
+            ap.error("--task must be in 0..125")
         if a.instance < 0:
             a.instance = a.task // 42
         if not a.arm:

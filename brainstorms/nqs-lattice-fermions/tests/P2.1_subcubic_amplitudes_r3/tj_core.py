@@ -231,22 +231,26 @@ class TJ:
 
 
 # ============================================================================ symmetry
-def group_elements(Lx, Ly, diag):
+def group_elements(Lx, Ly, diag, bcx="pbc", bcy="pbc"):
     """(label, site permutation p) for g = T^(a,b) M^(c,d) D^e: site (x,y) -> D^e -> mirrors ->
-    translation. D (x <-> y) only if diag and Lx == Ly."""
+    translation. Translations only along periodic directions; the mirror of a periodic
+    direction is x -> -x mod L, of an open direction x -> L-1-x. D (x <-> y) only if diag,
+    Lx == Ly and bcx == bcy."""
     V = Lx * Ly
     out = []
-    for e in ((0, 1) if (diag and Lx == Ly) else (0,)):
+    for e in ((0, 1) if (diag and Lx == Ly and bcx == bcy) else (0,)):
         for c in (0, 1):
             for d in (0, 1):
-                for a in range(Lx):
-                    for b in range(Ly):
+                for a in (range(Lx) if bcx == "pbc" else (0,)):
+                    for b in (range(Ly) if bcy == "pbc" else (0,)):
                         p = np.empty(V, dtype=np.int64)
                         for y in range(Ly):
                             for x in range(Lx):
                                 x2, y2 = (y, x) if e else (x, y)
-                                x2 = (-x2) % Lx if c else x2
-                                y2 = (-y2) % Ly if d else y2
+                                if c:
+                                    x2 = (-x2) % Lx if bcx == "pbc" else Lx - 1 - x2
+                                if d:
+                                    y2 = (-y2) % Ly if bcy == "pbc" else Ly - 1 - y2
                                 p[x + Lx * y] = (x2 + a) % Lx + Lx * ((y2 + b) % Ly)
                         out.append(((a, b, c, d, e), p))
     return out
@@ -271,7 +275,7 @@ class SpaceGroup:
         self.m = m
         self.elems, inv_l, sinv_l = [], [], []
         idx = np.arange(m.D)
-        for e, p in group_elements(m.Lx, m.Ly, diag):
+        for e, p in group_elements(m.Lx, m.Ly, diag, m.bcx, m.bcy):
             mu, su = species_map(m.rows_u, m.lk_u, p)
             md, sd = species_map(m.rows_d, m.lk_d, p)
             img = m.index(m.su[mu[m._iu]], m.sd[md[m._id]])
@@ -793,15 +797,20 @@ class LRCarried:
 
     def drift(self):
         """Max deviation of carried tables from a fresh setup at the current configuration."""
+        # carried tables keep the in-place slot order; align them to the sorted order of a fresh
+        # setup (Ainv and G0 columns follow the slots; Y and Hk are slot-order invariant)
         old = {s: {k: v.copy() for k, v in self.sd[s].items()} for s in self.sd}
         S_old = self.S
         self.setup(self.occ["u"].copy(), self.occ["d"].copy())
         d = abs(S_old - self.S) / (abs(self.S) + 1e-300)
         for s in self.sd:
-            for k in ("Ainv", "G0", "Y", "Hk"):
-                if k in self.sd[s]:
-                    ref = self.sd[s][k]
-                    d = max(d, float(np.max(np.abs(old[s][k] - ref)) / (1 + np.max(np.abs(ref)))))
+            perm = np.argsort(old[s]["rows"])
+            al = dict(Ainv=old[s]["Ainv"][:, perm], G0=old[s]["G0"][:, perm])
+            if "Y" in old[s]:
+                al.update(Y=old[s]["Y"], Hk=old[s]["Hk"])
+            for k, v in al.items():
+                ref = self.sd[s][k]
+                d = max(d, float(np.max(np.abs(v - ref)) / (1 + np.max(np.abs(ref)))))
         return d
 
 

@@ -1,4 +1,4 @@
-instance 0 D=627264: model 1.4s
+instance 0 D=627264 (numbering before the lower-symmetry clusters were added; now instance 3, the 5+5 U=8 torus): model 1.4s
 space group 0.5s
 spin 0.1s
 A apply 0.463s
