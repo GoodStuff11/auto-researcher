@@ -161,7 +161,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.2 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410216 (3 tasks: projected control, one per instance) |
 | P1.3 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410199 (9 tasks: c1 instance, PSaf/PSfs/PScdw, 3 seeds) |
 | P2.1 | SUBMITTED (control pilot); both routes Gate 0 restated, test fixes pending | full test blocked on pilot (premise: projected NNBF sign error at least 0.01t) | Slurm 410988 (3 tasks) |
-| P2.2 | CRITIC (round 4; one survivor, CGK) | nothing | per-leaf critic |
+| P2.2 | SUBMITTED (large-K accuracy pilot); CGK conditional | full test blocked on pilot and on fixes | Slurm 411919 (H4, 8–12 orbitals per shell) |
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | SUBMITTED (control pilot); AT killed, SO-EC conditional | full test blocked on pilot regime (NO-TARGET / NO-ROOM / INTRINSIC-BIAS / GO) | Slurm 410917 (width 8, inner 4 targets) |
 | P4.1 | MUTATE (round 4) + SUBMITTED (diagnostic pilot) | nothing | round-4 worker; Slurm 411494 (9 tasks: charge-only vs spin-resolved, exactly projected) |
@@ -183,6 +183,16 @@ Each leaf advances on its own as soon as it returns: lint, then its own critic, 
         * Curvature/susceptibility, Gate 1.
         * Berry phase, Gates 2 and 3.
         * In-irrep zero-variance extrapolation, Gate 0 (mVMC practice).
+* **P2.2 round-4 per-leaf critic (10 objections, 6 Major)**:
+    * **The pre-check was tautological.** At $K=8$ there is one external orbital per shell, so CGK equals NNBFJ, and $v$ is training noise. The honest $M_{\mathrm{op}}\approx0.54$ would be AMBIGUOUS.
+    * **Accuracy is tested at no more than 3 orbitals per shell; cost is certified at 16–64.** The information lost is exactly the dynamic pair correlation that grows with the basis. This is the known failure mode of externally contracted MRCI.
+    * **Training noise is about $\tau$**, and NNBFJ is under-trained.
+    * **The controls are capped or on a knife edge.** The SS $\epsilon$ grid stops at $3\times10^{-3}$, and SCREEN's bias of $0.18$–$0.19$ mHa sits right at $\tau=0.2$.
+    * **The op-count model favours KEYX about $2\times$ over wall-clock**, and the veto is toothless.
+    * **Gate 0 is narrower than claimed.** The key structure is GAS/RAS occupation-class blocking from CI (Olsen; LUCITA), and the barrier is the contraction error of externally contracted MRCI. The R4.0 kill is sound; its anti-pattern is narrowed to per-class dressing with $N_\gamma\propto K$.
+    * **Action.** The 34-task array is not submitted. A large-$K$ accuracy pilot runs as job 411919: H4 at $R=4.4$ bohr, HF weight about 0.49, $K=12/16/20$ (8–12 orbitals per shell), arms NNBFJ/CGK/WIBJ, 3 seeds. Pre-committed rule:
+        * kill R4.1 if the median $\delta_{\mathrm{CGK}}>\tau$ at $K=20$;
+        * otherwise, before any array runs: recompute $M_{\mathrm{op}}$ honestly, extend the SS and SCREEN grids, add the noise-floor arm and best-of-seeds scoring, require a wall-clock advantage, and add the H4 large-$K$ instance to Part A.
 * **P4.1 round-3 per-leaf critic (12 objections, 9 Major)**:
     * **SQ-RVB fails Gate 0.** For a symmetric charge-backflow pairing, $\det F_c[U_s\cup D_b,D_s\cup D_b]=\det F_c[D_b,D_b]\,\det S_c[U_s,D_s]$, where $D_b$ is the doublon set and the Schur complement $S_c$ is symmetric. SQ-RVB is therefore the round-1 Tocchio family, reparameterised, and costs two determinants against Tocchio's one.
     * **Che's projection was benchmarked sub-optimally.** It is closed-form via elementary symmetric polynomials of the eigenvalues of $D_m^{-1}X$, at $\mathcal{O}(N_e^3)$, so the cost "advantage" is a constant factor.

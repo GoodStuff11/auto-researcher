@@ -1,0 +1,23 @@
+[15:24:41] args: {"instance": 0, "seed": 101, "task_id": 0, "sr_iters": 1500, "snaps": "100,400", "sr_lr": 0.05, "sr_shift": 0.001, "sr_samples": 2000, "chunk": 65536, "o_chunk": 256, "r_min": 1.5, "populations": "P_w1,P_w2,P_w4,F_P", "mc_samples": 2000, "n_boot": 10, "zr_width": 8, "zr_steps": 1, "zr_lr": 0.02, "minres_tol": 1e-08, "out": "results_pilot/inst0_s101.json", "overwrite": 0, "checks_only": 0, "aggregate": "", "include_smoke": 0, "min_target_inst": 2, "pop_list": ["P_w1", "P_w2", "P_w4", "F_P"], "snap_list": [100, 400]}
+[15:24:41] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[15:24:41] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[15:24:41] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[15:24:41] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[15:24:41] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[15:24:41] check gradient: analytic -2.2335990712e-01  finite-diff -2.2335990657e-01
+[15:24:41] ALL CHECKS PASSED
+[15:24:41] check group 3x2 obc/obc: |G|=4 max ||[H,U_g]v|| 2.4e-14
+[15:24:41] check group 3x2 pbc/obc: |G|=12 max ||[H,U_g]v|| 2.8e-14
+[15:24:41] check projector P: idempotent 4.9e-16 [Pi,H] 7.4e-17 ||Pi psi0 - psi0|| 8.4e-15
+[15:24:41] check projector PS: idempotent 5.0e-16 [Pi,H] 2.3e-17 ||Pi psi0 - psi0|| 8.4e-15
+[15:24:41] check A: hermitian 0.0e+00 vs bond sum 1.6e-19 [A,U_g] 2.8e-16 [A,S2] 1.1e-17
+[15:24:41] check per-sample E_loc, A_loc, (HA psi)_loc vs indexed full vectors: max rel err 8.9e-16
+[15:24:41] check Cov(E_loc,A_loc) = <(H-E)psi|(A-a)psi>: -4.352160125338e-02 vs -4.352160125338e-02
+[15:24:41] check first-order response formula eps=0.01: delta -6.620497e-05 oracle -6.510001e-05
+[15:24:41] check first-order response formula eps=0.001: delta -6.720727e-06 oracle -6.709665e-06
+[15:24:42] check response gradient: analytic 3.2028808878e-02 finite-diff 3.2028808938e-02
+[15:24:42] P3.1-r3 CHECKS PASSED
+[15:24:42] instance 0 V=12 N=(4,4) D=245025; A has 152 bond pairs
+[15:24:48] ED [-9.361710143750996, -9.229217073872054, -9.218322016435536]; |G|=4; irrep {'My': 1, 'Mx': 1}; S(psi0)=0; a0=+5.348396e-03; [H,U_g] 2.6e-16 [A,U_g] 1.8e-16 ||P_S P_chi psi0 - psi0|| 1.5e-14
+[15:24:49] P_w1: it     0  E = -7.72398301  |f| = 3.45e-01
+[15:27:39] P_w1: it   100  E = -6.82784866  |f| = 4.81e+01
