@@ -165,7 +165,7 @@ $$\psi(x)=s_{\mathrm{ord}}(x)\,e^{J(c)}\det\Psi_c[\mathrm{occ}_2(c)]\;(-1)^{\mat
     - both competitors are singlets, so exact $S$ does not separate them;
     - that sector has dimension 1618, below the 2205-parameter control, so accuracy cannot discriminate there.
   - It is the natural follow-up if a route PASSes here.
-* **Arms** (all trained with projection, exact sums, L-BFGS with an exact gradient, **2000 iterations for every arm**, a 20 h safety cap, seeds 0, 1 and 2; `logs/timing_output.txt` gives seconds per energy-and-gradient evaluation):
+* **Arms** (all trained with projection, exact sums, L-BFGS with an exact gradient, **2000 iterations for every arm**, a 20 h safety cap, seeds 0, 1 and 2; parameter counts are those at NNBF width 16; `logs/timing_output.txt` gives seconds per energy-and-gradient evaluation):
 
 | Arm | Description | Projection | Parameters | s / eval |
 | :--- | :--- | :--- | :--- | :--- |
@@ -189,19 +189,29 @@ $$\psi(x)=s_{\mathrm{ord}}(x)\,e^{J(c)}\det\Psi_c[\mathrm{occ}_2(c)]\;(-1)^{\mat
   - $g_{\mathrm{mech}}$ (`sqrvb` only): $\mathrm m(\epsilon_{\mathrm{sqrvb}})\le0.8\,\mathrm m(\epsilon_{\mathrm{sqrvb0}})$.
   - $g_2$: $\mathrm m(\Delta C_s)$ and $\mathrm m(\Delta P_d)$ no worse than nSG (with a $10^{-4}$ allowance on $\Delta P_d$).
   - **Premise gate**: $\mathrm m(\epsilon_{\mathrm{nSG}})\ge10^{-4}$.
+  - **Accuracy metric**: accuracy is judged on $\epsilon$ ($\Delta E_{\mathrm{tot}}$) only.
+    - P1.1-P (orchestrator broadcast) shows that, after symmetry projection on ED-sized clusters, $\Delta E_{\mathrm{sign}}\le5\times10^{-5}$ and $f_E=0.004$–$0.023$.
+    - $\Delta E_{\mathrm{sign}}$ is therefore reported but does not gate.
+    - Exact $S$ acts measurably on $\Delta E_{\mathrm{tot}}$ and on cost.
+  - The verdicts are evaluated in the order listed.
 
 | Verdict | Condition |
 | :--- | :--- |
-| PASS | All gates hold, and $\mathrm m(\epsilon_R)\le0.8\,\mathrm m(\epsilon_{\mathrm{nSG}})$, $\mathrm m(\Delta E_{\mathrm{sign},R})\le0.8\,\mathrm m(\Delta E_{\mathrm{sign,nSG}})$, $\mathrm m(\epsilon_R)<\mathrm m(\epsilon_{\mathrm{che}})$ and $\mathrm m(\epsilon_R)\le0.5\,\mathrm m(\epsilon_{\mathrm{foil}})$ |
-| FAIL | $g_1$ or $g_{\mathrm{cost}}$ violated, or $\mathrm m(\epsilon_R)\ge\mathrm m(\epsilon_{\mathrm{nSG}})$, or $\mathrm m(\epsilon_R)\ge\mathrm m(\epsilon_{\mathrm{che}})$; the last condition is "matched accuracy" against the quadrature-projected arm |
-| UNINFORMATIVE | Not FAIL, and the premise gate fails. Pre-committed action: rerun on the $6\times2$ ladder (`--Lx 6 --Ly 2 --bc-y obc --Ne 10`) |
-| AMBIGUOUS | Anything else, or fewer than 3 seeds, or a capped run. Pre-committed action: rerun on the $5+5$ instance; promote $R$ only if it is not FAIL there and $\mathrm m(\Delta E_{\mathrm{sign},R})<\mathrm m(\Delta E_{\mathrm{sign,nSG}})$ on both instances; otherwise KILL $R$ |
+| FAIL (cost) | $g_1$ or $g_{\mathrm{cost}}$ violated; this is the primary claim |
+| NO-TARGET | The premise gate fails: the spin- and space-projected control is already near-exact. The cost claim stands alone. Pre-committed action: rerun on the $6\times2$ ladder (`--Lx 6 --Ly 2 --bc-x obc --bc-y obc --Ne 10`) or a larger sampled system |
+| FAIL (accuracy) | $\mathrm m(\epsilon_R)\ge\mathrm m(\epsilon_{\mathrm{nSG}})$, or $\mathrm m(\epsilon_R)\ge\mathrm m(\epsilon_{\mathrm{che}})$; the second condition means the route does not match the quadrature-projected arm's accuracy at its lower cost |
+| PASS | $g_1$, $g_{\mathrm{cost}}$, $g_{\mathrm{mech}}$ and $g_2$ hold, and $\mathrm m(\epsilon_R)\le0.8\,\mathrm m(\epsilon_{\mathrm{nSG}})$, $\mathrm m(\epsilon_R)<\mathrm m(\epsilon_{\mathrm{che}})$ and $\mathrm m(\epsilon_R)\le0.5\,\mathrm m(\epsilon_{\mathrm{foil}})$ |
+| AMBIGUOUS | Anything else, or fewer than 3 seeds, or a capped run. Pre-committed action: rerun on the $4\times3$ cylinder (`--bc-x pbc`); promote $R$ only if it is not FAIL there and $\mathrm m(\epsilon_R)<\mathrm m(\epsilon_{\mathrm{nSG}})$ on both instances; otherwise KILL $R$ |
+
+* **Report logic checked on synthetic results** (`check_report_logic.py`, `logs/check_report_logic_output.txt`): four scenarios return PASS, FAIL (accuracy), NO-TARGET and FAIL (cost), as intended.
 
 * **Execution** (not submitted): `tests/P4.1_cheap_su2_r3/micro_test.py` (modes `smoke`, `time`, `cost`, `run`, `report`) and `submit_test.sbatch`.
-  - Slurm array 0–20: 7 arms $\times$ 3 seeds, partition `kim`, 8 CPUs, 32 GB, 24 h.
+  - Slurm array 0–41: 2 matched widths $\times$ 7 arms $\times$ 3 seeds, partition `kim`, 8 CPUs, 32 GB, 24 h.
+  - The two widths are NNBF width 16 (table above, ratio 8.1) and NNBF width 4, a deliberately narrow control (753 parameters, ratio 24), whose matched arms are `sqrvb` 774, `sqrvb0` 847 and `scf` 825.
+  - Each width gets its own report and verdict.
   - The slowest arm, `scf`, needs about 18 h for 2000 iterations (30 s per evaluation, about 1.1 evaluations per iteration) plus about 2 h for the sign budget.
   - Command: `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r3/submit_test.sbatch`.
-  - Then, from the test directory: `python3 micro_test.py --mode report`.
+  - Then, from the test directory: `python3 micro_test.py --mode report --nnbf-hidden 16` and the same with `--nnbf-hidden 4`.
 * **Smoke** (`cd tests/P4.1_cheap_su2_r3 && /share/apps/software/anaconda3/bin/python3 micro_test.py --mode smoke`; 13 s; `logs/smoke_output.txt`):
 
 ```
@@ -245,6 +255,8 @@ SMOKE PASS  (13.2s)
   - The instance moved from the torus ($r=0.73$) to the open $4\times3$ cluster ($r=8.1$).
   - A premise gate was added.
   - The per-amplitude cost of exact $S$, measured on the implemented single-configuration algorithms, is the **primary** claim. The accuracy comparison is secondary.
+  - P1.1-P width-8 budgets show the post-projection error at ED size is amplitude, not sign. Accuracy is therefore judged on $\Delta E_{\mathrm{tot}}$ only; $\Delta E_{\mathrm{sign}}$ is reported, not gating; and the premise gate returns NO-TARGET when the projected control is near-exact.
+  - P3.2's same-irrep conical intersection is noted, and not used (see the Instance bullet).
 * **New kills**:
   - Route 3.1: prior art, Che 2608.22925.
   - Route 3.2: a multilinear spin dependence reduces to UHF.

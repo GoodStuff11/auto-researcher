@@ -23,3 +23,153 @@
 [     1.2s] selftest(g) projected-energy gradient vs finite differences max rel err 2.79e-10; metric PSD OK
 [     1.2s] selftest(h) [report] complete coverage: sources ['4x2', 't8'] cover 16 of 16 4x4 momenta on C4v orbits (first source alone: 12 of 16)
 [     1.2s] SELFTEST PASSED
+[   131.9s] instance t'=-0.25 J=0.4: E0=-13.93410177 E1=-13.74106215 <S2>=-7.26e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
+[   142.3s] target 4x4 t'=-0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=13070 E0=-13.93410177 (full -13.93410177) gap/V=1.3904e-02 no same-irrep competitor below 0.005 t/site: sign half only
+[   142.3s] projected-sector dimension 13070 / route parameters 122 = 107.1
+[   142.3s] calibration: E_sign(exact signs) - E0 = 5.329e-15; Pd(E0)=4.8483e-03
+[   142.4s] source clusters: 4x2 E0=-8.28182066, t8 E0=-7.08027574
+[   142.5s]   [route TCMN restart 0] step 1/800 E=-6.01759588,-0.08584441 lr=0.055 relerr=2.734e-01,9.879e-01
+[   144.6s]   [route TCMN restart 0] step 81/800 E=-8.12222931,-7.08012061 lr=0.101 relerr=1.927e-02,2.191e-05
+[   146.6s]   [route TCMN restart 0] step 161/800 E=-8.22943985,-7.08016835 lr=0.101 relerr=6.325e-03,1.517e-05
+[   148.7s]   [route TCMN restart 0] step 241/800 E=-8.24590567,-7.08026485 lr=0.101 relerr=4.337e-03,1.539e-06
+[   150.8s]   [route TCMN restart 0] step 321/800 E=-8.25102587,-7.08027221 lr=0.101 relerr=3.718e-03,4.994e-07
+[   152.9s]   [route TCMN restart 0] step 401/800 E=-8.25235944,-7.08026608 lr=0.101 relerr=3.557e-03,1.364e-06
+[   154.9s]   [route TCMN restart 0] step 481/800 E=-8.25311212,-7.08023897 lr=0.101 relerr=3.466e-03,5.194e-06
+[   157.0s]   [route TCMN restart 0] step 561/800 E=-8.25372756,-7.08027236 lr=0.0958 relerr=3.392e-03,4.780e-07
+[   159.1s]   [route TCMN restart 0] step 641/800 E=-8.25433225,-7.08027154 lr=0.0958 relerr=3.319e-03,5.931e-07
+[   161.2s]   [route TCMN restart 0] step 721/800 E=-8.25499727,-7.08027420 lr=0.0958 relerr=3.239e-03,2.181e-07
+[   163.2s]   [route TCMN restart 0] step 800/800 E=-8.25580616,-7.08027505 lr=0.164 relerr=3.141e-03,9.847e-08
+[   163.2s]   [route TCMN restart 1] step 1/800 E=-4.87417725,-1.25345282 lr=0.055 relerr=4.115e-01,8.230e-01
+[   165.3s]   [route TCMN restart 1] step 81/800 E=-8.27271116,-7.08027501 lr=0.0792 relerr=1.100e-03,1.043e-07
+[   167.3s]   [route TCMN restart 1] step 161/800 E=-8.27335579,-7.08027513 lr=0.0792 relerr=1.022e-03,8.671e-08
+[   169.4s]   [route TCMN restart 1] step 241/800 E=-8.27360698,-7.08027520 lr=0.0792 relerr=9.918e-04,7.621e-08
+[   171.4s]   [route TCMN restart 1] step 321/800 E=-8.27376003,-7.08027527 lr=0.158 relerr=9.733e-04,6.757e-08
+[   173.5s]   [route TCMN restart 1] step 401/800 E=-8.27386196,-7.08027530 lr=0.0792 relerr=9.610e-04,6.249e-08
+[   175.5s]   [route TCMN restart 1] step 481/800 E=-8.27393158,-7.08027533 lr=0.0792 relerr=9.526e-04,5.802e-08
+[   177.5s]   [route TCMN restart 1] step 561/800 E=-8.27398380,-7.08027537 lr=0.0792 relerr=9.463e-04,5.324e-08
+[   179.6s]   [route TCMN restart 1] step 641/800 E=-8.27402408,-7.08027538 lr=0.0793 relerr=9.414e-04,5.128e-08
+[   181.6s]   [route TCMN restart 1] step 721/800 E=-8.27405476,-7.08027541 lr=0.0793 relerr=9.377e-04,4.655e-08
+[   183.6s]   [route TCMN restart 1] step 800/800 E=-8.27408107,-7.08027541 lr=0.144 relerr=9.345e-04,4.691e-08
+[   183.7s]   [route TCMN restart 2] step 1/800 E=-5.01146583,-1.58134881 lr=0.055 relerr=3.949e-01,7.767e-01
+[   185.7s]   [route TCMN restart 2] step 81/800 E=-8.17189265,-7.08026044 lr=0.107 relerr=1.327e-02,2.162e-06
+[   187.7s]   [route TCMN restart 2] step 161/800 E=-8.19152443,-7.08024554 lr=0.0901 relerr=1.090e-02,4.266e-06
+[   189.7s]   [route TCMN restart 2] step 241/800 E=-8.20010670,-7.08026595 lr=0.0901 relerr=9.867e-03,1.383e-06
+[   191.8s]   [route TCMN restart 2] step 321/800 E=-8.20570183,-7.08027216 lr=0.0902 relerr=9.191e-03,5.060e-07
+[   193.8s]   [route TCMN restart 2] step 401/800 E=-8.20984356,-7.08026256 lr=0.0819 relerr=8.691e-03,1.861e-06
+[   195.8s]   [route TCMN restart 2] step 481/800 E=-8.21284917,-7.08027351 lr=0.164 relerr=8.328e-03,3.154e-07
+[   197.8s]   [route TCMN restart 2] step 561/800 E=-8.21535835,-7.08027366 lr=0.082 relerr=8.025e-03,2.937e-07
+[   199.9s]   [route TCMN restart 2] step 641/800 E=-8.21738329,-7.08026913 lr=0.082 relerr=7.781e-03,9.347e-07
+[   201.9s]   [route TCMN restart 2] step 721/800 E=-8.21905625,-7.08027417 lr=0.082 relerr=7.579e-03,2.223e-07
+[   203.9s]   [route TCMN restart 2] step 800/800 E=-8.22049069,-7.08027524 lr=0.149 relerr=7.405e-03,7.105e-08
+[   203.9s]   [route TCMN restart 3] step 1/800 E=-5.63813257,2.29438060 lr=0.055 relerr=3.192e-01,1.324e+00
+[   206.0s]   [route TCMN restart 3] step 81/800 E=-7.35843539,-7.08011612 lr=0.134 relerr=1.115e-01,2.255e-05
+[   208.1s]   [route TCMN restart 3] step 161/800 E=-7.39494636,-7.08011978 lr=0.134 relerr=1.071e-01,2.203e-05
+[   210.1s]   [route TCMN restart 3] step 241/800 E=-7.41092458,-7.08027057 lr=0.134 relerr=1.052e-01,7.304e-07
+[   212.2s]   [route TCMN restart 3] step 321/800 E=-7.42076788,-7.08024133 lr=0.134 relerr=1.040e-01,4.860e-06
+[   214.3s]   [route TCMN restart 3] step 401/800 E=-7.42728527,-7.08025229 lr=0.134 relerr=1.032e-01,3.313e-06
+[   216.3s]   [route TCMN restart 3] step 481/800 E=-7.43209096,-7.08026001 lr=0.134 relerr=1.026e-01,2.222e-06
+[   218.4s]   [route TCMN restart 3] step 561/800 E=-7.43580078,-7.08027552 lr=0.134 relerr=1.022e-01,3.157e-08
+[   220.4s]   [route TCMN restart 3] step 641/800 E=-7.43887993,-7.08026405 lr=0.134 relerr=1.018e-01,1.652e-06
+[   222.5s]   [route TCMN restart 3] step 721/800 E=-7.44132126,-7.08026732 lr=0.134 relerr=1.015e-01,1.190e-06
+[   224.5s]   [route TCMN restart 3] step 800/800 E=-7.44336343,-7.08023563 lr=0.122 relerr=1.012e-01,5.666e-06
+[   224.6s] source route TCMN: E=['-8.27408107', '-7.08027541'] relerr=['9.35e-04', '4.69e-08'] npar=122 null-dim(S)=110 |theta|=5.247
+[   224.6s]   [foil TCMN restart 0] step 1/800 E=-6.96343718,-4.18215845 lr=0.055 relerr=1.592e-01,4.093e-01
+[   225.8s]   [foil TCMN restart 0] step 81/800 E=-8.12889676,-7.08001469 lr=0.2 relerr=1.847e-02,3.687e-05
+[   227.0s]   [foil TCMN restart 0] step 161/800 E=-8.12892186,-7.08001579 lr=0.133 relerr=1.846e-02,3.672e-05
+[   228.2s]   [foil TCMN restart 0] step 241/800 E=-8.12892834,-7.08001580 lr=0.143 relerr=1.846e-02,3.671e-05
+[   229.4s]   [foil TCMN restart 0] step 321/800 E=-8.12893129,-7.08001581 lr=0.143 relerr=1.846e-02,3.671e-05
+[   230.7s]   [foil TCMN restart 0] step 401/800 E=-8.12893297,-7.08001581 lr=0.133 relerr=1.846e-02,3.671e-05
+[   231.9s]   [foil TCMN restart 0] step 481/800 E=-8.12893405,-7.08001581 lr=0.133 relerr=1.846e-02,3.671e-05
+[   233.1s]   [foil TCMN restart 0] step 561/800 E=-8.12893481,-7.08001582 lr=0.133 relerr=1.846e-02,3.671e-05
+[   234.3s]   [foil TCMN restart 0] step 641/800 E=-8.12893537,-7.08001582 lr=0.133 relerr=1.846e-02,3.671e-05
+[   235.5s]   [foil TCMN restart 0] step 721/800 E=-8.12893580,-7.08001582 lr=0.133 relerr=1.846e-02,3.671e-05
+[   236.7s]   [foil TCMN restart 0] step 800/800 E=-8.12893614,-7.08001582 lr=0.121 relerr=1.846e-02,3.671e-05
+[   236.7s]   [foil TCMN restart 1] step 1/800 E=-6.41239235,0.11557676 lr=0.055 relerr=2.257e-01,1.016e+00
+[   238.0s]   [foil TCMN restart 1] step 81/800 E=-7.63931960,-7.08022608 lr=0.177 relerr=7.758e-02,7.014e-06
+[   239.2s]   [foil TCMN restart 1] step 161/800 E=-7.63960376,-7.08023594 lr=0.133 relerr=7.755e-02,5.621e-06
+[   240.4s]   [foil TCMN restart 1] step 241/800 E=-7.63969101,-7.08023694 lr=0.195 relerr=7.753e-02,5.481e-06
+[   241.7s]   [foil TCMN restart 1] step 321/800 E=-7.63973276,-7.08023779 lr=0.133 relerr=7.753e-02,5.360e-06
+[   242.9s]   [foil TCMN restart 1] step 401/800 E=-7.63975765,-7.08023807 lr=0.177 relerr=7.753e-02,5.322e-06
+[   244.2s]   [foil TCMN restart 1] step 481/800 E=-7.63977403,-7.08023826 lr=0.11 relerr=7.752e-02,5.294e-06
+[   245.4s]   [foil TCMN restart 1] step 561/800 E=-7.63978551,-7.08023847 lr=0.157 relerr=7.752e-02,5.265e-06
+[   246.6s]   [foil TCMN restart 1] step 641/800 E=-7.63979423,-7.08023852 lr=0.195 relerr=7.752e-02,5.257e-06
+[   247.9s]   [foil TCMN restart 1] step 721/800 E=-7.63980090,-7.08023865 lr=0.118 relerr=7.752e-02,5.239e-06
+[   249.1s]   [foil TCMN restart 1] step 800/800 E=-7.63980617,-7.08023872 lr=0.143 relerr=7.752e-02,5.230e-06
+[   249.1s]   [foil TCMN restart 2] step 1/800 E=-6.49016895,-6.02974320 lr=0.055 relerr=2.163e-01,1.484e-01
+[   250.4s]   [foil TCMN restart 2] step 81/800 E=-7.63746429,-7.07988756 lr=0.2 relerr=7.780e-02,5.483e-05
+[   251.6s]   [foil TCMN restart 2] step 161/800 E=-7.63826363,-7.07996839 lr=0.11 relerr=7.771e-02,4.341e-05
+[   252.8s]   [foil TCMN restart 2] step 241/800 E=-7.63853223,-7.07998698 lr=0.118 relerr=7.767e-02,4.078e-05
+[   254.0s]   [foil TCMN restart 2] step 321/800 E=-7.63866981,-7.07999242 lr=0.11 relerr=7.766e-02,4.002e-05
+[   255.3s]   [foil TCMN restart 2] step 401/800 E=-7.63875283,-7.07999675 lr=0.11 relerr=7.765e-02,3.940e-05
+[   256.5s]   [foil TCMN restart 2] step 481/800 E=-7.63880869,-7.07999971 lr=0.11 relerr=7.764e-02,3.899e-05
+[   257.7s]   [foil TCMN restart 2] step 561/800 E=-7.63884891,-7.08000150 lr=0.11 relerr=7.764e-02,3.873e-05
+[   258.9s]   [foil TCMN restart 2] step 641/800 E=-7.63887925,-7.08000315 lr=0.11 relerr=7.763e-02,3.850e-05
+[   260.1s]   [foil TCMN restart 2] step 721/800 E=-7.63890298,-7.08000423 lr=0.11 relerr=7.763e-02,3.835e-05
+[   261.4s]   [foil TCMN restart 2] step 800/800 E=-7.63892191,-7.08000435 lr=0.2 relerr=7.763e-02,3.833e-05
+[   261.4s]   [foil TCMN restart 3] step 1/800 E=-3.58336802,1.05754466 lr=0.055 relerr=5.673e-01,1.149e+00
+[   262.6s]   [foil TCMN restart 3] step 81/800 E=-7.48219762,-7.07882107 lr=0.0764 relerr=9.655e-02,2.055e-04
+[   263.8s]   [foil TCMN restart 3] step 161/800 E=-7.51185980,-7.08013239 lr=0.152 relerr=9.297e-02,2.025e-05
+[   265.1s]   [foil TCMN restart 3] step 241/800 E=-7.51187061,-7.08013237 lr=0.152 relerr=9.297e-02,2.025e-05
+[   266.3s]   [foil TCMN restart 3] step 321/800 E=-7.51187419,-7.08013237 lr=0.152 relerr=9.297e-02,2.025e-05
+[   267.5s]   [foil TCMN restart 3] step 401/800 E=-7.51187602,-7.08013233 lr=0.152 relerr=9.297e-02,2.025e-05
+[   268.7s]   [foil TCMN restart 3] step 481/800 E=-7.51187712,-7.08013231 lr=0.152 relerr=9.297e-02,2.026e-05
+[   270.0s]   [foil TCMN restart 3] step 561/800 E=-7.51187786,-7.08013229 lr=0.144 relerr=9.297e-02,2.026e-05
+[   271.2s]   [foil TCMN restart 3] step 641/800 E=-7.51187839,-7.08013227 lr=0.144 relerr=9.297e-02,2.026e-05
+[   272.4s]   [foil TCMN restart 3] step 721/800 E=-7.51187879,-7.08013227 lr=0.144 relerr=9.297e-02,2.026e-05
+[   273.6s]   [foil TCMN restart 3] step 800/800 E=-7.51187909,-7.08013226 lr=0.131 relerr=9.297e-02,2.026e-05
+[   273.7s] source foil TCMN: E=['-8.12893614', '-7.08001582'] relerr=['1.85e-02', '3.67e-05'] npar=62 null-dim(S)=61 |theta|=6.206
+[   273.7s]   [route r2-style restart 0] step 1/800 E=-6.02161833 lr=0.055 relerr=2.729e-01
+[   274.7s]   [route r2-style restart 0] step 81/800 E=-8.28178209 lr=0.11 relerr=4.657e-06
+[   275.7s]   [route r2-style restart 0] step 161/800 E=-8.28181310 lr=0.055 relerr=9.129e-07
+[   276.8s]   [route r2-style restart 0] step 241/800 E=-8.28181827 lr=0.11 relerr=2.890e-07
+[   277.8s]   [route r2-style restart 0] step 321/800 E=-8.28181975 lr=0.11 relerr=1.099e-07
+[   278.8s]   [route r2-style restart 0] step 401/800 E=-8.28182029 lr=0.11 relerr=4.497e-08
+[   279.9s]   [route r2-style restart 0] step 481/800 E=-8.28182050 lr=0.0551 relerr=1.917e-08
+[   280.9s]   [route r2-style restart 0] step 561/800 E=-8.28182059 lr=0.11 relerr=8.191e-09
+[   281.9s]   [route r2-style restart 0] step 641/800 E=-8.28182063 lr=0.0551 relerr=3.581e-09
+[   283.0s]   [route r2-style restart 0] step 721/800 E=-8.28182065 lr=0.11 relerr=1.564e-09
+[   284.0s]   [route r2-style restart 0] step 800/800 E=-8.28182066 lr=0.1 relerr=7.045e-10
+[   284.0s]   [route r2-style restart 1] step 1/800 E=-4.86949845 lr=0.055 relerr=4.120e-01
+[   285.1s]   [route r2-style restart 1] step 81/800 E=-8.28178479 lr=0.11 relerr=4.332e-06
+[   286.1s]   [route r2-style restart 1] step 161/800 E=-8.28180881 lr=0.11 relerr=1.431e-06
+[   287.2s]   [route r2-style restart 1] step 241/800 E=-8.28181250 lr=0.055 relerr=9.849e-07
+[   288.2s]   [route r2-style restart 1] step 321/800 E=-8.28181502 lr=0.11 relerr=6.812e-07
+[   289.3s]   [route r2-style restart 1] step 401/800 E=-8.28181697 lr=0.11 relerr=4.458e-07
+[   290.3s]   [route r2-style restart 1] step 481/800 E=-8.28181848 lr=0.0551 relerr=2.633e-07
+[   291.4s]   [route r2-style restart 1] step 561/800 E=-8.28181954 lr=0.11 relerr=1.356e-07
+[   292.4s]   [route r2-style restart 1] step 641/800 E=-8.28182014 lr=0.11 relerr=6.309e-08
+[   293.5s]   [route r2-style restart 1] step 721/800 E=-8.28182045 lr=0.11 relerr=2.582e-08
+[   294.5s]   [route r2-style restart 1] step 800/800 E=-8.28182058 lr=0.1 relerr=9.959e-09
+[   294.5s]   [route r2-style restart 2] step 1/800 E=-5.40513256 lr=0.055 relerr=3.473e-01
+[   295.6s]   [route r2-style restart 2] step 81/800 E=-8.28181795 lr=0.11 relerr=3.275e-07
+[   296.6s]   [route r2-style restart 2] step 161/800 E=-8.28182007 lr=0.11 relerr=7.168e-08
+[   297.7s]   [route r2-style restart 2] step 241/800 E=-8.28182043 lr=0.11 relerr=2.814e-08
+[   298.7s]   [route r2-style restart 2] step 321/800 E=-8.28182057 lr=0.11 relerr=1.095e-08
+[   299.8s]   [route r2-style restart 2] step 401/800 E=-8.28182063 lr=0.11 relerr=4.304e-09
+[   300.8s]   [route r2-style restart 2] step 481/800 E=-8.28182065 lr=0.0551 relerr=1.658e-09
+[   301.9s]   [route r2-style restart 2] step 561/800 E=-8.28182066 lr=0.11 relerr=6.511e-10
+[   302.9s]   [route r2-style restart 2] step 641/800 E=-8.28182066 lr=0.11 relerr=2.542e-10
+[   304.0s]   [route r2-style restart 2] step 721/800 E=-8.28182066 lr=0.11 relerr=9.830e-11
+[   305.0s]   [route r2-style restart 2] step 800/800 E=-8.28182066 lr=0.1 relerr=3.815e-11
+[   305.0s]   [route r2-style restart 3] step 1/800 E=-6.10927425 lr=0.055 relerr=2.623e-01
+[   306.1s]   [route r2-style restart 3] step 81/800 E=-8.27983032 lr=0.11 relerr=2.403e-04
+[   307.1s]   [route r2-style restart 3] step 161/800 E=-8.28038409 lr=0.11 relerr=1.735e-04
+[   308.2s]   [route r2-style restart 3] step 241/800 E=-8.28047571 lr=0.11 relerr=1.624e-04
+[   309.2s]   [route r2-style restart 3] step 321/800 E=-8.28050380 lr=0.055 relerr=1.590e-04
+[   310.3s]   [route r2-style restart 3] step 401/800 E=-8.28051889 lr=0.11 relerr=1.572e-04
+[   311.3s]   [route r2-style restart 3] step 481/800 E=-8.28053100 lr=0.11 relerr=1.557e-04
+[   312.4s]   [route r2-style restart 3] step 561/800 E=-8.28054282 lr=0.11 relerr=1.543e-04
+[   313.4s]   [route r2-style restart 3] step 641/800 E=-8.28055534 lr=0.11 relerr=1.528e-04
+[   314.5s]   [route r2-style restart 3] step 721/800 E=-8.28056896 lr=0.11 relerr=1.511e-04
+[   315.5s]   [route r2-style restart 3] step 800/800 E=-8.28058247 lr=0.1 relerr=1.495e-04
+[   315.5s] source route r2-style: E=['-8.28182066'] relerr=['3.82e-11'] npar=122 null-dim(S)=107 |theta|=6.920
+[   337.5s] zero-shot sector rule: picked {"D": -1, "Mx": 1, "My": 1, "Tx": 1, "Ty": 1} (ED irrep {'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1}) -> correct
+[   376.2s] <S^2> of the transferred state = 2.17e-16
+[   394.0s] arm tr0      : E=-1.79276164 eps=7.5883e-01 (raw 7.6480e-01, irrep weight 0.582) A/V=9.7057e-02 sign-agree=0.5657 Pd=2.5410e-06 fid=0.0029
+[   407.5s] arm tr0_r2   : E=-5.61344977 eps=5.2004e-01 (raw 5.0312e-01, irrep weight 0.536) sign-agree=-0.0229 Pd=1.0343e-03 fid=0.0000
+[   420.1s] arm foil_tr  : E=-2.89269840 eps=6.9009e-01 (raw 7.1064e-01, irrep weight 0.343) A/V=2.1149e-01 sign-agree=0.0109 Pd=-5.3197e-05 fid=0.0008
+[   476.5s] arm trB      : E=-1.79276164 eps=7.5883e-01 (raw 7.6480e-01, irrep weight 0.582) A/V=9.7057e-02 sign-agree=0.5657 Pd=2.5410e-06 fid=0.0029
+[   532.9s] arm fstB     : E=-1.79276164 eps=7.5883e-01 (raw 7.6480e-01, irrep weight 0.582) A/V=9.7057e-02 sign-agree=0.5657 Pd=2.5410e-06 fid=0.0029
+[   588.2s] arm scrB     : E=-11.85455692 eps=1.2997e-01 (raw 1.6427e-01, irrep weight 0.589) A/V=1.4549e-02 sign-agree=0.9028 Pd=4.5920e-03 fid=0.3987
+[   640.1s] arm trL      : E=-1.79276164 eps=7.5883e-01 (raw 7.6480e-01, irrep weight 0.582) sign-agree=0.5657 Pd=2.5410e-06 fid=0.0029
+[   640.1s] done (results_zeroshot/task1.json)

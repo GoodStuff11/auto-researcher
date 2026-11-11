@@ -118,15 +118,20 @@ nSG = nnbf_SG):
   g_mech (sqrvb) : m(eps_sqrvb) <= 0.8 m(eps_sqrvb0) (the charge-conditioned spinon pairing is
                    what works); not applied to scf.
   g2 correlations: m(dCs_R) <= m(dCs_nSG) and m(dPd_R) <= m(dPd_nSG) + 1e-4.
-  PASS      : g1, g_cost, g_mech, g2, m(eps_R) <= 0.8 m(eps_nSG),
-              m(dE_sign_R) <= 0.8 m(dE_sign_nSG), m(eps_R) < m(eps_che), m(eps_R) <= 0.5 m(eps_foil).
-  FAIL      : not g1, or not g_cost, or m(eps_R) >= m(eps_nSG), or m(eps_R) >= m(eps_che).
-  UNINFORMATIVE (premise gate) : not FAIL and m(eps_nSG) < 1e-4 (the projected control leaves no
-              measurable error, so accuracy cannot discriminate). Pre-committed action: rerun on a
-              6x2 ladder (--Lx 6 --Ly 2 --bc-x obc --bc-y obc --Ne 10) and report the cost claim alone.
+  (Accuracy is judged on eps = Delta E_tot only. P1.1-P shows that after symmetry projection
+   the residual error at ED size is almost all amplitude, so dE_sign is reported, not gating.)
+  FAIL      : not g1, or not g_cost  (the primary, cost claim fails), checked first.
+  NO-TARGET (premise gate) : m(eps_nSG) < 1e-4, i.e. the spin- and space-projected control is
+              already near-exact, so accuracy cannot discriminate. The cost claim stands alone;
+              pre-committed action: rerun on the 6x2 ladder (--Lx 6 --Ly 2 --bc-x obc --bc-y obc
+              --Ne 10) or a larger sampled system.
+  FAIL      : m(eps_R) >= m(eps_nSG), or m(eps_R) >= m(eps_che) (accuracy not matched by the
+              quadrature-projected arm at lower cost).
+  PASS      : g1, g_cost, g_mech, g2, m(eps_R) <= 0.8 m(eps_nSG), m(eps_R) < m(eps_che),
+              m(eps_R) <= 0.5 m(eps_foil).
   AMBIGUOUS : otherwise (or < 3 seeds, or a capped run). Pre-committed action: rerun the array on
-              P1.1 instance 0 (--Ne 10, dim 627264); promote R only if it is not FAIL there and
-              m(dE_sign_R) < m(dE_sign_nSG) on both instances; otherwise KILL R.
+              the 4x3 cylinder (--bc-x pbc); promote R only if it is not FAIL there and
+              m(eps_R) < m(eps_nSG) on both instances; otherwise KILL R.
   Reported, not gating: che vs nnbf_SG (does charge-only conditioning lose against
   spin-resolved conditioning once both are projected?), nnbf_G before / after post-hoc P_S,
   seed spread (min, max) of every metric.
@@ -651,7 +656,7 @@ def parse_args(argv=None):
     if a.Lx < 2 or a.Ly < 2 or a.Ne % 2 or not (2 <= a.Ne <= 2 * L - 2):
         p.error("invalid lattice / Ne")
     if a.tag is None:
-        a.tag = f"L{a.Lx}x{a.Ly}x{a.bc_x}y{a.bc_y}_N{a.Ne}_U{a.U:g}_tp{a.tp:g}_G"
+        a.tag = f"L{a.Lx}x{a.Ly}x{a.bc_x}y{a.bc_y}_N{a.Ne}_U{a.U:g}_tp{a.tp:g}_G_w{a.nnbf_hidden}"
     return a
 
 
@@ -992,13 +997,15 @@ def report(a):
         mE, mS = r["med"]["eps"] / n["med"]["eps"], r["med"]["dE_sign"] / n["med"]["dE_sign"]
         mC, mF = r["med"]["eps"] / ch["med"]["eps"], r["med"]["eps"] / fo["med"]["eps"]
         prem = n["med"]["eps"] >= PREMISE_EPS
-        if (not g1) or (not gc) or mE >= 1.0 or mC >= 1.0:
+        if (not g1) or (not gc):
             v = "FAIL"
         elif not prem:
-            v = "UNINFORMATIVE"
+            v = "NO-TARGET"
+        elif mE >= 1.0 or mC >= 1.0:
+            v = "FAIL"
         elif few or capped:
             v = "AMBIGUOUS"
-        elif g2 and gm and mE <= 0.8 and mS <= 0.8 and mC < 1.0 and mF <= 0.5:
+        elif g2 and gm and mE <= 0.8 and mC < 1.0 and mF <= 0.5:
             v = "PASS"
         else:
             v = "AMBIGUOUS"

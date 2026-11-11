@@ -3,3 +3,7 @@
 [14:19:21]   iter    50  E_best = -9.3537019162  (3.4 min)
 [14:22:10]   iter   100  E_best = -9.3580975725  (6.2 min)
 [14:25:09]   iter   150  E_best = -9.3593418478  (9.2 min)
+[14:28:02]   iter   200  E_best = -9.3599606100  (12.1 min)
+[14:31:03]   iter   250  E_best = -9.3602993421  (15.1 min)
+[14:33:58]   iter   300  E_best = -9.3605464566  (18.0 min)
+[14:34:03] done: E=-9.3605464566 eps=1.243e-04 <S^2>=5.630e-18 iters=300 -> results_precheck/L4x3xobcyobc_N8_U8_tp-0.25_G_nnbf_SG_seed0.json

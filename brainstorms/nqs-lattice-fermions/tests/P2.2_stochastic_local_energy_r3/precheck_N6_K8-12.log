@@ -24,3 +24,22 @@
   seed=0 WIBJ  dE=   0.895 mHa Var(EL)=3.47e-03 <|C|>=236 <keys>=130.4 (multi 49.6) ELchk=5.3e-15 KEYX-EXACT max=8.9e-16 |W1_ext|=0 (train 20s)
       C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=1.08
       C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.817
+  seed=0 SHRJ  dE=   1.067 mHa Var(EL)=3.88e-03 <|C|>=236 <keys>=130.4 (multi 49.6) ELchk=5.8e-15 KEYX-EXACT max=1.4e-02 |W1_ext|=0.0885 (train 19s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.11 PFCV=1.29
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.818 PFCV=0.854
+      PFCV   eps=0.01 K=4 bias=-0.1932+-0.2059 mHa top1%share=0.83
+
+=== H6 ring R=2.8 6-31G** active K=12 M=24 dim=48400 E_RHF=-3.057914 E_FCI=-3.160363 Ecorr=-102.4 mHa gap=0.1090 HF wt=0.840 frustr=0.148 p-MOs=6 mean p-weight(external MOs)=0.996 window K_W=6 nnz/row=440 (build 26.5s)
+  seed=0 NNBFJ dE=   1.729 mHa Var(EL)=6.19e-03 <|C|>=416 <keys>=139.0 (multi 87.5) ELchk=4.9e-15 KEYX-EXACT max=3.5e-02 |W1_ext|=2.67 (train 82s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.01 SCREEN=0.934 SS=0.945 PFCV=1.15
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.663 SCREEN=0.905 SS=0.7 PFCV=0.725
+      SCREEN eps=0.001 K=0 bias=0.0136+-0.0011 mHa top1%share=0.62
+      SS     eps=0 K=64 bias=0.0000+-0.0000 mHa top1%share=0.00
+      PFCV   eps=0.03 K=16 bias=-1.3591+-0.7295 mHa top1%share=0.35
+  seed=0 WIBJ  dE=   2.197 mHa Var(EL)=8.76e-03 <|C|>=416 <keys>=139.0 (multi 87.5) ELchk=7.5e-15 KEYX-EXACT max=8.9e-16 |W1_ext|=0 (train 87s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=0.931
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.66
+  seed=0 SHRJ  dE=   2.368 mHa Var(EL)=9.40e-03 <|C|>=416 <keys>=139.0 (multi 87.5) ELchk=5.8e-15 KEYX-EXACT max=3.7e-03 |W1_ext|=0.111 (train 95s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=0.949 PFCV=1.05
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.66 PFCV=0.702
+      PFCV   eps=0.03 K=16 bias=-0.0228+-0.0987 mHa top1%share=0.43

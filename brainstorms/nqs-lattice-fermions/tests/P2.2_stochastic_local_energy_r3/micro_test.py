@@ -4,7 +4,7 @@ P2.2 round-3 decisive test: exactly-cheap local energies by window-keyed
 backflow, versus exact enumeration, screening and semistochastic local
 energies of an unrestricted neural-network-backflow-Jastrow (NNBF-J) state,
 on stretched hydrogen rings with polarization (p) functions, at N = 6 and
-N = 8 electrons, all numbers measured on the same instance at the same N.
+N = 8 electrons (decisive sizes: N = 6, K = 8..16; N = 8, K = 9..12), all numbers measured on the same instance at the same N.
 
 Routes under test
 -----------------

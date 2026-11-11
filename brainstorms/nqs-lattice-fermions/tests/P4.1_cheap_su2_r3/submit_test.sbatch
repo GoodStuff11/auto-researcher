@@ -4,15 +4,22 @@
 # against the PROJECTED control nnbf_SG (spin-resolved NNBF trained as P_G P_S phi), the exact-S
 # charge-input control che (Che arXiv:2608.22925 family, P_G P_S), nnbf_G (P_G only), the sqrvb0
 # ablation (uncoupled spinon pairing) and the mVMC-like foil (P_G P_S).
-# Instance: 4x3 OPEN cluster (OBC in x and y) Hubbard, N_up = N_dn = 4, U = 8, t' = -0.25 (dim 245025), SIGN HALF ONLY.
-# Array 0-20: arm = task / 3 in (sqrvb sqrvb0 scf nnbf_SG nnbf_G che foil), seed = task % 3.
-# Budget: every arm gets the same L-BFGS iteration cap (2000) and the same 20 h safety cap;
-# see logs/timing_output.txt for the measured cost per iteration (scf is the slowest arm).
-# Before the array (login node, seconds, already done): python3 micro_test.py --mode cost
-# Afterwards (login node, seconds): python3 micro_test.py --mode report
+# PRIMARY CLAIM = per-amplitude cost (already measured: logs/cost_output.txt, results/cost.json);
+# this array decides the secondary, accuracy part.
+# Instance: 4x3 OPEN cluster (OBC in x and y) Hubbard, N_up = N_dn = 4, U = 8, t' = -0.25
+# (dim 245025; dim range(P_S P_G) = 17905), SIGN HALF ONLY.
+# Array 0-41: width block = task / 21 -> matched NNBF width 16 (2205 parameters, ratio 8.1) or
+# 4 (753 parameters, ratio 24, a deliberately narrow control; premise pre-check
+# logs/precheck_nnbf_SG_h{16,4}_300it.txt); arm = (task % 21) / 3 in
+# (sqrvb sqrvb0 scf nnbf_SG nnbf_G che foil); seed = task % 3.
+# Budget: same L-BFGS iteration cap (2000) and 20 h safety cap for every arm; slowest arm scf
+# ~30 s per evaluation at width 16 -> ~18 h, plus ED (~7 min) and sign budget (~2 h).
+# Afterwards (login node, seconds), one report per width:
+#   python3 micro_test.py --mode report --nnbf-hidden 16
+#   python3 micro_test.py --mode report --nnbf-hidden 4
 #SBATCH --job-name=P4.1_su2_r3
 #SBATCH --partition=kim
-#SBATCH --array=0-20
+#SBATCH --array=0-41
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
@@ -24,11 +31,13 @@ set -euo pipefail
 DIR=/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r3
 PY=/share/apps/software/anaconda3/bin/python3
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK} OPENBLAS_NUM_THREADS=${SLURM_CPUS_PER_TASK} MKL_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+WIDTHS=(16 4)
 ARMS=(sqrvb sqrvb0 scf nnbf_SG nnbf_G che foil)
 ID=${SLURM_ARRAY_TASK_ID}
-ARM=${ARMS[$((ID / 3))]}
+W=${WIDTHS[$((ID / 21))]}
+ARM=${ARMS[$(((ID % 21) / 3))]}
 SEED=$((ID % 3))
 cd "$DIR"
 $PY -u micro_test.py --mode run --Lx 4 --Ly 3 --Ne 8 --U 8 --tp -0.25 \
-    --bc-x obc --bc-y obc --ansatz "$ARM" --seed "$SEED" --nnbf-hidden 16 --mps-mult 2,2,1,1 \
+    --bc-x obc --bc-y obc --ansatz "$ARM" --seed "$SEED" --nnbf-hidden "$W" --mps-mult 2,2,1,1 \
     --maxiter 2000 --max-hours 20 --chunk 16384 --lbfgs-iters 4000 --fn-iters 10 --fn-floor 1e-3
