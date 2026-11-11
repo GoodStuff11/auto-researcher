@@ -164,7 +164,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P2.2 | MUTATE (round 4) | nothing | round-4 worker (key-wise Cholesky/THC contraction) |
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | SUBMITTED (control pilot); AT killed, SO-EC conditional | full test blocked on pilot regime (NO-TARGET / NO-ROOM / INTRINSIC-BIAS / GO) | Slurm 410917 (width 8, inner 4 targets) |
-| P4.1 | CRITIC (round 3) | nothing | per-leaf critic |
+| P4.1 | MUTATE (round 4) + SUBMITTED (diagnostic pilot) | nothing | round-4 worker; Slurm 411494 (9 tasks: charge-only vs spin-resolved, exactly projected) |
 | P4.2 | SUBMITTED (zero-shot pilot); 3.2 merged into 3.1 as diagnostic | full test blocked on pilot (spread and sector-pick kills) and on fixes | Slurm 410960 (3 tasks) |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
@@ -183,6 +183,16 @@ Each leaf advances on its own as soon as it returns: lint, then its own critic, 
         * Curvature/susceptibility, Gate 1.
         * Berry phase, Gates 2 and 3.
         * In-irrep zero-variance extrapolation, Gate 0 (mVMC practice).
+* **P4.1 round-3 per-leaf critic (12 objections, 9 Major)**:
+    * **SQ-RVB fails Gate 0.** For a symmetric charge-backflow pairing, $\det F_c[U_s\cup D_b,D_s\cup D_b]=\det F_c[D_b,D_b]\,\det S_c[U_s,D_s]$, where $D_b$ is the doublon set and the Schur complement $S_c$ is symmetric. SQ-RVB is therefore the round-1 Tocchio family, reparameterised, and costs two determinants against Tocchio's one.
+    * **Che's projection was benchmarked sub-optimally.** It is closed-form via elementary symmetric polynomials of the eigenvalues of $D_m^{-1}X$, at $\mathcal{O}(N_e^3)$, so the cost "advantage" is a constant factor.
+    * **SCF's cost was measured at a toy bond dimension**, and the cost and accuracy parameterisations differ.
+    * **Completeness is untested.** Whether one AGP per charge configuration can reach $\psi_0$ was never checked.
+    * **Width-4 accuracy measures only capacity per parameter.**
+    * **Action.** The 42-task array is not submitted.
+        * A 9-task width-16 diagnostic pilot runs as job 411494 (sqrvb, nnbf_SG and che, 3 seeds). It measures charge-only against spin-resolved conditioning, both exactly projected.
+        * P4.1 goes to round 4 with a **Saturation Diagnostic**: "exact $S$ below projection cost" is already met by standard constructions (singlet pairing with charge-only correlators at one determinant; Che's closed form at $\mathcal{O}(N^3)$).
+        * The leaf is refined to what remains open: exact $S$ for spin-resolved backflow, the cost of charge-only conditioning, and exact-$S$ forms beyond one AGP per charge configuration.
 * **P2.2 round-3 per-leaf critic (10 objections, 6 Major)**:
     * **The test could not PASS globally.** The H8 key/term ratio is 0.55.
     * **ED-sized symmetric rings cannot show the $M$-scaling.**

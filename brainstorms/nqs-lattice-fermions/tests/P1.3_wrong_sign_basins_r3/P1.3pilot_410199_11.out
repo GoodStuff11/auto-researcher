@@ -30,3 +30,5 @@
 [14:48:36]   PSaf: it 1200 E=-12.522375
 [14:51:25]   PSaf: it 1300 E=-12.522372
 [14:54:16]   PSaf: it 1400 E=-12.522377
+[14:57:29] ARM PSaf: steps=1500 e_var=0.00000 e_sign=0.00000 ov=[1.0, 0.0, 0.0] trapped=False S2=3.69e-31 (2549s)
+[14:57:29] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r3/results/c1_s1235_PSaf.json

@@ -1,0 +1,18 @@
+[14:58:28] args: {"instance": "c1", "arm": "PScdw", "task_id": 13, "seed": 1235, "width": 32, "budget": 1500, "warmup": 300, "cycles": 2, "relax": 40, "null_k": 3, "probe_at": 600, "probe": 300, "lam": 2.0, "pretrain": 300, "acc_samples": 2000, "final_window": 100, "sr_lr": 0.05, "sr_shift": 0.001, "sr_samples": 2000, "chunk": 65536, "o_chunk": 256, "fn_iters": 4, "fn_floor": 0.001, "lbfgs_iters": 3000, "min_seeds": 5, "out": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r3/results/c1_s1235_PScdw.json", "overwrite": 0, "checks_only": 0, "aggregate": ""}
+[14:58:28] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[14:58:28] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[14:58:28] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[14:58:28] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[14:58:28] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[14:58:28] check gradient: analytic 2.3827536205e-01  finite-diff 2.3827536211e-01
+[14:58:28] ALL CHECKS PASSED
+[14:58:28] check smoke instance: E0=-8.9361601979 sector levels [-8.93616, -6.774781, -5.923371] chi={'Ty': 1, 'Tx': -1, 'My': 1, 'Mx': -1} S=0 same_sector=[True, True, True]
+[14:58:28] check P_S P_chi: idempotent 6.0e-16 symmetric 8.2e-19 [P,H] 4.7e-17
+[14:58:28] check P_S P_chi energy gradient: analytic -6.3688989900e-02 fd -6.3688990970e-02
+[14:58:28] check projected fidelity gradient: analytic -9.2191024529e-02 fd -9.2191024544e-02
+[14:58:28] check sampled energy -8.653562 +- 0.020472 vs exact -8.634204
+[14:58:28] check sampled fidelity 0.18111 +- 0.00918 vs exact 0.17694
+[14:58:29] check sampled 1-RDM: tr up 2.000000 (N_up=2) max dev from exact 4.783e-03
+[14:58:29] P1.3 r3 CHECKS PASSED
+[14:58:49] instance c1 D=245025 E0=-12.52238081 sector levels [-12.522380813875973, -12.288216667552978, -11.930756460060815] gap_in=0.23416 chi={'Ty': 1, 'Tx': 1, 'My': 1, 'Mx': 1} S=0 same_sector=[True, True, True] (20s)
+[14:58:51]   PScdw: it 0 E=-11.529781
