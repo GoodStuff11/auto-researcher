@@ -1,0 +1,50 @@
+{
+ "params": {
+  "instance": 2,
+  "arm": "P",
+  "task_id": 17,
+  "widths": "8,32,128",
+  "sr_iters": 1500,
+  "sr_lr": 0.05,
+  "sr_shift": 0.001,
+  "sr_samples": 2000,
+  "chunk": 65536,
+  "o_chunk": 256,
+  "lbfgs_iters": 4000,
+  "fn_iters": 10,
+  "fn_floor": 0.001,
+  "r_min": 1.5,
+  "rng_replay": 1,
+  "seed": 3456,
+  "out": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.1P_projected/results/inst2_s3456_armP.json",
+  "overwrite": 0,
+  "checks_only": 0,
+  "time_step": 0,
+  "smoke_dir": "results",
+  "aggregate": "",
+  "width_list": [
+   8,
+   32,
+   128
+  ]
+ },
+ "ed": {
+  "levels": [
+   -13.858923213662823,
+   -13.465727663234775,
+   -13.465727663234771
+  ],
+  "degeneracy": 1
+ },
+ "irrep": {
+  "Ty": 1,
+  "Tx": 1,
+  "My": 1,
+  "Mx": 1
+ },
+ "G": 48,
+ "S_psi0": 0.0,
+ "budgets": {},
+ "timing": {},
+ "calib_err": -1.9539925233402755e-14
+}

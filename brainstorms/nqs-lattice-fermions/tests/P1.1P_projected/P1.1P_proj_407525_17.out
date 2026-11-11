@@ -1,0 +1,25 @@
+[13:17:18] args: {"instance": 2, "arm": "P", "task_id": 17, "widths": "8,32,128", "sr_iters": 1500, "sr_lr": 0.05, "sr_shift": 0.001, "sr_samples": 2000, "chunk": 65536, "o_chunk": 256, "lbfgs_iters": 4000, "fn_iters": 10, "fn_floor": 0.001, "r_min": 1.5, "rng_replay": 1, "seed": 3456, "out": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.1P_projected/results/inst2_s3456_armP.json", "overwrite": 0, "checks_only": 0, "time_step": 0, "smoke_dir": "results", "aggregate": "", "width_list": [8, 32, 128]}
+[13:17:18] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[13:17:18] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[13:17:18] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[13:17:18] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[13:17:18] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[13:17:18] check gradient: analytic 6.2518680175e-02  finite-diff 6.2518679567e-02
+[13:17:18] ALL CHECKS PASSED
+[13:17:18] check max ||[H,U_g]v||/||Hv|| over |G|=36: 3.0e-16  (ground degeneracy 1)
+[13:17:18] check projector chi={'Ty': 1, 'Tx': 1, 'My': -1, 'Mx': -1}: idempotent 4.7e-16  symmetric 7.6e-19  [P,H] 6.7e-17  ||P psi0|| = 1.000000000000  overlap 1.000000000000
+[13:17:18] check spin: two-site singlet <S2> = 4.93e-32  psi0 <S2> = 6.0000000000 (S = 2.000000)  [H,S2] 6.4e-16  [S2,U_g] 1.0e-16  S=0: P_S idempotent 1.9e-16 <S2>(P_S v)=0.000000; S=2: P_S idempotent 4.2e-16 <S2>(P_S v)=6.000000  ||P_S psi0 - psi0|| 6.5e-15
+[13:17:18] check projected gradient: analytic 5.1471678767e-01  finite-diff 5.1471678875e-01
+[13:17:18] check projected O_P vs finite-diff: max rel err 2.3e-10
+[13:17:18] P1.1-P CHECKS PASSED
+[13:17:19] model instance 2 V=12 N=(5,5) D=627264 nnz(H)=32544072
+[13:17:38] ED levels [-13.858923213662823, -13.465727663234775, -13.465727663234771]  ground degeneracy 1
+[13:17:39] space group |G|=48 built in 0.4s; psi_0 irrep {'Ty': 1, 'Tx': 1, 'My': 1, 'Mx': 1}; psi_0 <S2> = 3.425e-28 (S = 0); S_max = 5.0
+[13:17:55] calibration: E_sign(s_0) - E0 = -1.954e-14
+[13:17:55] RNG replay: advanced by 1500 x 2000 foil draws
+[13:17:59] P nnbf_8: it     0  E = -12.58637114  |f| = 1.80e+00  (4.33 s/step)
+[13:21:33] P nnbf_8: it    50  E = -13.85759423  |f| = 5.69e-03  (4.29 s/step)
+[13:25:08] P nnbf_8: it   100  E = -13.85673155  |f| = 2.41e-02  (4.28 s/step)
+[13:28:41] P nnbf_8: it   150  E = -13.85825498  |f| = 3.20e-03  (4.28 s/step)
+[13:32:15] P nnbf_8: it   200  E = -13.85813215  |f| = 1.09e-02  (4.28 s/step)
+[13:35:48] P nnbf_8: it   250  E = -13.85838344  |f| = 3.95e-03  (4.27 s/step)

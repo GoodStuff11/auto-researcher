@@ -101,6 +101,21 @@ Present the leaf summary table to the user and prompt for the routing mode:
 
 ### Protocol for Mode B (Parallel Fan-Out)
 
+#### 0. Pipelined Orchestration (No Global Barriers)
+Mode B is dependency-driven, not phase-driven. Each leaf advances through its own pipeline as soon as its own inputs are ready. The orchestrator never waits for "all workers" (or "all critics", or "all tests") before moving a leaf that is not blocked.
+- **Per-leaf state machine.** Track every leaf in a status table at the top of `## Master Leaf Synthesis Matrix`:
+  `DISPATCHED → RETURNED → LINTED → CRITIC → (MUTATE → RETURNED …) → TEST-READY → SUBMITTED → RESULT → (autopsy → MUTATE …)`
+  Record the current state and what, if anything, the leaf is blocked on.
+- **Act on each arrival immediately.** When any agent or job for leaf $P_i$ finishes, advance $P_i$ in the same turn, without waiting for its siblings:
+  1. When a worker returns: lint its artifact (rule 9), and fix it or send it back. Add or update its row in the synthesis matrix. Spawn that leaf's critic right away (see the Evaluation Protocol: one critic per leaf, or per small batch of leaves that return together).
+  2. When a critic returns: apply its accepted objections. A route that is killed or downgraded goes straight back to a mutation worker for that leaf (Stage 3.3). A route that survives with a fixable test defect gets a fix worker, or the orchestrator fixes it.
+  3. When a test is ready and critic-clean: submit its job right away (fire-and-forget on Slurm).
+  4. When a result lands: record it, apply the Stage 4 Autopsy & Re-Loop rule for that leaf, and run the cross-pollination check against the leaves still running (step 5).
+- **Explicit dependencies are the only barriers.** Keep a `Blocked on` column. A leaf waits only if its premise, instance, metric or baseline depends on a result that is not yet available, for example "the premise of P1.3 depends on the verdict of P1.1". When a result arrives, unblock exactly the leaves that list it. A critical-path test is run first, but it does **not** hold back leaves that do not depend on it. If only part of a leaf depends on a pending result, start the independent part now and record the pending part as a follow-up.
+- **Broadcast, don't restart.** When a result, correction or new anti-pattern affects leaves that are still running, send it to those workers as a message (e.g. "the competitor you were told about is in another symmetry sector"). Do not wait for them to finish and then redo the work.
+- **Keep agents busy.** Run up to the concurrency limit (the session's workflow-size guideline, or the user's instruction). When an agent finishes and work is queued, start the next queued item (mutation, critic, fix, test build) in the same turn. Idle waiting is acceptable only when every remaining item is blocked or running. In that case wait for notifications; never poll.
+- **Incremental synthesis.** The Master Leaf Synthesis Matrix and the Cross-Pollination section are updated row by row as leaves arrive, not compiled once at the end. A final whole-document lint and a cross-node critic pass (Evaluation Protocol) close each round, but they never hold back per-leaf progress.
+
 #### 1. Directory Setup
 Create `.subproblems/` inside the working directory.
 
@@ -146,8 +161,8 @@ Provide each worker with:
 * Log of all killed parent ideas and why they were mutated or discarded.
 ```
 
-#### 4. The Fan-In Synthesis (Master Compilation)
-Once all subagent workers complete, the orchestrator first runs `python3 check_brainstorm.py <working-dir>`. Any leaf artifact with Markdown errors is fixed, or sent back to its worker, before synthesis. The orchestrator then reads each `.subproblems/P{i}_{slug}.md` and generates the **Master Leaf Synthesis Matrix** in `brainstorm-<slug>.md`:
+#### 4. The Fan-In Synthesis (Incremental Master Compilation)
+As each worker returns (not after all of them), the orchestrator lints that artifact with `python3 check_brainstorm.py .subproblems/P{i}_{slug}.md`. An artifact with Markdown errors is fixed, or sent back to its worker. The orchestrator then reads it and adds or updates its row in the **Master Leaf Synthesis Matrix** in `brainstorm-<slug>.md`, together with its pipeline state and `Blocked on` entry (step 0):
 
 | Node | Subproblem Name | Status | Top Surviving Route | Sharpest Gap | 24-Hour Decisive Micro-Test | Cross-Node Dependencies |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -155,11 +170,12 @@ Once all subagent workers complete, the orchestrator first runs `python3 check_b
 | **P1.2** | ... | SURVIVED (via Mutation) | ... | ... | ... | Unblocks P2.1 |
 | **P2.1** | ... | SURVIVED | ... | ... | ... | Independent |
 
-#### 5. Cross-Pollination Analysis
-The orchestrator checks for global interactions across the subproblems:
-- **Mechanism Transfer**: Can a mechanism that survived in $P_1$ resolve the sharpest gap in $P_3$?
-- **Cascade Refinement**: If a mutation in $P_1$ altered the interface to $P_2$, harmonize the boundary conditions.
-- **Critical Path Recommendation**: Select the single highest-leverage 24-hour test to execute first (the one that unblocks the most downstream work).
+#### 5. Cross-Pollination Analysis (Run on Every Arrival)
+Each time a leaf returns or a result lands, the orchestrator checks it against every other leaf, whether finished or still running:
+- **Mechanism Transfer**: Can a mechanism that survived in $P_1$ resolve the sharpest gap in $P_3$? If $P_3$ is still running, message its worker now.
+- **Cascade Refinement**: If a mutation or result in $P_1$ changed the interface to $P_2$ (a premise, instance, metric or baseline), harmonize the boundary conditions. Update `Blocked on` for $P_2$, or broadcast the change if $P_2$ is running.
+- **Domino Invalidation**: If a result kills a premise, mark every leaf that depends on it, and send those leaves to mutation right away.
+- **Critical Path Recommendation**: Select the highest-leverage 24-hour test and submit it first, the one that unblocks the most downstream work. Only the leaves that list it in `Blocked on` wait for it; every other leaf keeps moving.
 
 ---
 
@@ -285,6 +301,12 @@ python3 check_brainstorm.py <working-dir>
 ```
 
 Resolve all syntax and formatting failures flagged by the linter until the summary line reports `0 with errors` and no file prints a warning. Re-run it after every edit pass, including after the critic loop and after appending test results. A single file can still be linted with `python3 check_brainstorm.py <file>.md`.
+
+**Scheduling (Mode B)**: critics are pipelined too (Mode B step 0).
+- Spawn a **per-leaf critic** as soon as that leaf's artifact returns and lints clean, or a critic for a small batch of leaves that return together. Do not wait for the whole fan-out.
+- Point the per-leaf critic at that leaf's artifact and test code, plus the master Invariants and Anti-Patterns. Have it read the test code itself, not only the markdown.
+- Each critic's objections go straight to that leaf's fix or mutation step.
+- A single **cross-node critic** closes each round, once the last leaf of the round has passed its own critic. It checks only claims that span leaves: shared baselines, shared instances, corrections that must propagate, and global anti-patterns. It never holds back per-leaf progress.
 
 Spawn a fresh adversarial critic agent with this mandate:
 > "Act as a hostile referee whose sole objective is to break the surviving routes in this document. 

@@ -1,0 +1,50 @@
+[11:49:20] args: {"instance": 0, "arm": "P", "task_id": 1, "widths": "8,32,128", "sr_iters": 1500, "sr_lr": 0.05, "sr_shift": 0.001, "sr_samples": 2000, "chunk": 65536, "o_chunk": 256, "lbfgs_iters": 4000, "fn_iters": 10, "fn_floor": 0.001, "r_min": 1.5, "rng_replay": 1, "seed": 1234, "out": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.1P_projected/results/inst0_s1234_armP.json", "overwrite": 0, "checks_only": 0, "time_step": 0, "smoke_dir": "results", "aggregate": "", "width_list": [8, 32, 128]}
+[11:49:20] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[11:49:20] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[11:49:20] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[11:49:20] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[11:49:20] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[11:49:20] check gradient: analytic 3.2455640501e-01  finite-diff 3.2455640531e-01
+[11:49:20] ALL CHECKS PASSED
+[11:49:20] check max ||[H,U_g]v||/||Hv|| over |G|=36: 3.0e-16  (ground degeneracy 1)
+[11:49:20] check projector chi={'Ty': 1, 'Tx': 1, 'My': -1, 'Mx': -1}: idempotent 4.7e-16  symmetric 7.5e-19  [P,H] 6.8e-17  ||P psi0|| = 1.000000000000  overlap 1.000000000000
+[11:49:20] check spin: two-site singlet <S2> = 4.93e-32  psi0 <S2> = 6.0000000000 (S = 2.000000)  [H,S2] 6.9e-16  [S2,U_g] 1.0e-16  S=0: P_S idempotent 2.1e-16 <S2>(P_S v)=0.000000; S=2: P_S idempotent 4.8e-16 <S2>(P_S v)=6.000000  ||P_S psi0 - psi0|| 3.4e-15
+[11:49:20] check projected gradient: analytic 6.4236802975e-01  finite-diff 6.4236802944e-01
+[11:49:20] check projected O_P vs finite-diff: max rel err 7.2e-10
+[11:49:20] P1.1-P CHECKS PASSED
+[11:49:21] model instance 0 V=12 N=(5,5) D=627264 nnz(H)=32544072
+[11:49:43] ED levels [-11.030368095751191, -10.650965621165371, -10.619381176325046]  ground degeneracy 1
+[11:49:44] space group |G|=48 built in 0.4s; psi_0 irrep {'Ty': 1, 'Tx': 1, 'My': 1, 'Mx': 1}; psi_0 <S2> = 1.068e-28 (S = 0); S_max = 5.0
+[11:50:06] calibration: E_sign(s_0) - E0 = 1.776e-15
+[11:50:06] RNG replay: advanced by 1500 x 2000 foil draws
+[11:50:11] P nnbf_8: it     0  E = -8.71616310  |f| = 1.66e+00  (4.27 s/step)
+[11:53:44] P nnbf_8: it    50  E = -10.95074292  |f| = 2.16e-01  (4.27 s/step)
+[11:57:18] P nnbf_8: it   100  E = -11.01671743  |f| = 7.11e-02  (4.28 s/step)
+[12:00:52] P nnbf_8: it   150  E = -11.01691131  |f| = 7.54e-02  (4.28 s/step)
+[12:04:26] P nnbf_8: it   200  E = -11.01741125  |f| = 7.03e-02  (4.28 s/step)
+[12:08:01] P nnbf_8: it   250  E = -11.02578038  |f| = 3.78e-02  (4.28 s/step)
+[12:11:33] P nnbf_8: it   300  E = -11.01518828  |f| = 7.70e-02  (4.27 s/step)
+[12:15:03] P nnbf_8: it   350  E = -11.02028308  |f| = 5.45e-02  (4.27 s/step)
+[12:18:34] P nnbf_8: it   400  E = -11.01916428  |f| = 7.49e-02  (4.26 s/step)
+[12:22:05] P nnbf_8: it   450  E = -11.01781370  |f| = 8.11e-02  (4.25 s/step)
+[12:25:36] P nnbf_8: it   500  E = -11.02056241  |f| = 5.83e-02  (4.25 s/step)
+[12:29:07] P nnbf_8: it   550  E = -11.02692575  |f| = 3.26e-02  (4.25 s/step)
+[12:32:38] P nnbf_8: it   600  E = -11.00121895  |f| = 1.41e-01  (4.25 s/step)
+[12:36:09] P nnbf_8: it   650  E = -11.02574483  |f| = 3.23e-02  (4.24 s/step)
+[12:39:39] P nnbf_8: it   700  E = -11.02764562  |f| = 1.92e-02  (4.24 s/step)
+[12:43:10] P nnbf_8: it   750  E = -11.02506260  |f| = 3.91e-02  (4.24 s/step)
+[12:46:42] P nnbf_8: it   800  E = -11.02705592  |f| = 2.48e-02  (4.24 s/step)
+[12:50:12] P nnbf_8: it   850  E = -11.02485663  |f| = 3.91e-02  (4.24 s/step)
+[12:53:42] P nnbf_8: it   900  E = -11.02559911  |f| = 3.18e-02  (4.24 s/step)
+[12:57:13] P nnbf_8: it   950  E = -11.02722923  |f| = 4.11e-02  (4.23 s/step)
+[13:00:44] P nnbf_8: it  1000  E = -11.02385852  |f| = 5.89e-02  (4.23 s/step)
+[13:04:15] P nnbf_8: it  1050  E = -11.02810914  |f| = 1.21e-02  (4.23 s/step)
+[13:07:47] P nnbf_8: it  1100  E = -11.02800734  |f| = 1.23e-02  (4.23 s/step)
+[13:11:18] P nnbf_8: it  1150  E = -11.02762721  |f| = 1.94e-02  (4.23 s/step)
+[13:14:50] P nnbf_8: it  1200  E = -11.02652394  |f| = 2.90e-02  (4.23 s/step)
+[13:18:21] P nnbf_8: it  1250  E = -11.02819094  |f| = 9.62e-03  (4.23 s/step)
+[13:21:53] P nnbf_8: it  1300  E = -11.02680707  |f| = 2.90e-02  (4.23 s/step)
+[13:25:24] P nnbf_8: it  1350  E = -11.01617190  |f| = 9.34e-02  (4.23 s/step)
+[13:28:55] P nnbf_8: it  1400  E = -11.02599376  |f| = 3.26e-02  (4.23 s/step)
+[13:32:27] P nnbf_8: it  1450  E = -11.02828796  |f| = 6.22e-03  (4.23 s/step)
+[13:35:55] P nnbf_8: it  1499  E = -11.02758878  |f| = 2.03e-02  (4.23 s/step)

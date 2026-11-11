@@ -152,6 +152,22 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | **P4.1** | Exact SU(2) below projection cost | KILLED (Gate 0 after critic) | Charge-only backflow into a singlet pairing $F_c=B_cF_0B_c^{\mathsf T}$, plus spin-invariant bond-exchange dressing $\alpha_b(c)\hat{X}_b$; $S$ exact for all parameters | Large $U$ near half filling: charge configuration carries almost no information | $3\times4$ torus, $t'=-0.3$, $U=8$, $N_e=10$ singlet; $M=\epsilon_{\mathrm{r1x}}/\epsilon_{\mathrm{foil}}$; PASS if $M\le0.5$ and correlations no worse | $\langle S^2\rangle$ exact to $10^{-16}$; small-cluster accuracy favourable but under-determined | Lemma constrains P1.2 and P4.2 designs |
 | **P4.2** | Size-transferable fermionic NQS | KILLED (Gate 3 after critic; pre-check $M=1.30$) | Residual-geminal transfer: mean-field $d$-wave geminal rebuilt per size, plus learned short-range residual $\Delta f$ carried over | Is the optimal $\Delta f$ short-ranged and size-stable (nodal $d$-wave predicts power-law tails)? | $t$–$J$ ladder $2\times4\to2\times8$; $M=e_{\mathrm{tr}}/e_{\mathrm{foil}}$; PASS if $M<0.5$ | $2\times4\to2\times6$: $M=1.30$ | Uses $S^z$ features, which conflicts with P4.1 |
 
+### Pipeline State (pipelined orchestration, Mode B step 0)
+
+| Leaf | State | Blocked on | Running job / agent |
+| :--- | :--- | :--- | :--- |
+| P1.1 | RESULT (PASS, qualified) | nothing | none |
+| P1.1-P | SUBMITTED | nothing | Slurm 407525 (18 tasks) |
+| P1.2 | MUTATE (round 3) | nothing (P1.1-P verdict changes interpretation only; broadcast on arrival) | round-3 worker |
+| P1.3 | MUTATE (round 3) | nothing (as for P1.2) | round-3 worker |
+| P2.1 | MUTATE (round 3) | nothing | round-3 worker |
+| P2.2 | MUTATE (round 3) | nothing | round-3 worker |
+| P3.1 | MUTATE (round 3) | nothing | round-3 worker |
+| P3.2 | MUTATE (round 3) | nothing | round-3 worker |
+| P4.1 | MUTATE (round 3) | nothing | round-3 worker |
+| P4.2 | MUTATE (round 3) | nothing | round-3 worker |
+
+Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
 ### Round 2 — Mutation & Replenishment Synthesis (2026-11-11)
 Under the Persistence Mandate, every leaf except P1.1 was re-run through the Stage 3.3 mutation and replenishment loop, with the round-1 critic objections as binding constraints. Every leaf now has at least two routes that pass all four gates in the worker's own audit; P2.2 has three. None has yet been through the round-2 critic, and no round-2 decisive test has been submitted.
 

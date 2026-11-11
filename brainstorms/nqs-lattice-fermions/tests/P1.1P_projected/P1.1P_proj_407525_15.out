@@ -1,0 +1,42 @@
+[11:51:16] args: {"instance": 2, "arm": "P", "task_id": 15, "widths": "8,32,128", "sr_iters": 1500, "sr_lr": 0.05, "sr_shift": 0.001, "sr_samples": 2000, "chunk": 65536, "o_chunk": 256, "lbfgs_iters": 4000, "fn_iters": 10, "fn_floor": 0.001, "r_min": 1.5, "rng_replay": 1, "seed": 2345, "out": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.1P_projected/results/inst2_s2345_armP.json", "overwrite": 0, "checks_only": 0, "time_step": 0, "smoke_dir": "results", "aggregate": "", "width_list": [8, 32, 128]}
+[11:51:16] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[11:51:16] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[11:51:16] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[11:51:16] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[11:51:16] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[11:51:16] check gradient: analytic 6.5459376224e-01  finite-diff 6.5459376186e-01
+[11:51:16] ALL CHECKS PASSED
+[11:51:17] check max ||[H,U_g]v||/||Hv|| over |G|=36: 2.9e-16  (ground degeneracy 1)
+[11:51:17] check projector chi={'Ty': 1, 'Tx': 1, 'My': -1, 'Mx': -1}: idempotent 4.9e-16  symmetric 0.0e+00  [P,H] 9.1e-17  ||P psi0|| = 1.000000000000  overlap 1.000000000000
+[11:51:17] check spin: two-site singlet <S2> = 4.93e-32  psi0 <S2> = 6.0000000000 (S = 2.000000)  [H,S2] 6.6e-16  [S2,U_g] 1.1e-16  S=0: P_S idempotent 2.0e-16 <S2>(P_S v)=0.000000; S=2: P_S idempotent 4.3e-16 <S2>(P_S v)=6.000000  ||P_S psi0 - psi0|| 8.6e-15
+[11:51:17] check projected gradient: analytic 2.1437041721e-01  finite-diff 2.1437041786e-01
+[11:51:17] check projected O_P vs finite-diff: max rel err 2.7e-10
+[11:51:17] P1.1-P CHECKS PASSED
+[11:51:18] model instance 2 V=12 N=(5,5) D=627264 nnz(H)=32544072
+[11:51:40] ED levels [-13.858923213662878, -13.465727663234874, -13.465727663234803]  ground degeneracy 1
+[11:51:41] space group |G|=48 built in 0.6s; psi_0 irrep {'Ty': 1, 'Tx': 1, 'My': 1, 'Mx': 1}; psi_0 <S2> = 4.532e-28 (S = 0); S_max = 5.0
+[11:52:05] calibration: E_sign(s_0) - E0 = 2.842e-14
+[11:52:05] RNG replay: advanced by 1500 x 2000 foil draws
+[11:52:11] P nnbf_8: it     0  E = -12.58794958  |f| = 1.93e+00  (5.55 s/step)
+[11:56:46] P nnbf_8: it    50  E = -13.85710677  |f| = 1.63e-02  (5.50 s/step)
+[12:01:20] P nnbf_8: it   100  E = -13.85811527  |f| = 3.20e-03  (5.49 s/step)
+[12:05:55] P nnbf_8: it   150  E = -13.85724887  |f| = 2.71e-02  (5.49 s/step)
+[12:10:29] P nnbf_8: it   200  E = -13.85829505  |f| = 9.93e-03  (5.49 s/step)
+[12:15:05] P nnbf_8: it   250  E = -13.85843597  |f| = 1.51e-04  (5.49 s/step)
+[12:19:40] P nnbf_8: it   300  E = -13.85846939  |f| = 1.57e-03  (5.50 s/step)
+[12:24:15] P nnbf_8: it   350  E = -13.85836515  |f| = 1.07e-02  (5.50 s/step)
+[12:28:51] P nnbf_8: it   400  E = -13.85783278  |f| = 2.75e-02  (5.50 s/step)
+[12:33:26] P nnbf_8: it   450  E = -13.85817442  |f| = 1.97e-02  (5.50 s/step)
+[12:38:02] P nnbf_8: it   500  E = -13.85846340  |f| = 7.06e-03  (5.50 s/step)
+[12:42:38] P nnbf_8: it   550  E = -13.85845476  |f| = 7.88e-03  (5.50 s/step)
+[12:47:16] P nnbf_8: it   600  E = -13.85795003  |f| = 2.66e-02  (5.51 s/step)
+[12:51:54] P nnbf_8: it   650  E = -13.85828330  |f| = 1.87e-02  (5.51 s/step)
+[12:56:32] P nnbf_8: it   700  E = -13.85839497  |f| = 1.40e-02  (5.52 s/step)
+[13:01:10] P nnbf_8: it   750  E = -13.85849333  |f| = 1.02e-02  (5.52 s/step)
+[13:05:48] P nnbf_8: it   800  E = -13.85857768  |f| = 1.20e-03  (5.52 s/step)
+[13:10:25] P nnbf_8: it   850  E = -13.84478351  |f| = 1.51e-01  (5.52 s/step)
+[13:15:03] P nnbf_8: it   900  E = -13.85858253  |f| = 1.34e-03  (5.52 s/step)
+[13:19:41] P nnbf_8: it   950  E = -13.85859447  |f| = 6.88e-04  (5.53 s/step)
+[13:24:19] P nnbf_8: it  1000  E = -13.85860300  |f| = 2.41e-04  (5.53 s/step)
+[13:28:56] P nnbf_8: it  1050  E = -13.85860642  |f| = 1.28e-03  (5.53 s/step)
+[13:33:33] P nnbf_8: it  1100  E = -13.85860304  |f| = 2.44e-03  (5.53 s/step)
