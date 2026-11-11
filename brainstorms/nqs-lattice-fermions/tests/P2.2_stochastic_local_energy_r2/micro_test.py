@@ -21,8 +21,12 @@ assumed (1e-3) rather than measured.  This test:
     itself, with batched numpy implementations of both;
   * compares two round-2 routes against the best of a strong control set.
 
-Routes under test (both unbiased)
----------------------------------
+Routes under test (all unbiased)
+--------------------------------
+R2.0 SCVSS   Round-1 frozen-backflow additive control variate, revived under
+             the corrected test (larger M, measured kappa): exact |y_FB| > eps,
+             sum_tail y_FB exactly, K draws of the residual x - y_FB.  Judged
+             against the controls WITHOUT itself; for R2.1-R2.5 it is a control.
 R2.1 POS_FB  Positivisation (Owen & Zhou 2000) with the frozen-backflow
              surrogate y = H_{nn'} * rt(n'), rt = det Phi(n)[occ n'] / psi(n):
              terms with |y| > eps evaluated exactly; the tail is split into
@@ -51,6 +55,13 @@ R2.4 MLMC    Multilevel Monte Carlo over surrogate fidelity (Giles): exact
              level), the correction y_LRX - y_FB with K1 draws (LRX level) and
              the correction x - y_LRX with K2 draws (exact amplitudes), both
              with p ~ alpha |y_FB| + (1-alpha) |H|.
+
+R2.5 ADA     Cost-aware cross-sample allocation (active probing): the
+             round-1 additive frozen-backflow control variate, but each sample
+             n gets K_n = max(1, round(K Z_n / E_pi[Z])) residual draws, with
+             Z_n = sum_tail |y_FB| known before any amplitude is evaluated
+             (SCV_ADA).  MLMC_ADA combines R2.4 and R2.5 (reported as
+             "R2.4+R2.5").
 
 Controls (the route must beat the BEST of these)
 ------------------------------------------------
@@ -85,7 +96,7 @@ bias/variance shifts use common rows for every method: all rows if
 dim <= --exact-rows-max, else top-weight rows plus defensive draws.
 All tau^2 are analytic per row (no inner Monte Carlo noise).
 
-Verdict (per route X in {R2.1, ..., R2.4}, per geometry, final snapshot)
+Verdict (per route X in {R2.0, ..., R2.5, R2.4+R2.5}, per geometry, final snapshot)
 ------------------------------------------------------------------------
 M_X(ns) = C_X / min(controls).  With ns_max the largest basis:
   PASS       M_X(ns_max) <= 0.5  and  M_X(ns_max) < M_X(ns_min)
@@ -148,8 +159,9 @@ Command-line options
                          builder against an independent second-quantized
                          builder, the 2x2 frozen-ratio formula against direct
                          determinants, the EN diagonal update against direct
-                         diagonals, the NNBF gradient, then runs ns = 1 2 with
-                         maxiter 150, hidden 8.
+                         diagonals, the LRX error order, the NNBF gradient, then runs ns = 1 2 with
+                         maxiter 150, hidden 8, and times the decisive
+                         kappas at N=8, M=32, hidden 64 (4000 terms).
 
 Example
 -------
@@ -215,6 +227,8 @@ def parse_args(argv=None):
         ap.error("--bond-length and --en-delta must be > 0")
     if a.hidden < 1 or a.maxiter < 1 or a.n_eps < 2 or a.n_rows < 10:
         ap.error("--hidden, --maxiter >= 1, --n-eps >= 2, --n-rows >= 10")
+    if min(a.kappa_scale) < 2 or a.kappa_scale[0] >= a.kappa_scale[1]:
+        ap.error("--kappa-scale N M H T: integers >= 2 with N < M")
     if any(not (0 <= x <= 1) for x in a.alphas) or min(a.k_grid) < 1:
         ap.error("--alphas in [0,1], --k-grid >= 1")
     return a
@@ -856,11 +870,13 @@ class Analyzer:
                 best = {"C": float(C), "K": int(K), "tau2_over_var": float(self.w @ var_row * K / max(self.V, 1e-300))}
         return best
 
-    def unbiased(self, name, score, extraD, q, sign, base_fn, resid_cv=None, alphas=None):
+    def unbiased(self, name, score, extraD, q, sign, base_fn, resid_cv=None, alphas=None, adaptive=False):
         """Semistochastic: D = {score > eps} | extraD exact; tail sampled.
         sign: None (single stratum) or array of +-1 for stratification.
         resid_cv: if given (array y), additive control variate: sample x - y on
-        the tail and add sum_tail y exactly (round-1 SCV)."""
+        the tail and add sum_tail y exactly (round-1 SCV).
+        adaptive: per-sample draw allocation K_n = max(1, round(K Z_n / E_pi Z))
+        with the cheap, known tail mass Z_n = sum_tail q (R2.5)."""
         x = self.d["x"]
         best = None
         alphas = self.a.alphas if alphas is None else alphas
@@ -875,7 +891,11 @@ class Analyzer:
             for al in alphas:
                 if sign is None:
                     tau, Zq, Zh = self.tau2(xt, tail, q, al)
-                    strata = [(tau, np.ones(self.R), self.rs(np.ones_like(x), tail) > 0)]
+                    wgt = np.ones(self.R)
+                    if adaptive:
+                        zm = float(self.w @ Zq)
+                        wgt = Zq / zm if zm > 0 else wgt
+                    strata = [(tau, wgt, self.rs(np.ones_like(x), tail) > 0)]
                 else:
                     strata = []
                     Zq_tot = self.rs(q, tail); Zh_tot = self.rs(self.ah, tail)
@@ -892,7 +912,7 @@ class Analyzer:
         best["name"] = name
         return best
 
-    def multilevel(self, name, y0, y1, base_fn, lvl1_cost, lvl1_setup, alphas=None):
+    def multilevel(self, name, y0, y1, base_fn, lvl1_cost, lvl1_setup, alphas=None, adaptive=False):
         """R2.4 three-level estimator (multilevel Monte Carlo over surrogate
         fidelity): D = {|y0| > eps} exact; on the tail T,
           sum_T x = sum_T y0 (exact, cheap)
@@ -911,14 +931,20 @@ class Analyzer:
             base = self.w @ base_fn(nD)
             ne = self.rs(np.ones_like(x), tail) > 0
             for al in alphas:
-                t1, _, _ = self.tau2(y1 - y0, tail, a0, al)
+                t1, Zq, _ = self.tau2(y1 - y0, tail, a0, al)
                 t2, _, _ = self.tau2(x - y1, tail, a0, al)
+                wgt = np.ones(self.R)
+                if adaptive:
+                    zm = float(self.w @ Zq)
+                    wgt = Zq / zm if zm > 0 else wgt
                 for K1 in self.kgrid:
-                    v1 = self.w @ np.where(ne, t1 / K1, 0)
-                    c1 = self.w @ np.where(ne, K1 * lvl1_cost + lvl1_setup, 0)
+                    K1n = np.maximum(1, np.round(K1 * wgt))
+                    v1 = self.w @ np.where(ne, t1 / K1n, 0)
+                    c1 = self.w @ np.where(ne, K1n * lvl1_cost + lvl1_setup, 0)
                     for K2 in self.kgrid:
-                        v2 = self.w @ np.where(ne, t2 / K2, 0)
-                        c2 = self.w @ np.where(ne, K2, 0)
+                        K2n = np.maximum(1, np.round(K2 * wgt))
+                        v2 = self.w @ np.where(ne, t2 / K2n, 0)
+                        c2 = self.w @ np.where(ne, K2n, 0)
                         C = (self.V + v1 + v2) * (base + c1 + c2)
                         if best is None or C < best["C"]:
                             best = {"C": float(C), "K": int(K2), "K1": int(K1), "eps": float(eps), "alpha": al,
@@ -999,6 +1025,9 @@ class Analyzer:
             out["resid_frac_" + tag] = float(self.w @ self.rs(np.abs(d["x"] - y)) / (self.w @ self.rs(np.abs(d["x"]))))
         out["ISFB"] = self.unbiased("ISFB", aFB, None, aFB, None, cFB)
         out["MLMC"] = self.multilevel("MLMC", d["yFB"], d["yLRX"], cFB, k["kLRX"], k["kSetupLRX"])
+        out["SCV_ADA"] = self.unbiased("SCV_ADA", aFB, None, aFB, None, cFB, resid_cv=d["yFB"], adaptive=True)
+        out["MLMC_ADA"] = self.multilevel("MLMC_ADA", d["yFB"], d["yLRX"], cFB, k["kLRX"], k["kSetupLRX"],
+                                          adaptive=True)
         tauO, _, _ = self.tau2(d["x"], allm, np.abs(d["x"]), 1.0)
         out["ORACLE_IS"] = dict(self.best_K([(tauO, np.ones(self.R), nc > 0)], np.ones(self.R)), name="ORACLE_IS")
         # diagnostics
@@ -1010,6 +1039,11 @@ class Analyzer:
         ctrl = ["EXACT", "SCREEN_H", "SCREEN_FB", "SCREEN_EN", "COMP_FB", "COMP_EN", "HB", "SS", "SCVSS",
                 "SCREEN_LRX", "COMP_LRX"]
         out["C_ctrl"] = min(out[c]["C"] for c in ctrl)
+        # R2.0 (revived round-1 SCV) is judged against the controls WITHOUT itself
+        ctrl0 = [c for c in ctrl if c != "SCVSS"]
+        out["C_ctrl0"] = min(out[c]["C"] for c in ctrl0)
+        out["ctrl0_best"] = min(ctrl0, key=lambda c: out[c]["C"])
+        out["M_R20"] = out["SCVSS"]["C"] / out["C_ctrl0"]
         out["ctrl_best"] = min(ctrl, key=lambda c: out[c]["C"])
         out["C_R21"] = min(out["POS_FB"]["C"], out["POS_HYB"]["C"])
         out["C_R22"] = out["PT2IS"]["C"]
@@ -1019,6 +1053,9 @@ class Analyzer:
         out["M_R23"] = out["C_R23"] / out["C_ctrl"]
         out["C_R24"] = out["MLMC"]["C"]
         out["M_R24"] = out["C_R24"] / out["C_ctrl"]
+        out["C_R25"] = out["SCV_ADA"]["C"]
+        out["M_R25"] = out["C_R25"] / out["C_ctrl"]
+        out["M_R24R25"] = out["MLMC_ADA"]["C"] / out["C_ctrl"]
         return out
 
 
@@ -1173,11 +1210,12 @@ def run_instance(ns, args, rng):
             kap_used.update(dict(zip(["kH", "kFB", "kEN", "kLRX", "kSetup", "kSetupLRX"], args.kappa_override)))
         an = Analyzer(d, wrow, EL, kap_used, args, Ev, var_exact).run()
         a2 = Analyzer(d, wrow, EL, kap_inst, args, Ev, var_exact).run()
-        sens = {"instance_kappa": {"M_R21": a2["M_R21"], "M_R22": a2["M_R22"], "M_R23": a2["M_R23"],
-                                   "M_R24": a2["M_R24"],
+        sens = {"instance_kappa": {"M_R20": a2["M_R20"], "M_R21": a2["M_R21"], "M_R22": a2["M_R22"], "M_R23": a2["M_R23"],
+                                   "M_R24": a2["M_R24"], "M_R25": a2["M_R25"], "M_R24R25": a2["M_R24R25"],
                                    "ctrl_best": a2["ctrl_best"], "C_ctrl_over_exact": a2["C_ctrl"] / a2["EXACT"]["C"],
                                    "C_route_over_exact": {kk: a2[kk]["C"] / a2["EXACT"]["C"] for kk in
-                                                          ("POS_FB", "PT2IS", "SCV_LRX", "POS_LRX", "MLMC", "SCVSS",
+                                                          ("POS_FB", "PT2IS", "SCV_LRX", "POS_LRX", "MLMC", "SCV_ADA",
+                                                           "MLMC_ADA", "SCVSS",
                                                            "SCREEN_H", "SS")}}}
         an.update({"iter": s, "dE_mHa": 1e3 * (Ev - E0), "var_exact": var_exact, "EL_check": el_err,
                    "fwd_kernel_rel_err": fwd_err, "n_rows": int(len(rows_idx)),
@@ -1196,16 +1234,19 @@ def run_instance(ns, args, rng):
         ce = an["EXACT"]["C"]
         for key in ["EXACT", "SCREEN_H", "SCREEN_FB", "SCREEN_EN", "COMP_FB", "COMP_EN", "SCREEN_LRX",
                     "COMP_LRX", "HB", "SS", "SCVSS", "POS_FB", "POS_HYB", "PT2IS", "SCV_LRX", "POS_LRX",
-                    "MLMC", "ISFB", "ORACLE_SIGN", "ORACLE_IS"]:
+                    "MLMC", "SCV_ADA", "MLMC_ADA", "ISFB", "ORACLE_SIGN", "ORACLE_IS"]:
             dd = an[key]
             extra = " ".join(f"{q}={dd[q]:.3g}" for q in ("K", "K1", "eps", "alpha", "delta_P", "nD", "bias") if q in dd)
             print(f"     {key:11s} C/C_exact={dd['C']/ce:10.4g}  {extra}")
+        print(f"     -> R2.0 (revived SCV) vs best non-SCV control ({an['ctrl0_best']}): M_R2.0 = {an['M_R20']:.4g}")
         print(f"     -> control best = {an['ctrl_best']};  M_R2.1 = {an['M_R21']:.4g};  M_R2.2 = {an['M_R22']:.4g};"
-              f"  M_R2.3 = {an['M_R23']:.4g};  M_R2.4 = {an['M_R24']:.4g}",
+              f"  M_R2.3 = {an['M_R23']:.4g};  M_R2.4 = {an['M_R24']:.4g};  M_R2.5 = {an['M_R25']:.4g};"
+              f"  M_(R2.4+R2.5) = {an['M_R24R25']:.4g}",
               flush=True)
         sv = sens["instance_kappa"]
-        print(f"     [sensitivity, instance kappa] ctrl={sv['ctrl_best']} M_R2.1={sv['M_R21']:.4g} "
-              f"M_R2.2={sv['M_R22']:.4g} M_R2.3={sv['M_R23']:.4g} M_R2.4={sv['M_R24']:.4g}", flush=True)
+        print(f"     [sensitivity, instance kappa] M_R2.0={sv['M_R20']:.4g} ctrl={sv['ctrl_best']} M_R2.1={sv['M_R21']:.4g} "
+              f"M_R2.2={sv['M_R22']:.4g} M_R2.3={sv['M_R23']:.4g} M_R2.4={sv['M_R24']:.4g} "
+              f"M_R2.5={sv['M_R25']:.4g} M_(R2.4+R2.5)={sv['M_R24R25']:.4g}", flush=True)
     return res
 
 
@@ -1213,7 +1254,8 @@ def verdict(results, args):
     st = sorted(results, key=lambda r: r["ns"])
     out = {"ns": [r["ns"] for r in st], "M_orb": [r["M"] for r in st],
            "dE_final_mHa": [r["snapshots"][-1]["dE_mHa"] for r in st]}
-    for key, lab in (("M_R21", "R2.1"), ("M_R22", "R2.2"), ("M_R23", "R2.3"), ("M_R24", "R2.4")):
+    for key, lab in (("M_R20", "R2.0"), ("M_R21", "R2.1"), ("M_R22", "R2.2"), ("M_R23", "R2.3"), ("M_R24", "R2.4"),
+                     ("M_R25", "R2.5"), ("M_R24R25", "R2.4+R2.5")):
         Ms = [r["snapshots"][-1][key] for r in st]
         Mx = Ms[-1]
         if Mx >= 1.0:
@@ -1241,12 +1283,15 @@ def aggregate(path):
         per[os.path.basename(f)] = v
         print(f"{os.path.basename(f)}: geometry={dat['args']['geometry']} M_orb={v['M_orb']} "
               f"dE={['%.2f' % x for x in v['dE_final_mHa']]} "
+              f"R2.0 M={['%.3g' % x for x in v['R2.0']['M_by_ns']]} {v['R2.0']['verdict']}  "
               f"R2.1 M={['%.3g' % x for x in v['R2.1']['M_by_ns']]} {v['R2.1']['verdict']}  "
               f"R2.2 M={['%.3g' % x for x in v['R2.2']['M_by_ns']]} {v['R2.2']['verdict']}  "
               f"R2.3 M={['%.3g' % x for x in v['R2.3']['M_by_ns']]} {v['R2.3']['verdict']}  "
-              f"R2.4 M={['%.3g' % x for x in v['R2.4']['M_by_ns']]} {v['R2.4']['verdict']}")
+              f"R2.4 M={['%.3g' % x for x in v['R2.4']['M_by_ns']]} {v['R2.4']['verdict']}  "
+              f"R2.5 M={['%.3g' % x for x in v['R2.5']['M_by_ns']]} {v['R2.5']['verdict']}  "
+              f"R2.4+R2.5 M={['%.3g' % x for x in v['R2.4+R2.5']['M_by_ns']]} {v['R2.4+R2.5']['verdict']}")
     glob_v = {}
-    for lab in ("R2.1", "R2.2", "R2.3", "R2.4"):
+    for lab in ("R2.0", "R2.1", "R2.2", "R2.3", "R2.4", "R2.5", "R2.4+R2.5"):
         vs = [v[lab]["verdict"] for v in per.values()]
         if not vs:
             glob_v[lab] = "NO DATA"
