@@ -3,3 +3,7 @@
 [14:03:48] check projected gradient (anisotropic H): analytic 9.2216478947e-01 FD 9.2216478986e-01
 [14:03:49] check MC mixture S_01 0.998416 vs exact 0.998345 (1.0 standard errors)
 [14:03:49] P3.2-r3 CHECKS PASSED
+[14:04:02] snap d=-0.0500: gap=0.2548 c0=+0.248 | A dE=2.07e+00 c=-0.255 | B dE=1.28e+00 c=+0.535 -> B cert=False
+[14:04:13] snap d=+0.0500: gap=0.2468 c0=-0.240 | A dE=1.95e+00 c=-0.263 | B dE=1.49e+00 c=+0.542 -> B cert=False
+[14:04:34] target d=+0.0020 gap=0.0102 truth=A | eps_A=1.88e+00 eps_B=1.26e+00 | R0P=B EC=B AT=B ECor=A ATor=A | sampled R0P/EC/AT BBB/BBB/BBB
+[14:04:34] done (70s) -> /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.2_biased_ensemble_r3/results_smoke/w4_s1234.json

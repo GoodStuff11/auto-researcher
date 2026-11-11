@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 r"""
-P4.2 round-3 decisive test: twist-complete, minimum-norm, irrep-projected size transfer of a
+P4.2 round-3 decisive test: grid-complete, minimum-norm, irrep-projected size transfer of a
 momentum-field neural geminal (MFNG) on the doped t-t'-J torus, judged against the
 target-optimised Jastrow-BCS foil, a projected-SR NQS trained from scratch at matched budget,
 and the converged target energy. Decided on medians over 3 seeds.
@@ -8,13 +8,18 @@ and the converged target energy. Decided on medians over 3 seeds.
 
 Routes tested (P4.2 round 3, see .subproblems/P4.2_size_transfer.md)
 --------------------------------------------------------------------
-Route 3.1 "TCMN transfer" (twist-complete, min-norm). The source is not one cluster but the set
-of twisted source clusters whose momentum grids together are exactly the target grid
-(for 4x2 -> 4x4: the 4x2 torus with y-boundary phase 0 and pi; their ky grids {0, pi} and
-{pi/2, 3pi/2} together are the 4x4 ky grid). MFNG is trained JOINTLY on all of them with an
-L2 (minimum-norm) penalty lam*|theta|^2, so (i) every target momentum of every pair kernel is
-pinned by source data (no interpolation), and (ii) the source optimum is selected by norm
-rather than by the seed. At the target the copied state is projected onto the ground-state
+Route 3.1 "TCMN transfer" (grid-complete multi-cluster source, min-norm). The source is not
+one cluster but a set of small periodic clusters at the target's doping whose momentum grids
+together contain every C4v orbit of the target grid. Default: the 4x2 torus (grid
+{0,pi/2,pi,3pi/2} x {0,pi}) plus the 8-site tilted cluster a1=(2,2), a2=(2,-2) (grid
+{(0,0),(pi,0),(0,pi),(pi,pi),(+-pi/2,+-pi/2)}); together 16 of 16 orbits of 4x4, against 12 of
+16 for the 4x2 alone (round 2). (A y-twisted 4x2 was tried first and dropped: its doubled
+y-hops cancel, the hole number per leg is conserved and the mirror-even pair field cannot pair
+across legs, so its odd-per-leg configurations are unrepresentable.) MFNG is trained JOINTLY
+on all source clusters with an L2 (minimum-norm) penalty lam*|theta|^2 and best-of-K restarts
+selected by the source loss, so (i) every target momentum orbit of every pair kernel is pinned
+by source data, and (ii) the source optimum is selected by norm and source loss, not by one
+seed. At the target the copied state is projected onto the ground-state
 irrep (translations x mirrors x diagonal mirror); the irrep can be picked by the transferred
 state itself ("zero-shot sector rule": the 1-D K=0 irrep with the lowest projected energy),
 which the test checks against ED.
@@ -41,7 +46,7 @@ Ansatz (MFNG; the Jastrow-BCS foil is the same with C = 0)
     z_k = ((cos kx + cos ky)/2, cos kx cos ky), gamma_k = cos kx - cos ky
     phi_m(s) = sum_h a_{mh} tanh(Wb_h . v_s + bb_h),  v_s = (h_s, sum_nn h / 4, sum_nnn h / 4)
 Exact S = 0 singlet; parameter vector size independent (transfer = copy). Default sizes give
-122 parameters (route) and 62 (foil); the two 4x2 source clusters have 2 x 560 states.
+122 parameters (route) and 62 (foil); the two source clusters have 560 states each.
 
 Symmetry projection (round-3 rule 1)
 ------------------------------------
@@ -62,7 +67,7 @@ Arms
 ----
 role transfer (array tasks 0-2, seed = task):
   tr0       TCMN-transferred MFNG, projected, 0 target steps (zero shot)
-  tr0_r2    ablation: round-2-style source (periodic cluster only, lam = 0), zero shot
+  tr0_r2    ablation: round-2-style source (4x2 cluster only, lam = 0, same restarts), zero shot
   foil_tr   Jastrow-BCS foil transferred by the same TCMN rule, zero shot (diagnostic)
   trB       tr0 + B projected-SR steps (all parameters)
   fstB      tr0 + B projected-SR steps on the Jastrow only (Route 3.2)
@@ -80,6 +85,13 @@ A_X = E_sign_up(sgn b_X) - E0 (P1.1 fixed-sign excess in the irrep basis), sprea
   VOID         if (E_opt - E0)/|E0| > --void-tol (ansatz too weak at the target).
   premises     (I) identifiability: spread(eps_tr0) <= 0.5 m(eps_tr0)
                (S) zero-shot sector rule picks the ED irrep in >= 2 of 3 seeds
+               (P1) the target is not trivial for the projected control:
+                    m(eps_scrB) - eps_opt >= 1e-3 t/site, else both routes UNINFORMATIVE
+               (P2) Route 3.2 only: room for a better sign, m(A_foil_opt)/V >= 1e-3 t/site,
+                    else Route 3.2 UNINFORMATIVE
+               Reported with them: steps for scrL (from scratch) and trL (from transfer,
+               counting the B steps) to come within 1e-3 t/site of eps_opt, and the sign share
+               A/(E - E0) of the scrB error.
 Route 3.1 PASS if all of
   (a) m(eps_tr0) <= m(eps_foil_opt)                     zero shot beats the target-optimised foil
   (b) m(eps_trB) <= 0.5 m(eps_scrB)                      beats scratch at matched budget
@@ -102,16 +114,21 @@ Command-line options
                        scratch; seed = task % 3. Overrides --role/--seed. Default -1 (off).
   --role STR           transfer | foil | scratch (default transfer).
   --seed INT           Seed (default 0).
-  --src LxXLy          Source torus (default 4x2). --tgt LxXLy target (default 4x4); each
-                       target length must be 1x or 2x the source length.
-  --holes-src INT      Holes at the source (default 2). --holes-tgt INT (default 4).
+  --sources STR        Comma list of source clusters, each "LxXLy" (torus) or "t8" (8-site
+                       tilted cluster); default "4x2,t8". Holes per source = target doping x
+                       sites (must be an integer with an even electron number).
+  --tgt LxXLy          Target torus (default 4x4).
+  --holes-tgt INT      Holes at the target (default 4, doping 1/4).
   --t FLOAT            Nearest-neighbour hopping (default 1.0).
   --instances STR      Ordered candidate list "tp:J,tp:J,..." (default
-                       "-0.25:0.4,-0.25:0.6,0.25:0.4,-0.1:0.4").
+                       "-0.25:0.4,-0.25:0.6,0.25:0.4,-0.1:0.4,0.0:0.4"); pass it as
+                       --instances=... because values start with "-".
   --channels INT       Backflow channels C (default 2). --field-hidden (8), --bf-hidden (4),
                        --jas-hidden (4): hidden widths.
   --delta0, --eta      MF-init d-wave amplitude (0.3) and E_k regulariser (0.1).
-  --lam FLOAT          Min-norm penalty at the source, per parameter squared (default 1e-5).
+  --lam FLOAT          Min-norm penalty at the source, per parameter squared (default 1e-3).
+  --src-restarts INT   Source restarts per seed; the restart with the lowest SOURCE loss is kept
+                       (default 4). Applied to every source family (route, foil, r2-style).
   --steps-src INT      Source SR steps (default 800).
   --budget INT         Matched small target budget B (default 20).
   --steps-long INT     Long target runs (default 200).
@@ -123,13 +140,13 @@ Command-line options
   --out PATH           JSON output (default results/<role>_s<seed>.json next to this file).
   --aggregate DIR      Read every JSON in DIR, print the global decision (no computation).
   --selftest           Self-tests only (exit 2 on failure): (a) band sums incl. twisted
-                       grids, (b) Hermiticity, (c) MFNG eigenstate of (twisted) translations
+                       grids and the tilted cluster, (b) Hermiticity, (c) MFNG eigenstate of (twisted) translations
                        and [H, T~] = 0, (d) log-derivatives vs finite differences,
                        (e) symmetry sectors: [H, P_g] = 0, U^T U = I, H_G spectra inside the
                        full spectrum, ED ground state inside its irrep, (f) <S^2> on a
                        two-electron cluster, (g) projected-energy gradient vs finite
-                       differences, (h) twist-covering bookkeeping (union of source grids
-                       equals the target grid).
+                       differences, (h) [report] momentum-orbit coverage of the target grid by
+                       the source clusters.
   --timing             Time one MFNG forward+gradient and value pass on --chunk target
                        configurations and extrapolate to the full basis, then exit.
 
@@ -137,8 +154,9 @@ Examples
 --------
   python micro_test.py --selftest
   python micro_test.py --timing
-  python micro_test.py --src 2x2 --tgt 4x2 --holes-src 2 --holes-tgt 4 --steps-src 150 \
-      --budget 5 --steps-long 30 --role transfer       # login smoke (seconds)
+  python micro_test.py --tgt 4x4 --holes-tgt 12 --instances=0.25:0.4 --steps-src 100 \
+      --budget 5 --steps-long 20 --lbfgs-iters 500 --task-id 0   # login smoke (seconds;
+                                                       # tasks 0-8, then --aggregate)
   python micro_test.py --task-id 0                     # one Slurm task
   python micro_test.py --aggregate results
 """
@@ -998,9 +1016,20 @@ def train_source(args, src, C, lam, seed, tag):
         net = new_net(s["lat"], s["nup"], args, C)
         I = sp.identity(len(s["basis"]), format="csr")
         clusters.append(Cluster(net, s["basis"], I, s["H"]))
-    th0 = clusters[0].net.init(np.random.default_rng(1000 + seed), dens, args.t, args.tp_sel, args.delta0, args.eta)
-    th, Es, _ = optimise(clusters, th0, args.steps_src, args.lr, args.diag_shift, args.chunk, tag,
-                         lam=lam, Eref=[s["E0"] for s in src])
+    # best-of-K restarts by the SOURCE loss only (no target information): the joint source loss
+    # has seed-dependent basins (pre-check: 4x2 relerr 1e-4 to 8e-2 at fixed settings)
+    best = None
+    losses = []
+    for r in range(args.src_restarts):
+        th0 = clusters[0].net.init(np.random.default_rng(1000 + 100 * seed + r), dens, args.t, args.tp_sel,
+                                   args.delta0, args.eta)
+        th_r, Es_r, _ = optimise(clusters, th0, args.steps_src, args.lr, args.diag_shift, args.chunk,
+                                 f"{tag} restart {r}", lam=lam, Eref=[s["E0"] for s in src])
+        L = sum(e / cl.V for e, cl in zip(Es_r, clusters)) + lam * float(th_r @ th_r)
+        losses.append(L)
+        if best is None or L < best[0]:
+            best = (L, th_r, Es_r)
+    _, th, Es = best
     # identifiability: joint SR metric at the optimum (per-site weighted)
     S = np.zeros((len(th), len(th)))
     for cl in clusters:
@@ -1011,7 +1040,7 @@ def train_source(args, src, C, lam, seed, tag):
     log(f"source {tag}: E={['%.8f' % e for e in Es]} relerr={['%.2e' % r for r in rel]} "
         f"npar={len(th)} null-dim(S)={n_null} |theta|={np.linalg.norm(th):.3f}")
     return th, dict(E=[float(e) for e in Es], relerr=rel, n_null=n_null, npar=len(th),
-                    norm=float(np.linalg.norm(th)))
+                    norm=float(np.linalg.norm(th)), restart_losses=losses)
 
 
 # ============================================================================ main runs
@@ -1033,12 +1062,15 @@ def target_setup(args, R):
     s0 = np.where(b0 >= 0, 1.0, -1.0)
     K0 = (sp.diags(s0) @ HG @ sp.diags(s0)).tocsr()
     Ecal, _, _ = sign_constrained_min(K0, [("uniform", np.ones(len(b0)))], args.lbfgs_iters)
+    npar = new_net(lat, inst["nup"], args).npar
     R["target"] = dict(tp=inst["tp"], J=inst["J"], irrep=lam, n_irrep=int(U.shape[1]), dim=len(basis),
+                       npar=npar, sector_dim_per_param=float(U.shape[1] / npar),
                        E0=E0, E0_full=inst["E0_full"], E1_irrep=float(w[1]), gap_per_site=gap / V,
                        competitor=bool(gap / V < COMP_TOL), Pd_E0=Pd0, calib_err=float(Ecal - E0))
     log(f"target {lat.name()} t'={inst['tp']} J={inst['J']} irrep={lam} n_irrep={U.shape[1]} "
         f"E0={E0:.8f} (full {inst['E0_full']:.8f}) gap/V={gap / V:.4e} "
         f"{'COMPETITOR' if gap / V < COMP_TOL else 'no same-irrep competitor below 0.005 t/site: sign half only'}")
+    log(f"projected-sector dimension {U.shape[1]} / route parameters {npar} = {U.shape[1] / npar:.1f}")
     log(f"calibration: E_sign(exact signs) - E0 = {Ecal - E0:.3e}; Pd(E0)={Pd0:.4e}")
     return dict(lat=lat, basis=basis, H=H, sec=sec, lam=lam, U=U, HG=HG, E0=E0, psi0=psi0,
                 pair=pair, nup=inst["nup"], V=V)
@@ -1248,7 +1280,8 @@ def aggregate(d, void_tol):
     if "m" in out:
         T = res["transfer"][0]["target"]
         print(f"target t'={T['tp']} J={T['J']} irrep={T['irrep']} E0={T['E0']:.8f} gap/V={T['gap_per_site']:.4e} "
-              f"competitor={T['competitor']} calib={out['calib']:.2e}")
+              f"competitor={T['competitor']} calib={out['calib']:.2e} sector dim {T['n_irrep']} / params {T['npar']} = "
+              f"{T['sector_dim_per_param']:.1f}")
         for k, v in out["eps_seeds"].items():
             a = out["A_seeds"].get(k)
             print(f"  {k:9s} eps median={out['m'][k]:.4e} seeds={['%.4e' % x for x in v]}"
@@ -1399,7 +1432,8 @@ def parse_args(argv):
     p.add_argument("--jas-hidden", type=int, default=4)
     p.add_argument("--delta0", type=float, default=0.3)
     p.add_argument("--eta", type=float, default=0.1)
-    p.add_argument("--lam", type=float, default=1e-5)
+    p.add_argument("--lam", type=float, default=1e-3)
+    p.add_argument("--src-restarts", type=int, default=4)
     p.add_argument("--steps-src", type=int, default=800)
     p.add_argument("--budget", type=int, default=20)
     p.add_argument("--steps-long", type=int, default=200)

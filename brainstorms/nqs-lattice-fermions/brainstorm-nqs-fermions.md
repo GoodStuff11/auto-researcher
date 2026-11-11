@@ -158,7 +158,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | :--- | :--- | :--- | :--- |
 | P1.1 | RESULT (PASS, qualified) | nothing | none |
 | P1.1-P | RESULT on instance 1 (SYMMETRY-DOMINATED); instances 0 and 2 running | nothing | Slurm 407525 (17 tasks left) |
-| P1.2 | CRITIC (round 3) | nothing | per-leaf critic |
+| P1.2 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410216 (3 tasks: projected control, one per instance) |
 | P1.3 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410199 (9 tasks: c1 instance, PSaf/PSfs/PScdw, 3 seeds) |
 | P2.1 | MUTATE (round 3) | nothing | round-3 worker |
 | P2.2 | MUTATE (round 3) | nothing | round-3 worker |
@@ -168,6 +168,27 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P4.2 | MUTATE (round 3) | nothing | round-3 worker |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
+* **P1.2 round-3 per-leaf critic (12 objections, 6 Major)**:
+    * **Premise gate likely fails.** What sets how close a projected NNBF gets to exact is the ratio $\dim\mathrm{range}(P_SP_\chi)/(\text{parameters})$, not $\lvert G\rvert$. The exact sector dimensions are:
+
+| Cluster | Sector dimension | Ratio to control parameters |
+| :--- | :--- | :--- |
+| P1.1 torus $4+4$ | 1618 | 0.4 |
+| P1.1 torus $5+5$ | 3752 | 2.9 |
+| $4\times3$ OBC | 17905 | 4.4 |
+| $4\times3$ cylinder | 4663 | 1.15 |
+| $6\times2$ ladder | 11920 | 2.4 |
+
+      At ratio 2.9 the projected control already sat about $1000\times$ below $0.01t$, so at most one instance is likely to be informative.
+    * **FRD vs control is confounded.** FRD sits on a backflow-free Slater–Jastrow base while the control is NNBF. The decisive contrast should be NNBF×FRD vs NNBF.
+    * **The adoption barrier is never tested.** That barrier is SR instability through zero crossings under *sampled* force; every arm trains with the exact force.
+    * **The heavy-tail gate cannot fire.** The FRD $E_{\mathrm{loc}}$ kurtosis is $143\times$ the control's, yet the arm passes.
+    * **Novelty is only partial.** In the zero-crossing regime the factor is locally a configuration-dependent Lanczos/Baeriswyl step. The real adoption barrier is the $\mathcal{O}((zV)^2N_e)$ per-sample local-energy cost, hidden by full-basis amplitudes in the test.
+    * **Action.** The 108-task job is held; the critic's 3-task premise pilot (projected control, seed 1234, shift $10^{-2}$, one task per instance) runs as job 410216. Pre-committed rule:
+        * if the projected control's $\Delta E_{\mathrm{sign}}<0.003t$ on at least 2 of 3 instances, the verdict is NO-TARGET, the array is cancelled, and the instances are redesigned for a larger sector-dimension/parameter ratio;
+        * if $\Delta E_{\mathrm{sign}}\ge0.01t$ on at least 2 instances, the test is fixed (NNBF×FRD contrast, sampled-force arm, kurtosis gate) and then run;
+        * otherwise 2 more seeds of the projected control run first.
+    * **Broadcast.** The sector-dimension/parameter insight was sent to the P2.1, P3.2, P4.1 and P4.2 workers.
 * **P1.3 round-3 per-leaf critic (12 objections, 9 Major)**:
     * **Premise.** It is close to certainly false at ED size. The projected trivial-irrep sector of $4+4$ on 12 sites has about $1.5\times10^3$ dimensions, against about $4\times10^3$ NNBF parameters.
     * **OCP fails Gate 0.** It is SCF metadynamics / deflation, the family already killed as FCD (Thom & Head-Gordon 2008; variational quantum deflation; arXiv:2605.30944 combines projection with an orthogonality penalty). It also cannot escape a diabatic (mixed) basin.
