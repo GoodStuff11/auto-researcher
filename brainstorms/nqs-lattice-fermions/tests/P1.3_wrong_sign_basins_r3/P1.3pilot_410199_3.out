@@ -29,3 +29,6 @@
 [14:37:45]   PScdw: it 1100 E=-12.522371
 [14:40:47]   PScdw: it 1200 E=-12.522373
 [14:43:47]   PScdw: it 1300 E=-12.522375
+[14:46:47]   PScdw: it 1400 E=-12.522376
+[14:50:10] ARM PScdw: steps=1500 e_var=0.00000 e_sign=0.00000 ov=[1.0, 0.0, 0.0] trapped=False S2=2.42e-31 (2737s)
+[14:50:10] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r3/results/c1_s1234_PScdw.json

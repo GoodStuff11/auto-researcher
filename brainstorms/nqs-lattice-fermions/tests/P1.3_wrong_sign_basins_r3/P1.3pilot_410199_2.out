@@ -29,3 +29,6 @@
 [14:38:43]   PSfs: it 1100 E=-12.522366
 [14:41:48]   PSfs: it 1200 E=-12.522368
 [14:44:55]   PSfs: it 1300 E=-12.522372
+[14:48:01]   PSfs: it 1400 E=-12.522374
+[14:51:29] ARM PSfs: steps=1500 e_var=0.00001 e_sign=0.00000 ov=[1.0, 0.0, 0.0] trapped=False S2=8.38e-32 (2815s)
+[14:51:29] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r3/results/c1_s1234_PSfs.json

@@ -2,3 +2,8 @@
 [14:38:57] arm nnbf_SG: 753 parameters, hidden 4, P_S=1, P_G on
 [14:41:44]   iter    50  E_best = -9.3372715497  (2.8 min)
 [14:44:24]   iter   100  E_best = -9.3476226784  (5.5 min)
+[14:47:05]   iter   150  E_best = -9.3507160849  (8.1 min)
+[14:49:44]   iter   200  E_best = -9.3520271886  (10.8 min)
+[14:52:30]   iter   250  E_best = -9.3526897722  (13.6 min)
+[14:55:11]   iter   300  E_best = -9.3530101068  (16.2 min)
+[14:55:16] done: E=-9.3530101068 eps=9.293e-04 <S^2>=7.683e-19 iters=300 -> results_precheck_h4/L4x3xobcyobc_N8_U8_tp-0.25_G_nnbf_SG_seed0.json

@@ -119,3 +119,7 @@
 [14:40:34] U nnbf_128: it  1450  E = -11.93762183  |f| = 3.56e-02
 [14:42:55] U nnbf_128: it  1499  E = -11.94544316  |f| = 5.88e-03
 [14:44:34]     U_w128: dE_tot=0.09745 dE_sign=0.07591 f_E=0.779 f_C=0.922 spread=8.9e-13 S2=0.777 ov0=0.300 w_sign=1.949e-01 (97s)
+[14:45:44]    UP_w128: dE_tot=0.04625 dE_sign=0.00728 f_E=0.157 f_C=0.211 spread=1.3e-12 S2=0.004 ov0=0.943 w_sign=1.088e-03 (71s)
+[14:47:13]   U_S_w128: dE_tot=0.08092 dE_sign=0.05396 f_E=0.667 f_C=0.875 spread=2.0e-13 S2=0.000 ov0=0.488 w_sign=8.745e-02 (89s)
+[14:48:21]  UP_S_w128: dE_tot=0.04265 dE_sign=0.00713 f_E=0.167 f_C=0.225 spread=1.8e-12 S2=0.000 ov0=0.944 w_sign=1.123e-03 (68s)
+[14:48:21] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.1P_projected/results/inst1_s3456_armU.json

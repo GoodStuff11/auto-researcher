@@ -10,12 +10,12 @@
   foil    P=  62 E=-5.248864 <S^2>(phi)=+1.93e+00 <S^2>(psi)=-9.45e-17 [PASS]  grad rel.err=1.1e-08 [PASS]
   per-amplitude: sqrvb_single vs batched 4.5e-16; che_single (N_q=2) vs full-vector P_S 1.6e-15; quad_single vs full-vector P_S 2.4e-16; scf_single vs batched 2.9e-16 nnbf_orbit_single vs full-vector P_S 1.6e-16 [PASS]
   sign budget on psi_0: E_sign_up - E0 = -1.8e-15 [PASS]
-  opt sqrvb  : P= 255 eps=0.00e+00 (80 it, 0.5s)
-  opt sqrvb0 : P= 219 eps=1.38e-16 (85 it, 0.6s)
-  opt scf    : P= 233 eps=5.89e-03 (300 it, 6.6s)
-  opt nnbf_SG: P= 245 eps=8.69e-15 (87 it, 0.9s)
-  opt nnbf_G : P= 245 eps=4.00e-15 (188 it, 1.3s)
-  opt che    : P= 245 eps=1.52e-15 (81 it, 0.8s)
-  opt foil   : P=  62 eps=1.38e-15 (121 it, 0.8s)
+  opt sqrvb  : P= 255 eps=0.00e+00 (80 it, 0.3s)
+  opt sqrvb0 : P= 219 eps=1.38e-16 (85 it, 0.3s)
+  opt scf    : P= 233 eps=5.89e-03 (300 it, 5.2s)
+  opt nnbf_SG: P= 245 eps=8.69e-15 (87 it, 0.6s)
+  opt nnbf_G : P= 245 eps=4.00e-15 (188 it, 0.8s)
+  opt che    : P= 245 eps=1.52e-15 (81 it, 0.6s)
+  opt foil   : P=  62 eps=1.38e-15 (121 it, 0.6s)
 (2x3: more parameters than symmetric states for most arms; optimisation lines only show the code runs)
-SMOKE PASS  (13.2s)
+SMOKE PASS  (9.8s)
