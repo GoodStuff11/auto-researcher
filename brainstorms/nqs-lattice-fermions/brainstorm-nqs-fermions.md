@@ -160,7 +160,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.1-P | RESULT on instance 1 (SYMMETRY-DOMINATED); instances 0 and 2 running | nothing | Slurm 407525 (17 tasks left) |
 | P1.2 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410216 (3 tasks: projected control, one per instance) |
 | P1.3 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410199 (9 tasks: c1 instance, PSaf/PSfs/PScdw, 3 seeds) |
-| P2.1 | MUTATE (round 3) | nothing | round-3 worker |
+| P2.1 | CRITIC (round 3) | nothing | per-leaf critic |
 | P2.2 | MUTATE (round 3) | nothing | round-3 worker |
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | CRITIC (round 3) | nothing | per-leaf critic |
