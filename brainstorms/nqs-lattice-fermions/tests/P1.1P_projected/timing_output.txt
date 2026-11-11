@@ -1,0 +1,20 @@
+[11:46:46] timing: instance 1 D=245025 arm U
+[11:46:46] group maps built in 0.0s (|G| = -)
+[11:46:48] width    8 (n_params 1160): one SR step 1.11s  amplitudes=0.34s  force=1.05s  metric_O=0.01s  solve=0.05s
+[11:46:49] width   32 (n_params 4064): one SR step 1.39s  amplitudes=0.33s  force=1.25s  metric_O=0.04s  solve=0.11s
+[11:46:51] width  128 (n_params 15680): one SR step 2.13s  amplitudes=0.49s  force=1.74s  metric_O=0.15s  solve=0.24s
+[11:46:52] timing: instance 1 D=245025 arm P
+[11:46:52] group maps built in 0.2s (|G| = 48)
+[11:46:53] width    8 (n_params 1160): one SR step 1.09s  force=0.87s  metric_O=0.17s  solve=0.05s
+[11:46:54] width   32 (n_params 4064): one SR step 1.28s  force=0.96s  metric_O=0.21s  solve=0.11s
+[11:46:56] width  128 (n_params 15680): one SR step 1.94s  force=1.33s  metric_O=0.39s  solve=0.22s
+[11:47:03] timing: instance 0 D=627264 arm U
+[11:47:03] group maps built in 0.0s (|G| = -)
+[11:47:06] width    8 (n_params 1400): one SR step 2.51s  amplitudes=0.84s  force=2.44s  metric_O=0.02s  solve=0.05s
+[11:47:09] width   32 (n_params 4880): one SR step 3.28s  amplitudes=0.82s  force=3.15s  metric_O=0.05s  solve=0.09s
+[11:47:14] width  128 (n_params 18800): one SR step 4.70s  amplitudes=1.16s  force=4.27s  metric_O=0.16s  solve=0.27s
+[11:47:15] timing: instance 0 D=627264 arm P
+[11:47:15] group maps built in 0.3s (|G| = 48)
+[11:47:18] width    8 (n_params 1400): one SR step 2.93s  force=2.66s  metric_O=0.23s  solve=0.05s
+[11:47:21] width   32 (n_params 4880): one SR step 3.26s  force=2.90s  metric_O=0.26s  solve=0.09s
+[11:47:26] width  128 (n_params 18800): one SR step 4.75s  force=4.04s  metric_O=0.45s  solve=0.26s

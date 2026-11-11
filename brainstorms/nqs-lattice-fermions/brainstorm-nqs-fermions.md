@@ -186,6 +186,11 @@ Under the Persistence Mandate, every leaf except P1.1 was re-run through the Sta
         * P2.2 has no legitimate survivor. R2.0 is a revived round-1 kill whose PASS rests on a hybrid cost model ($\kappa$ from $N=20$, variances from $N=4$); R2.4 and R2.5 meet FAIL on their own pre-checks.
     * **Routes the critics did not break**: P1.2 FRD's novelty (no prior art found), and P2.1 SK-LR (shared-reference low-rank multi-determinant). Both still need a projected control and a test on the competitor instance.
     * **Decision (orchestrator)**: every round-2 status above is downgraded to **Under Mutation (round 3 pending)**, except P1.2 FRD and P2.1 SK-LR, which are **CONDITIONAL (projected control required)**. Round 3 is gated on the critical-path test **P1.1-P**, a re-run of P1.1 with symmetry-projected NNBF. If projection removes most of the sign error on all three instances, the sign branch and most claimed gains are symmetry problems, and round 3 must start from projected baselines. If a large sign fraction survives projection, P1.1's conclusion stands on firmer ground.
+    * **P1.1-P submitted (2026-11-11)** as Slurm array job 407525 (18 tasks, partition `kim`); leaf note `.subproblems/P1.1P_projected.md`. The orchestrator re-ran the correctness checks before submission, and all passed:
+        * the projector is idempotent to $5\times10^{-16}$, commutes with $H$ to $7\times10^{-17}$, and gives overlap $1$ with $\psi_0$;
+        * the projected gradient matches finite differences.
+
+      Read the verdict with `python3 micro_test.py --aggregate results` in `tests/P1.1P_projected/`.
     * **New global anti-patterns**:
         * Any NQS comparison on a cluster whose mean-field start breaks symmetry, made without a projected control arm.
         * Any variational decision or witness validated only by exact sums, when it needs cross-terms or ratios that are heavy-tailed under sampling.
