@@ -15,28 +15,28 @@
 [     0.3s] selftest(d) 4x2 log-derivative max rel err over 122 params = 1.63e-09 OK
 [     0.3s] selftest(b) t-J t8 dim=560 hermitian OK
 [     0.3s] selftest(c) t8 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=4.4e-15 OK
-[     0.4s] selftest(d) t8 log-derivative max rel err over 122 params = 4.32e-09 OK
+[     0.5s] selftest(d) t8 log-derivative max rel err over 122 params = 4.32e-09 OK
 [     0.5s] selftest(e) 4x4 N_e=2: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 9 of 240), GS gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': 1.0}, GS weight in its irrep=1.000000000000 OK
-[     0.5s] selftest(e) 4x2 N_e=4: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 57 of 420), GS gens={'Tx': -1.0, 'Ty': 1.0, 'Mx': -1.0, 'My': 1.0}, GS weight in its irrep=nan OK
-[     0.5s] selftest(f) S^2 on 2x2 N_e=2: symmetric, spectrum [0.0, 2.0] OK
-[     0.5s] selftest(f) S^2 on 2x2 N_e=4: symmetric, spectrum [-0.0, 2.0, 6.0] OK
-[     0.6s] selftest(g) projected-energy gradient vs finite differences max rel err 2.79e-10; metric PSD OK
-[     0.6s] selftest(h) [report] complete coverage: sources ['4x2', 't8'] cover 16 of 16 4x4 momenta on C4v orbits (first source alone: 12 of 16)
-[     0.6s] SELFTEST PASSED
-[     1.0s] instance t'=0.25 J=0.4: E0=-12.81808701 E1=-12.79277607 <S2>=-2.91e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
-[     1.1s] target 4x4 t'=0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=105 E0=-12.81808701 (full -12.81808701) gap/V=2.3863e-01 no same-irrep competitor below 0.005 t/site: sign half only
-[     1.1s] projected-sector dimension 105 / route parameters 122 = 0.9
-[     1.1s] calibration: E_sign(exact signs) - E0 = 3.553e-15; Pd(E0)=8.3002e-03
-[     1.3s]   [foil_opt] step 1/20 E=-1.56556706 lr=0.055 relerr=8.779e-01
-[     1.6s]   [foil_opt] step 3/20 E=-7.84971775 lr=0.0666 relerr=3.876e-01
-[     1.9s]   [foil_opt] step 5/20 E=-12.65978388 lr=0.0805 relerr=1.235e-02
-[     2.2s]   [foil_opt] step 7/20 E=-12.80195687 lr=0.0487 relerr=1.258e-03
-[     2.5s]   [foil_opt] step 9/20 E=-12.80641127 lr=0.0589 relerr=9.109e-04
-[     2.8s]   [foil_opt] step 11/20 E=-12.80656416 lr=0.0713 relerr=8.990e-04
-[     3.1s]   [foil_opt] step 13/20 E=-12.80661485 lr=0.0863 relerr=8.950e-04
-[     3.4s]   [foil_opt] step 15/20 E=-12.80667025 lr=0.0522 relerr=8.907e-04
-[     3.7s]   [foil_opt] step 17/20 E=-12.80669901 lr=0.0632 relerr=8.884e-04
-[     4.0s]   [foil_opt] step 19/20 E=-12.80672192 lr=0.0764 relerr=8.866e-04
-[     4.1s]   [foil_opt] step 20/20 E=-12.80673292 lr=0.0841 relerr=8.858e-04
-[     4.2s] arm foil_opt : E=-12.80673292 eps=7.0963e-04 (raw 3.1382e-01, irrep weight 0.025) A/V=6.0988e-06 sign-agree=1.0000 Pd=8.2016e-03 fid=0.9987
+[     0.6s] selftest(e) 4x2 N_e=4: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 57 of 420), GS gens={'Tx': -1.0, 'Ty': 1.0, 'Mx': -1.0, 'My': 1.0}, GS weight in its irrep=nan OK
+[     0.7s] selftest(f) S^2 on 2x2 N_e=2: symmetric, spectrum [0.0, 2.0] OK
+[     0.7s] selftest(f) S^2 on 2x2 N_e=4: symmetric, spectrum [-0.0, 2.0, 6.0] OK
+[     0.7s] selftest(g) projected-energy gradient vs finite differences max rel err 2.79e-10; metric PSD OK
+[     0.7s] selftest(h) [report] complete coverage: sources ['4x2', 't8'] cover 16 of 16 4x4 momenta on C4v orbits (first source alone: 12 of 16)
+[     0.7s] SELFTEST PASSED
+[     1.1s] instance t'=0.25 J=0.4: E0=-12.81808701 E1=-12.79277607 <S2>=-2.91e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
+[     1.2s] target 4x4 t'=0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=105 E0=-12.81808701 (full -12.81808701) gap/V=2.3863e-01 no same-irrep competitor below 0.005 t/site: sign half only
+[     1.2s] projected-sector dimension 105 / route parameters 122 = 0.9
+[     1.2s] calibration: E_sign(exact signs) - E0 = 3.553e-15; Pd(E0)=8.3002e-03
+[     1.4s]   [foil_opt] step 1/20 E=-1.56556706 lr=0.055 relerr=8.779e-01
+[     1.7s]   [foil_opt] step 3/20 E=-6.19798549 lr=0.0666 relerr=5.165e-01
+[     2.0s]   [foil_opt] step 5/20 E=-12.52678743 lr=0.0805 relerr=2.273e-02
+[     2.3s]   [foil_opt] step 7/20 E=-12.80486007 lr=0.0974 relerr=1.032e-03
+[     2.6s]   [foil_opt] step 9/20 E=-12.80645825 lr=0.0589 relerr=9.072e-04
+[     2.8s]   [foil_opt] step 11/20 E=-12.80655774 lr=0.0713 relerr=8.995e-04
+[     3.1s]   [foil_opt] step 13/20 E=-12.80660435 lr=0.0863 relerr=8.958e-04
+[     3.4s]   [foil_opt] step 15/20 E=-12.80665380 lr=0.0522 relerr=8.920e-04
+[     3.7s]   [foil_opt] step 17/20 E=-12.80667925 lr=0.0632 relerr=8.900e-04
+[     4.0s]   [foil_opt] step 19/20 E=-12.80670393 lr=0.0764 relerr=8.880e-04
+[     4.1s]   [foil_opt] step 20/20 E=-12.80671590 lr=0.0841 relerr=8.871e-04
+[     4.2s] arm foil_opt : E=-12.80671590 eps=7.1069e-04 (raw 3.1434e-01, irrep weight 0.023) A/V=6.0988e-06 sign-agree=1.0000 Pd=8.2013e-03 fid=0.9987
 [     4.2s] done (results_smoke/task3.json)

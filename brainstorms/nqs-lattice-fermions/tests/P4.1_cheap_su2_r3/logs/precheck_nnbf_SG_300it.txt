@@ -1,0 +1,2 @@
+[14:15:57] instance L4x3xobcyobc_N8_U8_tp-0.25_G: dim=245025; psi_0 E0=-9.3617101438 <S^2>=6.1e-18 irrep={'My': 1, 'Mx': 1}; next K=0 S=0 level -9.017191 (<S^2>=-0.00) (440s)
+[14:15:58] arm nnbf_SG: 2205 parameters, hidden 16, P_S=1, P_G on

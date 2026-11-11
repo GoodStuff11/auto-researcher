@@ -163,11 +163,26 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P2.1 | MUTATE (round 3) | nothing | round-3 worker |
 | P2.2 | MUTATE (round 3) | nothing | round-3 worker |
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
-| P3.2 | MUTATE (round 3) | nothing | round-3 worker |
+| P3.2 | CRITIC (round 3) | nothing | per-leaf critic |
 | P4.1 | MUTATE (round 3) | nothing | round-3 worker |
 | P4.2 | MUTATE (round 3) | nothing | round-3 worker |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
+* **P3.2 round 3: first Hard-Core-scale same-irrep competitor (2026-11-11)**:
+    * **Where the crossing is.** With $t'$ and $U$ alone, the 4×3 torus has no exact same-irrep crossing (the gap valley runs to the excluded free limit $U\to0$); the 6×2 ladder reaches only $0.090t$. Adding anisotropic hopping $t_y$ as a second knob produces exact conical intersections, as expected from the codimension-2 rule.
+    * **The test path.** On $4\times3$ PBC, $4+4$, $U=8$, $t_y=1.11394$, inside the irrep ($K=0$, $M_x=M_y=+1$, $S=0$; the global ground-state sector, dimension 1618):
+        * the crossing is at $t'_c=-0.470482$;
+        * the gap is $1.4\times10^{-3}t$ at $t'_c\pm0.0002$ and $0.010t$ at $\pm0.002$, which is the Hard-Core scale;
+        * the two states are a period-4 spin stripe and a near-Néel state ($c_0$ flips sign across $t'_c$), with similar $d$-wave correlation.
+    * **Other intersections:** $4+4$ at $U=8$ ($t'=-0.515243$, $t_y=1.143944$); $4+4$ at $U=5$; $5+5$ at $U=8$ ($t'=-0.5925$, $t_y=0.8442$, sector dimension 3752). They are in `tests/P3.2_biased_ensemble_r3/scan_logs/`, and were broadcast to the running P2.1, P4.1 and P4.2 workers.
+    * **Survivors (critic pending).**
+        * SO-EC: same-order eigenvector continuation from projected snapshots trained far from the crossing.
+        * AT: affine-transport upper bounds.
+    * **Kills.**
+        * Kink/jump crossing detector, Gate 2: a $2\times2$ lemma puts every variational-energy rule on R0+'s decision boundary.
+        * Curvature/susceptibility, Gate 1.
+        * Berry phase, Gates 2 and 3.
+        * In-irrep zero-variance extrapolation, Gate 0 (mVMC practice).
 * **P3.1 round-3 per-leaf critic (12 objections, 8 Major)**:
     * **Gate 0, both routes.**
         * ZR is the Assaraf–Caffarel zero-bias correction with a learned $\psi'$ (physics/0310035; Toulouse, Assaraf & Umrigar 0705.0721), and also a dual-weighted-residual estimate (Cancès, Dusson, Kemlin & Levitt 2111.01470). It needs one extra NQS per observable, which contradicts the leaf's "cheap information" premise. The round-2 kill "zero-variance, zero-bias estimators reduce variance, not bias" was factually wrong; that log entry is corrected here.

@@ -110,3 +110,30 @@
 [     6.0s] arm trB      : E=-12.78308111 eps=2.1879e-03 (raw 1.6502e-01, irrep weight 0.494) A/V=1.7543e-05 sign-agree=1.0000 Pd=8.4197e-03 fid=0.9955
 [     6.4s]   [fstB] step 1/5 E=-7.59768349 lr=0.055 relerr=4.073e-01
 [     6.7s]   [fstB] step 2/5 E=-7.87350140 lr=0.0605 relerr=3.858e-01
+[     6.9s]   [fstB] step 3/5 E=-7.90691318 lr=0.0666 relerr=3.831e-01
+[     7.2s]   [fstB] step 4/5 E=-7.99631281 lr=0.0732 relerr=3.762e-01
+[     7.5s]   [fstB] step 5/5 E=-8.17077887 lr=0.0805 relerr=3.626e-01
+[     7.6s] arm fstB     : E=-8.17077887 eps=2.9046e-01 (raw 3.4734e-01, irrep weight 0.465) A/V=2.2494e-02 sign-agree=0.9319 Pd=1.1609e-02 fid=0.5578
+[     8.0s]   [scrB] step 1/5 E=-6.18521977 lr=0.055 relerr=5.175e-01
+[     8.3s]   [scrB] step 2/5 E=-6.69770353 lr=0.0605 relerr=4.775e-01
+[     8.5s]   [scrB] step 3/5 E=-7.24079444 lr=0.0666 relerr=4.351e-01
+[     8.7s]   [scrB] step 4/5 E=-8.02911893 lr=0.0732 relerr=3.736e-01
+[     9.0s]   [scrB] step 5/5 E=-9.00912126 lr=0.0805 relerr=2.972e-01
+[     9.0s] arm scrB     : E=-9.00912126 eps=2.3806e-01 (raw 3.3482e-01, irrep weight 0.125) A/V=6.9698e-02 sign-agree=0.7236 Pd=1.6418e-02 fid=0.4211
+[     9.5s]   [trL] step 1/15 E=-12.78414349 lr=0.055 relerr=2.648e-03
+[     9.8s]   [trL] step 2/15 E=-12.78458242 lr=0.0605 relerr=2.614e-03
+[    10.0s]   [trL] step 3/15 E=-12.78499049 lr=0.0666 relerr=2.582e-03
+[    10.3s]   [trL] step 4/15 E=-12.78539637 lr=0.0732 relerr=2.550e-03
+[    10.5s]   [trL] step 5/15 E=-12.78580855 lr=0.0805 relerr=2.518e-03
+[    10.8s]   [trL] step 6/15 E=-12.78624324 lr=0.0886 relerr=2.484e-03
+[    11.1s]   [trL] step 7/15 E=-12.78669477 lr=0.0974 relerr=2.449e-03
+[    11.4s]   [trL] step 8/15 E=-12.78714300 lr=0.107 relerr=2.414e-03
+[    11.7s]   [trL] step 9/15 E=-12.78770102 lr=0.118 relerr=2.371e-03
+[    11.9s]   [trL] step 10/15 E=-12.78822648 lr=0.13 relerr=2.330e-03
+[    12.2s]   [trL] step 11/15 E=-12.78857101 lr=0.143 relerr=2.303e-03
+[    12.4s]   [trL] step 12/15 E=-12.78877002 lr=0.0785 relerr=2.287e-03
+[    12.7s]   [trL] step 13/15 E=-12.78892638 lr=0.0863 relerr=2.275e-03
+[    13.0s]   [trL] step 14/15 E=-12.78904195 lr=0.0949 relerr=2.266e-03
+[    13.3s]   [trL] step 15/15 E=-12.78907145 lr=0.104 relerr=2.264e-03
+[    13.4s] arm trL      : E=-12.78907145 eps=1.8135e-03 (raw 1.1163e-01, irrep weight 0.659) sign-agree=1.0000 Pd=8.3792e-03 fid=0.9965
+[    13.4s] done (results_smoke/task1.json)

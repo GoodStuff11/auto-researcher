@@ -113,3 +113,7 @@
 [14:06:15] P nnbf_128: it  1350  E = -12.04289512  |f| = 9.13e-06  (2.42 s/step)
 [14:08:17] P nnbf_128: it  1400  E = -12.04289552  |f| = 8.75e-06  (2.42 s/step)
 [14:10:18] P nnbf_128: it  1450  E = -12.04289588  |f| = 8.42e-06  (2.42 s/step)
+[14:12:18] P nnbf_128: it  1499  E = -12.04289622  |f| = 8.12e-06  (2.42 s/step)
+[14:13:05]     P_w128: dE_tot=0.00001 dE_sign=0.00000 f_E=0.007 f_C=0.342 spread=6.1e-09 S2=0.000 ov0=1.000 w_sign=1.956e-09 (46s)
+[14:13:48]   P_S_w128: dE_tot=0.00000 dE_sign=0.00000 f_E=0.000 f_C=0.012 spread=4.4e-08 S2=0.000 ov0=1.000 w_sign=5.943e-12 (43s)
+[14:13:48] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.1P_projected/results/inst1_s1234_armP.json

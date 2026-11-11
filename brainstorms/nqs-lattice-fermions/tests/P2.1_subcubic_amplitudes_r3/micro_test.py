@@ -8,14 +8,20 @@ Physics question
 ----------------
 Round 2 tested SK-LR on 4x3 Hubbard clusters with N_sigma in {4, 5} at rank r = 2, i.e. at
 r/N_sigma = 0.4-0.5, where a low-rank hop response is almost no restriction, with loose
-thresholds and no projected control. This test
-  * goes to N_sigma = 7 (4x4 t-t'-J, 2 holes, D = 411840) at rank r = 1 (r/N_sigma = 0.14) and
-    keeps a smaller instance (4x3 t-t'-J, 2 holes, N_sigma = 5, D = 16632) for the size trend at
-    fixed r;
-  * checks that the restriction bites (a single rank-1 hidden-fermion term, "hf1", must be
-    measurably worse in sign than projected NNBF), and asks whether a SUM of K = 4 rank-1 terms
-    over one shared reference ("sk1") recovers NNBF's sign quality AND beats a single term of the
-    same total rank K*r = 4 ("hf4", same per-ratio cost);
+thresholds and no projected control. The P1.1-P interim result then showed that NNBF trained with
+symmetry projection is essentially exact on those clusters, because the projected sector is
+smaller than the network (dim range(P_S P_chi) / n_params <= 3). This test therefore
+  * uses 4x4 t-t'-J clusters with open boundaries in at least one direction (small groups) and a
+    deliberately narrow parameter budget (NNBF width 6, about 1.6-2.0k parameters), so that the
+    exact projected-sector dimension is 4-20x the parameter count (sector_dims_output.txt) and a
+    projected control can retain a measurable error;
+  * gates every instance on that premise: an instance counts only if the projected NNBF control
+    has median dE_sign >= 0.01 t (PREMISE_REF); the sector dimensions are computed in every task;
+  * works at N_sigma = 6 and 7 with rank r = 1 (r/N_sigma = 0.14-0.17), checks that the
+    restriction bites (a single rank-1 hidden-fermion term "hf1" must be measurably worse in sign
+    than projected NNBF), and asks whether a SUM of K = 4 rank-1 terms over one shared reference
+    ("sk1") recovers NNBF's sign quality AND beats a single term of the same total rank K*r = 4
+    ("hf4", same per-ratio cost);
   * trains every compared arm WITH space-group projection (projected SR, exact sums), adds
     oracle total-spin-projected training (P_S P_chi) for NNBF and sk1, and reports every state
     after post-hoc spin projection;
@@ -27,18 +33,21 @@ thresholds and no projected control. This test
     on L x L t-J lattices up to L = 32 (N_e = 896), with the brute slope as the regime guard.
 
 Model (tj_core.TJ): H = -sum_{ij,s} T_ij P c^dag_is c_js P + J sum_<ij> (S_i.S_j - n_i n_j / 4),
-t = 1, t' = -0.25 (diagonals), J = 0.4 (NN only), PBC, no double occupancy. Instances:
-  0 : 4x3 PBC, N_up = N_dn = 5 (2 holes, delta = 1/6), D = 16632. psi_0: non-degenerate,
-      trivial irrep of translations x {Mx, My} (|G| = 48), singlet (probe_output.txt).
-  1 : 4x4 PBC, N_up = N_dn = 7 (2 holes, delta = 1/8), D = 411840. The ground level is a
-      degenerate singlet pair at momenta (pi, 0) and (0, pi), exchanged by the diagonal mirror
-      (probe_output.txt; scratch/deg.py). psi_0 is taken as the member with definite
-      characters under translations x {Mx, My} (|G| = 64); the projector is onto that 1-D
-      irrep, so the diagonal mirror, which maps psi_0 to its partner, is not used.
-  9 : 3x2 (PBC x, OBC y), N_up = N_dn = 2, D = 90 (smoke only, not a Hard-Core instance).
-Hard Core: both instances are doped, t' != 0, 2D and non-stoquastic. Neither has a verified
-same-sector near-degenerate competitor (instance 1's degenerate partner is in another irrep).
-THIS TEST COVERS THE SIGN HALF OF THE HARD CORE ONLY.
+t = 1, t' = -0.25 (diagonals), J = 0.4 (NN only), no double occupancy. Instances
+(sector_dims_output.txt, probe_output.txt):
+  0 : 4x4 OBC, N_up = N_dn = 6 (4 holes, delta = 1/4), D = 1681680. psi_0 non-degenerate singlet,
+      characters Mx = My = +1, D = -1 under the point group C4v-subgroup {1, Mx, My, D, ...}
+      (|G| = 8). dim range(P_chi) = 210430, dim range(P_S P_chi) = 30220.
+  1 : 4x4 cylinder (PBC x, OBC y), N_up = N_dn = 6, D = 1681680, |G| = 16 (Tx x {Mx, My}),
+      psi_0 non-degenerate singlet (Tx = Mx = My = +1). dim range(P_S P_chi) = 15268.
+  2 : 4x4 OBC, N_up = N_dn = 7 (2 holes, delta = 1/8), D = 411840, |G| = 8, psi_0
+      non-degenerate singlet (Mx = My = +1, D = -1). dim range(P_S P_chi) = 6540.
+  9 : 3x2 (PBC x, OBC y), N_up = N_dn = 2, D = 90 (smoke only; its projected sector has
+      dimension 5, so every arm is exact there: the smoke verdict is meaningless by design).
+Degenerate ground levels are resolved into a member with definite characters under the abelian
+subgroup (resolve_ground); none of instances 0-2 is degenerate.
+Hard Core: all instances are doped, t' != 0, 2D and non-stoquastic. None has a verified
+same-sector near-degenerate competitor. THIS TEST COVERS THE SIGN HALF OF THE HARD CORE ONLY.
 
 Families (tj_core.LRAnsatz; psi = exp(J(n)) sum_k w_k det B_k(n), J a separate tanh net):
   full : NNBF, B_{k,s} = (Phi0_{k,s} + out_{k,s}(n))[occ_s]                 (Luo & Clark)
@@ -48,10 +57,11 @@ Families (tj_core.LRAnsatz; psi = exp(J(n)) sum_k w_k det B_k(n), J a separate t
          pairing reference F0 (SK-AGP; r = 0 is projected BCS x neural Jastrow, the Foil)
 References: Phi0 = UHF orbitals of the U = 8 Hubbard model on the same lattice (seed 1234);
 F0 = d-wave BCS pairing function with a small extended-s admixture and noise (tj_core.dwave_bcs_F).
-Arms (all at the parameter count of NNBF width --match-width, within one hidden unit; the sign
-trunk of every r > 0 low-rank arm has width --hs-sign and the amplitude net takes the rest):
-  nnbf     full K=1                         projected (P_chi)          control
-  mdnnbf   full K=4 separate refs           projected                  control (unrestricted sum)
+Arms (all at the parameter count of NNBF width --match-width (default 6), within one hidden unit;
+the sign trunk of every r > 0 low-rank arm has width --hs-sign (default 6) and the amplitude net
+takes the rest). The round-2 unrestricted multi-determinant control (mdnnbf) is dropped: its four
+reference orbital sets alone exceed this budget.
+  nnbf     full K=1                         projected (P_chi)          control (Ref)
   hf1      lr   K=1 r=1                     projected                  bite premise (HFDS rank 1)
   hf4      lr   K=1 r=4                     projected                  equal-rank control for sk1
   sk1      lr   K=4 r=1                     projected                  ROUTE 3.1 (SK-LR)
@@ -78,39 +88,45 @@ Sampled arm (nnbf, hf4, sk1, skagp, agpj; state "P"): Metropolis from |psi_P|^2 
 proposals (swap the contents of the two ends of a random t / t' bond), --mc-samples measurements
 every N_e proposals after --mc-burn measurements of burn-in. Amplitudes are read from the trained
 P_chi psi_theta vector; 200 visited configurations are re-evaluated per amplitude (forward passes
-on the |G| images) and must agree to 1e-10 relative. Reports the exact local-energy variance
-var_ex = sum p (E_loc - E)^2, the sampled variance, the exact kurtosis, the tail share (fraction
-of var_ex from |E_loc - E| > 5 sigma), the binned standard error and z = |mean - E| / stderr.
+on the |G| images) and the maximal relative deviation is reported (per_amp_check). Reports the
+exact local-energy variance var_ex = sum p (E_loc - E)^2, the sampled variance, the exact
+kurtosis, the tail share (fraction of var_ex from |E_loc - E| > 5 sigma), the binned standard
+error and z = |mean - E| / stderr.
 
 Pre-committed decision rule (implemented in --mode aggregate; medians over seeds)
 ---------------------------------------------------------------------------------
-Ref_X(I) = min(med X(nnbf), med X(mdnnbf)) on instance I for X in {dE_sign, dE_tot} (state "P").
+Ref_X(I) = med X(nnbf) on instance I for X in {dE_sign, dE_tot} (state "P").
+PREMISE GATE: instance I counts only if Ref_sign(I) >= 0.01 t. If no instance counts, both
+routes are UNINFORMATIVE (pre-committed action: halve --match-width, i.e. raise the
+sector/parameter ratio, and rerun; this is reported, not a PASS or FAIL).
 rho_s = med dE_sign(route)/Ref_sign, rho_t = med dE_tot(route)/Ref_tot.
-Guards (else AMBIGUOUS): every seed of route, nnbf, mdnnbf and the rank control has
+Guards (else AMBIGUOUS): every seed of route, nnbf and the rank control has
 calib_err <= 1e-3 dE_tot and spread < 0.05; 3 seeds present.
-ROUTE 3.1 (sk1; rank control hf4; premise arm hf1; Gate-2 control sjnet)
-  premise  beta = med dE_sign(hf1)/Ref_sign(1) >= 1.3 (the restriction bites); if not -> FAIL
-           ("REDUNDANT": a single rank-1 term already matches NNBF, so the sum is unnecessary)
-  PASS if  rho_s(0), rho_s(1) <= 1.10 and rho_t(0), rho_t(1) <= 1.15
-           and sigma = med dE_sign(sk1)/med dE_sign(hf4) on instance 1 <= 0.85 with
-               pairwise dominance #(sk1 seed < hf4 seed in dE_sign) >= 7 of 9
-           and gamma = med dE_sign(sk1)/med dE_sign(sjnet) on instance 1 <= 0.6
-           and trend rho_s(1) - rho_s(0) <= 0.10 (no growth of the penalty with N at fixed r)
-           and spin: rho_s from the post-hoc "P_S" budgets <= 1.15 on instance 1, and the
-               oracle ratio med dE_sign(sk1_PS)/med dE_sign(nnbf_PS) <= 1.15
-           and sampled: v = med var_ex(sk1)/med var_ex(nnbf) <= 2 and median z <= 4 (inst. 1)
-           and the cost check for the lr family is PASS
-  FAIL if  premise fails, or on instance 1 rho_s >= 1.30 or rho_t >= 1.40 or sigma >= 1.0 or
-           gamma >= 0.85 or oracle ratio >= 1.30, or trend >= 0.25, or v >= 4 or median z > 6,
-           or the lr cost check is FAIL
-  AMBIGUOUS otherwise. Pre-committed action: 3 more seeds (--seeds 44,55,66) for sk1, hf4,
-           nnbf, mdnnbf on instance 1; if still AMBIGUOUS, FAIL.
+ROUTE 3.1 (sk1; rank control hf4; premise arm hf1; Gate-2 control sjnet), on every counted I:
+  premise  beta = med dE_sign(hf1)/Ref_sign >= 1.3 (the restriction bites); if not on some
+           counted instance -> FAIL ("REDUNDANT": a single rank-1 term already matches NNBF, so
+           the sum is unnecessary)
+  PASS if  rho_s <= 1.10 and rho_t <= 1.15
+           and sigma = med dE_sign(sk1)/med dE_sign(hf4) <= 0.85 with pairwise dominance
+               #(sk1 seed < hf4 seed in dE_sign) >= 7 of 9
+           and gamma = med dE_sign(sk1)/med dE_sign(sjnet) <= 0.6
+           and spin: rho_s from the post-hoc "P_S" budgets <= 1.15, and the oracle ratio
+               med dE_sign(sk1_PS)/med dE_sign(nnbf_PS) <= 1.15
+           and sampled: v = med var_ex(sk1)/med var_ex(nnbf) <= 2 and median z <= 4
+           and (on instance 2, if instance 0 also counts) the filling trend
+               rho_s(2) - rho_s(0) <= 0.10 (no growth of the penalty from N_sigma = 6 to 7 at r = 1)
+           on every counted instance, and the cost check for the lr family is PASS
+  FAIL if  on any counted instance: premise fails, or rho_s >= 1.30, rho_t >= 1.40, sigma >= 1.0,
+           gamma >= 0.85, oracle ratio >= 1.30, trend >= 0.25, v >= 4 or median z > 6; or the lr
+           cost check is FAIL
+  AMBIGUOUS otherwise. Pre-committed action: 3 more seeds (44, 55, 66) for sk1, hf4 and nnbf on
+           the counted instances; if still AMBIGUOUS, FAIL.
 ROUTE 3.2 (skagp; rank control agh4; premise and Gate-2 control agpj = Foil): the same rule
-  with sk1 -> skagp, hf4 -> agh4, hf1 and sjnet -> agpj (premise: med dE_sign(agpj)/Ref_sign(1)
+  with sk1 -> skagp, hf4 -> agh4, hf1 and sjnet -> agpj (premise: med dE_sign(agpj)/Ref_sign
   >= 1.3, i.e. the Foil's sign is measurably worse than NNBF's), no oracle-spin arm (the post-hoc
   P_S check applies), and the agp cost check.
 Reported, not in the verdict: rho_s and rho_t of every arm, the rank trend (hf1, hf4, sk1,
-sk2 versus r/N_sigma at both sizes), U versus U->P, <S^2>, overlaps, f_E, eC_tot, seed spreads.
+sk2 versus r/N_sigma), U versus U->P, <S^2>, overlaps, f_E, eC_tot, seed spreads, sector dims.
 
 Cost check (--mode cost; single thread; folded into the verdict)
 -----------------------------------------------------------------

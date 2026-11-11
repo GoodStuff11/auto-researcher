@@ -1,15 +1,15 @@
 target t'=0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} E0=-12.81808701 gap/V=2.3863e-01 competitor=False calib=3.55e-15 sector dim 105 / params 122 = 0.9
-  tr0       eps median=4.4533e-01 seeds=['4.4533e-01', '2.8317e-01', '5.6269e-01']  A median=1.3006e+00
-  tr0_r2    eps median=3.5325e-01 seeds=['3.6600e-01', '1.8079e-01', '3.5325e-01']
-  foil_tr   eps median=3.4947e-01 seeds=['3.3546e-01', '3.8254e-01', '3.4947e-01']  A median=3.2445e-01
-  trB       eps median=5.2327e-03 seeds=['5.2327e-03', '4.2147e-03', '6.2966e-03']  A median=3.9963e-04
-  fstB      eps median=4.4533e-01 seeds=['4.4533e-01', '2.4032e-01', '5.6269e-01']  A median=1.3006e+00
-  scrB      eps median=1.7909e-02 seeds=['1.7909e-02', '3.7087e-02', '1.0289e-02']  A median=2.4470e-03
-  trL       eps median=4.0159e-03 seeds=['4.0159e-03', '4.0159e-03', '4.0159e-03']
-  foil_opt  eps median=7.4328e-04 seeds=['7.0963e-04', '7.4328e-04', '1.3993e-03']  A median=9.7581e-05
-  scrL      eps median=2.6718e-05 seeds=['5.5156e-05', '2.4767e-05', '2.6718e-05']
-  eps_opt=2.4767e-05 relerr_opt=3.091e-05 spread(eps_tr0)=2.795e-01 spread(A_tr0)=1.624e+00 |dPd| trB=3.031e-04 foil_opt=9.865e-05
+  tr0       eps median=4.4387e-01 seeds=['4.4387e-01', '3.4239e-01', '6.9225e-01']  A median=9.1524e-01
+  tr0_r2    eps median=2.4780e-01 seeds=['3.0048e-01', '1.9024e-01', '2.4780e-01']
+  foil_tr   eps median=4.1542e-01 seeds=['4.1542e-01', '4.7752e-01', '3.7551e-01']  A median=9.9784e-01
+  trB       eps median=5.2877e-03 seeds=['2.7334e-01', '2.1879e-03', '5.2877e-03']  A median=7.9953e-04
+  fstB      eps median=4.2281e-01 seeds=['4.2281e-01', '2.9046e-01', '6.8460e-01']  A median=9.1524e-01
+  scrB      eps median=9.8614e-02 seeds=['9.8614e-02', '2.3806e-01', '3.9591e-02']  A median=2.7295e-01
+  trL       eps median=1.1449e-03 seeds=['9.0353e-04', '1.8135e-03', '1.1449e-03']
+  foil_opt  eps median=7.0538e-04 seeds=['7.1069e-04', '7.0538e-04', '6.9604e-04']  A median=9.7581e-05
+  scrL      eps median=1.1855e-04 seeds=['1.8802e-05', '2.3673e-04', '1.1855e-04']
+  eps_opt=1.8802e-05 relerr_opt=2.347e-05 spread(eps_tr0)=3.499e-01 spread(A_tr0)=4.441e+00 |dPd| trB=4.363e-04 foil_opt=9.619e-05
   Route 3.1 criteria: {'a': False, 'b': True, 'c': False, 'd': False, 'e': False, 'I': False, 'S': True}
-  premises: P1 scratch-not-converged=True P2 sign-room=False; steps to within 0.001 t/site of converged: scratch [9, 9, 7], transfer [None, None, None]; sign share of scrB error ['0.002', '0.040', '0.015']
+  premises: P1 scratch-not-converged=True P2 sign-room=False; steps to within 0.001 t/site of converged: scratch [12, 11, 8], transfer [16, None, None]; sign share of scrB error ['0.173', '0.293', '0.007']
 GLOBAL Route 3.1 (TCMN transfer): FAIL
 GLOBAL Route 3.2 (frozen-sign transfer): UNINFORMATIVE (premise P2: target-optimised foil sign excess below 0.001 t/site)

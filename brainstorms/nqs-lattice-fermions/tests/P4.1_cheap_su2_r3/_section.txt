@@ -159,6 +159,12 @@ $$\psi(x)=s_{\mathrm{ord}}(x)\,e^{J(c)}\det\Psi_c[\mathrm{occ}_2(c)]\;(-1)^{\mat
   - The open cluster has the largest ratio and is used here.
   - The cylinder support (`--bc-x pbc`) is kept in the code.
 * **Hard-Core scope: sign half only.** No same-sector competitor is claimed.
+  - P3.2 has found a genuine same-irrep conical intersection: on the $4\times3$ torus, $4+4$, $U=8$, $t_y=1.11394$, $t'_c=-0.470482$, a period-4 stripe and a near-Néel singlet are separated by $1.4\times10^{-3}t$ at $t'_c\pm0.0002$ (`tests/P3.2_biased_ensemble_r3/scan_logs/instance_table.txt`).
+  - It is deliberately **not** used for this leaf's verdict, for three reasons:
+    - the primary claim is cost;
+    - both competitors are singlets, so exact $S$ does not separate them;
+    - that sector has dimension 1618, below the 2205-parameter control, so accuracy cannot discriminate there.
+  - It is the natural follow-up if a route PASSes here.
 * **Arms** (all trained with projection, exact sums, L-BFGS with an exact gradient, **2000 iterations for every arm**, a 20 h safety cap, seeds 0, 1 and 2; `logs/timing_output.txt` gives seconds per energy-and-gradient evaluation):
 
 | Arm | Description | Projection | Parameters | s / eval |

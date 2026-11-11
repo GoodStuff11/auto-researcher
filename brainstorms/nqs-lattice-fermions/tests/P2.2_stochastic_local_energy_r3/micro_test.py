@@ -20,23 +20,24 @@ R3.1 WIBJ   Window-input backflow x all-orbital Jastrow (an ansatz whose EXACT
             ~N^2 W_v^2 / 4 keys, independent of M) plus O(1) arithmetic per
             connected term (2x2 Green's-function minor x Jastrow ratio).
             Estimator: KEYX (exact).
-R3.2 SHRJ   Unrestricted NNBF-J trained with an external-input shrinkage
-            penalty mu * ||W1[:, ext]||^2 (lambda-continuation from WIBJ,
-            mu = inf, to NNBFJ, mu = 0), with the window-keyed evaluation
-            used as an additive control variate (PFCV): the surrogate
-            evaluates the network with the external input frozen at n, it
-            is summed exactly over all terms, the terms with |y| > eps are
-            evaluated exactly, and the residual x - y on the rest gets K
-            draws from p ~ 0.9 |y| + 0.1 |h|.  Unbiased.  The penalty makes
-            the residual (the external-input response) small by
-            construction.
+R3.2 PFCV   Window-keyed partially-frozen control variate on the UNRESTRICTED
+            NNBF-J state (same state as the controls, so the comparison is
+            paired): the surrogate evaluates the network with the window
+            input of n' and the external input frozen at n (one backflow
+            evaluation per window key, exact 2x2 minors for external
+            excitations), it is summed exactly over all terms, the terms with
+            |y| > eps are evaluated exactly, and the residual x - y on the
+            rest gets K draws from p ~ 0.9 |y| + 0.1 |h|.  Unbiased.
+SHRJ        (diagnostic, not in the verdict) NNBF-J trained with an
+            external-input shrinkage mu * ||W1[:, ext]||^2, the
+            lambda-continuation between NNBFJ (mu = 0) and WIBJ (mu = inf),
+            estimated with PFCV.
 Controls (same instance, same N, unrestricted NNBFJ state, same seed)
 --------------------------------------------------------------------
 EXACT       full enumeration with exact incremental NNBF-J amplitudes.
 SCREEN      keep |H_nn'| > eps (biased; admissible only if
             |bias| + 2 SE <= --bias-tol).
 SS          semistochastic: |H| > eps exact + K heat-bath draws p ~ |H|.
-PFCV        (ablation) the R3.2 estimator on the unpenalised NNBFJ state.
 All estimators are run per sample with the real per-term code (row
 generation by Slater-Condon rules, incremental exact amplitudes for every
 term actually evaluated, window-keyed backflow), on samples n drawn iid
@@ -58,7 +59,12 @@ selected on the first half of the samples and evaluated on the second
 half.  Control cost C_ctrl = min(C_EXACT, C_SS, C_SCREEN[admissible]) on
 the NNBFJ state of the same seed.
   M_R3.1 = C_KEYX(WIBJ) / C_ctrl(NNBFJ)
-  M_R3.2 = C_PFCV(SHRJ) / C_ctrl(NNBFJ)
+  M_R3.2 = C_PFCV(NNBFJ) / C_ctrl(NNBFJ)
+Two cost models, both on this instance and this N: (a) measured single-thread
+wall-clock per sample; (b) operation count of the kernels the code executes
+(exact amplitude N^2 h + 4h + N^3; multi-term window key M h + N^2 h + 2 N^3
+plus N h per distinct added row; per-term minor 2.5 N^2 + 10; row generation 30 per term; per-sample setup).
+(b) removes Python overhead, which dominates wall-clock at ED-feasible sizes.
 plus dE_X = E_var - E_FCI for every arm.  Seeds: --seeds (default 3);
 per-instance values are medians over seeds of the per-seed (paired) ratios.
 
@@ -72,7 +78,10 @@ spaces run:
   FAIL       not dE_ok, or M(K_max) >= 1
   AMBIGUOUS  otherwise.  Pre-committed action: rerun N = 6 with
              --n-active 15; PASS iff M(15) <= min(M(14), 0.5), else KILL.
+Applied separately under both cost models; a route PASSES at a given N only
+if it PASSES under both, FAILS if it FAILS under either.
 Global per route: PASS iff PASS at N = 6 and N = 8; FAIL if FAIL at either.
+R3.2 shares the control's state, so its dE_ok holds by construction.
 Hard Core: the instances carry non-stoquastic sign structure and strong
 multireference character (reported: HF weight, frustrated fraction);
 same-sector competitors are not examined: SIGN HALF ONLY.
@@ -89,7 +98,7 @@ Command-line options
 --seeds INT [...]      Network-initialisation seeds. Default 0 1 2.
 --hidden INT           Backflow hidden width. Default 48.
 --maxiter INT          L-BFGS iterations on the exact energy. Default 1500.
---mu FLOAT             SHRJ external-input shrinkage. Default 1e-2.
+--mu FLOAT             SHRJ (diagnostic) external-input shrinkage. Default 1e-2.
 --n-samples INT        Samples B per state (even, >= 20). Default 2000.
 --eps-screen FLOAT...  SCREEN thresholds. Default 1e-5 1e-4 3e-4 1e-3 3e-3 1e-2.
 --eps-grid FLOAT...    SS / PFCV thresholds. Default 0 1e-3 1e-2 3e-2.
@@ -587,7 +596,8 @@ class Ansatz:
         change share one backflow evaluation.  Keys with a single term are
         evaluated as one incremental amplitude (N occupied rows, O(N^2 h + N^3));
         keys with several terms (excitations into external orbitals) build
-        Phi_k once (O(M N h + N^3)) and each term costs a 2x2 Green's-function
+        the N occupied rows of Phi_k once (O(N^2 h + N^3)) plus one O(N h) row per
+        distinct added orbital, and each term costs a 2x2 Green's-function
         minor of G_k = Phi_k A_k^{-1} plus an O(1) Jastrow ratio.  Exact when
         mask = window (WIBJ, R3.1); the frozen-external-input surrogate
         otherwise (PFCV, R3.2)."""
@@ -605,25 +615,34 @@ class Ansatz:
             A1 = P["Phi0"][occ_j[s_idx]] + np.einsum("bknh,bh->bkn", P["W2r"][occ_j[s_idx]], T[inv[s_idx]])
             r[s_idx] = np.linalg.det(A1) / st["detA"]
         m_idx = np.nonzero(~single)[0]
+        n_pairs = 0
         if len(m_idx):
             mk, minv = np.unique(inv[m_idx], return_inverse=True)
-            Phi = P["Phi0"][None] + (T[mk] @ P["W2"].T).reshape(-1, M, N)
-            A = Phi[:, occ_n, :]
-            Ainv = np.linalg.inv(A)
-            dk = np.linalg.det(A)
+            nm = len(mk)
             pos = np.full(M, -1); pos[occ_n] = np.arange(N)
             rm, ad = rem[m_idx], add[m_idx]
-            ki = pos[rm[:, 0]]; a = ad[:, 0]
+            # occupied rows of Phi_k for every multi-term key: A_k (N x N)
+            A = P["Phi0"][occ_n][None] + np.einsum("rnh,kh->krn", P["W2r"][occ_n], T[mk])
+            Ainv = np.linalg.inv(A)
+            dk = np.linalg.det(A)
+            # added rows: one Phi row per distinct (key, orbital) pair, O(N h) each
             nt = len(m_idx); ar = np.arange(nt)
-            ga = np.einsum("tn,tnc->tc", Phi[minv, a, :], Ainv[minv])
-            rr = ga[ar, ki].copy()
             d2 = rm[:, 1] >= 0
+            pk = np.concatenate([minv, minv[d2]]); po = np.concatenate([ad[:, 0], ad[d2, 1]])
+            pair_code = pk * M + po
+            up, pinv = np.unique(pair_code, return_inverse=True)
+            n_pairs = len(up)
+            rows = P["Phi0"][up % M] + np.einsum("pnh,ph->pn", P["W2r"][up % M], T[mk[up // M]])
+            ra = rows[pinv[:nt]]
+            ki = pos[rm[:, 0]]; a = ad[:, 0]
+            ga = np.einsum("tn,tnc->tc", ra, Ainv[minv])
+            rr = ga[ar, ki].copy()
             L = np.repeat(occ_n[None], nt, 0)
             L[ar, ki] = a
             if d2.any():
                 t2 = np.nonzero(d2)[0]
                 kj = pos[rm[t2, 1]]; b = ad[t2, 1]
-                gb = np.einsum("tn,tnc->tc", Phi[minv[t2], b, :], Ainv[minv[t2]])
+                gb = np.einsum("tn,tnc->tc", rows[pinv[nt:]], Ainv[minv[t2]])
                 rr[t2] = ga[t2, ki[t2]] * gb[np.arange(len(t2)), kj] - ga[t2, kj] * gb[np.arange(len(t2)), ki[t2]]
                 L[t2, kj] = b
             par = np.zeros(nt, np.int64)
@@ -631,7 +650,7 @@ class Ansatz:
                 for q_ in range(p_ + 1, N):
                     par += L[:, p_] > L[:, q_]
             r[m_idx] = rr * (1 - 2 * (par & 1)) * dk[minv] / st["detA"]
-        return r * np.exp(self.jastrow_delta(P, st, rem, add)), len(keys), int((cnt > 1).sum())
+        return r * np.exp(self.jastrow_delta(P, st, rem, add)), len(keys), int((cnt > 1).sum()), n_pairs
 
 
 def decode(codes, M, N):
@@ -690,6 +709,9 @@ def analyse_state(net, th, ham, samples_codes, args, rng, wcode, win_idx, arm):
     B = len(samples_codes)
     res = {"EXACT": [], "KEYX": []}
     tim = {"row": [], "EXACT": [], "KEY": []}
+    ops = {"row": [], "EXACT": [], "KEY": []}
+    h_ = net.Hh
+    f_amp = N * N * h_ + 4 * h_ + N ** 3  # one exact incremental amplitude
     cfg = []
     if arm == "NNBFJ":
         cfg += [("SCREEN", e, 0) for e in args.eps_screen]
@@ -697,7 +719,7 @@ def analyse_state(net, th, ham, samples_codes, args, rng, wcode, win_idx, arm):
     if arm in ("NNBFJ", "SHRJ"):
         cfg += [("PFCV", e, K) for e in args.eps_grid for K in args.k_grid]
     for c in cfg:
-        res[c] = []; tim[c] = []
+        res[c] = []; tim[c] = []; ops[c] = []
     nkeys, ncon = [], []
     for code in samples_codes:
         t0 = time.perf_counter()
@@ -709,7 +731,7 @@ def analyse_state(net, th, ham, samples_codes, args, rng, wcode, win_idx, arm):
         t1b = time.perf_counter()
         ex = est_exact(net, P, st, row, occ_j)
         t2 = time.perf_counter()
-        rk, nk, nkm = net.ratio_key(P, st, row["code"], row["rem"], row["add"], occ_j, wcode, win_idx)
+        rk, nk, nkm, npair = net.ratio_key(P, st, row["code"], row["rem"], row["add"], occ_j, wcode, win_idx)
         y = row["h"] * rk
         kx = row["Hnn"] + y.sum()
         t3 = time.perf_counter()
@@ -717,6 +739,11 @@ def analyse_state(net, th, ham, samples_codes, args, rng, wcode, win_idx, arm):
         tim["row"].append(t1 - t0 + tset); tim["EXACT"].append(t2 - t1b); tim["KEY"].append(t3 - t2)
         res["EXACT"].append(ex); res["KEYX"].append(kx)
         nkeys.append((nk, nkm)); ncon.append(len(row["h"]))
+        nc_ = len(row["h"]); n_single = nk - nkm
+        ops["row"].append(30 * nc_ + M * h_ + M * N * h_ + N ** 3)
+        ops["EXACT"].append(nc_ * f_amp)
+        ops["KEY"].append(n_single * f_amp + nkm * (M * h_ + N * N * h_ + 2 * N ** 3) + npair * N * h_
+                          + (nc_ - n_single) * (2.5 * N * N + 10))
         for c in cfg:
             s0 = time.perf_counter()
             if c[0] == "SCREEN":
@@ -727,9 +754,13 @@ def analyse_state(net, th, ham, samples_codes, args, rng, wcode, win_idx, arm):
                 v = est_pfcv(net, P, st, row, occ_j, y, c[1], c[2], rng)
             tim[c].append(time.perf_counter() - s0)
             res[c].append(v)
+            sel = np.abs(row["h"]) > c[1] if c[0] != "PFCV" else np.abs(y) > c[1]
+            ntail = nc_ - int(sel.sum())
+            ops[c].append((int(sel.sum()) + (c[2] if (c[0] != "SCREEN" and ntail) else 0)) * f_amp + 5 * ntail)
     res = {k: np.array(v) for k, v in res.items()}
     tim = {k: np.array(v) for k, v in tim.items()}
-    return res, tim, np.array(nkeys), np.array(ncon), cfg
+    ops = {k: np.array(v, dtype=float) for k, v in ops.items()}
+    return res, tim, ops, np.array(nkeys), np.array(ncon), cfg
 
 
 def costs(res, tim, cfg, args, V_pi):
@@ -857,20 +888,24 @@ def run_instance(K, args):
             srng = np.random.default_rng(10 ** 6 + 1000 * seed + 13)
             samp = codes[srng.choice(len(codes), size=args.n_samples, p=wv)]
             topt = time.time() - t1
-            res, tim, nk, nc, cfg = analyse_state(net, th, ham, samp, args, srng, wcode, win_idx, arm)
+            res, tim, ops, nk, nc, cfg = analyse_state(net, th, ham, samp, args, srng, wcode, win_idx, arm)
             elchk = float(np.max(np.abs(res["EXACT"] - EL[np.searchsorted(codes, samp)])))
             cst = costs(res, tim, cfg, args, varx)
+            cst_ops = costs(res, ops, cfg, args, varx)
             run = {"seed": seed, "arm": arm, "dE_mHa": 1e3 * (Ev - E0), "var_exact": varx, "EL_check": elchk,
-                   "mean_keys": float(nk[:, 0].mean()), "mean_multi_keys": float(nk[:, 1].mean()), "mean_conn": float(nc.mean()), "costs": cst,
+                   "mean_keys": float(nk[:, 0].mean()), "mean_multi_keys": float(nk[:, 1].mean()), "mean_conn": float(nc.mean()), "costs": cst, "costs_ops": cst_ops,
                    "W1_ext_norm": float(np.linalg.norm(net.unpack(th)["W1"][:, ~win])),
                    "t_train_s": topt, "t_analyse_s": time.time() - t1 - topt}
             out["runs"].append(run)
             ce = cst["EXACT"]["C"]
+            ceo = cst_ops["EXACT"]["C"]
+            line_o = " ".join(f"{k}={v['C']/ceo:.3g}" for k, v in cst_ops.items() if "C" in v and not k.endswith("norow"))
             line = " ".join(f"{'KEYX' if (k == 'KEYX' and arm == 'WIBJ') else ('PFDET(biased)' if k == 'KEYX' else k)}"
                             f"={v['C']/ce:.3g}" for k, v in cst.items() if "C" in v and not k.endswith("norow"))
             print(f"  seed={seed} {arm:5s} dE={run['dE_mHa']:8.3f} mHa Var(EL)={varx:.2e} <|C|>={nc.mean():.0f} "
                   f"<keys>={nk[:, 0].mean():.1f} (multi {nk[:, 1].mean():.1f}) ELchk={elchk:.1e} KEYX-EXACT max={cst['KEYX']['max_dev_from_exact']:.1e} "
-                  f"|W1_ext|={run['W1_ext_norm']:.3g} (train {topt:.0f}s)\n      C/C_EXACT(own state): {line}",
+                  f"|W1_ext|={run['W1_ext_norm']:.3g} (train {topt:.0f}s)\n      C/C_EXACT(own state), wall-clock: {line}"
+                  f"\n      C/C_EXACT(own state), operation count: {line_o}",
                   flush=True)
             for fam in ("SCREEN", "SS", "PFCV"):
                 if fam in cst:
@@ -880,9 +915,12 @@ def run_instance(K, args):
     return out
 
 
-def ratios_for_instance(inst):
-    """Per seed (paired with the NNBFJ control of the same seed): M_R3.1, M_R3.2,
-    the PFCV ablation, and the no-row-generation sensitivity."""
+def ratios_for_instance(inst, model="costs"):
+    """Per seed, paired with the NNBFJ control of the same seed.
+    model = "costs" (measured wall-clock) or "costs_ops" (operation count of the
+    kernels the code executes).  M_R31 = C_KEYX(WIBJ)/C_ctrl(NNBFJ);
+    M_R32 = C_PFCV(NNBFJ)/C_ctrl(NNBFJ) (same state); M_SHRJ = C_PFCV(SHRJ)/C_ctrl
+    (lambda-continuation diagnostic, not in the verdict)."""
     by = {}
     for r in inst["runs"]:
         by.setdefault(r["seed"], {})[r["arm"]] = r
@@ -890,47 +928,58 @@ def ratios_for_instance(inst):
     for seed, d in sorted(by.items()):
         if "NNBFJ" not in d:
             continue
-        c = d["NNBFJ"]["costs"]
-        ctrl = min(c[k]["C"] for k in ("EXACT", "SS", "SCREEN") if k in c)
-        ctrl_nr = min([c["EXACT_norow"]["C"]] + [c[k]["C_norow"] for k in ("SS", "SCREEN") if k in c])
-        rr = {"seed": seed, "dE_NNBFJ": d["NNBFJ"]["dE_mHa"],
-              "ctrl": min((k for k in ("EXACT", "SS", "SCREEN") if k in c), key=lambda k: c[k]["C"]),
-              "M_PFCV_ablation": c["PFCV"]["C"] / ctrl if "PFCV" in c else np.nan}
+        c = d["NNBFJ"][model]
+        ks = [k for k in ("EXACT", "SS", "SCREEN") if k in c]
+        ctrl = min(c[k]["C"] for k in ks)
+        rr = {"seed": seed, "dE_NNBFJ": d["NNBFJ"]["dE_mHa"], "ctrl": min(ks, key=lambda k: c[k]["C"]),
+              "dE_R32": d["NNBFJ"]["dE_mHa"]}
+        if "PFCV" in c:
+            rr["M_R32"] = c["PFCV"]["C"] / ctrl
         if "WIBJ" in d:
-            w = d["WIBJ"]["costs"]
-            rr.update({"dE_WIBJ": d["WIBJ"]["dE_mHa"], "M_R31": w["KEYX"]["C"] / ctrl,
-                       "M_R31_norow": w["KEYX_norow"]["C"] / ctrl_nr})
-        if "SHRJ" in d and "PFCV" in d["SHRJ"]["costs"]:
-            s = d["SHRJ"]["costs"]
-            rr.update({"dE_SHRJ": d["SHRJ"]["dE_mHa"], "M_R32": s["PFCV"]["C"] / ctrl,
-                       "M_R32_norow": s["PFCV"]["C_norow"] / ctrl_nr})
+            rr.update({"dE_R31": d["WIBJ"]["dE_mHa"], "M_R31": d["WIBJ"][model]["KEYX"]["C"] / ctrl})
+        if "SHRJ" in d and "PFCV" in d["SHRJ"][model]:
+            rr.update({"dE_SHRJ": d["SHRJ"]["dE_mHa"], "M_SHRJ": d["SHRJ"][model]["PFCV"]["C"] / ctrl})
         rows.append(rr)
     return rows
 
 
-def verdict_for(insts_by_K, route):
-    key, dkey = {"R3.1": ("M_R31", "dE_WIBJ"), "R3.2": ("M_R32", "dE_SHRJ")}[route]
+def _verdict_model(insts_by_K, route, model):
+    key, dkey = {"R3.1": ("M_R31", "dE_R31"), "R3.2": ("M_R32", "dE_R32")}[route]
     Ks = sorted(insts_by_K)
     med = {}
     for K in Ks:
-        rows = [r for r in ratios_for_instance(insts_by_K[K]) if key in r]
+        rows = [r for r in ratios_for_instance(insts_by_K[K], model) if key in r]
         if not rows:
             return {"verdict": "INCOMPLETE"}
         med[K] = {"M": float(np.median([r[key] for r in rows])),
-                  "M_norow": float(np.median([r[key + "_norow"] for r in rows])),
                   "M_spread": [float(min(r[key] for r in rows)), float(max(r[key] for r in rows))],
                   "dE": float(np.median([r[dkey] for r in rows])),
-                  "dE_ctrl": float(np.median([r["dE_NNBFJ"] for r in rows])), "n_seeds": len(rows)}
+                  "dE_ctrl": float(np.median([r["dE_NNBFJ"] for r in rows])), "n_seeds": len(rows),
+                  "ctrl": [r["ctrl"] for r in rows]}
+        sh = [r["M_SHRJ"] for r in rows if "M_SHRJ" in r]
+        if sh:
+            med[K]["M_SHRJ_diag"] = float(np.median(sh))
     kmin, kmax = Ks[0], Ks[-1]
     m = med[kmax]
     dE_ok = m["dE"] <= max(1.25 * m["dE_ctrl"], m["dE_ctrl"] + 0.5)
     if not dE_ok or m["M"] >= 1:
         v = "FAIL"
-    elif m["M"] <= 0.5 and m["M"] < med[kmin]["M"] and len(Ks) > 1:
+    elif m["M"] <= 0.5 and len(Ks) > 1 and m["M"] < med[kmin]["M"]:
         v = "PASS"
     else:
         v = "AMBIGUOUS"
     return {"verdict": v, "dE_ok": bool(dE_ok), "by_K": med}
+
+
+def verdict_for(insts_by_K, route):
+    """PASS only if PASS under both the wall-clock and the operation-count cost;
+    FAIL if FAIL under either; AMBIGUOUS otherwise."""
+    w = _verdict_model(insts_by_K, route, "costs")
+    o = _verdict_model(insts_by_K, route, "costs_ops")
+    vs = (w["verdict"], o["verdict"])
+    v = ("INCOMPLETE" if "INCOMPLETE" in vs else "FAIL" if "FAIL" in vs else
+         "PASS" if vs == ("PASS", "PASS") else "AMBIGUOUS")
+    return {"verdict": v, "wall_clock": w, "op_count": o}
 
 
 def aggregate(path):
@@ -1038,7 +1087,7 @@ def main(argv=None):
         insts = {inst["K"]: inst for inst in out["instances"]}
         for route in ("R3.1", "R3.2"):
             print(f"[smoke-scale verdict logic, H4 only, not decisive] {route}: "
-                  f"{json.dumps(verdict_for(insts, route))}")
+                  f"{json.dumps({k: (v if k == 'verdict' else {'verdict': v['verdict'], 'M_by_K': {K: round(x['M'], 3) for K, x in v['by_K'].items()}} if 'by_K' in v else v) for k, v in verdict_for(insts, route).items()})}")
 
 
 if __name__ == "__main__":
