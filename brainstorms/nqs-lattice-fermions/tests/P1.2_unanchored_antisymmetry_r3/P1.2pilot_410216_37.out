@@ -53,3 +53,15 @@
 [14:52:38] ctrl_PS: it   950  E = -10.54101516  |f| = 6.54e-04  (2.93 s/step)
 [14:55:03] ctrl_PS: it  1000  E = -10.54102461  |f| = 8.14e-04  (2.93 s/step)
 [14:57:29] ctrl_PS: it  1050  E = -10.54102785  |f| = 3.70e-03  (2.93 s/step)
+[14:59:56] ctrl_PS: it  1100  E = -10.54057823  |f| = 3.72e-02  (2.93 s/step)
+[15:02:22] ctrl_PS: it  1150  E = -10.54103735  |f| = 9.25e-04  (2.93 s/step)
+[15:04:48] ctrl_PS: it  1200  E = -10.54104942  |f| = 5.48e-04  (2.93 s/step)
+[15:07:13] ctrl_PS: it  1250  E = -10.54105709  |f| = 4.99e-04  (2.93 s/step)
+[15:09:40] ctrl_PS: it  1300  E = -10.54106335  |f| = 7.31e-04  (2.93 s/step)
+[15:12:07] ctrl_PS: it  1350  E = -10.54106900  |f| = 5.04e-04  (2.93 s/step)
+[15:14:35] ctrl_PS: it  1400  E = -10.54107407  |f| = 5.13e-04  (2.93 s/step)
+[15:17:02] ctrl_PS: it  1450  E = -10.54107870  |f| = 4.45e-04  (2.93 s/step)
+[15:19:26] ctrl_PS: it  1499  E = -10.54108289  |f| = 4.31e-04  (2.93 s/step)
+[15:20:35] ctrl_PS   PS: dE_tot=0.00014 dE_sign=0.00000 f_E=0.008 w_sign=4.777e-08 S2=0.000 spread=4.1e-10
+[15:20:40] ctrl_PS sampled arm: sigma2=4.410e+00 kurt=4.940e+03 share_El=1.029e-01 share_O=1.096e-01 tail_El=2.910e+02 tail_O=2.995e+02 eta=4.069e+01 n_samples=8.000e+03
+[15:20:40] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results/inst1_ctrl_PS_s1234_sh0.01.json

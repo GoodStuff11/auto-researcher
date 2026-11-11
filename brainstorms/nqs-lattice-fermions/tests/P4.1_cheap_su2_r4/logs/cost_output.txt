@@ -1,0 +1,8 @@
+Lx= 6 L= 36 Ne= 32 nnbf_unproj       65.3us  kagp1      361.2us  kagp2      208.4us  kagp4      271.9us  sqrvb      112.0us  che_closed      251.2us  che_gl      259.8us  sfb    65057.5us
+Lx= 8 L= 64 Ne= 56 nnbf_unproj       60.9us  kagp1       80.0us  kagp2      149.0us  kagp4      288.7us  sqrvb      152.4us  che_closed      343.6us  che_gl      352.7us  sfb   341963.7us
+Lx=12 L=144 Ne=126 nnbf_unproj      165.1us  kagp1      231.8us  kagp2      450.1us  kagp4      885.0us  sqrvb     1008.5us  che_closed     1111.7us  che_gl     1417.8us
+Lx=16 L=256 Ne=224 nnbf_unproj      496.0us  kagp1      649.2us  kagp2     1288.1us  kagp4     2711.7us  sqrvb     1672.8us  che_closed     3123.5us  che_gl     5204.2us
+Lx=20 L=400 Ne=350 nnbf_unproj     1228.2us  kagp1     1495.3us  kagp2     3087.8us  kagp4     6250.7us  sqrvb     4637.7us  che_closed     9530.0us  che_gl    17697.5us
+Lx=24 L=576 Ne=504 nnbf_unproj     2799.7us  kagp1     3299.0us  kagp2     6734.8us  kagp4    13474.5us  sqrvb    10869.9us  che_closed    20772.8us  che_gl    53813.8us
+log-log slopes in N_e (three largest sizes): nnbf_unproj 2.13  kagp1 2.00  kagp2 2.04  kagp4 1.97  sqrvb 2.31  che_closed 2.34  che_gl 2.88
+ratios at largest size (t / t_tocchio): nnbf_unproj 0.8  kagp1 1.0  kagp2 2.0  kagp4 4.1  sqrvb 3.3  che_closed 6.3  che_gl 16.3

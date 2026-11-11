@@ -108,3 +108,12 @@
 [14:52:01] P nnbf_128: it  1100  E = -12.04289289  |f| = 1.15e-05  (3.57 s/step)
 [14:54:59] P nnbf_128: it  1150  E = -12.04289351  |f| = 1.10e-05  (3.57 s/step)
 [14:57:56] P nnbf_128: it  1200  E = -12.04289408  |f| = 1.04e-05  (3.57 s/step)
+[15:00:51] P nnbf_128: it  1250  E = -12.04289459  |f| = 9.91e-06  (3.56 s/step)
+[15:03:50] P nnbf_128: it  1300  E = -12.04289506  |f| = 9.48e-06  (3.56 s/step)
+[15:06:49] P nnbf_128: it  1350  E = -12.04289549  |f| = 9.08e-06  (3.56 s/step)
+[15:09:45] P nnbf_128: it  1400  E = -12.04289588  |f| = 8.77e-06  (3.56 s/step)
+[15:12:42] P nnbf_128: it  1450  E = -12.04289625  |f| = 8.38e-06  (3.56 s/step)
+[15:15:33] P nnbf_128: it  1499  E = -12.04289658  |f| = 8.26e-06  (3.56 s/step)
+[15:16:43]     P_w128: dE_tot=0.00001 dE_sign=0.00000 f_E=0.001 f_C=0.211 spread=1.7e-08 S2=0.000 ov0=1.000 w_sign=2.571e-10 (68s)
+[15:17:49]   P_S_w128: dE_tot=0.00000 dE_sign=0.00000 f_E=0.000 f_C=0.080 spread=2.8e-08 S2=0.000 ov0=1.000 w_sign=1.525e-11 (66s)
+[15:17:49] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.1P_projected/results/inst1_s2345_armP.json

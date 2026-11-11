@@ -1,0 +1,4 @@
+[15:23:12] ED: E0=-9.3617101438 <S^2>=7.3e-19 irrep={'My': 1, 'Mx': 1} next level -9.017191 (440s)
+[15:23:16]   N_s= 2 tocchio1 : 7888 configs, median F=1.000000000000 min F=1.000000 (3s)
+[15:23:18]   N_s= 2 tocchio2 : 7888 configs, median F=1.000000000000 min F=1.000000 (2s)
+[15:23:26]   N_s= 2 puhf     : 7888 configs, median F=1.000000000000 min F=1.000000 (8s)

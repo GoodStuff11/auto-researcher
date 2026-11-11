@@ -161,7 +161,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.2 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410216 (3 tasks: projected control, one per instance) |
 | P1.3 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410199 (9 tasks: c1 instance, PSaf/PSfs/PScdw, 3 seeds) |
 | P2.1 | SUBMITTED (control pilot); both routes Gate 0 restated, test fixes pending | full test blocked on pilot (premise: projected NNBF sign error at least 0.01t) | Slurm 410988 (3 tasks) |
-| P2.2 | MUTATE (round 4) | nothing | round-4 worker (key-wise Cholesky/THC contraction) |
+| P2.2 | CRITIC (round 4; one survivor, CGK) | nothing | per-leaf critic |
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | SUBMITTED (control pilot); AT killed, SO-EC conditional | full test blocked on pilot regime (NO-TARGET / NO-ROOM / INTRINSIC-BIAS / GO) | Slurm 410917 (width 8, inner 4 targets) |
 | P4.1 | MUTATE (round 4) + SUBMITTED (diagnostic pilot) | nothing | round-4 worker; Slurm 411494 (9 tasks: charge-only vs spin-resolved, exactly projected) |

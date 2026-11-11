@@ -1,0 +1,17 @@
+[15:14:42]   N_s= 2 tocchio1 : 420 configs, median F=1.000000000000 min F=1.000000 (0s)
+[15:14:42]   N_s= 2 tocchio2 : 420 configs, median F=1.000000000000 min F=1.000000 (0s)
+[15:14:42]   N_s= 2 puhf     : 420 configs, median F=1.000000000000 min F=1.000000 (0s)
+[15:14:44]   N_s= 4 tocchio1 : 280 configs, median F=1.000000000000 min F=1.000000 (2s)
+[15:14:47]   N_s= 4 tocchio2 : 280 configs, median F=1.000000000000 min F=1.000000 (3s)
+[15:14:51]   N_s= 4 puhf     : 280 configs, median F=1.000000000000 min F=1.000000 (3s)
+[15:14:51]   N_s= 6 tocchio1 : 28 configs, median F=1.000000000000 min F=1.000000 (1s)
+[15:14:52]   N_s= 6 tocchio2 : 28 configs, median F=1.000000000000 min F=1.000000 (1s)
+[15:14:53]   N_s= 6 puhf     : 28 configs, median F=1.000000000000 min F=1.000000 (1s)
+[15:14:53] tocchio1 : total infidelity 4.441e-16  eps=1.605e-16  <S^2>=-1.2e-17
+[15:14:53] tocchio2 : total infidelity 2.220e-16  eps=-1.605e-16  <S^2>=4.0e-17
+[15:14:53] puhf     : total infidelity -2.220e-16  eps=-1.605e-16  <S^2>=-1.5e-18
+ N_s     #c    weight singlet        tocchio1 (wInfid, minF)        tocchio2 (wInfid, minF)            puhf (wInfid, minF)
+   0     56  3.88e-05       1         0.00e+00     1.000000         0.00e+00     1.000000         0.00e+00     1.000000
+   2    420  5.68e-03       1        -8.57e-19     1.000000        -7.85e-19     1.000000        -9.98e-19     1.000000
+   4    280  1.44e-01       2        -2.87e-17     1.000000        -2.95e-17     1.000000        -2.86e-17     1.000000
+   6     28  8.50e-01       5        -3.05e-16     1.000000        -2.25e-16     1.000000        -2.61e-16     1.000000
