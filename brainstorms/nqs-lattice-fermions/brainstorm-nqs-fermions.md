@@ -165,7 +165,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
 | P3.2 | SUBMITTED (control pilot); AT killed, SO-EC conditional | full test blocked on pilot regime (NO-TARGET / NO-ROOM / INTRINSIC-BIAS / GO) | Slurm 410917 (width 8, inner 4 targets) |
 | P4.1 | MUTATE (round 3) | nothing | round-3 worker |
-| P4.2 | CRITIC (round 3) | nothing | per-leaf critic |
+| P4.2 | SUBMITTED (zero-shot pilot); 3.2 merged into 3.1 as diagnostic | full test blocked on pilot (spread and sector-pick kills) and on fixes | Slurm 410960 (3 tasks) |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
 * **P3.2 round 3: first Hard-Core-scale same-irrep competitor (2026-11-11)**:
@@ -183,6 +183,15 @@ Each leaf advances on its own as soon as it returns: lint, then its own critic, 
         * Curvature/susceptibility, Gate 1.
         * Berry phase, Gates 2 and 3.
         * In-irrep zero-variance extrapolation, Gate 0 (mVMC practice).
+* **P4.2 round-3 per-leaf critic (11 objections, 5 Major)**:
+    * **Prior art.** The critic confirmed the worker: arXiv:2505.00233 keeps the lattice size fixed, and no lattice-fermion NQS size transfer is published. Gate 0 must still cite and distinguish arXiv:2606.17045 (single-hole, exactly solvable, local-rule size transfer) and arXiv:2512.11962 (a $t$–$V$ foundation NQS conditioned on Hamiltonian parameters).
+    * **Route 3.2 is a relabel.** Freezing the determinant and refitting a Jastrow is standard fixed-node practice, and its sign verdict is decided by route 3.1's zero-shot object. It is merged into 3.1 as a diagnostic, which leaves P4.2 with one survivor.
+    * **The minimum-norm selection is contradicted by its own pre-check.** With the penalty, the seeds are further apart (1.30–2.00 against 1.05–1.75). The norm of a nonlinear network is not reparameterisation-invariant, and about 110 source-null directions act on 3- and 4-hole features the source never sees.
+    * **Capacity dominates the criteria.** They should score the excess over $\epsilon_{\mathrm{opt}}$ and tighten VOID.
+    * **The P1 premise passes almost automatically**, because scrB is scrL after 20 steps. The gate should be on steps-to-$\epsilon$ at several $B$, with a plateau check.
+    * **Action.** The 9-task array is held. A zero-shot pilot runs as job 410960 (3 transfer tasks, `--budget 0 --steps-long 0`). Pre-committed rule:
+        * kill 3.1 if the spread of $\epsilon_{\mathrm{tr0}}$ exceeds half the median, or if the sector-pick gate (S) fails;
+        * otherwise apply fixes 3, 4, 5, 8 and 10 before any array runs.
 * **P3.2 round-3 per-leaf critic (12 objections, 9 Major)**. The critic computed the oracle cases from exact ED snapshots.
     * **AT is killed.**
         * Even with exact snapshots it commits the wrong decision at $d=-0.0002$. The two diabats have unequal curvature ($d^2E/dt'^2pprox-14$ vs $-10$), which gives a differential transport bias of about $2.1\times10^{-3}$, above the $1.4\times10^{-3}$ gap.

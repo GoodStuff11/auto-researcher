@@ -39,3 +39,7 @@
   seed=0 WIBJ  dE=   2.001 mHa Var(EL)=8.05e-03 <|C|>=416 <keys>=139.0 (multi 87.5) ELchk=8.9e-15 KEYX-EXACT max=1.3e-15 |W1_ext|=0 (train 74s)
       C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=0.917
       C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.629
+  seed=0 SHRJ  dE=   2.081 mHa Var(EL)=7.81e-03 <|C|>=416 <keys>=139.0 (multi 87.5) ELchk=1.1e-14 KEYX-EXACT max=1.0e-02 |W1_ext|=0.151 (train 81s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=0.953 PFCV=1.06
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.629 PFCV=0.659
+      PFCV   eps=0.03 K=4 bias=-0.0776+-0.5522 mHa top1%share=0.91
