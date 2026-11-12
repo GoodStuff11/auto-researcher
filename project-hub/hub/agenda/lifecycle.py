@@ -32,6 +32,8 @@ def build_agenda(root, series: str, *, force: bool = False) -> Path:
         rb = read_workbook(live)
         if rb.series and rb.series != series:
             raise AgendaError(f"{live} belongs to series '{rb.series}', not '{series}'")
+        if not force and not rb.read_back and rb.meeting_date is None:
+            raise AgendaError("live agenda has no readable meeting date; pass --force to overwrite")
         if (not force and not rb.read_back and rb.meeting_date and rb.meeting_date < draft["meeting_date"]):
             raise AgendaError(f"the {rb.meeting_date} agenda has not been read back; run "
                               f"`hub agenda read {series}` first (or pass --force to discard its edits)")
@@ -58,13 +60,17 @@ def read_agenda(store: Store, config: HubConfig, series: str, *, author: str, to
         raise AgendaError(f"{live} has no meeting date (neither _meta nor sheet title)")
     tag = f"{series}/{rb.meeting_date.isoformat()}"
     source = f"agenda:{tag}"
+    note_path = root / "Status" / "Meetings" / series / f"{rb.meeting_date.isoformat()}.md"
+    if note_path.exists():
+        raise AgendaError(f"meeting note {note_path} already exists — a previous read-back of this meeting was "
+                          "applied (possibly partially); inspect it, remove the note to retry")
     decisions = {i.id: i for i in store.all() if i.type == "decision"}
     by_title = {d.title: d.id for d in decisions.values() if d.status == "proposed"}
     applied, staged, not_reached, lines = [], [], [], []
     for row in rb.rows:
         did = row.id if row.planned and row.id in decisions else by_title.get(row.decide)
         if did is None:
-            if row.outcome or row.as_decided or row.outcome_text:
+            if row.outcome or row.as_decided or row.outcome_text or row.new_actions.strip():
                 ops = [{"op": "new", "ref": "$d", "type": "decision", "title": row.decide, "owner": author,
                         "series": [series], "source": source,
                         "fields": {"status": RAISED_STATUS[row.outcome], "meeting": tag,
@@ -74,6 +80,16 @@ def read_agenda(store: Store, config: HubConfig, series: str, *, author: str, to
                                    reason="Decision raised in meeting; link it to the question(s) it answers before applying.",
                                    day=today)
                 staged.append((pid, f"Raised at {tag}: {row.decide}"))
+            continue
+        if row.outcome and decisions[did].status not in ("proposed", "deferred"):
+            title = f"Outcome for already-resolved decision at {tag}: {decisions[did].title}"
+            ops = [{"op": "entry", "id": did, "source": source,
+                    "text": f"Outcome typed in meeting: '{row.outcome_text}'; as decided: {row.as_decided or '—'}"
+                            + (f"; new actions: {row.new_actions}" if row.new_actions else "")}]
+            pid = add_proposal(root, title, ops, proposer=author, source=source,
+                               reason=f"Decision is already '{decisions[did].status}'; not changed by read-back.",
+                               day=today)
+            staged.append((pid, title))
             continue
         if row.outcome in ("approve", "modify"):
             fields = {"status": "made", "meeting": tag}
@@ -105,6 +121,16 @@ def read_agenda(store: Store, config: HubConfig, series: str, *, author: str, to
             staged.append((pid, title))
             continue
         else:
+            if row.as_decided or row.new_actions.strip():
+                title = f"Notes without outcome at {tag}: {decisions[did].title}"
+                text = f"Notes typed in meeting without an outcome; as decided: {row.as_decided or '—'}"
+                if row.new_actions.strip():
+                    text += "; new actions: " + "; ".join(
+                        f"{t} ({o})" if o else t for t, o in parse_actions(row.new_actions))
+                pid = add_proposal(root, title, [{"op": "entry", "id": did, "text": text, "source": source}],
+                                   proposer=author, source=source,
+                                   reason="Meeting notes were written but no outcome was set.", day=today)
+                staged.append((pid, title))
             store.entry(did, f"Not reached at {tag}.", author=author, source=source, day=today)
             not_reached.append(did)
             continue
@@ -115,7 +141,6 @@ def read_agenda(store: Store, config: HubConfig, series: str, *, author: str, to
             "## Decisions", *(lines or ["None."]),
             "## Not reached", *([f"- [[{i}]]" for i in not_reached] or ["None."]),
             "## Staged for approval", *([f"- {p} · {t}" for p, t in staged] or ["None."])]
-    note_path = root / "Status" / "Meetings" / series / f"{rb.meeting_date.isoformat()}.md"
     note_path.parent.mkdir(parents=True, exist_ok=True)
     note_path.write_text("\n".join(note) + "\n")
     set_read_back(live, True)

@@ -109,3 +109,61 @@ def test_unrecognised_outcome_is_staged(env):
                               "text": "Outcome typed in meeting: 'approve, but only 4x3'; as decided: —"}]
     assert res["staged"] == [p.pid]
     assert p.pid in (root / "Status" / "Meetings" / "group" / "2026-11-19.md").read_text()
+
+
+def test_second_read_refused_when_note_exists(env):
+    from hub.agenda.build import set_read_back
+    s, cfg, root, ids = env
+    path = build_agenda(root, "group")
+    r1 = row_of(path, ids["d1"].id)
+    fill(path, {f"H{r1}": "approve"})
+    read_agenda(s, cfg, "group", author="bob", today=MEET)
+    before = {k: len(s.get(v.id).entries) for k, v in ids.items()}
+    set_read_back(path, False)
+    with pytest.raises(AgendaError, match="already exists"):
+        read_agenda(s, cfg, "group", author="bob", today=MEET)
+    assert before == {k: len(s.get(v.id).entries) for k, v in ids.items()}
+
+
+def test_resolved_decision_not_overwritten(env):
+    s, cfg, root, ids = env
+    s.set_fields(ids["d2"].id, {"status": "made"})
+    path = build_agenda(root, "group")
+    r2 = row_of(path, ids["d2"].id)
+    fill(path, {f"H{r2}": "Reject", f"I{r2}": "nope"})
+    res = read_agenda(s, cfg, "group", author="bob", today=MEET)
+    assert s.get(ids["d2"].id).status == "made"
+    p = next(x for x in load_proposals(root) if x.title.startswith("Outcome for already-resolved"))
+    assert p.title == "Outcome for already-resolved decision at group/2026-11-19: Drop Z"
+    assert p.body["ops"][0]["op"] == "entry" and "nope" in p.body["ops"][0]["text"]
+    assert p.pid in res["staged"]
+
+
+def test_notes_without_outcome_staged(env):
+    s, cfg, root, ids = env
+    path = build_agenda(root, "group")
+    r1 = row_of(path, ids["d1"].id)
+    fill(path, {f"I{r1}": "Leaning yes", f"J{r1}": "Email Bob (alice)"})
+    res = read_agenda(s, cfg, "group", author="bob", today=MEET)
+    assert s.get(ids["d1"].id).entries[-1].text == "Not reached at group/2026-11-19."
+    assert ids["d1"].id in res["not_reached"]
+    p = next(x for x in load_proposals(root) if x.title.startswith("Notes without outcome"))
+    assert p.title == "Notes without outcome at group/2026-11-19: Adopt Y"
+    op = p.body["ops"][0]
+    assert op["op"] == "entry" and "Leaning yes" in op["text"] and "Email Bob (alice)" in op["text"]
+
+
+def test_build_refuses_unreadable_live_date(env):
+    s, cfg, root, _ = env
+    path = build_agenda(root, "group")
+    wb = load_workbook(path)
+    del wb["_meta"]
+    for ws in wb.worksheets:
+        ws["B1"] = ""
+    wb.save(path)
+    draft = scaffold(s, root, "group", date(2026, 11, 26))
+    draft["summary"] = "Next."
+    save_draft(root, draft)
+    with pytest.raises(AgendaError, match="no readable meeting date"):
+        build_agenda(root, "group")
+    assert build_agenda(root, "group", force=True).is_file()
