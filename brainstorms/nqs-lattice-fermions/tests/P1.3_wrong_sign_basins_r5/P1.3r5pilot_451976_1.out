@@ -6,3 +6,5 @@
 [13:37:14] ALL CHECKS PASSED
 [13:37:32] instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=Cuhf width=6 seed=22 pre(fid cap)=600 rel(energy steps)=900 init_from=-
 [13:38:19] ED levels [-11.388010886295248, -11.338627749487609, -11.329223800405972, -11.31736051148136] deg 1; |G|=8 chi(psi_0)={'My': 1, 'Mx': 1, 'D': -1}; S(psi_0)=0; level labels [{'chars': {'My': 1.0, 'Mx': 1.0, 'D': -1.0}, 'S2': 0.0, 'in_sector': True}, {'chars': {'My': 1.0, 'Mx': 1.0, 'D': 1.0}, 'S2': 0.0, 'in_sector': False}, {'chars': {'My': -1.0, 'Mx': -1.0, 'D': -1.0}, 'S2': 2.0, 'in_sector': False}, {'chars': {'My': -0.299, 'Mx': 0.299, 'D': -0.9543}, 'S2': 2.0, 'in_sector': False}] (47 s)
+[13:40:30] Cuhf-w6-s22: n_params=1734 calib=3.55e-14 init |P psi|/|psi|=3.538e-01 init F=0.0375
+[13:40:47] Cuhf-w6-s22: it     0 [E] E = -9.58690021 F = 0.037537 |f| = 1.88e+00 (17.65 s/step)

@@ -162,7 +162,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.3 | SUBMITTED (width-6 basin pilot; premise checked by own control arm) | tasks 12–35 blocked on pilot decision | Slurm 451976 (12 tasks) |
 | P2.1 | SUBMITTED (2 more control seeds) | nothing | Slurm 451706 |
 | P2.2 | SUBMITTED (round 5 reduced: accuracy trend + equal-cost foils + calibrated cost; no unconditional survivor) | nothing | Slurm 452238 (44 tasks) |
-| P3.1 | MUTATE (round 7; CLX INJECT-FAIL; low-ω dominance confirmed on real states) | nothing | round-7 worker; Slurm 452146 (formal), 451837 |
+| P3.1 | BLOCKED (round 7: ESR0 survivor; Prop. S3) | injected check job 454376 (INJECT-PASS required before excited-state training) | Slurm 454376, 452146 (formal), 451837 |
 | P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
 | P4.1 | SUBMITTED (decisive pilot; completeness probe: one AGP per c incomplete, eps_tab(K=1) at least 6.8e-3, K=2 about 2e-8) | report gates on 451839 | Slurm 451886 (15 tasks), 451839 (completeness) |
 | P4.2 | SUBMITTED (capacity pilot; ELT killed Gate 0, PA carried) | array blocked on capacity pilot (ε_scr^∞ at most 3% → run array, else enlarge family) | Slurm 452196 (capacity), 451914 (close 3.1) |

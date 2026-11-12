@@ -2,3 +2,4 @@
 === [W] H4_R4.4_d0.25_g1 K=16 dim=14400 E_FCI=-1.985652 HF wt=0.493 nnz/row=1023 (17.9s)
   CASJ     seed=0 dE=   0.642 mHa Var(EL)=3.04e-03 P=692 (train 468s)
   CASJ     seed=1 dE=   0.632 mHa Var(EL)=3.00e-03 P=692 (train 465s)
+  CASJ     seed=2 dE=   0.638 mHa Var(EL)=3.01e-03 P=692 (train 470s)
