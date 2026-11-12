@@ -163,7 +163,7 @@ def build_parser() -> argparse.ArgumentParser:
                     help="only items whose last activity is on or after this date")
     ls.add_argument("--json", action="store_true",
                     help="print a JSON list of objects with keys id, type, status, title, owner, priority "
-                         "(1-3 or null) and last_activity (YYYY-MM-DD) instead of text lines")
+                         "(1-3 or null), due (YYYY-MM-DD or null; actions only) and last_activity (YYYY-MM-DD) instead of text lines")
 
     sh = _sp(sub, "show", "print one item",
              "Print an item as its Markdown file, optionally followed by everything descending from it.")
@@ -268,9 +268,14 @@ def _me(cfg) -> str:
     return cfg.me
 
 
+def _iso_or_none(value):
+    return value.isoformat() if hasattr(value, "isoformat") else (str(value) if value else None)
+
+
 def _row(it) -> dict:
     return {"id": it.id, "type": it.type, "status": it.status, "title": it.title, "owner": it.owner,
-            "priority": it.meta.get("priority"), "last_activity": it.last_activity().isoformat()}
+            "priority": it.meta.get("priority"), "due": _iso_or_none(it.meta.get("due")),
+            "last_activity": it.last_activity().isoformat()}
 
 
 def _pull_first(root) -> None:

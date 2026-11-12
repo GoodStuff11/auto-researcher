@@ -165,3 +165,14 @@ def test_safe_new_may_set_due_and_spawned_by(hub_root, store):
     assert rep["applied"] == 1
     action = store.query(type="action")[0]
     assert action.meta["due"] == date(2026, 11, 30) and action.meta["links"]["spawned_by"] == [q.id]
+
+
+def test_proposal_new_owner_must_be_a_known_person(hub_root, store):
+    q, batch = base(store)
+    batch["proposals"].append({"title": "Act", "reason": "r", "source": "s", "ops": [
+        {"op": "new", "type": "action", "title": "Z", "owner": "mallory", "source": "s"}]})
+    people = {"alice": {}, "bob": {}}
+    assert any("mallory" in e and "proposal 2" in e for e in check_batch(store, batch, people=people))
+    with pytest.raises(BatchError, match="nothing written"):
+        run_batch(hub_root, store, batch, author="alice", day=D, people=people)
+    assert load_proposals(hub_root) == []

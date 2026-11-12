@@ -212,3 +212,13 @@ def test_unexpected_keyerror_is_not_user_error(cli, monkeypatch):
 def test_unknown_item_message(cli, capsys):
     code, _, err = run(capsys, "show", "Q-20990101-zzz")
     assert code == 1 and err.strip() == "error: no such item Q-20990101-zzz"
+
+
+def test_list_json_has_due(cli, capsys):
+    run(capsys, "new", "a", "Do it", "--source", "manual", "--owner", "alice")
+    aid = Store(cli).query(type="action")[0].id
+    run(capsys, "set", aid, "due=2026-12-01")
+    rows = json.loads(run(capsys, "list", "--type", "action", "--json")[1])
+    assert rows[0]["due"] == "2026-12-01"
+    run(capsys, "new", "q", "Why?", "--source", "manual")
+    assert json.loads(run(capsys, "list", "--type", "question", "--json")[1])[0]["due"] is None

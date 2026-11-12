@@ -189,6 +189,13 @@ def check_batch(store: Store, batch, people=None) -> list[str]:
             errs.append(f"{where}: ops must be a list of mappings, each with an op name")
             continue
         errs += [f"{where}: {e}" for e in check_ops(store, ops)]
+        if people is not None:
+            for j, o in enumerate(ops):
+                if o.get("op") == "new" and o.get("owner") is not None:
+                    if not _is_str(o["owner"]):
+                        errs.append(f"{where} (op {j + 1}): owner must be a string")
+                    elif o["owner"] not in people:
+                        errs.append(f"{where} (op {j + 1}): owner {o['owner']} is not a known person")
     if not all(_nonempty(f) for f in batch.get("flags") or []):
         errs.append("flags must be non-empty strings")
     wm = batch.get("watermark")
