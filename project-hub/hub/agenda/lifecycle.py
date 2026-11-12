@@ -122,7 +122,7 @@ def read_agenda(store: Store, config: HubConfig, series: str, *, author: str, to
         if did is None:
             if row.outcome or row.as_decided or row.outcome_text or row.new_actions.strip():
                 snippet = " ".join((row.as_decided or row.new_actions or row.outcome_text).split())[:UNTITLED_CHARS]
-                title = row.decide or f"(untitled: {snippet})"
+                title = " ".join((row.decide or f"(untitled: {snippet})").split())
                 ops = [{"op": "new", "ref": "$d", "type": "decision", "title": title, "owner": author,
                         "series": [series], "source": source,
                         "fields": {"status": RAISED_STATUS[row.outcome], "meeting": tag,
