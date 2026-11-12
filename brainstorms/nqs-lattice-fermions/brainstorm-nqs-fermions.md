@@ -162,7 +162,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.3 | SUBMITTED (width-6 basin pilot; premise checked by own control arm) | tasks 12–35 blocked on pilot decision | Slurm 451976 (12 tasks) |
 | P2.1 | SUBMITTED (2 more control seeds) | nothing | Slurm 451706 |
 | P2.2 | SUBMITTED (round 5 reduced: accuracy trend + equal-cost foils + calibrated cost; no unconditional survivor) | nothing | Slurm 452238 (44 tasks) |
-| P3.1 | BLOCKED (round 7: ESR0 survivor; Prop. S3) | injected check job 454376 (INJECT-PASS required before excited-state training) | Slurm 454376, 452146 (formal), 451837 |
+| P3.1 | CRITIC (round 7: ESR0 INJECT-PASS, 16/21 tracked, G=0; L1R 1/21, G=0.90) | step-2 excited-state training waits on critic | per-leaf critic; Slurm 452146 (formal), 451837 |
 | P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
 | P4.1 | SUBMITTED (decisive pilot; completeness probe: one AGP per c incomplete, eps_tab(K=1) at least 6.8e-3, K=2 about 2e-8) | report gates on 451839 | Slurm 451886 (15 tasks), 451839 (completeness) |
 | P4.2 | SUBMITTED (capacity pilot; ELT killed Gate 0, PA carried) | array blocked on capacity pilot (ε_scr^∞ at most 3% → run array, else enlarge family) | Slurm 452196 (capacity), 451914 (close 3.1) |
@@ -337,6 +337,13 @@ Every number below was read from the result files by an agent; the orchestrator 
     * **CLX: INJECT-FAIL.** It tracked 0 of 4 set-A items, abstaining almost everywhere because its jackknife SE is about $\lvert\delta\rvert$.
     * **The Lanczos variance-extrapolation controls give false certificates on every set-A item** ($G=1.00$), as S1/S2 predict. They track only the high-$\omega$ junk set.
     * **P3.1 goes to round-7 mutation**, aimed at estimating or bounding the low-$\omega$ in-irrep subspace directly.
+    * **Round 7, ESR0 (excited-state subspace Ritz): INJECT-PASS (job 454376, grade R).**
+        * Set A: 16 of 21 items tracked (0.76), per-seed median 0.83, **no false certificates**. The Lanczos control L1R tracks 1 of 21 with false-certificate rate 0.90.
+        * Real items: 3 of 3 tracked, none false.
+        * The observable error is concentrated in few in-irrep levels: $K_{1/2}$ = 2 (pair), 6 (spin), 11 (charge).
+        * Even an oracle energy-window certificate is $9$–$81\times$ looser than $\lvert\delta\rvert$.
+        * **Proposition S3:** junk at energy $\varepsilon$ in an excited state recovers only $\omega/(\omega+\varepsilon)$ of that level's error, so trained excited states must reach $\varepsilon\lesssim\omega$.
+        * Step 2 (training width-6 excited states) waits on the per-leaf critic.
 * **P4.1 completeness result (job 451839, 4×3 OBC, $U=8$, $t'=-0.25$).** This is the best tabular fit of one or two charge-conditioned singlet AGPs per charge configuration to $\psi_0$. All fits are exact singlets ($\lvert\langle S^2\rangle\rvert\le10^{-16}$).
 
 | $N_e$ | Weight on configurations with $N_s\ge10$ | Infidelity, $K=1$ | Infidelity, $K=2$ |
