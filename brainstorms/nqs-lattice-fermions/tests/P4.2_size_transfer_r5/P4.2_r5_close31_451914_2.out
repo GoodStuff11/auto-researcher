@@ -1,0 +1,6 @@
+[    94.8s] instance t'=-0.25 J=0.4: E0=-13.93410177 E1=-13.74106215 <S2>=-7.26e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
+[   102.0s] target 4x4 t'=-0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=13070 E0=-13.93410177 (full -13.93410177) gap/V=1.3904e-02 no same-irrep competitor below 0.005 t/site: sign half only
+[   102.0s] projected-sector dimension 13070 / route parameters 122 = 107.1
+[   102.0s] calibration: E_sign(exact signs) - E0 = 5.329e-15; Pd(E0)=4.8483e-03
+[   142.7s] arm tr@0     : E=-4.08815830 eps=6.1537e-01 (raw 6.1563e-01, irrep weight 0.390) A/V=1.6382e-01 sign-agree=-0.1540 Pd=4.5697e-03 fid=0.0033
+[   322.8s]   [tr] step 5/50 eps=1.98631e-01 lr=0.0805

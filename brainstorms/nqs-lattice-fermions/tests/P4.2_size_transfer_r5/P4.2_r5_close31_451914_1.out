@@ -7,3 +7,6 @@
 [   541.6s]   [tr] step 10/50 eps=8.75841e-02 lr=0.0648
 [   551.5s] arm tr@10    : E=-12.53275673 eps=8.7584e-02 (raw 1.1303e-01, irrep weight 0.883) sign-agree=0.9260 Pd=2.5880e-03 fid=0.6814
 [   736.0s]   [tr] step 15/50 eps=3.58901e-02 lr=0.104
+[   919.6s]   [tr] step 20/50 eps=3.51714e-02 lr=0.168
+[   930.8s] arm tr@20    : E=-13.37135910 eps=3.5171e-02 (raw 7.7459e-02, irrep weight 0.810) A/V=5.5844e-03 sign-agree=0.9620 Pd=4.6136e-03 fid=0.7986
+[  1120.0s]   [tr] step 25/50 eps=3.49166e-02 lr=0.135
