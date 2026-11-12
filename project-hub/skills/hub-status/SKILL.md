@@ -35,7 +35,7 @@ Maintains the shared status store of one project hub vault (an Obsidian vault th
 1. Identify the series and date (the user, or the series whose `Agenda/<series>.xlsx` has not been read back; ask if ambiguous).
 2. `hub agenda read <series>` applies the decisions recorded in the workbook and stages free-text items. If it refuses, show its message (it explains what to do).
 3. **Circleback cross-check** (`sources/circleback.md`, section *Cross-check*): compare what was said with `hub meeting decided <series> <date> --json`; anything decided or assigned aloud but not recorded becomes a proposal.
-4. Run **update** for the other sources (ClickUp especially).
+4. Run steps 1–4 of **update** for the other sources (ClickUp especially), not a full update, so approvals and the commit happen once in step 5.
 5. Then steps 5-9 of update, in that order: approval batch → `hub validate` → ClickUp push (new actions need tasks, including the ones from the proposals just applied) → one `hub commit` → report.
 ## Writing entries
 One factual sentence each, with numbers when there are numbers ("4×3 open-boundary run finished: F = 0.97 at 1092 parameters"). Name the item the fact serves. Cite the source id in `--source` (formats in each source file).
