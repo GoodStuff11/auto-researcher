@@ -90,7 +90,7 @@ found, and >= 6 scored items over >= 3 seeds.
 
 Usage
 -----
-  python3 micro_test.py --mode checks                  small-cluster correctness checks (~2 min)
+  python3 micro_test.py --mode checks                  small-cluster correctness checks (~3 min)
   python3 micro_test.py --mode inject [--results DIR]  injected-sign-flip check alone (~5 min)
   python3 micro_test.py --mode train --width 6 --seed S   one projected-SR training (hours)
   python3 micro_test.py --mode analyze --widths 6 --seeds 11,22,33   all arms + inject check
@@ -99,7 +99,7 @@ Options
   --mode {checks,inject,train,analyze,aggregate}  (default checks)
       checks    small 4x4 2+2 cluster: first-order oracle, historic OSG sampled vs exact, local energy.
       inject    builds the instance, runs only the injected-sign-flip check; writes <results>/inject.json.
-      train     trains one network (--width, --seed); writes <results>/params/inst0_nnbf_w{W}_s{S}.npz.
+      train     trains one network (--width, --seed); writes <params-dir>/inst0_nnbf_w{W}_s{S}.npz.
       analyze   all arms on every (width, seed, label) found, plus the injected check;
                 writes <results>/analysis.json.
       aggregate reads <results>/analysis.json, prints the table and verdict, writes aggregate.json.
@@ -107,7 +107,7 @@ Options
   --width INT         NNBF hidden width for --mode train (default 6).
   --seed INT          Seed for --mode train.
   --widths LIST       Widths analysed (default 6). Width 6 is read from --p21-params first, then
-                      from <results>/params/inst0_nnbf_w6_s{S}.npz; other widths only from the latter.
+                      from <params-dir>/inst0_nnbf_w6_s{S}.npz; other widths only from the latter.
   --seeds LIST        Seeds analysed (default 11,22,33). Missing parameter files are skipped (logged).
   --labels LIST       Labels analysed, subset of {P, P_S} (default P). P_S states get EHX = ZV = NaN
                       (no hybrids are formed); only P is scored by aggregate.
@@ -118,11 +118,13 @@ Options
   --minres-iters INT  ZRO iteration cap (default 3000).
   --no-inject         analyze: skip the injected check (aggregate then reports INJECT = missing,
                       which counts as INJECT not passed).
-  --results DIR       default results/ next to this script.
+  --results DIR       output folder (default results/ next to this script).
+  --params-dir DIR    trained parameter files (default results/params next to this script, independent
+                      of --results, so a gate run with its own --results still finds trained seeds).
   --p21-params DIR    default ../P2.1_subcubic_amplitudes_r3/results/params
   --p21-results DIR   default ../P2.1_subcubic_amplitudes_r3/results (dE_sign premise)
 Outputs
-  train:     <results>/params/inst0_nnbf_w{W}_s{S}.npz and <results>/train_w{W}_s{S}.json
+  train:     <params-dir>/inst0_nnbf_w{W}_s{S}.npz and <results>/train_w{W}_s{S}.json
   analyze:   <results>/analysis.json (rows: truth, every arm's estimate, SE_boot, SE_jk; inject rows)
   inject:    <results>/inject.json
   aggregate: printed table and verdict; <results>/aggregate.json
@@ -212,7 +214,7 @@ def train(args):
     psiP = state_of(ans, m, sg, args.chunk)[1]
     psiP /= np.linalg.norm(psiP)
     Ef = float(psiP @ (m.H @ psiP))
-    pd = os.path.join(args.results, "params")
+    pd = args.results_params
     os.makedirs(pd, exist_ok=True)
     np.savez(os.path.join(pd, f"inst0_nnbf_w{args.width}_s{args.seed}.npz"), flat=ans.flat(),
              layout=json.dumps([[k, list(ans.p[k].shape)] for k in ans.keys]))
@@ -511,26 +513,43 @@ def zro(m, ob, psi, obs, maxiter):
     return float(-2.0 * r @ x), int(info)
 
 
+def param_file(args, wdt, seed):
+    """Width 6: P2.1 file first, then this test's trained file; other widths: this test only."""
+    cands = []
+    if wdt == 6:
+        cands.append(os.path.join(args.p21_params, f"inst0_nnbf_s{seed}.npz"))
+    cands.append(os.path.join(args.results_params, f"inst0_nnbf_w{wdt}_s{seed}.npz"))
+    for f in cands:
+        if os.path.exists(f):
+            return f
+    return None
+
+
 def analyze(args):
     m, W, psi0, sg, S0, ob = rc.setup(4, log)
     a0 = ob.all(psi0)
     log("a0 " + json.dumps(a0))
     rng = np.random.default_rng(2026)
+    labels = [x for x in args.labels.split(",") if x]
+    assert set(labels) <= {"P", "P_S"}, labels
     states = {}
     for wdt in [int(x) for x in args.widths.split(",")]:
         for seed in [int(x) for x in args.seeds.split(",")]:
-            f = (os.path.join(args.p21_params, f"inst0_nnbf_s{seed}.npz") if wdt == 6
-                 else os.path.join(args.results, "params", f"inst0_nnbf_w{wdt}_s{seed}.npz"))
-            if not os.path.exists(f):
-                log(f"missing {f}; skipped"); continue
+            f = param_file(args, wdt, seed)
+            if f is None:
+                log(f"missing parameters for width {wdt} seed {seed}; skipped"); continue
             ans = rc.load_params(rc.nnbf(m, wdt, seed), f)
             psiP = sg.project(ans.amplitudes(args.chunk)); psiP /= np.linalg.norm(psiP)
-            psiPS = m.spin_project(psiP, S0); psiPS /= np.linalg.norm(psiPS)
-            for lab, v in (("P", psiP), ("P_S", psiPS)):
+            vs = {"P": psiP}
+            if "P_S" in labels:
+                psiPS = m.spin_project(psiP, S0); vs["P_S"] = psiPS / np.linalg.norm(psiPS)
+            for lab in labels:
+                v = vs[lab]
                 if v @ psi0 < 0:
                     v = -v
                 states[(wdt, seed, lab)] = v
-    log(f"{len(states)} states")
+            log(f"loaded {f}")
+    log(f"{len(states)} states: {sorted(states)}")
     dsign = []
     for seed in [int(x) for x in args.seeds.split(",")]:
         jf = os.path.join(args.p21_results, f"inst0_nnbf_s{seed}.json")
@@ -545,31 +564,24 @@ def analyze(args):
         E = float(psi @ (m.H @ psi))
         a = ob.all(psi)
         lz, _ = lanczos_vex(m, ob, psi)
-        idx = samples[key]
-        # EHX hybrids and ZV ensemble (other seeds, same label)
-        others = [k2 for k2 in states if k2[2] == lab and k2[1] != seed]
-        hyb = [plain[key]]
-        for k2 in others:
-            psj = states[k2]
-            h1 = np.abs(psi) * np.sign(psj)
-            h1 /= np.linalg.norm(h1)
-            hyb.append(point_stats(m, ob, h1, idx))
-            h2 = np.abs(psj) * np.sign(psi)
-            h2 /= np.linalg.norm(h2)
-            hyb.append(point_stats(m, ob, h2, samples[k2]))
-        ehx, ehx_se = ensemble_extrap(hyb, args.n_boot, rng)
-        zv, zv_se = ensemble_extrap([plain[key]] + [plain[k2] for k2 in others], args.n_boot, rng)
+        # EHX / ZV partners: other seeds, same width and label (leave-own-seed-out). No P_S hybrids.
+        others = [k2 for k2 in states if k2[0] == wdt and k2[2] == lab and k2[1] != seed]
+        if lab == "P":
+            ez = ehx_zv(m, ob, psi, samples[key], plain[key],
+                        [(states[k2], samples[k2], plain[k2]) for k2 in others], args.n_boot, rng)
+        else:
+            ez = None
         for obs in rc.OBS:
             d_true = a0[obs] - a[obs]
             sd_vals = [ob.expect(obs, states[k2]) for k2 in states if k2[0] == wdt and k2[2] == lab]
             est = {}
-            d, se, nk = osg(m, ob, psi, obs, idx, args.n_boot, rng)
-            est["OSG"] = dict(d=d, se=se, nk=nk)
-            d, se, _ = osg(m, ob, psi, obs, idx, args.n_boot, rng, single=True)
-            est["SMA"] = dict(d=d, se=se)
             a_s = float(np.mean(plain[key][1][obs]))
-            est["EHX"] = dict(d=ehx[obs] - a_s, se=ehx_se[obs])
-            est["ZV"] = dict(d=zv[obs] - a_s, se=zv_se[obs])
+            for arm in ("EHX", "ZV", "EHX_R", "EHX_E", "ZV_R", "ZV_E"):
+                if ez is None:
+                    est[arm] = dict(d=float("nan"), se=float("nan"), se_boot=float("nan"), se_jk=float("nan"))
+                else:
+                    e = ez[arm][obs]
+                    est[arm] = est_entry(e["a"], a_s, e["se_boot"], e["se_jk"])
             est["L1"] = dict(d=lz[obs]["L1"], se=0.0)
             est["L2"] = dict(d=lz[obs]["L2"], se=0.0)
             est["SD"] = dict(d=float(np.std(sd_vals, ddof=1)) if len(sd_vals) > 1 else float("nan"), se=0.0)
@@ -577,22 +589,27 @@ def analyze(args):
             d, info = zro(m, ob, psi, obs, args.minres_iters)
             est["ZRO"] = dict(d=d, se=0.0, info=info)
             rows.append(dict(width=wdt, seed=seed, label=lab, obs=obs, a0=a0[obs], a=a[obs], delta=d_true,
-                             dE=E - W[0], ov0=float((psi0 @ psi) ** 2), est=est))
+                             dE=E - W[0], ov0=float((psi0 @ psi) ** 2), n_partners=len(others), est=est))
             log(f"w{wdt} s{seed} {lab} {obs}: delta={d_true:+.3e} (rel {abs(d_true) / abs(a0[obs]):.3f}) | "
-                + " ".join(f"{k}={v['d']:+.2e}" for k, v in est.items()))
+                + " ".join(f"{k}={v['d']:+.2e}" for k, v in est.items())
+                + f" | SE(EHX) boot {est['EHX'].get('se_boot', float('nan')):.1e} jk {est['EHX'].get('se_jk', float('nan')):.1e}")
         log(f"state {key} done ({time.time() - t0:.0f} s)")
-    out = dict(a0=a0, ed=W.tolist(), dE_sign_w6=dsign, rows=rows, args=vars(args))
+    inj = [] if args.no_inject else inject_check(m, ob, psi0, sg, a0, args, rng)
+    out = dict(a0=a0, ed=W.tolist(), dE_sign_w6=dsign, rows=rows, inject_rows=inj, args=vars(args))
     os.makedirs(args.results, exist_ok=True)
     json.dump(out, open(os.path.join(args.results, "analysis.json"), "w"), indent=1)
 
 
 # ============================================================================ aggregate
 def classify(arm, row):
-    e = row["est"][arm]
+    e = row["est"].get(arm)
+    if e is None:
+        return "abstain"
     d, dh = row["delta"], e["d"]
     if not np.isfinite(dh):
         return "abstain"
-    if arm != "SD" and e.get("se", 0.0) > TRUST * abs(dh):
+    se = e.get("se", 0.0)
+    if arm != "SD" and (not np.isfinite(se) or se > TRUST * abs(dh)):
         return "untrusted"
     ratio = abs(dh) / abs(d) if arm == "SD" else dh / d
     if 0.5 <= ratio <= 2.0:
@@ -602,51 +619,69 @@ def classify(arm, row):
     return "over"
 
 
+def g_false(cl):
+    """G = false / trusted items; None (undefined) if fewer than MIN_TRUSTED trusted items."""
+    nt = sum(c in ("tracked", "false", "over") for c in cl)
+    return (sum(c == "false" for c in cl) / nt if nt >= MIN_TRUSTED else None), nt
+
+
 def aggregate(args):
     D = json.load(open(os.path.join(args.results, "analysis.json")))
-    rows = [r for r in D["rows"] if abs(r["delta"]) >= SCORE_REL * abs(r["a0"])]
+    allP = [r for r in D["rows"] if r["label"] == "P"]          # one label per network is scored
+    rows = [r for r in allP if abs(r["delta"]) >= SCORE_REL * abs(r["a0"])]
     seeds = sorted({r["seed"] for r in rows})
     med_sign = float(np.median(D["dE_sign_w6"])) if D["dE_sign_w6"] else float("nan")
-    print(f"scored items {len(rows)} of {len(D['rows'])} over seeds {seeds}; "
+    print(f"rule {args.rule}; label P only; scored items {len(rows)} of {len(allP)} over seeds {seeds}; "
           f"width-6 control median dE_sign = {med_sign:.4f}")
+    print("note: per-seed EHX/ZV estimates share partner data (each seed's fit uses every other seed).")
     for obs in rc.OBS:
-        rr = [r for r in D["rows"] if r["obs"] == obs]
-        print(f"  {obs}: a0={rr[0]['a0']:+.3e} median |delta|/|a0| = "
-              f"{np.median([abs(r['delta']) / abs(r['a0']) for r in rr]):.3f}, scored {sum(1 for r in rows if r['obs'] == obs)}")
+        rr = [r for r in allP if r["obs"] == obs]
+        if rr:
+            print(f"  {obs}: a0={rr[0]['a0']:+.3e} median |delta|/|a0| = "
+                  f"{np.median([abs(r['delta']) / abs(r['a0']) for r in rr]):.3f}, scored {sum(1 for r in rows if r['obs'] == obs)}")
+    inj = inject_verdict(D["inject_rows"]) if D.get("inject_rows") else None
+    print("INJECT: " + ("missing (counts as not passed)" if inj is None else
+                        f"scored {inj['scored']}, tracked {inj['tracked']}, EHX {inj['classes']['EHX']} -> "
+                        f"{'PASS' if inj['passed'] else 'FAIL'}"))
+    inj_ok = bool(inj and inj["passed"])
     if not (med_sign >= PREMISE_SIGN and len(rows) >= 6 and len(seeds) >= 3):
         print("VERDICT: NO-TARGET (premise gate)")
-        json.dump(dict(verdict="NO-TARGET"), open(os.path.join(args.results, "aggregate.json"), "w"))
+        json.dump(dict(verdict="NO-TARGET", inject=inj), open(os.path.join(args.results, "aggregate.json"), "w"), indent=1)
         return
-    T = {arm: {} for arm in ARMS}
-    G = {}
-    print("arm   M      G      per-seed tracked fractions")
+    T, G = {}, {}
+    print("arm    role        M      G (false/trusted, n_trusted)   per-seed tracked fractions")
     for arm in ARMS:
         cl = [classify(arm, r) for r in rows]
-        for s in seeds:
-            sel = [c for c, r in zip(cl, rows) if r["seed"] == s]
-            T[arm][s] = sum(c == "tracked" for c in sel) / len(sel)
-        G[arm] = sum(c == "false" for c in cl) / len(cl)
-        print(f"{arm:4s} {np.median(list(T[arm].values())):.3f}  {G[arm]:.3f}  "
+        T[arm] = {s: sum(c == "tracked" for c, r in zip(cl, rows) if r["seed"] == s)
+                  / sum(1 for r in rows if r["seed"] == s) for s in seeds}
+        G[arm] = g_false(cl)
+        role = ("decides" if arm == ROUTE else "comparator" if arm == COMPARATOR
+                else "diagnostic" if arm in DIAGNOSTICS else "reported")
+        gs = "undef" if G[arm][0] is None else f"{G[arm][0]:.3f}"
+        print(f"{arm:6s} {role:10s} {np.median(list(T[arm].values())):.3f}  {gs:>5s} (n={G[arm][1]:2d})          "
               + " ".join(f"{s}:{T[arm][s]:.2f}" for s in seeds))
-    B = max(CONTROLS, key=lambda c: np.median(list(T[c].values())))
-    zro_ok = np.median(list(T["ZRO"].values())) >= 0.7
-    verdict = {}
-    for arm in ROUTES:
-        gains = [T[arm][s] - T[B][s] for s in seeds]
-        M = float(np.median(list(T[arm].values()))); Dl = float(np.median(gains))
-        if arm == "OSG" and not zro_ok:
-            v = "FAIL (premise: ZRO tracks < 70%)"
-        elif M >= 0.5 and Dl >= 0.2 and min(gains) > 0 and G[arm] <= 0.10:
+    gains = [T[ROUTE][s] - T[COMPARATOR][s] for s in seeds]
+    M = float(np.median(list(T[ROUTE].values()))); Dl = float(np.median(gains))
+    g, nt = G[ROUTE]
+    g_ok = g is not None and g <= 0.10
+    if args.rule == "gate":
+        ok = inj_ok and M >= 0.5 and Dl > 0 and g_ok
+        v = ("GATE-PASS: train >= 8 more width-6 seeds (submit_train.sbatch), then --rule full" if ok else
+             "GATE-FAIL: EHX = Route 2.3 restated; mark the leaf for mutation; no training compute")
+    else:
+        if inj_ok and M >= 0.5 and Dl >= 0.2 and min(gains) > 0 and g_ok:
             v = "PASS"
-        elif M < 0.3 or Dl < 0.05 or G[arm] > 0.20:
+        elif (not inj_ok) or M < 0.3 or Dl < 0.05 or (g is not None and g > 0.20):
             v = "FAIL"
         else:
-            v = "AMBIGUOUS"
-        verdict[arm] = dict(M=M, Delta=Dl, spread=float(max(gains) - min(gains)), G=G[arm], best_control=B, verdict=v)
-        print(f"{arm}: M={M:.3f} vs best control {B} M={np.median(list(T[B].values())):.3f}; "
-              f"paired median Delta={Dl:+.3f} (per-seed {['%+.2f' % g for g in gains]}); G={G[arm]:.3f} -> {v}")
-    print("VERDICT: " + "; ".join(f"{k} = {v['verdict']}" for k, v in verdict.items()))
-    json.dump(verdict, open(os.path.join(args.results, "aggregate.json"), "w"), indent=1)
+            v = "AMBIGUOUS (rerun --mc-samples 500000; still not PASS -> killed)"
+    res = dict(rule=args.rule, M=M, Delta=Dl, gains=gains, G=g, n_trusted=nt, inject=inj,
+               comparator=COMPARATOR, verdict=v, T={k: {str(s): x for s, x in t.items()} for k, t in T.items()})
+    print(f"EHX (form S): M={M:.3f} vs ZV M={np.median(list(T[COMPARATOR].values())):.3f}; paired median gain "
+          f"{Dl:+.3f} (per-seed {['%+.2f' % x for x in gains]}); G={'undef' if g is None else '%.3f' % g} "
+          f"(n_trusted={nt}); INJECT {'PASS' if inj_ok else 'not passed'}")
+    print("VERDICT: " + v)
+    json.dump(res, open(os.path.join(args.results, "aggregate.json"), "w"), indent=1)
 
 
 # ============================================================================ checks
@@ -685,15 +720,23 @@ def checks(args):
     row = m.H.getrow(k)
     direct = float((row @ psi)[0]) / psi[k]
     log(f"check local energy indexed vs sparse row: {(m.H @ psi)[k] / psi[k]:.12e} vs {direct:.12e}")
+    # injected-sign-flip machinery on the small cluster (irrep closure, known delta, EHX/ZV fits)
+    a0s = ob.all(psi0)
+    v = inject_verdict(inject_check(m, ob, psi0, sg, a0s, args, rng))
+    log(f"check inject (small cluster): scored {v['scored']} tracked {v['tracked']} EHX {v['classes']['EHX']} "
+        f"-> {'PASS' if v['passed'] else 'FAIL'}")
     log("P3.1-r5 CHECKS DONE")
 
 
 def parse_args(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--mode", default="checks", choices=["checks", "train", "analyze", "aggregate"])
-    ap.add_argument("--width", type=int, default=3)
+    ap.add_argument("--mode", default="checks", choices=["checks", "inject", "train", "analyze", "aggregate"])
+    ap.add_argument("--width", type=int, default=6)
     ap.add_argument("--seed", type=int, default=11)
-    ap.add_argument("--widths", default="3,6,12")
+    ap.add_argument("--widths", default="6")
+    ap.add_argument("--labels", default="P")
+    ap.add_argument("--rule", default="gate", choices=["gate", "full"])
+    ap.add_argument("--no-inject", action="store_true")
     ap.add_argument("--seeds", default="11,22,33")
     ap.add_argument("--sr-iters", type=int, default=1200)
     ap.add_argument("--sr-lr", type=float, default=0.05)
@@ -705,6 +748,7 @@ def parse_args(argv=None):
     ap.add_argument("--n-boot", type=int, default=100)
     ap.add_argument("--minres-iters", type=int, default=3000)
     ap.add_argument("--results", default=os.path.join(HERE, "results"))
+    ap.add_argument("--params-dir", dest="results_params", default=os.path.join(HERE, "results", "params"))
     ap.add_argument("--p21-params", default=os.path.join(HERE, "..", "P2.1_subcubic_amplitudes_r3", "results", "params"))
     ap.add_argument("--p21-results", default=os.path.join(HERE, "..", "P2.1_subcubic_amplitudes_r3", "results"))
     return ap.parse_args(argv)
@@ -712,7 +756,7 @@ def parse_args(argv=None):
 
 def main(argv=None):
     args = parse_args(argv)
-    {"checks": checks, "train": train, "analyze": analyze, "aggregate": aggregate}[args.mode](args)
+    {"checks": checks, "inject": inject_mode, "train": train, "analyze": analyze, "aggregate": aggregate}[args.mode](args)
 
 
 if __name__ == "__main__":

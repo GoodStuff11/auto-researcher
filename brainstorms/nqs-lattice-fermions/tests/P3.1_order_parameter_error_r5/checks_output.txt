@@ -1,11 +1,8 @@
-[11:15:40] check first-order oracle eps=0.01 pair: delta -1.480423e-06 ZRO -1.504865e-06 (minres info 0)
-[11:15:40] check first-order oracle eps=0.01 spin: delta -3.648250e-06 ZRO -3.571874e-06 (minres info 0)
-[11:15:40] check first-order oracle eps=0.01 charge: delta -2.599890e-06 ZRO -2.582495e-06 (minres info 0)
-[11:15:40] check first-order oracle eps=0.001 pair: delta -7.027578e-08 ZRO -7.041987e-08 (minres info 0)
-[11:15:40] check first-order oracle eps=0.001 spin: delta +6.204203e-07 ZRO +6.209023e-07 (minres info 0)
-[11:15:40] check first-order oracle eps=0.001 charge: delta +2.835136e-06 ZRO +2.834995e-06 (minres info 0)
-[11:16:42] check OSG pair: pieces 15 kept 15 sampled +9.0129e-06 +- 1.8e-05 vs exact-Galerkin +5.1975e-06 | ZRO +7.0018e-06 | true delta +7.4772e-06
-[11:17:01] check OSG spin: pieces 9 kept 8 sampled +3.2428e-05 +- 1.8e-05 vs exact-Galerkin +4.6746e-05 | ZRO +1.5225e-05 | true delta +1.4261e-05
-[11:17:22] check OSG charge: pieces 9 kept 8 sampled -1.3293e-04 +- 7.1e-05 vs exact-Galerkin -3.5657e-05 | ZRO -5.3334e-05 | true delta -5.3597e-05
-[11:17:22] check local energy indexed vs sparse row: -8.702832457707e+00 vs -8.702832457707e+00
-[11:17:22] P3.1-r5 CHECKS DONE
+[11:33:01] check first-order oracle eps=0.01 pair: delta -1.480423e-06 ZRO -1.504865e-06 (minres info 0)
+[11:33:01] check first-order oracle eps=0.01 spin: delta -3.648250e-06 ZRO -3.571874e-06 (minres info 0)
+[11:33:01] check first-order oracle eps=0.01 charge: delta -2.599890e-06 ZRO -2.582495e-06 (minres info 0)
+[11:33:01] check first-order oracle eps=0.001 pair: delta -7.027578e-08 ZRO -7.041987e-08 (minres info 0)
+[11:33:01] check first-order oracle eps=0.001 spin: delta +6.204203e-07 ZRO +6.209023e-07 (minres info 0)
+[11:33:01] check first-order oracle eps=0.001 charge: delta +2.835136e-06 ZRO +2.834995e-06 (minres info 0)
+[11:33:59] check OSG pair: pieces 15 kept 15 sampled +9.0129e-06 +- 1.8e-05 vs exact-Galerkin +5.1975e-06 | ZRO +7.0018e-06 | true delta +7.4772e-06
+[11:34:17] check OSG spin: pieces 9 kept 8 sampled +3.2428e-05 +- 1.8e-05 vs exact-Galerkin +4.6746e-05 | ZRO +1.5225e-05 | true delta +1.4261e-05
