@@ -1,36 +1,79 @@
-# project-hub/hub/sync_state.py
-"""Status/sync-state.yaml: per-source watermarks, next meeting per series, unresolved sync flags."""
+"""Status/sync-state/: per-source ingest watermarks, next meeting per series, unresolved sync flags.
+
+One small file per key, so clones updating different sources never touch the same file:
+  Status/sync-state/watermark.<source>.yaml      `value: <watermark>`
+  Status/sync-state/next_meeting.<series>.yaml   `value: <YYYY-MM-DD>`
+  Status/sync-state/flags.md                     one `- <text>` line per flag (git `merge=union`)
+"""
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import yaml
 
+from .fsutil import atomic_write_text
 
-def _path(root) -> Path:
-    return Path(root) / "Status" / "sync-state.yaml"
+KINDS = {"watermarks": "watermark", "next_meeting": "next_meeting"}
+NAME_RE = re.compile(r"^[A-Za-z0-9_-][A-Za-z0-9_.-]*$")
+
+
+def state_dir(root) -> Path:
+    return Path(root) / "Status" / "sync-state"
+
+
+def _check_name(name: str) -> str:
+    if not isinstance(name, str) or not NAME_RE.match(name):
+        raise ValueError(f"sync-state key must be letters, digits, '_', '-' or '.', got {name!r}")
+    return name
+
+
+def _key_path(root, kind: str, name: str) -> Path:
+    return state_dir(root) / f"{kind}.{_check_name(name)}.yaml"
+
+
+def _read_value(path: Path):
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return data.get("value") if isinstance(data, dict) else None
+
+
+def _write_value(path: Path, value) -> None:
+    atomic_write_text(path, yaml.safe_dump({"value": value}, allow_unicode=True))
 
 
 def load_state(root) -> dict:
-    p = _path(root)
-    data = (yaml.safe_load(p.read_text()) if p.is_file() else None) or {}
-    data.setdefault("watermarks", {})
-    data.setdefault("next_meeting", {})
-    data.setdefault("flags", [])
-    return data
+    d = state_dir(root)
+    state: dict = {"watermarks": {}, "next_meeting": {}, "flags": []}
+    if not d.is_dir():
+        return state
+    for key, kind in KINDS.items():
+        for p in sorted(d.glob(f"{kind}.*.yaml")):
+            state[key][p.name[len(kind) + 1:-len(".yaml")]] = _read_value(p)
+    flags = d / "flags.md"
+    if flags.is_file():
+        state["flags"] = [ln[2:].strip() for ln in flags.read_text(encoding="utf-8").splitlines()
+                          if ln.startswith("- ") and ln[2:].strip()]
+    return state
 
 
 def save_state(root, state: dict) -> None:
-    p = _path(root)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(yaml.safe_dump(state, sort_keys=True, allow_unicode=True))
+    """Write the whole state; keys absent from `state` are removed."""
+    d = state_dir(root)
+    for key, kind in KINDS.items():
+        wanted = {_check_name(n): v for n, v in (state.get(key) or {}).items()}
+        for p in d.glob(f"{kind}.*.yaml") if d.is_dir() else []:
+            if p.name[len(kind) + 1:-len(".yaml")] not in wanted:
+                p.unlink()
+        for name, value in wanted.items():
+            _write_value(_key_path(root, kind, name), value)
+    flags = [" ".join(str(f).split()) for f in state.get("flags") or []]
+    atomic_write_text(d / "flags.md", "".join(f"- {f}\n" for f in flags if f))
 
 
 def get_watermark(root, source: str):
-    return load_state(root)["watermarks"].get(source)
+    p = _key_path(root, "watermark", source)
+    return _read_value(p) if p.is_file() else None
 
 
 def set_watermark(root, source: str, value: str) -> None:
-    state = load_state(root)
-    state["watermarks"][source] = value
-    save_state(root, state)
+    _write_value(_key_path(root, "watermark", source), value)

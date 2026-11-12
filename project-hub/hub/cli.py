@@ -43,7 +43,7 @@ Commands (each has its own --help):
                              Status/Pending/<P-id>.md (one file per proposal),
                              write the meeting note, archive the workbook
   sync-state get SOURCE | set SOURCE VALUE
-                             read/write ingest watermarks in Status/sync-state.yaml
+                             read/write ingest watermarks (Status/sync-state/watermark.<SOURCE>.yaml)
   commit MESSAGE             git add -A, commit, pull --rebase, regenerate Snapshot.md, push (3 retries);
                              exit 3 on a genuine merge conflict (rebase is aborted, nothing lost)
 
@@ -219,7 +219,8 @@ def build_parser() -> argparse.ArgumentParser:
     ar.add_argument("series", help="meeting series key")
 
     ss = _sp(sub, "sync-state", "ingest watermarks",
-             "Read or write ingest watermarks in Status/sync-state.yaml. Subcommands: get, set.")
+             "Read or write ingest watermarks, one file per source at Status/sync-state/watermark.<SOURCE>.yaml. "
+             "SOURCE is letters, digits, _, - or . only. Subcommands: get, set.")
     sss = ss.add_subparsers(dest="scmd", required=True, metavar="SUBCOMMAND")
     sg = _sp(sss, "get", "print a watermark", "Print the watermark for SOURCE (empty line if none).")
     sg.add_argument("source", help="ingest source name, e.g. clickup or circleback")

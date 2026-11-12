@@ -198,6 +198,26 @@ def test_pull_if_possible(two_clones, tmp_path):
     assert warning and warning.startswith("warning: could not pull")
 
 
+def test_concurrent_watermarks_and_flags_merge(two_clones):
+    from hub.sync_state import load_state, save_state, set_watermark
+    a, b = two_clones
+    set_watermark(a, "clickup", "2026-11-12T10:00")
+    state = load_state(a)
+    state["flags"] = ["flag from A"]
+    save_state(a, state)
+    set_watermark(b, "circleback", "2026-11-12T11:00")
+    state = load_state(b)
+    state["flags"] = ["flag from B"]
+    save_state(b, state)
+    commit(a, "a")
+    commit(b, "b")  # different watermark files; flags.md union-merges
+    git(a, "pull", "--rebase")
+    for clone in (a, b):
+        st = load_state(clone)
+        assert st["watermarks"] == {"circleback": "2026-11-12T11:00", "clickup": "2026-11-12T10:00"}
+        assert sorted(st["flags"]) == ["flag from A", "flag from B"]
+
+
 def test_cli_commit_with_garbage_item_still_pushes(two_clones):
     from hub.cli import main
     a, b = two_clones

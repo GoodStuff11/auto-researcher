@@ -17,6 +17,7 @@ GITATTRIBUTES_LINES = [
     "Status/Log/*.md merge=union",
     "Status/Snapshot.md merge=ours",
     "Status/Items/*.md merge=hub-item",
+    "Status/sync-state/flags.md merge=union",
     "*.xlsx binary",
     "*.md text eol=lf",
     "*.yaml text eol=lf",
