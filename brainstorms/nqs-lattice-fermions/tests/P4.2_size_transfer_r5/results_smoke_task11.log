@@ -5,15 +5,5 @@
 [     1.1s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
 [     1.1s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
 [     1.1s] SELFTEST PASSED
-Traceback (most recent call last):
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 707, in <module>
-    main()
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 703, in main
-    run(a)
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 445, in run
-    T = target_setup(a, R)
-        ^^^^^^^^^^^^^^^^^^
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 418, in target_setup
-    assert ok and not deg and abs(s2) < 1e-6, f"target GS not a non-degenerate 1-D singlet: {ev} S2={s2}"
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: target GS not a non-degenerate 1-D singlet: {'Mx': -1.0000000000000002, 'My': -1.0000000000000004, 'D': -1.0000000000000004} S2=2.0000000000000004
+[     1.7s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
+[     2.3s]   [env restart 0] step 1/60 E=-2.90794405,-2.06887654,-4.54801861,-4.46895507 lr=0.055 relerr=3.623e-01,5.463e-01,4.984e-01,5.071e-01

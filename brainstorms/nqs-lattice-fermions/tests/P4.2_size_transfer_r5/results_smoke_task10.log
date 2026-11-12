@@ -1,19 +1,50 @@
 [     0.0s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
 [     0.2s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
-[     0.6s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
-[     1.1s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
-[     1.1s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
-[     1.1s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
-[     1.1s] SELFTEST PASSED
-Traceback (most recent call last):
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 707, in <module>
-    main()
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 703, in main
-    run(a)
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 445, in run
-    T = target_setup(a, R)
-        ^^^^^^^^^^^^^^^^^^
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 418, in target_setup
-    assert ok and not deg and abs(s2) < 1e-6, f"target GS not a non-degenerate 1-D singlet: {ev} S2={s2}"
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: target GS not a non-degenerate 1-D singlet: {'Mx': -1.0000000000000002, 'My': -1.0000000000000004, 'D': -1.0000000000000004} S2=2.0000000000000004
+[     0.5s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
+[     1.0s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
+[     1.0s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
+[     1.0s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
+[     1.0s] SELFTEST PASSED
+[     1.4s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
+[     2.0s]   [env restart 0] step 1/60 E=-2.97217129,-3.48824585,-6.88584220,-7.17370858 lr=0.055 relerr=3.482e-01,2.350e-01,2.406e-01,2.088e-01
+[     3.4s]   [env restart 0] step 7/60 E=-3.09776196,-3.63245610,-7.18342427,-7.46193106 lr=0.0487 relerr=3.206e-01,2.034e-01,2.078e-01,1.771e-01
+[     4.8s]   [env restart 0] step 13/60 E=-3.13701972,-3.71874560,-7.31437969,-7.64320299 lr=0.0863 relerr=3.120e-01,1.844e-01,1.933e-01,1.571e-01
+[     6.3s]   [env restart 0] step 19/60 E=-3.14640228,-3.74157326,-7.35369644,-7.71455897 lr=0.0191 relerr=3.100e-01,1.794e-01,1.890e-01,1.492e-01
+[     7.7s]   [env restart 0] step 25/60 E=-3.14835717,-3.75712488,-7.37136983,-7.75431805 lr=0.0169 relerr=3.095e-01,1.760e-01,1.870e-01,1.448e-01
+[     9.1s]   [env restart 0] step 31/60 E=-3.15381175,-3.77846772,-7.40523385,-7.80942119 lr=0.015 relerr=3.083e-01,1.713e-01,1.833e-01,1.387e-01
+[    10.4s]   [env restart 0] step 37/60 E=-3.16252566,-3.80710994,-7.45881515,-7.88245169 lr=0.0266 relerr=3.064e-01,1.651e-01,1.774e-01,1.307e-01
+[    11.8s]   [env restart 0] step 43/60 E=-3.16317655,-3.82198477,-7.48714007,-7.91915857 lr=0.0235 relerr=3.063e-01,1.618e-01,1.743e-01,1.266e-01
+[    13.2s]   [env restart 0] step 49/60 E=-3.16729954,-3.84201398,-7.53092822,-7.96663776 lr=0.0208 relerr=3.054e-01,1.574e-01,1.694e-01,1.214e-01
+[    14.6s]   [env restart 0] step 55/60 E=-3.16925286,-3.85837072,-7.56866169,-8.00296774 lr=0.0185 relerr=3.049e-01,1.538e-01,1.653e-01,1.174e-01
+[    15.8s]   [env restart 0] step 60/60 E=-3.17127078,-3.87250374,-7.60364666,-8.03304593 lr=0.0149 relerr=3.045e-01,1.507e-01,1.614e-01,1.141e-01
+[    16.2s]   [env restart 1] step 1/60 E=-1.69509480,-0.76632070,-3.17994100,-2.30919259 lr=0.055 relerr=6.282e-01,8.319e-01,6.493e-01,7.453e-01
+[    17.6s]   [env restart 1] step 7/60 E=-2.81753985,-1.84597264,-5.26220296,-4.48794896 lr=0.0487 relerr=3.821e-01,5.952e-01,4.197e-01,5.050e-01
+[    19.0s]   [env restart 1] step 13/60 E=-3.35029391,-2.40047007,-6.38049306,-5.78524441 lr=0.0863 relerr=2.652e-01,4.735e-01,2.963e-01,3.620e-01
+[    20.4s]   [env restart 1] step 19/60 E=-3.64800148,-3.11490122,-7.44636188,-7.10422789 lr=0.0764 relerr=2.000e-01,3.169e-01,1.788e-01,2.165e-01
+[    21.8s]   [env restart 1] step 25/60 E=-3.68995845,-3.12333136,-7.53530030,-7.19649819 lr=0.0339 relerr=1.908e-01,3.150e-01,1.690e-01,2.063e-01
+[    23.2s]   [env restart 1] step 31/60 E=-3.73952800,-3.10367383,-7.58996505,-7.25966921 lr=0.03 relerr=1.799e-01,3.193e-01,1.629e-01,1.994e-01
+[    24.6s]   [env restart 1] step 37/60 E=-3.81077688,-3.10388615,-7.69453185,-7.38157901 lr=0.0531 relerr=1.643e-01,3.193e-01,1.514e-01,1.859e-01
+[    26.0s]   [env restart 1] step 43/60 E=-3.85770314,-3.12507711,-7.80734884,-7.51502105 lr=0.0235 relerr=1.540e-01,3.146e-01,1.390e-01,1.712e-01
+[    27.4s]   [env restart 1] step 49/60 E=-3.89426806,-3.12215225,-7.85316899,-7.58785575 lr=0.0417 relerr=1.459e-01,3.153e-01,1.339e-01,1.632e-01
+[    28.8s]   [env restart 1] step 55/60 E=-3.95620128,-3.13872798,-7.93181745,-7.72622884 lr=0.0739 relerr=1.324e-01,3.116e-01,1.252e-01,1.479e-01
+[    30.0s]   [env restart 1] step 60/60 E=-3.99515503,-3.15673516,-7.97906506,-7.81107425 lr=0.0297 relerr=1.238e-01,3.077e-01,1.200e-01,1.386e-01
+[    30.0s] source env: relerr=['1.24e-01', '3.08e-01', '1.20e-01', '1.39e-01'] |theta-theta_init|=0.479
+[    30.0s] env coverage of target environments: library 1.0000, src-a only 0.7999; uncovered [104]
+[    31.8s] arm env@0    : E=-2.32288110 eps=4.5904e-01 (raw 1.1597e-01, irrep weight 0.024) A/V=1.1826e-01 sign-agree=0.0244 Pd=5.5080e-03 fid=0.0314
+[    32.3s]   [env] step 1/12 eps=3.80283e-01 lr=0.055
+[    32.9s]   [env] step 2/12 eps=3.44512e-01 lr=0.0605
+[    33.0s] arm env@2    : E=-4.15531750 eps=3.4451e-01 (raw 1.5277e-01, irrep weight 0.125) sign-agree=0.2752 Pd=4.3326e-03 fid=0.0513
+[    33.6s]   [env] step 3/12 eps=2.73424e-01 lr=0.0666
+[    34.2s]   [env] step 4/12 eps=2.28479e-01 lr=0.0732
+[    34.3s] arm env@4    : E=-6.01184074 eps=2.2848e-01 (raw 1.4395e-01, irrep weight 0.246) sign-agree=0.4751 Pd=6.4638e-03 fid=0.2239
+[    34.9s]   [env] step 5/12 eps=1.77332e-01 lr=0.0805
+[    35.5s]   [env] step 6/12 eps=1.14750e-01 lr=0.0886
+[    36.8s] arm env@6    : E=-7.83151828 eps=1.1475e-01 (raw 1.2879e-01, irrep weight 0.543) A/V=5.0088e-03 sign-agree=0.9624 Pd=1.1660e-02 fid=0.4595
+[    37.4s]   [env] step 7/12 eps=4.87136e-02 lr=0.0974
+[    37.9s]   [env] step 8/12 eps=3.52563e-02 lr=0.107
+[    38.6s]   [env] step 9/12 eps=1.41650e-02 lr=0.0589
+[    39.3s]   [env] step 10/12 eps=1.07223e-02 lr=0.0648
+[    40.0s]   [env] step 11/12 eps=8.77073e-03 lr=0.0713
+[    40.7s]   [env] step 12/12 eps=7.27156e-03 lr=0.0785
+[    42.1s] arm env@12   : E=-9.55116601 eps=7.2716e-03 (raw 6.1304e-02, irrep weight 0.338) A/V=1.2127e-03 sign-agree=0.9910 Pd=8.3984e-03 fid=0.8930
+[    42.1s] done (results_smoke/task10.json)

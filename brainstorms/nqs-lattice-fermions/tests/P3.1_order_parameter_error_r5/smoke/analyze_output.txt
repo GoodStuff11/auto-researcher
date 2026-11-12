@@ -2,3 +2,11 @@
 [11:16:33] observables: pair pairs (R>=3.0) 22, site pairs (R>=3.5) 10
 [11:16:34] a0 {"pair": 9.22356233054273e-05, "spin": 0.05338127903520056, "charge": -0.001415903914327327}
 [11:16:38] 2 states
+[11:17:41] w6 s11 P pair: delta=+2.895e-05 (rel 0.314) | OSG=+1.58e-05 SMA=+1.86e-05 EHX=+nan ZV=+nan L1=+3.62e-06 L2=-9.22e-07 SD=+nan OSGX=-4.37e-06 ZRO=+4.06e-05
+[11:17:51] w6 s11 P spin: delta=+7.876e-03 (rel 0.148) | OSG=+1.07e-02 SMA=+7.71e-03 EHX=+nan ZV=+nan L1=+1.44e-03 L2=+3.21e-03 SD=+nan OSGX=+7.81e-03 ZRO=+1.02e-02
+[11:17:58] w6 s11 P charge: delta=-3.122e-04 (rel 0.220) | OSG=+1.10e-04 SMA=+2.94e-05 EHX=+nan ZV=+nan L1=+7.84e-06 L2=-8.43e-05 SD=+nan OSGX=+7.29e-05 ZRO=-1.48e-04
+[11:17:58] state (6, 11, 'P') done (79 s)
+[11:18:56] w6 s11 P_S pair: delta=+2.788e-05 (rel 0.302) | OSG=+4.86e-05 SMA=+5.70e-05 EHX=+nan ZV=+nan L1=+3.83e-06 L2=-2.93e-06 SD=+nan OSGX=-7.20e-06 ZRO=+3.41e-05
+[11:19:04] w6 s11 P_S spin: delta=+8.525e-03 (rel 0.160) | OSG=+9.24e-03 SMA=+8.04e-03 EHX=+nan ZV=+nan L1=+1.72e-03 L2=+4.18e-03 SD=+nan OSGX=+8.10e-03 ZRO=+1.17e-02
+[11:19:09] w6 s11 P_S charge: delta=-3.390e-04 (rel 0.239) | OSG=-2.87e-04 SMA=-2.14e-04 EHX=+nan ZV=+nan L1=-1.58e-05 L2=-1.61e-04 SD=+nan OSGX=-4.26e-06 ZRO=-1.94e-04
+[11:19:09] state (6, 11, 'P_S') done (71 s)

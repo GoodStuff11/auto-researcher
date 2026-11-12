@@ -9,3 +9,6 @@
 [11:14:12] projected sector dim range(P_S P_chi) = 1618 (space-group irrep 5214); NNBF width 4: 676 parameters; ratio 2.39
 [11:14:17] snap A t'=-0.55048 W=4 s=1234: it     0  E = -11.51728792  |f| = 1.48e+00  (1.53 s/step)
 [11:15:33] snap A t'=-0.55048 W=4 s=1234: it    50  E = -13.15256235  |f| = 8.04e-01  (1.51 s/step)
+[11:16:51] snap A t'=-0.55048 W=4 s=1234: it   100  E = -13.24218846  |f| = 3.79e-01  (1.54 s/step)
+[11:18:09] snap A t'=-0.55048 W=4 s=1234: it   150  E = -13.24663685  |f| = 3.60e-01  (1.55 s/step)
+[11:19:28] snap A t'=-0.55048 W=4 s=1234: it   200  E = -13.34793640  |f| = 7.13e-01  (1.55 s/step)

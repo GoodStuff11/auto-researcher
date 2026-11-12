@@ -1,0 +1,26 @@
+=== H4 distorted chain R=4.4 K=6 dim=225 E_FCI=-1.984758 HF wt=0.490 <|C|>=92 (1.1s)
+  logderiv vs FD rel err=4.7e-09; VJP vs per-sample O err=7.1e-15
+  ALE unbiasedness (3000 draws, 4 rows, |dtheta|=0.46): max z ALE0=2.31 ALE1=1.26; per-draw sd ALE0=1.91e-01 ALE1=3.04e-02; sum_j JVP_j vs g~.dtheta rel err=3.2e-10
+  (3.4s)
+SMOKE CHECKS PASS
+=== H4 distorted chain R=4.4 K=8 dim=784 E_FCI=-1.984806 HF wt=0.491 <|C|>=198 (1.2s)
+  warm start: 150 L-BFGS its, dE=0.662 mHa (0s); P=920 <|C|>_pi=198; cal: a=103us b=0.64us/amp ts=106us bg=1.72us/term; real-kernel wall ALE0(Kd=4)/EXACT per sample=0.4101 CI=[0.3901781898282358, 0.42709702942311056]
+  EXACT seed=0: steps=31 anchors=0 dE(C_b)[ops]=0.662 [cal]=0.662 dE(C_b/2)[ops]=0.662 last dE=0.662 mHa (0s)
+  EXACT seed=1: steps=31 anchors=0 dE(C_b)[ops]=0.663 [cal]=0.663 dE(C_b/2)[ops]=0.662 last dE=0.663 mHa (0s)
+  EXACT seed=2: steps=31 anchors=0 dE(C_b)[ops]=0.662 [cal]=0.662 dE(C_b/2)[ops]=0.662 last dE=0.662 mHa (0s)
+=== H4 distorted chain R=4.4 K=8 dim=784 E_FCI=-1.984806 HF wt=0.491 <|C|>=198 (1.1s)
+  warm start: 150 L-BFGS its, dE=0.662 mHa (0s); P=920 <|C|>_pi=198; cal: a=110us b=0.58us/amp ts=102us bg=1.62us/term; real-kernel wall ALE0(Kd=4)/EXACT per sample=0.4117 CI=[0.39123316752330095, 0.43455702887298453]
+  EXACTNF seed=10: steps=31 anchors=0 dE(C_b)[ops]=0.662 [cal]=0.662 dE(C_b/2)[ops]=0.662 last dE=0.662 mHa (0s)
+  EXACTNF seed=11: steps=31 anchors=0 dE(C_b)[ops]=0.662 [cal]=0.662 dE(C_b/2)[ops]=0.662 last dE=0.662 mHa (0s)
+  EXACTNF seed=12: steps=31 anchors=0 dE(C_b)[ops]=0.662 [cal]=0.662 dE(C_b/2)[ops]=0.662 last dE=0.662 mHa (0s)
+=== H4 distorted chain R=4.4 K=8 dim=784 E_FCI=-1.984806 HF wt=0.491 <|C|>=198 (1.1s)
+  warm start: 150 L-BFGS its, dE=0.662 mHa (0s); P=920 <|C|>_pi=198; cal: a=112us b=0.55us/amp ts=116us bg=1.70us/term; real-kernel wall ALE0(Kd=4)/EXACT per sample=0.4168 CI=[0.3997358629225153, 0.435886518160367]
+  SCREEN:1e-2 seed=0: steps=120 anchors=0 dE(C_b)[ops]=0.688 [cal]=0.684 dE(C_b/2)[ops]=0.684 last dE=0.688 mHa (0s)
+  SCREEN:1e-2 seed=1: steps=120 anchors=0 dE(C_b)[ops]=0.687 [cal]=0.683 dE(C_b/2)[ops]=0.684 last dE=0.687 mHa (0s)
+  SCREEN:1e-2 seed=2: steps=120 anchors=0 dE(C_b)[ops]=0.688 [cal]=0.685 dE(C_b/2)[ops]=0.686 last dE=0.688 mHa (0s)
+=== H4 distorted chain R=4.4 K=8 dim=784 E_FCI=-1.984806 HF wt=0.491 <|C|>=198 (1.1s)
+  warm start: 150 L-BFGS its, dE=0.662 mHa (0s); P=920 <|C|>_pi=198; cal: a=108us b=0.66us/amp ts=115us bg=1.78us/term; real-kernel wall ALE0(Kd=4)/EXACT per sample=0.3969 CI=[0.3847326286446682, 0.41158839091858185]
+  +B mode: per-sample cost ratio EXACT/arm = 5.24 -> B = 400
+  SCREEN:1e-2+B seed=0: steps=41 anchors=0 dE(C_b)[ops]=0.687 [cal]=0.681 dE(C_b/2)[ops]=0.682 last dE=0.687 mHa (1s)
+  SCREEN:1e-2+B seed=1: steps=41 anchors=0 dE(C_b)[ops]=0.701 [cal]=0.694 dE(C_b/2)[ops]=0.694 last dE=0.701 mHa (1s)
+  SCREEN:1e-2+B seed=2: steps=41 anchors=0 dE(C_b)[ops]=0.689 [cal]=0.682 dE(C_b/2)[ops]=0.683 last dE=0.689 mHa (1s)

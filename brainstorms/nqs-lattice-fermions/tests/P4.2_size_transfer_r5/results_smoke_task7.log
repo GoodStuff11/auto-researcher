@@ -5,15 +5,45 @@
 [     1.0s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
 [     1.0s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
 [     1.0s] SELFTEST PASSED
-Traceback (most recent call last):
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 707, in <module>
-    main()
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 703, in main
-    run(a)
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 445, in run
-    T = target_setup(a, R)
-        ^^^^^^^^^^^^^^^^^^
-  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 418, in target_setup
-    assert ok and not deg and abs(s2) < 1e-6, f"target GS not a non-degenerate 1-D singlet: {ev} S2={s2}"
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: target GS not a non-degenerate 1-D singlet: {'Mx': -1.0000000000000002, 'My': -1.0000000000000004, 'D': -1.0000000000000004} S2=2.0000000000000004
+[     1.4s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
+[     1.5s]   [pa restart 0] step 1/60 E=-2.98128732,-3.52448409 lr=0.055 relerr=3.462e-01,2.270e-01
+[     1.6s]   [pa restart 0] step 7/60 E=-3.02305284,-3.59172157 lr=0.0244 relerr=3.370e-01,2.123e-01
+[     1.6s]   [pa restart 0] step 13/60 E=-3.07032875,-3.65651783 lr=0.0432 relerr=3.266e-01,1.981e-01
+[     1.7s]   [pa restart 0] step 19/60 E=-3.08451193,-3.72065629 lr=0.0764 relerr=3.235e-01,1.840e-01
+[     1.8s]   [pa restart 0] step 25/60 E=-3.08625727,-3.77005608 lr=0.0677 relerr=3.231e-01,1.732e-01
+[     1.8s]   [pa restart 0] step 31/60 E=-3.10158012,-3.79524890 lr=0.015 relerr=3.198e-01,1.677e-01
+[     1.9s]   [pa restart 0] step 37/60 E=-3.10317009,-3.80233496 lr=0.0266 relerr=3.194e-01,1.661e-01
+[     2.0s]   [pa restart 0] step 43/60 E=-3.10652877,-3.81395436 lr=0.0235 relerr=3.187e-01,1.636e-01
+[     2.1s]   [pa restart 0] step 49/60 E=-3.10808500,-3.82071215 lr=0.0208 relerr=3.184e-01,1.621e-01
+[     2.1s]   [pa restart 0] step 55/60 E=-3.10948091,-3.82806362 lr=0.0185 relerr=3.181e-01,1.605e-01
+[     2.2s]   [pa restart 0] step 60/60 E=-3.11060564,-3.83433483 lr=0.0149 relerr=3.178e-01,1.591e-01
+[     2.2s]   [pa restart 1] step 1/60 E=-1.91215392,-0.97409373 lr=0.055 relerr=5.806e-01,7.864e-01
+[     2.3s]   [pa restart 1] step 7/60 E=-2.04600819,-1.07836487 lr=0.0244 relerr=5.513e-01,7.635e-01
+[     2.4s]   [pa restart 1] step 13/60 E=-2.18914474,-1.18349678 lr=0.0432 relerr=5.199e-01,7.404e-01
+[     2.4s]   [pa restart 1] step 19/60 E=-2.38083661,-1.32755571 lr=0.0764 relerr=4.779e-01,7.089e-01
+[     2.5s]   [pa restart 1] step 25/60 E=-2.67839000,-1.55601757 lr=0.0677 relerr=4.126e-01,6.587e-01
+[     2.6s]   [pa restart 1] step 31/60 E=-2.86360810,-1.76025699 lr=0.06 relerr=3.720e-01,6.140e-01
+[     2.7s]   [pa restart 1] step 37/60 E=-2.99649951,-1.89095690 lr=0.0531 relerr=3.428e-01,5.853e-01
+[     2.7s]   [pa restart 1] step 43/60 E=-3.31819210,-2.20660396 lr=0.0471 relerr=2.723e-01,5.161e-01
+[     2.8s]   [pa restart 1] step 49/60 E=-3.44929395,-2.33100470 lr=0.0208 relerr=2.435e-01,4.888e-01
+[     2.9s]   [pa restart 1] step 55/60 E=-3.63762640,-2.50683148 lr=0.00923 relerr=2.022e-01,4.502e-01
+[     2.9s]   [pa restart 1] step 60/60 E=-3.69543066,-2.56978663 lr=0.0149 relerr=1.896e-01,4.364e-01
+[     2.9s] source pa: relerr=['3.18e-01', '1.59e-01'] |theta-theta_init|=0.296
+[     4.8s] arm pa@0     : E=-8.31643572 eps=8.4442e-02 (raw 1.0467e-01, irrep weight 0.129) A/V=1.6649e-02 sign-agree=0.8301 Pd=7.2139e-03 fid=0.4245
+[     5.4s]   [pa] step 1/12 eps=7.55537e-02 lr=0.055
+[     6.1s]   [pa] step 2/12 eps=7.09598e-02 lr=0.0303
+[     6.2s] arm pa@2     : E=-8.53215356 eps=7.0960e-02 (raw 9.3889e-02, irrep weight 0.295) sign-agree=0.8497 Pd=6.1969e-03 fid=0.4865
+[     6.8s]   [pa] step 3/12 eps=6.24782e-02 lr=0.0333
+[     7.4s]   [pa] step 4/12 eps=5.40884e-02 lr=0.0366
+[     7.5s] arm pa@4     : E=-8.80209599 eps=5.4088e-02 (raw 7.5409e-02, irrep weight 0.437) sign-agree=0.9043 Pd=6.2140e-03 fid=0.5586
+[     8.1s]   [pa] step 5/12 eps=4.58829e-02 lr=0.0403
+[     8.7s]   [pa] step 6/12 eps=3.75660e-02 lr=0.0443
+[    10.0s] arm pa@6     : E=-9.06645525 eps=3.7566e-02 (raw 5.3819e-02, irrep weight 0.540) A/V=3.9453e-03 sign-agree=0.9718 Pd=6.0543e-03 fid=0.6501
+[    10.6s]   [pa] step 7/12 eps=2.92922e-02 lr=0.0487
+[    11.2s]   [pa] step 8/12 eps=2.22961e-02 lr=0.0536
+[    11.8s]   [pa] step 9/12 eps=1.68455e-02 lr=0.0589
+[    12.3s]   [pa] step 10/12 eps=1.27128e-02 lr=0.0648
+[    12.9s]   [pa] step 11/12 eps=9.58727e-03 lr=0.0713
+[    13.6s]   [pa] step 12/12 eps=7.73454e-03 lr=0.0785
+[    15.0s] arm pa@12    : E=-9.54375835 eps=7.7345e-03 (raw 6.9764e-02, irrep weight 0.252) A/V=5.8394e-04 sign-agree=0.9954 Pd=6.0200e-03 fid=0.8981
+[    15.0s] done (results_smoke/task7.json)

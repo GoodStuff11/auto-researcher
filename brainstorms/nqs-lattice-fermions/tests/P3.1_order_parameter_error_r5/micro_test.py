@@ -65,7 +65,7 @@ Delta_X = median_u [T_X(u) - T_B(u)], spread = max-min over units of T_X(u) - T_
   PASS:  M_X >= 0.5, Delta_X >= 0.2, min_u [T_X(u) - T_B(u)] > 0 (positive on every seed),
          G_X (pooled false-certificate fraction) <= 0.10, and for OSG the ZRO premise holds.
   FAIL:  M_X < 0.3 or Delta_X < 0.05 or G_X > 0.20.
-  AMBIGUOUS otherwise; pre-committed action: rerun --mode analyze with --mc-samples 200000;
+  AMBIGUOUS otherwise; pre-committed action: rerun --mode analyze with --mc-samples 500000;
   a route still not PASS is killed.
 PREMISE GATE (NO-TARGET): the run counts only if the width-6 projected control's median dE_sign
 over its seeds is >= 0.005 t (P2.1 JSONs) AND >= 6 items are scored over >= 3 seeds. Otherwise

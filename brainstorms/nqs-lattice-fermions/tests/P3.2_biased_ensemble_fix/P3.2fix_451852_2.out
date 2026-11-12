@@ -8,3 +8,5 @@
 [11:16:31] P3.2-fix CHECKS PASSED
 [11:16:31] projected sector dim range(P_S P_chi) = 1618 (space-group irrep 5214); NNBF width 4: 676 parameters; ratio 2.39
 [11:16:36] snap A t'=-0.55048 W=4 s=3456: it     0  E = -11.51438939  |f| = 1.60e+00  (1.55 s/step)
+[11:17:53] snap A t'=-0.55048 W=4 s=3456: it    50  E = -13.13458651  |f| = 8.19e-01  (1.53 s/step)
+[11:19:09] snap A t'=-0.55048 W=4 s=3456: it   100  E = -13.30136595  |f| = 6.04e-01  (1.53 s/step)

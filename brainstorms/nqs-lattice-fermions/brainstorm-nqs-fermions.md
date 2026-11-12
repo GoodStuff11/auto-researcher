@@ -158,7 +158,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | :--- | :--- | :--- | :--- |
 | P1.1 | RESULT (PASS, qualified) | nothing | none |
 | P1.1-P | RESULT: SYMMETRY-DOMINATED (all instances) | nothing | none |
-| P1.2 | MUTATE (redesign onto 4×4 OBC t–J instance) | instance seed confirmation (job 451706) gates submission only | round-5 worker |
+| P1.2 | SUBMITTED (round 5 on 4×4 OBC; FRD is O(V) more passes per E_loc, so matched-parameter claim only) | nothing (premise read from own control arm) | Slurm 451916 (27 tasks) |
 | P1.3 | FIX (round 5 basin test, critic fixes) | job 451706 gates submission | fix worker |
 | P2.1 | SUBMITTED (2 more control seeds) | nothing | Slurm 451706 |
 | P2.2 | MUTATE (round 5; CGK killed) | nothing | round-5 worker |

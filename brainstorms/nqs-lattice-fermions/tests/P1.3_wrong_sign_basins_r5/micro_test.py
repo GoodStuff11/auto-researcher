@@ -10,85 +10,119 @@ On the shared instance (4x4 OBC, N_up = N_dn = 6, t' = -0.25, J = 0.4; D = 16816
 sector dim range(P_S P_chi) = 30220) a space-group-projected NNBF of width 6 (1734 parameters)
 keeps a nodal error dE_sign = 0.0125 t, overlap 0.936 with psi_0 (P2.1 round-3 pilot, job 410988,
 seed 11). P1.3 has a target only if that error is a basin: a better-signed state exists AT THE
-SAME WIDTH, is stable under projected SR, and is not found from cold starts. If instead the
-oracle-guided state relaxes back to the cold level, or the oracle optimum is no better, the error
-is a capacity limit and the leaf hands over to P2.1 / P1.2.
+SAME WIDTH, is strictly lower in energy, is stable under projected SR, and is not found from
+cold starts. If instead the oracle-guided state relaxes back to the cold level, or buys its
+better sign with a worse energy, the error is a capacity limit and the leaf hands over to
+P2.1 / P1.2. A better sign at EQUAL energy is SIGN-DEGENERATE: no target for P1.3 either.
 
 Arms (all: NNBF "full" mode of tj_core.LRAnsatz, K = 1, no Jastrow, width w; trained state
 psi_P = P_chi psi_theta, projected SR with the exact force and the sampled projected metric,
 exactly as P2.1's "nnbf" arm, which Cuhf at w = 6 reproduces step for step):
   Cuhf  cold start, reference = UHF orbitals of the U = 8 Hubbard model (p11_core.uhf_orbitals,
-        seed 1234; P2.1's reference). This is the PROJECTED CONTROL. --pre + --rel energy steps.
+        seed 1234; P2.1's reference). This is the PROJECTED CONTROL. --rel energy steps.
   Cfs   cold start, reference = Fermi sea of -T (lowest N_sigma orbitals, 1e-3 random diagonal
-        tie-break with seed + 31). --pre + --rel energy steps.
+        tie-break with seed + 31). --rel energy steps.
   Ccdw  cold start, reference = UHF from a charge-stripe initial density (column x = 0 depleted by
-        40%, other columns enriched, staggered moment 0.3; P1.3 round-3 "cdw"). --pre + --rel.
-  W     oracle arm, paired with Cuhf (same reference, same network initialisation, same SR random
-        stream): --pre steps of projected SR on -log F, F = <psi_0|psi_P>^2/<psi_P|psi_P>
-        (half-gradient force with coefficient psi_P/<psi_P|psi_P> - psi_0/<psi_0|psi_P>),
-        keeping the best-fidelity iterate ("W0"); then RELEASED to --rel steps of plain projected
-        energy SR. Every arm therefore takes the same total number of SR steps (--pre + --rel).
-Width ladder: w in {6, 4, 10} (1734, 1156, 2890 parameters). Seeds 11, 22, 33.
+        40%, other columns enriched, staggered moment 0.3; P1.3 round-3 "cdw"). --rel steps.
+  W     oracle arm, same reference, network initialisation and SR seed as Cuhf. The pairing is
+        nominal only: after the fidelity phase the SR sample stream and the parameters differ.
+        Fidelity phase: projected SR on -log F, F = <psi_0|psi_P>^2/<psi_P|psi_P> (half-gradient
+        force with coefficient psi_P/<psi_P|psi_P> - psi_0/<psi_0|psi_P>), run until
+        F >= fid_target = ov0_ref + 0.02 or --pre steps (cap), keeping the best-fidelity
+        iterate ("W0"). ov0_ref is the end overlap of Cuhf at the same (width, seed) if its
+        result exists, else the largest Cuhf end overlap of the same seed at any width, else
+        P2.1's control of the same seed (instance 0), else 0.936 (the P2.1 seed-11 value; the
+        smoke instance falls back to 0.9). --fid-target overrides. The fidelity phase is NOT
+        charged to the energy budget: W is then RELEASED to the same --rel energy steps as
+        every cold arm.
+Width ladder: w in {6, 4, 10} (1734, 1284, 2634 parameters, measured). Seeds 11, 22, 33.
 Snapshots with full P1.1 budgets (p11_core.budget: E_sign upper estimate = min of 4 L-BFGS-B
-starts and the ten Haaf fixed node, dE_tot, dE_sign, f_E, w_sign, ...), all on the best-energy
-iterate so far:
+starts and the ten Haaf fixed node, dE_tot, dE_sign, f_E, w_sign, spread, ...), all on the
+best-energy iterate so far; "step" counts energy steps:
   W0   (W only) end of the fidelity phase, state P;
-  mid  step --pre + --rel/2, state P;
-  end  step --pre + --rel, states P and P_S (post-hoc exact total-spin projection).
+  mid  energy step --rel // 2, state P;
+  end  energy step --rel, states P and P_S (post-hoc exact total-spin projection).
 Each snapshot also records ov_k = |<E_k|psi>|^2 with the 4 lowest ED levels and their sector
 labels (space-group characters, <S^2>), so a same-sector competitor would be visible.
-Energy and fidelity traces are stored per step; "converged" means the mean energy of the last
-100 steps is at most CONV_TOL = 1e-3 t below the mean of the 100 steps before (2% of the
-control's dE_tot = 0.052); "W0 plateau" means the fidelity of the last 50 fidelity steps gained
-at most 2e-3 over the 50 before.
+Energy and fidelity traces are stored per step. "Converged" (every arm, W after release too)
+means the least-squares slope of the energy trace over the last CONV_WIN = 200 energy steps
+gives a drop of at most CONV_TOL = 3e-4 t per 100 steps (fewer than 200 energy steps: not
+converged). "fid_reached" means F(W0) >= fid_target.
 
-Pre-committed decision rule (implemented in --mode aggregate; primary state P, metric dE_sign)
+Pre-committed decision rule (implemented in width_verdict / global_verdict / pilot_decision)
 ---------------------------------------------------------------------------------------------
-Per width w, with n complete seeds (n >= 3 required, otherwise UNCLEAR):
+Per width w, with n complete seeds (n >= 3 required, otherwise INCOMPLETE):
   c_a      = median over seeds of dE_sign(cold arm a, end);  Cbest = min_a c_a
   sigma_c  = median over the 3 cold arms of the seed range (max - min) of dE_sign(end)
-  sigma_E  = the same for dE_tot(end)
-  Wr, Wm, W0 = medians of dE_sign(W) at end, mid, W0
-  B1 (lower)      Wr <= Cbest - max(0.25 Cbest, 2 sigma_c)
+  sigma_E  = the same for dE_tot(end);  cE_a = median dE_tot(a, end);  tolE = max(2 sigma_E, 1e-3)
+  Wr, Wm, W0 = medians of dE_sign(W) at end, mid, W0;  WE = median dE_tot(W, end)
+  margin   = max(0.25 Cbest, 2 sigma_c)                                     (the B1 margin)
+  NT (premise, per width)  Cbest < 0.005 t -> NO-TARGET(w), excluded from every count below
+  Bm (measurement)  spread * dE_tot <= 0.2 margin on every end and mid snapshot of every arm and
+                    seed, and |calib_err| <= 1e-4 on every task
+  Bc (converged)    every task (all 3 cold arms and W, every seed) converged, and every cold
+                    (arm, seed) has |dE_sign(end) - dE_sign(mid)| <= 0.1 margin
+  B1 (lower)      Wr <= Cbest - margin
   B2 (paired)     dE_sign(W, end, s) < min_a dE_sign(a, end, s) on >= ceil(2n/3) seeds
   B3 (stays)      median_s [dE_sign(W,end,s) - dE_sign(W,mid,s)] <= 0.25 (Cbest - Wr)
-  B4 (stable)     median dE_tot(W, end) <= min_a median dE_tot(a, end) + max(2 sigma_E, 1e-3)
-                  (W is not a sign-for-amplitude trade that SR would leave)
-  Bc (converged)  every cold arm's median run is converged (energy plateau)
-  BASIN(w)        B1 and B2 and B3 and B4 and Bc
-  K1 (oracle no better)  W0 >= 0.75 Cbest, the W0 fidelity phase plateaued on >= ceil(2n/3)
-                         seeds, and median ov0(W0) >= median ov0(Cuhf, end) (the oracle phase
-                         reached at least the control's overlap, so it is not itself trapped)
-  K2 (relaxed back)      Wr >= Cbest - max(0.10 Cbest, sigma_c)
-  K3 (trade-off)         B1 and B2 hold but B4 fails
-  CAPACITY(w)     not BASIN(w) and (K1 or K2 or K3)
-  UNCLEAR(w)      otherwise (also: B1, B2, B3, B4 hold but Bc fails)
-Global (instance 0):
-  PREMISE GATE    median dE_sign(Cuhf, w = 6, end) >= 0.005 t over its seeds; else NO-TARGET
-                  (no residual sign error to trap: leaf closed on this instance too).
-  BASIN           BASIN(w) at >= 2 widths, at least one of them w = 6 or w = 10.
-  CAPACITY        CAPACITY(w) at >= 2 widths and BASIN(w) at none.
-  UNCLEAR         otherwise. Pre-committed action: seeds 44, 55, 66 at every width that is
-                  not CAPACITY, then re-apply; if still not BASIN, the verdict is CAPACITY.
+  B4 (strictly lower energy)  WE <= min_a cE_a - tolE
+  SD (equal energy)  B1 and B2 and B3 and |WE - min_a cE_a| < tolE (neither B4 nor K3)
+  K1 (oracle no better)  W0 >= 0.75 Cbest
+  K2 (relaxed back)      W0 <= Cbest - margin and Wr >= Cbest - max(0.10 Cbest, sigma_c)
+  K3 (trade-off)         B1 and B2 and WE > min_a cE_a + tolE
+  Verdict, first match:
+    INCOMPLETE        fewer than 3 complete seeds or a missing value
+    NO-TARGET(w)      NT
+    UNCLEAR-MEAS      not Bm      -> re-budget the end states (resume, --rel 0, --lbfgs-iters 8000)
+    UNCLEAR-CONV      not Bc      -> resume every run of that width with --init-from, --rel 600
+    BASIN(w)          B1 and B2 and B3 and B4
+    SIGN-DEGENERATE   SD          (no target for P1.3; never counted as BASIN)
+    CAPACITY(w)       K2 or K3    (CAPACITY comes only from K2 or K3)
+    UNCLEAR-ORACLE    K1, or W missed fid_target on some seed -> rerun W with --pre 1200
+    UNCLEAR-NOISE     otherwise   -> seeds 44, 55, 66 at that width
+Global (instance 0; widths with NO-TARGET(w) are excluded, k = min(2, #eligible widths)):
+  PREMISE GATE    median dE_sign(Cuhf, w = 6, end) >= 0.005 t over its seeds; else NO-TARGET.
+  NO-TARGET       also when no width is eligible.
+  BASIN           BASIN(w) at >= k widths, at least one of them w = 6 or w = 10.
+  CAPACITY        no BASIN width and CAPACITY(w) at >= k widths.
+  SIGN-DEGENERATE no BASIN width, >= 1 SIGN-DEGENERATE width and CAPACITY + SIGN-DEGENERATE
+                  widths >= k (no target for P1.3; leaf closes).
+  UNCLEAR         otherwise. Pre-committed actions: the per-width UNCLEAR-* action above at each
+                  UNCLEAR width (only UNCLEAR-NOISE adds seeds), then re-apply. Tie-breaker if
+                  still UNCLEAR: width trend. Width-limited (Cbest(10) <= 0.5 Cbest(4)) ->
+                  CAPACITY; otherwise -> NO-TARGET (no basin shown; leaf closes).
   Consequence     BASIN -> P1.3 has a target; an escape route (not OCP, not SNO-FN) is tested
                   against Cuhf/Cfs/Ccdw at the BASIN widths. CAPACITY -> the leaf reduces to a
                   capacity question and is handed to P2.1 (amplitude/sign capacity at fixed cost)
-                  and P1.2 (sign-layer capacity).
-Reported, not gated: Cbest(w) and W0(w) versus width (width-limited if Cbest(10) <= 0.5 Cbest(4)),
-the P_S budgets, overlaps with the ED levels, P2.1's seeds of the same control if present.
+                  and P1.2 (sign-layer capacity). SIGN-DEGENERATE / NO-TARGET -> P1.3 closes.
+Width-6 pilot (--pilot w6; tasks 0-11 = width 6, arms Cuhf 0-2, Cfs 3-5, Ccdw 6-8, W 9-11,
+seeds 11/22/33 in each block):
+  NO-TARGET(6) or premise fails -> close P1.3 as NO-TARGET;
+  CAPACITY(6) (K2 or K3, Cbest(6) >= 0.005 implied) -> close P1.3 as CAPACITY;
+  SIGN-DEGENERATE(6)            -> close P1.3 as no target (SIGN-DEGENERATE);
+  BASIN(6) or any UNCLEAR-*(6)  -> submit tasks 12-35 (plus the width-6 UNCLEAR-* action);
+  INCOMPLETE                    -> wait for / resubmit the missing pilot tasks.
+Reported, not gated: Cbest(w) and W0(w) versus width, the P_S budgets, overlaps with the ED
+levels, P2.1's seeds of the same control if present, fid_reached and fid_plateau of W.
 Hard Core: SIGN HALF ONLY. ED levels 1-3 are labelled, but no same-sector competitor is claimed.
 
 Usage
 -----
   python3 micro_test.py --mode train --task ID [options]  one Slurm array task (0..35)
   python3 micro_test.py --mode train --instance I --arm A --width W --seed S [options]
-  python3 micro_test.py --mode aggregate [--results DIR] [--instance I]
+  python3 micro_test.py --mode train --task ID --init-from results/inst0_W_w6_s11.json --rel 600
+                                                           resume (extension) of one task
+  python3 micro_test.py --mode aggregate [--results DIR] [--instance I] [--pilot w6]
   python3 micro_test.py --mode smoke                       checks + tiny pipeline (instance 8)
   python3 micro_test.py --mode time --instance 0           one energy SR step per width
 
 Options
 -------
   --mode {train,aggregate,smoke,time}  What to run (default smoke).
+                   train: one task; aggregate: verdicts from the result JSONs; smoke: gradient
+                   checks plus the full pipeline on instance 8 (36 tiny tasks, one resume, both
+                   aggregates) into results_smoke/; time: one energy and one fidelity SR step
+                   per width on --instance.
   --task INT       Array index 0..35: width = WIDTHS[task // 12] with WIDTHS = 6, 4, 10;
                    arm = ARMS[(task % 12) // 3] with ARMS = Cuhf, Cfs, Ccdw, W;
                    seed = SEEDS[task % 3] with SEEDS = 11, 22, 33. Explicit --arm / --width /
@@ -97,27 +131,42 @@ Options
   --arm NAME       Cuhf, Cfs, Ccdw or W (see Arms).
   --width INT      NNBF hidden width (default 6).
   --seed INT       Network initialisation and SR sampling seed (default 11).
-  --pre INT        Fidelity steps of W; every cold arm takes --pre extra energy steps (default 200).
-  --rel INT        Energy steps after the fidelity phase (default 700). Mid snapshot at
-                   --pre + --rel // 2.
+  --pre INT        Cap on W's fidelity steps (default 600); the phase stops earlier once
+                   F >= fid_target. Cold arms ignore it. Not charged to the energy budget.
+  --rel INT        Energy SR steps for every arm, W counted after release (default 900). Mid
+                   snapshot at --rel // 2. With --init-from: the number of further steps
+                   (0 allowed: re-budget only).
+  --fid-target FLOAT  Fidelity at which W's fidelity phase stops (default -1: automatic,
+                   ov0_ref + 0.02, see Arms).
   --sr-lr FLOAT (0.05)  --sr-shift FLOAT (1e-3)  --sr-samples INT (2000): projected SR settings
                    (P2.1's). The same step size is used for the fidelity phase.
   --chunk INT      Configurations per forward chunk (default 32768).
   --o-chunk INT    Samples per chunk of projected log-derivatives (default 8).
   --lbfgs-iters INT (4000)  --fn-iters INT (10)  --fn-floor FLOAT (1e-3)  --r-min FLOAT (1.5):
                    budget settings, as P1.1 / P2.1.
-  --init-from PATH Optional .npz of saved parameters (results/params) to resume from; the run
-                   then does --rel further energy steps (pre-committed extension action).
+  --init-from PATH Result JSON of a finished run of the same (instance, arm, width, seed), base
+                   or _ext. The run resumes from its saved final parameters and saved RNG
+                   states (no replay; runs without saved states reseed with
+                   [seed, arm, steps done]), carries its W0 snapshot, traces, fidelity record
+                   and energy-step offset forward, does --rel further energy steps, and writes
+                   results/inst{I}_{arm}_w{W}_s{S}_ext.json (+ params/..._ext.npz). Earlier
+                   mid/end snapshots are kept under "history". The aggregate uses an _ext JSON
+                   in place of its base JSON.
+  --pilot {none,w6}  Aggregate only: w6 restricts to width 6 and seeds 11/22/33 (tasks 0-11)
+                   and prints the pilot decision (default none: full rule).
   --results DIR    Results directory (default results/ next to this script).
-  --overwrite {0,1} Recompute an existing result JSON (default 0).
+  --overwrite {0,1} Recompute an existing result JSON (default 0). A resume may always
+                   overwrite the _ext JSON it was started from.
 
 Outputs
 -------
-  train: results/inst{I}_{arm}_w{W}_s{S}.json with params, n_params, ED levels and their sector
-         labels, irrep, sector dims, calib_err, traces (E, F per step), converged flags, and
-         snapshots {W0, mid, end, end_PS}: P1.1 budget fields + S2, ov0, ovk, step;
-         results/params/inst{I}_{arm}_w{W}_s{S}.npz (flat parameters of the final state).
-  aggregate: printed table, per-width and global verdicts; results/aggregate_inst{I}.json.
+  train: results/inst{I}_{arm}_w{W}_s{S}[_ext].json with params, n_params, ED levels and their
+         sector labels, irrep, calib_err, traces (E, F, phase per step), energy_steps, n_fid,
+         fid_ref/fid_target/fid_reached/fid_plateau, energy_drop, converged, RNG states,
+         params_file, history, and snapshots {W0, mid, end, end_PS}: P1.1 budget fields + S2,
+         ov0, ovk, step; results/params/inst{I}_{arm}_w{W}_s{S}[_ext].npz (final parameters).
+  aggregate: printed table, per-width and global (or pilot) verdicts;
+         results/aggregate_inst{I}[_pilot_w6].json.
 """
 import argparse
 import json
@@ -146,7 +195,9 @@ UHF_SEED = 1234
 PREMISE_MIN = 0.005
 B1_FRAC, B1_SIG, B3_FRAC, B4_MIN, B4_SIG = 0.25, 2.0, 0.25, 1e-3, 2.0
 K1_FRAC, K2_FRAC = 0.75, 0.10
-CONV_TOL, CONV_WIN, FID_TOL, FID_WIN = 1e-3, 100, 2e-3, 50
+CONV_TOL, CONV_WIN, FID_TOL, FID_WIN = 3e-4, 200, 2e-3, 50   # CONV_TOL: energy drop per 100 steps
+STAB_FRAC, NOISE_FRAC, CALIB_MAX = 0.10, 0.20, 1e-4
+FID_GAIN, FID_FALLBACK = 0.02, {0: 0.936, 8: 0.9}
 P21_RESULTS = os.path.join(HERE, "..", "P2.1_subcubic_amplitudes_r3", "results")
 
 
@@ -283,7 +334,8 @@ class Tracker:
         self.best = None
         self.t0 = time.time()
 
-    def run(self, nsteps, fidelity):
+    def run(self, nsteps, fidelity, stop_F=None):
+        """nsteps SR steps; a fidelity phase stops early once F >= stop_F (that iterate is kept)."""
         if fidelity or self.best is None or self.best[2] != "E":
             self.best = (np.inf, self.ans.flat().copy(), "F" if fidelity else "E")
         for _ in range(nsteps):
@@ -302,6 +354,9 @@ class Tracker:
             if it % 50 == 0:
                 log(f"{self.label}: it {it:5d} [{'fid' if fidelity else 'E'}] E = {E:.8f} F = {F:.6f} "
                     f"|f| = {fn:.2e} ({(time.time() - self.t0) / (it + 1):.2f} s/step)")
+            if stop_F is not None and F >= stop_F:
+                log(f"{self.label}: fidelity target {stop_F:.4f} reached at it {it} (F = {F:.6f})")
+                break
 
     def best_params(self):
         """Best iterate of the current phase, including the current parameters."""
@@ -317,6 +372,15 @@ def window_drop(x, win):
     if len(x) < 2 * win:
         return float("nan")
     return float(np.mean(x[-2 * win:-win]) - np.mean(x[-win:]))
+
+
+def conv_drop(x, win=CONV_WIN):
+    """Energy decrease per 100 steps from the least-squares slope of the last `win` values
+    (nan if fewer than `win` values)."""
+    x = np.asarray(x, float)
+    if len(x) < win:
+        return float("nan")
+    return float(-100.0 * np.polyfit(np.arange(win), x[-win:], 1)[0])
 
 
 # ============================================================================ task

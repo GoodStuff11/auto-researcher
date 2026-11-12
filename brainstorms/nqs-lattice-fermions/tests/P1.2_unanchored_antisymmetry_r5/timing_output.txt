@@ -2,3 +2,10 @@
 [11:16:12] nnbf6: n_params=1734 (ctrl 1734) {'kind': 'nnbf', 'Hs': 6}: 12.98 s per SR step
 [11:16:37] nnbf4: n_params=1284 (ctrl 1734) {'kind': 'nnbf', 'Hs': 4}: 12.32 s per SR step
 [11:16:53] frdK: edge tables 16.4 s
+[11:18:08] frdK: n_params=1719 (ctrl 1734) {'kind': 'frd', 'frame': 'K', 'base_Hs': 4, 'alpha_width': 3, 'E': 84}: 37.57 s per SR step
+[11:18:21] frdX: edge tables 12.4 s
+[11:19:10] frdX: n_params=1656 (ctrl 1734) {'kind': 'frd', 'frame': 'X', 'base_Hs': 4, 'alpha_width': 4, 'E': 48}: 24.58 s per SR step
+[11:19:25] frdK_mc: edge tables 14.9 s
+[11:19:41] frdK_mc: it     0  E_exact = -9.59093669  E_mc = -9.581486  |f| = 3.33e+00  acc = 0.157  (15.76 s/step)
+[11:19:56] frdK_mc: it     1  E_exact = -9.80890538  E_mc = -9.835875  |f| = 3.06e+00  acc = 0.159  (15.69 s/step)
+[11:20:05] frdK_mc: n_params=1719 (ctrl 1734) {'kind': 'frd', 'frame': 'K', 'base_Hs': 4, 'alpha_width': 3, 'E': 84}: 20.24 s per SR step

@@ -37,6 +37,12 @@ L  (route R5.2, F_B) Anchored local energy (ALE): SVRG on the inner sum of
      SS:e:Kd      |h| > e exact + Kd heat-bath draws p ~ |h| (unbiased).
      ALE0:T:Kd    route R5.2, zeroth order.
      ALE1:T:Kd    route R5.2, first order.
+     suffix +B    (any arm except EXACT/EXACTNF) equal-step-cost mode: the arm
+                  spends its saving on samples per step instead of on steps,
+                  B = --batch x (EXACT cost / arm cost per sample per step,
+                  measured on 300 warm-state samples), capped at --b-cap x
+                  --batch; leftover budget buys steps.  Both modes of every
+                  control and route enter the verdict (best of each set).
    Cost models (both logged per step, cumulative):
      ops : amplitudes x amp_ops + generated terms x C_GEN (keyx_core units);
            SCREEN/SS charged only for kept terms (generous: HCI-style sorted
@@ -105,7 +111,8 @@ Command-line options
 --n-active INT [...]    L, W: active spatial MOs K. Default 16 (L), 20 24 (W).
 --basis-series LIST     S: "ns,np" pairs (keyx_core). Default "2,1 3,2 4,3 5,4".
 --arm STR               L only, one arm spec: EXACT, EXACTNF, SCREEN:e,
-                        SS:e:Kd, ALE0:T:Kd, ALE1:T:Kd.  Default EXACT.
+                        SS:e:Kd, ALE0:T:Kd, ALE1:T:Kd, each but the first two
+                        optionally suffixed +B.  Default EXACT.
 --w-arms LIST           W only: subset of NNBFJ NNBFJNF WIBJ (NNBFJNF = NNBFJ
                         with seeds 3 4 5). Default all three.
 --seeds INT [...]       L: SR seeds (EXACTNF adds 10). W: network seeds for
@@ -121,6 +128,7 @@ Command-line options
 --n-ref INT             L: budget C_b = n-ref EXACT steps. Default 200.
 --max-steps-factor INT  L: cap on steps = factor x n-ref. Default 12.
 --ess-min FLOAT         L: ALE re-anchors when ESS < ess-min * B. Default 0.5.
+--b-cap INT             L: +B mode cap on B / --batch. Default 4.
 --n-wall INT            L: samples with real-kernel wall-clock timing. Default 40.
                         S: as keyx_core. Default 12.
 --n-samples INT         W/S: as keyx_core. Default 2000 (W), 200 (S).
@@ -180,6 +188,7 @@ def parse_args(argv=None):
     ap.add_argument("--n-ref", type=int, default=200)
     ap.add_argument("--max-steps-factor", type=int, default=12)
     ap.add_argument("--ess-min", type=float, default=0.5)
+    ap.add_argument("--b-cap", type=int, default=4)
     ap.add_argument("--n-wall", type=int, default=None)
     ap.add_argument("--n-samples", type=int, default=None)
     ap.add_argument("--eps-screen", type=float, nargs="+", default=[1e-5, 1e-4, 3e-4, 1e-3, 3e-3, 1e-2, 3e-2])
@@ -216,17 +225,39 @@ def parse_args(argv=None):
 
 
 def parse_arm(s):
-    f = s.split(":")
+    eq = s.endswith("+B")
+    f = (s[:-2] if eq else s).split(":")
     kind = f[0]
-    if kind in ("EXACT", "EXACTNF") and len(f) == 1:
-        return {"kind": kind}
+    if kind in ("EXACT", "EXACTNF") and len(f) == 1 and not eq:
+        return {"kind": kind, "eqB": False}
     if kind == "SCREEN" and len(f) == 2:
-        return {"kind": kind, "eps": float(f[1])}
+        return {"kind": kind, "eps": float(f[1]), "eqB": eq}
     if kind == "SS" and len(f) == 3:
-        return {"kind": kind, "eps": float(f[1]), "Kd": int(f[2])}
+        return {"kind": kind, "eps": float(f[1]), "Kd": int(f[2]), "eqB": eq}
     if kind in ("ALE0", "ALE1") and len(f) == 3:
-        return {"kind": kind, "T": int(f[1]), "Kd": int(f[2])}
-    raise SystemExit(f"bad --arm {s!r}: use EXACT, EXACTNF, SCREEN:e, SS:e:Kd, ALE0:T:Kd, ALE1:T:Kd")
+        return {"kind": kind, "T": int(f[1]), "Kd": int(f[2]), "eqB": eq}
+    raise SystemExit(f"bad --arm {s!r}: use EXACT, EXACTNF, SCREEN:e, SS:e:Kd, ALE0:T:Kd, ALE1:T:Kd, "
+                     f"optionally with the suffix +B (not for EXACT/EXACTNF)")
+
+
+def per_sample_ops(inst, arm, sidx, amp):
+    """Mean per-sample, per-step local-energy cost (ops) of an arm on samples sidx
+    (ALE: amortized over an epoch of T steps)."""
+    gen = kc.C_GEN
+    C = np.diff(inst.Hoff.indptr)[sidx].astype(float)
+    k = arm["kind"]
+    if k in ("EXACT", "EXACTNF"):
+        return float(np.mean(C * (gen + amp)))
+    if k in ("SCREEN", "SS"):
+        v = []
+        for n in sidx:
+            _, h = inst.row(n)
+            m = int((np.abs(h) > arm["eps"]).sum())
+            v.append(m * (gen + amp) + (arm["Kd"] * amp if k == "SS" and m < len(h) else 0))
+        return float(np.mean(v))
+    fo = 3 if k == "ALE1" else 1
+    T, Kd = arm["T"], arm["Kd"]
+    return float(np.mean((C * (gen + fo * amp) + (T - 1) * (amp + Kd * (fo * amp + kc.C_HASH))) / T))
 
 
 # ----------------------------------------------------------------------------
@@ -452,13 +483,18 @@ def ale_estimate(inst, net, anc, th, psi, Kd, rng, first_order, fd_eps=1e-4):
     return e
 
 
-def run_sr(inst, net, th0, arm, seed, args, costs, budget_ops, budget_cal, log_every=1):
+def run_sr(inst, net, th0, arm, seed, args, costs, budget_ops, budget_cal, B=None):
+    """SR (minSR form) with the arm's local-energy estimator.  Mode 'steps'
+    (B = --batch): cheaper estimators buy more steps.  Mode '+B' (B given):
+    cheaper estimators buy more samples per step (B = --batch x cost ratio,
+    capped at --b-cap x --batch); any leftover budget buys steps."""
     rng = np.random.default_rng(10 ** 5 + 97 * seed + 1)
     th = th0.copy()
     amp = costs["amp_ops"]; gen = kc.C_GEN
     c = costs["cal"]
-    B = args.batch
     max_steps = args.max_steps_factor * args.n_ref
+    if B is None:
+        B = args.batch
     kind = arm["kind"]
     traj = {"step": [], "ops": [], "cal": [], "dE_mHa": [], "ess": [], "anchor": []}
     cum_ops = cum_cal = 0.0
@@ -550,9 +586,16 @@ def run_part_L(args):
         rec = {**inst.info, "warm_dE_mHa": Ew, "P": int(net.theta0.size), "mean_conn_pi": mCpi, "calibration": cal,
                "costs": costs, "budget_ops": budget_ops, "budget_cal": budget_cal, "runs": [],
                "cert_bound": cert_bound(inst, net, thw, args.eps_screen, np.random.default_rng(7), 100)}
+        Barm = None
+        if arm["eqB"]:
+            s0 = np.random.default_rng(99).choice(inst.D, size=300, p=wv)
+            ratio = per_sample_ops(inst, {"kind": "EXACT"}, s0, amp) / per_sample_ops(inst, arm, s0, amp)
+            Barm = int(min(args.b_cap * args.batch, max(args.batch, round(args.batch * ratio))))
+            rec["eqB"] = {"cost_ratio_EXACT_over_arm": ratio, "B": Barm}
+            print(f"  +B mode: per-sample cost ratio EXACT/arm = {ratio:.2f} -> B = {Barm}", flush=True)
         for seed in seeds:
             t1 = time.time()
-            tr = run_sr(inst, net, thw, arm, seed, args, costs, budget_ops, budget_cal)
+            tr = run_sr(inst, net, thw, arm, seed, args, costs, budget_ops, budget_cal, Barm)
             rec["runs"].append({"seed": seed, **tr})
             fo = final_dE(tr, "ops", budget_ops); fc = final_dE(tr, "cal", budget_cal)
             print(f"  {args.arm} seed={seed}: steps={len(tr['step'])} anchors={sum(tr['anchor'])} "
@@ -868,7 +911,8 @@ def main(argv=None):
         print(f"SMOKE CHECKS {'PASS' if ok else 'FAIL'}", flush=True)
         sd = os.path.join(HERE, "smoke_results"); os.makedirs(sd, exist_ok=True)
         # tiny Part L: H4 K=8, every arm type
-        arms = ["EXACT", "EXACTNF", "SCREEN:1e-3", "SCREEN:1e-2", "SS:1e-2:4", "ALE0:8:4", "ALE1:8:4"]
+        arms = ["EXACT", "EXACTNF", "SCREEN:1e-2", "SCREEN:1e-2+B", "SS:1e-2:4", "SS:1e-2:4+B",
+                "ALE0:8:4", "ALE0:8:4+B", "ALE1:8:4"]
         for a in arms:
             la = parse_args(["--part", "L", "--n-active", "8", "--arm", a, "--hidden", "8", "--hj", "4",
                              "--warm-iters", "150", "--batch", "100", "--n-ref", "30", "--max-steps-factor", "4",
