@@ -14,13 +14,20 @@ Code: `hub/config.py` (`find_root`, `load_config`, `HubConfig`), `hub/sync_state
 ## project.yaml
 Parsed by `load_config` (`hub/config.py:35`). Required top-level keys: `name`, `people`, `series`; a missing one raises `ConfigError`.
 - `name` (string) — project name, shown in the Snapshot title
-- `people` (mapping) — key = people key (the identifier used as item owner and entry author), value = mapping (e.g. `{name: Alice}`); the people key must contain no whitespace
-- `series` (mapping) — key = meeting series name; value = mapping; the only key the code reads is `attendees` (list of people keys, printed in the meeting note)
-- `sources` (mapping, optional) — passed through as `HubConfig.sources`; not interpreted by the core
+- `people` (mapping) — key = people key (the identifier used as item owner and entry author), value = mapping (e.g. `{name: Alice}`); the people key must contain no whitespace. Optional per person: `clickup` (ClickUp user id) and `email`, used to map ClickUp assignees to people (ingest.md)
+- `series` (mapping) — key = meeting series name; value = mapping; keys read: `attendees` (list of people keys, printed in the meeting note) and `calendar_match` (text the calendar skill matches against event titles to find the series' next meeting)
+- `sources` (mapping, optional) — `HubConfig.sources`; read by the ingest code and `hub sources` (ingest.md). Keys:
+  - `clickup: {list_id, done_statuses?}` — the ClickUp list and the status names meaning done
+  - `circleback: {folder, terms}` — Circleback folder and search terms for this project's meetings
+  - `repos: [{root, branch}]` — code repositories (`root` is a key of `roots`; `branch` optional, default HEAD)
+  - `overleaf: {root, branch}` — Overleaf git clone, same shape as one `repos` entry
+  - `calendar: {}` — presence enables calendar lookups for next meeting dates
+  - `gmail: {enabled, terms}` and `slack: {enabled, channels}` — opt-in sources, ignored unless `enabled: true`
 - `roots` (mapping, optional) — name to path; merged with `roots` from `hub.local.yaml` (local wins)
 ## hub.local.yaml
 - `me` (string) — your people key; must be a key of `people`, else `ConfigError`. Overridden by the environment variable `HUB_ME`. Required by every command that writes (entry author).
 - `roots` (mapping, optional) — local paths, merged over `project.yaml` `roots`
+- `notes` (list, optional) — folders of private notes; opt-in, read only by the skill, never by the CLI
 ## Status/Log/<YYYY-MM>.md
 First line `# Log YYYY-MM`, then one line per event in the item entry format `- YYYY-MM-DD · <author> · <source> — <text>` (see item-format.md). Written only by `Store.log` (`hub/store.py`, `hub log`, apply/reject of proposals, agenda read-back). Merges with git's union driver.
 ## Status/sync-state/

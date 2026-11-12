@@ -46,6 +46,15 @@ Commands (each has its own --help):
                              write the meeting note, archive the workbook
   sync-state get SOURCE | set SOURCE VALUE
                              read/write ingest watermarks (Status/sync-state/watermark.<SOURCE>.yaml)
+  seen SOURCE                print `new`, or `seen` and where SOURCE (circleback:<id>, clickup:<id>, …) is recorded
+  ingest git ROOT [--since YYYY-MM-DD] [--advance] [--limit N]
+                             JSON list of commits of a configured repository since watermark git.<ROOT>
+  ingest batch FILE          apply an agent-written ingest file (safe ops directly, proposals staged; idempotent)
+  clickup plan|apply --tasks FILE
+                             reconcile a ClickUp list export: mirror status/assignee/due, stage new tasks, flags
+  meeting next SERIES YYYY-MM-DD | meeting decided SERIES YYYY-MM-DD [--json]
+                             record the next meeting date; list what a meeting decided
+  sources [--json]           configured ingest sources and their watermarks
   commit MESSAGE             git add -A, commit, pull --rebase, regenerate Snapshot.md, push (3 retries);
                              item files merge field by field (hub-item driver); exit 3 only when both sides
                              changed one field differently (rebase is aborted, nothing lost)
@@ -67,6 +76,7 @@ import yaml
 
 from .agenda.draft import DraftError, draft_path, save_draft, scaffold
 from .agenda.lifecycle import AgendaError, build_agenda, read_agenda
+from .cli_ext import add_ext_parsers, dispatch_ext
 from .config import ConfigError, find_root, load_config
 from .gitsync import SyncConflict, SyncError, commit, pull_if_possible
 from .items import LINK_KEYS, ItemFormatError, render_item
@@ -244,6 +254,7 @@ def build_parser() -> argparse.ArgumentParser:
             "both values (the rebase is aborted, nothing is lost). A failure to regenerate Snapshot.md is only a "
             "warning.")
     c.add_argument("message", help="git commit message")
+    add_ext_parsers(sub)
     return p
 
 
@@ -285,6 +296,9 @@ def _print_items(items, as_json):
 def _dispatch(args, cfg, store) -> int:
     today = _today()
     cmd = args.cmd
+    rc = dispatch_ext(args, cfg, store, today=today, me=lambda: _me(cfg))
+    if rc is not None:
+        return rc
     if cmd == "new":
         links: dict[str, list[str]] = {}
         for spec in args.link:
