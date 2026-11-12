@@ -218,6 +218,27 @@ def test_concurrent_watermarks_and_flags_merge(two_clones):
         assert sorted(st["flags"]) == ["flag from A", "flag from B"]
 
 
+def test_same_proposal_applied_in_two_clones_creates_one_item(two_clones):
+    from hub.pending import apply_proposals
+    a, b = two_clones
+    q = Store(a).create("question", "Q", owner="alice", author="alice", day=D, source="m")
+    pid = add_proposal(a, "Decide", [{"op": "new", "type": "decision", "title": "Do X",
+                                      "links": {"answers": [q.id]}}],
+                       proposer="alice", source="s", reason="r", day=D)
+    commit(a, "stage")
+    git(b, "pull", "--rebase")
+    made_a = apply_proposals(a, Store(a), [pid], author="alice", day=D)
+    made_b = apply_proposals(b, Store(b), [pid], author="bob", day=D)
+    assert made_a == made_b
+    commit(a, "apply in a")
+    commit(b, "apply in b")  # add/add of the same item file: merged by the hub-item driver
+    git(a, "pull", "--rebase")
+    for clone in (a, b):
+        decisions = Store(clone).query(type="decision")
+        assert [d.id for d in decisions] == made_a
+        assert sorted(e.author for e in decisions[0].entries) == ["alice", "bob"]
+
+
 def test_cli_commit_with_garbage_item_still_pushes(two_clones):
     from hub.cli import main
     a, b = two_clones

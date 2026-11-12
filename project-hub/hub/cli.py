@@ -24,12 +24,13 @@ Commands (each has its own --help):
   list [filters] [--json]    --type {question,decision,action} --status S --owner KEY|me --series NAME
                              --since YYYY-MM-DD (last activity on/after)
   show ID [--chain]          print one item; --chain also prints everything descending from it
-  since DATE                 items with activity on/after DATE (same as list --since)
+  since DATE [--series NAME] items with activity on/after DATE (same as list --since [--series])
   log TEXT --source S        append to Status/Log/<YYYY-MM>.md
   validate                   check every rule; exit 1 and list violations if any
   snapshot                   regenerate Status/Snapshot.md
-  pending list               show staged proposals
-  pending apply PID …        apply proposals (P-xxxx) in order; each is removed once applied
+  pending list               show staged proposals; files that cannot be read print as UNREADABLE <path>
+  pending apply PID …        apply proposals (P-xxxx) in order, each all-or-nothing; prints `applied <P-id>`
+                             then `created <id>` per new item as each completes. Pulls first (best effort)
   pending reject PID …       drop proposals, logging the rejection
   pending add --title T --ops-file F.yaml --source S --reason R
                              stage a proposal whose ops are read from a YAML list (see .agent_docs/pending-format.md)
@@ -39,7 +40,7 @@ Commands (each has its own --help):
   agenda build SERIES [--force]
                              render the draft into Agenda/<series>.xlsx; refuses while the previous meeting's
                              workbook is unread, unless --force (which discards its meeting edits)
-  agenda read SERIES         apply the meeting's edits to the store, stage free-text items as
+  agenda read SERIES         pull (best effort), apply the meeting's edits to the store, stage free-text items as
                              Status/Pending/<P-id>.md (one file per proposal),
                              write the meeting note, archive the workbook
   sync-state get SOURCE | set SOURCE VALUE
@@ -65,9 +66,10 @@ import yaml
 from .agenda.draft import DraftError, draft_path, save_draft, scaffold
 from .agenda.lifecycle import AgendaError, build_agenda, read_agenda
 from .config import ConfigError, find_root, load_config
-from .gitsync import SyncConflict, SyncError, commit
+from .gitsync import SyncConflict, SyncError, commit, pull_if_possible
 from .items import LINK_KEYS, ItemFormatError, render_item
-from .pending import PendingError, add_proposal, apply_proposals, load_proposals, reject_proposals
+from .pending import (PendingError, add_proposal, apply_proposals, load_proposals, load_unreadable,
+                      reject_proposals)
 from .snapshot import write_snapshot
 from .store import Store, StoreError, UnknownItem
 from .sync_state import get_watermark, set_watermark
@@ -161,6 +163,7 @@ def build_parser() -> argparse.ArgumentParser:
     si = _sp(sub, "since", "items with activity since a date",
              "List items whose last activity is on or after DATE (same as `list --since DATE`).")
     si.add_argument("date", type=date.fromisoformat, metavar="YYYY-MM-DD", help="earliest activity date to include")
+    si.add_argument("--series", help="only items that may appear on this meeting series (same as `list --series`)")
 
     lg = _sp(sub, "log", "append to the monthly log",
              "Append a line to Status/Log/<YYYY-MM>.md for the current month, authored by you.")
@@ -177,10 +180,13 @@ def build_parser() -> argparse.ArgumentParser:
              "reject, add.")
     pes = pe.add_subparsers(dest="pcmd", required=True, metavar="SUBCOMMAND")
     _sp(pes, "list", "show staged proposals",
-        "Show every staged proposal (id, title, proposer, date, reason), or `No pending proposals.`")
+        "Show every staged proposal (id, title, proposer, date, reason), or `No pending proposals.` Proposal "
+        "files that cannot be parsed are listed as `UNREADABLE <path>`; fix or delete them by hand.")
     pa = _sp(pes, "apply", "apply proposals in order",
-             "Apply proposals in the order given; each creates/changes items and is removed once applied. "
-             "Prints `created <id>` per new item.")
+             "First runs a best-effort `git pull --rebase` (a failure is printed as a warning). Then applies "
+             "proposals in the order given. Each proposal is all-or-nothing: its ops are checked first and, if "
+             "any op fails, every file it touched is restored and it stays pending. As each completes it is "
+             "logged and removed, and `applied <P-id>` is printed followed by `created <id>` per new item.")
     pa.add_argument("pids", nargs="+", metavar="PID", help="one or more proposal ids (P-xxxx) to apply")
     pr = _sp(pes, "reject", "drop proposals",
              "Drop proposals without applying them, recording the rejection in the log.")
@@ -214,7 +220,8 @@ def build_parser() -> argparse.ArgumentParser:
                     help="build even if the previous meeting's workbook has not been read back yet; this discards "
                          "that workbook's meeting edits")
     ar = _sp(ags, "read", "apply the meeting's edits to the store",
-             "Read Agenda/<series>.xlsx after the meeting: apply edits to the store, stage free-text items as "
+             "First runs a best-effort `git pull --rebase` (a failure is printed as a warning). Then reads "
+             "Agenda/<series>.xlsx after the meeting: apply edits to the store, stage free-text items as "
              "Status/Pending/<P-id>.md, write the meeting note and archive the workbook.")
     ar.add_argument("series", help="meeting series key")
 
@@ -248,6 +255,13 @@ def _me(cfg) -> str:
 def _row(it) -> dict:
     return {"id": it.id, "type": it.type, "status": it.status, "title": it.title, "owner": it.owner,
             "priority": it.meta.get("priority"), "last_activity": it.last_activity().isoformat()}
+
+
+def _pull_first(root) -> None:
+    """Best-effort `git pull --rebase` so we act on the latest shared state; a failure is only a warning."""
+    warning = pull_if_possible(root)
+    if warning:
+        print(warning, file=sys.stderr)
 
 
 def _warn_load_errors(store) -> None:
@@ -308,7 +322,8 @@ def _dispatch(args, cfg, store) -> int:
             print("## Chain")
             walk(args.id, 1)
     elif cmd == "since":
-        _print_items(store.query(since=args.date), False)
+        _print_items(store.query(series=args.series, since=args.date), False)
+        _warn_load_errors(store)
     elif cmd == "log":
         store.log(args.text, author=_me(cfg), source=args.source, day=today)
     elif cmd == "validate":
@@ -322,14 +337,25 @@ def _dispatch(args, cfg, store) -> int:
     elif cmd == "pending":
         if args.pcmd == "list":
             props = load_proposals(cfg.root)
-            if not props:
+            unreadable = load_unreadable(cfg.root)
+            if not props and not unreadable:
                 print("No pending proposals.")
             for pr in props:
                 print(f"{pr.pid}  {pr.title}  (by {pr.body.get('proposer')}, {pr.body.get('date')}): "
                       f"{pr.body.get('reason')}")
+            for path in unreadable:
+                print(f"UNREADABLE {path}")
         elif args.pcmd == "apply":
-            for i in apply_proposals(cfg.root, store, args.pids, author=_me(cfg), day=today):
-                print(f"created {i}")
+            author = _me(cfg)
+            _pull_first(cfg.root)
+
+            def report(pid, ids):
+                print(f"applied {pid}")
+                for i in ids:
+                    print(f"created {i}")
+                sys.stdout.flush()
+
+            apply_proposals(cfg.root, store, args.pids, author=author, day=today, on_applied=report)
         elif args.pcmd == "reject":
             reject_proposals(cfg.root, store, args.pids, author=_me(cfg), day=today)
         else:
@@ -346,7 +372,9 @@ def _dispatch(args, cfg, store) -> int:
         elif args.acmd == "build":
             print(build_agenda(cfg.root, args.series, force=args.force))
         else:
-            res = read_agenda(store, cfg, args.series, author=_me(cfg), today=today)
+            author = _me(cfg)
+            _pull_first(cfg.root)
+            res = read_agenda(store, cfg, args.series, author=author, today=today)
             print(f"applied {len(res['applied'])}, staged {len(res['staged'])} "
                   f"({' '.join(res['staged'])}), not reached {len(res['not_reached'])}")
             print(f"meeting note: {res['meeting_note']}\narchive: {res['archive']}")

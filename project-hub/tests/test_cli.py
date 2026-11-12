@@ -165,3 +165,50 @@ def test_sync_conflict_exit_3(cli, capsys, monkeypatch):
     monkeypatch.setattr("hub.cli.commit", boom)
     code, _, err = run(capsys, "commit", "msg")
     assert code == 3 and "x.md" in err
+
+
+def test_pending_list_shows_unreadable_and_apply_reports_per_proposal(cli, capsys, monkeypatch):
+    from datetime import date
+    from hub.pending import add_proposal
+    p1 = add_proposal(cli, "One", [{"op": "new", "type": "question", "title": "A"}],
+                      proposer="alice", source="s", reason="r", day=date(2026, 11, 12))
+    p2 = add_proposal(cli, "Two", [{"op": "new", "type": "question", "title": "B"}],
+                      proposer="alice", source="s", reason="r", day=date(2026, 11, 12))
+    bad = cli / "Status" / "Pending" / "P-bad1.md"
+    bad.write_text("garbage\n")
+    code, out, _ = run(capsys, "pending", "list")
+    assert code == 0 and f"UNREADABLE {bad}" in out and p1 in out
+    monkeypatch.setattr("hub.cli.pull_if_possible", lambda root: "warning: could not pull (test)")
+    code, out, err = run(capsys, "pending", "apply", p1, p2)
+    assert code == 0 and "warning: could not pull (test)" in err
+    lines = out.splitlines()
+    assert lines[0] == f"applied {p1}" and lines[1].startswith("created Q-")
+    assert lines[2] == f"applied {p2}" and lines[3].startswith("created Q-")
+
+
+def test_agenda_read_pulls_first(cli, capsys, monkeypatch):
+    calls = []
+    monkeypatch.setattr("hub.cli.pull_if_possible", lambda root: calls.append(root) or None)
+    code, _, err = run(capsys, "agenda", "read", "group")
+    assert calls == [cli] and code == 1 and "no live agenda" in err
+
+
+def test_since_series_filter(cli, capsys):
+    run(capsys, "new", "q", "In group", "--source", "manual", "--series", "group")
+    run(capsys, "new", "q", "Elsewhere", "--source", "manual", "--series", "other")
+    code, out, _ = run(capsys, "since", "2026-11-01", "--series", "group")
+    assert code == 0 and "In group" in out and "Elsewhere" not in out
+
+
+def test_unexpected_keyerror_is_not_user_error(cli, monkeypatch):
+    def bug(*a, **k):
+        raise KeyError("internal")
+
+    monkeypatch.setattr("hub.cli.validate", bug)
+    with pytest.raises(KeyError):
+        main(["validate"])
+
+
+def test_unknown_item_message(cli, capsys):
+    code, _, err = run(capsys, "show", "Q-20990101-zzz")
+    assert code == 1 and err.strip() == "error: no such item Q-20990101-zzz"
