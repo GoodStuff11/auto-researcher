@@ -165,7 +165,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P3.1 | PILOT (ESR0: set A 16/21 G=0 but set W 8/19 and a grade-H real false certificate; Gate 0 FAIL as method, PASS as diagnostic) | step 2 blocked on excited-state pilot (GO: eps/omega at most 0.4 per level, out-of-window weight at most 0.03) | Slurm 456094 (excited pilot); EHX gate 452146 recorded GATE-FAIL (EHX = Route 2.3 restated) |
 | P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
 | P4.1 | SUBMITTED (decisive pilot; completeness probe: one AGP per c incomplete, eps_tab(K=1) at least 6.8e-3, K=2 about 2e-8) | report gates on 451839 | Slurm 451886 (15 tasks), 451839 (completeness) |
-| P4.2 | SUBMITTED (capacity pilot; ELT killed Gate 0, PA carried) | array blocked on capacity pilot (ε_scr^∞ at most 3% → run array, else enlarge family) | Slurm 452196 (capacity), 451914 (close 3.1) |
+| P4.2 | SUBMITTED (capacity pilot; ELT killed Gate 0, PA carried) | array blocked on capacity pilot (ε_scr^∞ at most 3% → run array, else enlarge family) | Slurm 452196 (capacity); Route 3.1 CLOSED-FAIL (451914: warm start slower than scratch at B=10/20/50) |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
 * **P3.2 round 3: first Hard-Core-scale same-irrep competitor (2026-11-11)**:

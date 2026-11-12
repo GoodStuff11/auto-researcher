@@ -43,3 +43,14 @@
 [  4079.0s] arm foil@end : E=-12.89208573 eps=6.5126e-02 (raw 1.9821e-01, irrep weight 0.147) sign-agree=0.9166 Pd=3.3398e-03 fid=0.5364
 [  4079.1s] nfp: n_null=112 removed shift fraction 0.945; source E tr0 [-8.229400795635696, -7.080274667117395] -> nfp [-4.268549992379714, -5.667403916645772] (exact [-8.281820661071484, -7.080275743918655])
 [  4118.6s] arm nfp@0    : E=-5.87988093 eps=5.0339e-01 (raw 4.9684e-01, irrep weight 0.502) A/V=1.9510e-01 sign-agree=0.0383 Pd=3.9246e-03 fid=0.0027
+[  4189.7s]   [nfp] step 2/20 eps=4.63493e-01 lr=0.0605
+[  4259.3s]   [nfp] step 4/20 eps=4.15895e-01 lr=0.0732
+[  4328.6s]   [nfp] step 6/20 eps=3.66544e-01 lr=0.0886
+[  4397.6s]   [nfp] step 8/20 eps=2.71249e-01 lr=0.107
+[  4466.1s]   [nfp] step 10/20 eps=1.24528e-01 lr=0.13
+[  4533.8s]   [nfp] step 12/20 eps=6.26324e-02 lr=0.157
+[  4608.7s]   [nfp] step 14/20 eps=3.34286e-02 lr=0.0949
+[  4675.9s]   [nfp] step 16/20 eps=3.17210e-02 lr=0.115
+[  4743.1s]   [nfp] step 18/20 eps=3.11501e-02 lr=0.139
+[  4810.4s]   [nfp] step 20/20 eps=3.09168e-02 lr=0.168
+[  4810.4s] done (/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/results_close31/close31_s2.json); valid=True

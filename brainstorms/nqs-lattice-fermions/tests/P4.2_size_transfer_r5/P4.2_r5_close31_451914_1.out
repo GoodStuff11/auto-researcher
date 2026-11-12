@@ -52,3 +52,5 @@
 [  4798.1s]   [nfp] step 14/20 eps=2.53901e-02 lr=0.0949
 [  4870.3s]   [nfp] step 16/20 eps=2.48276e-02 lr=0.115
 [  4942.3s]   [nfp] step 18/20 eps=2.42719e-02 lr=0.139
+[  5014.6s]   [nfp] step 20/20 eps=2.39960e-02 lr=0.168
+[  5014.6s] done (/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/results_close31/close31_s1.json); valid=True

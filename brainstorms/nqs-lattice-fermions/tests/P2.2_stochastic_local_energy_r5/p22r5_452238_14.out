@@ -1,2 +1,3 @@
 
 === [W] H4_R4.4_d0.25_g1 K=20 dim=36100 E_FCI=-2.011685 HF wt=0.463 nnz/row=1675 (69.0s)
+  WIBJ     seed=0 dE=   0.199 mHa Var(EL)=8.46e-04 P=12116 (train 2041s) KEYX-EL max=1.0e-14 ops KEYX/EXACT(trained |psi|^2)=0.139
