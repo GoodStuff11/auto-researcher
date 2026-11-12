@@ -124,3 +124,33 @@ def test_sources(cli, capsys):
     assert rows[0]["watermark"] == "2026-11-18T10:00" and rows[1]["watermark"] is None
     code, out, _ = run(capsys, "sources")
     assert code == 0 and "git.CODE" in out
+
+
+def test_sources_json_with_date_watermark(cli, capsys):
+    (cli / "project.yaml").write_text((cli / "project.yaml").read_text() + "sources:\n  clickup: {list_id: '9'}\n")
+    d = cli / "Status" / "sync-state"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "watermark.clickup.yaml").write_text("value: 2026-11-19\n")
+    code, out, _ = run(capsys, "sources", "--json")
+    assert code == 0 and "2026-11-19" in out
+
+
+def test_bad_yaml_batch_names_file(cli, capsys):
+    f = cli / "bad.yaml"
+    f.write_text("safe: [unclosed\n")
+    code, _, err = run(capsys, "ingest", "batch", str(f))
+    assert code == 1 and "bad.yaml" in err and "cannot parse" in err
+
+
+def test_bad_tasks_file_names_file(cli, capsys):
+    f = cli / "tasks.json"
+    f.write_text("[{unclosed\n")
+    code, _, err = run(capsys, "clickup", "plan", "--tasks", str(f))
+    assert code == 1 and "tasks.json" in err and "cannot parse" in err
+
+
+@pytest.mark.parametrize("n", ["0", "-3"])
+def test_limit_must_be_positive(cli, capsys, n):
+    with pytest.raises(SystemExit) as e:
+        main(["ingest", "git", "CODE", "--limit", n])
+    assert e.value.code == 2

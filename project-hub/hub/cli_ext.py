@@ -16,6 +16,21 @@ from .sources import source_seen
 from .sync_state import load_state, save_state
 
 
+def _positive(text):
+    try:
+        n = int(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{text!r} is not an integer") from None
+    if n < 1:
+        raise argparse.ArgumentTypeError("must be at least 1")
+    return n
+
+
+def _parse_error(path, exc):
+    first = (str(exc).strip().splitlines() or [type(exc).__name__])[0]
+    return ValueError(f"cannot parse {path}: {first}")
+
+
 def _sp(sub, name, help, description):
     return sub.add_parser(name, help=help, description=description,
                           formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -26,7 +41,7 @@ def add_ext_parsers(sub) -> None:
             "Print `new` if SOURCE appears nowhere in the vault, else `seen` followed by where it appears: item "
             "ids that list it in `sources`, log:<YYYY-MM> for monthly logs citing it, and pending proposal ids "
             "citing it. An unreadable:<path> entry means the answer may be incomplete (that file could not be "
-            "read; fix it). Exits 0. Use before writing anything derived from a source.")
+            "read; fix it). Exits 0 unless a log file cannot be read. Use before writing anything derived from a source.")
     s.add_argument("source", help="source id exactly as written in entries, e.g. circleback:<meeting id>, "
                                   "clickup:<task id>, commit:<ROOT>@<7-char sha>")
 
@@ -46,7 +61,7 @@ def add_ext_parsers(sub) -> None:
     g.add_argument("--advance", action="store_true",
                    help="after listing, move the watermark git.<ROOT> to the newest listed commit; use only "
                         "once the commits have been recorded (e.g. via `hub ingest batch`)")
-    g.add_argument("--limit", type=int, default=500, metavar="N",
+    g.add_argument("--limit", type=_positive, default=500, metavar="N",
                    help="at most N oldest unlisted commits per run; a warning says when more remain "
                         "(default 500)")
     b = _sp(isub, "batch", "apply an ingest batch file: safe changes directly, judgement calls as proposals",
@@ -138,23 +153,30 @@ def dispatch_ext(args, cfg, store, *, today, me) -> int | None:
     elif cmd == "ingest" and args.icmd == "git":
         res = ingest_git(cfg, args.root_name, today=today, since=args.since, advance=args.advance,
                          limit=args.limit)
-        print(json.dumps(res, indent=2))
+        print(json.dumps(res, indent=2, default=str))
         if res["warning"]:
             print(f"warning: {res['warning']}", file=sys.stderr)
     elif cmd == "ingest":
         author = me()
-        batch = yaml.safe_load(args.file.read_text(encoding="utf-8"))
+        try:
+            batch = yaml.safe_load(args.file.read_text(encoding="utf-8"))
+        except (yaml.YAMLError, UnicodeDecodeError) as exc:
+            raise _parse_error(args.file, exc) from exc
         rep = run_batch(cfg.root, store, batch, author=author, day=today, people=cfg.people)
         print(f"applied {rep['applied']}, skipped {rep['skipped']}, staged {len(rep['staged'])} "
               f"({' '.join(rep['staged'])}), skipped proposals {rep['skipped_proposals']}, "
               f"flags added {rep['flags_added']}" + (f", watermark {rep['watermark']}" if rep["watermark"] else ""))
     elif cmd == "clickup":
         author = me() if args.ccmd == "apply" else None
-        plan = plan_clickup(store, cfg, load_tasks(args.tasks), today=today)
+        try:
+            tasks = load_tasks(args.tasks)
+        except (yaml.YAMLError, UnicodeDecodeError) as exc:
+            raise _parse_error(args.tasks, exc) from exc
+        plan = plan_clickup(store, cfg, tasks, today=today)
         if args.ccmd == "plan":
-            print(json.dumps(plan, indent=2))
+            print(json.dumps(plan, indent=2, default=str))
         else:
-            print(json.dumps(apply_clickup(cfg.root, store, plan, author=author, day=today), indent=2))
+            print(json.dumps(apply_clickup(cfg.root, store, plan, author=author, day=today), indent=2, default=str))
     elif cmd == "meeting":
         if args.series not in cfg.series:
             raise ValueError(f"unknown series '{args.series}' (project.yaml series: {', '.join(cfg.series)})")
@@ -166,14 +188,14 @@ def dispatch_ext(args, cfg, store, *, today, me) -> int | None:
         else:
             rows = _decided(store, args.series, args.date)
             if args.json:
-                print(json.dumps(rows, indent=2))
+                print(json.dumps(rows, indent=2, default=str))
             for r in [] if args.json else rows:
                 print(f"{r['id']}  {r['status']:<9} {r['title']} — {r['as_decided'] or 'as proposed'}"
                       f"  actions: {' '.join(r['actions']) or 'none'}")
     elif cmd == "sources":
         rows = _source_rows(cfg)
         if args.json:
-            print(json.dumps(rows, indent=2))
+            print(json.dumps(rows, indent=2, default=str))
         for r in [] if args.json else rows:
             print(f"{r['source']:<20} {r['watermark'] or '—':<28} {r['detail']}")
     else:

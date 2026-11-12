@@ -8,8 +8,11 @@ Every derived record carries a source id (no whitespace). `hub seen SOURCE` says
 | `clickup:<task id>` | a ClickUp task |
 | `commit:<ROOT>@<7-char sha>` | a commit of the repository `ROOT` (a key of `roots`) |
 | `agenda:<series>/<YYYY-MM-DD>` | agenda read-back of a meeting |
+| `notes:<people key>@<YYYY-MM-DD>` | a private note of that person on that day |
+| `gmail:<thread id>` | a Gmail thread (opt-in source) |
+| `slack:<channel id>-<ts>` | a Slack message (opt-in source) |
 | `manual` | typed by a person |
-Watermarks live in `Status/sync-state/watermark.<name>.yaml` (vault-layout.md; name matches `[A-Za-z0-9_-][A-Za-z0-9_.-]*`, `hub/sync_state.py:18`). Names used: `clickup`, `circleback`, `git.<ROOT>` (full sha of the newest ingested commit; also for the Overleaf root), `gmail`, `slack`. Set by `hub sync-state set` or the `watermark` key of a batch.
+Watermarks live in `Status/sync-state/watermark.<name>.yaml` (vault-layout.md; name matches `[A-Za-z0-9_-][A-Za-z0-9_.-]*`, `hub/sync_state.py:18`). Names used: `clickup`, `circleback`, `git.<ROOT>` (full sha of the newest ingested commit; also for the Overleaf root), `gmail`, `slack`, `notes.<people key>`. Set by `hub sync-state set` or the `watermark` key of a batch.
 ## hub seen SOURCE
 `source_seen` (`hub/sources.py:21`). Prints `new` when SOURCE appears nowhere. Otherwise `seen` plus space-separated places: an item id (SOURCE is in its `sources` frontmatter list), `log:<YYYY-MM>` (a monthly log line has ` · SOURCE — `), a pending id `P-xxxx` (the proposal's `source` or one of its ops' `source`). Example: `seen S-20261101-ab12 log:2026-11`. Exit 0.
 An `unreadable:<path>` entry (item or proposal file that failed to load) means the answer may be incomplete; fix that file. A monthly log that cannot be decoded is an error (exit 1) rather than a silent `new`.
@@ -54,7 +57,7 @@ Export (JSON or YAML list the agent writes from the list `sources.clickup.list_i
   "assignees": ["<user id | username | email>" or {"id": 1, "username": "x", "email": "x@y"}],
   "due": "2026-11-26", "due_date": 1795737600000}]
 ```
-`status` is required and non-empty (a string, or `{status, type}`). `due` is `YYYY-MM-DD` or null; `due_date` (epoch milliseconds, or an ISO date) is read only when `due` is absent. Only the first assignee counts.
+`status` is required and non-empty (a string, or `{status, type}`). `due` is `YYYY-MM-DD`, an ISO datetime, epoch milliseconds or null; `due_date` (epoch milliseconds, or an ISO date) is read only when `due` is absent. Only the first assignee counts.
 Configuration: `sources.clickup: {list_id, done_statuses?}` (default done statuses `complete, completed, closed, done`, case-insensitive); `people.<key>.clickup` = ClickUp user id, matched (with the people key, `email` and `name`, case-insensitively) against the assignee ids, usernames and emails.
 `plan` prints JSON `{set, proposals, flags, push}` and writes nothing; `apply` writes, then prints `{updated, staged, flags, push}`.
 | situation | result |
@@ -63,6 +66,8 @@ Configuration: `sources.clickup: {list_id, done_statuses?}` (default done status
 | task not done but action is done or dropped | flag `clickup: <id> is <status> in the hub but task ... is '<s>' in ClickUp` |
 | assignee maps to a person other than the owner | set `owner` |
 | assignee maps to nobody | flag `clickup: assignee '<a>' of task ... is not in project.yaml people` |
+| task has no assignee | owner unchanged |
+| assignee of a new (not yet linked) task maps to nobody | flag `clickup: assignee '<a>' of new task ... is not in project.yaml people`; the proposal is still staged, with no owner |
 | `due` differs | set `due` (empty clears it) |
 | action's `clickup_id` missing from the export | flag `... is not in the export (deleted or moved?)` |
 | open owned action without `clickup_id` | listed in `push` (`{id, title, owner, assignee, due}`; create the ClickUp task, then `hub set ID clickup_id=<id>`) |
