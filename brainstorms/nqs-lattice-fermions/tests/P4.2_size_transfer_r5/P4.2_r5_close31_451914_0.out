@@ -2,3 +2,4 @@
 [   148.1s] target 4x4 t'=-0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=13070 E0=-13.93410177 (full -13.93410177) gap/V=1.3904e-02 no same-irrep competitor below 0.005 t/site: sign half only
 [   148.1s] projected-sector dimension 13070 / route parameters 122 = 107.1
 [   148.1s] calibration: E_sign(exact signs) - E0 = 5.329e-15; Pd(E0)=4.8483e-03
+[   208.7s] arm tr@0     : E=-3.31823879 eps=6.6349e-01 (raw 6.5913e-01, irrep weight 0.458) A/V=1.4731e-01 sign-agree=0.1067 Pd=5.1096e-03 fid=0.0032
