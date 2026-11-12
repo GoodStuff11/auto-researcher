@@ -7,6 +7,7 @@ from pathlib import Path
 
 import yaml
 
+from ..fsutil import atomic_write_text
 from ..snapshot import last_meeting
 from ..store import Store
 
@@ -67,9 +68,11 @@ def scaffold(store: Store, root, series: str, meeting_date: date) -> dict:
                   "age_days": (meeting_date - _raised(q, meeting_date)).days, "priority": q.meta.get("priority"),
                   "proposed_decision": proposed_for.get(q.id, "")} for q in qs]
     proposed.sort(key=lambda d: (d.meta.get("priority") or 9, _raised(d, meeting_date)))
+    deferred = [d for d in items if d.type == "decision" and d.status == "deferred" and _in_series(d, series)]
+    deferred.sort(key=lambda d: (d.meta.get("priority") or 9, _raised(d, meeting_date)))
     decisions = [{"id": d.id, "decide": d.title, "proposed_action": d.meta.get("proposed_action", ""),
                   "reason": d.meta.get("rationale", ""), "weigh_in": "", "minutes": 10, "link": ""}
-                 for d in proposed[:MAX_DECISIONS]]
+                 for d in (proposed + deferred)[:MAX_DECISIONS]]  # deferred come back after proposed
     return {"series": series, "meeting_date": meeting_date, "previous_meeting": prev, "summary": "",
             "since_last": since_last, "questions": questions, "decisions": decisions}
 
@@ -124,8 +127,7 @@ def draft_path(root, series: str) -> Path:
 
 def save_draft(root, draft: dict) -> Path:
     p = draft_path(root, draft["series"])
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(yaml.safe_dump(draft, sort_keys=False, allow_unicode=True))
+    atomic_write_text(p, yaml.safe_dump(draft, sort_keys=False, allow_unicode=True))
     return p
 
 

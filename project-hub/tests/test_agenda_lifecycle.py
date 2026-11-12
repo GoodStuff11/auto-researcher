@@ -167,3 +167,124 @@ def test_build_refuses_unreadable_live_date(env):
     with pytest.raises(AgendaError, match="no readable meeting date"):
         build_agenda(root, "group")
     assert build_agenda(root, "group", force=True).is_file()
+
+
+def test_untitled_meeting_row_is_staged(env):
+    s, cfg, root, ids = env
+    path = build_agenda(root, "group")
+    text = "Use the 4x4 lattice for every production run from now on, agreed by all"
+    fill(path, {"H8": "approve", "I8": text, "J8": "Rerun (bob)"})
+    res = read_agenda(s, cfg, "group", author="bob", today=MEET)
+    p = next(x for x in load_proposals(root) if x.title.startswith("Raised"))
+    expected = f"(untitled: {text[:60]})"
+    assert p.title == f"Raised at group/2026-11-19: {expected}"
+    assert p.body["ops"][0]["title"] == expected
+    assert p.pid in res["staged"]
+
+
+def test_untitled_row_with_only_actions_is_read(tmp_path):
+    from hub.agenda.build import build_workbook
+    from hub.agenda.read import read_workbook
+    draft = {"series": "group", "meeting_date": MEET, "previous_meeting": None, "summary": "S",
+             "since_last": [], "questions": [], "decisions": []}
+    p = tmp_path / "a.xlsx"
+    build_workbook(draft, p)
+    fill(p, {"J5": "Email Tamra (alice)"})
+    rows = read_workbook(p).rows
+    assert len(rows) == 1 and rows[0].decide == "" and rows[0].new_actions == "Email Tamra (alice)"
+
+
+def test_reworded_planned_row_is_recorded(env):
+    s, cfg, root, ids = env
+    path = build_agenda(root, "group")
+    r1, r2 = row_of(path, ids["d1"].id), row_of(path, ids["d2"].id)
+    fill(path, {f"B{r1}": "Adopt Y for 2D only", f"H{r1}": "approve",
+                f"B{r2}": "Drop Z now", f"H{r2}": "reject", f"I{r2}": "Too costly"})
+    read_agenda(s, cfg, "group", author="bob", today=MEET)
+    d1 = s.get(ids["d1"].id)
+    assert d1.meta["as_decided"] == "Adopt Y for 2D only"
+    assert d1.entries[-1].text == "Approved at group/2026-11-19: Adopt Y for 2D only"
+    d2 = s.get(ids["d2"].id)
+    assert d2.entries[-1].text == 'Rejected at group/2026-11-19: Too costly (wording in meeting: "Drop Z now")'
+
+
+def test_same_date_rebuild_refuses_over_meeting_input(env):
+    s, cfg, root, ids = env
+    path = build_agenda(root, "group")
+    build_agenda(root, "group")  # no input yet: re-prepping is fine
+    fill(path, {f"I{row_of(path, ids['d1'].id)}": "Leaning yes"})
+    with pytest.raises(AgendaError) as exc:
+        build_agenda(root, "group")
+    assert str(exc.value) == ("live agenda already contains meeting input; run `hub agenda read group` "
+                              "or pass --force")
+    build_agenda(root, "group", force=True)
+    fill(path, {"B8": "Something new"})
+    with pytest.raises(AgendaError, match="meeting input"):
+        build_agenda(root, "group")
+
+
+def test_read_refuses_draft_workbook_date_mismatch(env):
+    s, cfg, root, ids = env
+    build_agenda(root, "group")
+    draft = scaffold(s, root, "group", date(2026, 11, 26))
+    draft["summary"] = "Next."
+    save_draft(root, draft)
+    with pytest.raises(AgendaError) as exc:
+        read_agenda(s, cfg, "group", author="bob", today=MEET)
+    assert str(exc.value) == "workbook is for 2026-11-19, draft is for 2026-11-26"
+
+
+def test_partial_read_back_leaves_marker_and_retry_is_refused(env, monkeypatch):
+    s, cfg, root, ids = env
+    path = build_agenda(root, "group")
+    fill(path, {f"H{row_of(path, ids['d1'].id)}": "approve", f"H{row_of(path, ids['d2'].id)}": "defer"})
+    real = s.set_fields
+    calls = []
+
+    def flaky(*a, **k):
+        calls.append(1)
+        if len(calls) == 2:
+            raise RuntimeError("crash mid read-back")
+        return real(*a, **k)
+
+    monkeypatch.setattr(s, "set_fields", flaky)
+    with pytest.raises(RuntimeError):
+        read_agenda(s, cfg, "group", author="bob", today=MEET)
+    note = root / "Status" / "Meetings" / "group" / "2026-11-19.md"
+    assert note.read_text() == "# group — 2026-11-19\n- status: read-back in progress\n"
+    monkeypatch.setattr(s, "set_fields", real)
+    with pytest.raises(AgendaError, match="a previous read-back"):
+        read_agenda(s, cfg, "group", author="bob", today=MEET)
+
+
+def test_deferred_decisions_return_and_match_by_title(env):
+    s, cfg, root, ids = env
+    s.set_fields(ids["d3"].id, {"status": "deferred"})
+    draft = scaffold(s, root, "group", MEET)
+    assert [d["id"] for d in draft["decisions"]][-1] == ids["d3"].id
+    draft["summary"] = "S."
+    save_draft(root, draft)
+    path = build_agenda(root, "group")
+    fill(path, {"B8": "Try W", "H8": "approve"})  # retyped as a new row: matched by title
+    read_agenda(s, cfg, "group", author="bob", today=MEET)
+    assert s.get(ids["d3"].id).status == "made"
+
+
+def test_raised_row_without_outcome_stages_proposed(env):
+    s, cfg, root, ids = env
+    path = build_agenda(root, "group")
+    fill(path, {"B8": "Maybe drop UCJ", "J8": "Check with Tamra (bob)"})
+    read_agenda(s, cfg, "group", author="bob", today=MEET)
+    p = next(x for x in load_proposals(root) if x.title.startswith("Raised"))
+    assert p.body["ops"][0]["fields"]["status"] == "proposed"
+
+
+def test_action_owner_mapped_to_people_key(env):
+    s, cfg, root, ids = env
+    path = build_agenda(root, "group")
+    r1 = row_of(path, ids["d1"].id)
+    fill(path, {f"H{r1}": "approve", f"J{r1}": "Rerun (Bob); Plot (ALICE); Ask (Bob Smith); Mail (carol)"})
+    read_agenda(s, cfg, "group", author="bob", today=MEET)
+    p = next(x for x in load_proposals(root) if x.title.startswith("Actions"))
+    assert [(o["title"], o["owner"]) for o in p.body["ops"]] == [
+        ("Rerun", "bob"), ("Plot", "alice"), ("Ask", "Bob Smith"), ("Mail", "carol")]

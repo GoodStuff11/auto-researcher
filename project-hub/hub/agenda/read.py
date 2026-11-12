@@ -11,7 +11,7 @@ from openpyxl import load_workbook
 from .build import SHEET_D, SHEET_META
 
 TITLE_RE = re.compile(r"^(\S+) — (\d{4}-\d{2}-\d{2}) · ")
-ACTION_RE = re.compile(r"^(.*?)\s*\(([\w-]+)\)\s*$")
+ACTION_RE = re.compile(r"^(.*?)\s*\(([\w.-]+(?: [\w.-]+)?)\)\s*$")  # "title (owner)", owner raw: 1-2 words
 
 
 @dataclass
@@ -104,12 +104,10 @@ def read_workbook(path) -> ReadBack:
     for r in range(header_row + 1, ws.max_row + 1):
         rid = get(r, "id") or None
         decide = get(r, "What to decide")
-        if not decide:
-            continue
+        outcome_text, as_decided, new_actions = get(r, "Outcome"), get(r, "As decided"), get(r, "New actions · owners")
+        if not (decide or outcome_text or as_decided or new_actions):
+            continue  # an empty row; a row with any meeting input is kept even without a title
         planned = rid is not None and not rid.startswith("NEW")
-        if rid is None:
-            planned = False
-        outcome_text = get(r, "Outcome")
-        rows.append(DecisionRow(rid, decide, parse_outcome(outcome_text), get(r, "As decided"),
-                                get(r, "New actions · owners"), planned, outcome_text))
+        rows.append(DecisionRow(rid, decide, parse_outcome(outcome_text), as_decided, new_actions, planned,
+                                outcome_text))
     return ReadBack(series, meeting, read_back, rows)
