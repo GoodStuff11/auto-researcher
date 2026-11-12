@@ -6,3 +6,25 @@
 [15:37:08] TARGET-PROBE CHECKS PASSED
 [15:37:54] ED [-11.388010886295248, -11.338627749487609, -11.329223800405972, -11.31736051148136] deg 1 |G|=8 chi={'My': 1, 'Mx': 1, 'D': -1} S0=0.0 (46 s)
 [15:38:13] observables: pair pairs (R>=3.0) 22, site pairs (R>=3.5) 10
+[15:38:13] a0: pair=+9.223562e-05 spin=+5.338128e-02 charge=-1.415904e-03 charge_conn=-1.601545e-03
+[15:38:20] seed 11 [P] dE=0.05181 ov0=0.9362 dE_sign(P)=0.012464574121485938 | pair: a=+6.32861e-05 d=+2.895e-05 rel=0.314 spin: a=+4.55057e-02 d=+7.876e-03 rel=0.148 charge: a=-1.10375e-03 d=-3.122e-04 rel=0.220 | conn-charge rel=0.111
+[15:38:20]     L1: dE=0.02277 pair: d=+2.620e-05 spin: d=+6.785e-03 charge: d=-3.181e-04
+[15:38:20]     L2: dE=0.01495 pair: d=+2.800e-05 spin: d=+5.747e-03 charge: d=-2.739e-04
+[15:38:22] seed 11 [P_S] dE=0.03018 ov0=0.9566 dE_sign(P)=0.012464574121485938 | pair: a=+6.43538e-05 d=+2.788e-05 rel=0.302 spin: a=+4.48566e-02 d=+8.525e-03 rel=0.160 charge: a=-1.07690e-03 d=-3.390e-04 rel=0.239 | conn-charge rel=0.115
+[15:38:22]     L1: dE=0.01587 pair: d=+2.535e-05 spin: d=+7.391e-03 charge: d=-3.285e-04
+[15:38:22]     L2: dE=0.01057 pair: d=+2.763e-05 spin: d=+6.118e-03 charge: d=-2.657e-04
+[15:38:29] seed 22 [P] dE=0.05710 ov0=0.9157 dE_sign(P)=0.013640397561218265 | pair: a=+3.46348e-05 d=+5.760e-05 rel=0.624 spin: a=+4.60155e-02 d=+7.366e-03 rel=0.138 charge: a=-9.73665e-04 d=-4.422e-04 rel=0.312 | conn-charge rel=0.222
+[15:38:29]     L1: dE=0.02681 pair: d=+3.402e-05 spin: d=+6.286e-03 charge: d=-4.466e-04
+[15:38:29]     L2: dE=0.01849 pair: d=+2.691e-05 spin: d=+5.215e-03 charge: d=-3.656e-04
+[15:38:31] seed 22 [P_S] dE=0.03458 ov0=0.9465 dE_sign(P)=0.013640397561218265 | pair: a=+3.52900e-05 d=+5.695e-05 rel=0.617 spin: a=+4.49667e-02 d=+8.415e-03 rel=0.158 charge: a=-9.57672e-04 d=-4.582e-04 rel=0.324 | conn-charge rel=0.214
+[15:38:31]     L1: dE=0.01848 pair: d=+3.045e-05 spin: d=+7.227e-03 charge: d=-4.592e-04
+[15:38:31]     L2: dE=0.01269 pair: d=+2.340e-05 spin: d=+5.864e-03 charge: d=-3.526e-04
+[15:38:38] seed 33 [P] dE=0.05837 ov0=0.9135 dE_sign(P)=0.012540401467026285 | pair: a=+1.02514e-05 d=+8.198e-05 rel=0.889 spin: a=+4.93448e-02 d=+4.036e-03 rel=0.076 charge: a=-9.96994e-04 d=-4.189e-04 rel=0.296 | conn-charge rel=0.216
+[15:38:38]     L1: dE=0.02576 pair: d=+4.535e-05 spin: d=+3.173e-03 charge: d=-4.040e-04
+[15:38:38]     L2: dE=0.01742 pair: d=+3.053e-05 spin: d=+2.460e-03 charge: d=-3.331e-04
+[15:38:40] seed 33 [P_S] dE=0.03401 ov0=0.9540 dE_sign(P)=0.012540401467026285 | pair: a=+1.01223e-05 d=+8.211e-05 rel=0.890 spin: a=+4.82410e-02 d=+5.140e-03 rel=0.096 charge: a=-9.62152e-04 d=-4.538e-04 rel=0.320 | conn-charge rel=0.215
+[15:38:40]     L1: dE=0.01666 pair: d=+4.191e-05 spin: d=+4.239e-03 charge: d=-4.197e-04
+[15:38:40]     L2: dE=0.01103 pair: d=+2.518e-05 spin: d=+3.310e-03 charge: d=-3.284e-04
+[15:38:40] median rel error over 3 P states: pair=0.6245 spin=0.1380 charge=0.2959; median dE_sign(P)=0.0125 (premise >= 0.005: True)
+[15:38:40] STEP-1 VERDICT: TARGET pair,spin,charge
+[15:38:40] wrote results/target_probe_all.json

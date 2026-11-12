@@ -361,6 +361,18 @@ Every number below was read from the result files by an agent; the orchestrator 
   * **Observable consequence (P3.1 round 5, seed 11).** The converged projected NNBF has relative errors of **31% in the long-range pair correlation, 15% in spin and 22% in charge**, with overlap 0.936. One and two Lanczos steps cut $\Delta E$ from 0.052 to 0.023 and 0.015 but barely move these observables, so the observable error lies in low-energy directions. This is the frozen Unacceptable Outcome happening in practice: a much better energy with the order parameter still wrong. Three-seed confirmation is job 451837.
 
   This is the first instance in this study where a nodal error survives projection, consistent with the sector-dimension/parameter criterion.
+  * **Three-seed observable errors (job 451837, P3.1 target probe; converged projected NNBF, width 6).** Relative errors of the long-range correlations against ED:
+
+| Seed | $\Delta E$ | Overlap with $\psi_0$ | Pair | Spin | Charge |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 11 | 0.052 | 0.936 | 0.31 | 0.15 | 0.22 |
+| 22 | 0.057 | 0.916 | 0.62 | 0.14 | 0.31 |
+| 33 | 0.058 | 0.914 | 0.89 | 0.08 | 0.30 |
+
+  * **The three seeds have nearly the same energy but disagree by $3\times$ on the pair correlation.** Seed 33 shows almost no long-range pairing ($a=1.0\times10^{-5}$ against the exact $9.2\times10^{-5}$). This is the "variational bias decides the physics" problem of the doped-Hubbard NQS literature, reproduced on an exactly solvable cluster.
+  * **Exact spin projection** lowers $\Delta E$ by about 40% (to 0.030–0.035) **but leaves every observable error unchanged**.
+  * **Two Lanczos steps** cut $\Delta E$ by $3$–$4\times$ but move the pair error by less than half.
+  * Step-1 verdict: TARGET for pair, spin and charge.
   * **Seed confirmation (job 451706).** On the 4×4 OBC $6+6$ instance, the projected NNBF (width 6) has median $\Delta E_{\mathrm{sign}}=0.0125t$ over seeds 11/22/33 (range 0.0125–0.0136), $f_E=0.22$–$0.24$. With exact $P_S$ added the median is $0.0071t$. The target is confirmed for P1.2, P1.3 and P3.1.
   * **Comparison instance.** The 4×4 cylinder $6+6$ (sector 15268) gives median $0.0038t$, which is below the $0.01t$ bar. It becomes the shared target for P1.2, P1.3 (basin check) and P3.1 (error bars). Seed confirmation is running as job 451706.
 ### Round 2 — Mutation & Replenishment Synthesis (2026-11-11)
