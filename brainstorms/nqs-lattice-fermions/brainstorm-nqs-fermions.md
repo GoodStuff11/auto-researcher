@@ -161,11 +161,11 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.2 | SUBMITTED (round 5 on 4×4 OBC; FRD is O(V) more passes per E_loc, so matched-parameter claim only) | nothing (premise read from own control arm) | Slurm 451916 (27 tasks) |
 | P1.3 | SUBMITTED (width-6 basin pilot; premise checked by own control arm) | tasks 12–35 blocked on pilot decision | Slurm 451976 (12 tasks) |
 | P2.1 | SUBMITTED (2 more control seeds) | nothing | Slurm 451706 |
-| P2.2 | CRITIC (round 5; goal narrowed by saturation diagnostic; WIBJ re-entered, ALE conditional) | nothing | per-leaf critic |
+| P2.2 | FIX (round 5: Godambe–Joshi claim corrected; WIBJ conditional, error grows with K; Part L dropped) | nothing | fix worker |
 | P3.1 | FIX (OSG killed; EHX fixed, cheap gate run on width-6 seeds) | gate run after 451706 | fix worker; Slurm 451837 (step-1 seeds) |
 | P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
 | P4.1 | SUBMITTED (decisive pilot; completeness probe: one AGP per c incomplete, eps_tab(K=1) at least 6.8e-3, K=2 about 2e-8) | report gates on 451839 | Slurm 451886 (15 tasks), 451839 (completeness) |
-| P4.2 | FIX then reduced decisive run (FAIL expected) | nothing | fix worker |
+| P4.2 | CRITIC (round 5: PA, ELT on 4×4 OBC) + Route 3.1 closing | 451706 gates round-5 submission | per-leaf critic; Slurm 451914 (close 3.1) |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
 * **P3.2 round 3: first Hard-Core-scale same-irrep competitor (2026-11-11)**:
@@ -326,7 +326,7 @@ Every number below was read from the result files by an agent; the orchestrator 
 | **P3.1** (410398) | Instances meeting the go criterion: 0 of 6 (2 needed). L1 never tracks; ZRO tracks 0–2 per instance | **NO-GO** | Re-scope onto the 4×4 OBC instance |
 | **P3.2** (410917) | 2 hard targets; R0P wrong at $d=+0.0002$; no branch crossover; both snapshots `certified` with collapsed branches. Final-window energy swing about $5\times10^{-3}$, above the gap | **INTRINSIC-BIAS**, by elimination; the wrong call may be optimizer noise | Fix: R0P-warm, certification gate, multi-seed |
 | **P4.1** (411494, 411996) | Exactly projected: $m(\epsilon_{\mathrm{che}})=8.4\times10^{-5}$ vs $m(\epsilon_{\mathrm{nnbf\_SG}})=4.0\times10^{-5}$, ratio 2.10, seed ranges disjoint. Tabular AGP job **timed out** with no fit | `sfb` has headroom (charge-only is $2.1\times$ worse); the KAGP premise is **unavailable** | Fix list plus a faster completeness test |
-| **P4.2** (410960) | $\epsilon_{\mathrm{tr0}}$ = 0.66/0.76/0.62 (spread 0.143, below ½·median); correct irrep picked 2 of 3 times | **Route 3.1 not killed** | Fixes, but zero-shot states are 2–5× worse than 20 steps from scratch, so FAIL is expected |
+| **P4.2** (410960) | $\epsilon_{\mathrm{tr0}}$ = 0.66/0.76/0.62 (spread 0.143, below ½·median); correct irrep picked 2 of 3 times | **Route 3.1 not killed** | Correction (P4.2 round 5): the pilot ran with `--budget 0`, so the "scratch" comparator was the untrained mean-field start. Zero-shot transfer (median 0.66) is worse than that untrained start (0.29); Route 3.1 is expected CLOSED-FAIL (closing job 451914) |
 
 * **New key instance (from P2.1's pilot).** On the 4×4 OBC $t$–$t'$–$J$ cluster, $6+6$ electrons, $t'=-0.25$, $J=0.4$ (projected sector dimension 30220; NNBF width 6 with about 1.7k parameters, ratio about 17), the symmetry-projected NNBF keeps a measurable sign error:
     * $\Delta E_{\mathrm{sign}}=0.0125t$, $f_E=0.24$, overlap with $\psi_0$ 0.936;

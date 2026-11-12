@@ -1,100 +1,131 @@
 #!/usr/bin/env python3
 """
-P3.1 round-5 decisive test: error of long-range correlations of CONVERGED symmetry-projected NNBF
-states on the shared 4x4 OBC t-t'-J instance, from cheap information
-==================================================================================================
+P3.1 round-5 decisive test (after the per-leaf critic's fixes): error of long-range correlations of
+CONVERGED symmetry-projected NNBF states on the shared 4x4 OBC t-t'-J instance, from cheap information
+=====================================================================================================
 
 Instance (r5_core.INST0): 4x4 OBC, N_up = N_dn = 6, t' = -0.25, J = 0.4, D = 1681680, psi_0 a
-non-degenerate singlet (Mx = My = +1, D = -1, |G| = 8). Sign half of the Hard Core only (see the
-artifact for the in-irrep spectrum measured by target_probe.py).
+non-degenerate singlet (Mx = My = +1, D = -1, |G| = 8). Sign half of the Hard Core only.
 Observables (r5_core.Observables): long-range d-wave pair correlation (bond-centre distance >= 3),
 spin correlation S_i.S_j and charge correlation (n_i - nbar)(n_j - nbar) at site distance >= 3.5.
 
-Population (all CONVERGED finals; no snapshots)
------------------------------------------------
-NNBF (P2.1 r3 arm "nnbf": full backflow, K = 1, Ha = 0) of hidden width W in {3, 6, 12}, seeds
-{11, 22, 33}, trained with P_chi-projected SR (exact force, sampled metric; P2.1 settings: 1200
-steps, step 0.05, shift 1e-3, 2000 samples, best-energy iterate). Width 6 is read from the P2.1
-round-3 parameter files (jobs 410988 and 451706); widths 3 and 12 are trained here (--mode train).
-Each trained state gives two verdict states: "P" (P_chi psi_theta) and "P_S" (its post-hoc
-total-spin projection). 9 networks x 2 labels = 18 states x 3 observables.
+Population (CONVERGED finals only; no snapshots)
+------------------------------------------------
+NNBF (P2.1 r3 arm "nnbf": full backflow, K = 1, Ha = 0), WIDTH 6 ONLY (critic: no widths 3/12).
+Seeds 11, 22, 33 are read from the P2.1 round-3 parameter files (jobs 410988, 451706); further
+width-6 seeds are trained here with --mode train and read from <results>/params. ONE label per
+network is scored: "P" (P_chi psi_theta). The P_S label is not scored, and P_S hybrids are never
+formed (|psi_k| sgn psi_j of two spin-projected states is not a spin eigenstate). The unit is the
+seed; the per-seed EHX/ZV estimates SHARE partner data (each uses every other seed), so the
+per-seed numbers are not independent.
 
-Routes (P3.1 artifact, round 5)
--------------------------------
-  OSG  Route 5.1 (Operation A on ZR: the trained response network is replaced by a closed-form
-       Galerkin solve). Zero-bias / first-order correction delta ~ -2 <r|Kt^-1|w>, r = (H-E)psi,
-       w = (A-a)psi, Kt = Q(H-E)Q, solved in the span of the observable's OWN resolved pieces
-       y_c = (A_c - a_c) psi, one per symmetry-invariant distance class c of the same correlator
-       (the full measured correlation function C(r), not powers of H):
-           delta_hat = -2 c^T M^+ b,  c_p = <r|y_p>,  M_pq = <y_p|Kt|y_q>,  b_p = <y_p|w>.
-       All three are sampled from |psi|^2 with ONE-SIDED local estimators X(n)/psi(n)
-       (X = symmetrised (H-E)(A_p-a_p)psi, (A_p-a_p)(H-E)(A_q-a_q)psi, (A_p-a_p)(A-a)psi), cost
-       O(N_A^2 N_H) connections per sample; no extra network, no training, nothing fitted.
-       M is inverted on the eigen-directions of the full-sample M with |lambda| >= 1e-3 max|lambda|
-       AND |lambda| >= 3 x its bootstrap SE (fixed in advance; exact linear dependences among the
-       pieces, e.g. sum of all charge pieces = const, are otherwise inverted noise).
-  EHX  Route 5.2 (Operation B, ensemble sign/amplitude hybrids). For state k (label L), take every
-       ensemble member j of the same label from a DIFFERENT seed (leave-own-seed-out), and form the
-       hybrids |psi_k| sgn psi_j (sampled from |psi_k|^2) and |psi_j| sgn psi_k (sampled from
-       |psi_j|^2). These need only the two networks' amplitudes at the sampled and connected
-       configurations: no cross-overlap, no heavy-tailed ratio psi_j/psi_k. Over the point set
-       {psi_k} U hybrids, fit E = E0_hat + s sigma^2 (zero-variance energy) and a = alpha + beta E;
-       delta_hat = alpha + beta E0_hat - a_k. Nothing is fitted to the truth.
-Controls (the PASS must beat the best of them)
-  L1   one Lanczos step: two-point linear extrapolation of a in sigma^2 through psi and phi_1
-       (exact matrix elements, generous to the control).
-  L2   two Lanczos steps: linear fit in sigma^2 through phi_1 and phi_2, extrapolated to 0 (exact).
-  SD   seed spread of a at the same (width, label): unsigned |delta_hat| = std over seeds.
-  ZV   the EHX fit restricted to the plain ensemble members (no hybrids), leave-own-seed-out
-       (isolates what the hybrids add); sampled.
-Ablations / premise
-  SMA  OSG with the single basis vector w (single-mode Galerkin = covariance / single-mode scale).
-  OSGX OSG with exact matrix elements (diagnostic: separates sampling noise from mechanism).
-  ZRO  exact first-order oracle -2 <r|Kt^-1|w> (MINRES). Premise of OSG: if ZRO tracks < 70 % of
-       scored items, OSG is "FAIL (premise)".
+Route (P3.1 artifact, round 5)
+------------------------------
+  EHX  ensemble sign/amplitude hybrid extrapolation. For state k take every other seed j (same
+       width, label P) and form h_kj = |psi_k| sgn psi_j (sampled from |psi_k|^2) and
+       h_jk = |psi_j| sgn psi_k (sampled from |psi_j|^2). Both lie in the chi irrep because
+       sgn psi_j(g n) = chi(g) xi_g(n) sgn psi_j(n) (xi_g the fermionic reordering sign) while
+       |psi_k(g n)| = |psi_k(n)|. Over the point set {psi_k} U {psi_j-hybrids}, three fit forms are
+       pre-registered; THE DECIDING FORM IS "S":
+         S (decides)  a = alpha + gamma * sigma            -> a_hat = alpha (sigma -> 0)
+         R            a = alpha + gamma * sqrt(max(E - E0_hat, 0)), E0_hat from E = E0_hat + s sigma^2
+         E            a = alpha + beta * E,  a_hat = alpha + beta * E0_hat   (the original linear chord)
+       Reason for S: delta a is first order in the wavefunction error e, sigma is first order, and
+       E - E0 is second order, so a linear chord in E understates delta; S needs no E0_hat, whereas
+       R puts the error of E0_hat (dE = 0.03-0.05 against sigma^2 ~ 0.14) under a square root.
+       delta_hat = a_hat - a_k (a_k sampled). Nothing is fitted to the truth.
+  OSG  KILLED by the critic (it is the Assaraf-Caffarel / Toulouse-Assaraf-Umrigar zero-bias
+       correction with a fixed linear-basis psi'; its exact-element ablation OSGX has the wrong sign
+       or zero on 4 of 6 smoke items, and the sampled version was biased 3.7x versus exact Galerkin).
+       Not computed in --mode analyze. OSGX and ZRO are kept as DIAGNOSTICS only (never scored
+       against a threshold). The sampled osg() function remains only for the historic --mode checks.
+Controls
+  ZV   the same three fits restricted to the plain ensemble members {psi_k} U {psi_j} (no hybrids).
+       THE DECISIVE COMPARISON IS EHX (form S) vs ZV (form S): ZV isolates what the hybrids add.
+  L1, L2  one / two exact Lanczos steps (variance extrapolation). Reported only: they fail here by a
+       known mechanism (the residual error is low-omega; Lanczos lowers dE 2-3.5x and leaves delta).
+  SD   seed spread at the same width (unsigned). Reported only.
+Diagnostics: OSGX (Galerkin in the observable's pieces, exact elements), ZRO (exact first-order
+oracle -2 <r|Kt^-1|w>, MINRES).
 
-Metric and pre-committed rule (implemented in --mode aggregate)
---------------------------------------------------------------
-Item = (state, observable). delta = a_0 - a_psi (exact). Scored iff |delta| >= 0.02 |a_0|.
-Trusted: SE_boot(delta_hat) <= 0.5 |delta_hat| (sampled arms; exact arms always trusted).
-Tracked: trusted and 1/2 <= delta_hat/delta <= 2 (|.| for SD). False: trusted and
-delta_hat/delta < 1/2 (includes the wrong sign). Unit = seed (3 units; each unit holds its
-widths x labels x observables). T_X(u) = tracked fraction of unit u (abstentions = misses),
-M_X = median_u T_X(u); B = control with the largest M among L1, L2, SD, ZV;
-Delta_X = median_u [T_X(u) - T_B(u)], spread = max-min over units of T_X(u) - T_B(u).
-  PASS:  M_X >= 0.5, Delta_X >= 0.2, min_u [T_X(u) - T_B(u)] > 0 (positive on every seed),
-         G_X (pooled false-certificate fraction) <= 0.10, and for OSG the ZRO premise holds.
-  FAIL:  M_X < 0.3 or Delta_X < 0.05 or G_X > 0.20.
-  AMBIGUOUS otherwise; pre-committed action: rerun --mode analyze with --mc-samples 500000;
-  a route still not PASS is killed.
-PREMISE GATE (NO-TARGET): the run counts only if the width-6 projected control's median dE_sign
-over its seeds is >= 0.005 t (P2.1 JSONs) AND >= 6 items are scored over >= 3 seeds. Otherwise
-both routes are NO-TARGET.
+Uncertainty and trust
+---------------------
+SE(delta_hat) = sqrt(SE_boot^2 + SE_jk^2): SE_boot over Monte Carlo draws (n_boot replicas,
+every point resampled), SE_jk the leave-one-PARTNER-out jackknife (each replicate drops one other
+seed, i.e. its plain point and both its hybrids; SE_jk^2 = (n-1)/n sum (theta_i - theta_bar)^2).
+A replicate needs >= 2 points (an exactly determined line is allowed).
+
+Injected-sign-flip correctness check (EHX must recover it; part of the gate)
+---------------------------------------------------------------------------
+Three synthetic members psi_i = psi_0 * exp(eps_amp * xi(orbit)) * (-1)^{[n in S_i]}, with S_i a
+union of whole G-orbits drawn with probability proportional to orbit weight until the flipped
+weight reaches w_i in (0.01, 0.02, 0.04), xi a G-invariant Gaussian per orbit, eps_amp = 0.10 (so
+the hybrids differ from the members). Every psi_i lies in the chi irrep (checked) and its delta
+= a_0 - a(psi_i) is known exactly. EHX and ZV are run on this ensemble exactly as on the networks.
+INJECT-PASS iff EHX (form S) tracks >= 50 % of the scored injected items, with >= 3 scored.
+
+Metric
+------
+Item = (seed, observable), label P. delta = a_0 - a_psi (exact). Scored iff |delta| >= 0.02 |a_0|.
+Trusted: SE <= 0.5 |delta_hat| (exact arms always trusted). Tracked: trusted and
+1/2 <= delta_hat/delta <= 2 (|.| for SD). False: trusted and delta_hat/delta < 1/2 (includes the
+wrong sign). T_X(u) = tracked fraction of seed u (abstentions and untrusted count as misses);
+M_X = median_u T_X(u). G_X = false / TRUSTED items, defined only with >= MIN_TRUSTED = 3 trusted
+items (otherwise G is undefined and X cannot PASS).
+
+Pre-committed rules (--mode aggregate --rule gate|full)
+------------------------------------------------------
+PREMISE (both rules, NO-TARGET otherwise): P2.1 width-6 median dE_sign >= 0.005 t over the seeds
+found, and >= 6 scored items over >= 3 seeds.
+  gate (cheap run: width 6, seeds 11/22/33, label P):
+    GATE-PASS iff INJECT-PASS and M_EHX >= 0.5 and median_u [T_EHX(u) - T_ZV(u)] > 0 and
+    G_EHX <= 0.10 (defined). Action: train >= 8 more width-6 seeds (submit_train.sbatch) and run
+    the full rule. Otherwise GATE-FAIL: EHX is "Route 2.3 restated" (variance extrapolation of a)
+    and the leaf is marked for mutation; no training compute is spent.
+  full (width 6, >= 11 seeds, label P):
+    PASS:  M_EHX >= 0.5, Delta = median_u [T_EHX - T_ZV] >= 0.2, T_EHX(u) - T_ZV(u) > 0 on every
+           seed, G_EHX <= 0.10 (defined), INJECT-PASS.
+    FAIL:  M_EHX < 0.3 or Delta < 0.05 or G_EHX > 0.20 or INJECT fails.
+    AMBIGUOUS otherwise: rerun --mode analyze with --mc-samples 500000; still not PASS -> killed.
 
 Usage
 -----
-  python3 micro_test.py --mode checks                  correctness checks (small clusters; ~1 min)
-  python3 micro_test.py --mode train --width W --seed S   one projected-SR training (hours)
-  python3 micro_test.py --mode analyze [--widths 3,6,12] [--seeds 11,22,33]   all arms (hours)
-  python3 micro_test.py --mode aggregate [--results DIR]  verdict (seconds)
+  python3 micro_test.py --mode checks                  small-cluster correctness checks (~2 min)
+  python3 micro_test.py --mode inject [--results DIR]  injected-sign-flip check alone (~5 min)
+  python3 micro_test.py --mode train --width 6 --seed S   one projected-SR training (hours)
+  python3 micro_test.py --mode analyze --widths 6 --seeds 11,22,33   all arms + inject check
+  python3 micro_test.py --mode aggregate --rule gate [--results DIR]   verdict (seconds)
 Options
-  --mode {checks,train,analyze,aggregate}  (default checks)
-  --width INT         NNBF hidden width for --mode train (3 or 12 in the decisive run).
+  --mode {checks,inject,train,analyze,aggregate}  (default checks)
+      checks    small 4x4 2+2 cluster: first-order oracle, historic OSG sampled vs exact, local energy.
+      inject    builds the instance, runs only the injected-sign-flip check; writes <results>/inject.json.
+      train     trains one network (--width, --seed); writes <results>/params/inst0_nnbf_w{W}_s{S}.npz.
+      analyze   all arms on every (width, seed, label) found, plus the injected check;
+                writes <results>/analysis.json.
+      aggregate reads <results>/analysis.json, prints the table and verdict, writes aggregate.json.
+  --rule {gate,full}  (aggregate only; default gate) which pre-committed rule above is applied.
+  --width INT         NNBF hidden width for --mode train (default 6).
   --seed INT          Seed for --mode train.
-  --widths LIST       Widths analysed (default 3,6,12). Width 6 is read from --p21-params.
-  --seeds LIST        Seeds analysed (default 11,22,33). Missing parameter files are skipped.
+  --widths LIST       Widths analysed (default 6). Width 6 is read from --p21-params first, then
+                      from <results>/params/inst0_nnbf_w6_s{S}.npz; other widths only from the latter.
+  --seeds LIST        Seeds analysed (default 11,22,33). Missing parameter files are skipped (logged).
+  --labels LIST       Labels analysed, subset of {P, P_S} (default P). P_S states get EHX = ZV = NaN
+                      (no hybrids are formed); only P is scored by aggregate.
   --sr-iters INT (1200)  --sr-lr FLOAT (0.05)  --sr-shift FLOAT (1e-3)  --sr-samples INT (2000)
   --chunk INT (32768)  --o-chunk INT (8)        training settings (P2.1 values).
   --mc-samples INT    i.i.d. draws from |psi|^2 per sampled point (default 20000).
   --n-boot INT        bootstrap replicas (default 100).
   --minres-iters INT  ZRO iteration cap (default 3000).
+  --no-inject         analyze: skip the injected check (aggregate then reports INJECT = missing,
+                      which counts as INJECT not passed).
   --results DIR       default results/ next to this script.
   --p21-params DIR    default ../P2.1_subcubic_amplitudes_r3/results/params
   --p21-results DIR   default ../P2.1_subcubic_amplitudes_r3/results (dE_sign premise)
 Outputs
-  train:     results/params/inst0_nnbf_w{W}_s{S}.npz and results/train_w{W}_s{S}.json
-  analyze:   results/analysis.json (per item: truth, every arm's estimate, SE, diagnostics)
-  aggregate: printed table and verdict; results/aggregate.json
+  train:     <results>/params/inst0_nnbf_w{W}_s{S}.npz and <results>/train_w{W}_s{S}.json
+  analyze:   <results>/analysis.json (rows: truth, every arm's estimate, SE_boot, SE_jk; inject rows)
+  inject:    <results>/inject.json
+  aggregate: printed table and verdict; <results>/aggregate.json
 Sampling note: local estimators are read from exact vectors indexed at the sampled
 configurations (identical to the per-sample local estimator; checked in --mode checks).
 """
@@ -117,9 +148,17 @@ TAU_M = 1e-3
 TRUST = 0.5
 SCORE_REL = 0.02
 PREMISE_SIGN = 0.005
-CONTROLS = ("L1", "L2", "SD", "ZV")
-ROUTES = ("OSG", "EHX")
-ARMS = ROUTES + CONTROLS + ("SMA", "OSGX", "ZRO")
+MIN_TRUSTED = 3
+FORMS = ("S", "R", "E")            # S decides (pre-registered); R and E are reported
+DECIDING = "S"
+ROUTE = "EHX"                      # arm EHX = form S; EHX_R, EHX_E the other forms
+COMPARATOR = "ZV"                  # decisive comparison: EHX vs ZV (both form S)
+REPORTED = ("EHX_R", "EHX_E", "ZV_R", "ZV_E", "L1", "L2", "SD")
+DIAGNOSTICS = ("OSGX", "ZRO")
+ARMS = (ROUTE, COMPARATOR) + REPORTED + DIAGNOSTICS
+INJ_WEIGHTS = (0.01, 0.02, 0.04)
+INJ_EPS_AMP = 0.10
+INJ_SEED = 777
 
 
 def log(msg):
@@ -311,37 +350,151 @@ def point_stats(m, ob, h, idx):
     return El, Al
 
 
-def zv_fit(points, sel_fn):
-    """points: list of (El, Al) per-sample arrays. Returns {obs: delta-free extrapolated a}."""
+def fit_forms(points, sels):
+    """points: list of (El, Al) per-sample arrays; sels: per-point index arrays.
+    Returns {form: {obs: a_hat}} for the pre-registered forms S, R, E, or None if < 2 points."""
     E = []; S = []; A = {k: [] for k in rc.OBS}
-    for (El, Al), sel in zip(points, sel_fn):
+    for (El, Al), sel in zip(points, sels):
         e = El[sel]
         E.append(e.mean()); S.append(e.var())
         for k in rc.OBS:
             A[k].append(Al[k][sel].mean())
     E, S = np.array(E), np.array(S)
-    if len(E) < 3:
+    if len(E) < 2:
         return None
     sE, E0 = np.polyfit(S, E, 1)
-    out = {}
+    sig = np.sqrt(S)
+    rt = np.sqrt(np.maximum(E - E0, 0.0))
+    out = {f: {} for f in FORMS}
     for k in rc.OBS:
-        beta, alpha = np.polyfit(E, np.array(A[k]), 1)
-        out[k] = float(alpha + beta * E0)
+        a = np.array(A[k])
+        out["S"][k] = float(np.polyfit(sig, a, 1)[1]) if np.ptp(sig) > 0 else float("nan")
+        out["R"][k] = float(np.polyfit(rt, a, 1)[1]) if np.ptp(rt) > 0 else float("nan")
+        beta, alpha = np.polyfit(E, a, 1)
+        out["E"][k] = float(alpha + beta * E0)
     return out
 
 
-def ensemble_extrap(points, n_boot, rng):
-    ns = [len(p[0]) for p in points]
-    full = zv_fit(points, [np.arange(n) for n in ns])
-    if full is None:
-        nan = {k: float("nan") for k in rc.OBS}
-        return nan, nan
-    reps = []
-    for _ in range(n_boot):
-        r = zv_fit(points, [rng.integers(0, n, n) for n in ns])
-        reps.append(r)
-    se = {k: float(np.std([r[k] for r in reps], ddof=1)) for k in rc.OBS}
-    return full, se
+def ensemble_extrap(base, partners, n_boot, rng):
+    """base: points always present (psi_k's own); partners: one point-list per partner seed (its
+    plain point, or its two hybrids). Returns {form: {obs: (a_hat, se_boot, se_jk)}}.
+    se_boot: MC bootstrap (every point resampled); se_jk: leave-one-partner-out jackknife."""
+    pts = base + [p for grp in partners for p in grp]
+    nan = {f: {k: (float("nan"),) * 3 for k in rc.OBS} for f in FORMS}
+    if len(partners) == 0:
+        return nan
+    full = fit_forms(pts, [np.arange(len(p[0])) for p in pts])
+    reps = [fit_forms(pts, [rng.integers(0, len(p[0]), len(p[0])) for p in pts]) for _ in range(n_boot)]
+    jk = []
+    if len(partners) >= 2:
+        for i in range(len(partners)):
+            sub = base + [p for j, grp in enumerate(partners) if j != i for p in grp]
+            jk.append(fit_forms(sub, [np.arange(len(p[0])) for p in sub]))
+    out = {}
+    for f in FORMS:
+        out[f] = {}
+        for k in rc.OBS:
+            sb = float(np.nanstd([r[f][k] for r in reps], ddof=1))
+            if jk:
+                th = np.array([r[f][k] for r in jk]); n = len(th)
+                sj = float(np.sqrt((n - 1) / n * np.sum((th - th.mean()) ** 2)))
+            else:
+                sj = float("nan")
+            out[f][k] = (full[f][k], sb, sj)
+    return out
+
+
+def ehx_zv(m, ob, psi, idx, plain_k, partners, n_boot, rng):
+    """EHX and ZV for state psi (samples idx, plain point plain_k). partners: list of
+    (psi_j, idx_j, plain_j) from the other seeds. Returns {arm: {obs: dict(a, se_boot, se_jk)}}."""
+    hyb = []
+    for psj, idj, plj in partners:
+        h1 = np.abs(psi) * np.sign(psj); h1 /= np.linalg.norm(h1)
+        h2 = np.abs(psj) * np.sign(psi); h2 /= np.linalg.norm(h2)
+        hyb.append([point_stats(m, ob, h1, idx), point_stats(m, ob, h2, idj)])
+    res = {"EHX": ensemble_extrap([plain_k], hyb, n_boot, rng),
+           "ZV": ensemble_extrap([plain_k], [[plj] for _, _, plj in partners], n_boot, rng)}
+    out = {}
+    for base, r in res.items():
+        for f in FORMS:
+            arm = base if f == DECIDING else f"{base}_{f}"
+            out[arm] = {k: dict(a=r[f][k][0], se_boot=r[f][k][1], se_jk=r[f][k][2]) for k in rc.OBS}
+    return out
+
+
+def est_entry(a_hat, a_s, se_boot, se_jk):
+    """delta_hat = a_hat - a_s; SE = sqrt(SE_boot^2 + SE_jk^2) (SE_jk = 0 when undefined)."""
+    se = float(np.sqrt(se_boot ** 2 + (se_jk if np.isfinite(se_jk) else 0.0) ** 2))
+    return dict(d=float(a_hat - a_s), se=se, se_boot=float(se_boot), se_jk=float(se_jk))
+
+
+def injected_states(psi0, sg, rng):
+    """Synthetic ensemble: psi_0 with sign flips on whole G-orbits (flipped weight INJ_WEIGHTS,
+    orbits drawn with probability proportional to orbit weight) and a G-invariant amplitude
+    distortion exp(INJ_EPS_AMP xi(orbit)). Returns list of (psi_i, w_flipped, |P_chi psi_i - psi_i|)."""
+    rep = sg.inv.min(axis=0)            # orbit representative of every configuration
+    D = len(psi0)
+    ow = np.bincount(rep, weights=psi0 ** 2, minlength=D)
+    reps = np.nonzero(ow > 0)[0]
+    out = []
+    for wt in INJ_WEIGHTS:
+        keys = np.log(ow[reps]) + rng.gumbel(size=len(reps))
+        order = reps[np.argsort(-keys)]
+        nsel = int(np.searchsorted(np.cumsum(ow[order]), wt)) + 1
+        fr = np.zeros(D, bool); fr[order[:nsel]] = True
+        flip = fr[rep]
+        xi = rng.standard_normal(D)[rep]
+        v = psi0 * np.exp(INJ_EPS_AMP * xi) * np.where(flip, -1.0, 1.0)
+        v /= np.linalg.norm(v)
+        dev = float(np.linalg.norm(sg.project(v) - v))
+        assert dev < 1e-8, f"injected state left the chi irrep: |P v - v| = {dev:.2e}"
+        out.append((v, float(np.sum(psi0[flip] ** 2)), dev))
+    return out
+
+
+def inject_check(m, ob, psi0, sg, a0, args, rng):
+    """Injected-sign-flip correctness check (module docstring). Returns rows like analyze's."""
+    inj = injected_states(psi0, sg, np.random.default_rng(INJ_SEED))
+    vs = [v for v, _, _ in inj]
+    smp = [sample_idx(v ** 2, args.mc_samples, rng) for v in vs]
+    plain = [point_stats(m, ob, v, s) for v, s in zip(vs, smp)]
+    rows = []
+    for i, (v, wf, dev) in enumerate(inj):
+        partners = [(vs[j], smp[j], plain[j]) for j in range(len(vs)) if j != i]
+        ez = ehx_zv(m, ob, v, smp[i], plain[i], partners, args.n_boot, rng)
+        a = ob.all(v)
+        ov = float((psi0 @ v) ** 2)
+        for obs in rc.OBS:
+            a_s = float(np.mean(plain[i][1][obs]))
+            est = {arm: est_entry(ez[arm][obs]["a"], a_s, ez[arm][obs]["se_boot"], ez[arm][obs]["se_jk"])
+                   for arm in ez}
+            d = a0[obs] - a[obs]
+            rows.append(dict(inj=i, w_flip=wf, irrep_dev=dev, obs=obs, a0=a0[obs], a=a[obs],
+                             delta=d, ov0=ov, est=est))
+            log(f"inject {i} (w_flip={wf:.4f}, ov0={ov:.4f}, irrep dev {dev:.1e}) {obs}: delta={d:+.3e} "
+                f"(rel {abs(d) / abs(a0[obs]):.3f}) | "
+                + " ".join(f"{k}={e['d']:+.2e}+-{e['se']:.1e}" for k, e in est.items()))
+    return rows
+
+
+def inject_verdict(rows):
+    sc = [r for r in rows if abs(r["delta"]) >= SCORE_REL * abs(r["a0"])]
+    tr = {arm: sum(classify(arm, r) == "tracked" for r in sc) for arm in ("EHX", "ZV", "EHX_R", "EHX_E")}
+    ok = len(sc) >= 3 and tr["EHX"] >= 0.5 * len(sc)
+    return dict(scored=len(sc), tracked=tr, passed=bool(ok),
+                classes={arm: [classify(arm, r) for r in sc] for arm in ("EHX", "ZV")})
+
+
+def inject_mode(args):
+    m, W, psi0, sg, S0, ob = rc.setup(4, log)
+    a0 = ob.all(psi0)
+    rows = inject_check(m, ob, psi0, sg, a0, args, np.random.default_rng(2027))
+    os.makedirs(args.results, exist_ok=True)
+    v = inject_verdict(rows)
+    json.dump(dict(a0=a0, inject_rows=rows, verdict=v, args=vars(args)),
+              open(os.path.join(args.results, "inject.json"), "w"), indent=1)
+    print(f"INJECT: scored {v['scored']}; tracked {v['tracked']}; EHX classes {v['classes']['EHX']}; "
+          f"ZV classes {v['classes']['ZV']} -> {'PASS' if v['passed'] else 'FAIL'}")
 
 
 def zro(m, ob, psi, obs, maxiter):
