@@ -328,6 +328,16 @@ Every number below was read from the result files by an agent; the orchestrator 
 | **P4.1** (411494, 411996) | Exactly projected: $m(\epsilon_{\mathrm{che}})=8.4\times10^{-5}$ vs $m(\epsilon_{\mathrm{nnbf\_SG}})=4.0\times10^{-5}$, ratio 2.10, seed ranges disjoint. Tabular AGP job **timed out** with no fit | `sfb` has headroom (charge-only is $2.1\times$ worse); the KAGP premise is **unavailable** | Fix list plus a faster completeness test |
 | **P4.2** (410960) | $\epsilon_{\mathrm{tr0}}$ = 0.66/0.76/0.62 (spread 0.143, below ½·median); correct irrep picked 2 of 3 times | **Route 3.1 not killed** | Correction (P4.2 round 5): the pilot ran with `--budget 0`, so the "scratch" comparator was the untrained mean-field start. Zero-shot transfer (median 0.66) is worse than that untrained start (0.29); Route 3.1 is expected CLOSED-FAIL (closing job 451914) |
 
+* **P4.1 completeness result (job 451839, 4×3 OBC, $U=8$, $t'=-0.25$).** This is the best tabular fit of one or two charge-conditioned singlet AGPs per charge configuration to $\psi_0$. All fits are exact singlets ($\lvert\langle S^2\rangle\rvert\le10^{-16}$).
+
+| $N_e$ | Weight on configurations with $N_s\ge10$ | Infidelity, $K=1$ | Infidelity, $K=2$ |
+| :--- | :--- | :--- | :--- |
+| 8 | 0 | $5.8\times10^{-4}$ | $\sim10^{-15}$ |
+| 10 | 0.72 | $6.8\times10^{-3}$ | $2.0\times10^{-8}$ |
+| 12 | 0.92 | $2.4\times10^{-2}$ | $6.6\times10^{-4}$ |
+
+  * The Tocchio class (one AGP per charge configuration) becomes less complete as the number of singly occupied sites grows, and two AGPs recover almost all of the gap. This is KAGP's structural premise.
+  * Whether it matters against a trained network's capacity is the decisive question for job 451886, whose `report()` enforces $\epsilon_{\mathrm{tab}}(K{=}1)\ge0.5\,m(\epsilon_{\mathrm{tocchio}})$.
 * **New key instance (from P2.1's pilot).** On the 4×4 OBC $t$–$t'$–$J$ cluster, $6+6$ electrons, $t'=-0.25$, $J=0.4$ (projected sector dimension 30220; NNBF width 6 with about 1.7k parameters, ratio about 17), the symmetry-projected NNBF keeps a measurable sign error:
     * $\Delta E_{\mathrm{sign}}=0.0125t$, $f_E=0.24$, overlap with $\psi_0$ 0.936;
     * with exact $P_S$ added, $\Delta E_{\mathrm{sign}}=0.0063t$.
