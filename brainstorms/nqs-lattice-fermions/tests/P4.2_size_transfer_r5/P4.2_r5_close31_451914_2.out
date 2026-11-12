@@ -7,3 +7,20 @@
 [   507.8s]   [tr] step 10/50 eps=5.58871e-02 lr=0.0648
 [   517.2s] arm tr@10    : E=-13.03990818 eps=5.5887e-02 (raw 6.9148e-02, irrep weight 0.473) sign-agree=0.1866 Pd=2.3215e-03 fid=0.0755
 [   691.0s]   [tr] step 15/50 eps=4.35526e-02 lr=0.104
+[   870.9s]   [tr] step 20/50 eps=3.35306e-02 lr=0.0841
+[   881.1s] arm tr@20    : E=-13.39761203 eps=3.3531e-02 (raw 5.5882e-02, irrep weight 0.735) A/V=1.1190e-02 sign-agree=0.6992 Pd=3.3567e-03 fid=0.3946
+[  1069.7s]   [tr] step 25/50 eps=2.86280e-02 lr=0.0339
+[  1242.9s]   [tr] step 30/50 eps=2.49985e-02 lr=0.0545
+[  1416.2s]   [tr] step 35/50 eps=2.22651e-02 lr=0.0878
+[  1589.3s]   [tr] step 40/50 eps=2.15975e-02 lr=0.141
+[  1762.8s]   [tr] step 45/50 eps=2.12571e-02 lr=0.2
+[  1945.3s]   [tr] step 50/50 eps=2.11129e-02 lr=0.133
+[  1956.6s] arm tr@50    : E=-13.59629613 eps=2.1113e-02 (raw 6.5939e-02, irrep weight 0.812) A/V=5.4337e-03 sign-agree=0.9348 Pd=3.9061e-03 fid=0.5710
+[  1999.6s] arm scr@0    : E=-9.37210183 eps=2.8512e-01 (raw 3.1905e-01, irrep weight 0.402) A/V=3.2942e-02 sign-agree=0.7001 Pd=2.4471e-03 fid=0.1985
+[  2187.6s]   [scr] step 5/50 eps=7.17942e-02 lr=0.0805
+[  2371.3s]   [scr] step 10/50 eps=4.29499e-02 lr=0.13
+[  2381.7s] arm scr@10   : E=-13.24690414 eps=4.2950e-02 (raw 5.4663e-02, irrep weight 0.864) sign-agree=0.9464 Pd=4.8389e-03 fid=0.6264
+[  2566.7s]   [scr] step 15/50 eps=2.69878e-02 lr=0.104
+[  2739.4s]   [scr] step 20/50 eps=2.40074e-02 lr=0.168
+[  2749.5s] arm scr@20   : E=-13.54998289 eps=2.4007e-02 (raw 4.1150e-02, irrep weight 0.871) A/V=3.5600e-03 sign-agree=0.9795 Pd=4.9155e-03 fid=0.8657
+[  2928.8s]   [scr] step 25/50 eps=2.13718e-02 lr=0.135

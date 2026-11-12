@@ -160,7 +160,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.1-P | RESULT: SYMMETRY-DOMINATED (all instances) | nothing | none |
 | P1.2 | SUBMITTED (round 5 on 4×4 OBC; FRD is O(V) more passes per E_loc, so matched-parameter claim only) | nothing (premise read from own control arm) | Slurm 451916 (27 tasks) |
 | P1.3 | SUBMITTED (width-6 basin pilot; premise checked by own control arm) | tasks 12–35 blocked on pilot decision | Slurm 451976 (12 tasks) |
-| P2.1 | SUBMITTED (2 more control seeds) | nothing | Slurm 451706 |
+| P2.1 | MUTATE (inst0 confirmed: median dE_sign 0.0125t over 3 seeds; inst1 0.0038t below bar, only one qualifying instance → UNINFORMATIVE unless a second is found) | nothing | worker: critic fixes + second-instance pilot |
 | P2.2 | SUBMITTED (round 5 reduced: accuracy trend + equal-cost foils + calibrated cost; no unconditional survivor) | nothing | Slurm 452238 (44 tasks) |
 | P3.1 | PILOT (ESR0: set A 16/21 G=0 but set W 8/19 and a grade-H real false certificate; Gate 0 FAIL as method, PASS as diagnostic) | step 2 blocked on excited-state pilot (GO: eps/omega at most 0.4 per level, out-of-window weight at most 0.03) | Slurm 456094 (excited pilot), 452146 (formal), 451837 |
 | P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
@@ -360,7 +360,9 @@ Every number below was read from the result files by an agent; the orchestrator 
 
   * **Observable consequence (P3.1 round 5, seed 11).** The converged projected NNBF has relative errors of **31% in the long-range pair correlation, 15% in spin and 22% in charge**, with overlap 0.936. One and two Lanczos steps cut $\Delta E$ from 0.052 to 0.023 and 0.015 but barely move these observables, so the observable error lies in low-energy directions. This is the frozen Unacceptable Outcome happening in practice: a much better energy with the order parameter still wrong. Three-seed confirmation is job 451837.
 
-  This is the first instance in this study where a nodal error survives projection, consistent with the sector-dimension/parameter criterion. It becomes the shared target for P1.2, P1.3 (basin check) and P3.1 (error bars). Seed confirmation is running as job 451706.
+  This is the first instance in this study where a nodal error survives projection, consistent with the sector-dimension/parameter criterion.
+  * **Seed confirmation (job 451706).** On the 4×4 OBC $6+6$ instance, the projected NNBF (width 6) has median $\Delta E_{\mathrm{sign}}=0.0125t$ over seeds 11/22/33 (range 0.0125–0.0136), $f_E=0.22$–$0.24$. With exact $P_S$ added the median is $0.0071t$. The target is confirmed for P1.2, P1.3 and P3.1.
+  * **Comparison instance.** The 4×4 cylinder $6+6$ (sector 15268) gives median $0.0038t$, which is below the $0.01t$ bar. It becomes the shared target for P1.2, P1.3 (basin check) and P3.1 (error bars). Seed confirmation is running as job 451706.
 ### Round 2 — Mutation & Replenishment Synthesis (2026-11-11)
 Under the Persistence Mandate, every leaf except P1.1 was re-run through the Stage 3.3 mutation and replenishment loop, with the round-1 critic objections as binding constraints. Every leaf now has at least two routes that pass all four gates in the worker's own audit; P2.2 has three. None has yet been through the round-2 critic, and no round-2 decisive test has been submitted.
 

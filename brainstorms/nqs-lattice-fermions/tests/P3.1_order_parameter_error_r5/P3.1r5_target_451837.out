@@ -1,0 +1,8 @@
+[15:37:08] check S_tot^2 = sum_i S_i^2 + 2 sum_(i<j) S_i.S_j (exchange signs): rel err 9.1e-17
+[15:37:08] check A_pair: n_pairs 22 hermitian 1.8e-18 [A,U_g] 1.1e-16 [A,S^2] 3.1e-16
+[15:37:08] check A_spin: n_pairs 10 hermitian 6.0e-18 [A,U_g] 4.7e-17 [A,S^2] 3.8e-16
+[15:37:08] check A_charge: n_pairs 10 hermitian 0.0e+00 [A,U_g] 0.0e+00 [A,S^2] 3.1e-16
+[15:37:08] check <A_pair> operator vs direct bond-pair sum: -1.144648824382e-03 vs -1.144648824382e-03
+[15:37:08] TARGET-PROBE CHECKS PASSED
+[15:37:54] ED [-11.388010886295248, -11.338627749487609, -11.329223800405972, -11.31736051148136] deg 1 |G|=8 chi={'My': 1, 'Mx': 1, 'D': -1} S0=0.0 (46 s)
+[15:38:13] observables: pair pairs (R>=3.0) 22, site pairs (R>=3.5) 10

@@ -6,3 +6,6 @@
   NNBFJ    seed=1 dE=   0.277 mHa Var(EL)=1.35e-03 P=15188 (train 2163s)
       SCREEN exact bias (mHa): 1e-05:-0.0000 0.0001:0.0001 0.0003:0.0001 0.001:0.0476 0.0015:0.0708 0.002:0.1167 0.0025:0.2250 0.003:0.2831 0.01:1.3985 0.03:47.2242
       SS selected eps=-1 Kd=-1 inc ratio (half B)=inf
+  NNBFJ    seed=2 dE=   0.028 mHa Var(EL)=1.34e-04 P=15188 (train 2135s)
+      SCREEN exact bias (mHa): 1e-05:-0.0000 0.0001:0.0002 0.0003:-0.0001 0.001:0.0465 0.0015:0.0679 0.002:0.1174 0.0025:0.2262 0.003:0.2832 0.01:1.4482 0.03:47.3982
+      SS selected eps=-1 Kd=-1 inc ratio (half B)=inf

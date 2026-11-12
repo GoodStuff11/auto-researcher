@@ -49,3 +49,9 @@
 [14:35:10] nnbf: it  1000  E = -12.74629900  |f| = 8.95e-02  (12.83 s/step)
 [14:45:56] nnbf: it  1050  E = -12.75510981  |f| = 2.42e-02  (12.83 s/step)
 [14:56:40] nnbf: it  1100  E = -12.75472507  |f| = 2.93e-02  (12.83 s/step)
+[15:07:24] nnbf: it  1150  E = -12.75262213  |f| = 5.68e-02  (12.83 s/step)
+[15:17:56] nnbf: it  1199  E = -12.75280450  |f| = 5.64e-02  (12.84 s/step)
+[15:23:23] nnbf [P]: dE_tot=0.03760 dE_sign=0.00352 f_E=0.094 eC=1.21e-03 spread=8.0e-13 S2=0.042 ov0=0.986 (319 s)
+[15:28:11] nnbf [P_S]: dE_tot=0.01557 dE_sign=0.00105 f_E=0.068 eC=1.40e-03 spread=2.2e-12 S2=0.000 ov0=0.993 (288 s)
+[15:28:17] nnbf sampled: E_exact=-12.76 mean=-12.76 stderr=0.00322 z=1.175 var_mc=0.1688 var_ex=0.1911 kurt_ex=5.462e+05 tail_share=0.4569 max_dev_sigma=30.84 accept=0.2842 n=2e+04 per_amp_check=2.688e-16 (6 s)
+[15:28:17] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r3/results/inst1_nnbf_s22.json
