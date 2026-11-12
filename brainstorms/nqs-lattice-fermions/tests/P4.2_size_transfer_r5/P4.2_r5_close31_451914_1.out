@@ -29,3 +29,4 @@
 [  3621.8s]   [scr] step 40/50 eps=1.71261e-02 lr=0.0666
 [  3797.4s]   [scr] step 45/50 eps=1.70977e-02 lr=0.107
 [  3988.8s]   [scr] step 50/50 eps=1.70715e-02 lr=0.0863
+[  3999.2s] arm scr@50   : E=-13.66095807 eps=1.7071e-02 (raw 4.5284e-02, irrep weight 0.889) A/V=2.5983e-03 sign-agree=0.9822 Pd=4.7246e-03 fid=0.8921
