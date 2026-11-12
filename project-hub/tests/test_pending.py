@@ -63,3 +63,36 @@ def test_failed_apply_keeps_proposal(hub_root, store):
     with pytest.raises(PendingError):
         apply_proposals(hub_root, store, [pid], author="bob", day=D)
     assert [p.pid for p in load_proposals(hub_root)] == [pid]
+
+
+def test_entry_with_whitespace_source_is_pending_error(hub_root, store):
+    q = store.create("question", "Q", owner="alice", author="alice", day=D, source="m")
+    pid = add_proposal(hub_root, "Bad source",
+                       [{"op": "entry", "id": q.id, "text": "t", "source": "meeting notes"}],
+                       proposer="alice", source="s", reason="r", day=D)
+    with pytest.raises(PendingError):
+        apply_proposals(hub_root, store, [pid], author="bob", day=D)
+    assert [p.pid for p in load_proposals(hub_root)] == [pid]
+
+
+def test_non_mapping_op_is_pending_error(hub_root, store):
+    pid = add_proposal(hub_root, "Oops", ["oops"], proposer="alice", source="s", reason="r", day=D)
+    with pytest.raises(PendingError):
+        apply_proposals(hub_root, store, [pid], author="bob", day=D)
+    assert [p.pid for p in load_proposals(hub_root)] == [pid]
+
+
+def test_bad_author_rejected_before_any_write(hub_root, store):
+    pid = add_proposal(hub_root, "Create", [{"op": "new", "type": "question", "title": "Made", "owner": "alice"}],
+                       proposer="alice", source="s", reason="r", day=D)
+    before = store.ids()
+    with pytest.raises(PendingError):
+        apply_proposals(hub_root, store, [pid], author="bad author", day=D)
+    assert store.ids() == before
+    assert [p.pid for p in load_proposals(hub_root)] == [pid]
+
+
+def test_title_is_single_line(hub_root):
+    pid = add_proposal(hub_root, "two\nlines", [], proposer="alice", source="s", reason="r", day=D)
+    props = load_proposals(hub_root)
+    assert [(p.pid, p.title) for p in props] == [(pid, "two lines")]

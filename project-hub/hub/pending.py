@@ -48,7 +48,13 @@ def save_proposals(root, proposals: list[Proposal]) -> None:
     p.write_text("".join(parts))
 
 
+def _check_author(author) -> None:
+    if not isinstance(author, str) or not author or any(ch.isspace() for ch in author):
+        raise PendingError(f"author must be a non-empty string with no whitespace, got {author!r}")
+
+
 def add_proposal(root, title, ops, *, proposer, source, reason, day, rng=None) -> str:
+    title = " ".join(str(title).split())  # one line, so BLOCK_RE always matches on reload
     proposals = load_proposals(root)
     pid = new_pending_id({p.pid for p in proposals}, rng)
     proposals.append(Proposal(pid, title, {"proposer": proposer, "date": day, "source": source,
@@ -67,31 +73,41 @@ def _resolve(value, refs):
     return value
 
 
+def _req(op: dict, key: str):
+    if key not in op:
+        raise PendingError(f"op missing required key '{key}'")
+    return op[key]
+
+
 def _run_ops(store: Store, ops, *, author, day) -> tuple[dict[str, str], list[str]]:
     refs: dict[str, str] = {}
     created: list[str] = []
     try:
         for op in ops:
+            if not isinstance(op, dict):
+                raise PendingError(f"op must be a mapping, got {op!r}")
             kind = op.get("op")
             if kind == "new":
                 links = {k: _resolve(v, refs) for k, v in (op.get("links") or {}).items()}
-                item = store.create(op["type"], op["title"], owner=op.get("owner"), author=author, day=day,
-                                    source=op.get("source", "pending"), series=op.get("series") or [],
+                item = store.create(_req(op, "type"), _req(op, "title"), owner=op.get("owner"), author=author,
+                                    day=day, source=op.get("source", "pending"), series=op.get("series") or [],
                                     priority=op.get("priority", 2), links=links,
                                     description=op.get("description", ""), fields=op.get("fields"))
                 created.append(item.id)
                 if op.get("ref"):
                     refs[op["ref"]] = item.id
             elif kind == "entry":
-                store.entry(_resolve(op["id"], refs), op["text"], author=author,
+                store.entry(_resolve(_req(op, "id"), refs), _req(op, "text"), author=author,
                             source=op.get("source", "pending"), day=day)
             elif kind == "set":
-                store.set_fields(_resolve(op["id"], refs), op.get("fields") or {})
+                store.set_fields(_resolve(_req(op, "id"), refs), op.get("fields") or {})
             elif kind == "link":
-                store.link(_resolve(op["id"], refs), op["rel"], _resolve(op["target"], refs))
+                store.link(_resolve(_req(op, "id"), refs), _req(op, "rel"), _resolve(_req(op, "target"), refs))
             else:
                 raise PendingError(f"unknown op '{kind}'")
-    except (StoreError, KeyError) as exc:
+    except PendingError:
+        raise
+    except (StoreError, KeyError, ValueError, AttributeError, TypeError) as exc:
         raise PendingError(f"op failed: {exc}") from exc
     return refs, created
 
@@ -114,6 +130,7 @@ def _take(root, pids) -> tuple[list[Proposal], list[Proposal]]:
 
 
 def apply_proposals(root, store: Store, pids, *, author, day) -> list[str]:
+    _check_author(author)  # before any write, so the post-ops log call cannot fail after ops land
     chosen, _ = _take(root, pids)
     created: list[str] = []
     for pr in chosen:
@@ -125,6 +142,7 @@ def apply_proposals(root, store: Store, pids, *, author, day) -> list[str]:
 
 
 def reject_proposals(root, store: Store, pids, *, author, day) -> None:
+    _check_author(author)
     chosen, rest = _take(root, pids)
     for pr in chosen:
         store.log(f"Rejected {pr.pid}: {pr.title}", author=author, source=f"pending:{pr.pid}", day=day)
