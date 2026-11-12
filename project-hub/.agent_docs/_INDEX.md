@@ -5,8 +5,7 @@ Read this first. Each file below is the complete truth for its domain; do not re
 - [agenda-workbook.md](agenda-workbook.md) — draft YAML keys, the sheets and their columns, `_meta`, read-back mapping, build/read guards (`hub/agenda/draft.py`, `build.py`, `read.py`, `lifecycle.py`)
 - [git-sync.md](git-sync.md) — `.gitattributes` merge drivers (incl. the `hub-item` item merge driver), `hub commit` sequence, best-effort pull, conflict handling, exit codes (`hub/gitsync.py`, `hub/merge_item.py`, `hub/cli.py`)
 - [vault-layout.md](vault-layout.md) — `project.yaml`, `hub.local.yaml`, vault directory tree, `Status/Log/<YYYY-MM>.md`, `Status/sync-state/`, `Status/Snapshot.md`, `Status/Meetings/` (`hub/config.py`, `hub/sync_state.py`, `hub/snapshot.py`)
-
-Not yet documented: the VS Code Office Viewer spike (`project-hub/spike/`) has no written result; the agenda reader therefore tolerates a lost `_meta` sheet, a dropped hidden id column and a dropped dropdown (see agenda-workbook.md).
+- [office-viewer-spike.md](office-viewer-spike.md) — what VS Code Office Viewer keeps when it saves an agenda xlsx: `_meta` and the id column survive but become visible, the dropdown is not shown, styling survives (`project-hub/spike/`)
 
 Rules of thumb for agents:
 - Safe changes go through the CLI (`hub new`, `entry`, `set`, `link`, `log`). Judgement calls (closing a question, recording a decision as made outside the agenda, anything inferred from free text) go through `hub pending add`.
