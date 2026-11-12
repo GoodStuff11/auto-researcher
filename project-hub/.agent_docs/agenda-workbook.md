@@ -1,0 +1,54 @@
+# Agenda draft and workbook (`Agenda/`)
+Code: `hub/agenda/draft.py` (scaffold, validate_draft, load/save), `hub/agenda/build.py` (workbook), `hub/agenda/read.py` (reading cells), `hub/agenda/lifecycle.py` (`build_agenda`, `read_agenda`, guards). CLI: `hub agenda scaffold SERIES --date D [--force]`, `build SERIES [--force]`, `read SERIES`.
+Lifecycle: `scaffold` writes `Agenda/<series>.draft.yaml` from the store (the agent fills `summary` and `follow_up` cells), `build` renders it to the live `Agenda/<series>.xlsx`, humans edit the workbook in the meeting, `read` applies the edits and archives it to `Agenda/archive/<series>/<meeting date>.xlsx`. The live workbook must have exactly one editor per meeting (binary file; the later push loses).
+## Draft YAML keys (`Agenda/<series>.draft.yaml`)
+All seven keys are required (`REQUIRED`, `hub/agenda/draft.py:15`). `build` runs `validate_draft` and raises `DraftError` listing every problem (CLI exit 1).
+- `series` (non-empty string) — key of `project.yaml` series; `scaffold` rejects an unknown series
+- `meeting_date` (YAML date) — meeting day
+- `previous_meeting` (date or null) — latest `Status/Meetings/<series>/*.md` strictly before `meeting_date`, null for the first meeting
+- `summary` (non-blank string) — scaffold leaves it empty; the agent must write it (empty means build refuses)
+- `since_last` (list of mappings) — one per decision with status `made` and `meeting == "<series>/<previous_meeting date>"`; keys:
+  - `id` — decision id
+  - `decision` — `as_decided`, else the title
+  - `actions` — `"<title> (<owner>, <status>); …"` for actions spawned by the decision
+  - `follow_up` — empty; the agent fills it
+  - `outcome` — must be one of `closed question`, `new question`, `pivot`, `in progress` (`SINCE_OUTCOMES`). Derived from the store, first match wins: `pivot` if any question the decision answers has status `pivoted`; else `closed question` if it answers at least one existing question and all are `answered`/`dropped`; else `new question` if any question has the decision in `spawned_by`; else `in progress`. The agent may override it.
+  - `affected` — comma-separated ids of the questions it answers
+- `questions` (list of mappings) — open questions in the series (series empty or containing it), sorted: has a proposed decision first, then priority, then raised date; keys `id`, `title`, `description`, `owner`, `age_days` (meeting date minus raised), `priority`, `proposed_decision` (id of a proposed decision answering it, else empty)
+- `decisions` (list of at most 7, `MAX_DECISIONS`) — proposed decisions in the series sorted by priority then raised date; keys `id`, `decide` (title, non-blank), `proposed_action` (the decision's `proposed_action` field), `reason` (its `rationale`), `weigh_in` (empty), `minutes` (int, default 10; a bool or non-int is rejected), `link` (empty; URL or pre-read text)
+Validation errors raised by `validate_draft`: missing key; series not non-empty string; meeting_date not a date; summary blank; a list key not a list; non-mapping rows; a since_last outcome outside the four values; more than 7 decisions; blank `decide`; non-int `minutes`.
+## Workbook sheets (in order)
+Common layout of the three visible sheets: row 1 has the title in column B (`"<series> — <YYYY-MM-DD> · <sheet name>"`, bold 14); the header is on row 4 (`HEADER_ROW`); data starts at row 5; column A holds the item id and is hidden; panes frozen below the header; landscape, fit to one page wide. Every cell written by `build` is text/number; a string starting with `=` is stored as literal text, never a formula (`_set`).
+1. `Since last meeting` — row 2 (B2:F2 merged) holds `summary`. Columns `SINCE_COLS`: `id`, `Decision`, `Actions · owners`, `Follow-up`, `Outcome`, `Affected`. When `previous_meeting` is null row 5 reads `First meeting of this series — nothing to follow up.`. Outcome cell filled green (`closed question`), blue (`new question`), orange (`pivot`).
+2. `Open questions` — columns `Q_COLS`: `id`, `Title`, `Description`, `Owner`, `Age (d)`, `Priority`, `Proposed decision`. Display only; never read back.
+3. `Decisions` — columns `D_COLS`: `id`, `What to decide`, `Proposed action`, `Reason`, `Who weighs in`, `Min`, `Figure / pre-read`, `Outcome`, `As decided`, `New actions · owners`. Planned decision rows come first (grey fill on the last three columns, which people type into), then 5 yellow unplanned rows with ids `NEW-1` … `NEW-5` for decisions raised in the meeting. B2 holds the hint `Yellow rows: decisions raised in the meeting. Outcome: Approve / Modify / Defer / Reject.`. Column H (Outcome) has a dropdown list `Approve,Modify,Defer,Reject` (`OUTCOME_CHOICES`). `http(s)://` text gets a hyperlink.
+4. `_meta` (hidden) — column A key, column B value, rows: `series` (series name), `meeting_date` (`YYYY-MM-DD`), `read_back` (`false`; set to `true` by `read`), `format` (`1`).
+Reading is tolerant of viewers that drop features: if `_meta` is missing or its `series`/`meeting_date` is empty or unparsable the reader falls back to the title row (`B1`, else `A1` if the id column was removed) matching `<series> — <YYYY-MM-DD> · …`; an impossible date such as 2026-02-30 leaves the date unknown. The decision header row is found by the cell `What to decide` in rows 1-10 and columns are located by header name, so a dropped id column or dropdown does not break reading. Rows with an empty "What to decide" are skipped.
+## Outcome parsing (`parse_outcome`, `hub/agenda/read.py:44`)
+The cell is stripped, lowercased and trailing `.` and `!` removed, then must equal a token exactly (no prefixes), else outcome is none (the raw text is kept as `DecisionRow.outcome_text`).
+| Outcome | Accepted tokens |
+|---|---|
+| approve | approve, approved, a, yes, y, ✓, ✔ |
+| modify | modify, modified, m |
+| defer | defer, deferred, d |
+| reject | reject, rejected, r, no, n, x, ✗, ✘ |
+Action syntax (`parse_actions`) in the `New actions · owners` cell: items separated by `;` or newline, each `title (owner)` where owner matches `[\w-]+` (a people key); an item without trailing parentheses has no owner.
+## Read-back rules (`read_agenda`, `hub/agenda/lifecycle.py`; run `hub agenda read SERIES`)
+Refusals (`AgendaError`, CLI exit 1, nothing written): no live workbook; `_meta.read_back` already `true`; workbook series differs; no meeting date from `_meta` or title; the meeting note `Status/Meetings/<series>/<date>.md` already exists (a previous read-back was applied, possibly partially — inspect it and remove the note to retry).
+Source id for everything written: `agenda:<series>/<date>`; tag `<series>/<date>`; author is `me`; entry day is today.
+Row to decision matching: a planned row (id not starting `NEW`, id exists as a decision) uses that id; otherwise a row whose "What to decide" equals the title of a `proposed` decision matches it; otherwise it is an unmatched row.
+- Unmatched row with any of outcome cell text, As decided, or New actions: stage one proposal `Raised at <tag>: <title>` creating a decision (owner me, series [series], `fields` status `made` for approve/modify/none, `deferred`, `rejected`; `meeting`, `as_decided`) plus actions spawned by it (ref `$d`). The reason tells a human to link it to the question(s) it answers before applying. An unmatched row with no text is ignored.
+- Matched row with a recognised outcome but the decision is not `proposed`/`deferred`: stage `Outcome for already-resolved decision at <tag>: <title>` containing one entry op with the typed text; the decision is not changed.
+- approve / modify: set `status=made`, `meeting=<tag>`, `as_decided` if typed; entry `Approved|Modified at <tag>: <as decided or "as proposed">`; if New actions text exists stage `Actions from <tag>: <title>` with `new` action ops (`spawned_by` the decision, series [series], owner parsed). Counted as applied.
+- defer: `status=deferred`, entry `Deferred at <tag>.`. Counted as applied.
+- reject: `status=rejected`, `closed=today`, entry `Rejected at <tag>: <as decided or "no reason recorded">`. Counted as applied.
+- Matched row, outcome text present but unrecognised: stage `Unrecognised outcome at <tag>: <title>` (entry op with the raw text; reason says to set the status by hand). Not applied, not counted as not reached.
+- Matched row, no outcome text: if As decided or New actions text exist stage `Notes without outcome at <tag>: <title>` (entry op); then entry `Not reached at <tag>.` and the decision is listed under not reached.
+After the rows: write the meeting note (vault-layout.md), set `_meta.read_back` to `true`, copy the workbook to `Agenda/archive/<series>/<date>.xlsx`, log `Agenda read back: <n> applied, <n> staged`. CLI prints `applied N, staged M (<P-ids>), not reached K`, the note path and archive path. Staged proposals are applied with `hub pending apply` (pending-format.md); a made decision needs an action (or `no_action`) to pass `validate`, so apply the staged actions first.
+## Build refusal rules (`build_agenda`)
+`hub agenda build SERIES` loads the draft (error if missing or invalid), then if a live workbook exists:
+- refuses when its series differs from `SERIES`;
+- refuses when it is not read back and its meeting date cannot be read, unless `--force`;
+- refuses when it is not read back and its meeting date is earlier than the draft's `meeting_date` (the previous meeting's edits would be lost), unless `--force`;
+- rebuilding for the same meeting date, or over a read-back workbook, is allowed.
+`--force` discards the live workbook's edits. `hub agenda scaffold` refuses to overwrite an existing draft unless `--force` (protects the agent-written summary).
