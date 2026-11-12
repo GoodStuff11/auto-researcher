@@ -157,15 +157,15 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | Leaf | State | Blocked on | Running job / agent |
 | :--- | :--- | :--- | :--- |
 | P1.1 | RESULT (PASS, qualified) | nothing | none |
-| P1.1-P | RESULT on instance 1 (SYMMETRY-DOMINATED); instances 0 and 2 running | nothing | Slurm 407525 (17 tasks left) |
-| P1.2 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410216 (3 tasks: projected control, one per instance) |
-| P1.3 | SUBMITTED (premise pilot only) | full test blocked on pilot result | Slurm 410199 (9 tasks: c1 instance, PSaf/PSfs/PScdw, 3 seeds) |
-| P2.1 | SUBMITTED (control pilot); both routes Gate 0 restated, test fixes pending | full test blocked on pilot (premise: projected NNBF sign error at least 0.01t) | Slurm 410988 (3 tasks) |
-| P2.2 | SUBMITTED (large-K accuracy pilot); CGK conditional | full test blocked on pilot and on fixes | Slurm 411919 (H4, 8–12 orbitals per shell) |
-| P3.1 | SUBMITTED (target pilot); routes back to MUTATE after pilot | round-4 mutation blocked on pilot result (whether any scoreable target exists) | Slurm 410398 (6 tasks, exact quantities only) |
-| P3.2 | SUBMITTED (control pilot); AT killed, SO-EC conditional | full test blocked on pilot regime (NO-TARGET / NO-ROOM / INTRINSIC-BIAS / GO) | Slurm 410917 (width 8, inner 4 targets) |
-| P4.1 | BLOCKED (fix-then-submit) | Slurm 411996 (tabular AGP fit: premise for KAGP) and 411494 (charge-only vs spin-resolved: headroom for sfb) | none |
-| P4.2 | SUBMITTED (zero-shot pilot); 3.2 merged into 3.1 as diagnostic | full test blocked on pilot (spread and sector-pick kills) and on fixes | Slurm 410960 (3 tasks) |
+| P1.1-P | RESULT: SYMMETRY-DOMINATED (all instances) | nothing | none |
+| P1.2 | MUTATE (redesign onto 4×4 OBC t–J instance) | instance seed confirmation (job 451706) gates submission only | round-5 worker |
+| P1.3 | RESULT: premise falsified at 4×3; basin check on 4×4 OBC instance | job 451706 gates submission only | round-5 worker |
+| P2.1 | SUBMITTED (2 more control seeds) | nothing | Slurm 451706 |
+| P2.2 | MUTATE (round 5; CGK killed) | nothing | round-5 worker |
+| P3.1 | MUTATE (re-scope onto 4×4 OBC instance) | job 451706 gates submission only | round-5 worker |
+| P3.2 | FIX (INTRINSIC-BIAS: R0P-warm, certification gate, multi-seed) | nothing | fix worker |
+| P4.1 | FIX (sfb has headroom; KAGP premise unavailable, AGP fit timed out) | nothing | fix worker |
+| P4.2 | FIX then reduced decisive run (FAIL expected) | nothing | fix worker |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
 * **P3.2 round 3: first Hard-Core-scale same-irrep competitor (2026-11-11)**:
@@ -313,6 +313,26 @@ Each leaf advances on its own as soon as it returns: lint, then its own critic, 
         * if all 9 runs end with $e_{\mathrm{var}}\le0.05\Delta$ and overlap with $\psi_0\ge0.9$, the premise is falsified at ED size and the P1.3 route search closes at these sizes;
         * if any run ends trapped at $e_{\mathrm{var}}\ge0.25\Delta$ with a flat energy, the full test is first fixed (items 2, 3, 4, 6, 7) and then run on a refined smaller-gap instance;
         * otherwise the pilot extends to 6 seeds.
+### Pilot read-out (2026-11-12): pre-committed rules applied
+Every number below was read from the result files by an agent; the orchestrator re-checked the P1.1-P aggregate and the P2.1 instance-0 numbers.
+
+| Leaf | Key numbers | Rule outcome | Next step |
+| :--- | :--- | :--- | :--- |
+| **P1.1-P** (407525) | Width 128, medians over 3 seeds. $f_E$: U 0.61/0.77/0.66, P 0.008/0.006/0.005. $\Delta E_{\mathrm{sign}}(P)/\Delta E_{\mathrm{sign}}(U)\le3.5\times10^{-6}$ | **SYMMETRY-DOMINATED** on all three tori | Final. P1.1's "sign is binding" result is symmetry contamination on these clusters |
+| **P1.2** (410216) | Projected-control $\Delta E_{\mathrm{sign}}$: $6.8\times10^{-6}$, $1.1\times10^{-6}$, $1.0\times10^{-5}$ | **NO-TARGET** (3 of 3 below $0.003t$) | Redesign onto the 4×4 OBC $t$–$t'$–$J$ instance below |
+| **P1.3** (410199) | All 9 runs: $e_{\mathrm{var}}\le2.7\times10^{-5}$ ($\le1.2\times10^{-4}\Delta$), overlap with $\psi_0\ge0.999998$, none trapped | **Premise falsified at ED size** on the 4×3 crossing instance | Closed on 4×3; reopened only as a basin check on the 4×4 OBC instance |
+| **P2.1** (410988) | Projected $\Delta E_{\mathrm{sign}}$: inst0 0.0125, inst1 0.0038, inst2 0.0028 | **Otherwise → 2 more seeds** | Job 451706 (inst0 and inst1, seeds 22 and 33) |
+| **P2.2** (411919) | H4, $K=20$: median $\delta_{\mathrm{CGK}}=0.691$ mHa, above $\tau=0.2$ | **Kill R4.1 (CGK)** | Round-5 mutation |
+| **P3.1** (410398) | Instances meeting the go criterion: 0 of 6 (2 needed). L1 never tracks; ZRO tracks 0–2 per instance | **NO-GO** | Re-scope onto the 4×4 OBC instance |
+| **P3.2** (410917) | 2 hard targets; R0P wrong at $d=+0.0002$; no branch crossover; both snapshots `certified` with collapsed branches. Final-window energy swing about $5\times10^{-3}$, above the gap | **INTRINSIC-BIAS**, by elimination; the wrong call may be optimizer noise | Fix: R0P-warm, certification gate, multi-seed |
+| **P4.1** (411494, 411996) | Exactly projected: $m(\epsilon_{\mathrm{che}})=8.4\times10^{-5}$ vs $m(\epsilon_{\mathrm{nnbf\_SG}})=4.0\times10^{-5}$, ratio 2.10, seed ranges disjoint. Tabular AGP job **timed out** with no fit | `sfb` has headroom (charge-only is $2.1\times$ worse); the KAGP premise is **unavailable** | Fix list plus a faster completeness test |
+| **P4.2** (410960) | $\epsilon_{\mathrm{tr0}}$ = 0.66/0.76/0.62 (spread 0.143, below ½·median); correct irrep picked 2 of 3 times | **Route 3.1 not killed** | Fixes, but zero-shot states are 2–5× worse than 20 steps from scratch, so FAIL is expected |
+
+* **New key instance (from P2.1's pilot).** On the 4×4 OBC $t$–$t'$–$J$ cluster, $6+6$ electrons, $t'=-0.25$, $J=0.4$ (projected sector dimension 30220; NNBF width 6 with about 1.7k parameters, ratio about 17), the symmetry-projected NNBF keeps a measurable sign error:
+    * $\Delta E_{\mathrm{sign}}=0.0125t$, $f_E=0.24$, overlap with $\psi_0$ 0.936;
+    * with exact $P_S$ added, $\Delta E_{\mathrm{sign}}=0.0063t$.
+
+  This is the first instance in this study where a nodal error survives projection, consistent with the sector-dimension/parameter criterion. It becomes the shared target for P1.2, P1.3 (basin check) and P3.1 (error bars). Seed confirmation is running as job 451706.
 ### Round 2 — Mutation & Replenishment Synthesis (2026-11-11)
 Under the Persistence Mandate, every leaf except P1.1 was re-run through the Stage 3.3 mutation and replenishment loop, with the round-1 critic objections as binding constraints. Every leaf now has at least two routes that pass all four gates in the worker's own audit; P2.2 has three. None has yet been through the round-2 critic, and no round-2 decisive test has been submitted.
 

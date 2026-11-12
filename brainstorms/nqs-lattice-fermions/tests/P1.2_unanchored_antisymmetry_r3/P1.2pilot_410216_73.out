@@ -45,3 +45,23 @@
 [15:28:41] ctrl_PS: it   550  E = -8.04617041  |f| = 2.25e-02  (8.63 s/step)
 [15:35:51] ctrl_PS: it   600  E = -8.04603020  |f| = 4.08e-02  (8.63 s/step)
 [15:43:02] ctrl_PS: it   650  E = -8.04301984  |f| = 1.22e-01  (8.63 s/step)
+[15:50:15] ctrl_PS: it   700  E = -8.04677717  |f| = 7.60e-03  (8.63 s/step)
+[15:57:26] ctrl_PS: it   750  E = -8.04698799  |f| = 3.57e-03  (8.63 s/step)
+[16:04:36] ctrl_PS: it   800  E = -8.04708151  |f| = 2.07e-03  (8.63 s/step)
+[16:11:53] ctrl_PS: it   850  E = -8.04715006  |f| = 1.82e-03  (8.63 s/step)
+[16:19:06] ctrl_PS: it   900  E = -8.04692789  |f| = 1.75e-02  (8.64 s/step)
+[16:26:17] ctrl_PS: it   950  E = -8.04717391  |f| = 8.76e-03  (8.63 s/step)
+[16:33:31] ctrl_PS: it  1000  E = -8.04702648  |f| = 2.47e-02  (8.64 s/step)
+[16:40:54] ctrl_PS: it  1050  E = -8.04725260  |f| = 3.94e-03  (8.65 s/step)
+[16:48:11] ctrl_PS: it  1100  E = -8.04724174  |f| = 1.71e-02  (8.65 s/step)
+[16:55:30] ctrl_PS: it  1150  E = -8.04604543  |f| = 5.64e-02  (8.66 s/step)
+[17:02:44] ctrl_PS: it  1200  E = -8.04735821  |f| = 2.87e-03  (8.66 s/step)
+[17:10:00] ctrl_PS: it  1250  E = -8.04729805  |f| = 1.82e-02  (8.66 s/step)
+[17:17:16] ctrl_PS: it  1300  E = -8.04659124  |f| = 5.03e-02  (8.66 s/step)
+[17:24:29] ctrl_PS: it  1350  E = -8.04713450  |f| = 2.05e-02  (8.66 s/step)
+[17:31:42] ctrl_PS: it  1400  E = -8.04736257  |f| = 6.46e-03  (8.66 s/step)
+[17:38:59] ctrl_PS: it  1450  E = -8.04741183  |f| = 3.92e-03  (8.67 s/step)
+[17:46:05] ctrl_PS: it  1499  E = -8.04745400  |f| = 3.55e-03  (8.67 s/step)
+[17:49:49] ctrl_PS   PS: dE_tot=0.00069 dE_sign=0.00001 f_E=0.015 w_sign=4.569e-07 S2=2.000 spread=7.7e-11
+[17:50:03] ctrl_PS sampled arm: sigma2=1.309e+01 kurt=3.611e+02 share_El=7.013e-02 share_O=5.049e-02 tail_El=1.105e+02 tail_O=1.682e+02 eta=1.944e+01 n_samples=8.000e+03
+[17:50:03] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r3/results/inst2_ctrl_PS_s1234_sh0.01.json

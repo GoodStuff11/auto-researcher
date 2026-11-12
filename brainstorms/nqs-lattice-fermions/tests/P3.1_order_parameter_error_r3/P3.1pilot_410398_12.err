@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r3/micro_test.py", line 1155, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r3/micro_test.py", line 1151, in main
+    return run(args)
+           ^^^^^^^^^
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r3/micro_test.py", line 847, in run
+    snaps = optimize_sr_proj(ans, m.H, sg, pr, args, rng, pop, snaps_at=())
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r3/micro_test.py", line 437, in optimize_sr_proj
+    dx = (f - Oc.T @ np.linalg.solve(Kmat, Oc @ f)) / lam
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/share/apps/software/anaconda3/lib/python3.12/site-packages/numpy/linalg/linalg.py", line 409, in solve
+    r = gufunc(a, b, signature=signature, extobj=extobj)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/share/apps/software/anaconda3/lib/python3.12/site-packages/numpy/linalg/linalg.py", line 112, in _raise_linalgerror_singular
+    raise LinAlgError("Singular matrix")
+numpy.linalg.LinAlgError: Singular matrix
