@@ -39,6 +39,11 @@ class Entry:
     text: str
 
     def render(self) -> str:
+        for name, value in (("author", self.author), ("source", self.source)):
+            if not value or any(ch.isspace() for ch in value):
+                raise ValueError(
+                    f"entry author/source must be non-empty with no whitespace: "
+                    f"{self.author!r} / {self.source!r}")
         text = " ".join(self.text.split())
         return f"- {self.day.isoformat()} · {self.author} · {self.source} — {text}"
 
@@ -97,7 +102,12 @@ def parse_item(text: str) -> Item:
     end = text.find("\n---\n", 4)
     if end == -1:
         raise ItemFormatError("missing frontmatter closing '---'")
-    meta = yaml.safe_load(text[4:end]) or {}
+    try:
+        meta = yaml.safe_load(text[4:end]) or {}
+    except yaml.YAMLError as exc:
+        raise ItemFormatError(f"invalid frontmatter YAML: {exc}") from exc
+    if not isinstance(meta, dict):
+        raise ItemFormatError("frontmatter must be a mapping")
     for key in ("id", "type", "title", "status"):
         if key not in meta:
             raise ItemFormatError(f"frontmatter missing '{key}'")
@@ -112,7 +122,11 @@ def parse_item(text: str) -> Item:
             m = ENTRY_RE.match(line)
             if not m:
                 raise ItemFormatError(f"malformed entry line: {line!r}")
-            entries.append(Entry(date.fromisoformat(m[1]), m[2], m[3], m[4]))
+            try:
+                day = date.fromisoformat(m[1])
+            except ValueError as exc:
+                raise ItemFormatError(f"malformed entry date: {line!r}") from exc
+            entries.append(Entry(day, m[2], m[3], m[4]))
     else:
         description = "\n".join(lines).strip()
     return Item(meta, description, entries)
@@ -120,7 +134,7 @@ def parse_item(text: str) -> Item:
 
 def render_item(item: Item) -> str:
     front = yaml.dump(item.meta, Dumper=_Dumper, sort_keys=False, allow_unicode=True,
-                      default_flow_style=False)
+                      default_flow_style=False, width=float("inf"))
     out = ["---", front.rstrip("\n"), "---", item.description.strip(), ENTRIES_HEADING]
     out += [e.render() for e in item.entries]
     return "\n".join(out) + "\n"

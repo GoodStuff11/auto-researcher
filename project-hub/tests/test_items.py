@@ -79,3 +79,36 @@ def test_no_entries_section():
     text = CANONICAL.split("## Entries")[0]
     it = parse_item(text)
     assert it.entries == [] and it.description == "Why this matters."
+
+
+def test_long_title_not_wrapped():
+    title = " ".join(["word"] * 30)
+    assert len(title) == 149
+    item = parse_item(CANONICAL)
+    item.meta["title"] = title
+    out = render_item(item)
+    assert [ln for ln in out.splitlines() if ln.startswith("title: ")] == [f"title: {title}"]
+    assert render_item(parse_item(out)) == out
+
+
+def test_invalid_yaml_frontmatter_rejected():
+    bad = CANONICAL.replace("id: Q-20261112-a3f", "id: [unclosed")
+    with pytest.raises(ItemFormatError, match="invalid frontmatter YAML"):
+        parse_item(bad)
+
+
+def test_non_mapping_frontmatter_rejected():
+    with pytest.raises(ItemFormatError, match="frontmatter must be a mapping"):
+        parse_item("---\n- a\n- b\n---\nbody\n")
+
+
+def test_bad_entry_date_rejected():
+    bad = CANONICAL.replace("- 2026-11-15 ·", "- 2026-13-45 ·")
+    with pytest.raises(ItemFormatError, match="malformed entry date"):
+        parse_item(bad)
+
+
+@pytest.mark.parametrize("author, source", [("", "manual"), ("ali ce", "manual"), ("alice", ""), ("alice", "a b")])
+def test_entry_render_rejects_whitespace_fields(author, source):
+    with pytest.raises(ValueError):
+        Entry(date(2026, 1, 1), author, source, "text").render()
