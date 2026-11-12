@@ -66,7 +66,7 @@ from .agenda.draft import DraftError, draft_path, save_draft, scaffold
 from .agenda.lifecycle import AgendaError, build_agenda, read_agenda
 from .config import ConfigError, find_root, load_config
 from .gitsync import SyncConflict, SyncError, commit
-from .items import LINK_KEYS, render_item
+from .items import LINK_KEYS, ItemFormatError, render_item
 from .pending import PendingError, add_proposal, apply_proposals, load_proposals, reject_proposals
 from .snapshot import write_snapshot
 from .store import Store, StoreError
@@ -80,92 +80,157 @@ class UserError(Exception):
     pass
 
 
+def _sp(sub, name, help, description):
+    return sub.add_parser(name, help=help, description=description, formatter_class=argparse.RawDescriptionHelpFormatter)
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="hub", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--root", type=Path, help="vault root (default: nearest parent containing project.yaml)")
+    p.add_argument("--root", type=Path, help="vault root directory (the one containing project.yaml). "
+                   "Default: the nearest parent of the current directory that contains project.yaml.")
     sub = p.add_subparsers(dest="cmd", required=True, metavar="COMMAND")
 
-    n = sub.add_parser("new", help="create an item")
-    n.add_argument("type", choices=sorted(TYPE_ALIASES))
-    n.add_argument("title")
-    n.add_argument("--source", required=True)
-    n.add_argument("--owner")
-    n.add_argument("--series", action="append", default=[])
-    n.add_argument("--priority", type=int, choices=(1, 2, 3), default=2)
-    n.add_argument("--link", action="append", default=[], metavar="REL:ID")
-    n.add_argument("--description", default="")
+    n = _sp(sub, "new", "create a question, decision or action; prints its id",
+            "Create a new item in Status/Items and print its id. Needs `me` (hub.local.yaml or HUB_ME) "
+            "as the entry author.")
+    n.add_argument("type", choices=sorted(TYPE_ALIASES),
+                   help="item type: q = question, d = decision, a = action")
+    n.add_argument("title", help="one-line title of the item")
+    n.add_argument("--source", required=True,
+                   help="provenance of the item, e.g. circleback:<id>, commit:<repo>@<sha>, clickup:<id>, "
+                        "agenda:<series>/<date>, or manual")
+    n.add_argument("--owner", help="people key from project.yaml who owns the item (default: you)")
+    n.add_argument("--series", action="append", default=[],
+                   help="meeting series (a key under `series` in project.yaml) the item may appear on; "
+                        "repeatable. Default: none given, meaning the item may appear on every series")
+    n.add_argument("--priority", type=int, choices=(1, 2, 3), default=2,
+                   help="1 = highest, 2 = normal (default), 3 = lowest")
+    n.add_argument("--link", action="append", default=[], metavar="REL:ID",
+                   help="relation to an existing item; repeatable. REL is answers (this decision answers that "
+                        "question), spawned_by (this item came out of that item) or pivoted_to (this item was "
+                        "replaced by that item). Example: answers:Q-20261112-abc")
+    n.add_argument("--description", default="", help="one-paragraph description (default: empty)")
 
-    e = sub.add_parser("entry", help="append a history entry")
-    e.add_argument("id")
-    e.add_argument("text")
-    e.add_argument("--source", required=True)
+    e = _sp(sub, "entry", "append a dated history entry to an item",
+            "Append a dated history entry, authored by you, to an item's history.")
+    e.add_argument("id", help="id of the item (Q-/D-/A-YYYYMMDD-xxx)")
+    e.add_argument("text", help="the entry text")
+    e.add_argument("--source", required=True, help="provenance of the entry (same forms as `new --source`)")
 
-    s = sub.add_parser("set", help="set frontmatter fields")
-    s.add_argument("id")
-    s.add_argument("pairs", nargs="+", metavar="KEY=VALUE")
+    s = _sp(sub, "set", "set frontmatter fields of an item",
+            "Set frontmatter fields of an item. Not allowed for id, type or links (use `link` for links). "
+            "Dates are YYYY-MM-DD; an empty value (KEY=) clears the field. Valid status per type:\n"
+            "  question: open | answered | dropped | pivoted\n"
+            "  decision: proposed | made | rejected | deferred\n"
+            "  action:   open | done | dropped")
+    s.add_argument("id", help="id of the item")
+    s.add_argument("pairs", nargs="+", metavar="KEY=VALUE",
+                   help="one or more assignments such as status=answered owner=bob closed=2026-11-12; "
+                        "an empty VALUE clears the field")
 
-    l = sub.add_parser("link", help="add a link")
-    l.add_argument("id")
-    l.add_argument("rel", choices=LINK_KEYS)
-    l.add_argument("target")
+    l = _sp(sub, "link", "add a link from one item to another",
+            "Add a link of kind REL from item ID to TARGET.")
+    l.add_argument("id", help="id of the item the link is added to")
+    l.add_argument("rel", choices=LINK_KEYS,
+                   help="answers = ID is a decision answering the question TARGET; spawned_by = ID came out of "
+                        "TARGET; pivoted_to = ID was replaced by TARGET")
+    l.add_argument("target", help="id of the item linked to")
 
-    ls = sub.add_parser("list", help="query items")
-    ls.add_argument("--type", choices=("question", "decision", "action"))
-    ls.add_argument("--status")
-    ls.add_argument("--owner")
-    ls.add_argument("--series")
-    ls.add_argument("--since", type=date.fromisoformat)
-    ls.add_argument("--json", action="store_true")
+    ls = _sp(sub, "list", "query items",
+             "List items matching all given filters, one per line (id, status, owner, title), or as JSON.")
+    ls.add_argument("--type", choices=("question", "decision", "action"), help="only items of this type")
+    ls.add_argument("--status",
+                    help="only items with this status. question: open|answered|dropped|pivoted; "
+                         "decision: proposed|made|rejected|deferred; action: open|done|dropped")
+    ls.add_argument("--owner", help="only items owned by this people key; `me` means your key from hub.local.yaml "
+                                    "(or HUB_ME)")
+    ls.add_argument("--series", help="only items that may appear on this meeting series")
+    ls.add_argument("--since", type=date.fromisoformat, metavar="YYYY-MM-DD",
+                    help="only items whose last activity is on or after this date")
+    ls.add_argument("--json", action="store_true",
+                    help="print a JSON list of objects with keys id, type, status, title, owner, priority "
+                         "(1-3 or null) and last_activity (YYYY-MM-DD) instead of text lines")
 
-    sh = sub.add_parser("show", help="print an item")
-    sh.add_argument("id")
-    sh.add_argument("--chain", action="store_true")
+    sh = _sp(sub, "show", "print one item",
+             "Print an item as its Markdown file, optionally followed by everything descending from it.")
+    sh.add_argument("id", help="id of the item")
+    sh.add_argument("--chain", action="store_true",
+                    help="also print an indented tree of items that answer, were spawned by, or were pivoted "
+                         "from this item (recursively)")
 
-    si = sub.add_parser("since", help="items with activity since a date")
-    si.add_argument("date", type=date.fromisoformat)
+    si = _sp(sub, "since", "items with activity since a date",
+             "List items whose last activity is on or after DATE (same as `list --since DATE`).")
+    si.add_argument("date", type=date.fromisoformat, metavar="YYYY-MM-DD", help="earliest activity date to include")
 
-    lg = sub.add_parser("log", help="append to the monthly log")
-    lg.add_argument("text")
-    lg.add_argument("--source", required=True)
+    lg = _sp(sub, "log", "append to the monthly log",
+             "Append a line to Status/Log/<YYYY-MM>.md for the current month, authored by you.")
+    lg.add_argument("text", help="the log text")
+    lg.add_argument("--source", required=True, help="provenance of the log line (same forms as `new --source`)")
 
-    sub.add_parser("validate", help="check store rules")
-    sub.add_parser("snapshot", help="regenerate Status/Snapshot.md")
+    _sp(sub, "validate", "check every store rule",
+        "Check every rule over all items. Prints one line per violation and a count; exit 1 if any, else 0.")
+    _sp(sub, "snapshot", "regenerate Status/Snapshot.md",
+        "Regenerate Status/Snapshot.md from the store and print its path.")
 
-    pe = sub.add_parser("pending", help="staged proposals")
-    pes = pe.add_subparsers(dest="pcmd", required=True)
-    pes.add_parser("list")
-    pa = pes.add_parser("apply")
-    pa.add_argument("pids", nargs="+")
-    pr = pes.add_parser("reject")
-    pr.add_argument("pids", nargs="+")
-    pad = pes.add_parser("add")
-    pad.add_argument("--title", required=True)
-    pad.add_argument("--ops-file", type=Path, required=True)
-    pad.add_argument("--source", required=True)
-    pad.add_argument("--reason", required=True)
+    pe = _sp(sub, "pending", "staged proposals (Status/Pending/<P-id>.md)",
+             "Staged proposals, one file per proposal at Status/Pending/<P-id>.md. Subcommands: list, apply, "
+             "reject, add.")
+    pes = pe.add_subparsers(dest="pcmd", required=True, metavar="SUBCOMMAND")
+    _sp(pes, "list", "show staged proposals",
+        "Show every staged proposal (id, title, proposer, date, reason), or `No pending proposals.`")
+    pa = _sp(pes, "apply", "apply proposals in order",
+             "Apply proposals in the order given; each creates/changes items and is removed once applied. "
+             "Prints `created <id>` per new item.")
+    pa.add_argument("pids", nargs="+", metavar="PID", help="one or more proposal ids (P-xxxx) to apply")
+    pr = _sp(pes, "reject", "drop proposals",
+             "Drop proposals without applying them, recording the rejection in the log.")
+    pr.add_argument("pids", nargs="+", metavar="PID", help="one or more proposal ids (P-xxxx) to reject")
+    pad = _sp(pes, "add", "stage a new proposal",
+              "Stage a proposal as Status/Pending/<P-id>.md and print its id. Format of the ops file: "
+              ".agent_docs/pending-format.md.")
+    pad.add_argument("--title", required=True, help="short title of the proposal")
+    pad.add_argument("--ops-file", type=Path, required=True, metavar="F.yaml",
+                     help="YAML file holding the list of operations the proposal performs when applied")
+    pad.add_argument("--source", required=True, help="provenance of the proposal (same forms as `new --source`)")
+    pad.add_argument("--reason", required=True, help="why this change is proposed")
 
-    ag = sub.add_parser("agenda", help="meeting agenda workbook")
-    ags = ag.add_subparsers(dest="acmd", required=True)
-    asc = ags.add_parser("scaffold")
-    asc.add_argument("series")
-    asc.add_argument("--date", type=date.fromisoformat, required=True)
-    asc.add_argument("--force", action="store_true")
-    ab = ags.add_parser("build")
-    ab.add_argument("series")
-    ab.add_argument("--force", action="store_true")
-    ar = ags.add_parser("read")
-    ar.add_argument("series")
+    ag = _sp(sub, "agenda", "meeting agenda workbook",
+             "Meeting agenda lifecycle for a series: scaffold a draft, build the workbook, read it back after "
+             "the meeting. Subcommands: scaffold, build, read.")
+    ags = ag.add_subparsers(dest="acmd", required=True, metavar="SUBCOMMAND")
+    asc = _sp(ags, "scaffold", "write a draft agenda from the store",
+              "Write Agenda/<series>.draft.yaml pre-filled from the store (summary and follow-ups left empty) "
+              "and print its path. Refuses if the draft already exists unless --force.")
+    asc.add_argument("series", help="meeting series key from project.yaml")
+    asc.add_argument("--date", type=date.fromisoformat, required=True, metavar="YYYY-MM-DD",
+                     help="date of the meeting")
+    asc.add_argument("--force", action="store_true",
+                     help="overwrite an existing draft (losing its edits); without it an existing draft is an error")
+    ab = _sp(ags, "build", "render the draft into the xlsx workbook",
+             "Render Agenda/<series>.draft.yaml into Agenda/<series>.xlsx and print its path. Fails if the draft "
+             "is incomplete (e.g. empty summary).")
+    ab.add_argument("series", help="meeting series key")
+    ab.add_argument("--force", action="store_true",
+                    help="build even if the previous meeting's workbook has not been read back yet; this discards "
+                         "that workbook's meeting edits")
+    ar = _sp(ags, "read", "apply the meeting's edits to the store",
+             "Read Agenda/<series>.xlsx after the meeting: apply edits to the store, stage free-text items as "
+             "Status/Pending/<P-id>.md, write the meeting note and archive the workbook.")
+    ar.add_argument("series", help="meeting series key")
 
-    ss = sub.add_parser("sync-state", help="ingest watermarks")
-    sss = ss.add_subparsers(dest="scmd", required=True)
-    sg = sss.add_parser("get")
-    sg.add_argument("source")
-    sst = sss.add_parser("set")
-    sst.add_argument("source")
-    sst.add_argument("value")
+    ss = _sp(sub, "sync-state", "ingest watermarks",
+             "Read or write ingest watermarks in Status/sync-state.yaml. Subcommands: get, set.")
+    sss = ss.add_subparsers(dest="scmd", required=True, metavar="SUBCOMMAND")
+    sg = _sp(sss, "get", "print a watermark", "Print the watermark for SOURCE (empty line if none).")
+    sg.add_argument("source", help="ingest source name, e.g. clickup or circleback")
+    sst = _sp(sss, "set", "store a watermark", "Store VALUE as the watermark for SOURCE.")
+    sst.add_argument("source", help="ingest source name, e.g. clickup or circleback")
+    sst.add_argument("value", help="watermark value, typically an ISO timestamp such as 2026-11-12T09:00")
 
-    c = sub.add_parser("commit", help="commit and push with rebase/retry")
-    c.add_argument("message")
+    c = _sp(sub, "commit", "commit and push with rebase/retry",
+            "git add -A, commit, pull --rebase, regenerate Snapshot.md, push (3 retries). Exit 3 on a genuine "
+            "merge conflict (the rebase is aborted, nothing is lost).")
+    c.add_argument("message", help="git commit message")
     return p
 
 
@@ -300,7 +365,8 @@ def main(argv: list[str] | None = None) -> int:
     except KeyError as exc:
         print(f"error: no such item {exc}", file=sys.stderr)
         return 1
-    except (UserError, ConfigError, StoreError, PendingError, DraftError, AgendaError, SyncError, ValueError) as exc:
+    except (UserError, ConfigError, StoreError, PendingError, DraftError, AgendaError, SyncError, ItemFormatError, ValueError,
+            OSError, yaml.YAMLError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
 

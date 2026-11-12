@@ -90,3 +90,75 @@ def test_scaffold_refuses_to_overwrite(cli, capsys):
     code, _, err = run(capsys, "agenda", "scaffold", "group", "--date", "2026-11-19")
     assert code == 1 and "already exists" in err and "--force" in err
     assert run(capsys, "agenda", "scaffold", "group", "--date", "2026-11-19", "--force")[0] == 0
+
+
+def test_garbage_item_file_is_clean_error(cli, capsys):
+    items = cli / "Status" / "Items"
+    items.mkdir(parents=True, exist_ok=True)
+    (items / "Q-20260101-bad.md").write_text("not an item at all\n")
+    for argv in (("validate",), ("list",)):
+        code, _, err = run(capsys, *argv)
+        assert code == 1 and "error:" in err
+
+
+def test_ops_file_problems_are_clean(cli, capsys):
+    base = ("pending", "add", "--title", "T", "--source", "m", "--reason", "r", "--ops-file")
+    code, _, err = run(capsys, *base, str(cli / "missing.yaml"))
+    assert code == 1 and "error:" in err
+    bad = cli / "bad.yaml"
+    bad.write_text("a: [unclosed\n")
+    code, _, err = run(capsys, *base, str(bad))
+    assert code == 1 and "error:" in err
+
+
+def test_malformed_project_yaml_is_clean(cli, capsys):
+    (cli / "project.yaml").write_text("name: [unclosed\n")
+    code, _, err = run(capsys, "list")
+    assert code == 1 and "error:" in err
+
+
+def test_bad_root_is_clean(cli, capsys):
+    code, _, err = run(capsys, "--root", "/nonexistent/hub", "list")
+    assert code == 1 and "error:" in err
+
+
+def _walk(parser, path="hub"):
+    import argparse
+    for act in parser._actions:
+        if isinstance(act, argparse._SubParsersAction):
+            helps = {a.dest: a.help for a in act._choices_actions}
+            for name, sp in act.choices.items():
+                assert helps.get(name) or any(c.dest == name and c.help for c in act._choices_actions), \
+                    f"{path} {name}: no help="
+                assert sp.description, f"{path} {name}: no description"
+                yield from _walk(sp, f"{path} {name}")
+        elif not isinstance(act, argparse._HelpAction):
+            assert act.help, f"{path}: argument {act.dest} has no help"
+
+
+def test_every_subparser_and_argument_is_documented():
+    from hub.cli import build_parser
+    list(_walk(build_parser()))
+
+
+def test_owner_me_needs_local_config(cli, capsys):
+    (cli / "hub.local.yaml").unlink()
+    code, _, err = run(capsys, "list", "--owner", "me")
+    assert code == 1 and "hub.local.yaml" in err
+
+
+def test_bad_since_date_is_exit_2(cli, capsys):
+    with pytest.raises(SystemExit) as ei:
+        main(["list", "--since", "nope"])
+    assert ei.value.code == 2
+
+
+def test_sync_conflict_exit_3(cli, capsys, monkeypatch):
+    from hub.gitsync import SyncConflict
+
+    def boom(*a, **k):
+        raise SyncConflict(["Status/Items/x.md"], "detail")
+
+    monkeypatch.setattr("hub.cli.commit", boom)
+    code, _, err = run(capsys, "commit", "msg")
+    assert code == 3 and "x.md" in err
