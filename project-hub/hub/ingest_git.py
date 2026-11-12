@@ -19,7 +19,7 @@ from .sync_state import get_watermark, set_watermark
 
 DEFAULT_LOOKBACK_DAYS = 30
 _FIELD = "\x1f"
-_RECORD = "\x1e"
+_RECORD = "\x00"
 
 
 class IngestError(ValueError):
@@ -66,8 +66,12 @@ def git_commits(path: Path, branch: str | None, *, since_sha=None, since_date=No
         warning = (f"watermark {since_sha} not found in {path} (history rewritten?); "
                    f"listed commits since {since_date} instead")
         since_sha = None
-    args = ["log", "--no-merges", f"--max-count={limit}", "--date=short",
-            f"--format={_RECORD}%H{_FIELD}%h{_FIELD}%ad{_FIELD}%an{_FIELD}%s", "--name-only"]
+    elif since_sha and _git(path, "merge-base", "--is-ancestor", since_sha, ref).returncode != 0:
+        warning = (f"watermark {since_sha} is not an ancestor of {ref} (branch reset?); "
+                   f"listed commits since {since_date} instead")
+        since_sha = None
+    args = ["-c", "core.quotePath=false", "log", "--no-merges", "--date=short",
+            f"--format=%x00%H{_FIELD}%h{_FIELD}%ad{_FIELD}%an{_FIELD}%s", "--name-only"]
     if since_sha:
         args += [f"{since_sha}..{ref}"]
     else:
@@ -83,15 +87,20 @@ def git_commits(path: Path, branch: str | None, *, since_sha=None, since_date=No
         if not block:
             continue
         head, *files = block.split("\n")
-        sha, short, day, author, subject = head.split(_FIELD)
+        sha, short, day, author, subject = head.split(_FIELD, 4)
         commits.append({"sha": sha, "short": short, "date": day, "author": author, "subject": subject,
                         "files": [f for f in files if f.strip()]})
     commits.reverse()
-    return commits, warning
+    parts = [warning] if warning else []
+    if len(commits) > limit:
+        dropped = len(commits) - limit
+        commits = commits[:limit]
+        parts.append(f"{dropped} newer commit(s) not listed yet (limit {limit}); run again after --advance")
+    return commits, "; ".join(parts) or None
 
 
 def ingest_git(config: HubConfig, name: str, *, today: date, since: date | None = None,
-               advance: bool = False) -> dict:
+               advance: bool = False, limit: int = 500) -> dict:
     """List commits since the watermark (or since `since`, which ignores the watermark). With `advance`,
     move the watermark to the newest listed commit; run it only after the commits have been recorded."""
     path = resolve_root(config, name)
@@ -99,7 +108,8 @@ def ingest_git(config: HubConfig, name: str, *, today: date, since: date | None 
     wm = watermark_name(name)
     before = get_watermark(config.root, wm)
     since_date = since or (today - timedelta(days=DEFAULT_LOOKBACK_DAYS))
-    commits, warning = git_commits(path, branch, since_sha=None if since else before, since_date=since_date)
+    commits, warning = git_commits(path, branch, since_sha=None if since else before,
+                                   since_date=since_date, limit=limit)
     advanced = bool(advance and commits)
     if advanced:
         set_watermark(config.root, wm, commits[-1]["sha"])

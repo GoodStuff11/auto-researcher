@@ -5,7 +5,7 @@ from datetime import date
 import pytest
 
 from hub.config import load_config
-from hub.ingest_git import IngestError, ingest_git
+from hub.ingest_git import IngestError, git_commits, ingest_git
 from hub.sync_state import get_watermark, set_watermark
 
 
@@ -94,3 +94,52 @@ def test_errors(setup):
     cfg.sources["repos"][0]["branch"] = "nosuch"
     with pytest.raises(IngestError, match="branch 'nosuch'"):
         ingest_git(cfg, "CODE", today=date.today())
+
+
+def test_limit_keeps_oldest_and_warns(setup):
+    cfg, repo, vault = setup
+    for i in range(3, 7):
+        commit_file(repo, f"f{i}.txt", f"c{i}")
+    commits, warning = git_commits(repo, "main", limit=5)
+    assert [c["subject"] for c in commits] == ["c0", "c1", "c2", "c3", "c4"]
+    assert "2 newer commit(s) not listed yet (limit 5)" in warning
+
+
+def test_advance_with_limit_pages_through_history(setup):
+    cfg, repo, vault = setup
+    for i in range(3, 7):
+        commit_file(repo, f"f{i}.txt", f"c{i}")
+    first = ingest_git(cfg, "CODE", today=date.today(), advance=True, limit=5)
+    assert [c["subject"] for c in first["commits"]] == ["c0", "c1", "c2", "c3", "c4"]
+    assert get_watermark(vault, "git.CODE") == first["commits"][-1]["sha"]
+    second = ingest_git(cfg, "CODE", today=date.today(), advance=True, limit=5)
+    assert [c["subject"] for c in second["commits"]] == ["c5", "c6"]
+    assert second["warning"] is None
+
+
+def test_subject_with_separator_characters_is_kept(setup):
+    cfg, repo, vault = setup
+    subject = "x\x1fy\x1ez"
+    commit_file(repo, "sep.txt", subject)
+    commits, _ = git_commits(repo, "main")
+    assert commits[-1]["subject"] == subject
+    assert commits[-1]["files"] == ["sep.txt"]
+
+
+def test_file_names_are_exact_not_quoted(setup):
+    cfg, repo, vault = setup
+    commit_file(repo, "é fig.pdf", "fig")
+    commits, _ = git_commits(repo, "main")
+    assert commits[-1]["files"] == ["é fig.pdf"]
+
+
+def test_watermark_off_the_branch_falls_back(setup):
+    cfg, repo, vault = setup
+    git(repo, "checkout", "-q", "-b", "other")
+    commit_file(repo, "o.txt", "other")
+    other_sha = git(repo, "rev-parse", "HEAD").strip()
+    git(repo, "checkout", "-q", "main")
+    set_watermark(vault, "git.CODE", other_sha)
+    res = ingest_git(cfg, "CODE", today=date.today())
+    assert "is not an ancestor of main" in res["warning"]
+    assert [c["subject"] for c in res["commits"]] == ["c0", "c1", "c2"]
