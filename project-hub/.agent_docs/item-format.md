@@ -50,7 +50,7 @@ Decision only (not required to be filled): `rationale` (string, why), `meeting` 
 Action only: `clickup_id` (string or null, ClickUp task id), `due` (date or null).
 `set` coercion (`coerce_value`, `hub/store.py:23`): empty string becomes null; `raised`, `closed`, `due` parse `YYYY-MM-DD`; `priority` parses an int; a bad value raises `StoreError`. `id`, `type`, `links` are protected.
 ## Links
-Stored one way only, on the item that points; reverse lookups use `Store.children(id)` (`hub/store.py:159`), which returns each descendant once and skips missing pivot targets (raises `KeyError` for an unknown id). `hub show ID --chain` prints the tree.
+Stored one way only, on the item that points; reverse lookups use `Store.children(id)` (`hub/store.py`), which returns each descendant once and skips missing pivot targets (raises `UnknownItem` for an unknown id). `hub show ID --chain` prints the tree.
 - `answers`: on a decision, the question(s) it answers.
 - `spawned_by`: on an action or question, the decision or item it came out of.
 - `pivoted_to`: on a question, the question that replaces it (children() also returns those targets).
@@ -59,10 +59,11 @@ Link targets must exist and match the id regex (`StoreError` otherwise).
 Line format, regex `ENTRY_RE` (`hub/items.py:20`): `^- (\d{4}-\d{2}-\d{2}) · (\S+) · (\S+) — (.*)$`, that is `- <date> · <author> · <source> — <text>`. Author is a people key; both author and source must be non-empty with no whitespace (`Entry.render` raises `ValueError`). Text is collapsed to one line. The first entry of every item is `Raised.` (the creation entry). Appended by `Store.entry` / `hub entry`.
 Source id conventions: `circleback:<meeting id>`, `commit:<root>@<short sha>`, `clickup:<task id>`, `agenda:<series>/<date>`, `pending:<P-id>`, `manual`; the default source of ops in proposals is `pending`.
 ## IDs (`hub/ids.py`)
-Items: `<T>-<YYYYMMDD>-<rand3>` with T = `Q`, `D`, `A`, the creation day, and 3 characters of `a-z0-9`; retried until unused (100 attempts). Random, so independent clones never collide. Proposals: `P-<rand4>` (pending-format.md). A malformed id passed to `Store.get/path` raises `KeyError`, which the CLI prints as `error: no such item ...` (exit 1).
+Items: `<T>-<YYYYMMDD>-<rand3>` with T = `Q`, `D`, `A`, the creation day, and 3 characters of `a-z0-9`; retried until unused (100 attempts). Random, so independent clones never collide; items created by a pending proposal use a generator seeded by `<P-id>:<op index>` so every clone applying it gets the same id (pending-format.md). Proposals: `P-<rand4>`. A missing or malformed id passed to `Store.get/path` raises `UnknownItem` (a `StoreError` and a `KeyError`), which the CLI prints as `error: no such item <id>` (exit 1).
 ## Validation rules (`validate`, `hub/validate.py`; `hub validate` prints `<id>  <rule>: <message>` per violation then `<n> violation(s)`, exit 1 if any)
 | Rule | Condition that raises it |
 |---|---|
+| `format` | the file `<id>.md` could not be parsed (item id = file stem); the item is skipped by every reader, the other items are still checked |
 | `type` | `type` not question/decision/action (other rules skipped for that item) |
 | `status` | status not valid for the type |
 | `id-prefix` | id does not start with Q-/D-/A- matching the type |
@@ -77,4 +78,10 @@ Items: `<T>-<YYYYMMDD>-<rand3>` with T = `Q`, `D`, `A`, the creation day, and 3 
 | `action-owner` | action `open` and owner null or not a `people` key |
 Practical consequences: when closing, add a closing entry (`hub entry`) on or after the `closed` date; when making a decision, link it to its question and either create an action spawned by it or set `no_action=<reason>`.
 ## CLI errors
-`StoreError` (bad field/status/link/type), `ItemFormatError`, `KeyError` (unknown id) all print `error: ...` and exit 1 (see git-sync.md for exit codes).
+`StoreError` (bad field/status/link/type), `ItemFormatError`, `UnknownItem` (unknown id) all print `error: ...` and exit 1 (see git-sync.md for exit codes).
+## Robustness
+- `parse_item` normalises CRLF line endings to LF before parsing; `raised`, `closed` and `due` written as datetimes (e.g. `2026-11-12 10:00:00`) are read as dates.
+- `Store.all()` skips files that fail to parse and records them in `store.load_errors` (list of `(path, error)`, reset on each call): one malformed file never blocks `list`, `since`, `validate`, the Snapshot or `hub commit`. `hub validate` reports each as rule `format` with the file stem as item id; `list`/`since` print `warning: cannot load <path>: <error>` to stderr; the Snapshot lists them under `## Flags`.
+- `Store.get`/`Store.path` raise `UnknownItem` (a subclass of both `StoreError` and `KeyError`) for a missing id or one not of the form `T-YYYYMMDD-xxx`; the CLI prints `error: no such item <id>`. A file that exists but does not parse raises `ItemFormatError` from `get`.
+- Item files are written atomically (temp file + `os.replace`).
+- Concurrent edits of one item from two clones are merged by the `hub-item` git driver (git-sync.md).

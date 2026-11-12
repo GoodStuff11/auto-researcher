@@ -3,8 +3,8 @@ Read this first. Each file below is the complete truth for its domain; do not re
 - [item-format.md](item-format.md) — item files under `Status/Items/`: every frontmatter key, statuses, links, entries, IDs, validation rules (`hub/items.py`, `hub/store.py`, `hub/validate.py`, `hub/ids.py`)
 - [pending-format.md](pending-format.md) — `Status/Pending/<P-id>.md` proposals (one file per proposal) and the op schema (`hub/pending.py`)
 - [agenda-workbook.md](agenda-workbook.md) — draft YAML keys, the sheets and their columns, `_meta`, read-back mapping, build/read guards (`hub/agenda/draft.py`, `build.py`, `read.py`, `lifecycle.py`)
-- [git-sync.md](git-sync.md) — `.gitattributes` merge drivers, `hub commit` sequence, conflict handling, exit codes (`hub/gitsync.py`, `hub/cli.py`)
-- [vault-layout.md](vault-layout.md) — `project.yaml`, `hub.local.yaml`, vault directory tree, `Status/Log/<YYYY-MM>.md`, `Status/sync-state.yaml`, `Status/Snapshot.md`, `Status/Meetings/` (`hub/config.py`, `hub/sync_state.py`, `hub/snapshot.py`)
+- [git-sync.md](git-sync.md) — `.gitattributes` merge drivers (incl. the `hub-item` item merge driver), `hub commit` sequence, best-effort pull, conflict handling, exit codes (`hub/gitsync.py`, `hub/merge_item.py`, `hub/cli.py`)
+- [vault-layout.md](vault-layout.md) — `project.yaml`, `hub.local.yaml`, vault directory tree, `Status/Log/<YYYY-MM>.md`, `Status/sync-state/`, `Status/Snapshot.md`, `Status/Meetings/` (`hub/config.py`, `hub/sync_state.py`, `hub/snapshot.py`)
 
 Not yet documented: the VS Code Office Viewer spike (`project-hub/spike/`) has no written result; the agenda reader therefore tolerates a lost `_meta` sheet, a dropped hidden id column and a dropped dropdown (see agenda-workbook.md).
 

@@ -45,7 +45,10 @@ The hub splits this into a shared, structured, mergeable store that agents maint
     Knowledge/                       # stable findings, what the code does, rejected claims
     Snapshot.md                      # generated, ≤ 1 page
     Pending/<P-id>.md                # staged judgement calls, one file per proposal
-    sync-state.yaml                  # per-source watermarks
+    sync-state/                      # one small file per key, so clones never touch the same file
+      watermark.<source>.yaml        #   `value: <watermark>` per ingest source
+      next_meeting.<series>.yaml     #   `value: <YYYY-MM-DD>` per series
+      flags.md                       #   one `- <flag>` line per unresolved sync flag (merge=union)
     Items.base                       # Bases views
   Agenda/
     <series>.xlsx
@@ -169,12 +172,13 @@ Safe changes applied directly:
 | `validate` | Rules above; non-zero exit on violation |
 | `snapshot` | Regenerate `Snapshot.md` |
 | `pending {add,list,apply,reject}` | Staged changes |
+| `agenda scaffold SERIES --date D [--force]` | Write `Agenda/<series>.draft.yaml` pre-filled from the store |
 | `agenda {build,read} SERIES [--force]` | Workbook (below) |
 | `figures {sync,add,gallery}` | Figure registry |
 | `check-links` | Resolve every `$ROOT/…` path and URL in `Locator.md` and `meta.yaml` |
 | `sync-state {get,set} SOURCE` | Watermarks |
 | `import-handoff PATH` | One-off migration, stages everything in `Status/Pending/` |
-| `commit MSG` | pull --rebase → commit → push, retry ×3 on rejection; stops and reports on a real conflict |
+| `commit MSG` | commit → pull --rebase → regenerate generated files → push, retry ×3 on rejection; stops and reports on a real conflict |
 
 Agents read only through `list`/`show`/`since`/`snapshot` and write only through the CLI.
 
@@ -208,9 +212,9 @@ Agents read only through `list`/`show`/`since`/`snapshot` and write only through
 - Capped at 5–7 rows, followed by 5 blank "Raised in meeting" rows.
 
 **Lifecycle**
-1. **Prep:** `build` refuses if the live xlsx's `_meta.read_back` is false for a past meeting date (`--force` overrides).
+1. **Prep:** `build` refuses if the live xlsx's `_meta.read_back` is false for a past meeting date, or if it already holds meeting input (`--force` overrides).
 2. **Meeting:** edit in any viewer.
-3. **Read-back:** `read` matches rows by hidden ID, falling back to the title. It accepts Outcome as dropdown or typed text (case-insensitive prefixes, `✓`/`✗`).
+3. **Read-back:** `read` matches rows by hidden ID, falling back to the title. It accepts Outcome as dropdown or typed text, matched as exact case-insensitive tokens after trimming trailing `.`/`!` (`approve`/`approved`/`a`/`yes`/`y`/`✓`/`✔`, `modify`/`modified`/`m`, `defer`/`deferred`/`d`, `reject`/`rejected`/`r`/`no`/`n`/`x`/`✗`/`✘`); any other non-empty text is staged for review, never guessed.
    - Approve/Modify set the decision to `made`, copy "as decided" into the decision, and append entries. These are safe changes, because they record what the meeting itself decided.
    - Defer/Reject set the status and append an entry.
    - Free-text actions and "Raised in meeting" rows go to `Status/Pending/`.
@@ -277,11 +281,13 @@ Everything in the hub is readable by every project member. Skills instruct the a
 Writers do not lock. Mergeability comes from:
 - one file per item;
 - append-only logs, merged with the `union` merge driver;
-- one file per pending proposal;
+- one file per pending proposal, and one file per sync-state key;
+- item files merged by the `hub-item` git merge driver (`python -m hub.merge_item %O %A %B`, registered by `hub commit` in `.gitattributes` and `.git/config`): entries are unioned (de-duplicated, sorted by date), list fields (`sources`, `series`, `links.*`) are unioned, and every other field and the description merge three-way — one side changed it, that side wins;
+- items created by a pending proposal get ids seeded from the proposal id and op index, so two people applying the same proposal create the same item;
 - generated files rebuilt after every pull, never merged;
 - source-ID idempotency.
 
-`hub commit` rebases and retries; a genuine conflict on one item file is reported to the user running the agent, with both versions, and not auto-resolved. The live `.xlsx` is binary: if two people edit it during a meeting, the later push loses. The skill tells the meeting to have one editor, and `read` refuses a file whose `_meta` meeting date doesn't match the expected one.
+`hub commit` rebases and retries; a genuine conflict — both sides changed the same field of one item to different values — is reported to the user running the agent, naming the field and both values, and not auto-resolved. The live `.xlsx` is binary: if two people edit it during a meeting, the later push loses. The skill tells the meeting to have one editor, and `read` refuses a file whose `_meta` meeting date doesn't match the expected one.
 
 ## Testing
 - `tools/hub` unit tests (pytest):

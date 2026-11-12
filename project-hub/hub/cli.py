@@ -39,14 +39,16 @@ Commands (each has its own --help):
                              empty); refuses if the draft already exists unless --force (overwrites it)
   agenda build SERIES [--force]
                              render the draft into Agenda/<series>.xlsx; refuses while the previous meeting's
-                             workbook is unread, unless --force (which discards its meeting edits)
+                             workbook is unread or the live workbook already holds meeting input, unless
+                             --force (which discards its meeting edits)
   agenda read SERIES         pull (best effort), apply the meeting's edits to the store, stage free-text items as
                              Status/Pending/<P-id>.md (one file per proposal),
                              write the meeting note, archive the workbook
   sync-state get SOURCE | set SOURCE VALUE
                              read/write ingest watermarks (Status/sync-state/watermark.<SOURCE>.yaml)
   commit MESSAGE             git add -A, commit, pull --rebase, regenerate Snapshot.md, push (3 retries);
-                             exit 3 on a genuine merge conflict (rebase is aborted, nothing lost)
+                             item files merge field by field (hub-item driver); exit 3 only when both sides
+                             changed one field differently (rebase is aborted, nothing lost)
 
 Exit codes: 0 ok · 1 user error or validation violations · 2 bad arguments · 3 sync conflict.
 
@@ -217,8 +219,8 @@ def build_parser() -> argparse.ArgumentParser:
              "is incomplete (e.g. empty summary).")
     ab.add_argument("series", help="meeting series key")
     ab.add_argument("--force", action="store_true",
-                    help="build even if the previous meeting's workbook has not been read back yet; this discards "
-                         "that workbook's meeting edits")
+                    help="build even if the live workbook has not been read back (an earlier meeting, or meeting "
+                         "input already typed into it); this discards that workbook's meeting edits")
     ar = _sp(ags, "read", "apply the meeting's edits to the store",
              "First runs a best-effort `git pull --rebase` (a failure is printed as a warning). Then reads "
              "Agenda/<series>.xlsx after the meeting: apply edits to the store, stage free-text items as "
@@ -236,8 +238,11 @@ def build_parser() -> argparse.ArgumentParser:
     sst.add_argument("value", help="watermark value, typically an ISO timestamp such as 2026-11-12T09:00")
 
     c = _sp(sub, "commit", "commit and push with rebase/retry",
-            "git add -A, commit, pull --rebase, regenerate Snapshot.md, push (3 retries). Exit 3 on a genuine "
-            "merge conflict (the rebase is aborted, nothing is lost).")
+            "git add -A, commit, pull --rebase, regenerate Snapshot.md, push (3 retries). Item files merge field "
+            "by field through the hub-item git merge driver (entries and lists are unioned). Exit 3 on a genuine "
+            "conflict, i.e. both sides changed one field of an item differently; the message names the field and "
+            "both values (the rebase is aborted, nothing is lost). A failure to regenerate Snapshot.md is only a "
+            "warning.")
     c.add_argument("message", help="git commit message")
     return p
 
