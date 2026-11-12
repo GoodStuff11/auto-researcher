@@ -4,3 +4,5 @@
 [   148.1s] calibration: E_sign(exact signs) - E0 = 5.329e-15; Pd(E0)=4.8483e-03
 [   208.7s] arm tr@0     : E=-3.31823879 eps=6.6349e-01 (raw 6.5913e-01, irrep weight 0.458) A/V=1.4731e-01 sign-agree=0.1067 Pd=5.1096e-03 fid=0.0032
 [   464.5s]   [tr] step 5/50 eps=6.23572e-02 lr=0.0805
+[   732.0s]   [tr] step 10/50 eps=3.34811e-02 lr=0.0648
+[   745.8s] arm tr@10    : E=-13.39840462 eps=3.3481e-02 (raw 5.5159e-02, irrep weight 0.894) sign-agree=0.9495 Pd=4.0165e-03 fid=0.6084

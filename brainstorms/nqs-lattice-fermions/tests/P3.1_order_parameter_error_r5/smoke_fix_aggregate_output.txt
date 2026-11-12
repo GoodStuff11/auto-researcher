@@ -1,0 +1,7 @@
+rule gate; label P only; scored items 3 of 3 over seeds [11]; width-6 control median dE_sign = 0.0125
+note: per-seed EHX/ZV estimates share partner data (each seed's fit uses every other seed).
+  pair: a0=+9.224e-05 median |delta|/|a0| = 0.314, scored 1
+  spin: a0=+5.338e-02 median |delta|/|a0| = 0.148, scored 1
+  charge: a0=-1.416e-03 median |delta|/|a0| = 0.220, scored 1
+INJECT: scored 7, tracked {'EHX': 0, 'ZV': 0, 'EHX_R': 0, 'EHX_E': 0}, EHX ['untrusted', 'untrusted', 'untrusted', 'untrusted', 'untrusted', 'untrusted', 'untrusted'] -> FAIL
+VERDICT: NO-TARGET (premise gate)

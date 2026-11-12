@@ -1,153 +1,129 @@
 #!/usr/bin/env python3
 """
-P2.2 round-5 decisive test.  Two routes against the refined (post-Saturation-
-Diagnostic) formulation of the leaf, in three parts.
+P2.2 round-5 decisive test (critic-fix revision, 2026-11-12).  Route R5.1
+(WIBJ, regime F_A) in two parts; route R5.2 (ALE, Part L) is DEFERRED.
 
-Saturation result this test is built on (see the leaf artifact, Round 5):
-an unbiased estimator of E_L(n) = H_nn + sum_j x_j that queries term j with
-inclusion probability pi_j has anticipated variance >= sum_j s_j^2 (1/pi_j - 1)
-(Godambe-Joshi), s_j = the uncertainty of x_j given everything the estimator
-knows for free.  Exactness forces pi_j = 1 for every j with s_j > 0, i.e.
-Omega(|C|) work per sample.  A gain is possible only by (F_A) making each x_j
-cheap arithmetic by construction (architecture), or (F_B) making s_j small with
-free information, e.g. the same network at an earlier parameter (amortization).
+Saturation statement this test is built on (see the leaf artifact, Round 5)
+--------------------------------------------------------------------------
+Black-box query model: each connected term x_j = H_nn' psi(n')/psi(n) is
+revealed only by an oracle call psi(n').  (a) An EXACT local energy needs
+Omega(|C|) oracle calls whenever no x_j can be inferred from the others.
+(b) An estimator that is unbiased over its own randomness and queries term j
+with inclusion probability pi_j has variance >= sum_j s_j^2 (1/pi_j - 1) when
+x_j is known to the estimator only up to s_j (the inclusion-probability /
+Horvitz-Thompson bound).  Architectures that expose algebraic structure can
+beat |C|: either each term becomes cheap arithmetic ("cheaper per term",
+F_A1, which is what KEYX does for WIBJ), or whole classes of terms are summed
+by contraction without enumerating them ("sub-|C| by contraction", F_A2: the
+round-4 R4.0 Wick/Cholesky contraction for Slater-Jastrow with a factorizable
+Jastrow; THC/Cholesky factorized sums over external indices).  This test
+measures F_A1 only.
 
 Parts
 -----
-L  (route R5.2, F_B) Anchored local energy (ALE): SVRG on the inner sum of
-   E_L.  SR epochs of T steps on one fixed, reweighted sample set.  At the
-   epoch anchor theta~: exact enumeration x~_j = h_j psi~(j)/psi~(n), stored.
-   Inner step at theta:  E^ALE0(n) = H_nn + sum_j x~_j
-                                 + (1/Kd) sum_k [x_jk(theta) - x~_jk] / p_jk,
-                         E^ALE1(n) = E^ALE0 with the first-order anchor term
-                                 g~(n).dtheta added and subtracted per draw
-                                 (g~(n) = grad_theta E_L(n) at the anchor, one
-                                 backward pass through the anchor enumeration).
-   p_j = 0.9 |x~_j| / sum|x~| + 0.1 |h_j| / sum|h|.  Unbiased given the samples
-   for any theta; the increment vanishes as dtheta -> 0 (no sign floor).
-   Samples are reweighted by (psi(n)/psi~(n))^2; an epoch ends after T steps or
-   when ESS < --ess-min * B.  Every arm runs SR (minSR form) from ONE common
-   L-BFGS warm start of the general NNBF-J, until its cumulative local-energy
-   cost reaches the budget C_b = --n-ref steps of EXACT.  The exact energy of
-   every iterate is logged (evaluation only).
-   Arms (one --arm per task; 3 SR seeds per task):
-     EXACT        all connected terms, fresh samples every step.
-     EXACTNF      noise-floor arm: EXACT with SR seeds 10 11 12.
-     SCREEN:e     |h| > e only (biased; judged by the exact energy it reaches).
-     SS:e:Kd      |h| > e exact + Kd heat-bath draws p ~ |h| (unbiased).
-     ALE0:T:Kd    route R5.2, zeroth order.
-     ALE1:T:Kd    route R5.2, first order.
-     suffix +B    (any arm except EXACT/EXACTNF) equal-step-cost mode: the arm
-                  spends its saving on samples per step instead of on steps,
-                  B = --batch x (EXACT cost / arm cost per sample per step,
-                  measured on 300 warm-state samples), capped at --b-cap x
-                  --batch; leftover budget buys steps.  Both modes of every
-                  control and route enter the verdict (best of each set).
-   Cost models (both logged per step, cumulative):
-     ops : amplitudes x amp_ops + generated terms x C_GEN (keyx_core units);
-           SCREEN/SS charged only for kept terms (generous: HCI-style sorted
-           integrals); ALE anchor = EXACT (+ 2 amp per term for the ALE1
-           backward); ALE inner = 1 amp (psi(n)) + Kd amp (+ 2 Kd amp for the
-           ALE1 JVPs) + Kd C_HASH (alias draws).
-     cal : the same counts priced with single-thread seconds measured in this
-           task (t_amp from keyx_core.ratio_exact on full rows, t_gen from
-           SpatialHam.row); the ALE1 JVP is priced at 2 t_amp.
-   Values: amplitudes are looked up in the full ED vector of the same network
-   (identical numbers to per-amplitude evaluation); the per-amplitude kernels
-   are timed separately on --n-wall samples (EXACT row vs ALE0 inner
-   estimator, real ratio_exact calls) and reported with a bootstrap CI.
-W  (route R5.1, F_A) Window-input backflow x all-orbital Jastrow (WIBJ):
-   accuracy at large external/window ratio.  Wraps keyx_core Part A (L-BFGS
-   on the exact energy) with arms NNBFJ (seeds 0 1 2), NNBFJ noise-floor
-   (seeds 3 4 5) and WIBJ (seeds 0 1 2), extended SCREEN/SS grids.
-S  (route R5.1) ED-free cost scaling: keyx_core Part S, arms NNBFJ and WIBJ,
-   extended SCREEN/SS grids.
+W  (route R5.1 accuracy, ED, L-BFGS on the exact energy).  Instances:
+   H4 distorted chain R=4.4, K = 12 16 20 24 (the K-trend), H6 R=3.6,
+   K = 12 14.  Arms (one per task):
+     NNBFJ    general NNBF x neural/pair Jastrow, width --hidden (seeds 0 1 2)
+     NNBFJNF  the same, seeds 3 4 5 (noise floor)
+     WIBJ     window-input backflow x all-orbital Jastrow (seeds 0 1 2)
+     NNBFJh4  minimal-contrast foil: NNBFJ with hidden 4, hJ 4 (per-term
+              cost of the order of WIBJ's keyed per-term cost)
+     NNBFJh8  the same with hidden 8, hJ 8
+     CASJ     minimal-contrast foil: window-only multi-determinant x pair
+              Jastrow, no neural network (CAS(N, K_W) with trainable orbital
+              rows, all C(K_W, N/2)^2 window determinants)
+   NNBFJ also gets the exact SCREEN/TRUNC biases and the sampled SS
+   increments (controls), and every arm reports per-sample operation counts
+   on |psi|^2 samples of its own TRAINED state.
+S  (route R5.1 cost, ED-free).  Distorted H8 chain R=2.0, s+p bases with
+   K = 40 72 104 136.  --s-arms main = NNBFJ + WIBJ (timed in the same task),
+   --s-arms foils = NNBFJh4 + NNBFJh8 + CASJ (operation counts).  Samples come
+   from a CISD-like proposal (HF + MP1-weighted singles/doubles); no trained
+   state exists at these sizes (stated limitation).  Wall model (the Part L
+   calibration): generation is timed per row and fitted t = ag + bg m;
+   ratio_exact is timed on prefixes m = 1 .. |C| and fitted t = a + b m
+   (per-call overhead a).  EXACT/KEYX/TRUNC are charged generation of all
+   |C| terms, SCREEN/SS only of kept terms (generous: HCI-sorted integrals),
+   and an SS draw call is charged a + b Kd.  WIBJ+SCREEN (keyed on kept terms)
+   is reported against NNBFJ+SCREEN.
+L  (route R5.2, anchored local energy) DEFERRED: not in the array.  Its
+   decisive regime (cold start, step-limited optimization) needs a separate
+   micro-pilot.  The code is kept for that pilot.
 
-Pre-committed verdicts (python3 micro_test.py --aggregate DIR), tau = 0.2 mHa
-----------------------------------------------------------------------------
-R5.2 (Part L), per K, under BOTH cost models (ops and cal):
-  dE_X(c) = mean exact dE over the iterates whose cumulative cost lies in
-  (0.9 c, c]; medians over the 3 SR seeds.
-  ctrl* = the control config (EXACT, SCREEN:*, SS:*) with the lowest median
-  dE(C_b); D_ctrl its median.  nu = max(|median dE_EXACT(C_b) - median
-  dE_EXACTNF(C_b)|, half the range over the six EXACT/EXACTNF seeds) (noise
-  floor).  Both modes (steps, +B) count.  r* = the ALE config (ALE0, ALE1 pooled)
-  with the lowest median dE(C_b/2).
-  premise: median dE_EXACT(C_b) < 1.6 mHa and nu < tau.
-  PASS(K): premise, median dE_r*(C_b/2) <= D_ctrl, and best-of-seeds
-           dE_r*(C_b/2) <= best-of-seeds dE_ctrl*(C_b).
-  FAIL(K): median dE_r*(C_b) > D_ctrl + nu (worse at EQUAL cost).
-  AMBIGUOUS(K) otherwise.  A K passes only if it passes under both cost
-  models and fails if it fails under either.
-  Global: PASS iff PASS at every K; FAIL iff FAIL at the largest K;
-  otherwise AMBIGUOUS -> pre-committed rerun at K = 24 with the same grid:
-  PASS iff PASS(24), else KILL.
-R5.1 (Parts W + S):
-  Accuracy, per instance at its largest K: delta_med = median over seeds 0-2
-  of (dE_WIBJ - dE_NNBFJ), paired; delta_best = min_seed dE_WIBJ - min over
-  all six NNBFJ seeds; nu_W = |median NNBFJ(0-2) - median NNBFJ(3-5)|;
+Pre-committed verdict for R5.1 (python3 micro_test.py --aggregate DIR), tau = 0.2 mHa
+------------------------------------------------------------------------------------
+Accuracy, per W instance at its largest K:
+  delta_med  = median over seeds 0-2 of (dE_WIBJ - dE_NNBFJ), paired by seed;
+  delta_best = min over the 3 WIBJ seeds - min over the 6 NNBFJ seeds
+               (0-5; asymmetric, against WIBJ);
+  nu_W       = max(|median NNBFJ(0-2) - median NNBFJ(3-5)|, half the range
+               over the six NNBFJ seeds)   (the Part L noise-floor definition);
   premise: HF weight < 0.6, median NNBFJ dE < 1.6 mHa, nu_W < tau.
   ACC_OK if delta_med <= tau and delta_best <= tau on every instance (all
   premises hold); ACC_FAIL if delta_med > tau on a premise-valid instance;
   ACC_AMBIG otherwise.
-  Cost (Part S, keyx_core accounting, variance-ratio corrected, controls on
-  NNBFJ with SCREEN eps admissible iff its exact bias <= tau on every W
-  instance and SS charged its measured increment): M_op(K), M_wall(K) with
-  bootstrap 95% CI.
-  PASS: ACC_OK, M_op(K_max) <= 0.5, M_op(K_max) < M_op(K_min), and the upper
-        CI bound of M_wall(K_max) <= 0.8.
-  FAIL: ACC_FAIL, or M_op(K_max) >= 1, or the lower CI bound of M_wall(K_max)
-        > 1.
-  AMBIGUOUS otherwise -> pre-committed: Part S with --basis-series 6,5
-        (K = 168); PASS iff M_op <= 0.5 and M_wall CI upper <= 0.8, else KILL.
+Trend (every instance with >= 3 K values, i.e. H4 K = 12..24): TREND_FAIL if
+  delta_med(K) rises strictly monotonically AND its least-squares linear fit
+  in K, extrapolated to K = 40 (the smallest Part S K), exceeds tau.
+Foils: FOIL_FAIL if some foil F in {NNBFJh4, NNBFJh8, CASJ} is within the
+  noise floor of WIBJ on every instance (median dE_F <= median dE_WIBJ +
+  nu_W at the largest K) AND is no more expensive in Part S at K_max:
+  C_F = min(ops EXACT_F, ops SCREEN_F(eps*)) x v_F <= C_WIBJ = min(ops KEYX,
+  ops KEYX on SCREEN(eps*) kept terms) x v_WIBJ.
+Cost (Part S, variance-ratio corrected; v_X = max over instances of the
+  median Var_X / Var_NNBFJ; controls on NNBFJ: EXACT, SCREEN(eps*) with eps*
+  the largest eps whose exact bias <= tau on every W instance, SS charged its
+  measured increment, TRUNC(smallest admissible B_U)):
+  M_op(K) = ops_KEYX(WIBJ) v_WIBJ / min control ops;
+  M_wall(K) = mean route wall / min over controls of mean control wall, both
+  with the wall model above, paired bootstrap 95% CI.
+PASS: ACC_OK, no TREND_FAIL, no FOIL_FAIL, M_op(K_max) <= 0.5,
+      M_op(K_max) < M_op(K_min), and the upper CI bound of M_wall(K_max) <= 0.8.
+FAIL: ACC_FAIL, TREND_FAIL, FOIL_FAIL, M_op(K_max) >= 1, or the lower CI bound
+      of M_wall(K_max) > 1.
+AMBIGUOUS otherwise -> pre-committed: Part S with --basis-series 6,5
+      (K = 168); PASS iff M_op <= 0.5 and M_wall CI upper <= 0.8, else KILL.
 Hard Core: sign half only (same-sector competitors not examined).
 
 Command-line options
 --------------------
---part {L,W,S}          Required unless --smoke or --aggregate.
+--part {W,S,L}          Required unless --smoke or --aggregate (L: deferred).
 --n-atoms INT           H atoms = electrons (even, >= 4). Default 4 (L, W), 8 (S).
 --bond-length FLOAT     Mean H-H spacing in bohr. Default 4.4 (L, W), 2.0 (S).
 --distort FLOAT         Random displacement amplitude (bohr). Default 0.25.
 --geom-seed INT         Displacement seed. Default 1.
---n-active INT [...]    L, W: active spatial MOs K. Default 16 (L), 20 24 (W).
+--n-active INT [...]    L, W: active spatial MOs K. Default 16 (L), 12 16 20 24 (W).
 --basis-series LIST     S: "ns,np" pairs (keyx_core). Default "2,1 3,2 4,3 5,4".
---arm STR               L only, one arm spec: EXACT, EXACTNF, SCREEN:e,
-                        SS:e:Kd, ALE0:T:Kd, ALE1:T:Kd, each but the first two
-                        optionally suffixed +B.  Default EXACT.
---w-arms LIST           W only: subset of NNBFJ NNBFJNF WIBJ (NNBFJNF = NNBFJ
-                        with seeds 3 4 5). Default all three.
---seeds INT [...]       L: SR seeds (EXACTNF adds 10). W: network seeds for
-                        NNBFJ/WIBJ. Default 0 1 2.
+--w-arms LIST           W: subset of NNBFJ NNBFJNF WIBJ NNBFJh4 NNBFJh8 CASJ.
+                        Default all six.
+--s-arms {main,foils,all} S: arm group. Default all.
+--arm STR               L only (deferred), as before.
+--seeds INT [...]       W: network seeds (NNBFJNF adds 3). Default 0 1 2.
 --hidden INT            Backflow hidden width. Default 64 (W, S), 32 (L).
 --hj INT                Neural-Jastrow width. Default 32 (W, S), 16 (L).
 --maxiter INT           W: L-BFGS iterations. Default 6000.
---warm-iters INT        L: L-BFGS iterations of the common warm start. Default 400.
---batch INT             L: samples per SR step B. Default 500.
---lr FLOAT              L: SR step size. Default 0.5.
---shift FLOAT           L: minSR diagonal shift. Default 1e-4.
---max-dtheta FLOAT      L: step-norm clip. Default 1.0.
---n-ref INT             L: budget C_b = n-ref EXACT steps. Default 200.
---max-steps-factor INT  L: cap on steps = factor x n-ref. Default 12.
---ess-min FLOAT         L: ALE re-anchors when ESS < ess-min * B. Default 0.5.
---b-cap INT             L: +B mode cap on B / --batch. Default 4.
---n-wall INT            L: samples with real-kernel wall-clock timing. Default 40.
-                        S: as keyx_core. Default 12.
---n-samples INT         W/S: as keyx_core. Default 2000 (W), 200 (S).
---eps-screen FLOAT...   W/S grids. Default 1e-5 1e-4 3e-4 1e-3 3e-3 1e-2 3e-2.
+--n-wall INT            S: samples with wall-clock timing. Default 60 (>= 50 for
+                        a decisive run); L: 40.
+--n-samples INT         W/S samples per state. Default 2000 (W), 200 (S).
+--eps-screen FLOAT...   W/S grids. Default 1e-5 1e-4 3e-4 1e-3 1.5e-3 2e-3
+                        2.5e-3 3e-3 1e-2 3e-2.
 --k-grid INT...         W/S SS draws. Default 1 4 16 64 256.
+--bu-grid INT...        W TRUNC batch sizes. Default 1000 4000 16000.
 --tau FLOAT             Ha. Default 2e-4.
 --out PATH              Result JSON (default: results_<part>_<tag>.json here).
---smoke                 Correctness checks (log-derivatives, VJP, ALE
-                        unbiasedness and first-order identity, R5.3 certified
-                        bound), a tiny Part L on H4 K=8 with every arm type,
-                        tiny Parts W and S, and the smoke-scale aggregates.
---aggregate DIR         Read results_{L,W,S}_*.json in DIR, print verdicts.
+--smoke                 Correctness checks (log-derivatives, VJP, ALE identities,
+                        CASJ gradient and per-sample kernel), tiny Parts W and S
+                        with every arm, the smoke-scale aggregate, and the
+                        verdict self-test (PASS / FAIL / TREND_FAIL / FOIL_FAIL).
+--aggregate DIR         Read results_{W,S,L}_*.json in DIR, print verdicts.
 """
 import os
 for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
     os.environ.setdefault(_v, "1")
 import argparse
 import glob
+from itertools import combinations
 import json
 import sys
 import time
@@ -167,8 +143,8 @@ TAU = 2e-4
 # CLI
 # ----------------------------------------------------------------------------
 def parse_args(argv=None):
-    ap = argparse.ArgumentParser(description="P2.2 round-5 test (ALE and WIBJ)")
-    ap.add_argument("--part", choices=["L", "W", "S"], default=None)
+    ap = argparse.ArgumentParser(description="P2.2 round-5 test (WIBJ; ALE deferred)")
+    ap.add_argument("--part", choices=["W", "S", "L"], default=None)
     ap.add_argument("--n-atoms", type=int, default=None)
     ap.add_argument("--bond-length", type=float, default=None)
     ap.add_argument("--distort", type=float, default=0.25)
@@ -176,7 +152,9 @@ def parse_args(argv=None):
     ap.add_argument("--n-active", type=int, nargs="+", default=None)
     ap.add_argument("--basis-series", nargs="+", default=["2,1", "3,2", "4,3", "5,4"])
     ap.add_argument("--arm", type=str, default="EXACT")
-    ap.add_argument("--w-arms", nargs="+", default=["NNBFJ", "NNBFJNF", "WIBJ"], choices=["NNBFJ", "NNBFJNF", "WIBJ"])
+    ap.add_argument("--w-arms", nargs="+", default=["NNBFJ", "NNBFJNF", "WIBJ", "NNBFJh4", "NNBFJh8", "CASJ"],
+                    choices=["NNBFJ", "NNBFJNF", "WIBJ", "NNBFJh4", "NNBFJh8", "CASJ"])
+    ap.add_argument("--s-arms", choices=["main", "foils", "all"], default="all")
     ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     ap.add_argument("--hidden", type=int, default=None)
     ap.add_argument("--hj", type=int, default=None)
@@ -192,8 +170,10 @@ def parse_args(argv=None):
     ap.add_argument("--b-cap", type=int, default=4)
     ap.add_argument("--n-wall", type=int, default=None)
     ap.add_argument("--n-samples", type=int, default=None)
-    ap.add_argument("--eps-screen", type=float, nargs="+", default=[1e-5, 1e-4, 3e-4, 1e-3, 3e-3, 1e-2, 3e-2])
+    ap.add_argument("--eps-screen", type=float, nargs="+",
+                    default=[1e-5, 1e-4, 3e-4, 1e-3, 1.5e-3, 2e-3, 2.5e-3, 3e-3, 1e-2, 3e-2])
     ap.add_argument("--k-grid", type=int, nargs="+", default=[1, 4, 16, 64, 256])
+    ap.add_argument("--bu-grid", type=int, nargs="+", default=[1000, 4000, 16000])
     ap.add_argument("--tau", type=float, default=TAU)
     ap.add_argument("--out", type=str, default=None)
     ap.add_argument("--smoke", action="store_true")
@@ -202,9 +182,9 @@ def parse_args(argv=None):
     if a.aggregate or a.smoke:
         return a
     if a.part is None:
-        ap.error("--part L, W or S is required")
-    d = {"L": (4, 4.4, [16], 32, 16, 40, None), "W": (4, 4.4, [20, 24], 64, 32, None, 2000),
-         "S": (8, 2.0, None, 64, 32, 12, 200)}[a.part]
+        ap.error("--part W, S (or the deferred L) is required")
+    d = {"L": (4, 4.4, [16], 32, 16, 40, None), "W": (4, 4.4, [12, 16, 20, 24], 64, 32, None, 2000),
+         "S": (8, 2.0, None, 64, 32, 60, 200)}[a.part]
     a.n_atoms = a.n_atoms or d[0]
     a.bond_length = a.bond_length or d[1]
     a.n_active = a.n_active or d[2]
@@ -218,9 +198,11 @@ def parse_args(argv=None):
         parse_arm(a.arm)  # validates
         if a.batch < 10 or a.lr <= 0 or a.shift <= 0 or a.n_ref < 5 or not 0 < a.ess_min < 1:
             ap.error("bad --batch/--lr/--shift/--n-ref/--ess-min")
+    if min(a.eps_screen) <= 0 or min(a.k_grid) < 1 or min(a.bu_grid) < 1:
+        ap.error("--eps-screen > 0, --k-grid >= 1, --bu-grid >= 1")
     if a.out is None:
         tag = f"N{a.n_atoms}_R{a.bond_length}_" + ("K" + "-".join(map(str, a.n_active)) if a.n_active else "S")
-        tag += "_" + (a.arm.replace(":", "-") if a.part == "L" else "-".join(a.w_arms) if a.part == "W" else "NNBFJ-WIBJ")
+        tag += "_" + (a.arm.replace(":", "-") if a.part == "L" else "-".join(a.w_arms) if a.part == "W" else a.s_arms)
         a.out = os.path.join(HERE, f"results_{a.part}_{tag}.json")
     return a
 
@@ -574,7 +556,6 @@ def run_part_L(args):
         Ew = 1e3 * (r.fun - inst.E0)
         cal = calibrate(inst, net, thw, args.n_wall, np.random.default_rng(4242), arm.get("Kd", 4))
         amp = kc.amp_ops(net)
-        mC = inst.Hoff.nnz / inst.D
         psi, _ = net.amplitudes(thw, inst.occ, inst.oi)
         wv = psi ** 2 / (psi @ psi)
         mCpi = float(wv @ np.diff(inst.Hoff.indptr))
@@ -644,59 +625,392 @@ def cert_bound(inst, net, th, eps_grid, rng, nsamp):
     return res
 
 
+
 # ----------------------------------------------------------------------------
-# Parts W and S: wrappers around keyx_core
+# CASJ foil: window-only multi-determinant x pair Jastrow (no neural network)
 # ----------------------------------------------------------------------------
-def kc_args(args, part):
-    lst = ["--part", "A" if part == "W" else "S", "--n-atoms", str(args.n_atoms), "--bond-length", str(args.bond_length),
-           "--distort", str(args.distort), "--geom-seed", str(args.geom_seed), "--hidden", str(args.hidden),
-           "--hj", str(args.hj), "--n-samples", str(args.n_samples), "--eps-screen"] + [str(e) for e in args.eps_screen] + \
-          ["--k-grid"] + [str(k) for k in args.k_grid] + ["--out", args.out]
-    if part == "W":
-        lst += ["--maxiter", str(args.maxiter), "--n-active"] + [str(k) for k in args.n_active]
-    else:
-        lst += ["--n-wall", str(args.n_wall), "--basis-series"] + list(args.basis_series) + ["--arms", "NNBFJ", "WIBJ"]
-    if getattr(args, "allow_weak", False):
-        lst += ["--allow-weak"]
-    return kc.parse_args(lst)
+def cofactor(A):
+    """d det(A) / dA for a stack (..., n, n); closed form for n <= 3."""
+    n = A.shape[-1]
+    if n == 1:
+        return np.ones_like(A)
+    if n == 2:
+        C = np.empty_like(A)
+        C[..., 0, 0] = A[..., 1, 1]; C[..., 0, 1] = -A[..., 1, 0]
+        C[..., 1, 0] = -A[..., 0, 1]; C[..., 1, 1] = A[..., 0, 0]
+        return C
+    if n == 3:
+        r0, r1, r2 = A[..., 0, :], A[..., 1, :], A[..., 2, :]
+        return np.stack([np.cross(r1, r2), np.cross(r2, r0), np.cross(r0, r1)], -2)
+    return np.linalg.det(A)[..., None, None] * np.swapaxes(np.linalg.inv(A), -1, -2)
+
+
+class CASJ:
+    """psi(n) = J(n) * sum_{I,I'} C[I,I'] det Ua[occ_a(n), S_I] det Ub[occ_b(n), S_I'].
+    S_I runs over the C(K_W, N/2) subsets of the K_W window spatial MOs (the CAS
+    determinants); Ua, Ub (K x K_W) are trainable orbital rows, so external
+    occupations enter through orbital mixing (CAS with orbital optimization);
+    ln J = u.n + sum_{p<q} v_pq n_p n_q over all 2K spin orbitals (the WIBJ pair
+    Jastrow, no neural Jastrow).  K_W = N, as for WIBJ."""
+
+    arm = "CASJ"
+
+    def __init__(self, K, N, rng, KW=None, scale=0.01):
+        self.K, self.M, self.N = K, 2 * K, N
+        nh = N // 2
+        KW = min(N if KW is None else KW, K)
+        self.nh, self.KW = nh, KW
+        self.subs = np.array(list(combinations(range(KW), nh)))
+        self.ns = ns = len(self.subs)
+        self.iu = np.triu_indices(self.M, 1)
+        self.shapes = [("Ua", (K, KW)), ("Ub", (K, KW)), ("C", (ns, ns)), ("u", (self.M,)),
+                       ("v", (len(self.iu[0]),))]
+        U0 = np.eye(K)[:, :KW]
+        C0 = scale * rng.standard_normal((ns, ns)); C0[0, 0] = 1.0     # subset 0 = HF
+        init = {"Ua": U0 + scale * rng.standard_normal((K, KW)), "Ub": U0 + scale * rng.standard_normal((K, KW)),
+                "C": C0, "u": np.zeros(self.M), "v": np.zeros(len(self.iu[0]))}
+        self.theta0 = np.concatenate([init[k].ravel() for k, _ in self.shapes])
+        self.E = np.zeros((ns, nh, KW))
+        self.E[np.arange(ns)[:, None], np.arange(nh)[None], self.subs] = 1.0
+
+    def unpack(self, th):
+        out, i = {}, 0
+        for k, s in self.shapes:
+            n = int(np.prod(s)); out[k] = th[i:i + n].reshape(s); i += n
+        V = np.zeros((self.M, self.M)); V[self.iu] = out["v"]; out["V"] = V + V.T
+        return out
+
+    def _minors(self, U, rows):
+        """rows (B, nh) spatial MO indices -> A (B, ns, nh, nh), dets (B, ns)."""
+        A = U[rows][:, :, self.subs].transpose(0, 2, 1, 3)
+        return A, np.linalg.det(A)
+
+    def amplitudes(self, th, occ, occ_idx):
+        P = self.unpack(th)
+        nh, K = self.nh, self.K
+        Aa, ma = self._minors(P["Ua"], occ_idx[:, :nh])
+        Ab, mb = self._minors(P["Ub"], occ_idx[:, nh:] - K)
+        Phi = np.einsum("bi,ij,bj->b", ma, P["C"], mb)
+        o = occ.astype(float)
+        J = np.exp(o @ P["u"] + 0.5 * np.einsum("bp,bp->b", o @ P["V"], o))
+        return Phi * J, (P, Aa, ma, Ab, mb, J, o)
+
+    def energy_grad(self, th, H, occ, occ_idx):
+        psi, (P, Aa, ma, Ab, mb, J, o) = self.amplitudes(th, occ, occ_idx)
+        nrm = psi @ psi
+        Hpsi = H @ psi
+        E = psi @ Hpsi / nrm
+        c = 2 * (Hpsi - E * psi) / nrm
+        cp = c * psi
+        w = c * J
+        nh, K, B = self.nh, self.K, len(psi)
+        g = {"C": (ma * w[:, None]).T @ mb}
+        for key, A, k, rows in (("Ua", Aa, w[:, None] * (mb @ P["C"].T), occ_idx[:, :nh]),
+                                ("Ub", Ab, w[:, None] * (ma @ P["C"]), occ_idx[:, nh:] - K)):
+            gX = np.einsum("bi,birc,icw->brw", k, cofactor(A), self.E, optimize=True)
+            S = sp.csr_matrix((np.ones(B * nh), (rows.ravel(), np.arange(B * nh))), shape=(K, B * nh))
+            g[key] = S @ gX.reshape(B * nh, self.KW)
+        g["u"] = o.T @ cp
+        g["v"] = (o.T @ (o * cp[:, None]))[self.iu]
+        return E, np.concatenate([g[k].ravel() for k, _ in self.shapes])
+
+    # ---- per-sample kernel (Part S) and its generous incremental op count ----
+    def setup(self, P, occ_n):
+        nh, K = self.nh, self.K
+        _, ma = self._minors(P["Ua"], occ_n[None, :nh])
+        _, mb = self._minors(P["Ub"], occ_n[None, nh:] - K)
+        o = np.zeros(self.M); o[occ_n] = 1
+        return {"occ": occ_n, "Phi": float(ma[0] @ P["C"] @ mb[0]), "fp": P["V"] @ o}
+
+    def ratio(self, P, st, rem, add, occ_j, chunk=1024):
+        """Exact psi(n')/psi(n) by direct minor evaluation (vectorized)."""
+        out = np.empty(len(rem))
+        for c0 in range(0, len(rem), chunk):
+            sl = slice(c0, c0 + chunk)
+            _, ma = self._minors(P["Ua"], occ_j[sl, :self.nh])
+            _, mb = self._minors(P["Ub"], occ_j[sl, self.nh:] - self.K)
+            Phi = np.einsum("bi,ij,bj->b", ma, P["C"], mb)
+            out[sl] = Phi / st["Phi"] * np.exp(kc.Ansatz.jastrow_pair(self, P, st, rem[sl], add[sl]))
+        return out
+
+    def ops_terms(self, rem):
+        """Incremental cost per term (generous to the foil): a replaced row in one
+        spin costs ns (nh r + r^3) for the ns window minors of that spin (r = rows
+        replaced, Sherman-Morrison / 2x2 minor updates from stored inverses); the
+        contraction costs ns (one spin changed) or ns^2 (both); + pair Jastrow +
+        generation."""
+        K, ns, nh = self.K, self.ns, self.nh
+        ra = ((rem >= 0) & (rem < K)).sum(1); rb = (rem >= K).sum(1)
+        c = np.zeros(len(rem))
+        for r in (ra, rb):
+            c += np.where(r > 0, ns * (nh * r + r ** 3), 0)
+        c += np.where((ra > 0) & (rb > 0), ns * ns, ns) + kc.C_PAIRJ + kc.C_GEN
+        return c
+
+    def setup_ops(self):
+        """Minors and inverses of both spins, the two contracted vectors, and the
+        Green's-function rows of every orbital for every minor."""
+        return 2 * self.ns * self.nh ** 3 + 2 * self.ns ** 2 + 2 * self.K * self.ns * self.nh ** 2 + self.M
+
+
+# ----------------------------------------------------------------------------
+# Part W: accuracy, all arms, one task per (instance, arm)
+# ----------------------------------------------------------------------------
+W_ARMS = {"NNBFJ": ("NNBFJ", None, None, 0), "NNBFJNF": ("NNBFJ", None, None, 3), "WIBJ": ("WIBJ", None, None, 0),
+          "NNBFJh4": ("NNBFJ", 4, 4, 0), "NNBFJh8": ("NNBFJ", 8, 8, 0), "CASJ": ("CASJ", None, None, 0)}
+FOILS = ("NNBFJh4", "NNBFJh8", "CASJ")
+
+
+def build_net(K, N, w_arm, hidden, hj, seed):
+    kind, hh, hjj, off = W_ARMS[w_arm]
+    s = seed + off
+    if kind == "CASJ":
+        return CASJ(K, N, np.random.default_rng(1000 * s + 7)), s
+    return make_net(K, N, kind, hh or hidden, hjj or hj, s), s
 
 
 def run_part_W(args):
-    res = {"part": "A", "r5": True, "instance": f"H{args.n_atoms}_R{args.bond_length}_d{args.distort}_g{args.geom_seed}",
+    tag = f"H{args.n_atoms}_R{args.bond_length}_d{args.distort}_g{args.geom_seed}"
+    res = {"part": "W", "instance": tag, "w_arms": list(args.w_arms),
            "args": {k: v for k, v in vars(args).items()}, "instances": []}
+    ka = A_()
+    ka.eps_screen, ka.k_grid, ka.bu_grid = args.eps_screen, args.k_grid, args.bu_grid
+    N = args.n_atoms
     for K in args.n_active:
-        merged = None
+        t0 = time.time()
+        h, g, enuc, Erhf, eps = kc.build_molecule(N, args.bond_length, args.distort, args.geom_seed, kc.H631GSS, K,
+                                                  "valence-p")
+        ham = kc.SpatialHam(h, g, enuc, K, N)
+        codes, occ, oi = kc.build_space(K, N // 2, N // 2)
+        H = kc.build_hamiltonian(ham, codes, oi)
+        w2, v2 = kc.ground_states(H, 2)
+        E0, psi0 = w2[0], v2[:, 0]
+        hfw = float(psi0[np.searchsorted(codes, kc.hf_code(K, N))] ** 2)
+        print(f"\n=== [W] {tag} K={K} dim={len(codes)} E_FCI={E0:.6f} HF wt={hfw:.3f} nnz/row={H.nnz/len(codes):.0f} "
+              f"({time.time()-t0:.1f}s)", flush=True)
+        if hfw >= 0.6:
+            raise SystemExit(f"instance not multireference: HF weight {hfw:.3f} >= 0.6")
+        it = {"K": K, "N": N, "dim": len(codes), "E_FCI": float(E0), "HF_weight": hfw, "gap": float(w2[1] - E0),
+              "runs": []}
+        Hoff = H - sp.diags(H.diagonal())
         for wa in args.w_arms:
-            a = kc_args(args, "W")
-            a.arms = ["WIBJ"] if wa == "WIBJ" else ["NNBFJ"]
-            a.seeds = [s + 3 for s in args.seeds] if wa == "NNBFJ" + "NF" else list(args.seeds)
-            it = kc.run_part_A_instance(K, a)
-            for r in it["runs"]:
-                r["w_arm"] = wa
-            if merged is None:
-                merged = it
-            else:
-                merged["runs"].extend(it["runs"])
-        res["instances"].append(merged)
+            for seed in args.seeds:
+                net, s = build_net(K, N, wa, args.hidden, args.hj, seed)
+                t1 = time.time()
+                r = minimize(lambda t: net.energy_grad(t, H, occ, oi), net.theta0, jac=True, method="L-BFGS-B",
+                             options={"maxiter": args.maxiter, "maxcor": 30, "gtol": 1e-12, "ftol": 1e-16})
+                th = r.x
+                psi, _ = net.amplitudes(th, occ, oi)
+                nrm = psi @ psi
+                wv = psi ** 2 / nrm
+                Hpsi = H @ psi
+                Ev = float(psi @ Hpsi / nrm)
+                EL = Hpsi / psi
+                run = {"seed": s, "arm": wa, "dE_mHa": 1e3 * (Ev - E0), "var_exact": float(wv @ (EL - Ev) ** 2),
+                       "P": int(net.theta0.size), "t_train_s": time.time() - t1}
+                srng = np.random.default_rng(10 ** 6 + 1000 * s + 13)
+                sidx = srng.choice(len(codes), size=args.n_samples, p=wv)
+                P = net.unpack(th)
+                # per-sample operation counts on |psi|^2 samples of THIS trained state
+                nS = min(len(sidx), 200)
+                opsE, opsK, opsKs, opsS, dev = [], [], {str(e): [] for e in args.eps_screen}, \
+                    {str(e): [] for e in args.eps_screen}, []
+                for k in sidx[:nS]:
+                    row = ham.row(codes[k], oi[k])
+                    hab = np.abs(row["h"])
+                    if wa == "CASJ":
+                        so = net.setup_ops(); ct = net.ops_terms(row["rem"])
+                        opsE.append(ct.sum() + so)
+                        for e in args.eps_screen:
+                            opsS[str(e)].append(ct[hab > e].sum() + so)
+                        continue
+                    amp = kc.amp_ops(net); so = kc.setup_ops(net)
+                    opsE.append(len(row["h"]) * (kc.C_GEN + amp) + so)
+                    for e in args.eps_screen:
+                        opsS[str(e)].append(int((hab > e).sum()) * (kc.C_GEN + amp) + so)
+                    if wa == "WIBJ":
+                        st = net.setup(P, oi[k])
+                        rk, cnt = net.ratio_key(P, st, row["rem"], row["add"])
+                        dev.append(abs(row["Hnn"] + row["h"] @ rk - EL[k]))
+                        opsK.append(kc.keyx_ops(net, cnt) + kc.C_GEN * len(row["h"]) + so)
+                        for e in args.eps_screen:
+                            mk = hab > e
+                            if mk.any():
+                                _, ce = net.ratio_key(P, st, row["rem"][mk], row["add"][mk])
+                                opsKs[str(e)].append(kc.keyx_ops(net, ce) + kc.C_GEN * int(mk.sum()) + so)
+                            else:
+                                opsKs[str(e)].append(so)
+                run["ops_ED"] = {"EXACT": float(np.mean(opsE)), "SCREEN": {e: float(np.mean(v)) for e, v in opsS.items()}}
+                if wa == "WIBJ":
+                    run["ops_ED"].update({"KEYX": float(np.mean(opsK)),
+                                          "KEYX_SCREEN": {e: float(np.mean(v)) for e, v in opsKs.items()}})
+                    run["KEYX_max_dev"] = float(max(dev))
+                if wa == "NNBFJ":
+                    run["controls"] = kc.control_block_A(ka, H, Hoff, psi, EL, codes, oi, ham, net, P, sidx, srng)
+                it["runs"].append(run)
+                msg = (f"  {wa:8s} seed={s} dE={run['dE_mHa']:8.3f} mHa Var(EL)={run['var_exact']:.2e} P={run['P']} "
+                       f"(train {run['t_train_s']:.0f}s)")
+                if wa == "WIBJ":
+                    msg += (f" KEYX-EL max={run['KEYX_max_dev']:.1e} ops KEYX/EXACT(trained |psi|^2)="
+                            f"{run['ops_ED']['KEYX']/run['ops_ED']['EXACT']:.3f}")
+                print(msg, flush=True)
+                if wa == "NNBFJ":
+                    cb = run["controls"]
+                    print("      SCREEN exact bias (mHa): " + " ".join(f"{e}:{1e3*b:.4f}" for e, b in cb["screen_bias"].items()))
+                    print(f"      SS selected eps={cb['ss_sel']['eps']:g} Kd={cb['ss_sel']['K']} inc ratio (half B)="
+                          f"{cb['ss_sel']['inc_ratio_B']:.3f}", flush=True)
+        res["instances"].append(it)
         with open(args.out, "w") as fh:
             json.dump(res, fh, indent=1, default=float)
     return res
+
+
+# ----------------------------------------------------------------------------
+# Part S: ED-free cost scaling with the calibrated wall model
+# ----------------------------------------------------------------------------
+S_GROUPS = {"main": ["NNBFJ", "WIBJ"], "foils": list(FOILS), "all": ["NNBFJ", "WIBJ"] + list(FOILS)}
+
+
+def run_part_S_basis(ns, npp, args, arms):
+    t0 = time.time()
+    N = args.n_atoms
+    h, g, enuc, Erhf, eps = kc.build_molecule(N, args.bond_length, args.distort, args.geom_seed,
+                                              kc.make_basis(ns, npp), None, "energy")
+    K = h.shape[0]
+    ham = kc.SpatialHam(h, g, enuc, K, N)
+    print(f"\n=== [S] H{N} distorted chain R={args.bond_length} basis(ns,np)=({ns},{npp}) K={K} E_RHF={Erhf:.6f} "
+          f"(build {time.time()-t0:.0f}s)", flush=True)
+    samples = kc.cisd_sampler(ham, eps, K, N, args.n_samples, np.random.default_rng(12345))
+    U = np.unique([ham.code_of(o) for o in samples])
+    rows, tgen = [], []
+    for t, occ_n in enumerate(samples):
+        s0 = time.perf_counter()
+        rows.append((occ_n, ham.row(ham.code_of(occ_n), occ_n)))
+        tgen.append(time.perf_counter() - s0)
+    nconn = np.array([len(r[1]["h"]) for r in rows])
+    kept = {str(e): np.array([(np.abs(r[1]["h"]) > e).sum() for r in rows]) for e in args.eps_screen}
+    bg, ag = np.polyfit(nconn, tgen, 1) if len(set(nconn)) > 1 else (np.mean(tgen) / np.mean(nconn), 0.0)
+    nW = min(args.n_wall, len(rows))
+    out = {"K": K, "M": 2 * K, "N": N, "ns": ns, "np": npp, "mean_conn": float(nconn.mean()), "n_wall": nW,
+           "conn": nconn.tolist(), "kept": {e: v.tolist() for e, v in kept.items()},
+           "gen": {"t": tgen, "ag": float(max(ag, 0)), "bg": float(bg)}, "arms": {}}
+    print(f"  <|C|>={nconn.mean():.0f}  gen fit: {max(ag,0)*1e6:.0f}us + {bg*1e6:.3f}us/term; kept fraction: "
+          + " ".join(f"{e}:{v.mean()/nconn.mean():.3f}" for e, v in kept.items()), flush=True)
+    for arm in arms:
+        net, _ = build_net(K, N, arm, args.hidden, args.hj, 0)
+        P = net.unpack(net.theta0 + 0.02 * np.random.default_rng(5).standard_normal(net.theta0.size))
+        a = {"wall_EXACT": [], "wall_SCREEN": {str(e): [] for e in args.eps_screen}}
+        if arm == "CASJ":
+            so = net.setup_ops()
+            ops_all, ops_S = [], {str(e): [] for e in args.eps_screen}
+            for t, (occ_n, row) in enumerate(rows):
+                ct = net.ops_terms(row["rem"]); hab = np.abs(row["h"])
+                ops_all.append(ct.sum() + so)
+                for e in args.eps_screen:
+                    ops_S[str(e)].append(ct[hab > e].sum() + so)
+                if t < min(nW, 5):   # the direct (non-incremental) kernel is slow; timing reported only
+                    st = net.setup(P, occ_n)
+                    occ_j = kc.occ_from_row(occ_n, row["rem"], row["add"])
+                    s0 = time.perf_counter()
+                    _ = row["Hnn"] + row["h"] @ net.ratio(P, st, row["rem"], row["add"], occ_j)
+                    a["wall_EXACT"].append(time.perf_counter() - s0)
+            a.update({"ops_EXACT": float(np.mean(ops_all)),
+                      "ops_SCREEN": {e: float(np.mean(v)) for e, v in ops_S.items()}, "ns_dets": net.ns ** 2})
+            out["arms"][arm] = a
+            print(f"  {arm:8s} ops(all terms)/term={a['ops_EXACT']/nconn.mean():.0f} dets={net.ns**2}", flush=True)
+            continue
+        amp = kc.amp_ops(net); so = kc.setup_ops(net)
+        a.update({"ops_amp": amp, "ops_setup": so,
+                  "ops_EXACT": float(np.mean(nconn * (kc.C_GEN + amp) + so)),
+                  "ops_SCREEN": {e: float(np.mean(v * (kc.C_GEN + amp) + so)) for e, v in kept.items()},
+                  "ops_TRUNC": float(nconn.mean() * (kc.C_GEN + kc.C_HASH) + amp + so)})
+        if arm == "WIBJ":
+            opsK, wK, dev = [], [], []
+            opsKs = {str(e): [] for e in args.eps_screen}; wKs = {str(e): [] for e in args.eps_screen}
+        fitm, fitt = [], []
+        wT = []
+        for t, (occ_n, row) in enumerate(rows):
+            st = net.setup(P, occ_n)
+            hab = np.abs(row["h"])
+            if arm == "WIBJ":
+                s0 = time.perf_counter()
+                rk, cnt = net.ratio_key(P, st, row["rem"], row["add"])
+                ek = row["Hnn"] + row["h"] @ rk
+                wK.append(time.perf_counter() - s0)
+                opsK.append(kc.keyx_ops(net, cnt) + kc.C_GEN * len(row["h"]) + so)
+                for e in args.eps_screen:
+                    mk = hab > e
+                    s0 = time.perf_counter()
+                    if mk.any():
+                        rke, ce = net.ratio_key(P, st, row["rem"][mk], row["add"][mk])
+                        _ = row["Hnn"] + row["h"][mk] @ rke
+                        opsKs[str(e)].append(kc.keyx_ops(net, ce) + kc.C_GEN * int(mk.sum()) + so)
+                    else:
+                        opsKs[str(e)].append(so)
+                    wKs[str(e)].append(time.perf_counter() - s0)
+            if t >= nW or (arm in FOILS and t >= min(nW, 10)):
+                continue
+            occ_j = kc.occ_from_row(occ_n, row["rem"], row["add"])
+            s0 = time.perf_counter()
+            rx = net.ratio_exact(P, st, row["rem"], row["add"], occ_j)
+            ex = row["Hnn"] + row["h"] @ rx
+            a["wall_EXACT"].append(time.perf_counter() - s0)
+            if arm == "WIBJ":
+                dev.append(abs(ex - ek) / max(1.0, abs(ex)))
+            if arm == "NNBFJ":
+                for e in args.eps_screen:
+                    mk = hab > e
+                    s0 = time.perf_counter()
+                    _ = row["Hnn"] + row["h"][mk] @ net.ratio_exact(P, st, row["rem"][mk], row["add"][mk], occ_j[mk])
+                    a["wall_SCREEN"][str(e)].append(time.perf_counter() - s0)
+                for m_ in sorted({1, 4, 16, 64, 256, 1024, len(row["h"])}):
+                    m_ = min(m_, len(row["h"]))
+                    s0 = time.perf_counter()
+                    _ = row["h"][:m_] @ net.ratio_exact(P, st, row["rem"][:m_], row["add"][:m_], occ_j[:m_])
+                    fitm.append(m_); fitt.append(time.perf_counter() - s0)
+                s0 = time.perf_counter()
+                _ = row["Hnn"] + row["h"][np.isin(row["code"], U)].sum()
+                wT.append(time.perf_counter() - s0)
+        if arm == "NNBFJ":
+            b, a0 = np.polyfit(fitm, fitt, 1)
+            a.update({"cal": {"a": float(max(a0, 0)), "b": float(b)}, "wall_TRUNC": wT})
+        if arm == "WIBJ":
+            a.update({"ops_KEYX": float(np.mean(opsK)), "wall_KEYX": wK,
+                      "ops_KEYX_SCREEN": {e: float(np.mean(v)) for e, v in opsKs.items()}, "wall_KEYX_SCREEN": wKs,
+                      "KEYX_max_rel_dev": float(max(dev)) if dev else None})
+        out["arms"][arm] = a
+        msg = f"  {arm:8s} ops/term(EXACT)={a['ops_EXACT']/nconn.mean():.0f}"
+        if arm == "WIBJ":
+            msg += (f" ops KEYX/EXACT={a['ops_KEYX']/a['ops_EXACT']:.4f} wall KEYX/EXACT="
+                    f"{np.mean(wK[:len(a['wall_EXACT'])])/max(np.mean(a['wall_EXACT']),1e-12):.4f} "
+                    f"KEYX-EXACT rel dev={a['KEYX_max_rel_dev']:.1e}")
+        if arm == "NNBFJ":
+            msg += f" ratio_exact fit: a={a['cal']['a']*1e6:.0f}us b={a['cal']['b']*1e6:.2f}us/amp"
+        print(msg, flush=True)
+    return out
 
 
 def run_part_S(args):
-    a = kc_args(args, "S")
-    res = {"part": "S", "r5": True, "args": {k: v for k, v in vars(args).items()}, "instances": []}
-    for ns, npp in a.basis_series:
-        res["instances"].append(kc.run_part_S_basis(ns, npp, a))
+    a = kc_basis(args)
+    arms = S_GROUPS[args.s_arms]
+    res = {"part": "S", "r5": True, "s_arms": args.s_arms, "args": {k: v for k, v in vars(args).items()},
+           "instances": []}
+    for ns, npp in a:
+        res["instances"].append(run_part_S_basis(ns, npp, args, arms))
         with open(args.out, "w") as fh:
             json.dump(res, fh, indent=1, default=float)
     return res
+
+
+def kc_basis(args):
+    return [tuple(int(v) for v in s.split(",")) for s in args.basis_series]
 
 
 # ----------------------------------------------------------------------------
 # Verdicts
 # ----------------------------------------------------------------------------
 def verdict_L(Ls, tau=TAU):
+    """Part L verdict (kept for the deferred R5.2 micro-pilot)."""
     tauM = 1e3 * tau
     byK = {}
     for d in Ls:
@@ -705,7 +1019,7 @@ def verdict_L(Ls, tau=TAU):
             e["arms"][d["arm"]] = it["runs"]
     out = {"tau_mHa": tauM, "byK": {}}
     if not byK:
-        out["verdict"] = "INCOMPLETE"
+        out["verdict"] = "UNTESTED (deferred: needs a cold-start, step-limited micro-pilot)"
         return out
     for K, e in sorted(byK.items()):
         arms = e["arms"]
@@ -734,11 +1048,7 @@ def verdict_L(Ls, tau=TAU):
             else:
                 v = "AMBIGUOUS"
             rk[axis] = {"verdict": v, "ctrl_star": cstar, "D_ctrl_mHa": D, "nu_mHa": nu, "premise": bool(prem),
-                        "route_star": rstar, "route_dE_half_mHa": Rh, "route_dE_full_mHa": Rf,
-                        "best_seed_route_half": best_r, "best_seed_ctrl_full": best_c,
-                        "median_dE_full": {a: med(v_) for a, v_ in full.items()},
-                        "median_dE_half": {a: med(v_) for a, v_ in half.items()},
-                        "seed_spread_full": {a: float(np.nanmax(v_) - np.nanmin(v_)) for a, v_ in full.items()}}
+                        "route_star": rstar, "route_dE_half_mHa": Rh, "route_dE_full_mHa": Rf}
         vs = [rk[a]["verdict"] for a in rk]
         kv = "FAIL" if "FAIL" in vs else "PASS" if all(v == "PASS" for v in vs) else "AMBIGUOUS"
         out["byK"][K] = {"verdict": kv, **rk}
@@ -750,38 +1060,104 @@ def verdict_L(Ls, tau=TAU):
     elif all(v == "PASS" for v in done.values()) and len(done) == len(out["byK"]):
         out["verdict"] = "PASS"
     else:
-        out["verdict"] = "AMBIGUOUS (pre-committed: rerun Part L at K=24; PASS iff PASS(24), else KILL)"
+        out["verdict"] = "AMBIGUOUS"
     return out
+
+
+def noise_floor(a, b):
+    """Part L definition: max(|median a - median b|, half the range of a + b)."""
+    pool = np.array(list(a) + list(b))
+    return float(max(abs(np.median(list(a)) - np.median(list(b))), 0.5 * np.ptp(pool)))
+
+
+def trend_rule(Ks, dmed, tauM, K_ext=40):
+    """TREND_FAIL iff delta_med rises strictly monotonically in K and its
+    least-squares line extrapolated to K_ext exceeds tau."""
+    o = np.argsort(Ks); K_ = np.array(Ks, float)[o]; d_ = np.array(dmed)[o]
+    mono = bool(np.all(np.diff(d_) > 0))
+    slope, icpt = np.polyfit(K_, d_, 1)
+    ext = float(slope * K_ext + icpt)
+    return {"K": K_.tolist(), "delta_med": d_.tolist(), "monotone_rise": mono, "slope_mHa_per_K": float(slope),
+            "delta_ext_K40": ext, "trend_fail": bool(mono and ext > tauM)}
 
 
 def verdict_R51(Ws, Ss, tau=TAU):
     tauM = 1e3 * tau
-    kc.ROUTE_ARM.clear(); kc.ROUTE_ARM["R5.1"] = "WIBJ"
-    base = kc.verdict(Ws, Ss, tau) if Ws and Ss else {"routes": {}, "instances": {}}
-    out = {"tau_mHa": tauM, "instances": {}, "cost_byK": base.get("routes", {}).get("R5.1", {}).get("byK", {}),
-           "controls_transferred": base.get("controls_transferred")}
+    out = {"tau_mHa": tauM, "instances": {}, "trend": {}, "foils": {}}
+    # ---- merge W runs per (instance, K)
     inst = {}
     for d in Ws:
         for it in d["instances"]:
             e = inst.setdefault(d["instance"], {}).setdefault(it["K"], {"HF_weight": it["HF_weight"], "runs": []})
             e["runs"].extend(it["runs"])
-    acc = []
+
+    def arm_runs(runs, arm):
+        return {r["seed"]: r for r in runs if r["arm"] == arm}
+
+    acc, var_ratio, ctrl = [], {}, {"screen": None, "trunc": None, "ss": {}}
     for name, byK in inst.items():
-        Km = max(byK); runs = byK[Km]["runs"]
-        n0 = {r["seed"]: r["dE_mHa"] for r in runs if r["arm"] == "NNBFJ" and r.get("w_arm", "NNBFJ") == "NNBFJ"}
-        nf = {r["seed"]: r["dE_mHa"] for r in runs if r.get("w_arm") == "NNBFJNF"}
-        wb = {r["seed"]: r["dE_mHa"] for r in runs if r["arm"] == "WIBJ"}
-        if not (n0 and nf and wb):
-            out["instances"][name] = {"K_max": Km, "status": "INCOMPLETE"}
+        per_K = {}
+        for K, e in sorted(byK.items()):
+            n0, nf, wb = arm_runs(e["runs"], "NNBFJ"), arm_runs(e["runs"], "NNBFJNF"), arm_runs(e["runs"], "WIBJ")
+            if not (n0 and nf and wb):
+                per_K[K] = None
+                continue
+            dn0 = {s: r["dE_mHa"] for s, r in n0.items()}
+            dl = [wb[s]["dE_mHa"] - dn0[s] for s in wb if s in dn0]
+            per_K[K] = {"delta_med_mHa": float(np.median(dl)),
+                        "delta_best_mHa": float(min(r["dE_mHa"] for r in wb.values())
+                                                - min([r["dE_mHa"] for r in n0.values()] + [r["dE_mHa"] for r in nf.values()])),
+                        "nu_W_mHa": noise_floor(dn0.values(), [r["dE_mHa"] for r in nf.values()]),
+                        "median_dE_mHa": {a: float(np.median([r["dE_mHa"] for r in arm_runs(e["runs"], a).values()]))
+                                          for a in W_ARMS if arm_runs(e["runs"], a)},
+                        "dE_mHa": {a: {s: r["dE_mHa"] for s, r in arm_runs(e["runs"], a).items()}
+                                   for a in W_ARMS if arm_runs(e["runs"], a)}}
+        Km = max(byK)
+        top = per_K.get(Km)
+        out["instances"][name] = {"K_max": Km, "byK": per_K}
+        if top is None:
             acc.append(None)
             continue
-        dl = [wb[s] - n0[s] for s in wb if s in n0]
-        dmed = float(np.median(dl)); dbest = float(min(wb.values()) - min(list(n0.values()) + list(nf.values())))
-        nu = float(abs(np.median(list(n0.values())) - np.median(list(nf.values()))))
-        prem = byK[Km]["HF_weight"] < 0.6 and np.median(list(n0.values())) < 1.6 and nu < tauM
-        out["instances"][name] = {"K_max": Km, "delta_med_mHa": dmed, "delta_best_mHa": dbest, "nu_W_mHa": nu,
-                                  "premise": bool(prem), "dE_NNBFJ": n0, "dE_NNBFJNF": nf, "dE_WIBJ": wb}
-        acc.append((prem, dmed, dbest))
+        e = byK[Km]
+        n0 = arm_runs(e["runs"], "NNBFJ")
+        prem = bool(e["HF_weight"] < 0.6 and top["median_dE_mHa"]["NNBFJ"] < 1.6 and top["nu_W_mHa"] < tauM)
+        out["instances"][name]["premise"] = prem
+        acc.append((prem, top["delta_med_mHa"], top["delta_best_mHa"]))
+        # variance ratios (paired by seed) and NNBFJ controls at the largest K
+        for a in ("WIBJ",) + FOILS:
+            ar = arm_runs(e["runs"], a)
+            vr = [ar[s]["var_exact"] / n0[s]["var_exact"] for s in ar if s in n0]
+            if vr:
+                var_ratio[a] = max(var_ratio.get(a, 0.0), float(np.median(vr)))
+        sb, tb, ssi = {}, {}, {}
+        for r in n0.values():
+            c = r["controls"]
+            for k_, b in c["screen_bias"].items():
+                sb.setdefault(k_, []).append(abs(b))
+            for k_, (m, se) in c["trunc_bias"].items():
+                tb.setdefault(k_, []).append(abs(m) + 2 * se)
+            for k_, gg in c["ss_grid"].items():
+                ssi.setdefault(k_, []).append(gg["inc_ratio_B"] if (gg["tail_ok_A"] and gg["tail_ok_B"]) else float("inf"))
+        sok = {k_ for k_, v in sb.items() if max(v) <= tau}
+        tok = {k_ for k_, v in tb.items() if max(v) <= tau}
+        ctrl["screen"] = sok if ctrl["screen"] is None else ctrl["screen"] & sok
+        ctrl["trunc"] = tok if ctrl["trunc"] is None else ctrl["trunc"] & tok
+        for k_, v in ssi.items():
+            ctrl["ss"][k_] = max(ctrl["ss"].get(k_, 0.0), float(np.median(v)))
+        # cross-check on trained |psi|^2 samples (reported only)
+        wb = arm_runs(e["runs"], "WIBJ")
+        out["instances"][name]["ops_KEYX_over_EXACT_trained"] = float(np.median(
+            [r["ops_ED"]["KEYX"] / r["ops_ED"]["EXACT"] for r in wb.values()]))
+        # trend
+        ks = [K for K, v in per_K.items() if v is not None]
+        if len(ks) >= 3:
+            out["trend"][name] = {**trend_rule(ks, [per_K[K]["delta_med_mHa"] for K in ks], tauM),
+                                  "WIBJ_median_dE_mHa": [per_K[K]["median_dE_mHa"]["WIBJ"] for K in sorted(ks)]}
+    eps_star = max(ctrl["screen"], key=float) if ctrl["screen"] else None
+    eps_star = None if eps_star is None else str(float(eps_star))   # keys are str(float) in W and S
+    bu_star = min(ctrl["trunc"], key=int) if ctrl["trunc"] else None
+    out["controls"] = {"SCREEN_eps_star": eps_star, "TRUNC_BU_star": bu_star, "SS_inc_ratio": ctrl["ss"],
+                       "var_ratio": var_ratio}
     if not acc or any(a is None for a in acc):
         accv = "ACC_INCOMPLETE"
     elif any(p and dm > tauM for p, dm, _ in acc):
@@ -791,13 +1167,91 @@ def verdict_R51(Ws, Ss, tau=TAU):
     else:
         accv = "ACC_AMBIG"
     out["accuracy"] = accv
-    cb = out["cost_byK"]
-    if accv == "ACC_FAIL":
+    trend_fail = any(t["trend_fail"] for t in out["trend"].values())
+    out["trend_fail"] = trend_fail
+    # ---- Part S: merge arms per K
+    SK = {}
+    for d in Ss:
+        for it in d["instances"]:
+            e = SK.setdefault(it["K"], {k: v for k, v in it.items() if k != "arms"} | {"arms": {}})
+            e["arms"].update(it["arms"])
+            if "NNBFJ" in it["arms"]:
+                e["gen"] = it["gen"]; e["kept"] = it["kept"]; e["conn"] = it["conn"]
+    vW = var_ratio.get("WIBJ", 1.0)
+    cost = {}
+    for K, it in sorted(SK.items()):
+        A = it["arms"]
+        if "NNBFJ" not in A or "WIBJ" not in A:
+            continue
+        Cn, R = A["NNBFJ"], A["WIBJ"]
+        nW = len(Cn["wall_EXACT"])
+        tg = np.array(it["gen"]["t"][:nW])
+        gm = lambda m: it["gen"]["ag"] + it["gen"]["bg"] * np.asarray(m)  # noqa: E731
+        cal = Cn["cal"]
+        ops = {"EXACT": Cn["ops_EXACT"]}
+        wall = {"EXACT": np.array(Cn["wall_EXACT"]) + tg}
+        if eps_star is not None:
+            ops["SCREEN"] = Cn["ops_SCREEN"][eps_star]
+            wall["SCREEN"] = np.array(Cn["wall_SCREEN"][eps_star]) + gm(it["kept"][eps_star][:nW])
+        best_ss = None
+        for k_, inc in ctrl["ss"].items():
+            e_, Kd = k_.split(",")
+            ek = next((x for x in Cn["ops_SCREEN"] if float(x) == float(e_)), None)
+            if ek is None or not np.isfinite(inc):
+                continue
+            c_ = (Cn["ops_SCREEN"][ek] + int(Kd) * Cn["ops_amp"]) * (1 + inc)
+            if best_ss is None or c_ < best_ss[0]:
+                w_ = (np.array(Cn["wall_SCREEN"][ek]) + gm(it["kept"][ek][:nW]) + cal["a"] + cal["b"] * int(Kd)) * (1 + inc)
+                best_ss = (c_, w_, k_)
+        if best_ss:
+            ops["SS"] = best_ss[0]; wall["SS"] = best_ss[1]
+        if bu_star is not None:
+            ops["TRUNC"] = Cn["ops_TRUNC"]; wall["TRUNC"] = np.array(Cn["wall_TRUNC"]) + tg
+        cop = min(ops, key=ops.get)
+        cwl = min(wall, key=lambda k_: wall[k_].mean())
+        rw = (np.array(R["wall_KEYX"][:nW]) + tg) * vW
+        c = {"M_op": float(R["ops_KEYX"] * vW / ops[cop]), "ctrl_op": cop,
+             "M_wall": float(rw.mean() / wall[cwl].mean()), "ctrl_wall": cwl, "M_wall_CI": kc.boot_ratio_ci(rw, wall[cwl]),
+             "ops_KEYX_over_EXACT": R["ops_KEYX"] / R["ops_EXACT"], "SS_config": best_ss[2] if best_ss else None}
+        if eps_star is not None:
+            rws = (np.array(R["wall_KEYX_SCREEN"][eps_star][:nW]) + gm(it["kept"][eps_star][:nW])) * vW
+            c["WIBJ+SCREEN_over_NNBFJ+SCREEN"] = {"M_op": float(R["ops_KEYX_SCREEN"][eps_star] * vW / Cn["ops_SCREEN"][eps_star]),
+                                                  "M_wall": float(rws.mean() / wall["SCREEN"].mean())}
+        CW = min(R["ops_KEYX"], R["ops_KEYX_SCREEN"][eps_star] if eps_star else np.inf) * vW
+        c["C_WIBJ_best_ops"] = float(CW)
+        for f in FOILS:
+            if f in A:
+                Cf = min(A[f]["ops_EXACT"], A[f]["ops_SCREEN"][eps_star] if eps_star else np.inf) * var_ratio.get(f, 1.0)
+                c[f"C_{f}_over_C_WIBJ"] = float(Cf / CW)
+        cost[K] = c
+    out["cost_byK"] = cost
+    # ---- foils
+    foil_fail = False
+    Kmax_S = max(cost) if cost else None
+    for f in FOILS:
+        dom = []
+        for name, d in out["instances"].items():
+            top = d["byK"].get(d["K_max"])
+            if top is None or f not in top["median_dE_mHa"]:
+                dom = None
+                break
+            dom.append(top["median_dE_mHa"][f] <= top["median_dE_mHa"]["WIBJ"] + top["nu_W_mHa"])
+        cr = cost[Kmax_S].get(f"C_{f}_over_C_WIBJ") if Kmax_S is not None else None
+        if dom is None or cr is None:
+            out["foils"][f] = {"status": "INCOMPLETE"}
+            continue
+        ff = bool(all(dom) and cr <= 1.0)
+        out["foils"][f] = {"accuracy_within_nu_of_WIBJ_everywhere": bool(all(dom)), "cost_over_WIBJ_Kmax": cr,
+                           "foil_fail": ff}
+        foil_fail |= ff
+    foil_incomplete = any(v.get("status") == "INCOMPLETE" for v in out["foils"].values())
+    out["foil_fail"] = foil_fail
+    if accv == "ACC_FAIL" or trend_fail or foil_fail:
         v = "FAIL"
-    elif len(cb) < 2 or accv == "ACC_INCOMPLETE":
+    elif len(cost) < 2 or accv == "ACC_INCOMPLETE" or foil_incomplete:
         v = "INCOMPLETE"
     else:
-        Ks = sorted(cb, key=float); m, m0 = cb[Ks[-1]], cb[Ks[0]]
+        Ks = sorted(cost); m, m0 = cost[Ks[-1]], cost[Ks[0]]
         if m["M_op"] >= 1 or m["M_wall_CI"][0] > 1:
             v = "FAIL"
         elif accv == "ACC_OK" and m["M_op"] <= 0.5 and m["M_op"] < m0["M_op"] and m["M_wall_CI"][1] <= 0.8:
@@ -817,7 +1271,7 @@ def aggregate(path, tau=TAU, smoke=False):
             continue
         b = os.path.basename(f)
         (L if b.startswith("results_L") else W if b.startswith("results_W") else S).append(d)
-    out = {"R5.2 (ALE, Part L)": verdict_L(L, tau), "R5.1 (WIBJ, Parts W+S)": verdict_R51(W, S, tau)}
+    out = {"R5.1 (WIBJ, Parts W+S)": verdict_R51(W, S, tau), "R5.2 (ALE, Part L)": verdict_L(L, tau)}
     print(json.dumps(out, indent=1, default=str))
     return out
 
@@ -832,7 +1286,7 @@ def smoke_checks():
     inst = Inst(4, 4.4, 0.25, 1, 6)
     net = make_net(6, 4, "NNBFJ", 6, 4, 0)
     th = net.theta0 + 0.2 * rng.standard_normal(net.theta0.size)
-    # (1) log-derivatives vs finite differences
+    # (1) log-derivatives vs finite differences; (2) VJP (kept for the deferred R5.2 pilot)
     sidx = rng.choice(inst.D, 8, replace=False)
     psi, O = logderiv(net, th, inst.occ[sidx], inst.oi[sidx])
     d = rng.standard_normal(th.size) * 1e-6
@@ -840,86 +1294,91 @@ def smoke_checks():
     pm, _ = net.amplitudes(th - d, inst.occ[sidx], inst.oi[sidx])
     fd = (np.log(np.abs(pp)) - np.log(np.abs(pm))) / 2
     e1 = float(np.max(np.abs(O @ d - fd)) / np.max(np.abs(fd)))
-    # (2) VJP == sum of per-sample log-derivatives weighted
     cp = rng.standard_normal(8)
     e2 = float(np.max(np.abs(vjp(net, th, inst.occ[sidx], inst.oi[sidx], cp) - cp @ O)))
     print(f"  logderiv vs FD rel err={e1:.1e}; VJP vs per-sample O err={e2:.1e}")
     ok &= e1 < 1e-5 and e2 < 1e-10
-    # (3) ALE0 / ALE1 unbiasedness on fixed samples at a shifted theta, and
-    #     the first-order identity sum_j JVP_j == g~(n).dtheta
-    psiA, _ = net.amplitudes(th, inst.occ, inst.oi)
-    s3 = rng.choice(inst.D, 4, p=psiA ** 2 / (psiA @ psiA))
-    anc0 = Anchor(inst, net, th, s3, psiA, False)
-    anc1 = Anchor(inst, net, th, s3, psiA, True)
-    dth = 0.02 * rng.standard_normal(th.size)
-    th2 = th + dth
-    psiB, _ = net.amplitudes(th2, inst.occ, inst.oi)
-    ELB = (inst.H @ psiB)[s3] / psiB[s3]
-    z = {}
-    for name, anc, fo in (("ALE0", anc0, False), ("ALE1", anc1, True)):
-        vals = np.array([ale_estimate(inst, net, anc, th2, psiB, 4, rng, fo) for _ in range(3000)])
-        se = vals.std(0, ddof=1) / np.sqrt(len(vals))
-        z[name] = float(np.max(np.abs(vals.mean(0) - ELB) / se))
-        z[name + "_sd"] = float(vals.std(0).mean())
-    # first-order identity
-    n = s3[0]; j, h = inst.row(n)
-    u = dth / np.linalg.norm(dth); fe = 1e-5
-    allc = np.concatenate([[n], j])
-    pp, _ = net.amplitudes(th + fe * u, inst.occ[allc], inst.oi[allc])
-    pm, _ = net.amplitudes(th - fe * u, inst.occ[allc], inst.oi[allc])
-    jv = np.sum(h * (pp[1:] / pp[0] - pm[1:] / pm[0]) / (2 * fe)) * np.linalg.norm(dth)
-    e3 = abs(jv - anc1.G[0] @ dth) / max(abs(jv), 1e-12)
-    print(f"  ALE unbiasedness (3000 draws, 4 rows, |dtheta|={np.linalg.norm(dth):.2f}): max z ALE0={z['ALE0']:.2f} "
-          f"ALE1={z['ALE1']:.2f}; per-draw sd ALE0={z['ALE0_sd']:.2e} ALE1={z['ALE1_sd']:.2e}; "
-          f"sum_j JVP_j vs g~.dtheta rel err={e3:.1e}")
-    ok &= z["ALE0"] < 4.5 and z["ALE1"] < 4.5 and e3 < 1e-5 and z["ALE1_sd"] < z["ALE0_sd"]
+    # (3) CASJ: cofactor, gradient vs FD, per-sample kernel vs full-vector ratios, ops model
+    A = rng.standard_normal((5, 3, 3)); dA = np.zeros_like(A); dA[:, 1, 2] = 1e-6
+    ec = float(np.max(np.abs((np.linalg.det(A + dA) - np.linalg.det(A - dA)) / 2e-6 - cofactor(A)[:, 1, 2])))
+    for N_, K_ in ((4, 6), (6, 7)):
+        ins = Inst(N_, 4.4 if N_ == 4 else 3.6, 0.25, 1, K_, allow_weak=True)
+        cj = CASJ(K_, N_, np.random.default_rng(3))
+        thc = cj.theta0 + 0.3 * rng.standard_normal(cj.theta0.size)
+        _, ga = cj.energy_grad(thc, ins.H, ins.occ, ins.oi)
+        idx = rng.choice(thc.size, 12, replace=False); gn = []
+        for i in idx:
+            dd = np.zeros_like(thc); dd[i] = 1e-6
+            gn.append((cj.energy_grad(thc + dd, ins.H, ins.occ, ins.oi)[0] - cj.energy_grad(thc - dd, ins.H, ins.occ, ins.oi)[0]) / 2e-6)
+        gerr = float(np.max(np.abs(ga[idx] - gn)) / max(np.max(np.abs(gn)), 1e-12))
+        P = cj.unpack(thc)
+        psiC, _ = cj.amplitudes(thc, ins.occ, ins.oi)
+        rerr = 0.0
+        for n in (3, 40, 101):
+            row = ins.ham.row(ins.codes[n], ins.oi[n]); j = np.searchsorted(ins.codes, row["code"])
+            st = cj.setup(P, ins.oi[n])
+            occ_j = kc.decode(row["code"], ins.ham.M, N_)
+            rerr = max(rerr, float(np.max(np.abs(cj.ratio(P, st, row["rem"], row["add"], occ_j) - psiC[j] / psiC[n]))))
+        print(f"  CASJ N={N_} K={K_}: dets={cj.ns**2} P={cj.theta0.size} grad rel err={gerr:.1e} "
+              f"per-sample ratio err={rerr:.1e}; cofactor err={ec:.1e}")
+        ok &= gerr < 1e-5 and rerr < 1e-9 and ec < 1e-6
     print(f"  ({time.time()-t0:.1f}s)")
     return bool(ok)
 
 
+def _syn_W(case):
+    """Synthetic Part W results for the verdict self-test."""
+    Ws = []
+    for name, Ks in (("H4", [12, 16, 20, 24]), ("H6", [12, 14])):
+        its = []
+        for K in Ks:
+            runs = []
+            base = 0.5
+            wib = {"pass": 0.55, "fail": 0.95, "trend": 0.4 + 0.012 * (K - 12) if name == "H4" else 0.5,
+                   "foil": 0.55}[case]
+            for arm in W_ARMS:
+                for s in (0, 1, 2):
+                    seed = s + (3 if arm == "NNBFJNF" else 0)
+                    dE = {"NNBFJ": base, "NNBFJNF": base + 0.01, "WIBJ": wib,
+                          "NNBFJh4": 0.55 if case == "foil" else 3.0, "NNBFJh8": 2.0, "CASJ": 5.0}[arm]
+                    dE += 0.005 * s
+                    r = {"seed": seed, "arm": arm, "dE_mHa": dE, "var_exact": 1e-3}
+                    if arm == "NNBFJ":
+                        r["controls"] = {"screen_bias": {"0.001": 1e-5, "0.01": 1e-3}, "trunc_bias": {"1000": [1e-3, 1e-4]},
+                                         "ss_grid": {"0.001,4": {"inc_ratio_B": 0.2, "tail_ok_A": True, "tail_ok_B": True}}}
+                    if arm == "WIBJ":
+                        r["ops_ED"] = {"KEYX": 1.0, "EXACT": 5.0}
+                    runs.append(r)
+            its.append({"K": K, "HF_weight": 0.5, "runs": runs})
+        Ws.append({"part": "W", "instance": name, "instances": its})
+    return Ws
+
+
+def _syn_S(case, Mop):
+    Ss = []
+    for i, K in enumerate((40, 72)):
+        nW = 20
+        rng = np.random.default_rng(K)
+        tE = 1.0 + 0.1 * rng.random(nW)
+        m = Mop[i]
+        arms = {"NNBFJ": {"ops_EXACT": 100.0, "ops_SCREEN": {"0.001": 80.0, "0.01": 40.0}, "ops_amp": 1.0, "ops_TRUNC": 500.0,
+                          "wall_EXACT": tE.tolist(), "wall_SCREEN": {"0.001": (0.8 * tE).tolist(), "0.01": (0.4 * tE).tolist()},
+                          "wall_TRUNC": (5 * tE).tolist(), "cal": {"a": 1e-4, "b": 1e-6}},
+                "WIBJ": {"ops_EXACT": 100.0, "ops_KEYX": 80.0 * m, "ops_KEYX_SCREEN": {"0.001": 80.0 * m, "0.01": 40 * m},
+                         "wall_KEYX": (0.8 * m * tE).tolist(), "wall_KEYX_SCREEN": {"0.001": (0.8 * m * tE).tolist(),
+                                                                                   "0.01": (0.4 * m * tE).tolist()}},
+                "NNBFJh4": {"ops_EXACT": 10.0 if case == "foil" else 300.0, "ops_SCREEN": {"0.001": 10.0 if case == "foil" else 300.0}},
+                "NNBFJh8": {"ops_EXACT": 400.0, "ops_SCREEN": {"0.001": 400.0}},
+                "CASJ": {"ops_EXACT": 900.0, "ops_SCREEN": {"0.001": 900.0}}}
+        Ss.append({"part": "S", "instances": [{"K": K, "arms": arms, "conn": [100] * nW, "kept": {"0.001": [80] * nW, "0.01": [40] * nW},
+                                               "gen": {"t": [0.0] * nW, "ag": 0.0, "bg": 0.0}}]})
+    return Ss
+
+
 def verdict_selftest():
-    """Synthetic trajectories: verdict_L must return PASS when the route reaches
-    the control's full-budget energy at half budget, and FAIL when it is worse
-    at equal cost."""
-    def run(level_half, level_full):
-        c = np.linspace(0, 1.0, 101)
-        y = np.where(c <= 0.5, level_half, level_full)
-        return {"ops": list(c), "cal": list(c), "dE_mHa": list(y)}
     out = {}
-    for name, (rh, rf) in {"pass": (0.9, 0.8), "fail": (1.3, 1.3)}.items():
-        arms = {"EXACT": [run(1.2, 1.0 + 0.01 * s) for s in range(3)],
-                "EXACTNF": [run(1.2, 1.0 + 0.01 * s) for s in range(3)],
-                "SCREEN:1e-2": [run(1.3, 1.1) for _ in range(3)],
-                "ALE0:4:4": [run(rh, rf) for _ in range(3)]}
-        Ls = [{"arm": a, "instances": [{"K": 16, "budget_ops": 1.0, "budget_cal": 1.0, "runs": r}]}
-              for a, r in arms.items()]
-        out[name] = verdict_L(Ls)["verdict"]
-    return out
-
-
-def staleness_precheck(inst, net, thw, B=200, Kd=4, rng=None, steps=16, lr=0.05):
-    """Variance increment of ALE0/ALE1 (over Var_pi(E_L)) as a function of the
-    anchor age, along an EXACT-SR trajectory from the warm start."""
-    rng = rng or np.random.default_rng(3)
-    psi, _ = net.amplitudes(thw, inst.occ, inst.oi)
-    wv = psi ** 2 / (psi @ psi)
-    s = rng.choice(inst.D, B, p=wv)
-    a0 = Anchor(inst, net, thw, s, psi, False); a1 = Anchor(inst, net, thw, s, psi, True)
-    th = thw.copy(); out = []
-    for t in range(1, steps + 1):
-        sidx = rng.choice(inst.D, B, p=wv)
-        e = (inst.H @ psi)[sidx] / psi[sidx]
-        _, O = logderiv(net, th, inst.occ[sidx], inst.oi[sidx])
-        th = th + sr_update(O, np.full(B, 1 / B), e, lr, 1e-3, 0.05)
-        psi, _ = net.amplitudes(th, inst.occ, inst.oi)
-        wv = psi ** 2 / (psi @ psi)
-        EL = (inst.H @ psi) / psi
-        varpi = float(wv @ (EL - wv @ EL) ** 2)
-        r = []
-        for anc, fo in ((a0, False), (a1, True)):
-            reps = np.array([ale_estimate(inst, net, anc, th, psi, Kd, rng, fo) for _ in range(20)])
-            r.append(float(reps.var(0, ddof=1).mean() / varpi))
-        out.append((t, float(np.linalg.norm(th - thw)), r[0], r[1]))
+    for case, Mop in (("pass", (0.5, 0.3)), ("fail", (0.5, 0.3)), ("trend", (0.5, 0.3)), ("foil", (0.5, 0.3))):
+        out[case] = verdict_R51(_syn_W(case), _syn_S(case, Mop))["verdict"]
     return out
 
 
@@ -931,45 +1390,26 @@ def main(argv=None):
     if args.smoke:
         ok = smoke_checks()
         vs = verdict_selftest()
-        print(f"  verdict_L self-test on synthetic trajectories: {vs} (must be PASS / FAIL)")
-        ok &= vs == {"pass": "PASS", "fail": "FAIL"}
+        want = {"pass": "PASS", "fail": "FAIL", "trend": "FAIL", "foil": "FAIL"}
+        print(f"  verdict_R51 self-test on synthetic results: {vs} (must be {want})")
+        ok &= vs == want
         print(f"SMOKE CHECKS {'PASS' if ok else 'FAIL'}", flush=True)
         sd = os.path.join(HERE, "smoke_results"); os.makedirs(sd, exist_ok=True)
-        # tiny Part L: H4 K=8, every arm type
-        arms = ["EXACT", "EXACTNF", "SCREEN:1e-2", "SCREEN:1e-2+B", "SS:1e-2:4", "SS:1e-2:4+B",
-                "ALE0:8:4", "ALE0:8:4+B", "ALE1:8:4"]
-        for a in arms:
-            la = parse_args(["--part", "L", "--n-active", "8", "--arm", a, "--hidden", "8", "--hj", "4",
-                             "--warm-iters", "150", "--batch", "100", "--n-ref", "30", "--max-steps-factor", "4",
-                             "--n-wall", "6", "--seeds", "0", "1", "2",
-                             "--out", os.path.join(sd, f"results_L_smoke_{a.replace(':', '-')}.json")])
-            r = run_part_L(la); r["smoke"] = True
-            with open(la.out, "w") as fh:
-                json.dump(r, fh, default=float)
-        inst = Inst(4, 4.4, 0.25, 1, 8)
-        net = make_net(8, 4, "NNBFJ", 8, 4, 0)
-        thw = minimize(lambda t: net.energy_grad(t, inst.H, inst.occ, inst.oi), net.theta0, jac=True,
-                       method="L-BFGS-B", options={"maxiter": 150}).x
-        print("  staleness pre-check (age, |dtheta|, inc ALE0/Var_pi, inc ALE1/Var_pi), Kd=4:")
-        for t, nd, r0, r1 in staleness_precheck(inst, net, thw):
-            if t in (1, 2, 4, 8, 16):
-                print(f"    age={t:2d} |dth|={nd:.3f} ALE0={r0:.3e} ALE1={r1:.3e}")
-        print("  R5.3 certified screening bound at the warm state (mean per sample, mHa):")
-        for e, v in cert_bound(inst, net, thw, [1e-3, 1e-2], np.random.default_rng(1), 50).items():
-            print(f"    eps={e}: certified={v['certified_mHa']:.3e} actual |dropped|={v['actual_abs_mHa']:.3e}")
-        # tiny Parts W and S
-        wa = parse_args(["--part", "W", "--n-active", "6", "7", "--hidden", "8", "--hj", "4", "--maxiter", "150",
-                         "--n-samples", "200", "--eps-screen", "1e-4", "1e-3", "1e-2", "--k-grid", "1", "8",
-                         "--out", os.path.join(sd, "results_W_smoke.json")])
+        for f in glob.glob(os.path.join(sd, "results_*.json")):
+            os.remove(f)
+        wa = parse_args(["--part", "W", "--n-active", "6", "7", "8", "--hidden", "8", "--hj", "4", "--maxiter", "150",
+                         "--n-samples", "200", "--eps-screen", "1e-4", "1e-3", "2e-3", "1e-2", "--k-grid", "1", "8",
+                         "--bu-grid", "100", "--out", os.path.join(sd, "results_W_smoke.json")])
         rw = run_part_W(wa); rw["smoke"] = True
         with open(wa.out, "w") as fh:
             json.dump(rw, fh, default=float)
-        sa = parse_args(["--part", "S", "--n-atoms", "4", "--basis-series", "2,1", "3,2", "--hidden", "8", "--hj", "4",
-                         "--n-samples", "30", "--n-wall", "4", "--eps-screen", "1e-4", "1e-3", "1e-2", "--k-grid", "1", "8",
-                         "--out", os.path.join(sd, "results_S_smoke.json")])
-        rs = run_part_S(sa); rs["smoke"] = True
-        with open(sa.out, "w") as fh:
-            json.dump(rs, fh, default=float)
+        for grp in ("main", "foils"):
+            sa = parse_args(["--part", "S", "--n-atoms", "4", "--basis-series", "2,1", "3,2", "--hidden", "8", "--hj", "4",
+                             "--n-samples", "30", "--n-wall", "6", "--eps-screen", "1e-4", "1e-3", "2e-3", "1e-2",
+                             "--k-grid", "1", "8", "--s-arms", grp, "--out", os.path.join(sd, f"results_S_smoke_{grp}.json")])
+            rs = run_part_S(sa); rs["smoke"] = True
+            with open(sa.out, "w") as fh:
+                json.dump(rs, fh, default=float)
         print("[smoke-scale verdict logic, H4 only, not decisive]")
         aggregate(sd, smoke=True)
         return
