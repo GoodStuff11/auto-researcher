@@ -46,8 +46,8 @@ The hub splits this into a shared, structured, mergeable store that agents maint
     Snapshot.md                      # generated, ≤ 1 page
     Pending/<P-id>.md                # staged judgement calls, one file per proposal
     sync-state/                      # one small file per key, so clones never touch the same file
-      watermark.<source>.yaml        #   `value: <watermark>` per ingest source
-      next_meeting.<series>.yaml     #   `value: <YYYY-MM-DD>` per series
+      watermark.<source>.yaml        #   `value: <watermark>`, `updated: <ISO UTC>` per ingest source
+      next_meeting.<series>.yaml     #   `value: <YYYY-MM-DD>`, `updated: <ISO UTC>` per series
       flags.md                       #   one `- <flag>` line per unresolved sync flag (merge=union)
     Items.base                       # Bases views
   Agenda/
@@ -283,6 +283,7 @@ Writers do not lock. Mergeability comes from:
 - append-only logs, merged with the `union` merge driver;
 - one file per pending proposal, and one file per sync-state key;
 - item files merged by the `hub-item` git merge driver (`python -m hub.merge_item %O %A %B`, registered by `hub commit` in `.gitattributes` and `.git/config`): entries are unioned (de-duplicated, sorted by date), list fields (`sources`, `series`, `links.*`) are unioned, and every other field and the description merge three-way — one side changed it, that side wins;
+- sync-state key files (watermarks, next meeting) merged by the `hub-watermark` driver (`python -m hub.merge_watermark %O %A %B`): the side with the newer `updated` stamp wins, so two same-day ingests of one source never conflict;
 - items created by a pending proposal get ids seeded from the proposal id and op index, so two people applying the same proposal create the same item;
 - generated files rebuilt after every pull, never merged;
 - source-ID idempotency.

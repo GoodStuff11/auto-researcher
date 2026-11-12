@@ -18,6 +18,8 @@ GITATTRIBUTES_LINES = [
     "Status/Snapshot.md merge=ours",
     "Status/Items/*.md merge=hub-item",
     "Status/sync-state/flags.md merge=union",
+    "Status/sync-state/watermark.*.yaml merge=hub-watermark",
+    "Status/sync-state/next_meeting.*.yaml merge=hub-watermark",
     "*.xlsx binary",
     "*.md text eol=lf",
     "*.yaml text eol=lf",
@@ -25,6 +27,8 @@ GITATTRIBUTES_LINES = [
 GITIGNORE_LINES = ["hub.local.yaml", ".venv/", "__pycache__/", "*.egg-info/", ".obsidian/workspace*.json",
                    "~$*", ".~lock.*#", ".*.tmp"]
 CONFLICT_GUIDANCE = ("in `hub-item conflict` lines, A is the version already on the remote and B is yours. "
+                     "A conflicted Status/sync-state/*.yaml file (watermark or next meeting) means the "
+                     "hub-watermark driver could not read one side: keep the side with the newer `updated:`. "
                      "Re-run after fixing: `git pull --rebase`, fix the file, `git add` it, "
                      "`git rebase --continue`, then `hub validate` and `hub commit`")
 
@@ -60,6 +64,9 @@ def _configure_drivers(root) -> None:
     _git(root, "config", "merge.ours.driver", "true")
     _git(root, "config", "merge.hub-item.name", "hub item merge")
     _git(root, "config", "merge.hub-item.driver", f"{shlex.quote(sys.executable)} -m hub.merge_item %O %A %B")
+    _git(root, "config", "merge.hub-watermark.name", "hub watermark merge (newer updated wins)")
+    _git(root, "config", "merge.hub-watermark.driver",
+         f"{shlex.quote(sys.executable)} -m hub.merge_watermark %O %A %B")
 
 
 def ensure_repo_files(root) -> None:

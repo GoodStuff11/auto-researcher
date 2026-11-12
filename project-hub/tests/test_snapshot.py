@@ -14,7 +14,7 @@ def test_watermarks_round_trip(hub_root):
     assert get_watermark(hub_root, "clickup") == "2026-11-12T10:00"
     assert load_state(hub_root)["watermarks"] == {"clickup": "2026-11-12T10:00"}
     path = hub_root / "Status" / "sync-state" / "watermark.clickup.yaml"
-    assert path.read_text() == "value: 2026-11-12T10:00\n"
+    assert path.read_text().startswith("value: 2026-11-12T10:00\nupdated: ")
     set_watermark(hub_root, "clickup", "2026-11-12T10:00:00")  # looks like a YAML timestamp: stays a string
     assert get_watermark(hub_root, "clickup") == "2026-11-12T10:00:00"
     assert not (hub_root / "Status" / "sync-state.yaml").exists()
@@ -28,7 +28,7 @@ def test_state_layout_round_trip(hub_root):
     assert sorted(p.name for p in d.iterdir()) == ["flags.md", "next_meeting.group.yaml",
                                                    "watermark.circleback.yaml", "watermark.clickup.yaml"]
     assert (d / "flags.md").read_text() == "- one\n- two\n"
-    assert (d / "next_meeting.group.yaml").read_text() == "value: 2026-11-19\n"
+    assert (d / "next_meeting.group.yaml").read_text().startswith("value: 2026-11-19\nupdated: ")
     assert load_state(hub_root) == {"watermarks": {"circleback": "w2", "clickup": "w1"},
                                     "next_meeting": {"group": date(2026, 11, 19)}, "flags": ["one", "two"]}
     save_state(hub_root, {"watermarks": {"clickup": "w3"}, "next_meeting": {}, "flags": []})

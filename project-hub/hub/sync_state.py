@@ -1,13 +1,18 @@
 """Status/sync-state/: per-source ingest watermarks, next meeting per series, unresolved sync flags.
 
 One small file per key, so clones updating different sources never touch the same file:
-  Status/sync-state/watermark.<source>.yaml      `value: <watermark>`
-  Status/sync-state/next_meeting.<series>.yaml   `value: <YYYY-MM-DD>`
+  Status/sync-state/watermark.<source>.yaml      `value: <watermark>` and `updated: <ISO datetime, UTC>`
+  Status/sync-state/next_meeting.<series>.yaml   `value: <YYYY-MM-DD>` and `updated: <ISO datetime, UTC>`
   Status/sync-state/flags.md                     one `- <text>` line per flag (git `merge=union`)
+
+`updated` is the time the value last changed; it lets the `hub-watermark` merge driver (hub.merge_watermark)
+keep the newer side when two clones change the same key. A file without `updated` (older vaults) counts
+as oldest. A write that does not change the value leaves the file (and its `updated`) untouched.
 """
 from __future__ import annotations
 
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -37,8 +42,24 @@ def _read_value(path: Path):
     return data.get("value") if isinstance(data, dict) else None
 
 
+def _now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _norm(value):
+    return value.isoformat() if hasattr(value, "isoformat") else value
+
+
 def _write_value(path: Path, value) -> None:
-    atomic_write_text(path, yaml.safe_dump({"value": value}, allow_unicode=True))
+    """Write `value` with a fresh `updated` stamp, unless the file already holds this value."""
+    if path.is_file():
+        try:
+            if _norm(_read_value(path)) == _norm(value):
+                return
+        except yaml.YAMLError:
+            pass
+    atomic_write_text(path, yaml.safe_dump({"value": value, "updated": _now()}, sort_keys=False,
+                                           allow_unicode=True))
 
 
 def load_state(root) -> dict:
