@@ -1,180 +1,155 @@
 #!/usr/bin/env python3
 """
-P2.1 round-3 decisive test: does the shared-reference low-rank sum (SK-LR, and its geminal-frame
-twin SK-AGP) keep NNBF's sign quality where the low-rank restriction actually bites?
+P2.1 round-5 decisive test: at a fixed, narrow parameter budget, does spending the sign capacity
+as a SUM of K configuration-dependent rank-1 terms over one carried reference (SK-LR "sk1", and
+its pairing-frame twin SK-AGP "skagp") keep the sign quality of symmetry-projected NNBF (with or
+without a Jastrow factor), at O(N_e) cost per connection?
 ================================================================================================
 
-Physics question
-----------------
-Round 2 tested SK-LR on 4x3 Hubbard clusters with N_sigma in {4, 5} at rank r = 2, i.e. at
-r/N_sigma = 0.4-0.5, where a low-rank hop response is almost no restriction, with loose
-thresholds and no projected control. The P1.1-P interim result then showed that NNBF trained with
-symmetry projection is essentially exact on those clusters, because the projected sector is
-smaller than the network (dim range(P_S P_chi) / n_params <= 3). This test therefore
-  * uses 4x4 t-t'-J clusters with open boundaries in at least one direction (small groups) and a
-    deliberately narrow parameter budget (NNBF width 6, about 1.6-2.0k parameters), so that the
-    exact projected-sector dimension is 4-20x the parameter count (sector_dims_output.txt) and a
-    projected control can retain a measurable error;
-  * gates every instance on that premise: an instance counts only if the projected NNBF control
-    has median dE_sign >= 0.01 t (PREMISE_REF); the sector dimensions are computed in every task;
-  * works at N_sigma = 6 and 7 with rank r = 1 (r/N_sigma = 0.14-0.17), checks that the
-    restriction bites (a single rank-1 hidden-fermion term "hf1" must be measurably worse in sign
-    than projected NNBF), and asks whether a SUM of K = 4 rank-1 terms over one shared reference
-    ("sk1") recovers NNBF's sign quality AND beats a single term of the same total rank K*r = 4
-    ("hf4", same per-ratio cost);
-  * trains every compared arm WITH space-group projection (projected SR, exact sums), adds
-    oracle total-spin-projected training (P_S P_chi) for NNBF and sk1, and reports every state
-    after post-hoc spin projection;
-  * uses 3 seeds per arm and medians, with a pairwise-dominance rule where arms are compared;
-  * runs a genuine Metropolis Monte Carlo arm from |psi_P|^2 for the routes and controls and
-    measures the local-energy variance and tails (rule 4 of the round-3 brief);
-  * folds the cost check into the verdict: the carried-table local energy, the Metropolis sweep
-    with Sherman-Morrison table updates (SK-LR), the per-configuration setup, and brute force,
-    on L x L t-J lattices up to L = 32 (N_e = 896), with the brute slope as the regime guard.
+What changed from round 3 (round-3 critic, items 3 and 5-9)
+------------------------------------------------------------
+* Item 3: "the restriction bites" was false. det(A0 + phi c^T) = det A0 (1 + c^T A0^-1 phi), so a
+  rank-1 term with an unrestricted c(n) already represents an arbitrary scalar function times the
+  reference. Rank alone is NOT binding. The hypothesis is now about how a fixed parameter budget P
+  is split: a narrow sign trunk (width --hs-sign = 6) feeding K low-rank terms, plus a positive
+  amplitude net taking the rest of P, versus NNBF (all of P in the backflow) and NNBF x Jastrow.
+  The premise arm hf1 (one rank-1 term, same split) is kept as a CAPACITY premise: if hf1 already
+  matches the reference, the K-term sum is unnecessary (REDUNDANT).
+* Item 6: new control "nnbfj" = NNBF of width --nnbfj-width (default 4) x a tanh Jastrow whose
+  width fills the same P. Ref_X = the better (smaller median) of nnbf and nnbfj, per metric X.
+* Item 7: seeds are PAIRED (same seed index across arms); rho_s and rho_t are medians of per-seed
+  ratios against the Ref arm. The rank ratio sigma (sk1 versus the single rank-4 term hf4) and its
+  paired dominance are REPORTED ONLY (not in the verdict), since rank is not binding.
+* Item 8: the cost check gates on the time PER CONNECTION measured at large N_e (up to L = 48,
+  N_e = 2016) and on the measured fast/brute per-connection speedup at L = 32 (N_e = 896), not on
+  a fitted total-time exponent at sizes where interpreter overhead dominates.
+* Item 9: every sampled arm must reproduce the trained projected vector per amplitude to
+  per_amp_check <= 1e-10, else the instance is AMBIGUOUS (guard).
+* Item 5: the verdict needs >= 2 counted instances; one counted instance gives UNINFORMATIVE.
 
 Model (tj_core.TJ): H = -sum_{ij,s} T_ij P c^dag_is c_js P + J sum_<ij> (S_i.S_j - n_i n_j / 4),
-t = 1, t' = -0.25 (diagonals), J = 0.4 (NN only), no double occupancy. Instances
-(sector_dims_output.txt, probe_output.txt):
-  0 : 4x4 OBC, N_up = N_dn = 6 (4 holes, delta = 1/4), D = 1681680. psi_0 non-degenerate singlet,
-      characters Mx = My = +1, D = -1 under the point group C4v-subgroup {1, Mx, My, D, ...}
-      (|G| = 8). dim range(P_chi) = 210430, dim range(P_S P_chi) = 30220.
-  1 : 4x4 cylinder (PBC x, OBC y), N_up = N_dn = 6, D = 1681680, |G| = 16 (Tx x {Mx, My}),
-      psi_0 non-degenerate singlet (Tx = Mx = My = +1). dim range(P_S P_chi) = 15268.
-  2 : 4x4 OBC, N_up = N_dn = 7 (2 holes, delta = 1/8), D = 411840, |G| = 8, psi_0
-      non-degenerate singlet (Mx = My = +1, D = -1). dim range(P_S P_chi) = 6540.
-  9 : 3x2 (PBC x, OBC y), N_up = N_dn = 2, D = 90 (smoke only; its projected sector has
-      dimension 5, so every arm is exact there: the smoke verdict is meaningless by design).
-Degenerate ground levels are resolved into a member with definite characters under the abelian
-subgroup (resolve_ground); none of instances 0-2 is degenerate.
-Hard Core: all instances are doped, t' != 0, 2D and non-stoquastic. None has a verified
-same-sector near-degenerate competitor. THIS TEST COVERS THE SIGN HALF OF THE HARD CORE ONLY.
+t = 1, t' on diagonals, J on NN bonds, no double occupancy. Instances (INSTANCES below; sector
+dimensions in ../P2.1_subcubic_amplitudes_r3/sector_dims_output.txt and screen_output.txt):
+  0 : 4x4 OBC 6+6, t' = -0.25, J = 0.4, D = 1681680, |G| = 8, dim range(P_S P_chi) = 30220.
+      Projected NNBF width 6 (P = 1734): median dE_sign = 0.0125 t over seeds 11/22/33. QUALIFIES.
+  1 : 4x4 cylinder 6+6 (sector 15268): 0.0038 t. 2 : 4x4 OBC 7+7 (sector 6540): 0.0028 t (seed
+      11). Neither qualifies; kept for the record only.
+  3 : 4x4 OBC 5+5 (6 holes), D = 2018016, |G| = 8, sector 42302, P = 1478 (ratio 28.6), ED gap 0.013.
+  4 : 5x3 OBC 6+6 (3 holes), D = 420420, |G| = 4, sector 15080, P = 1626 (ratio 9.3), ED gap 0.025.
+      3 and 4 are the round-5 candidates for the second qualifying instance (screen_output.txt).
+      They are screened by a one-seed pilot (submit_pilot.sbatch).
+  9 : 3x2 smoke cluster (projected sector dimension 5, every arm exact: smoke verdicts are
+      meaningless by design).
+The decisive array runs on PRODUCTION = (0, --new-instance). Hard Core: doped, t' != 0, 2D,
+non-stoquastic; no verified same-sector competitor. SIGN HALF OF THE HARD CORE ONLY.
 
 Families (tj_core.LRAnsatz; psi = exp(J(n)) sum_k w_k det B_k(n), J a separate tanh net):
   full : NNBF, B_{k,s} = (Phi0_{k,s} + out_{k,s}(n))[occ_s]                 (Luo & Clark)
-  lr   : B_{k,s} = Phi0_s[occ_s] + Phih_{k,s}[occ_s] C_{k,s}(n), C_{k,s} r x N_s, one shared
-         reference Phi0 (SK-LR; K = 1 is HFDS / Liu-Clark with a Jastrow)
-  agp  : B_k = F0[occ_up, occ_dn] + Phih_k[occ_up] C_k(n)[:, occ_dn], C_k r x V, shared
-         pairing reference F0 (SK-AGP; r = 0 is projected BCS x neural Jastrow, the Foil)
+  lr   : B_{k,s} = Phi0_s[occ_s] + Phih_{k,s}[occ_s] C_{k,s}(n), one shared reference Phi0
+         (SK-LR; K = 1 is HFDS / Liu-Clark with a Jastrow and a frozen hidden block)
+  agp  : B_k = F0[occ_up, occ_dn] + Phih_k[occ_up] C_k(n)[:, occ_dn], shared pairing reference
+         F0 (SK-AGP; r = 0 is projected BCS x neural Jastrow, the Foil)
 References: Phi0 = UHF orbitals of the U = 8 Hubbard model on the same lattice (seed 1234);
-F0 = d-wave BCS pairing function with a small extended-s admixture and noise (tj_core.dwave_bcs_F).
-Arms (all at the parameter count of NNBF width --match-width (default 6), within one hidden unit;
-the sign trunk of every r > 0 low-rank arm has width --hs-sign (default 6) and the amplitude net
-takes the rest). The round-2 unrestricted multi-determinant control (mdnnbf) is dropped: its four
-reference orbital sets alone exceed this budget.
-  nnbf     full K=1                         projected (P_chi)          control (Ref)
-  hf1      lr   K=1 r=1                     projected                  bite premise (HFDS rank 1)
-  hf4      lr   K=1 r=4                     projected                  equal-rank control for sk1
-  sk1      lr   K=4 r=1                     projected                  ROUTE 3.1 (SK-LR)
-  sk2      lr   K=4 r=2                     projected                  rank trend
-  sjnet    lr   r=0 (Slater x neural J)     projected                  Gate-2 control
-  agpj     agp  r=0 (BCS x neural J, Foil)  projected                  Foil / premise for SK-AGP
-  agh4     agp  K=1 r=4                     projected                  equal-rank control for skagp
-  skagp    agp  K=4 r=1                     projected                  ROUTE 3.2 (SK-AGP)
-  nnbf_PS  as nnbf, trained with P_S P_chi (oracle spin projection)
-  sk1_PS   as sk1,  trained with P_S P_chi (oracle spin projection)
-  nnbf_U   as nnbf, unprojected training (P1.1 protocol), budgets also after post-hoc projection
-  sk1_U    as sk1,  unprojected training, budgets also after post-hoc projection
-Training: SR with the EXACT force and a sampled metric (P1.1 settings: --sr-iters 1500,
-step 0.05, shift 1e-3, 2000 samples, trust region |step| <= 1, best-energy iterate kept).
-Projected arms train psi_P = P_chi psi_theta (exact-sum version of Romero, Nys & Carleo,
-arXiv:2406.09077); the metric uses the projected log-derivatives O_P(n) computed per
-amplitude on the |G| images of each sample. "_PS" arms train psi = P_S P_chi psi_theta (energy and
-force exact); their metric is that of P_chi psi_theta (a preconditioner approximation, stated).
-Budgets: p11_core.budget (P1.1 definitions: E_sign upper estimate = min of 4 L-BFGS-B starts and
-the ten Haaf fixed node; dE_tot, dE_sign, dE_amp, f_E_up, spread, w_sign, pair error eC_tot) for
-  projected arms: "P" (the trained P_chi psi_theta) and "P_S" (post-hoc P_S P_chi psi_theta);
-  _PS arms: "PS"; unprojected arms: "U", "UP" (post-hoc P_chi) and "UP_S" (post-hoc P_S P_chi).
-Sampled arm (nnbf, hf4, sk1, skagp, agpj; state "P"): Metropolis from |psi_P|^2 with symmetric
-proposals (swap the contents of the two ends of a random t / t' bond), --mc-samples measurements
-every N_e proposals after --mc-burn measurements of burn-in. Amplitudes are read from the trained
-P_chi psi_theta vector; 200 visited configurations are re-evaluated per amplitude (forward passes
-on the |G| images) and the maximal relative deviation is reported (per_amp_check). Reports the
-exact local-energy variance var_ex = sum p (E_loc - E)^2, the sampled variance, the exact
-kurtosis, the tail share (fraction of var_ex from |E_loc - E| > 5 sigma), the binned standard
-error and z = |mean - E| / stderr.
+F0 = d-wave BCS pairing function (tj_core.dwave_bcs_F).
+Arms (all at P = parameter count of NNBF width --match-width = 6, within one hidden unit):
+  nnbf     full K=1, width 6                 P_chi     control (Ref candidate)
+  nnbfj    full K=1, width 4, + Jastrow      P_chi     control (Ref candidate; critic item 6)
+  hf1      lr K=1 r=1                        P_chi     capacity premise
+  hf4      lr K=1 r=4                        P_chi     equal-rank comparison (reported only)
+  sk1      lr K=4 r=1                        P_chi     ROUTE 3.1 (SK-LR)
+  sk2      lr K=4 r=2                        P_chi     rank trend (reported only)
+  sjnet    lr r=0 (Slater x neural J)        P_chi     Gate-2 control for 3.1
+  agpj     agp r=0 (BCS x neural J, Foil)    P_chi     Gate-2 control and premise for 3.2
+  agh4     agp K=1 r=4                       P_chi     equal-rank comparison for 3.2 (reported)
+  skagp    agp K=4 r=1                       P_chi     ROUTE 3.2 (SK-AGP)
+  nnbf_PS, sk1_PS   trained with P_S P_chi (oracle spin projection)
+  nnbf_U,  sk1_U    unprojected training, budgets also after post-hoc projection
+Training: SR with the EXACT force and a sampled metric (--sr-iters, step 0.05, shift 1e-3,
+2000 samples, trust region |step| <= 1, best-energy iterate kept); projected arms train
+psi_P = P_chi psi_theta with projected log-derivatives in the metric; "_PS" arms use the metric of
+P_chi psi_theta (a preconditioner approximation; energy and force exact).
+Budgets: p11_core.budget (P1.1 definitions; E_sign upper estimate = min of 4 L-BFGS-B starts and
+the ten Haaf fixed node) for "P" (trained P_chi psi_theta) and "P_S" (post-hoc P_S P_chi
+psi_theta); "PS" for _PS arms; "U", "UP", "UP_S" for unprojected arms.
+Sampled arm (SAMPLED arms, state "P"): Metropolis from |psi_P|^2; reports var_ex, kurtosis, tail
+share, binned stderr, z = |mean - E| / stderr and per_amp_check (max relative deviation of 200
+visited amplitudes recomputed per amplitude on the |G| images from the trained vector).
 
-Pre-committed decision rule (implemented in --mode aggregate; medians over seeds)
----------------------------------------------------------------------------------
-Ref_X(I) = med X(nnbf) on instance I for X in {dE_sign, dE_tot} (state "P").
-PREMISE GATE: instance I counts only if Ref_sign(I) >= 0.01 t. If no instance counts, both
-routes are UNINFORMATIVE (pre-committed action: halve --match-width, i.e. raise the
-sector/parameter ratio, and rerun; this is reported, not a PASS or FAIL).
-rho_s = med dE_sign(route)/Ref_sign, rho_t = med dE_tot(route)/Ref_tot.
-Guards (else AMBIGUOUS): every seed of route, nnbf and the rank control has
-calib_err <= 1e-3 dE_tot and spread < 0.05; 3 seeds present.
-ROUTE 3.1 (sk1; rank control hf4; premise arm hf1; Gate-2 control sjnet), on every counted I:
-  premise  beta = med dE_sign(hf1)/Ref_sign >= 1.3 (the restriction bites); if not on some
-           counted instance -> FAIL ("REDUNDANT": a single rank-1 term already matches NNBF, so
-           the sum is unnecessary)
-  PASS if  rho_s <= 1.10 and rho_t <= 1.15
-           and sigma = med dE_sign(sk1)/med dE_sign(hf4) <= 0.85 with pairwise dominance
-               #(sk1 seed < hf4 seed in dE_sign) >= 7 of 9
-           and gamma = med dE_sign(sk1)/med dE_sign(sjnet) <= 0.6
-           and spin: rho_s from the post-hoc "P_S" budgets <= 1.15, and the oracle ratio
-               med dE_sign(sk1_PS)/med dE_sign(nnbf_PS) <= 1.15
-           and sampled: v = med var_ex(sk1)/med var_ex(nnbf) <= 2 and median z <= 4
-           and (on instance 2, if instance 0 also counts) the filling trend
-               rho_s(2) - rho_s(0) <= 0.10 (no growth of the penalty from N_sigma = 6 to 7 at r = 1)
-           on every counted instance, and the cost check for the lr family is PASS
-  FAIL if  on any counted instance: premise fails, or rho_s >= 1.30, rho_t >= 1.40, sigma >= 1.0,
-           gamma >= 0.85, oracle ratio >= 1.30, trend >= 0.25, v >= 4 or median z > 6; or the lr
-           cost check is FAIL
-  AMBIGUOUS otherwise. Pre-committed action: 3 more seeds (44, 55, 66) for sk1, hf4 and nnbf on
-           the counted instances; if still AMBIGUOUS, FAIL.
-ROUTE 3.2 (skagp; rank control agh4; premise and Gate-2 control agpj = Foil): the same rule
-  with sk1 -> skagp, hf4 -> agh4, hf1 and sjnet -> agpj (premise: med dE_sign(agpj)/Ref_sign
-  >= 1.3, i.e. the Foil's sign is measurably worse than NNBF's), no oracle-spin arm (the post-hoc
-  P_S check applies), and the agp cost check.
-Reported, not in the verdict: rho_s and rho_t of every arm, the rank trend (hf1, hf4, sk1,
-sk2 versus r/N_sigma), U versus U->P, <S^2>, overlaps, f_E, eC_tot, seed spreads, sector dims.
+Pre-committed decision rule (--mode aggregate)
+----------------------------------------------
+For instance I and metric X in {dE_sign, dE_tot} (state "P"): Ref arm A_X(I) = the one of
+{nnbf, nnbfj} with the smaller median X; Ref_X = that median.
+PREMISE GATE (instance I counts): median dE_sign(nnbf) >= 0.01 t (the qualification bar used to
+  select the instance) AND Ref_sign >= 0.005 t (the better control still keeps a sign error).
+  Fewer than 2 counted instances -> both routes UNINFORMATIVE (critic item 5).
+Paired ratios: rho_X = median over seeds s of X(route, s) / X(A_X, s).
+Guards (else AMBIGUOUS): 3 seeds of route, premise arm and both controls; calib_err <= 1e-3
+  dE_tot; multi-start spread < 0.05; per_amp_check <= 1e-10 for every sampled seed of the route
+  and of the controls.
+ROUTE 3.1 (sk1; premise hf1; Gate-2 control sjnet), on every counted instance:
+  REDUNDANT (-> FAIL) if beta = med dE_sign(hf1) / Ref_sign < 1.3
+  PASS if rho_s <= 1.10 and rho_t <= 1.15 and gamma = med dE_sign(sk1)/med dE_sign(sjnet) <= 0.6
+       and post-hoc-spin rho_s(P_S) <= 1.15 and oracle med dE_sign(sk1_PS)/med dE_sign(nnbf_PS)
+       <= 1.15 and v = med var_ex(sk1)/med var_ex(Ref_sign arm) <= 2 and median z <= 4,
+       on every counted instance, and the lr cost check PASSes
+  FAIL if on any counted instance rho_s >= 1.30, rho_t >= 1.40, gamma >= 0.85, oracle >= 1.30,
+       v >= 4 or median z > 6; or the lr cost check FAILs
+  AMBIGUOUS otherwise. Action: 3 more seeds (44, 55, 66) for sk1, hf1, nnbf and nnbfj on the
+       counted instances; if still AMBIGUOUS, FAIL.
+ROUTE 3.2 (skagp; premise and Gate-2 control agpj = the Foil): the same rule with no oracle arm
+  and the agp cost check.
+Reported only: sigma = paired median dE_sign(route)/dE_sign(equal-rank arm) with paired
+dominance (of 3), rho of every arm, rank trend (hf1, hf4, sk1, sk2), U versus U->P, <S^2>,
+overlaps, f_E, eC_tot, seed spreads, sector dims.
 
-Cost check (--mode cost; single thread; folded into the verdict)
------------------------------------------------------------------
-L x L PBC t-t'-J lattices, t' = -0.25, J = 0.4, delta = 1/8, random configurations; SK-LR
-(lr, K=4, r=1, Hs=64, Ha=128) and SK-AGP (agp, K=4, r=1, Hs=64, Ha=128) with random weights.
-Per size: T_setup (per-configuration table construction, O(V N^2)), T_E (all connections with
-carried tables), T_sweep (SK-LR only: N_e Metropolis proposals with accepted-move
-Sherman-Morrison updates), drift (carried tables after the sweep versus a fresh setup), eps
-(relative difference of the carried-table local energy, AFTER the sweep, from brute force),
-T_brute (every connected amplitude rebuilt from scratch, O(N^4)).
-Per family: PASS if eps <= 1e-8 and drift <= 1e-8 at every size, slope(T_E) <= 2.4 and (lr)
-slope(T_sweep) <= 3.3 over the three largest sizes, with slope(T_brute) >= 3.3 over the three
-largest brute sizes as the regime guard. FAIL if eps or drift > 1e-6, or slope(T_E) >= 2.8, or
-(lr) slope(T_sweep) >= 3.8. AMBIGUOUS otherwise (also when the guard fails); action: rerun with
---sizes 16,24,32,40 --brute-max 40; if still AMBIGUOUS, the route's verdict is FAIL.
-T_setup's slope is reported (expected ~3) and is not gated: the setup is paid once per Markov
-chain, and its per-sample equivalent is the sweep.
+Cost check (--mode cost; one thread; folded into the verdict; critic item 8)
+---------------------------------------------------------------------------
+L x L PBC t-t'-J, t' = -0.25, J = 0.4, delta = 1/8, random configurations, random weights; SK-LR
+(lr, K=4, r=1, Hs=64, Ha=128) and SK-AGP (agp, same sizes). Per size: n_conn (hops + exchanges),
+t_c = T_E / n_conn (carried-table time per connection), t_sw = T_sweep / n_prop (SK-LR only),
+t_cb = T_brute / n_conn for L <= --brute-max, eps (carried-table E_loc after the sweep versus
+brute force), drift (carried tables versus a fresh setup).
+Per family: PASS if eps <= 1e-8 and drift <= 1e-8 at every size, the slope of t_c in N_e over the
+three largest sizes is in [0.5, 1.3] (O(N_e) per connection, i.e. C_E = O(N_e^2); a slope below
+0.5 means interpreter overhead still dominates, which is AMBIGUOUS), (lr) the slope of
+t_sw is <= 2.3, and the speedup t_cb / t_c at the largest brute size is >= 20. FAIL if eps or
+drift > 1e-6, slope(t_c) >= 1.8, (lr) slope(t_sw) >= 2.8, or speedup < 5. AMBIGUOUS otherwise;
+action: rerun with --sizes 32,48,56,64 --brute-max 32; if still AMBIGUOUS, FAIL.
+Total-time slopes and the brute per-connection slope are reported, not gated.
 
 Usage
 -----
-  python3 micro_test.py --mode train --task ID [options]   one Slurm array task (0..116)
-  python3 micro_test.py --mode cost [--sizes 12,16,20,24,28,32] [--brute-max 32]
-  python3 micro_test.py --mode aggregate [--results DIR]
-  python3 micro_test.py --mode smoke                        correctness checks + tiny pipeline
-  python3 micro_test.py --mode time --instance 1 --arm sk1  one SR step (cost estimate)
+  python3 micro_test.py --mode train --task ID [--new-instance I]   one Slurm array task
+  python3 micro_test.py --mode train --instance I --arm A --seed S  one explicit task
+  python3 micro_test.py --mode cost [--sizes 16,24,32,40,48] [--brute-max 32]
+  python3 micro_test.py --mode aggregate [--results DIR] [--new-instance I]
+  python3 micro_test.py --mode smoke                                 checks + tiny pipeline
+  python3 micro_test.py --mode time --instance I --arm A             one SR step (cost estimate)
 
 Options
 -------
   --mode {train,cost,aggregate,smoke,time}  What to run (default smoke).
-  --task INT        Array index 0..116 for --mode train: instance = task // 39,
-                    arm = ARM_LIST[(task % 42) // 3], seed = SEEDS[task % 3] with
-                    ARM_LIST = nnbf, mdnnbf, hf1, hf4, sk1, sk2, sjnet, agpj, agh4, skagp,
-                    nnbf_PS, sk1_PS, nnbf_U, sk1_U and SEEDS = 11, 22, 33. Explicit
-                    --instance / --arm / --seed override the decoded values.
-  --instance INT    0, 1 (production) or 9 (smoke cluster).
-  --arm NAME        One of the 14 arm names above.
+  --task INT        Array index 0..(2*3*NARM - 1) for --mode train: instance =
+                    PRODUCTION[task // (3*NARM)] with PRODUCTION = (0, --new-instance),
+                    arm = ARM_LIST[(task % (3*NARM)) // 3], seed = SEEDS[task % 3]
+                    (NARM = 14; ARM_LIST below; SEEDS = 11, 22, 33). Explicit --instance /
+                    --arm / --seed override the decoded values.
+  --new-instance INT  The second production instance (default 3).
+  --instance INT    0-4 (see above) or 9 (smoke cluster).
+  --arm NAME        One of ARM_LIST.
   --seed INT        Network-initialisation and SR-sampling seed.
-  --K INT           Terms of mdnnbf, sk1, sk2, skagp (default 4).
-  --hs-sign INT     Sign-trunk width of every lr/agp arm with r > 0 (default 64).
-  --match-width INT NNBF width whose parameter count every arm matches (default 128).
-  --sr-iters INT (1500)  --sr-lr FLOAT (0.05)  --sr-shift FLOAT (1e-3)  --sr-samples INT (2000)
+  --K INT           Terms of sk1, sk2, skagp (default 4).
+  --hs-sign INT     Sign-trunk width of every lr/agp arm with r > 0 (default 6).
+  --match-width INT NNBF width whose parameter count every arm matches (default 6).
+  --nnbfj-width INT Backflow width of the nnbfj control (default 4; its Jastrow fills P).
+  --sr-iters INT (1200)  --sr-lr FLOAT (0.05)  --sr-shift FLOAT (1e-3)  --sr-samples INT (2000)
   --chunk INT       Configurations per forward chunk (default 32768).
   --o-chunk INT     Samples per chunk of projected log-derivatives (default 8; x |G| images).
   --lbfgs-iters INT (4000)  --fn-iters INT (10)  --fn-floor FLOAT (1e-3)  --r-min FLOAT (1.5):
                     budget settings, as P1.1.
   --mc-samples INT  Measurements in the sampled arm (default 20000; 0 disables it).
   --mc-burn INT     Burn-in measurements (default 2000).
-  --sizes LIST      --mode cost: comma-separated L (default 12,16,20,24,28,32).
+  --sizes LIST      --mode cost: comma-separated L (default 16,24,32,40,48).
   --brute-max INT   --mode cost: largest L with brute force (default 32).
   --nconf INT       --mode cost: configurations per size (default 2).
   --results DIR     Results directory (default results/ next to this script).
@@ -182,11 +157,9 @@ Options
 
 Outputs
 -------
-  train: results/inst{I}_{arm}_s{seed}.json: params, arm kwargs, n_params, target, ED levels,
-         degeneracy, irrep characters, |G|, S_psi0, calib_err, initial projected-norm ratio,
-         budgets {label: P1.1 budget + S2, ov0}, sampled {stats}, t_sr, s_per_step;
-         results/params/inst{I}_{arm}_s{seed}.npz (flat parameters + layout).
-  cost:  results/cost_check.json (rows, slopes, per-family verdicts).
+  train: results/inst{I}_{arm}_s{seed}.json (params, arm kwargs, n_params, ED levels, irrep, |G|,
+         sector dims, calib_err, budgets, sampled stats, timing) and results/params/*.npz.
+  cost:  results/cost_check.json (rows, per-connection slopes, speedup, per-family verdicts).
   aggregate: printed table and verdicts; results/aggregate.json.
 """
 import argparse
@@ -208,14 +181,18 @@ import scipy.sparse as sp  # noqa: E402
 INSTANCES = {0: dict(Lx=4, Ly=4, bcx="obc", bcy="obc", nup=6, ndn=6, tp=-0.25, J=0.4),
              1: dict(Lx=4, Ly=4, bcx="pbc", bcy="obc", nup=6, ndn=6, tp=-0.25, J=0.4),
              2: dict(Lx=4, Ly=4, bcx="obc", bcy="obc", nup=7, ndn=7, tp=-0.25, J=0.4),
+             3: dict(Lx=4, Ly=4, bcx="obc", bcy="obc", nup=5, ndn=5, tp=-0.25, J=0.4),   # screen h6
+             4: dict(Lx=5, Ly=3, bcx="obc", bcy="obc", nup=6, ndn=6, tp=-0.25, J=0.4),   # screen r53n6
              9: dict(Lx=3, Ly=2, bcx="pbc", bcy="obc", nup=2, ndn=2, tp=-0.25, J=0.4)}
-ARM_LIST = ["nnbf", "hf1", "hf4", "sk1", "sk2", "sjnet", "agpj", "agh4", "skagp",
+ARM_LIST = ["nnbf", "nnbfj", "hf1", "hf4", "sk1", "sk2", "sjnet", "agpj", "agh4", "skagp",
             "nnbf_PS", "sk1_PS", "nnbf_U", "sk1_U"]
 NARM = len(ARM_LIST)
 SEEDS = [11, 22, 33]
+PRODUCTION = (0, "new")   # the decisive array: instance 0 and --new-instance
 UHF_SEED, F0_SEED = 1234, 1234
 ARM_DEF = {
     "nnbf": dict(mode="full", K=1, free=None, proj="chi"),
+    "nnbfj": dict(mode="full", K=1, Hs="nnbfj", free="Ha", proj="chi"),
     "hf1": dict(mode="lr", K=1, r=1, free="Ha", proj="chi"),
     "hf4": dict(mode="lr", K=1, r=4, free="Ha", proj="chi"),
     "sk1": dict(mode="lr", K="K", r=1, free="Ha", proj="chi"),
@@ -229,17 +206,19 @@ ARM_DEF = {
     "nnbf_U": dict(mode="full", K=1, free=None, proj="none"),
     "sk1_U": dict(mode="lr", K="K", r=1, free="Ha", proj="none"),
 }
-SAMPLED = {"nnbf", "hf4", "sk1", "skagp", "agpj"}
+SAMPLED = {"nnbf", "nnbfj", "hf1", "hf4", "sk1", "skagp", "agpj"}
 # pre-committed thresholds
-RHO_S_PASS, RHO_T_PASS, RANK_PASS, DOM_PASS, GAMMA_PASS, TREND_PASS = 1.10, 1.15, 0.85, 7, 0.6, 0.10
+RHO_S_PASS, RHO_T_PASS, GAMMA_PASS = 1.10, 1.15, 0.6
 SPIN_PASS, V_PASS, Z_PASS = 1.15, 2.0, 4.0
-RHO_S_FAIL, RHO_T_FAIL, RANK_FAIL, GAMMA_FAIL, TREND_FAIL, SPIN_FAIL, V_FAIL, Z_FAIL = \
-    1.30, 1.40, 1.0, 0.85, 0.25, 1.30, 4.0, 6.0
-BITE = 1.3
-PREMISE_REF = 0.01   # an instance counts only if the projected control's median dE_sign >= 0.01 t
-CALIB_TOL, SPREAD_TOL = 1e-3, 0.05
-EPS_C, SLOPE_E, SLOPE_SW, BRUTE_GUARD = 1e-8, 2.4, 3.3, 3.3
-EPS_CF, SLOPE_EF, SLOPE_SWF = 1e-6, 2.8, 3.8
+RHO_S_FAIL, RHO_T_FAIL, GAMMA_FAIL, SPIN_FAIL, V_FAIL, Z_FAIL = 1.30, 1.40, 0.85, 1.30, 4.0, 6.0
+BITE = 1.3            # capacity premise: med dE_sign(premise arm) / Ref_sign must be >= BITE
+QUALIFY = 0.01        # instance qualifies if med dE_sign(nnbf) >= 0.01 t (selection bar)
+PREMISE_REF = 0.005   # ... and the better control (nnbf or nnbfj) keeps Ref_sign >= 0.005 t
+MIN_COUNTED = 2       # critic item 5: fewer counted instances -> UNINFORMATIVE
+CALIB_TOL, SPREAD_TOL, AMP_TOL = 1e-3, 0.05, 1e-10
+# cost check (critic item 8): per-connection time at large N_e and measured speedup
+EPS_C, SLOPE_C, SLOPE_SW, SPEEDUP, SLOPE_GUARD = 1e-8, 1.3, 2.3, 20.0, 0.5
+EPS_CF, SLOPE_CF, SLOPE_SWF, SPEEDUP_F = 1e-6, 1.8, 2.8, 5.0
 ROUTES = {"3.1": dict(arm="sk1", rank="hf4", premise="hf1", gate2="sjnet", oracle=("sk1_PS", "nnbf_PS"),
                       cost="lr"),
           "3.2": dict(arm="skagp", rank="agh4", premise="agpj", gate2="agpj", oracle=None, cost="agp")}
@@ -313,8 +292,11 @@ def arm_kwargs(arm, m, args, refs):
     d = ARM_DEF[arm]
     target = LRAnsatz(m, refs[0], "full", K=1, Hs=args.match_width).n_params()
     r = d.get("r", 0)
+    hs = d.get("Hs", args.hs_sign if r > 0 else 0)
+    if hs == "nnbfj":
+        hs = args.nnbfj_width
     kw = dict(mode=d["mode"], K=(args.K if d["K"] == "K" else d["K"]), r=r,
-              shared_ref=d.get("shared_ref", True), Hs=d.get("Hs", args.hs_sign if r > 0 else 0), Ha=0)
+              shared_ref=d.get("shared_ref", True), Hs=hs, Ha=0)
     if d["free"] is None:
         kw.update(Hs=args.match_width)
         return kw, target
@@ -562,8 +544,10 @@ def _slope(rows, key):
 
 
 def cost_check(args):
+    """Critic item 8: gate on the time per connection at large N_e and on the measured speedup
+    over brute force per connection, not on total-time exponents at overhead-dominated sizes."""
     from p11_core import build_lattice
-    out = dict(rows={}, slopes={}, verdict={})
+    out = dict(rows={}, slopes={}, speedup={}, verdict={})
     for fam in ("lr", "agp"):
         rows = []
         for L in args.size_list:
@@ -576,49 +560,55 @@ def cost_check(args):
             nn = sorted({(min(i, j), max(i, j)) for (i, j, _) in bonds})
             a = random_ansatz(fam, L, n, T, coords, args.seed + L)
             rng = np.random.default_rng(args.seed + 7 * L)
-            ts, te, tsw, tb, eps, drift = [], [], [], [], 0.0, 0.0
+            ts, tc, tsw, tcb, eps, drift, ncs = [], [], [], [], 0.0, 0.0, []
             for _ in range(args.nconf):
                 ou, od = random_tj_config(V, nh, rng)
                 if fam == "lr":
                     t0 = time.perf_counter(); c = LRCarried(a, T, nn, 0.4, ou, od); ts.append(time.perf_counter() - t0)
-                    t0 = time.perf_counter(); c.sweep(rng, 2 * n); tsw.append(time.perf_counter() - t0)
-                    t0 = time.perf_counter(); Ef = c.eloc(); te.append(time.perf_counter() - t0)
+                    t0 = time.perf_counter(); c.sweep(rng, 2 * n); tsw.append((time.perf_counter() - t0) / (2 * n))
+                    t0 = time.perf_counter(); Ef = c.eloc(); te = time.perf_counter() - t0
                     ou2, od2 = c.occ["u"].copy(), c.occ["d"].copy()
                     drift = max(drift, c.drift())
                 else:
-                    Ef, t_set, t_e = eloc_fast_agp(a, T, nn, 0.4, ou, od)
-                    ts.append(t_set); te.append(t_e); ou2, od2 = ou, od
+                    Ef, t_set, te = eloc_fast_agp(a, T, nn, 0.4, ou, od)
+                    ts.append(t_set); ou2, od2 = ou, od
+                _, hops, exch = connections(T, nn, 0.4, ou2, od2)
+                nc = len(hops) + len(exch)
+                ncs.append(nc); tc.append(te / nc)
                 if L <= args.brute_max:
                     t0 = time.perf_counter()
                     Eb = eloc_brute(a, T, nn, 0.4, ou2, od2)
-                    tb.append(time.perf_counter() - t0)
+                    tcb.append((time.perf_counter() - t0) / nc)
                     eps = max(eps, abs(Ef - Eb) / (1 + abs(Eb)))
-            row = dict(L=L, V=V, Ne=2 * n, T_setup=float(np.median(ts)), T_E=float(np.median(te)),
-                       T_sweep=float(np.median(tsw)) if tsw else None,
-                       T_brute=float(np.median(tb)) if tb else None, eps=eps if tb else None, drift=drift)
+            row = dict(L=L, V=V, Ne=2 * n, n_conn=float(np.median(ncs)), T_setup=float(np.median(ts)),
+                       t_c=float(np.median(tc)), t_sw=float(np.median(tsw)) if tsw else None,
+                       t_cb=float(np.median(tcb)) if tcb else None, eps=eps if tcb else None, drift=drift)
             rows.append(row)
-            log(f"cost[{fam}] L={L:3d} Ne={2 * n:4d} setup={row['T_setup']:.3e} T_E={row['T_E']:.3e} "
-                f"sweep={row['T_sweep'] if tsw else float('nan'):.3e} brute={row['T_brute'] if tb else float('nan'):.3e} "
-                f"eps={row['eps'] if tb else float('nan'):.1e} drift={drift:.1e}")
+            log(f"cost[{fam}] L={L:3d} Ne={2 * n:4d} n_conn={row['n_conn']:.0f} setup={row['T_setup']:.3e} "
+                f"t_c={row['t_c']:.3e} t_sw={row['t_sw'] if tsw else float('nan'):.3e} "
+                f"t_cb={row['t_cb'] if tcb else float('nan'):.3e} eps={row['eps'] if tcb else float('nan'):.1e} "
+                f"drift={drift:.1e}")
         big = rows[-3:]
-        bb = [q for q in rows if q["T_brute"]][-3:]
-        sl = dict(setup=_slope(big, "T_setup"), E=_slope(big, "T_E"), sweep=_slope(big, "T_sweep"),
-                  brute=_slope(bb, "T_brute"))
+        bb = [q for q in rows if q["t_cb"]]
+        sl = dict(setup=_slope(big, "T_setup"), t_c=_slope(big, "t_c"), t_sw=_slope(big, "t_sw"),
+                  t_cb=_slope(bb[-3:], "t_cb"))
+        spd = bb[-1]["t_cb"] / next(q["t_c"] for q in rows if q["L"] == bb[-1]["L"]) if bb else float("nan")
         e_max = max([q["eps"] for q in rows if q["eps"] is not None] or [float("nan")])
         d_max = max(q["drift"] for q in rows)
-        sw_ok = fam != "lr" or sl["sweep"] <= SLOPE_SW
-        sw_bad = fam == "lr" and sl["sweep"] >= SLOPE_SWF
-        if not (e_max <= EPS_CF) or d_max > EPS_CF or sl["E"] >= SLOPE_EF or sw_bad:
+        sw_ok = fam != "lr" or sl["t_sw"] <= SLOPE_SW
+        sw_bad = fam == "lr" and sl["t_sw"] >= SLOPE_SWF
+        if not (e_max <= EPS_CF) or d_max > EPS_CF or sl["t_c"] >= SLOPE_CF or sw_bad or not (spd >= SPEEDUP_F):
             v = "FAIL"
-        elif e_max <= EPS_C and d_max <= EPS_C and sl["E"] <= SLOPE_E and sw_ok and sl["brute"] >= BRUTE_GUARD:
+        elif (e_max <= EPS_C and d_max <= EPS_C and SLOPE_GUARD <= sl["t_c"] <= SLOPE_C and sw_ok
+              and spd >= SPEEDUP):
             v = "PASS"
         else:
             v = "AMBIGUOUS"
-        out["rows"][fam], out["slopes"][fam], out["verdict"][fam] = rows, sl, v
+        out["rows"][fam], out["slopes"][fam], out["speedup"][fam], out["verdict"][fam] = rows, sl, spd, v
         out.setdefault("eps", {})[fam] = e_max
         out.setdefault("drift", {})[fam] = d_max
         log(f"cost[{fam}] slopes " + " ".join(f"{k}={v_:.2f}" for k, v_ in sl.items())
-            + f" eps={e_max:.1e} drift={d_max:.1e} -> {v}")
+            + f" speedup(L={bb[-1]['L'] if bb else 0})={spd:.1f} eps={e_max:.1e} drift={d_max:.1e} -> {v}")
     return out
 
 
@@ -735,7 +725,7 @@ def _med(x):
     return float(np.median(x)) if x else float("nan")
 
 
-def aggregate(d):
+def aggregate(d, new_instance=3):
     R = {}
     for f in sorted(glob.glob(os.path.join(d, "inst*_*_s*.json"))):
         r = json.load(open(f))
@@ -744,10 +734,19 @@ def aggregate(d):
     lab_of = {a: ("P" if ARM_DEF[a]["proj"] == "chi" else ("PS" if ARM_DEF[a]["proj"] == "spin_chi" else "U"))
               for a in ARM_DEF}
 
-    def vals(I, arm, key, lab=None):
+    def by_seed(I, arm, key, lab=None):
         lab = lab or lab_of[arm]
         rr = R.get(I, {}).get(arm, {})
-        return [rr[s]["budgets"][lab][key] for s in sorted(rr) if rr[s]["budgets"].get(lab)]
+        return {s: rr[s]["budgets"][lab][key] for s in sorted(rr) if rr[s]["budgets"].get(lab)}
+
+    def vals(I, arm, key, lab=None):
+        return list(by_seed(I, arm, key, lab).values())
+
+    def paired(I, arm, ref_arm, key, lab=None):
+        """Critic item 7: median over seeds of the per-seed ratio (same seed index in both arms)."""
+        x, y = by_seed(I, arm, key, lab), by_seed(I, ref_arm, key, lab)
+        rat = [x[s] / y[s] for s in x if s in y and y[s] > 0]
+        return _med(rat), int(sum(x[s] < y[s] for s in x if s in y)), len(rat)
 
     def guard(I, arm):
         rr = R.get(I, {}).get(arm, {})
@@ -760,34 +759,47 @@ def aggregate(d):
                 msgs.append(f"{arm} s{s}: calib {rr[s]['calib_err']:.1e}")
             if not b["spread"] < SPREAD_TOL:
                 msgs.append(f"{arm} s{s}: spread {b['spread']:.2e}")
+            smp = rr[s].get("sampled")
+            if arm in SAMPLED and smp is not None and not smp["per_amp_check"] <= AMP_TOL:
+                msgs.append(f"{arm} s{s}: per_amp_check {smp['per_amp_check']:.1e} > {AMP_TOL:g}")
         if len(rr) < 3:
             msgs.append(f"{arm}: {len(rr)} seeds")
         return msgs
 
-    insts = sorted(k for k in R if k in (0, 1, 2, 9))
+    insts = sorted(k for k in R if k in INSTANCES)
     ref = {}
     for I in insts:
-        rs = _med(vals(I, "nnbf", "dE_sign"))
-        rt = _med(vals(I, "nnbf", "dE_tot"))
-        rsS = _med(vals(I, "nnbf", "dE_sign", "P_S"))
-        ref[I] = (rs, rt, rsS)
-        Ns = INSTANCES[I]["nup"]
-        anyr = next(iter(next(iter(R[I].values())).values()))
-        print(f"instance {I} {INSTANCES[I]}: Ref_sign={rs:.5f} Ref_tot={rt:.5f} Ref_sign(P_S)={rsS:.5f} "
-              f"dim(P_chi)={anyr.get('dim_chi', float('nan')):.0f} dim(P_S P_chi)={anyr.get('dim_S_chi', float('nan')):.0f} "
-              f"P_target={anyr.get('P_target')}")
         tab = {}
+        Ns = INSTANCES[I]["nup"]
+        # Ref arm per metric: the better (smaller median) of nnbf and nnbfj (critic item 6)
+        refarm = {}
+        for key in ("dE_sign", "dE_tot"):
+            cands = [(_med(vals(I, c, key)), c) for c in ("nnbf", "nnbfj") if c in R.get(I, {})]
+            cands = [q for q in cands if np.isfinite(q[0])]
+            refarm[key] = min(cands)[1] if cands else "nnbf"
+        rs = _med(vals(I, refarm["dE_sign"], "dE_sign"))
+        rt = _med(vals(I, refarm["dE_tot"], "dE_tot"))
+        rsS = _med(vals(I, refarm["dE_sign"], "dE_sign", "P_S"))
+        q0 = _med(vals(I, "nnbf", "dE_sign"))
+        ref[I] = dict(sign=rs, tot=rt, signPS=rsS, qualify=q0, arm_sign=refarm["dE_sign"], arm_tot=refarm["dE_tot"])
+        anyr = next(iter(next(iter(R[I].values())).values()))
+        print(f"instance {I} {INSTANCES[I]}: med dE_sign(nnbf)={q0:.5f} Ref_sign={rs:.5f} ({refarm['dE_sign']}) "
+              f"Ref_tot={rt:.5f} ({refarm['dE_tot']}) Ref_sign(P_S)={rsS:.5f} "
+              f"dim(P_S P_chi)={anyr.get('dim_S_chi', float('nan')):.0f} P_target={anyr.get('P_target')}")
         for arm in ARM_LIST:
             if arm not in R.get(I, {}):
                 continue
             ds, dt = vals(I, arm, "dE_sign"), vals(I, arm, "dE_tot")
-            row = dict(n=len(ds), dE_sign=_med(ds), dE_tot=_med(dt), rho_s=_med(ds) / rs, rho_t=_med(dt) / rt,
+            isP = lab_of[arm] == "P"
+            row = dict(n=len(ds), dE_sign=_med(ds), dE_tot=_med(dt),
+                       rho_s=paired(I, arm, refarm["dE_sign"], "dE_sign")[0] if isP else _med(ds) / rs,
+                       rho_t=paired(I, arm, refarm["dE_tot"], "dE_tot")[0] if isP else _med(dt) / rt,
                        spread_sign=(max(ds) - min(ds)) / _med(ds) if ds else float("nan"),
                        f_E=_med(vals(I, arm, "f_E_up")), eC=_med(vals(I, arm, "eC_tot")),
                        S2=_med(vals(I, arm, "S2")), ov0=_med(vals(I, arm, "ov0")),
                        r_over_N=ARM_DEF[arm].get("r", Ns) / Ns if ARM_DEF[arm]["mode"] != "full" else 1.0)
-            if lab_of[arm] == "P":
-                row["rho_s_PS"] = _med(vals(I, arm, "dE_sign", "P_S")) / rsS
+            if isP:
+                row["rho_s_PS"] = paired(I, arm, refarm["dE_sign"], "dE_sign", "P_S")[0]
             if lab_of[arm] == "U":
                 row["dE_sign_UP"] = _med(vals(I, arm, "dE_sign", "UP"))
                 row["dE_tot_UP"] = _med(vals(I, arm, "dE_tot", "UP"))
@@ -805,23 +817,25 @@ def aggregate(d):
                   + (f" var_ex={row['var_ex']:.4g} z={row['z']:.2f} kurt={row['kurt']:.3g} tail={row['tail']:.3f}"
                      f" amp_chk={row['per_amp_check']:.1e}" if "var_ex" in row else ""))
         out["instances"][I] = tab
+        out.setdefault("ref", {})[I] = ref[I]
     cost = None
     cf = os.path.join(d, "cost_check.json")
     if os.path.exists(cf):
         cost = json.load(open(cf))
-        print(f"cost check: {cost['verdict']} slopes {cost['slopes']}")
-    # premise gate: an instance counts only if the projected control leaves a measurable sign error
-    counted = {I: bool(ref[I][0] >= PREMISE_REF) for I in insts}
+        print(f"cost check: {cost['verdict']} slopes {cost['slopes']} speedup {cost.get('speedup')}")
+    counted = {I: bool(ref[I]["qualify"] >= QUALIFY and ref[I]["sign"] >= PREMISE_REF) for I in insts}
     out["counted"] = counted
-    print("premise gate (Ref_sign >= %.3g t): " % PREMISE_REF + ", ".join(
-        f"instance {I}: Ref_sign={ref[I][0]:.4g} -> {'counts' if counted[I] else 'DOES NOT COUNT'}" for I in insts))
+    print(f"premise gate (med dE_sign(nnbf) >= {QUALIFY:g} t and Ref_sign >= {PREMISE_REF:g} t): " + ", ".join(
+        f"instance {I}: {ref[I]['qualify']:.4g}/{ref[I]['sign']:.4g} -> {'counts' if counted[I] else 'DOES NOT COUNT'}"
+        for I in insts))
     smoke = insts == [9]
-    primary = [I for I in insts if (I in (0, 1, 2) or smoke) and (counted[I] or smoke)]
+    prod = (0, new_instance)
+    primary = [I for I in insts if (I in prod or smoke) and (counted[I] or smoke)]
     for name, rt_ in ROUTES.items():
         arm, rk, pm, g2 = rt_["arm"], rt_["rank"], rt_["premise"], rt_["gate2"]
-        need = (arm, rk, pm, g2, "nnbf")
-        if not primary:
-            v = "UNINFORMATIVE (no instance passes the premise gate)"
+        need = (arm, pm, g2, "nnbf", "nnbfj")
+        if len(primary) < (1 if smoke else MIN_COUNTED):
+            v = f"UNINFORMATIVE ({len(primary)} counted instance(s); {MIN_COUNTED} needed)"
             out["routes"][name] = dict(verdict=v)
             print(f"ROUTE {name} ({arm}) VERDICT: {v}")
             continue
@@ -833,35 +847,24 @@ def aggregate(d):
         tags, per = [], {}
         for I in primary:
             T1 = out["instances"][I]
-            q = dict(beta=T1[pm]["rho_s"], rho_s=T1[arm]["rho_s"], rho_t=T1[arm]["rho_t"],
-                     sigma=T1[arm]["dE_sign"] / T1[rk]["dE_sign"], gamma=T1[arm]["dE_sign"] / T1[g2]["dE_sign"],
-                     rho_s_PS=T1[arm].get("rho_s_PS", float("nan")))
-            a_s, r_s = vals(I, arm, "dE_sign"), vals(I, rk, "dE_sign")
-            q["dominance"] = int(sum(x < y for x in a_s for y in r_s))
+            ra = ref[I]["arm_sign"]
+            q = dict(beta=T1[pm]["dE_sign"] / ref[I]["sign"], rho_s=T1[arm]["rho_s"], rho_t=T1[arm]["rho_t"],
+                     gamma=T1[arm]["dE_sign"] / T1[g2]["dE_sign"], rho_s_PS=T1[arm].get("rho_s_PS", float("nan")))
+            if rk in R.get(I, {}):
+                q["sigma_reported"], q["dominance_reported"], _ = paired(I, arm, rk, "dE_sign")
             orc = None
             if rt_["oracle"]:
                 orc = (_med(vals(I, rt_["oracle"][0], "dE_sign")) / _med(vals(I, rt_["oracle"][1], "dE_sign"))
                        if all(o in R.get(I, {}) for o in rt_["oracle"]) else float("nan"))
             q["oracle"] = orc
-            q["v"] = T1[arm].get("var_ex", float("nan")) / T1["nnbf"].get("var_ex", float("nan"))
+            q["v"] = T1[arm].get("var_ex", float("nan")) / T1[ra].get("var_ex", float("nan"))
             q["z"] = T1[arm].get("z", float("nan"))
-            # filling trend at fixed r on the same 4x4 OBC lattice: instance 2 (N_sigma = 7) minus
-            # instance 0 (N_sigma = 6); evaluated on instance 2 only, and only if both count
-            if I == 2 and counted.get(0) and arm in out["instances"].get(0, {}):
-                q["trend"] = q["rho_s"] - out["instances"][0][arm]["rho_s"]
-            else:
-                q["trend"] = None
-            g = guard(I, arm) + guard(I, rk) + guard(I, "nnbf")
+            g = guard(I, arm) + guard(I, pm) + guard(I, "nnbf") + guard(I, "nnbfj")
             q["guards"] = g
-            tr = q["trend"]
-            fail = (q["beta"] < BITE or q["rho_s"] >= RHO_S_FAIL or q["rho_t"] >= RHO_T_FAIL
-                    or q["sigma"] >= RANK_FAIL or q["gamma"] >= GAMMA_FAIL
-                    or (tr is not None and tr >= TREND_FAIL)
+            fail = (q["rho_s"] >= RHO_S_FAIL or q["rho_t"] >= RHO_T_FAIL or q["gamma"] >= GAMMA_FAIL
                     or (orc is not None and np.isfinite(orc) and orc >= SPIN_FAIL)
                     or q["v"] >= V_FAIL or q["z"] > Z_FAIL)
-            pas = (not g and q["beta"] >= BITE and q["rho_s"] <= RHO_S_PASS and q["rho_t"] <= RHO_T_PASS
-                   and q["sigma"] <= RANK_PASS and q["dominance"] >= DOM_PASS and q["gamma"] <= GAMMA_PASS
-                   and (tr is None or tr <= TREND_PASS)
+            pas = (not g and q["rho_s"] <= RHO_S_PASS and q["rho_t"] <= RHO_T_PASS and q["gamma"] <= GAMMA_PASS
                    and q["rho_s_PS"] <= SPIN_PASS and (orc is None or orc <= SPIN_PASS)
                    and q["v"] <= V_PASS and q["z"] <= Z_PASS)
             t = "FAIL" if fail else ("PASS" if pas else "AMBIGUOUS")
@@ -872,7 +875,7 @@ def aggregate(d):
             print(f"ROUTE {name} ({arm}) instance {I}: " + " ".join(
                 f"{k}={v_:.3f}" if isinstance(v_, float) else f"{k}={v_}" for k, v_ in q.items()) + f" -> {t}")
         if any(t == "REDUNDANT" for t in tags):
-            v = "FAIL (REDUNDANT: the rank-restricted single term already matches the control)"
+            v = "FAIL (REDUNDANT: one rank-1 term at the same parameter split already matches the reference)"
         elif any(t == "FAIL" for t in tags) or cv == "FAIL":
             v = "FAIL"
         elif all(t == "PASS" for t in tags) and cv == "PASS":
@@ -906,16 +909,18 @@ def time_step(args):
 
 # ============================================================================ main
 def parse_args(argv=None):
-    ap = argparse.ArgumentParser(description="P2.1 round-3 test (see module docstring)")
+    ap = argparse.ArgumentParser(description="P2.1 round-5 test (see module docstring)")
     ap.add_argument("--mode", choices=["train", "cost", "aggregate", "smoke", "time"], default="smoke")
     ap.add_argument("--task", type=int, default=-1)
-    ap.add_argument("--instance", type=int, default=-1, choices=[-1, 0, 1, 2, 9])
+    ap.add_argument("--instance", type=int, default=-1, choices=[-1] + sorted(INSTANCES))
+    ap.add_argument("--new-instance", type=int, default=3, choices=[k for k in INSTANCES if k not in (0, 9)])
+    ap.add_argument("--nnbfj-width", type=int, default=4)
     ap.add_argument("--arm", default="")
     ap.add_argument("--seed", type=int, default=-1)
     ap.add_argument("--K", type=int, default=4)
     ap.add_argument("--hs-sign", type=int, default=6)
     ap.add_argument("--match-width", type=int, default=6)
-    ap.add_argument("--sr-iters", type=int, default=1500)
+    ap.add_argument("--sr-iters", type=int, default=1200)
     ap.add_argument("--sr-lr", type=float, default=0.05)
     ap.add_argument("--sr-shift", type=float, default=1e-3)
     ap.add_argument("--sr-samples", type=int, default=2000)
@@ -927,17 +932,17 @@ def parse_args(argv=None):
     ap.add_argument("--r-min", type=float, default=1.5)
     ap.add_argument("--mc-samples", type=int, default=20000)
     ap.add_argument("--mc-burn", type=int, default=2000)
-    ap.add_argument("--sizes", default="12,16,20,24,28,32")
+    ap.add_argument("--sizes", default="16,24,32,40,48")
     ap.add_argument("--brute-max", type=int, default=32)
     ap.add_argument("--nconf", type=int, default=2)
     ap.add_argument("--results", default=os.path.join(HERE, "results"))
     ap.add_argument("--overwrite", type=int, choices=[0, 1], default=0)
     a = ap.parse_args(argv)
     if a.task >= 0:
-        if a.task > 116:
-            ap.error("--task must be in 0..116")
+        if a.task >= len(PRODUCTION) * 3 * NARM:
+            ap.error(f"--task must be in 0..{len(PRODUCTION) * 3 * NARM - 1}")
         if a.instance < 0:
-            a.instance = a.task // (3 * NARM)
+            a.instance = (0, a.new_instance)[a.task // (3 * NARM)]
         if not a.arm:
             a.arm = ARM_LIST[(a.task % (3 * NARM)) // 3]
         if a.seed < 0:
@@ -954,7 +959,7 @@ def main(argv=None):
     args = parse_args(argv)
     os.makedirs(args.results, exist_ok=True)
     if args.mode == "aggregate":
-        return aggregate(args.results)
+        return aggregate(args.results, args.new_instance)
     if args.mode == "time":
         time_step(args)
         return 0
@@ -978,7 +983,7 @@ def main(argv=None):
                 json.dump(res, open(os.path.join(sdir, f"inst9_{arm}_s{seed}.json"), "w"), indent=1, default=float)
         sc = parse_args(["--mode", "cost", "--sizes", "6,8,10", "--brute-max", "10", "--nconf", "1"])
         json.dump(cost_check(sc), open(os.path.join(sdir, "cost_check.json"), "w"), indent=1, default=float)
-        aggregate(sdir)
+        aggregate(sdir, args.new_instance)
         log(f"smoke total {time.time() - t0:.1f} s")
         return 0
     out = os.path.join(args.results, f"inst{args.instance}_{args.arm}_s{args.seed}.json")

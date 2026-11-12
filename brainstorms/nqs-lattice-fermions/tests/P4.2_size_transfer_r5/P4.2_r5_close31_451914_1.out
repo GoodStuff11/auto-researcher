@@ -30,3 +30,25 @@
 [  3797.4s]   [scr] step 45/50 eps=1.70977e-02 lr=0.107
 [  3988.8s]   [scr] step 50/50 eps=1.70715e-02 lr=0.0863
 [  3999.2s] arm scr@50   : E=-13.66095807 eps=1.7071e-02 (raw 4.5284e-02, irrep weight 0.889) A/V=2.5983e-03 sign-agree=0.9822 Pd=4.7246e-03 fid=0.8921
+[  4037.3s]   [foil] step 1/10 eps=2.59424e-01 lr=0.055
+[  4059.2s]   [foil] step 2/10 eps=2.03463e-01 lr=0.0605
+[  4081.2s]   [foil] step 3/10 eps=1.08556e-01 lr=0.0666
+[  4102.9s]   [foil] step 4/10 eps=7.72317e-02 lr=0.0732
+[  4123.8s]   [foil] step 5/10 eps=6.32922e-02 lr=0.0805
+[  4144.9s]   [foil] step 6/10 eps=5.76443e-02 lr=0.0886
+[  4165.8s]   [foil] step 7/10 eps=5.43836e-02 lr=0.0974
+[  4186.5s]   [foil] step 8/10 eps=5.12288e-02 lr=0.107
+[  4207.1s]   [foil] step 9/10 eps=4.84514e-02 lr=0.118
+[  4233.3s]   [foil] step 10/10 eps=4.73257e-02 lr=0.0648
+[  4240.3s] arm foil@end : E=-13.17689000 eps=4.7326e-02 (raw 1.6971e-01, irrep weight 0.296) sign-agree=0.9254 Pd=4.5634e-03 fid=0.7037
+[  4240.4s] nfp: n_null=110 removed shift fraction 0.973; source E tr0 [-8.274081068196603, -7.080275411750609] -> nfp [-4.921874795051398, -5.232253616752737] (exact [-8.281820661071484, -7.080275743918655])
+[  4280.7s] arm nfp@0    : E=-7.44760508 eps=4.0541e-01 (raw 4.8276e-01, irrep weight 0.552) A/V=8.1060e-02 sign-agree=0.4652 Pd=9.0143e-03 fid=0.0364
+[  4354.2s]   [nfp] step 2/20 eps=3.46369e-01 lr=0.0605
+[  4427.6s]   [nfp] step 4/20 eps=2.77997e-01 lr=0.0732
+[  4500.3s]   [nfp] step 6/20 eps=1.79216e-01 lr=0.0886
+[  4573.1s]   [nfp] step 8/20 eps=8.78219e-02 lr=0.107
+[  4645.5s]   [nfp] step 10/20 eps=2.90436e-02 lr=0.13
+[  4725.8s]   [nfp] step 12/20 eps=2.60685e-02 lr=0.0785
+[  4798.1s]   [nfp] step 14/20 eps=2.53901e-02 lr=0.0949
+[  4870.3s]   [nfp] step 16/20 eps=2.48276e-02 lr=0.115
+[  4942.3s]   [nfp] step 18/20 eps=2.42719e-02 lr=0.139
