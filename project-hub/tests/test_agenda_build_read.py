@@ -114,3 +114,32 @@ def test_parse_actions():
     "after next run", "another run", "no objection", "not now", "revise", "drop"])
 def test_parse_outcome_rejects_free_text(text):
     assert parse_outcome(text) is None
+
+
+@pytest.mark.parametrize("text,expected", [("approved.", "approve"), ("yes!", "approve")])
+def test_parse_outcome_strips_trailing_punctuation(text, expected):
+    assert parse_outcome(text) == expected
+
+
+def test_summary_equals_text_is_literal(tmp_path):
+    p = tmp_path / "sum.xlsx"
+    build_workbook({**DRAFT, "summary": "=1+1"}, p)
+    cell = load_workbook(p)[SHEET_SINCE]["B2"]
+    assert cell.value == "=1+1" and cell.data_type == "s"
+
+
+def test_outcome_text_keeps_raw_cell(xlsx):
+    wb = load_workbook(xlsx)
+    wb[SHEET_D]["H5"] = "approve, but only 4x3"
+    wb.save(xlsx)
+    r0 = read_workbook(xlsx).rows[0]
+    assert r0.outcome is None and r0.outcome_text == "approve, but only 4x3"
+
+
+def test_title_with_invalid_date_does_not_crash(xlsx):
+    wb = load_workbook(xlsx)
+    del wb[SHEET_META]
+    wb[SHEET_D]["B1"] = "group — 2026-02-30 · Decisions"
+    wb.save(xlsx)
+    rb = read_workbook(xlsx)
+    assert rb.meeting_date is None and rb.series == "group"

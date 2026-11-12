@@ -32,13 +32,21 @@ UNPLANNED_FILL = PatternFill("solid", fgColor="FFF2CC")
 DECIDE_FILL = PatternFill("solid", fgColor="F2F2F2")
 
 
+def _set(cell, value):
+    """Write a value to a cell; text starting with '=' is stored as literal text, never a formula."""
+    cell.value = value
+    if isinstance(value, str) and value.startswith("="):
+        cell.data_type = "s"
+    return cell
+
+
 def _sheet(wb, title, cols, draft, first=False):
     ws = wb.active if first else wb.create_sheet()
     ws.title = title
-    ws["B1"] = f"{draft['series']} — {draft['meeting_date'].isoformat()} · {title}"  # B: column A is hidden
+    _set(ws["B1"], f"{draft['series']} — {draft['meeting_date'].isoformat()} · {title}")  # B: column A is hidden
     ws["B1"].font = TITLE_FONT
     for i, (name, width) in enumerate(cols, 1):
-        c = ws.cell(HEADER_ROW, i, name)
+        c = _set(ws.cell(HEADER_ROW, i), name)
         c.fill, c.font, c.alignment = HEADER_FILL, HEADER_FONT, WRAP
         ws.column_dimensions[get_column_letter(i)].width = width
     ws.column_dimensions["A"].hidden = True
@@ -51,9 +59,7 @@ def _sheet(wb, title, cols, draft, first=False):
 
 def _row(ws, r, values, fill=None):
     for i, v in enumerate(values, 1):
-        c = ws.cell(r, i, v)
-        if isinstance(v, str) and v.startswith("="):
-            c.data_type = "s"  # agent text is literal, never a formula
+        c = _set(ws.cell(r, i), v)
         c.alignment, c.border = WRAP, THIN
         if fill:
             c.fill = fill
@@ -68,7 +74,7 @@ def build_workbook(draft: dict, out_path: Path) -> None:
     wb = Workbook()
     ws = _sheet(wb, SHEET_SINCE, SINCE_COLS, draft, first=True)
     ws.merge_cells(start_row=2, start_column=2, end_row=2, end_column=len(SINCE_COLS))
-    ws["B2"] = draft["summary"]
+    _set(ws["B2"], draft["summary"])
     ws["B2"].alignment = WRAP
     ws.row_dimensions[2].height = 15 * max(2, math.ceil(len(draft["summary"]) / 150) + 1)
     if draft["previous_meeting"] is None:
@@ -93,15 +99,15 @@ def build_workbook(draft: dict, out_path: Path) -> None:
     for k in range(1, UNPLANNED_ROWS + 1):
         _row(ws, r, [f"NEW-{k}", "", "", "", "", "", "", "", "", ""], fill=UNPLANNED_FILL)
         r += 1
-    ws.cell(2, 2, f"Yellow rows: decisions raised in the meeting. Outcome: {' / '.join(OUTCOME_CHOICES)}.")
+    _set(ws.cell(2, 2), f"Yellow rows: decisions raised in the meeting. Outcome: {' / '.join(OUTCOME_CHOICES)}.")
     dv = DataValidation(type="list", formula1='"' + ",".join(OUTCOME_CHOICES) + '"', allow_blank=True)
     ws.add_data_validation(dv)
     dv.add(f"H{HEADER_ROW + 1}:H{r - 1}")
     meta = wb.create_sheet(SHEET_META)
     for i, (k, v) in enumerate([("series", draft["series"]), ("meeting_date", draft["meeting_date"].isoformat()),
                                 ("read_back", "false"), ("format", "1")], 1):
-        meta.cell(i, 1, k)
-        meta.cell(i, 2, v)
+        _set(meta.cell(i, 1), k)
+        _set(meta.cell(i, 2), v)
     meta.sheet_state = "hidden"
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)

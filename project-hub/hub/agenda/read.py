@@ -22,6 +22,7 @@ class DecisionRow:
     as_decided: str
     new_actions: str
     planned: bool
+    outcome_text: str = ""
 
 
 @dataclass
@@ -41,7 +42,7 @@ OUTCOME_TOKENS = {
 
 
 def parse_outcome(text) -> str | None:
-    t = str(text or "").strip().lower()
+    t = str(text or "").strip().lower().rstrip(".!")
     for outcome, tokens in OUTCOME_TOKENS.items():
         if t in tokens:
             return outcome
@@ -80,7 +81,11 @@ def read_workbook(path) -> ReadBack:
         for ref in ("B1", "A1"):  # A1 if a viewer dropped the hidden id column
             m = TITLE_RE.match(_cell(ws[ref].value))
             if m:
-                series, meeting = m[1], date.fromisoformat(m[2])
+                series = m[1]
+                try:
+                    meeting = date.fromisoformat(m[2])
+                except ValueError:
+                    meeting = None  # e.g. 2026-02-30: keep the series, leave the date unknown
                 break
     header_row, cols = None, {}
     for r in range(1, 11):
@@ -104,6 +109,7 @@ def read_workbook(path) -> ReadBack:
         planned = rid is not None and not rid.startswith("NEW")
         if rid is None:
             planned = False
-        rows.append(DecisionRow(rid, decide, parse_outcome(get(r, "Outcome")), get(r, "As decided"),
-                                get(r, "New actions · owners"), planned))
+        outcome_text = get(r, "Outcome")
+        rows.append(DecisionRow(rid, decide, parse_outcome(outcome_text), get(r, "As decided"),
+                                get(r, "New actions · owners"), planned, outcome_text))
     return ReadBack(series, meeting, read_back, rows)
