@@ -3,7 +3,8 @@ import subprocess
 from datetime import date
 from pathlib import Path
 import pytest
-from hub.gitsync import SyncConflict, commit, ensure_repo_files
+from hub.gitsync import SyncConflict, SyncError, commit, ensure_repo_files
+from hub.pending import add_proposal, load_proposals
 from hub.store import Store
 
 D = date(2026, 11, 12)
@@ -94,3 +95,32 @@ def test_same_item_conflict_reported(two_clones):
         commit(b, "b2")
     assert f"Status/Items/{q.id}.md" in exc.value.files
     assert not (b / ".git" / "rebase-merge").exists()
+
+
+def test_concurrent_proposals_do_not_conflict(two_clones):
+    a, b = two_clones
+    pa = add_proposal(a, "From A", [], proposer="alice", source="s", reason="r", day=D)
+    commit(a, "a")
+    pb = add_proposal(b, "From B", [], proposer="bob", source="s", reason="r", day=D)
+    commit(b, "b")  # rebases over a's push; each proposal is its own file
+    git(a, "pull", "--rebase")
+    assert {p.pid for p in load_proposals(a)} == {pa, pb}
+
+
+def test_no_upstream_is_sync_error_not_conflict(two_clones):
+    a, _ = two_clones
+    git(a, "checkout", "-b", "other")
+    Store(a).create("question", "Local", owner="alice", author="alice", day=D, source="m")
+    with pytest.raises(SyncError) as exc:
+        commit(a, "a-other")
+    assert not isinstance(exc.value, SyncConflict)
+    assert "no upstream branch configured" in str(exc.value)
+
+
+def test_push_to_missing_remote_reports_git_message(two_clones, tmp_path):
+    a, _ = two_clones
+    missing = tmp_path / "gone.git"
+    git(a, "remote", "set-url", "origin", str(missing))
+    Store(a).create("question", "Lost", owner="alice", author="alice", day=D, source="m")
+    with pytest.raises(SyncError, match="does not appear to be a git repository"):
+        commit(a, "a")

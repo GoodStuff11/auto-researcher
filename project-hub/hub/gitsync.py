@@ -12,7 +12,6 @@ from pathlib import Path
 
 GITATTRIBUTES_LINES = [
     "Status/Log/*.md merge=union",
-    "Status/Pending.md merge=union",
     "Status/Snapshot.md merge=ours",
     "*.xlsx binary",
 ]
@@ -52,7 +51,7 @@ def ensure_repo_files(root) -> None:
 
 
 def _commit_all(root, message) -> bool:
-    _git(root, "add", "-A")
+    _git(root, "add", "-A", "--", ".")
     if _git(root, "diff", "--cached", "--quiet", check=False).returncode == 0:
         return False
     _git(root, "commit", "-m", message)
@@ -68,15 +67,25 @@ def commit(root, message, *, regenerate=None, retries=3) -> str:
             regenerate()
             _commit_all(root, "Regenerate generated files")
         return _git(root, "rev-parse", "HEAD").stdout.strip()
+    if _git(root, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}", check=False).returncode != 0:
+        raise SyncError("no upstream branch configured; run `git push -u origin <branch>` once")
     for _ in range(retries):
         pull = _git(root, "pull", "--rebase", check=False)
         if pull.returncode != 0:
+            output = pull.stdout + pull.stderr
             files = _git(root, "diff", "--name-only", "--diff-filter=U", check=False).stdout.split()
-            _git(root, "rebase", "--abort", check=False)
-            raise SyncConflict(files, pull.stdout + pull.stderr)
+            if files:
+                _git(root, "rebase", "--abort", check=False)
+                raise SyncConflict(files, output)
+            if (root / ".git" / "rebase-merge").exists() or (root / ".git" / "rebase-apply").exists():
+                _git(root, "rebase", "--abort", check=False)
+            raise SyncError(f"git pull --rebase failed: {output}")
         if regenerate:
             regenerate()
             _commit_all(root, "Regenerate generated files")
-        if _git(root, "push", check=False).returncode == 0:
+        push = _git(root, "push", check=False)
+        if push.returncode == 0:
             return _git(root, "rev-parse", "HEAD").stdout.strip()
+        if not any(s in push.stderr for s in ("non-fast-forward", "fetch first", "rejected")):
+            raise SyncError(f"git push failed: {push.stderr.strip()}")
     raise SyncError(f"push rejected {retries} times; someone is pushing continuously — retry later")

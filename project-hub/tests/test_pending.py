@@ -18,9 +18,8 @@ def test_add_and_load(hub_root):
     props = load_proposals(hub_root)
     assert [p.pid for p in props] == [pid]
     assert props[0].title == "Close Q" and props[0].body["reason"] == "Answered in meeting."
-    text = (hub_root / "Status" / "Pending.md").read_text()
-    assert text.startswith("# Pending changes\n")
-    assert f"## {pid} · Close Q\n" + "`" * 3 + "yaml\n" in text
+    text = (hub_root / "Status" / "Pending" / f"{pid}.md").read_text()
+    assert text.startswith(f"## {pid} · Close Q\n" + "`" * 3 + "yaml\n")
 
 
 def test_apply_with_refs(hub_root, store):
