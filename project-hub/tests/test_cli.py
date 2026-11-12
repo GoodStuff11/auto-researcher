@@ -92,13 +92,16 @@ def test_scaffold_refuses_to_overwrite(cli, capsys):
     assert run(capsys, "agenda", "scaffold", "group", "--date", "2026-11-19", "--force")[0] == 0
 
 
-def test_garbage_item_file_is_clean_error(cli, capsys):
+def test_garbage_item_file_does_not_block_reads(cli, capsys):
     items = cli / "Status" / "Items"
     items.mkdir(parents=True, exist_ok=True)
     (items / "Q-20260101-bad.md").write_text("not an item at all\n")
-    for argv in (("validate",), ("list",)):
-        code, _, err = run(capsys, *argv)
-        assert code == 1 and "error:" in err
+    code, out, _ = run(capsys, "validate")
+    assert code == 1 and "Q-20260101-bad  format:" in out
+    code, _, err = run(capsys, "list")
+    assert code == 0 and "warning: cannot load" in err and "Q-20260101-bad.md" in err
+    code, _, err = run(capsys, "show", "Q-20260101-bad")
+    assert code == 1 and "error:" in err
 
 
 def test_ops_file_problems_are_clean(cli, capsys):

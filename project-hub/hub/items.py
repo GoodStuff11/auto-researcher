@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 
 import yaml
 
@@ -16,6 +16,7 @@ STATUSES = {
 }
 CLOSING = {"answered", "dropped", "pivoted", "done", "rejected"}
 LINK_KEYS = ("answers", "spawned_by", "pivoted_to")
+DATE_FIELDS = ("raised", "closed", "due")
 ENTRIES_HEADING = "## Entries"
 ENTRY_RE = re.compile(r"^- (\d{4}-\d{2}-\d{2}) · (\S+) · (\S+) — (.*)$")
 
@@ -97,6 +98,7 @@ def default_meta(item_id, item_type, title, owner, raised, series, priority, sou
 
 
 def parse_item(text: str) -> Item:
+    text = text.replace("\r\n", "\n")
     if not text.startswith("---\n"):
         raise ItemFormatError("missing frontmatter opening '---'")
     end = text.find("\n---\n", 4)
@@ -111,6 +113,9 @@ def parse_item(text: str) -> Item:
     for key in ("id", "type", "title", "status"):
         if key not in meta:
             raise ItemFormatError(f"frontmatter missing '{key}'")
+    for key in DATE_FIELDS:  # YAML reads `2026-11-12 10:00` as a datetime; the store works in dates
+        if isinstance(meta.get(key), datetime):
+            meta[key] = meta[key].date()
     lines = text[end + 5:].splitlines()
     entries: list[Entry] = []
     if ENTRIES_HEADING in lines:

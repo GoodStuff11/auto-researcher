@@ -127,3 +127,21 @@ def test_since_last_outcomes(hub_root):
     d = scaffold(s, hub_root, "group", date(2026, 11, 12))
     outcomes = {r["id"]: r["outcome"] for r in d["since_last"]}
     assert outcomes == {dA.id: "closed question", dP.id: "pivot", dN.id: "new question"}
+
+
+def test_scaffold_tolerates_missing_raised_and_priority(hub_root):
+    from hub.agenda.draft import scaffold as _scaffold
+    from hub.store import Store as _Store
+    s = _Store(hub_root)
+    q = s.create("question", "Bare", owner="alice", author="alice", day=date(2026, 11, 1), source="m")
+    item = s.get(q.id)
+    del item.meta["raised"]
+    del item.meta["priority"]
+    s.save(item)
+    d = s.create("decision", "Pick", owner="alice", author="alice", day=date(2026, 11, 1), source="m")
+    item = s.get(d.id)
+    del item.meta["raised"]
+    s.save(item)
+    out = _scaffold(s, hub_root, "group", date(2026, 11, 19))
+    assert out["questions"][0]["age_days"] == 0 and out["questions"][0]["priority"] is None
+    assert [x["id"] for x in out["decisions"]] == [d.id]

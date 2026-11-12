@@ -47,3 +47,30 @@ def test_snapshot_content(hub_root, monkeypatch):
     assert "## Validation\n0 issues." in text
     path = write_snapshot(store, cfg, date(2026, 11, 15))
     assert path == hub_root / "Status" / "Snapshot.md" and path.read_text() == text
+
+
+def test_snapshot_survives_garbage_and_missing_fields(hub_root, monkeypatch):
+    monkeypatch.delenv("HUB_ME", raising=False)
+    store, cfg = Store(hub_root), load_config(hub_root)
+    q = store.create("question", "Bare", owner="alice", author="alice", day=D, source="m")
+    item = store.get(q.id)
+    del item.meta["raised"]
+    del item.meta["priority"]
+    store.save(item)
+    (hub_root / "Status" / "Items" / "Q-20261112-bad.md").write_text("garbage\n")
+    text = render_snapshot(store, cfg, D)
+    assert f"| [[{q.id}]] | Bare | alice | 0 | — |" in text
+    flags = text.split("## Flags\n")[1].split("\n## ")[0]
+    assert "Q-20261112-bad.md" in flags
+
+
+def test_snapshot_lists_deferred_decisions(hub_root, monkeypatch):
+    monkeypatch.delenv("HUB_ME", raising=False)
+    store, cfg = Store(hub_root), load_config(hub_root)
+    q = store.create("question", "Why?", owner="alice", author="alice", day=D, source="m")
+    d = store.create("decision", "Later", owner="bob", author="alice", day=D, source="m",
+                     links={"answers": [q.id]}, fields={"status": "deferred"})
+    text = render_snapshot(store, cfg, D)
+    assert "## Proposed decisions (0)" in text
+    assert ("## Deferred decisions (1)\n| ID | Title | Answers | Owner |\n|---|---|---|---|\n"
+            f"| [[{d.id}]] | Later | {q.id} | bob |") in text

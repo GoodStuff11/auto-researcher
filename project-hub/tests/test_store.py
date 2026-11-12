@@ -133,3 +133,51 @@ def test_field_shape_validation(store):
                      fields={"series": "group"})
     store.set_fields(q.id, {"owner": None})
     assert store.get(q.id).owner is None
+
+
+GARBAGE_ID = "Q-20261112-bad"
+
+
+def put_garbage(hub_root):
+    p = hub_root / "Status" / "Items" / f"{GARBAGE_ID}.md"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text("this is not an item\n")
+    return p
+
+
+def test_all_skips_malformed_and_records_load_errors(store, hub_root):
+    q = mk(store, "question", "Fine")
+    p = put_garbage(hub_root)
+    assert [i.id for i in store.all()] == [q.id]
+    assert [path for path, _ in store.load_errors] == [p]
+    assert "frontmatter" in store.load_errors[0][1]
+    p.unlink()
+    store.all()
+    assert store.load_errors == []
+
+
+def test_unknown_item_is_keyerror_and_storeerror(store):
+    from hub.store import UnknownItem
+    with pytest.raises(UnknownItem) as exc:
+        store.get("Q-20990101-zzz")
+    assert isinstance(exc.value, KeyError) and isinstance(exc.value, StoreError)
+    with pytest.raises(UnknownItem):
+        store.path("not-an-id")
+
+
+def test_save_is_atomic(store, hub_root, monkeypatch):
+    import os
+    q = mk(store, "question", "Before")
+    path = store.path(q.id)
+    before = path.read_bytes()
+    item = store.get(q.id)
+    item.meta["title"] = "After"
+
+    def boom(src, dst):
+        raise OSError("disk full")
+
+    monkeypatch.setattr(os, "replace", boom)
+    with pytest.raises(OSError):
+        store.save(item)
+    assert path.read_bytes() == before
+    assert [p.name for p in path.parent.iterdir()] == [path.name]  # no temp file left behind

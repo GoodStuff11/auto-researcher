@@ -112,3 +112,19 @@ def test_bad_entry_date_rejected():
 def test_entry_render_rejects_whitespace_fields(author, source):
     with pytest.raises(ValueError):
         Entry(date(2026, 1, 1), author, source, "text").render()
+
+
+def test_crlf_parses_like_lf():
+    crlf = CANONICAL.replace("\n", "\r\n")
+    it = parse_item(crlf)
+    assert render_item(it) == CANONICAL
+    assert it.entries[1].text == "Run finished: F=0.97."
+
+
+def test_datetime_dates_coerced_to_date():
+    text = CANONICAL.replace("raised: 2026-11-12", "raised: 2026-11-12 10:30:00").replace(
+        "closed:\n", "closed: 2026-11-14T08:00:00\n").replace("custom_key: kept", "custom_key: kept\ndue: 2026-11-20 09:00:00")
+    it = parse_item(text)
+    assert type(it.meta["raised"]) is date and it.meta["raised"] == date(2026, 11, 12)
+    assert type(it.meta["closed"]) is date and it.meta["closed"] == date(2026, 11, 14)
+    assert type(it.meta["due"]) is date

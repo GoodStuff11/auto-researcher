@@ -6,8 +6,10 @@ import re
 from datetime import date
 from pathlib import Path
 
+from .fsutil import atomic_write_text
 from .ids import new_id
-from .items import (LINK_KEYS, STATUSES, TYPES, Entry, Item, default_meta, parse_item, render_item)
+from .items import (LINK_KEYS, STATUSES, TYPES, Entry, Item, ItemFormatError, default_meta, parse_item,
+                    render_item)
 
 DATE_KEYS = {"raised", "closed", "due"}
 INT_KEYS = {"priority"}
@@ -18,6 +20,13 @@ ID_RE = re.compile(r"^[QDA]-\d{8}-[a-z0-9]{3}$")
 
 class StoreError(Exception):
     """A store operation would break the item format or reference a missing item."""
+
+
+class UnknownItem(StoreError, KeyError):
+    """No item with this id exists (or the id is not of the form T-YYYYMMDD-xxx)."""
+
+    def __str__(self) -> str:
+        return str(self.args[0]) if self.args else ""
 
 
 def coerce_value(key: str, value):
@@ -53,16 +62,26 @@ class Store:
         self.root = Path(root)
         self.items_dir = self.root / "Status" / "Items"
         self.log_dir = self.root / "Status" / "Log"
+        self.load_errors: list[tuple[Path, str]] = []
 
     def path(self, item_id: str) -> Path:
         if not isinstance(item_id, str) or not ID_RE.match(item_id):
-            raise KeyError(item_id)
+            raise UnknownItem(item_id)
         return self.items_dir / f"{item_id}.md"
 
     def all(self) -> list[Item]:
+        """Every parseable item. Files that fail to load are skipped and listed in `self.load_errors`
+        (reset on each call), so one malformed file never blocks reads, validation or snapshots."""
+        self.load_errors = []
         if not self.items_dir.is_dir():
             return []
-        return [parse_item(p.read_text()) for p in sorted(self.items_dir.glob("*.md"))]
+        out = []
+        for p in sorted(self.items_dir.glob("*.md")):
+            try:
+                out.append(parse_item(p.read_text(encoding="utf-8")))
+            except (ItemFormatError, OSError, UnicodeDecodeError) as exc:
+                self.load_errors.append((p, str(exc)))
+        return out
 
     def ids(self) -> set[str]:
         if not self.items_dir.is_dir():
@@ -72,12 +91,11 @@ class Store:
     def get(self, item_id: str) -> Item:
         p = self.path(item_id)
         if not p.is_file():
-            raise KeyError(item_id)
-        return parse_item(p.read_text())
+            raise UnknownItem(item_id)
+        return parse_item(p.read_text(encoding="utf-8"))
 
     def save(self, item: Item) -> None:
-        self.items_dir.mkdir(parents=True, exist_ok=True)
-        self.path(item.id).write_text(render_item(item))
+        atomic_write_text(self.path(item.id), render_item(item))
 
     def create(self, item_type, title, *, owner, author, day, source, series=(), priority=2,
                links=None, description="", fields=None, rng=None) -> Item:
@@ -159,7 +177,7 @@ class Store:
     def children(self, item_id) -> list[Item]:
         """Items that point at item_id: decisions answering it, items spawned by it, its pivot targets.
 
-        Raises KeyError if item_id does not exist. Pivot targets that do not exist are skipped;
+        Raises UnknownItem (a KeyError) if item_id does not exist. Pivot targets that do not exist are skipped;
         each child appears once, in first-seen order.
         """
         me = self.get(item_id)

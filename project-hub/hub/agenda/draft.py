@@ -35,6 +35,11 @@ def _outcome(d, by_id: dict, items) -> str:
     return "in progress"
 
 
+def _raised(item, fallback: date) -> date:
+    r = item.meta.get("raised")
+    return r if isinstance(r, date) else fallback
+
+
 def scaffold(store: Store, root, series: str, meeting_date: date) -> dict:
     items = store.all()
     by_id = {i.id: i for i in items}
@@ -57,11 +62,11 @@ def scaffold(store: Store, root, series: str, meeting_date: date) -> dict:
         for q in d.links("answers"):
             proposed_for.setdefault(q, d.id)
     qs = [q for q in items if q.type == "question" and q.status == "open" and _in_series(q, series)]
-    qs.sort(key=lambda q: (q.id not in proposed_for, q.meta.get("priority") or 9, q.meta["raised"]))
+    qs.sort(key=lambda q: (q.id not in proposed_for, q.meta.get("priority") or 9, _raised(q, meeting_date)))
     questions = [{"id": q.id, "title": q.title, "description": q.description, "owner": q.owner,
-                  "age_days": (meeting_date - q.meta["raised"]).days, "priority": q.meta.get("priority"),
+                  "age_days": (meeting_date - _raised(q, meeting_date)).days, "priority": q.meta.get("priority"),
                   "proposed_decision": proposed_for.get(q.id, "")} for q in qs]
-    proposed.sort(key=lambda d: (d.meta.get("priority") or 9, d.meta["raised"]))
+    proposed.sort(key=lambda d: (d.meta.get("priority") or 9, _raised(d, meeting_date)))
     decisions = [{"id": d.id, "decide": d.title, "proposed_action": d.meta.get("proposed_action", ""),
                   "reason": d.meta.get("rationale", ""), "weigh_in": "", "minutes": 10, "link": ""}
                  for d in proposed[:MAX_DECISIONS]]

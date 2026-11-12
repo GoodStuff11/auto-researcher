@@ -104,3 +104,13 @@ def test_id_prefix_rule(env):
     p = store.path(q.id)
     p.write_text(p.read_text().replace(f"id: {q.id}", f"id: D-{q.id[2:]}"))
     assert rules(store, cfg) == ["id-prefix"]
+
+
+def test_malformed_item_reported_as_format_and_others_still_checked(env, hub_root):
+    store, cfg = env
+    mk(store, "action", "No owner", owner=None)
+    (hub_root / "Status" / "Items" / "Q-20261112-bad.md").write_text("garbage\n")
+    vs = validate(store, cfg)
+    fmt = [v for v in vs if v.rule == "format"]
+    assert [v.item_id for v in fmt] == ["Q-20261112-bad"]
+    assert "action-owner" in {v.rule for v in vs}

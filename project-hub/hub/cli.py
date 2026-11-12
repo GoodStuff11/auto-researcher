@@ -69,7 +69,7 @@ from .gitsync import SyncConflict, SyncError, commit
 from .items import LINK_KEYS, ItemFormatError, render_item
 from .pending import PendingError, add_proposal, apply_proposals, load_proposals, reject_proposals
 from .snapshot import write_snapshot
-from .store import Store, StoreError
+from .store import Store, StoreError, UnknownItem
 from .sync_state import get_watermark, set_watermark
 from .validate import validate
 
@@ -249,6 +249,11 @@ def _row(it) -> dict:
             "priority": it.meta.get("priority"), "last_activity": it.last_activity().isoformat()}
 
 
+def _warn_load_errors(store) -> None:
+    for path, err in store.load_errors:
+        print(f"warning: cannot load {path}: {err}", file=sys.stderr)
+
+
 def _print_items(items, as_json):
     if as_json:
         print(json.dumps([_row(i) for i in items], indent=2))
@@ -285,6 +290,7 @@ def _dispatch(args, cfg, store) -> int:
         owner = _me(cfg) if args.owner == "me" else args.owner
         _print_items(store.query(type=args.type, status=args.status, owner=owner, series=args.series,
                                  since=args.since), args.json)
+        _warn_load_errors(store)
     elif cmd == "show":
         print(render_item(store.get(args.id)), end="")
         if args.chain:
@@ -362,7 +368,7 @@ def main(argv: list[str] | None = None) -> int:
     except SyncConflict as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 3
-    except KeyError as exc:
+    except UnknownItem as exc:
         print(f"error: no such item {exc}", file=sys.stderr)
         return 1
     except (UserError, ConfigError, StoreError, PendingError, DraftError, AgendaError, SyncError, ItemFormatError, ValueError,

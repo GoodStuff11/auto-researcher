@@ -21,7 +21,8 @@ class Violation:
 
 def validate(store: Store, config: HubConfig) -> list[Violation]:
     items = {i.id: i for i in store.all()}
-    out: list[Violation] = []
+    out: list[Violation] = [Violation(path.stem, "format", f"cannot load {path.name}: {err}")
+                            for path, err in store.load_errors]
     spawned_from: dict[str, list[str]] = defaultdict(list)
     for it in items.values():
         for t in it.links("spawned_by"):
