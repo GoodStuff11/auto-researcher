@@ -32,7 +32,7 @@ as_decided: ''
 ```
 File structure: line 1 `---`; YAML mapping; a line `---`; free-text description (everything up to the line `## Entries`); the line `## Entries`; one entry line per event. A file without `## Entries` parses with no entries. YAML is dumped with `sort_keys=False`, no line wrapping, empty value for null. A file that does not follow this raises `ItemFormatError` (missing/unclosed frontmatter, invalid YAML, non-mapping frontmatter, missing `id`/`type`/`title`/`status`, malformed entry line or entry date).
 ## Frontmatter keys
-Common to all types (written by `default_meta`, `hub/items.py:86`):
+Common to all types (written by `default_meta` in `hub/items.py`):
 | Key | Type | Set by | Meaning / allowed values |
 |---|---|---|---|
 | `id` | string | `Store.create` | Immutable id, regex `^[QDA]-\d{8}-[a-z0-9]{3}$`. Not settable. |
@@ -48,7 +48,7 @@ Common to all types (written by `default_meta`, `hub/items.py:86`):
 | `sources` | list of strings | create, `entry` | Every source id that has touched the item; `Store.entry` appends the entry's source if new. Must be a list. |
 Decision only (not required to be filled): `rationale` (string, why), `meeting` (string `<series>/<YYYY-MM-DD>`, set by the read-back when approved/modified), `as_decided` (string, wording of what was decided), `no_action` (string, reason a made decision spawns no action; absent unless set), `proposed_action` (string, read by the agenda draft; absent unless set).
 Action only: `clickup_id` (string or null, ClickUp task id), `due` (date or null).
-`set` coercion (`coerce_value`, `hub/store.py:23`): empty string becomes null; `raised`, `closed`, `due` parse `YYYY-MM-DD`; `priority` parses an int; a bad value raises `StoreError`. `id`, `type`, `links` are protected.
+`set` coercion (`coerce_value` in `hub/store.py`): empty string becomes null; `raised`, `closed`, `due` parse `YYYY-MM-DD`; `priority` parses an int; a bad value raises `StoreError`. `id`, `type`, `links` are protected.
 ## Links
 Stored one way only, on the item that points; reverse lookups use `Store.children(id)` (`hub/store.py`), which returns each descendant once and skips missing pivot targets (raises `UnknownItem` for an unknown id). `hub show ID --chain` prints the tree.
 - `answers`: on a decision, the question(s) it answers.
@@ -56,7 +56,7 @@ Stored one way only, on the item that points; reverse lookups use `Store.childre
 - `pivoted_to`: on a question, the question that replaces it (children() also returns those targets).
 Link targets must exist and match the id regex (`StoreError` otherwise). `Item.links(key)` returns `[]` when `links` or the key has the wrong shape (hand-edited files), and reports it as a `shape` violation.
 ## Entries (history)
-Line format, regex `ENTRY_RE` (`hub/items.py:20`): `^- (\d{4}-\d{2}-\d{2}) · (\S+) · (\S+) — (.*)$`, that is `- <date> · <author> · <source> — <text>`. Author is a people key; both author and source must be non-empty with no whitespace (`Entry.render` raises `ValueError`). Text is collapsed to one line. The first entry of every item is `Raised.` (the creation entry). Appended by `Store.entry` / `hub entry`.
+Line format, regex `ENTRY_RE` in `hub/items.py`: `^- (\d{4}-\d{2}-\d{2}) · (\S+) · (\S+) — (.*)$`, that is `- <date> · <author> · <source> — <text>`. Author is a people key; both author and source must be non-empty with no whitespace (`Entry.render` raises `ValueError`). Text is collapsed to one line. The first entry of every item is `Raised.` (the creation entry). Appended by `Store.entry` / `hub entry`.
 Source id conventions: `circleback:<meeting id>`, `commit:<root>@<short sha>`, `clickup:<task id>`, `agenda:<series>/<date>`, `pending:<P-id>`, `manual`; the default source of ops in proposals is `pending`.
 ## IDs (`hub/ids.py`)
 Items: `<T>-<YYYYMMDD>-<rand3>` with T = `Q`, `D`, `A`, the creation day, and 3 characters of `a-z0-9`; retried until unused (100 attempts). Random, so independent clones never collide; items created by a pending proposal use a generator seeded by `<P-id>:<op index>` so every clone applying it gets the same id (pending-format.md). Proposals: `P-<rand4>`. A missing or malformed id passed to `Store.get/path` raises `UnknownItem` (a `StoreError` and a `KeyError`), which the CLI prints as `error: no such item <id>` (exit 1).

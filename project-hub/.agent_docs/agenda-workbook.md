@@ -2,7 +2,7 @@
 Code: `hub/agenda/draft.py` (scaffold, validate_draft, load/save), `hub/agenda/build.py` (workbook), `hub/agenda/read.py` (reading cells), `hub/agenda/lifecycle.py` (`build_agenda`, `read_agenda`, guards). CLI: `hub agenda scaffold SERIES --date D [--force]`, `build SERIES [--force]`, `read SERIES`.
 Lifecycle: `scaffold` writes `Agenda/<series>.draft.yaml` from the store (the agent fills `summary` and `follow_up` cells), `build` renders it to the live `Agenda/<series>.xlsx`, humans edit the workbook in the meeting, `read` applies the edits and archives it to `Agenda/archive/<series>/<meeting date>.xlsx`. The live workbook must have exactly one editor per meeting (binary file; the later push loses).
 ## Draft YAML keys (`Agenda/<series>.draft.yaml`)
-All seven keys are required (`REQUIRED`, `hub/agenda/draft.py:15`). `build` runs `validate_draft` and raises `DraftError` listing every problem (CLI exit 1).
+All seven keys are required (`REQUIRED` in `hub/agenda/draft.py`). `build` runs `validate_draft` and raises `DraftError` listing every problem (CLI exit 1).
 - `series` (non-empty string) — key of `project.yaml` series; `scaffold` rejects an unknown series
 - `meeting_date` (YAML date) — meeting day
 - `previous_meeting` (date or null) — latest `Status/Meetings/<series>/*.md` strictly before `meeting_date`, null for the first meeting

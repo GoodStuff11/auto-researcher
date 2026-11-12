@@ -242,12 +242,12 @@ All live in the hub's `.claude/skills/` and are thin procedures over `hub` comma
 
   Advantage and novelty claims are checked with `research-question`. Each revision appends a dated entry to a *Revisions* section, linked to the decision that caused it. Any decision with `pivot` outcome makes `hub-status` propose a vision check.
 - **`hub-status`** — three modes:
-  - *update* — ingest each source since its watermark (table below), apply the safe changes, stage the rest, then `validate`, `snapshot`, `commit`. It ends with a source report: reached / not reachable / disabled, so a partial run is never mistaken for a complete one.
+  - *update* — ingest each source since its watermark (table below), apply the safe changes, stage the rest, and `commit` after each source (the commit pulls, so the next source's source-ID checks see what others pushed meanwhile); then the approval batch, a "close the gaps" step until `validate` reports nothing new (link decisions to questions, add actions or `no_action`, set owners), the ClickUp push, `snapshot`, `commit`. It ends with a source report: reached / not reachable / disabled, so a partial run is never mistaken for a complete one.
   - *todos* — `hub list --type action --owner me --status open`, sorted by due date then priority.
   - *post-meeting* — `agenda read`, then the Circleback cross-check, then *update*.
 - **`hub-agenda`** — for a series:
   1. check the last meeting was read back;
-  2. run *update* if any watermark is older than the last meeting;
+  2. run *update* if any source is stale: a dated watermark (ClickUp, Circleback, notes, Gmail, Slack) older than the last meeting, or a repository with commits not yet ingested;
   3. choose questions and proposed decisions, capped and ranked by priority, age and whether they block other items;
   4. write `draft.yaml`, `build`;
   5. report what was chosen and why, so the user can prune before the meeting.
@@ -264,7 +264,7 @@ All live in the hub's `.claude/skills/` and are thin procedures over `hub` comma
 | Private notes | user's opted-in folders, summarized, never copied verbatim | last mtime | entries, attributed to that user |
 | Gmail / Slack | threads matching project terms (opt-in) | last thread date | entries |
 
-Every ingested item carries its source ID; re-ingesting a source ID already present is a no-op, so overlapping runs by different people are idempotent.
+Every ingested item carries its source ID; re-ingesting a source ID already present is a no-op, so overlapping runs by different people are idempotent. Personal notes use one source ID per file (`notes:<key>@<date>-<file slug>`). Because two people can stage the same new ClickUp task before either pushes, a `new` action whose `clickup_id` is already linked is refused when staged or applied, and two actions sharing a task are flagged (`duplicate-clickup-id`).
 
 ### ClickUp mapping
 Only actions sync. Creating an action with an owner creates the task (description links back to the item path) and stores `clickup_id`. ClickUp owns status, assignee and due date; the hub mirrors them. Hub-side description changes are not pushed. Disagreements a mirror cannot settle become flags in `Snapshot.md`, including:

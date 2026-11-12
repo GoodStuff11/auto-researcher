@@ -8,24 +8,24 @@ Every derived record carries a source id (no whitespace). `hub seen SOURCE` says
 | `clickup:<task id>` | a ClickUp task |
 | `commit:<ROOT>@<7-char sha>` | a commit of the repository `ROOT` (a key of `roots`) |
 | `agenda:<series>/<YYYY-MM-DD>` | agenda read-back of a meeting |
-| `notes:<people key>@<YYYY-MM-DD>` | a private note of that person on that day |
+| `notes:<people key>@<YYYY-MM-DD>-<slug>` | one private note file of that person: its mtime date, then its file name without extension, lowercased, each run of characters other than a-z/0-9 replaced by `-` (`HVA runs.md` → `notes:alice@2026-11-17-hva-runs`) |
 | `gmail:<thread id>` | a Gmail thread (opt-in source) |
 | `slack:<channel id>-<ts>` | a Slack message (opt-in source) |
 | `manual` | typed by a person |
-Watermarks live in `Status/sync-state/watermark.<name>.yaml` (vault-layout.md; name matches `[A-Za-z0-9_-][A-Za-z0-9_.-]*`, `hub/sync_state.py:18`). Names used: `clickup`, `circleback`, `git.<ROOT>` (full sha of the newest ingested commit; also for the Overleaf root), `gmail`, `slack`, `notes.<people key>`. Set by `hub sync-state set` or the `watermark` key of a batch.
+Watermarks live in `Status/sync-state/watermark.<name>.yaml` (vault-layout.md; name matches `[A-Za-z0-9_-][A-Za-z0-9_.-]*`, `NAME_RE` in `hub/sync_state.py`). Names used: `clickup`, `circleback`, `git.<ROOT>` (full sha of the newest ingested commit; also for the Overleaf root), `gmail`, `slack`, `notes.<people key>`. Set by `hub sync-state set` or the `watermark` key of a batch.
 ## hub seen SOURCE
-`source_seen` (`hub/sources.py:21`). Prints `new` when SOURCE appears nowhere. Otherwise `seen` plus space-separated places: an item id (SOURCE is in its `sources` frontmatter list), `log:<YYYY-MM>` (a monthly log line has ` · SOURCE — `), a pending id `P-xxxx` (the proposal's `source` or one of its ops' `source`). Example: `seen S-20261101-ab12 log:2026-11`. Exit 0.
+`source_seen` (`hub/sources.py`). Prints `new` when SOURCE appears nowhere. Otherwise `seen` plus space-separated places: an item id (SOURCE is in its `sources` frontmatter list), `log:<YYYY-MM>` (a monthly log line has ` · SOURCE — `), a pending id `P-xxxx` (the proposal's `source` or one of its ops' `source`). Example: `seen S-20261101-ab12 log:2026-11`. Exit 0.
 An `unreadable:<path>` entry (item or proposal file that failed to load) means the answer may be incomplete; fix that file. A monthly log that cannot be decoded is an error (exit 1) rather than a silent `new`.
 ## hub ingest git ROOT [--since YYYY-MM-DD] [--advance [--to SHA]] [--limit N]
-`ingest_git` (`hub/ingest_git.py:102`).
+`ingest_git` (`hub/ingest_git.py`).
 - Configuration: ROOT is a key of `roots` (project.yaml, local path overridden in hub.local.yaml); unknown root or a path without `.git` is an error (exit 1). Branch (`entry_branch`): `branch` of the `sources.repos[]` entry (or `sources.overleaf`) with that `root`, or the first element of `branches` (which must then be a non-empty list); giving both is an error; default `HEAD`; a branch that does not exist is an error. `remote` is accepted and ignored; any other key in the entry raises `IngestError` naming it (`unknown key(s) branchs (allowed: root, branch, branches, remote)`). `hub sources` shows such an entry as `config error: …` instead of failing.
-- Listing: non-merge commits after the watermark `git.<ROOT>`, oldest first. Without a watermark (or with `--since`, which ignores the watermark) the commits since `--since`, default the last 30 days. A watermark sha that does not exist, or is not an ancestor of the branch, gives a warning and the date fallback (`hub/ingest_git.py:58`).
+- Listing: non-merge commits after the watermark `git.<ROOT>`, oldest first. Without a watermark (or with `--since`, which ignores the watermark) the commits since `--since`, default the last 30 days. A watermark sha that does not exist, or is not an ancestor of the branch, gives a warning and the date fallback (`git_commits` in `hub/ingest_git.py`).
 - `--limit N` (default 500): at most the N oldest unlisted commits; the warning says how many newer ones remain ("run again after --advance"), so `--advance` never skips a commit.
 - Output (stdout, JSON): `{root, path, branch, watermark_before, commits: [{sha, short, date, author, subject, files}], warning, advanced}`. A non-null `warning` is also printed on stderr as `warning: ...`.
 - `--advance` moves `git.<ROOT>` to the newest listed commit (`advanced: true`, only if any were listed). Use it only after the commits are recorded.
 - `--advance --to SHA` moves it only to SHA (full sha, or a prefix of at least 7 characters), which must match exactly one of the commits listed by this run; otherwise `IngestError` (exit 1), watermark untouched. The skill passes the newest sha it recorded, so a commit pushed between listing and advancing is listed next time instead of being skipped. `--to` without `--advance` is an error.
 ## hub ingest batch FILE
-`run_batch` (`hub/batch.py:219`), validation `check_batch` (`hub/batch.py:158`). YAML mapping with these top-level keys only (`watermark`, `safe`, `proposals`, `flags`); each op's keys must be in its allow-list, an unknown key is an error.
+`run_batch` in `hub/batch.py`, validation `check_batch` (same file). YAML mapping with these top-level keys only (`watermark`, `safe`, `proposals`, `flags`); each op's keys must be in its allow-list, an unknown key is an error.
 ```yaml
 watermark: {name: circleback, value: "2026-11-19"}   # optional; name as above; value str, int or date; set last
 safe:                                                # applied directly
@@ -38,7 +38,7 @@ proposals:                                           # staged as Status/Pending/
   - {title: <str>, reason: <why a human decides>, source: <id>, ops: [<pending ops, pending-format.md>]}
 flags: [<str>, ...]                                  # added to Status/sync-state/flags.md
 ```
-Rules (`hub/batch.py:83-203`):
+Rules (`check_batch` and its helpers in `hub/batch.py`):
 - `source` is required on every op and proposal, non-empty with no whitespace. `text`, `title`, `reason` and flags are non-empty strings; `priority` is an integer 1-3; `series` a list of strings; `description` a string.
 - `entry.id` must exist. Safe `new` creates only questions and actions (decisions are proposals); `owner` must be a key of `people` (else error `owner X is not a known person`); `links` may only be `spawned_by` to existing ids; `fields` may only set `due`. Closures, answers, pivots and decisions go through `proposals`.
 - Proposal ops are checked with the pending-format.md rules (`check_ops`); in addition every `new` op with an `owner` must name a key of `people` (same error as safe ops).
@@ -52,7 +52,7 @@ Idempotency (re-running the same file is a no-op, counted as skipped):
 - flags already present are ignored.
 Output (stdout): `applied N, skipped N, staged N (P-id P-id), skipped proposals N, flags added N`, plus `, watermark name=value` when set.
 ## hub clickup plan|apply --tasks FILE
-`load_tasks` (`hub/clickup.py:59`), `plan_clickup` (`hub/clickup.py:116`), `apply_clickup` (`hub/clickup.py:186`). ClickUp owns task status, assignee and due date; the hub mirrors them.
+`load_tasks`, `plan_clickup` and `apply_clickup` in `hub/clickup.py`. ClickUp owns task status, assignee and due date; the hub mirrors them.
 Export (JSON or YAML list the agent writes from the list `sources.clickup.list_id`; `id` and `name` required, ids without whitespace):
 ```json
 [{"id": "t1", "name": "Rerun", "status": "complete" or {"status": "complete", "type": "closed"},
@@ -81,4 +81,4 @@ Stores the date in `Status/sync-state/next_meeting.<SERIES>.yaml`; prints `next 
 ## hub meeting decided SERIES YYYY-MM-DD [--json]
 `_decided` in `hub/cli_ext.py`. Decisions whose `meeting` frontmatter is `SERIES/DATE` or that have an entry with source `agenda:SERIES/DATE`, plus the proposals that read-back staged. `reached` is false when every `agenda:SERIES/DATE` entry of the decision is `Not reached at …` and its `meeting` is not SERIES/DATE (the meeting ran out of time before it). Text: one line per decision `<id>  <status> <title> — <as_decided, else "as proposed"; "not reached" when not reached>  actions: <ids or none>`, then `staged: <P-ids or none>`. `--json`: `{"decisions": [{id, title, status, as_decided, reached, actions}], "staged": [P-ids]}`; `actions` are action ids with a `spawned_by` link to the decision; `staged` are pending proposals whose `source` is `agenda:SERIES/DATE` (decisions raised in the meeting and free-text actions, still awaiting approval: they count as recorded for the Circleback cross-check).
 ## hub sources [--json]
-`_source_rows` (`hub/cli_ext.py:96`). One row per configured source, in order: `clickup` (`sources.clickup`), `circleback` (`sources.circleback`: `folder`, `terms`), `git.<ROOT>` for each `sources.repos[]` and `sources.overleaf`, `calendar` (when the key is present; no watermark), `gmail` and `slack` (only when `enabled: true`). Text: `<source padded 20> <watermark or —, padded 28> <detail>`. `--json`: list of `{source, detail, watermark}` (watermark null when never ingested).
+`_source_rows` in `hub/cli_ext.py`. One row per configured source, in order: `clickup` (`sources.clickup`), `circleback` (`sources.circleback`: `folder`, `terms`), `git.<ROOT>` for each `sources.repos[]` and `sources.overleaf`, `calendar` (when the key is present; no watermark), `gmail` and `slack` (only when `enabled: true`). Text: `<source padded 20> <watermark or —, padded 28> <detail>`. `--json`: list of `{source, detail, watermark}` (watermark null when never ingested).

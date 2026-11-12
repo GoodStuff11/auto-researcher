@@ -20,7 +20,7 @@ ops:
   source: agenda:group/2026-11-19
 ```
 ````
-The heading is `## <P-id> · <title>` (title forced onto one line); then a fenced yaml block (regex `BLOCK_RE`, `hub/pending.py:18`). Files that do not match (or whose YAML does not parse to a mapping) are skipped by `load_proposals` and returned by `load_unreadable(root)`; `hub pending list` prints each as `UNREADABLE <path>` — fix or delete it by hand.
+The heading is `## <P-id> · <title>` (title forced onto one line); then a fenced yaml block (regex `BLOCK_RE` in `hub/pending.py`). Files that do not match (or whose YAML does not parse to a mapping) are skipped by `load_proposals` and returned by `load_unreadable(root)`; `hub pending list` prints each as `UNREADABLE <path>` — fix or delete it by hand.
 Block keys:
 - `proposer` (string) — people key of whoever staged it
 - `date` (date) — day staged
