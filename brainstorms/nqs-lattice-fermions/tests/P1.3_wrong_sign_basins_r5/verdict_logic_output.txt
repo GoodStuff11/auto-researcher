@@ -1,5 +1,40 @@
-basin (lower, stable)        -> BASIN  (B1 True B2 True B3 True B4 True Bc True K1 False K2 False K3 False)
-capacity: relaxed back       -> CAPACITY  (B1 False B2 True B3 False B4 True Bc True K1 False K2 True K3 False)
-capacity: trade-off          -> CAPACITY  (B1 True B2 True B3 True B4 False Bc True K1 False K2 False K3 True)
-unclear: cold unconverged    -> UNCLEAR  (B1 True B2 True B3 True B4 True Bc False K1 False K2 False K3 False)
-capacity: oracle no better   -> CAPACITY  (B1 False B2 True B3 False B4 True Bc True K1 True K2 True K3 False)
+--- per width (Cbest = 0.0135, margin = 0.004, min cE = 0.053, tolE = 0.004)
+basin: lower sign, strictly lower E      -> BASIN            (want BASIN           ) OK
+sign-degenerate: lower sign, equal E     -> SIGN-DEGENERATE  (want SIGN-DEGENERATE ) OK
+sign-degenerate: E within tol above      -> SIGN-DEGENERATE  (want SIGN-DEGENERATE ) OK
+capacity K3: lower sign, worse E         -> CAPACITY         (want CAPACITY        ) OK
+capacity K2: W0 lower, relaxed back      -> CAPACITY         (want CAPACITY        ) OK
+unclear-oracle: K1 alone (W0 no better)  -> UNCLEAR-ORACLE   (want UNCLEAR-ORACLE  ) OK
+unclear-oracle: fid target missed        -> UNCLEAR-ORACLE   (want UNCLEAR-ORACLE  ) OK
+unclear-noise: between B1 and K2         -> UNCLEAR-NOISE    (want UNCLEAR-NOISE   ) OK
+unclear-conv: a cold arm unconverged     -> UNCLEAR-CONV     (want UNCLEAR-CONV    ) OK
+unclear-conv: W unconverged              -> UNCLEAR-CONV     (want UNCLEAR-CONV    ) OK
+unclear-conv: cold mid->end drift 1e-3   -> UNCLEAR-CONV     (want UNCLEAR-CONV    ) OK
+unclear-meas: spread*dE_tot > 0.2 margin -> UNCLEAR-MEAS     (want UNCLEAR-MEAS    ) OK
+unclear-meas: |calib| > 1e-4             -> UNCLEAR-MEAS     (want UNCLEAR-MEAS    ) OK
+no-target(w): Cbest < 0.005              -> NO-TARGET        (want NO-TARGET       ) OK
+incomplete: 2 seeds                      -> INCOMPLETE       (want INCOMPLETE      ) OK
+--- global rule
+basin at 6 and 4                         -> BASIN            (want BASIN           ) OK
+capacity at 6 and 10                     -> CAPACITY         (want CAPACITY        ) OK
+NO-TARGET(4) excluded: 6 CAP, 10 CAP     -> CAPACITY         (want CAPACITY        ) OK
+only width 10 eligible, BASIN            -> BASIN            (want BASIN           ) OK
+only width 4 eligible, BASIN (not 6/10)  -> UNCLEAR          (want UNCLEAR         ) OK
+SD at 6 + CAP at 4                       -> SIGN-DEGENERATE  (want SIGN-DEGENERATE ) OK
+every width NO-TARGET(w)                 -> NO-TARGET        (want NO-TARGET       ) OK
+premise gate fails                       -> NO-TARGET        (want NO-TARGET       ) OK
+mixed -> UNCLEAR, tie-break width-limited -> UNCLEAR          (want UNCLEAR         ) OK
+    note: w10: UNCLEAR-ORACLE -> rerun W with a longer fidelity cap: --pre 1200 --overwrite 1; tie-breaker if still UNCLEAR after these actions: width-limited (Cbest(10)=0.00800 <= 0.5 Cbest(4)=0.01000) is True -> CAPACITY
+  tie-break note names CAPACITY          -> True             (want True            ) OK
+--- width-6 pilot rule
+pilot CAPACITY (premise True)            -> CLOSE P1.3: CAPACITY (want CLOSE P1.3: CAPACITY) OK
+pilot SIGN-DEGENERATE (premise True)     -> CLOSE P1.3: no target (want CLOSE P1.3: no target) OK
+pilot NO-TARGET (premise True)           -> CLOSE P1.3: NO-TARGET (want CLOSE P1.3: NO-TARGET) OK
+pilot BASIN (premise False)              -> CLOSE P1.3: NO-TARGET (want CLOSE P1.3: NO-TARGET) OK
+pilot BASIN (premise True)               -> SUBMIT tasks 12-35 (want SUBMIT tasks 12-35) OK
+pilot UNCLEAR-CONV (premise True)        -> SUBMIT tasks 12-35 (want SUBMIT tasks 12-35) OK
+pilot UNCLEAR-ORACLE (premise True)      -> SUBMIT tasks 12-35 (want SUBMIT tasks 12-35) OK
+pilot UNCLEAR-NOISE (premise True)       -> SUBMIT tasks 12-35 (want SUBMIT tasks 12-35) OK
+pilot INCOMPLETE (premise True)          -> WAIT             (want WAIT            ) OK
+    e.g. SUBMIT tasks 12-35: sbatch --array=12-35%12 submit_test.sbatch; width-6 action: resume every run of this width: --init-from <json> --rel 600
+ALL LOGIC CHECKS PASSED

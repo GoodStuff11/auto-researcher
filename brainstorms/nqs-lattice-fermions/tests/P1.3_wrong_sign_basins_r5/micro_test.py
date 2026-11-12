@@ -408,13 +408,48 @@ def snapshot(ctx, ans, x, lab, step, args, with_ps=False):
     return out
 
 
+def result_base(args):
+    return f"inst{args.instance}_{args.arm}_w{args.width}_s{args.seed}"
+
+
+def load_latest(d, base):
+    """The _ext JSON of a run if present, else its base JSON, else None."""
+    for fn in (base + "_ext.json", base + ".json"):
+        p = os.path.join(d, fn)
+        if os.path.exists(p):
+            return json.load(open(p))
+    return None
+
+
+def fid_reference(args):
+    """ov0 that W's fidelity phase must exceed by FID_GAIN (see the Arms section)."""
+    if args.fid_target > 0:
+        return args.fid_target - FID_GAIN, "--fid-target"
+    own = load_latest(args.results, f"inst{args.instance}_Cuhf_w{args.width}_s{args.seed}")
+    if own is not None:
+        return float(own["snapshots"]["end"]["ov0"]), f"Cuhf w{args.width} s{args.seed}"
+    other = []
+    for w in WIDTHS:
+        r = load_latest(args.results, f"inst{args.instance}_Cuhf_w{w}_s{args.seed}")
+        if r is not None:
+            other.append(float(r["snapshots"]["end"]["ov0"]))
+    if other:
+        return max(other), f"max Cuhf s{args.seed} over widths"
+    fn = os.path.join(P21_RESULTS, f"inst{args.instance}_nnbf_s{args.seed}.json")
+    if args.instance == 0 and os.path.exists(fn):
+        b = json.load(open(fn))["budgets"].get("P")
+        if b and "ov0" in b:
+            return float(b["ov0"]), f"P2.1 r3 control s{args.seed}"
+    return FID_FALLBACK[args.instance], "fallback"
+
+
 def train_task(args):
     m = make_model(args.instance)
     m.spin_setup()
     m.pair_setup(args.r_min)
     label = f"{args.arm}-w{args.width}-s{args.seed}"
     log(f"instance {args.instance} {INSTANCES[args.instance]} D={m.D} arm={args.arm} width={args.width} "
-        f"seed={args.seed} pre={args.pre} rel={args.rel}")
+        f"seed={args.seed} pre(fid cap)={args.pre} rel(energy steps)={args.rel} init_from={args.init_from or '-'}")
     t0 = time.time()
     W, Vv, deg = solve_ed(m, 4, 1e-8, UHF_SEED)
     psi0 = resolve_ground(m, Vv, deg)
@@ -430,49 +465,75 @@ def train_task(args):
                                     [("uniform", np.ones(m.D) + 0.01 * rng_b.random(m.D))], args.lbfgs_iters)
     calib = float(Ec - W[0])
     ans = make_ansatz(m, args.arm, args.width, args.seed)
+    arm_idx = 0 if args.arm == "W" else ARMS.index(args.arm)      # W shares Cuhf's SR seed (nominally)
+    rng = np.random.default_rng(args.seed + 1000 * arm_idx)
+    prev = None
     if args.init_from:
-        ans.set_flat(np.load(args.init_from)["flat"])
-        log(f"resumed parameters from {args.init_from}")
+        prev = json.load(open(args.init_from))
+        for k in ("instance", "arm", "width", "seed"):
+            if prev[k] != getattr(args, k):
+                raise SystemExit(f"--init-from {args.init_from}: {k} = {prev[k]} != {getattr(args, k)}")
+        pf = os.path.join(os.path.dirname(os.path.abspath(args.init_from)), prev["params_file"])
+        ans.set_flat(np.load(pf)["flat"])
+        if prev.get("rng_state"):
+            rng.bit_generator.state = prev["rng_state"]
+            rng_b.bit_generator.state = prev["rng_b_state"]
+        else:
+            rng = np.random.default_rng([args.seed, arm_idx, len(prev["trace_E"])])
+            rng_b = np.random.default_rng([args.seed + 1000003, len(prev["trace_E"])])
+        log(f"resumed parameters from {pf} after {prev['energy_steps']} energy steps "
+            f"(RNG {'restored' if prev.get('rng_state') else 'reseeded'})")
     psi_t, psi = proj_state(ans, sg, args.chunk)
     log(f"{label}: n_params={ans.n_params()} calib={calib:.2e} init |P psi|/|psi|="
         f"{np.linalg.norm(psi) / np.linalg.norm(psi_t):.3e} init F={float(psi0 @ psi) ** 2 / (psi @ psi):.4f}")
-    rng = np.random.default_rng(args.seed + 1000 * (0 if args.arm == "W" else ARMS.index(args.arm)))
     ctx = dict(m=m, sg=sg, W=W, Vv=Vv, deg=deg, psi0=psi0, S0=S0, rng_b=rng_b, label=label)
     tr = Tracker(ans, m, sg, psi0, args, rng, label)
-    snaps = {}
-    fid_plateau = None
-    if args.init_from:
-        n_pre = 0
+    snaps, history, off = {}, [], 0
+    fid = dict(n_fid=0, fid_ref=None, fid_ref_src=None, fid_target=None, fid_reached=None, fid_plateau=None)
+    if prev is not None:
+        tr.E, tr.F, tr.phase = list(prev["trace_E"]), list(prev["trace_F"]), list(prev["trace_phase"])
+        off = int(prev["energy_steps"])
+        fid = {k: prev.get(k) for k in fid}
+        snaps = {k: v for k, v in prev["snapshots"].items() if k == "W0"}
+        history = prev.get("history", []) + [dict(
+            energy_steps=off, converged=prev["converged"], energy_drop=prev["energy_drop"],
+            snapshots={k: v for k, v in prev["snapshots"].items() if k != "W0"})]
     elif args.arm == "W":
-        n_pre = args.pre
-        tr.run(n_pre, fidelity=True)
+        ref, src = fid_reference(args)
+        tgt = min(ref + FID_GAIN, 0.9999)
+        log(f"{label}: fidelity phase until F >= {tgt:.4f} (ov0_ref {ref:.4f} from {src}) or {args.pre} steps")
+        tr.run(args.pre, fidelity=True, stop_F=tgt)
         xw = tr.best_params()
         ans.set_flat(xw)                                   # release from the best-fidelity iterate
-        fid_plateau = bool(window_drop([-f for f in tr.F], FID_WIN) <= FID_TOL)
-        snaps.update(snapshot(ctx, ans, xw, "W0", n_pre, args))
-    else:
-        n_pre = args.pre
-        tr.run(n_pre, fidelity=False)
+        snaps.update(snapshot(ctx, ans, xw, "W0", 0, args))
+        fid = dict(n_fid=len(tr.E), fid_ref=ref, fid_ref_src=src, fid_target=tgt,
+                   fid_reached=bool(snaps["W0"]["ov0"] >= tgt - 1e-12),
+                   fid_plateau=bool(window_drop([-f for f in tr.F], FID_WIN) <= FID_TOL))
+        log(f"{label}: fidelity phase {fid['n_fid']} steps, F(W0) = {snaps['W0']['ov0']:.4f}, "
+            f"reached={fid['fid_reached']}")
     half = args.rel // 2
     tr.run(half, fidelity=False)
-    snaps.update(snapshot(ctx, ans, tr.best_params(), "mid", n_pre + half, args))
+    snaps.update(snapshot(ctx, ans, tr.best_params(), "mid", off + half, args))
     tr.run(args.rel - half, fidelity=False)
     xf = tr.best_params()
     ans.set_flat(xf)
-    snaps.update(snapshot(ctx, ans, xf, "end", n_pre + args.rel, args, with_ps=True))
+    snaps.update(snapshot(ctx, ans, xf, "end", off + args.rel, args, with_ps=True))
     Erel = [e for e, ph in zip(tr.E, tr.phase) if ph == "E"]
-    drop = window_drop(Erel, CONV_WIN)
+    drop = conv_drop(Erel)
     conv = bool(np.isfinite(drop) and drop <= CONV_TOL)
-    log(f"{label}: energy-window drop {drop:.2e} (tol {CONV_TOL:g}) converged={conv} fid_plateau={fid_plateau} "
-        f"total {time.time() - t0:.0f} s")
+    log(f"{label}: energy drop per 100 steps (slope over last {CONV_WIN}) {drop:.2e} (tol {CONV_TOL:g}) "
+        f"converged={conv} n_fid={fid['n_fid']} fid_reached={fid['fid_reached']} total {time.time() - t0:.0f} s")
     pdir = os.path.join(args.results, "params")
     os.makedirs(pdir, exist_ok=True)
-    np.savez(os.path.join(pdir, f"inst{args.instance}_{args.arm}_w{args.width}_s{args.seed}.npz"), flat=xf)
+    pname = result_base(args) + ("_ext" if prev is not None else "") + ".npz"
+    np.savez(os.path.join(pdir, pname), flat=xf)
     return dict(params=vars(args), instance=args.instance, arm=args.arm, width=args.width, seed=args.seed,
                 n_params=ans.n_params(), ed_levels=W.tolist(), level_labels=labels, degeneracy=deg,
                 irrep=gen, G=sg.G, S_psi0=S0, calib_err=calib, trace_E=tr.E, trace_F=tr.F,
-                trace_phase="".join(tr.phase), energy_drop=drop, converged=conv, fid_plateau=fid_plateau,
-                snapshots=snaps, wall=time.time() - t0)
+                trace_phase="".join(tr.phase), energy_steps=off + args.rel, energy_drop=drop, converged=conv,
+                snapshots=snaps, history=history, params_file=os.path.join("params", pname),
+                rng_state=rng.bit_generator.state, rng_b_state=rng_b.bit_generator.state,
+                resumed_from=args.init_from or None, wall=time.time() - t0, **fid)
 
 
 # ============================================================================ aggregate
@@ -481,8 +542,17 @@ def _med(x):
     return float(np.median(x)) if x else float("nan")
 
 
+UNCLEAR_ACTION = {
+    "UNCLEAR-MEAS": "re-budget the end states: --init-from <json> --rel 0 --lbfgs-iters 8000",
+    "UNCLEAR-CONV": "resume every run of this width: --init-from <json> --rel 600",
+    "UNCLEAR-ORACLE": "rerun W with a longer fidelity cap: --pre 1200 --overwrite 1",
+    "UNCLEAR-NOISE": "add seeds 44, 55, 66 at this width",
+    "INCOMPLETE": "finish / resubmit the missing tasks",
+}
+
+
 def width_verdict(R, w, seeds):
-    """R[(arm, seed)] = result dict at width w. Returns (verdict, info dict)."""
+    """R[(arm, seed)] = result dict at width w. Returns (verdict, info dict); see the module docstring."""
     def g(arm, s, snap="end", key="dE_sign"):
         r = R.get((arm, s))
         if r is None or snap not in r["snapshots"] or r["snapshots"][snap] is None:
@@ -492,54 +562,125 @@ def width_verdict(R, w, seeds):
     need = math.ceil(2 * n / 3)
     c = {a: _med([g(a, s) for s in seeds]) for a in COLD}
     cE = {a: _med([g(a, s, key="dE_tot") for s in seeds]) for a in COLD}
-    Cbest = min(c.values())
-    sig_c = _med([max(g(a, s) for s in seeds) - min(g(a, s) for s in seeds) for a in COLD])
+    Cbest = min(c.values()) if c else float("nan")
+    Emin = min(cE.values()) if cE else float("nan")
+    sig_c = _med([max(g(a, s) for s in seeds) - min(g(a, s) for s in seeds) for a in COLD]) if n else float("nan")
     sig_E = _med([max(g(a, s, key="dE_tot") for s in seeds) - min(g(a, s, key="dE_tot") for s in seeds)
-                  for a in COLD])
+                  for a in COLD]) if n else float("nan")
     Wr = _med([g("W", s) for s in seeds])
     Wm = _med([g("W", s, "mid") for s in seeds])
     W0 = _med([g("W", s, "W0") for s in seeds])
     WE = _med([g("W", s, key="dE_tot") for s in seeds])
     paired = sum(g("W", s) < min(g(a, s) for a in COLD) for s in seeds)
     drift = _med([g("W", s) - g("W", s, "mid") for s in seeds])
-    conv = {a: _med([float(R[(a, s)]["converged"]) for s in seeds if (a, s) in R]) >= 0.5 for a in COLD}
-    plateau = sum(bool(R[("W", s)].get("fid_plateau")) for s in seeds if ("W", s) in R)
-    B1 = Wr <= Cbest - max(B1_FRAC * Cbest, B1_SIG * sig_c)
+    margin = max(B1_FRAC * Cbest, B1_SIG * sig_c)
+    tolE = max(B4_SIG * sig_E, B4_MIN)
+    # measurement noise and calibration
+    noise = [g(a, s, sn, "spread") * g(a, s, sn, "dE_tot") for a in ARMS for s in seeds for sn in ("mid", "end")]
+    noise_max = max(noise) if noise and all(np.isfinite(noise)) else float("inf")
+    calib_max = max(abs(float(R[(a, s)].get("calib_err", np.inf))) for a in ARMS for s in seeds) if n else float("inf")
+    Bm = noise_max <= NOISE_FRAC * margin and calib_max <= CALIB_MAX
+    # convergence: every task (W after release too), plus cold mid->end stability
+    conv = {a: [bool(R[(a, s)]["converged"]) for s in seeds] for a in ARMS}
+    stab = {a: [abs(g(a, s) - g(a, s, "mid")) <= STAB_FRAC * margin for s in seeds] for a in COLD}
+    Bc = all(all(v) for v in conv.values()) and all(all(v) for v in stab.values())
+    fid_ok = [bool(R[("W", s)].get("fid_reached")) for s in seeds]
+    B1 = Wr <= Cbest - margin
     B2 = paired >= need
     B3 = drift <= B3_FRAC * (Cbest - Wr)
-    B4 = WE <= min(cE.values()) + max(B4_SIG * sig_E, B4_MIN)
-    Bc = all(conv.values())
-    ovW0 = _med([g("W", s, "W0", "ov0") for s in seeds])
-    ovC = _med([g("Cuhf", s, "end", "ov0") for s in seeds])
-    K1 = W0 >= K1_FRAC * Cbest and plateau >= need and ovW0 >= ovC
-    K2 = Wr >= Cbest - max(K2_FRAC * Cbest, sig_c)
-    K3 = B1 and B2 and not B4
-    info = dict(width=w, n=n, c=c, cE=cE, Cbest=Cbest, sigma_c=sig_c, sigma_E=sig_E, Wr=Wr, Wm=Wm, W0=W0,
-                W_dE_tot=WE, ov0_W0=ovW0, ov0_Cuhf=ovC, paired=paired, drift=drift, converged=conv, fid_plateau=plateau,
-                B1=B1, B2=B2, B3=B3, B4=B4, Bc=Bc, K1=K1, K2=K2, K3=K3)
-    if n < 3 or not np.isfinite(Cbest) or not np.isfinite(Wr):
-        return "UNCLEAR", info
-    if B1 and B2 and B3 and B4 and Bc:
+    B4 = WE <= Emin - tolE
+    K3 = B1 and B2 and WE > Emin + tolE
+    SD = B1 and B2 and B3 and not B4 and not K3
+    K1 = W0 >= K1_FRAC * Cbest
+    K2 = W0 <= Cbest - margin and Wr >= Cbest - max(K2_FRAC * Cbest, sig_c)
+    info = dict(width=w, n=n, c=c, cE=cE, Cbest=Cbest, sigma_c=sig_c, sigma_E=sig_E, margin=margin, tolE=tolE,
+                Wr=Wr, Wm=Wm, W0=W0, W_dE_tot=WE, paired=paired, drift=drift, noise_max=noise_max,
+                calib_max=calib_max, converged=conv, stable=stab, fid_reached=fid_ok,
+                n_fid=[R[("W", s)].get("n_fid") for s in seeds],
+                ov0_W0=_med([g("W", s, "W0", "ov0") for s in seeds]),
+                ov0_Cuhf=_med([g("Cuhf", s, "end", "ov0") for s in seeds]),
+                Bm=Bm, Bc=Bc, B1=B1, B2=B2, B3=B3, B4=B4, SD=SD, K1=K1, K2=K2, K3=K3)
+    vals = [Cbest, Wr, Wm, W0, WE, sig_c, sig_E]
+    if n < 3 or not all(np.isfinite(vals)):
+        return "INCOMPLETE", info
+    if Cbest < PREMISE_MIN:
+        return "NO-TARGET", info
+    if not Bm:
+        return "UNCLEAR-MEAS", info
+    if not Bc:
+        return "UNCLEAR-CONV", info
+    if B1 and B2 and B3 and B4:
         return "BASIN", info
-    if K1 or K2 or K3:
+    if SD:
+        return "SIGN-DEGENERATE", info
+    if K2 or K3:
         return "CAPACITY", info
-    return "UNCLEAR", info
+    if K1 or not all(fid_ok):
+        return "UNCLEAR-ORACLE", info
+    return "UNCLEAR-NOISE", info
 
 
-def aggregate(d, inst):
+def global_verdict(verdicts, premise, cbest):
+    """verdicts {width: label}, premise bool, cbest {width: Cbest}. Returns (label, note)."""
+    elig = [w for w, v in verdicts.items() if v != "NO-TARGET"]
+    nb = [w for w in elig if verdicts[w] == "BASIN"]
+    nc = [w for w in elig if verdicts[w] == "CAPACITY"]
+    nsd = [w for w in elig if verdicts[w] == "SIGN-DEGENERATE"]
+    k = min(2, len(elig))
+    if not premise:
+        return "NO-TARGET", "premise gate failed"
+    if not elig:
+        return "NO-TARGET", "every width has Cbest < 0.005"
+    if len(nb) >= k and (6 in nb or 10 in nb):
+        return "BASIN", f"BASIN widths {nb}"
+    if not nb and len(nc) >= k:
+        return "CAPACITY", f"CAPACITY widths {nc}"
+    if not nb and nsd and len(nc) + len(nsd) >= k:
+        return "SIGN-DEGENERATE", f"SIGN-DEGENERATE widths {nsd}, CAPACITY widths {nc}"
+    note = "; ".join(f"w{w}: {verdicts[w]} -> {UNCLEAR_ACTION[verdicts[w]]}" for w in elig
+                     if verdicts[w] in UNCLEAR_ACTION)
+    tb = ""
+    c4, c10 = cbest.get(4), cbest.get(10)
+    if c4 is not None and c10 is not None and np.isfinite(c4) and np.isfinite(c10):
+        tb = ("; tie-breaker if still UNCLEAR after these actions: width-limited "
+              f"(Cbest(10)={c10:.5f} <= 0.5 Cbest(4)={0.5 * c4:.5f}) is {c10 <= 0.5 * c4} -> "
+              f"{'CAPACITY' if c10 <= 0.5 * c4 else 'NO-TARGET'}")
+    return "UNCLEAR", (note or "no pre-committed action applies") + tb
+
+
+def pilot_decision(v6, premise):
+    """Width-6 pilot (tasks 0-11): the pre-committed decision for verdict v6 at width 6."""
+    if not premise or v6 == "NO-TARGET":
+        return "CLOSE P1.3: NO-TARGET (no residual sign error at width 6)"
+    if v6 == "CAPACITY":
+        return "CLOSE P1.3: CAPACITY (K2 or K3 at width 6) -> hand over to P2.1 and P1.2"
+    if v6 == "SIGN-DEGENERATE":
+        return "CLOSE P1.3: no target (SIGN-DEGENERATE at width 6)"
+    if v6 == "INCOMPLETE":
+        return "WAIT: finish / resubmit the missing pilot tasks 0-11"
+    act = f"; width-6 action: {UNCLEAR_ACTION[v6]}" if v6 in UNCLEAR_ACTION else ""
+    return f"SUBMIT tasks 12-35: sbatch --array=12-35%12 submit_test.sbatch{act}"
+
+
+def aggregate(d, inst, pilot="none"):
     R = {}
     for fn in sorted(os.listdir(d)):
-        if fn.startswith(f"inst{inst}_") and fn.endswith(".json") and "aggregate" not in fn:
+        if fn.startswith(f"inst{inst}_") and fn.endswith(".json"):
             r = json.load(open(os.path.join(d, fn)))
-            R[(r["width"], r["arm"], r["seed"])] = r
+            key = (r["width"], r["arm"], r["seed"])
+            if key not in R or fn.endswith("_ext.json"):   # an extension supersedes its base run
+                R[key] = r
+    if pilot == "w6":
+        R = {k: v for k, v in R.items() if k[0] == 6 and k[2] in SEEDS}
     if not R:
         print(f"no results for instance {inst} in {d}")
         return 1
     widths = [w for w in WIDTHS if any(k[0] == w for k in R)] + sorted({k[0] for k in R} - set(WIDTHS))
     any_r = next(iter(R.values()))
-    print(f"===== P1.3 r5 instance {inst}: ED {np.round(any_r['ed_levels'], 6).tolist()} irrep {any_r['irrep']}")
+    print(f"===== P1.3 r5 instance {inst}{' PILOT w6 (tasks 0-11)' if pilot == 'w6' else ''}: "
+          f"ED {np.round(any_r['ed_levels'], 6).tolist()} irrep {any_r['irrep']}")
     print(f"      ED level labels {any_r['level_labels']}")
-    out = dict(instance=inst, widths={})
+    out = dict(instance=inst, pilot=pilot, widths={})
     verdicts = {}
     for w in widths:
         seeds = sorted({k[2] for k in R if k[0] == w and all((w, a, k[2]) in R for a in ARMS)})
@@ -549,25 +690,30 @@ def aggregate(d, inst):
         for s in seeds:
             row = []
             for a in ARMS:
-                sn = Rw[(a, s)]["snapshots"]
-                extra = f" W0 {sn['W0']['dE_sign']:.4f}/{sn['W0']['ov0']:.3f}" if a == "W" else ""
+                r = Rw[(a, s)]
+                sn = r["snapshots"]
+                extra = (f" W0 {sn['W0']['dE_sign']:.4f}/{sn['W0']['ov0']:.3f} nfid {r.get('n_fid')} "
+                         f"reached {int(bool(r.get('fid_reached')))}") if a == "W" else ""
                 row.append(f"{a}: sign {sn['end']['dE_sign']:.4f} (mid {sn['mid']['dE_sign']:.4f}) "
                            f"tot {sn['end']['dE_tot']:.4f} ov0 {sn['end']['ov0']:.3f} "
-                           f"PS-sign {sn['end_PS']['dE_sign']:.4f} conv {int(Rw[(a, s)]['converged'])}{extra}")
+                           f"PS-sign {sn['end_PS']['dE_sign']:.4f} Esteps {r.get('energy_steps')} "
+                           f"conv {int(r['converged'])}{extra}")
             print(f"  seed {s}: " + " | ".join(row))
-        v, info = width_verdict(Rw, w, seeds) if seeds else ("UNCLEAR", dict(n=0))
+        v, info = width_verdict(Rw, w, seeds)
         verdicts[w] = v
         if seeds:
             print(f"  cold medians dE_sign {dict((a, round(x, 5)) for a, x in info['c'].items())} Cbest {info['Cbest']:.5f} "
-                  f"sigma_c {info['sigma_c']:.5f}; dE_tot {dict((a, round(x, 5)) for a, x in info['cE'].items())} "
-                  f"sigma_E {info['sigma_E']:.5f}")
+                  f"sigma_c {info['sigma_c']:.5f} margin {info['margin']:.5f}; dE_tot "
+                  f"{dict((a, round(x, 5)) for a, x in info['cE'].items())} sigma_E {info['sigma_E']:.5f} "
+                  f"tolE {info['tolE']:.5f}")
             print(f"  W: W0 {info['W0']:.5f} mid {info['Wm']:.5f} end {info['Wr']:.5f} dE_tot {info['W_dE_tot']:.5f}; "
-                  f"paired wins {info['paired']}/{info['n']}; drift {info['drift']:+.5f}; fid plateau "
-                  f"{info['fid_plateau']}/{info['n']}; ov0 W0 {info['ov0_W0']:.4f} vs Cuhf {info['ov0_Cuhf']:.4f}; "
-                  f"cold converged {info['converged']}")
-            print(f"  B1 {info['B1']} B2 {info['B2']} B3 {info['B3']} B4 {info['B4']} Bc {info['Bc']} | "
-                  f"K1 {info['K1']} K2 {info['K2']} K3 {info['K3']}  -> {v}")
-        out["widths"][w] = dict(verdict=v, **{k: (x if not isinstance(x, (np.bool_,)) else bool(x))
+                  f"paired wins {info['paired']}/{info['n']}; drift {info['drift']:+.5f}; fid reached "
+                  f"{info['fid_reached']}; ov0 W0 {info['ov0_W0']:.4f} vs Cuhf {info['ov0_Cuhf']:.4f}")
+            print(f"  noise max {info['noise_max']:.1e} calib max {info['calib_max']:.1e}; converged "
+                  f"{info['converged']}; cold mid->end stable {info['stable']}")
+            print(f"  Bm {info['Bm']} Bc {info['Bc']} | B1 {info['B1']} B2 {info['B2']} B3 {info['B3']} "
+                  f"B4 {info['B4']} SD {info['SD']} | K1 {info['K1']} K2 {info['K2']} K3 {info['K3']}  -> {v}")
+        out["widths"][w] = dict(verdict=v, **{k: (bool(x) if isinstance(x, np.bool_) else x)
                                               for k, x in info.items()})
     # premise gate on the projected control
     ref_w = 6 if 6 in widths else widths[0]
@@ -582,25 +728,18 @@ def aggregate(d, inst):
     premise = _med(ctrl) >= PREMISE_MIN
     print(f"PREMISE GATE: median dE_sign(Cuhf, w={ref_w}) = {_med(ctrl):.5f} over {len(ctrl)} seeds "
           f"(>= {PREMISE_MIN}): {premise}; P2.1 r3 control (1200 steps) {p21}")
-    nb = [w for w in widths if verdicts[w] == "BASIN"]
-    nc = [w for w in widths if verdicts[w] == "CAPACITY"]
-    if not premise:
-        g = "NO-TARGET"
-    elif len(nb) >= 2 and (6 in nb or 10 in nb):
-        g = "BASIN"
-    elif len(nc) >= 2 and not nb:
-        g = "CAPACITY"
+    cb = {w: out["widths"][w].get("Cbest", float("nan")) for w in widths}
+    print(f"width trend: Cbest {cb}")
+    if pilot == "w6":
+        v6 = verdicts.get(6, "INCOMPLETE")
+        g, note = v6, pilot_decision(v6, premise)
+        print(f"PILOT VERDICT (width 6): {v6}\n  PILOT DECISION: {note}")
     else:
-        g = "UNCLEAR"
-    cb = {w: out["widths"][w].get("Cbest") for w in widths}
-    if 4 in cb and 10 in cb and cb[4] and np.isfinite(cb[4]):
-        print(f"width trend: Cbest {cb}; width-limited (Cbest(10) <= 0.5 Cbest(4)): {cb[10] <= 0.5 * cb[4]}")
-    print(f"GLOBAL VERDICT: {g}  (BASIN widths {nb}, CAPACITY widths {nc})")
-    if g == "UNCLEAR":
-        print("  pre-committed action: seeds 44, 55, 66 at widths "
-              f"{[w for w in widths if verdicts[w] != 'CAPACITY']}; still not BASIN -> CAPACITY")
-    out.update(premise=premise, control=ctrl, p21_control=p21, verdict=g)
-    json.dump(out, open(os.path.join(d, f"aggregate_inst{inst}.json"), "w"), indent=1, default=float)
+        g, note = global_verdict(verdicts, premise, cb)
+        print(f"GLOBAL VERDICT: {g}  ({note})")
+    out.update(premise=premise, control=ctrl, p21_control=p21, verdict=g, note=note)
+    name = f"aggregate_inst{inst}{'_pilot_w6' if pilot == 'w6' else ''}.json"
+    json.dump(out, open(os.path.join(d, name), "w"), indent=1, default=float)
     return 0
 
 
@@ -675,8 +814,9 @@ def parse_args(argv=None):
     ap.add_argument("--arm", default="", choices=[""] + ARMS)
     ap.add_argument("--width", type=int, default=-1)
     ap.add_argument("--seed", type=int, default=-1)
-    ap.add_argument("--pre", type=int, default=200)
-    ap.add_argument("--rel", type=int, default=700)
+    ap.add_argument("--pre", type=int, default=600)
+    ap.add_argument("--rel", type=int, default=900)
+    ap.add_argument("--fid-target", type=float, default=-1.0)
     ap.add_argument("--sr-lr", type=float, default=0.05)
     ap.add_argument("--sr-shift", type=float, default=1e-3)
     ap.add_argument("--sr-samples", type=int, default=2000)
@@ -687,6 +827,7 @@ def parse_args(argv=None):
     ap.add_argument("--fn-floor", type=float, default=1e-3)
     ap.add_argument("--r-min", type=float, default=1.5)
     ap.add_argument("--init-from", default="")
+    ap.add_argument("--pilot", choices=["none", "w6"], default="none")
     ap.add_argument("--results", default=os.path.join(HERE, "results"))
     ap.add_argument("--overwrite", type=int, choices=[0, 1], default=0)
     a = ap.parse_args(argv)
@@ -703,14 +844,31 @@ def parse_args(argv=None):
     a.seed = SEEDS[0] if a.seed < 0 else a.seed
     if a.mode == "train" and not a.arm:
         ap.error("--mode train needs --task or --arm")
+    if a.rel < 0 or a.pre < 0:
+        ap.error("--pre and --rel must be >= 0")
+    if a.rel < 2 and not a.init_from:
+        ap.error("--rel must be >= 2 for a fresh run")
     return a
+
+
+def run_one(args):
+    """Train one task and write its JSON (base, or _ext when resuming). Returns the output path."""
+    out = os.path.join(args.results, result_base(args) + ("_ext.json" if args.init_from else ".json"))
+    same = bool(args.init_from) and os.path.abspath(args.init_from) == os.path.abspath(out)
+    if os.path.exists(out) and not args.overwrite and not same:
+        log(f"{out} exists; use --overwrite 1")
+        return out
+    res = train_task(args)
+    json.dump(res, open(out, "w"), indent=1, default=float)
+    log(f"wrote {out}")
+    return out
 
 
 def main(argv=None):
     args = parse_args(argv)
     os.makedirs(args.results, exist_ok=True)
     if args.mode == "aggregate":
-        return aggregate(args.results, args.instance)
+        return aggregate(args.results, args.instance, args.pilot)
     if args.mode == "time":
         time_step(args)
         return 0
@@ -720,27 +878,29 @@ def main(argv=None):
             return 2
         sdir = os.path.join(HERE, "results_smoke")
         os.makedirs(sdir, exist_ok=True)
-        for w in WIDTHS:
-            for arm in ARMS:
-                for seed in SEEDS:
-                    sm = parse_args(["--mode", "train", "--instance", "8", "--arm", arm, "--width", str(w),
-                                     "--seed", str(seed), "--pre", "30", "--rel", "60", "--sr-samples", "200",
-                                     "--lbfgs-iters", "300", "--fn-iters", "2", "--r-min", "1.0",
-                                     "--results", sdir])
-                    res = train_task(sm)
-                    json.dump(res, open(os.path.join(sdir, f"inst8_{arm}_w{w}_s{seed}.json"), "w"),
-                              indent=1, default=float)
+        for fn in os.listdir(sdir):                         # fresh smoke run every time
+            if fn.endswith(".json"):
+                os.remove(os.path.join(sdir, fn))
+        common = ["--mode", "train", "--instance", "8", "--pre", "30", "--rel", "60", "--sr-samples", "200",
+                  "--lbfgs-iters", "300", "--fn-iters", "2", "--r-min", "1.0", "--results", sdir]
+        for t in range(NTASK):                              # same task order as the Slurm array
+            run_one(parse_args(common + ["--task", str(t)]))
+        # resume check: extend W-w6-s11 by 20 energy steps from its saved state
+        base = os.path.join(sdir, "inst8_W_w6_s11.json")
+        ext = run_one(parse_args(common + ["--task", "9", "--rel", "20", "--init-from", base]))
+        b, e = json.load(open(base)), json.load(open(ext))
+        ok = (len(e["trace_E"]) == len(b["trace_E"]) + 20 and e["trace_E"][:len(b["trace_E"])] == b["trace_E"]
+              and e["energy_steps"] == b["energy_steps"] + 20 and e["snapshots"]["W0"] == b["snapshots"]["W0"]
+              and e["n_fid"] == b["n_fid"] and len(e["history"]) == 1 and e["snapshots"]["end"]["step"] == 80)
+        log(f"resume check: base {len(b['trace_E'])} steps ({b['energy_steps']} energy, n_fid {b['n_fid']}) -> "
+            f"ext {len(e['trace_E'])} steps ({e['energy_steps']} energy); traces/W0/offset carried: {ok}")
+        aggregate(sdir, 8, "w6")
         aggregate(sdir, 8)
-        log(f"smoke total {time.time() - t0:.1f} s")
-        return 0
-    out = os.path.join(args.results, f"inst{args.instance}_{args.arm}_w{args.width}_s{args.seed}.json")
-    if os.path.exists(out) and not args.overwrite:
-        log(f"{out} exists; use --overwrite 1"); return 0
+        log(f"smoke total {time.time() - t0:.1f} s; resume check {'PASSED' if ok else 'FAILED'}")
+        return 0 if ok else 3
     if not run_checks(UHF_SEED):
         return 2
-    res = train_task(args)
-    json.dump(res, open(out, "w"), indent=1, default=float)
-    log(f"wrote {out}")
+    run_one(args)
     return 0
 
 

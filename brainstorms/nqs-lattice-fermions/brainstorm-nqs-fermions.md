@@ -162,7 +162,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.3 | FIX (round 5 basin test, critic fixes) | job 451706 gates submission | fix worker |
 | P2.1 | SUBMITTED (2 more control seeds) | nothing | Slurm 451706 |
 | P2.2 | MUTATE (round 5; CGK killed) | nothing | round-5 worker |
-| P3.1 | MUTATE (re-scope onto 4×4 OBC instance) | job 451706 gates submission only | round-5 worker |
+| P3.1 | CRITIC (round 5; real target: projected NNBF pair/spin/charge errors 31/15/22%) | job 451706 gates analysis | per-leaf critic; Slurm 451837 (step-1 seeds) |
 | P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
 | P4.1 | SUBMITTED (decisive pilot; completeness probe: one AGP per c incomplete, eps_tab(K=1) at least 6.8e-3, K=2 about 2e-8) | report gates on 451839 | Slurm 451886 (15 tasks), 451839 (completeness) |
 | P4.2 | FIX then reduced decisive run (FAIL expected) | nothing | fix worker |
@@ -331,6 +331,8 @@ Every number below was read from the result files by an agent; the orchestrator 
 * **New key instance (from P2.1's pilot).** On the 4×4 OBC $t$–$t'$–$J$ cluster, $6+6$ electrons, $t'=-0.25$, $J=0.4$ (projected sector dimension 30220; NNBF width 6 with about 1.7k parameters, ratio about 17), the symmetry-projected NNBF keeps a measurable sign error:
     * $\Delta E_{\mathrm{sign}}=0.0125t$, $f_E=0.24$, overlap with $\psi_0$ 0.936;
     * with exact $P_S$ added, $\Delta E_{\mathrm{sign}}=0.0063t$.
+
+  * **Observable consequence (P3.1 round 5, seed 11).** The converged projected NNBF has relative errors of **31% in the long-range pair correlation, 15% in spin and 22% in charge**, with overlap 0.936. One and two Lanczos steps cut $\Delta E$ from 0.052 to 0.023 and 0.015 but barely move these observables, so the observable error lies in low-energy directions. This is the frozen Unacceptable Outcome happening in practice: a much better energy with the order parameter still wrong. Three-seed confirmation is job 451837.
 
   This is the first instance in this study where a nodal error survives projection, consistent with the sector-dimension/parameter criterion. It becomes the shared target for P1.2, P1.3 (basin check) and P3.1 (error bars). Seed confirmation is running as job 451706.
 ### Round 2 — Mutation & Replenishment Synthesis (2026-11-11)

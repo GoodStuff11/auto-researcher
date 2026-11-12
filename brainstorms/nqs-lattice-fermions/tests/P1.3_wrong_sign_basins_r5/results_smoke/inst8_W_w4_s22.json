@@ -1,13 +1,14 @@
 {
  "params": {
   "mode": "train",
-  "task": -1,
+  "task": 22,
   "instance": 8,
   "arm": "W",
   "width": 4,
   "seed": 22,
   "pre": 30,
   "rel": 60,
+  "fid_target": -1.0,
   "sr_lr": 0.05,
   "sr_shift": 0.001,
   "sr_samples": 200,
@@ -18,6 +19,7 @@
   "fn_floor": 0.001,
   "r_min": 1.0,
   "init_from": "",
+  "pilot": "none",
   "results": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results_smoke",
   "overwrite": 0
  },
@@ -264,9 +266,9 @@
   0.9976441286429518
  ],
  "trace_phase": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+ "energy_steps": 60,
  "energy_drop": NaN,
  "converged": false,
- "fid_plateau": false,
  "snapshots": {
   "W0": {
    "E": -6.481029986529471,
@@ -306,7 +308,7 @@
     4.5489694914448756e-29,
     0.00012691969499234367
    ],
-   "step": 30
+   "step": 0
   },
   "mid": {
    "E": -6.516839451452849,
@@ -346,7 +348,7 @@
     4.5958899597150096e-29,
     0.00022643695539120967
    ],
-   "step": 60
+   "step": 30
   },
   "end": {
    "E": -6.553435548614337,
@@ -386,7 +388,7 @@
     4.446591870426111e-29,
     0.00029380819155728225
    ],
-   "step": 90
+   "step": 60
   },
   "end_PS": {
    "E": -6.5563251284614426,
@@ -426,8 +428,35 @@
     4.563020354095396e-29,
     4.391240643824422e-31
    ],
-   "step": 90
+   "step": 60
   }
  },
- "wall": 2.0785999298095703
+ "history": [],
+ "params_file": "params/inst8_W_w4_s22.npz",
+ "rng_state": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 206441317066842192871014428823867582664,
+   "inc": 188221490827988801950180874055372779863
+  },
+  "has_uint32": 0,
+  "uinteger": 0
+ },
+ "rng_b_state": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 37973400320578528612664303452971470482,
+   "inc": 47641611361537857912074408168804448135
+  },
+  "has_uint32": 0,
+  "uinteger": 0
+ },
+ "resumed_from": null,
+ "wall": 1.8423397541046143,
+ "n_fid": 30,
+ "fid_ref": 0.9843512909349404,
+ "fid_ref_src": "Cuhf w4 s22",
+ "fid_target": 0.9999,
+ "fid_reached": false,
+ "fid_plateau": false
 }

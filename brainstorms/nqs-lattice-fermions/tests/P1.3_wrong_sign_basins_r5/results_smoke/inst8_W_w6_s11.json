@@ -1,13 +1,14 @@
 {
  "params": {
   "mode": "train",
-  "task": -1,
+  "task": 9,
   "instance": 8,
   "arm": "W",
   "width": 6,
   "seed": 11,
   "pre": 30,
   "rel": 60,
+  "fid_target": -1.0,
   "sr_lr": 0.05,
   "sr_shift": 0.001,
   "sr_samples": 200,
@@ -18,6 +19,7 @@
   "fn_floor": 0.001,
   "r_min": 1.0,
   "init_from": "",
+  "pilot": "none",
   "results": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results_smoke",
   "overwrite": 0
  },
@@ -264,9 +266,9 @@
   0.9953161632020061
  ],
  "trace_phase": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+ "energy_steps": 60,
  "energy_drop": NaN,
  "converged": false,
- "fid_plateau": false,
  "snapshots": {
   "W0": {
    "E": -6.4816382951693985,
@@ -306,7 +308,7 @@
     4.50228976441779e-29,
     0.0001237455642080285
    ],
-   "step": 30
+   "step": 0
   },
   "mid": {
    "E": -6.538665682433731,
@@ -346,7 +348,7 @@
     4.61944047181622e-29,
     0.002721298133060974
    ],
-   "step": 60
+   "step": 30
   },
   "end": {
    "E": -6.55246871063954,
@@ -386,7 +388,7 @@
     4.4883327908520587e-29,
     0.00046193628395783297
    ],
-   "step": 90
+   "step": 60
   },
   "end_PS": {
    "E": -6.5565043162359675,
@@ -426,8 +428,35 @@
     4.5723996329245616e-29,
     4.299758971466028e-31
    ],
-   "step": 90
+   "step": 60
   }
  },
- "wall": 2.938561201095581
+ "history": [],
+ "params_file": "params/inst8_W_w6_s11.npz",
+ "rng_state": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 34177089237259482240402995583498153086,
+   "inc": 7937318808080196428804369945471644491
+  },
+  "has_uint32": 0,
+  "uinteger": 0
+ },
+ "rng_b_state": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 252026605381724483537445529154962019889,
+   "inc": 80702435009091910000572081607288447175
+  },
+  "has_uint32": 0,
+  "uinteger": 0
+ },
+ "resumed_from": null,
+ "wall": 1.9543070793151855,
+ "n_fid": 30,
+ "fid_ref": 0.9769088985817949,
+ "fid_ref_src": "Cuhf w6 s11",
+ "fid_target": 0.9969088985817949,
+ "fid_reached": false,
+ "fid_plateau": false
 }

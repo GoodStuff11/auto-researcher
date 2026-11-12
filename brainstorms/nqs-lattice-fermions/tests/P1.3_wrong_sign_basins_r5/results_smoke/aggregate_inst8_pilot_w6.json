@@ -1,0 +1,104 @@
+{
+ "instance": 8,
+ "pilot": "w6",
+ "widths": {
+  "6": {
+   "verdict": "NO-TARGET",
+   "width": 6,
+   "n": 3,
+   "c": {
+    "Cuhf": 0.0025625564129425626,
+    "Cfs": 0.0008151098275392954,
+    "Ccdw": 0.00040293538323243894
+   },
+   "cE": {
+    "Cuhf": 0.03689282886248968,
+    "Cfs": 0.023259863800802805,
+    "Ccdw": 0.03454780929925416
+   },
+   "Cbest": 0.00040293538323243894,
+   "sigma_c": 0.0078116454093049015,
+   "sigma_E": 0.038080255361837345,
+   "margin": 0.015623290818609803,
+   "tolE": 0.07616051072367469,
+   "Wr": 5.8138698364906816e-05,
+   "Wm": 7.555949057636013e-05,
+   "W0": 0.0013327016150679327,
+   "W_dE_tot": 0.005758012450886696,
+   "paired": 3,
+   "drift": -3.00289718886404e-05,
+   "noise_max": 5.4178883601707645e-14,
+   "calib_max": 3.108624468950438e-14,
+   "converged": {
+    "Cuhf": [
+     false,
+     false,
+     false
+    ],
+    "Cfs": [
+     false,
+     false,
+     false
+    ],
+    "Ccdw": [
+     false,
+     false,
+     false
+    ],
+    "W": [
+     false,
+     false,
+     false
+    ]
+   },
+   "stable": {
+    "Cuhf": [
+     false,
+     false,
+     false
+    ],
+    "Cfs": [
+     true,
+     true,
+     true
+    ],
+    "Ccdw": [
+     true,
+     false,
+     false
+    ]
+   },
+   "fid_reached": [
+    false,
+    true,
+    true
+   ],
+   "n_fid": [
+    30,
+    29,
+    17
+   ],
+   "ov0_W0": 0.9841830938870417,
+   "ov0_Cuhf": 0.9653291439111066,
+   "Bm": true,
+   "Bc": false,
+   "B1": false,
+   "B2": true,
+   "B3": true,
+   "B4": false,
+   "SD": false,
+   "K1": true,
+   "K2": false,
+   "K3": false
+  }
+ },
+ "premise": false,
+ "control": [
+  0.000848867292297939,
+  0.0025625564129425626,
+  0.008684693002020794
+ ],
+ "p21_control": [],
+ "verdict": "NO-TARGET",
+ "note": "CLOSE P1.3: NO-TARGET (no residual sign error at width 6)"
+}

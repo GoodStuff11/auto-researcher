@@ -1,0 +1,16 @@
+target 4x4:2 OBC t'=-0.25 J=2.0 irrep={'Mx': 1, 'My': 1, 'D': -1} E0=-9.6675110278 n_irrep=1395 npar=426 gap/V=5.4039e-02 -> sign half only
+  premise control (P2.1 projected NNBF): [{'seed': 11, 'dE_sign': 0.012464574121485938, 'dE_tot': 0.05181114840172718}]
+  eps_best=5.7388e-03 relerr=9.498e-03 (VOID unless <= 0.01)
+  B=   6: m_scr=0.01961 counted=True S_cp=0 m_cp=0.1411 S_pa=0.8571 m_pa=0.02303 S_env=0.75 m_env=0.03144
+  B=  12: m_scr=0.006998 counted=True S_cp=0 m_cp=0.05543 S_pa=0 m_pa=0.007414 S_env=0 m_env=0.007272
+  m eps(12)={'scr': 0.007, 'cp': 0.05543, 'pa': 0.00741, 'env': 0.00727}  m A(last)={'scr': 0.01457, 'cp': 0.28172, 'pa': 0.01445, 'env': 0.0194}  env coverage=1.0000
+SMOKE: premise gate skipped (--skip-premise); the verdicts below are NOT a test result
+GLOBAL R5.1 PA: FAIL (slow, b-fail)  {'speed': False, 'b20': False, 'ablation': True, 'sign': True, 'coverage': True}
+GLOBAL R5.2 ELT: FAIL (slow, b-fail)  {'speed': False, 'b20': False, 'ablation': True, 'sign': False, 'coverage': True}
+target 4x4:2 OBC t'=-0.25 J=2.0 irrep={'Mx': 1, 'My': 1, 'D': -1} E0=-9.6675110278 n_irrep=1395 npar=426 gap/V=5.4039e-02 -> sign half only
+  premise control (P2.1 projected NNBF): [{'seed': 11, 'dE_sign': 0.012464574121485938, 'dE_tot': 0.05181114840172718}]
+  eps_best=5.7388e-03 relerr=9.498e-03 (VOID unless <= 0.01)
+  B=   6: m_scr=0.01961 counted=True S_cp=0 m_cp=0.1411 S_pa=0.8571 m_pa=0.02303 S_env=0.75 m_env=0.03144
+  B=  12: m_scr=0.006998 counted=True S_cp=0 m_cp=0.05543 S_pa=0 m_pa=0.007414 S_env=0 m_env=0.007272
+  m eps(12)={'scr': 0.007, 'cp': 0.05543, 'pa': 0.00741, 'env': 0.00727}  m A(last)={'scr': 0.01457, 'cp': 0.28172, 'pa': 0.01445, 'env': 0.0194}  env coverage=1.0000
+GLOBAL: PENDING-PREMISE (fewer than 3 projected-NNBF control seeds)

@@ -22,7 +22,7 @@ those directions are null only to first order. Operation A replaces the transfer
            4 holes, so the 3- and 4-hole environments of the target are seen at the source. Premise
            (coverage): at least 95% of the target ground state's site-environment weight lies on
            environment tuples that some library ground state populates (weight >= 1e-4).
-           Also anchored (same anchor as PA).
+           Also anchored (same ladder rule as PA, --env-restarts restarts).
 Ablation  CP  "copy": same sources as PA, no anchor (Route 3.1 transplanted to OBC).
 Control   SCR MFNG from the target MF init (the matched-architecture scratch control).
 Premise control: projected NNBF width 6 (1734 parameters) of P2.1, results read from
@@ -49,8 +49,8 @@ Arms and Slurm roles (--task-id 0..11: arm = ARMS[task // 3], seed = task % 3)
 ------------------------------------------------------------------------------
   scr  (tasks 0-2)  target MF init (rng 2000 + seed), --steps target steps
   cp   (tasks 3-5)  sources --src-a, anchor 0, best of --src-restarts by source loss; copy; --steps
-  pa   (tasks 6-8)  sources --src-a, anchor --anchor; copy; --steps                   [R5.1]
-  env  (tasks 9-11) sources --src-env, anchor --anchor; backflow + Jastrow copied, fields from the
+  pa   (tasks 6-8)  sources --src-a, anchor by the --anchors rule; copy; --steps     [R5.1]
+  env  (tasks 9-11) sources --src-env, --anchors rule; backflow + Jastrow copied, fields from the
                     target MF init (rng 2000 + seed); --steps                            [R5.2]
 Every arm records its eps trajectory eps(n) = (E_n - E0)/V (projected), full records at 0 and at
 every checkpoint, and the fixed-sign excess A (P1.1 budget in the irrep) at 0 and at the last two
@@ -84,11 +84,20 @@ Command-line options
   --tp, --J, --t    Couplings (-0.25, 0.4, 1.0).
   --src-a STR       Sources of cp/pa, comma list of "LxXLy:nup" OBC clusters (default "4x2:3,2x4:3").
   --src-env STR     Library of env (default "4x2:3,2x4:3,4x3:4,3x4:4").
-  --anchor FLOAT    L2-SP strength on |theta - theta_init|^2, per parameter (default 1e-2).
+  --anchors STR     L2-SP ladder for |theta - theta_init|^2, per parameter (default "1e-2,1e-3,1e-4").
+                    Pre-committed rule (pa and env): the LARGEST anchor whose source fit has max
+                    relative error <= --src-tol (default 1e-2) on every source cluster; if none,
+                    the smallest, flagged anchor_ok = False. cp uses anchor 0.
   --src-restarts INT (4)  --steps-src INT (800): source restarts (best by source loss) and steps.
+  --env-restarts INT  Restarts per anchor for the env library (default 2; its 12-site clusters
+                    cost ~4.5 s per step).
   --steps INT       Target steps per arm (default 150).
   --ckpts STR       Record checkpoints (default "10,20,50,100,150").
   --ckpts-rule STR  B values of the rule (default "10,20,50").
+  --b-step INT      The matched-budget step of the ratio, ablation criteria (default 20; written
+                    "20" in the rule above).
+  --skip-premise    SMOKE ONLY (--aggregate): skip the P2.1 premise gate so the route logic runs;
+                    the output is then labelled SMOKE and is not a test result.
   --channels, --field-hidden, --bf-hidden, --jas-hidden   MFNG sizes (4, 16, 16, 16).
   --kq INT          Quadrature grid of the size-independent kernels (default 8).
   --delta0, --eta   MF-init d-wave amplitude and regulariser (0.3, 0.1).
@@ -405,6 +414,24 @@ def train_sources(a, specs, anchor, seed, tag):
                                   restart_losses=losses, dist_init=float(np.linalg.norm(th - th_init)))
 
 
+def anchored_sources(a, specs, restarts, tag):
+    """Pre-committed anchor rule: the LARGEST anchor of --anchors (descending) whose source fit has
+    max relative error <= --src-tol on every source cluster; if none qualifies, the smallest is
+    used and info['anchor_ok'] = False."""
+    keep = a.src_restarts
+    a.src_restarts = restarts
+    ladder = sorted((float(x) for x in a.anchors.split(",")), reverse=True)
+    tried = []
+    for lam in ladder:
+        res = train_sources(a, specs, lam, a.seed, f"{tag} anchor {lam:g}")
+        tried.append(dict(anchor=lam, relerr=res[3]["relerr"]))
+        if max(res[3]["relerr"]) <= a.src_tol:
+            break
+    a.src_restarts = keep
+    res[3].update(ladder=tried, anchor_ok=bool(max(res[3]["relerr"]) <= a.src_tol))
+    return res
+
+
 # ============================================================================ run
 def target_setup(a, R):
     T = build_cluster(a.tgt, a, target=True)
@@ -451,11 +478,14 @@ def run(a):
     th_tgt_init = net.init(np.random.default_rng(2000 + a.seed), 2 * nup / lat.N, a.t, a.tp, a.delta0, a.eta)
     if a.arm == "scr":
         th = th_tgt_init
-    elif a.arm in ("cp", "pa"):
-        th, _, _, info = train_sources(a, a.src_a.split(","), 0.0 if a.arm == "cp" else a.anchor, a.seed, a.arm)
+    elif a.arm == "cp":
+        th, _, _, info = train_sources(a, a.src_a.split(","), 0.0, a.seed, a.arm)
+        R["source"] = info
+    elif a.arm == "pa":
+        th, _, _, info = anchored_sources(a, a.src_a.split(","), a.src_restarts, "pa")
         R["source"] = info
     else:
-        ths, _, src, info = train_sources(a, a.src_env.split(","), a.anchor, a.seed, "env")
+        ths, _, src, info = anchored_sources(a, a.src_env.split(","), a.env_restarts, "env")
         lm = local_mask(net)
         th = th_tgt_init.copy()
         th[lm] = ths[lm]
@@ -529,16 +559,18 @@ def aggregate(a):
         if c:
             counted.append(B)
         print(f"  B={B:4d}: " + " ".join(f"{k}={v:.4g}" if isinstance(v, float) else f"{k}={v}" for k, v in row.items()))
-    m20 = {k: med(at(H[k], 20)) for k in ARMS}
+    m20 = {k: med(at(H[k], a.b_step)) for k in ARMS}
     Alast = {k: med([r["arms"].get(f"{k}@{max(int(x) for x in a.ckpts.split(','))}", {}).get("A", float("nan"))
                      for r in rs[k]]) for k in ARMS}
     cov = med([r["source"].get("coverage") for r in rs["env"]])
-    print(f"  m eps(20)={ {k: round(v, 5) for k, v in m20.items()} }  m A(last)={ {k: round(v, 5) for k, v in Alast.items()} }  "
+    print(f"  m eps({a.b_step})={ {k: round(v, 5) for k, v in m20.items()} }  m A(last)={ {k: round(v, 5) for k, v in Alast.items()} }  "
           f"env coverage={cov:.4f}")
-    if len(prem) < 3:
+    if a.skip_premise:
+        print("SMOKE: premise gate skipped (--skip-premise); the verdicts below are NOT a test result")
+    elif len(prem) < 3:
         print("GLOBAL: PENDING-PREMISE (fewer than 3 projected-NNBF control seeds)")
         return
-    if med([p["dE_sign"] for p in prem]) < a.premise_sign:
+    elif med([p["dE_sign"] for p in prem]) < a.premise_sign:
         print(f"GLOBAL: UNINFORMATIVE (projected NNBF median dE_sign < {a.premise_sign} t)")
         return
     if relerr > a.void_tol:
@@ -641,8 +673,10 @@ def parse_args(argv):
     p.add_argument("--t", type=float, default=1.0)
     p.add_argument("--src-a", default="4x2:3,2x4:3")
     p.add_argument("--src-env", default="4x2:3,2x4:3,4x3:4,3x4:4")
-    p.add_argument("--anchor", type=float, default=1e-2)
+    p.add_argument("--anchors", default="1e-2,1e-3,1e-4")
+    p.add_argument("--src-tol", type=float, default=1e-2)
     p.add_argument("--src-restarts", type=int, default=4)
+    p.add_argument("--env-restarts", type=int, default=2)
     p.add_argument("--steps-src", type=int, default=800)
     p.add_argument("--steps", type=int, default=150)
     p.add_argument("--ckpts", default="10,20,50,100,150")
@@ -669,6 +703,8 @@ def parse_args(argv):
     p.add_argument("--comp-tol", type=float, default=1e-3)
     p.add_argument("--plateau-frac", type=float, default=0.02)
     p.add_argument("--premise-sign", type=float, default=0.005)
+    p.add_argument("--b-step", type=int, default=20)
+    p.add_argument("--skip-premise", action="store_true")
     p.add_argument("--selftest", action="store_true")
     p.add_argument("--timing", action="store_true")
     a = p.parse_args(argv)

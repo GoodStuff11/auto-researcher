@@ -1,9 +1,0 @@
-[     0.0s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
-[     0.2s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
-[     0.6s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
-[     1.1s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
-[     1.1s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
-[     1.1s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
-[     1.1s] SELFTEST PASSED
-[     1.7s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
-[     2.3s]   [env restart 0] step 1/60 E=-2.90794405,-2.06887654,-4.54801861,-4.46895507 lr=0.055 relerr=3.623e-01,5.463e-01,4.984e-01,5.071e-01

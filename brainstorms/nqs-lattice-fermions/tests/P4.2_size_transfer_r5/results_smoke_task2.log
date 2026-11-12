@@ -1,26 +1,26 @@
 [     0.0s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
 [     0.2s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
-[     0.6s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
+[     0.5s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
 [     1.0s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
 [     1.0s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
 [     1.0s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
 [     1.0s] SELFTEST PASSED
-[     1.5s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
-[     3.4s] arm scr@0    : E=-2.44188200 eps=4.5160e-01 (raw 3.8236e-01, irrep weight 0.547) A/V=1.5818e-01 sign-agree=0.2540 Pd=5.3916e-03 fid=0.0994
-[     4.0s]   [scr] step 1/12 eps=2.07218e-01 lr=0.055
-[     4.8s]   [scr] step 2/12 eps=7.26323e-02 lr=0.0605
-[     4.9s] arm scr@2    : E=-8.50539386 eps=7.2632e-02 (raw 1.1603e-01, irrep weight 0.128) sign-agree=0.9737 Pd=3.2419e-03 fid=0.5447
-[     5.7s]   [scr] step 3/12 eps=4.53461e-02 lr=0.0666
-[     6.4s]   [scr] step 4/12 eps=3.06503e-02 lr=0.0732
-[     6.5s] arm scr@4    : E=-9.17710570 eps=3.0650e-02 (raw 7.9462e-02, irrep weight 0.287) sign-agree=0.9857 Pd=4.4839e-03 fid=0.7318
-[     7.1s]   [scr] step 5/12 eps=1.87643e-02 lr=0.0805
-[     7.8s]   [scr] step 6/12 eps=1.42735e-02 lr=0.0886
-[     9.2s] arm scr@6    : E=-9.43913491 eps=1.4274e-02 (raw 5.7044e-02, irrep weight 0.415) A/V=1.8436e-03 sign-agree=0.9853 Pd=5.9957e-03 fid=0.8402
-[    10.0s]   [scr] step 7/12 eps=1.26345e-02 lr=0.0487
-[    10.6s]   [scr] step 8/12 eps=1.07672e-02 lr=0.0536
-[    11.3s]   [scr] step 9/12 eps=9.54796e-03 lr=0.0589
-[    12.0s]   [scr] step 10/12 eps=8.55295e-03 lr=0.0648
-[    12.7s]   [scr] step 11/12 eps=7.70271e-03 lr=0.0713
-[    13.3s]   [scr] step 12/12 eps=6.99811e-03 lr=0.0785
-[    14.9s] arm scr@12   : E=-9.55554123 eps=6.9981e-03 (raw 6.1460e-02, irrep weight 0.343) A/V=9.1036e-04 sign-agree=0.9943 Pd=5.1751e-03 fid=0.9211
-[    14.9s] done (results_smoke/task2.json)
+[     1.4s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
+[     3.2s] arm scr@0    : E=-2.44188200 eps=4.5160e-01 (raw 3.8236e-01, irrep weight 0.547) A/V=1.5818e-01 sign-agree=0.2540 Pd=5.3916e-03 fid=0.0994
+[     3.8s]   [scr] step 1/12 eps=2.07218e-01 lr=0.055
+[     4.4s]   [scr] step 2/12 eps=7.26323e-02 lr=0.0605
+[     4.5s] arm scr@2    : E=-8.50539386 eps=7.2632e-02 (raw 1.1603e-01, irrep weight 0.128) sign-agree=0.9737 Pd=3.2419e-03 fid=0.5447
+[     5.1s]   [scr] step 3/12 eps=4.53461e-02 lr=0.0666
+[     5.7s]   [scr] step 4/12 eps=3.06503e-02 lr=0.0732
+[     5.8s] arm scr@4    : E=-9.17710570 eps=3.0650e-02 (raw 7.9462e-02, irrep weight 0.287) sign-agree=0.9857 Pd=4.4839e-03 fid=0.7318
+[     6.3s]   [scr] step 5/12 eps=1.87643e-02 lr=0.0805
+[     6.9s]   [scr] step 6/12 eps=1.42735e-02 lr=0.0886
+[     8.2s] arm scr@6    : E=-9.43913491 eps=1.4274e-02 (raw 5.7044e-02, irrep weight 0.415) A/V=1.8436e-03 sign-agree=0.9853 Pd=5.9957e-03 fid=0.8402
+[     8.9s]   [scr] step 7/12 eps=1.26345e-02 lr=0.0487
+[     9.4s]   [scr] step 8/12 eps=1.07672e-02 lr=0.0536
+[    10.0s]   [scr] step 9/12 eps=9.54796e-03 lr=0.0589
+[    10.6s]   [scr] step 10/12 eps=8.55295e-03 lr=0.0648
+[    11.1s]   [scr] step 11/12 eps=7.70271e-03 lr=0.0713
+[    11.7s]   [scr] step 12/12 eps=6.99811e-03 lr=0.0785
+[    13.0s] arm scr@12   : E=-9.55554123 eps=6.9981e-03 (raw 6.1460e-02, irrep weight 0.343) A/V=9.1036e-04 sign-agree=0.9943 Pd=5.1751e-03 fid=0.9211
+[    13.0s] done (results_smoke/task2.json)

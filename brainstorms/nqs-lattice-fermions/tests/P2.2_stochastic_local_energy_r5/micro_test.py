@@ -69,8 +69,9 @@ R5.2 (Part L), per K, under BOTH cost models (ops and cal):
   dE_X(c) = mean exact dE over the iterates whose cumulative cost lies in
   (0.9 c, c]; medians over the 3 SR seeds.
   ctrl* = the control config (EXACT, SCREEN:*, SS:*) with the lowest median
-  dE(C_b); D_ctrl its median.  nu = |median dE_EXACT(C_b) - median
-  dE_EXACTNF(C_b)| (noise floor).  r* = the ALE config (ALE0 and ALE1 pooled)
+  dE(C_b); D_ctrl its median.  nu = max(|median dE_EXACT(C_b) - median
+  dE_EXACTNF(C_b)|, half the range over the six EXACT/EXACTNF seeds) (noise
+  floor).  Both modes (steps, +B) count.  r* = the ALE config (ALE0, ALE1 pooled)
   with the lowest median dE(C_b/2).
   premise: median dE_EXACT(C_b) < 1.6 mHa and nu < tau.
   PASS(K): premise, median dE_r*(C_b/2) <= D_ctrl, and best-of-seeds
@@ -721,7 +722,8 @@ def verdict_L(Ls, tau=TAU):
             cstar = min(ctrls, key=lambda a: med(full[a]))
             rstar = min(routes, key=lambda a: med(half[a]))
             D = med(full[cstar])
-            nu = abs(med(full["EXACT"]) - med(full["EXACTNF"]))
+            pool = np.array(full["EXACT"] + full["EXACTNF"])
+            nu = max(abs(med(full["EXACT"]) - med(full["EXACTNF"])), 0.5 * float(np.ptp(pool)))
             prem = med(full["EXACT"]) < 1.6 and nu < tauM
             Rh, Rf = med(half[rstar]), med(full[rstar])
             best_r = float(np.nanmin(half[rstar])); best_c = float(np.nanmin(full[cstar]))
