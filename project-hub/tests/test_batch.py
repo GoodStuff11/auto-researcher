@@ -63,18 +63,51 @@ def test_applied_proposal_is_not_staged_again(hub_root, store):
 
 
 @pytest.mark.parametrize("mutate,needle", [
+    # judgement calls and structure
     (lambda b, q: b["safe"].append({"op": "new", "type": "decision", "title": "X", "source": "s"}), "decisions are proposals"),
     (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s",
-                                    "fields": {"status": "done"}}), "without status"),
+                                    "fields": {"status": "done"}}), "fields may only set due"),
     (lambda b, q: b["safe"].append({"op": "entry", "id": "Q-20990101-zzz", "text": "x", "source": "s"}), "does not exist"),
     (lambda b, q: b["safe"].append({"op": "log", "text": "x", "source": "has space"}), "no whitespace"),
     (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s",
                                     "links": {"spawned_by": ["$d"]}}), "does not exist"),
     (lambda b, q: b["proposals"].append({"title": "T", "reason": "r", "source": "s",
                                          "ops": [{"op": "set", "id": "Q-20990101-zzz", "fields": {}}]}), "does not exist"),
+    (lambda b, q: b["proposals"].append({"title": "T", "reason": "r", "source": "s",
+                                         "ops": [{"op": ["set"], "id": q.id, "fields": {}}]}), "op name"),
     (lambda b, q: b.update(extra=1), "unknown top-level key"),
     (lambda b, q: b.update(safe={"op": "log"}), "safe must be a list"),
     (lambda b, q: b.update(watermark={"name": "circleback"}), "watermark must be"),
+    (lambda b, q: b.update(watermark={"name": "../x", "value": "1"}), "watermark name"),
+    # types
+    (lambda b, q: b["safe"].append({"op": "entry", "id": q.id, "text": date(2026, 11, 1), "source": "s"}),
+     "text must be a non-empty string"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": 42, "source": "s"}),
+     "title must be a non-empty string"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s", "owner": ["alice"]}),
+     "owner must be a string"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s", "priority": "high"}),
+     "priority must be an integer"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s", "priority": 7}),
+     "priority must be an integer"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s", "series": [1]}),
+     "series must be a list of strings"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s", "description": 3}),
+     "description must be a string"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s",
+                                    "fields": {"due": "tomorrow"}}), "fields may only set due"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s",
+                                    "fields": {"clickup_id": "x"}}), "fields may only set due"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s",
+                                    "fields": {"sources": ["a"]}}), "fields may only set due"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s",
+                                    "links": {"answers": [q.id]}}), "only spawned_by links are safe"),
+    (lambda b, q: b["safe"].append({"op": "new", "type": "action", "title": "X", "source": "s",
+                                    "links": {"blocks": ["Q-20990101-zzz"]}}), "only spawned_by links are safe"),
+    (lambda b, q: b["safe"].append({"op": ["entry"], "id": q.id, "text": "x", "source": "s"}), "op must be one of"),
+    (lambda b, q: b["safe"].append({"op": "entry", "id": [q.id], "text": "x", "source": "s"}), "id must be a string"),
+    (lambda b, q: b["safe"].append({"op": "entry", "id": q.id, "text": "x", "source": "s", "status": "answered"}),
+     "unknown key(s) status"),
 ])
 def test_invalid_batches_write_nothing(hub_root, store, mutate, needle):
     q, batch = base(store)
@@ -82,5 +115,53 @@ def test_invalid_batches_write_nothing(hub_root, store, mutate, needle):
     assert any(needle in e for e in check_batch(store, batch))
     with pytest.raises(BatchError, match="nothing written"):
         run_batch(hub_root, store, batch, author="alice", day=D)
-    assert len(store.get(q.id).entries) == 1 and load_proposals(hub_root) == []
+    assert len(store.get(q.id).entries) == 1
+    assert store.query(type="action") == []
+    assert load_proposals(hub_root) == []
     assert not (hub_root / "Status" / "Log").exists()
+
+
+def test_owner_must_be_a_known_person(hub_root, store):
+    q, batch = base(store)
+    batch["safe"].append({"op": "new", "type": "action", "title": "Y", "source": "s", "owner": "mallory"})
+    people = {"alice": {}, "bob": {}}
+    assert any("mallory" in e for e in check_batch(store, batch, people=people))
+    with pytest.raises(BatchError, match="nothing written"):
+        run_batch(hub_root, store, batch, author="alice", day=D, people=people)
+    assert len(store.get(q.id).entries) == 1
+    assert store.query(type="action") == []
+    assert not (hub_root / "Status" / "Log").exists()
+
+
+def test_log_with_same_source_but_different_text_is_not_a_duplicate(hub_root, store):
+    store.log("framing settled and more", author="alice", source="circleback:m1", day=date(2026, 11, 1))
+    batch = {"safe": [{"op": "log", "text": "framing settled", "source": "circleback:m1"}]}
+    rep = run_batch(hub_root, store, batch, author="alice", day=D)
+    assert rep["applied"] == 1 and rep["skipped"] == 0
+
+
+def test_new_item_title_duplicate_ignores_case_and_spacing(hub_root, store):
+    store.create("action", "Rerun HVA", owner="bob", author="alice", day=date(2026, 11, 1), source="circleback:m1")
+    batch = {"safe": [{"op": "new", "type": "action", "title": "rerun hva ", "source": "circleback:m1"}]}
+    rep = run_batch(hub_root, store, batch, author="alice", day=D)
+    assert rep["applied"] == 0 and rep["skipped"] == 1
+    assert len(store.query(type="action")) == 1
+
+
+def test_proposal_title_duplicate_ignores_case(hub_root, store):
+    q, batch = base(store)
+    run_batch(hub_root, store, batch, author="alice", day=D)
+    dup = {"proposals": [{"title": "close: why?", "reason": "r", "source": "circleback:m1",
+                          "ops": [{"op": "entry", "id": q.id, "text": "x", "source": "s"}]}]}
+    rep = run_batch(hub_root, store, dup, author="alice", day=D)
+    assert rep["staged"] == [] and rep["skipped_proposals"] == 1
+
+
+def test_safe_new_may_set_due_and_spawned_by(hub_root, store):
+    q, _ = base(store)
+    batch = {"safe": [{"op": "new", "type": "action", "title": "Due thing", "source": "c:1",
+                       "links": {"spawned_by": [q.id]}, "fields": {"due": "2026-11-30"}}]}
+    rep = run_batch(hub_root, store, batch, author="alice", day=D)
+    assert rep["applied"] == 1
+    action = store.query(type="action")[0]
+    assert action.meta["due"] == date(2026, 11, 30) and action.meta["links"]["spawned_by"] == [q.id]
