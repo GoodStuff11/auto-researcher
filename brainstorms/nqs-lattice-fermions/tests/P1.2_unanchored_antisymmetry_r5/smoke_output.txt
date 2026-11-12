@@ -1,0 +1,259 @@
+[11:14:13] check inst 9 D=90 frame K: E=30 edges, max|sum_e c_e y(m_e) - H_K y| = 8.9e-16
+[11:14:13] check inst 9 D=90 frame X: E=18 edges, max|sum_e c_e y(m_e) - H_X y| = 5.6e-17
+[11:14:13] check inst 8 D=560 frame K: E=32 edges, max|sum_e c_e y(m_e) - H_K y| = 8.9e-16
+[11:14:13] check inst 8 D=560 frame X: E=20 edges, max|sum_e c_e y(m_e) - H_X y| = 2.2e-16
+[11:14:13] check FRD-K grad proj=none: analytic 1.1368320329e+00 fd 1.1368320324e+00 (rel 4.3e-10); O vs fd 1.5e-08
+[11:14:13] check FRD-K grad proj=chi: analytic 4.5892863467e+00 fd 4.5892863456e+00 (rel 2.4e-10); per-amplitude psi_P 1.3e-16; O vs fd 5.9e-10
+[11:14:13] check FRD-K per-sample E_loc == (H psi)/psi on all 90 configs: 1.8e-15 (NNBF per-sample path 4.6e-15); flip_weight 0.781; base evals per E_loc mean 102.6
+[11:14:13] check FRD-X grad proj=none: analytic -9.9104166334e-02 fd -9.9104165985e-02 (rel 3.5e-10); O vs fd 2.2e-10
+[11:14:13] check FRD-X grad proj=chi: analytic 5.5831513214e-01 fd 5.5831513190e-01 (rel 2.4e-10); per-amplitude psi_P 1.7e-16; O vs fd 1.7e-10
+[11:14:14] check FRD-X per-sample E_loc == (H psi)/psi on all 90 configs: 9.5e-16 (NNBF per-sample path 4.6e-15); flip_weight 0.004; base evals per E_loc mean 39.4
+[11:14:25] check sampled force (inst 8 D=560): exact expectation of the sampled estimator vs force 5.8e-16; 40000 Metropolis samples rel err 0.140 vs iid-predicted 8.798 (acceptance 0.159)
+[11:14:25] check parameter match inst 0: nnbf6 1734, nnbf4 1284, frdK (base 4, alpha width 3, E=84) 1719
+[11:14:25] check parameter match inst 0: nnbf6 1734, nnbf4 1284, frdX (base 4, alpha width 4, E=48) 1656
+[11:14:25] ALL R5 CHECKS PASSED
+[11:14:25] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf6 seed=11 shift=0.001
+[11:14:25] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:25] arm nnbf6: {'kind': 'nnbf', 'Hs': 4} n_params=356 (control 356) calib=8.88e-15
+[11:14:25] nnbf6: it     0  E = -4.62278004  |f| = 1.12e+00  (0.01 s/step)
+[11:14:25] nnbf6: it    29  E = -5.00085096  |f| = 2.23e-01  (0.01 s/step)
+[11:14:25] nnbf6 [P]: dE_tot=0.18909 dE_sign=0.02269 f_E=0.120 w_sign=3.86e-02 spread=1.4e-14 ov0=0.687 (0 s)
+[11:14:25] nnbf6 [P_S]: dE_tot=0.08671 dE_sign=0.01621 f_E=0.187 w_sign=2.62e-02 spread=7.2e-14 ov0=0.835 (0 s)
+[11:14:25] nnbf6 sampled: E_exact=-5.001 mean=-4.99 stderr=0.03465 z=0.3208 var_mc=0.3967 var_ex=0.446 kurt_ex=10.9 tail_share=0.1356 max_dev_sigma=3.187 accept=0.4526 n=400 per_amp_check=0 (0 s)
+[11:14:25] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf6 seed=11 shift=0.01
+[11:14:25] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:25] arm nnbf6: {'kind': 'nnbf', 'Hs': 4} n_params=356 (control 356) calib=8.88e-15
+[11:14:25] nnbf6: it     0  E = -4.62278004  |f| = 1.12e+00  (0.01 s/step)
+[11:14:26] nnbf6: it    29  E = -5.14733296  |f| = 1.76e-01  (0.01 s/step)
+[11:14:26] nnbf6 [P]: dE_tot=0.03908 dE_sign=0.00116 f_E=0.030 w_sign=1.04e-03 spread=6.8e-14 ov0=0.889 (0 s)
+[11:14:26] nnbf6 [P_S]: dE_tot=0.01900 dE_sign=0.00208 f_E=0.109 w_sign=1.92e-03 spread=1.4e-13 ov0=0.933 (0 s)
+[11:14:26] nnbf6 sampled: E_exact=-5.151 mean=-5.175 stderr=0.0198 z=1.215 var_mc=0.1191 var_ex=0.05809 kurt_ex=25.57 tail_share=0.1242 max_dev_sigma=18.98 accept=0.4085 n=400 per_amp_check=0 (0 s)
+[11:14:26] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf6 seed=22 shift=0.001
+[11:14:26] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:26] arm nnbf6: {'kind': 'nnbf', 'Hs': 4} n_params=356 (control 356) calib=1.12e-13
+[11:14:26] nnbf6: it     0  E = -4.62176816  |f| = 1.26e+00  (0.01 s/step)
+[11:14:26] nnbf6: it    29  E = -4.85977104  |f| = 5.25e-01  (0.01 s/step)
+[11:14:26] nnbf6 [P]: dE_tot=0.21525 dE_sign=0.01234 f_E=0.057 w_sign=1.24e-02 spread=4.1e-15 ov0=0.760 (0 s)
+[11:14:26] nnbf6 [P_S]: dE_tot=0.10164 dE_sign=0.00414 f_E=0.041 w_sign=4.93e-03 spread=9.6e-14 ov0=0.894 (0 s)
+[11:14:26] nnbf6 sampled: E_exact=-4.975 mean=-5.028 stderr=0.03727 z=1.434 var_mc=0.4555 var_ex=0.5532 kurt_ex=1909 tail_share=0.111 max_dev_sigma=4.304 accept=0.4274 n=400 per_amp_check=0 (0 s)
+[11:14:26] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf6 seed=22 shift=0.01
+[11:14:26] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:26] arm nnbf6: {'kind': 'nnbf', 'Hs': 4} n_params=356 (control 356) calib=1.12e-13
+[11:14:26] nnbf6: it     0  E = -4.62176816  |f| = 1.26e+00  (0.01 s/step)
+[11:14:27] nnbf6: it    29  E = -5.16054390  |f| = 1.31e-01  (0.01 s/step)
+[11:14:27] nnbf6 [P]: dE_tot=0.02406 dE_sign=0.00015 f_E=0.006 w_sign=1.59e-04 spread=3.3e-13 ov0=0.980 (0 s)
+[11:14:27] nnbf6 [P_S]: dE_tot=0.00867 dE_sign=0.00001 f_E=0.001 w_sign=4.29e-06 spread=9.2e-13 ov0=0.992 (0 s)
+[11:14:27] nnbf6 sampled: E_exact=-5.166 mean=-5.163 stderr=0.01433 z=0.216 var_mc=0.07037 var_ex=0.08628 kurt_ex=276.6 tail_share=0.2733 max_dev_sigma=6 accept=0.3807 n=400 per_amp_check=0 (0 s)
+[11:14:27] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf6 seed=33 shift=0.001
+[11:14:27] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:27] arm nnbf6: {'kind': 'nnbf', 'Hs': 4} n_params=356 (control 356) calib=7.99e-15
+[11:14:27] nnbf6: it     0  E = -4.62286752  |f| = 1.20e+00  (0.01 s/step)
+[11:14:27] nnbf6: it    29  E = -4.80209728  |f| = 4.85e-01  (0.01 s/step)
+[11:14:27] nnbf6 [P]: dE_tot=0.32476 dE_sign=0.02950 f_E=0.091 w_sign=4.14e-02 spread=8.2e-15 ov0=0.746 (0 s)
+[11:14:27] nnbf6 [P_S]: dE_tot=0.14927 dE_sign=0.01853 f_E=0.124 w_sign=1.45e-02 spread=4.2e-14 ov0=0.865 (0 s)
+[11:14:27] nnbf6 sampled: E_exact=-4.865 mean=-4.868 stderr=0.06042 z=0.05155 var_mc=1.153 var_ex=0.9594 kurt_ex=21.79 tail_share=0.07601 max_dev_sigma=4.556 accept=0.3963 n=400 per_amp_check=0 (0 s)
+[11:14:27] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf6 seed=33 shift=0.01
+[11:14:27] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:27] arm nnbf6: {'kind': 'nnbf', 'Hs': 4} n_params=356 (control 356) calib=7.99e-15
+[11:14:27] nnbf6: it     0  E = -4.62286752  |f| = 1.20e+00  (0.01 s/step)
+[11:14:27] nnbf6: it    29  E = -5.14158046  |f| = 1.20e-01  (0.01 s/step)
+[11:14:28] nnbf6 [P]: dE_tot=0.04009 dE_sign=0.00584 f_E=0.146 w_sign=6.08e-03 spread=5.1e-13 ov0=0.864 (0 s)
+[11:14:28] nnbf6 [P_S]: dE_tot=0.02937 dE_sign=0.00594 f_E=0.202 w_sign=5.82e-03 spread=3.0e-14 ov0=0.872 (0 s)
+[11:14:28] nnbf6 sampled: E_exact=-5.15 mean=-5.154 stderr=0.01154 z=0.3189 var_mc=0.04827 var_ex=0.06908 kurt_ex=84.79 tail_share=0.1234 max_dev_sigma=3.383 accept=0.403 n=400 per_amp_check=0 (0 s)
+[11:14:28] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf4 seed=11 shift=0.001
+[11:14:28] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:28] arm nnbf4: {'kind': 'nnbf', 'Hs': 2} n_params=226 (control 356) calib=8.88e-15
+[11:14:28] nnbf4: it     0  E = -4.62273679  |f| = 1.08e+00  (0.01 s/step)
+[11:14:28] nnbf4: it    29  E = -5.05296763  |f| = 1.61e-01  (0.01 s/step)
+[11:14:28] nnbf4 [P]: dE_tot=0.13697 dE_sign=0.00094 f_E=0.007 w_sign=4.26e-04 spread=3.9e-14 ov0=0.902 (0 s)
+[11:14:28] nnbf4 [P_S]: dE_tot=0.04309 dE_sign=0.00273 f_E=0.063 w_sign=1.48e-03 spread=3.1e-13 ov0=0.959 (0 s)
+[11:14:28] nnbf4 sampled: E_exact=-5.053 mean=-5.103 stderr=0.03465 z=1.43 var_mc=0.4435 var_ex=0.4195 kurt_ex=246.5 tail_share=0.177 max_dev_sigma=5.163 accept=0.3889 n=400 per_amp_check=0 (0 s)
+[11:14:28] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf4 seed=11 shift=0.01
+[11:14:28] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:28] arm nnbf4: {'kind': 'nnbf', 'Hs': 2} n_params=226 (control 356) calib=8.88e-15
+[11:14:28] nnbf4: it     0  E = -4.62273679  |f| = 1.08e+00  (0.01 s/step)
+[11:14:28] nnbf4: it    29  E = -5.11692145  |f| = 1.56e-01  (0.01 s/step)
+[11:14:28] nnbf4 [P]: dE_tot=0.06103 dE_sign=0.00679 f_E=0.111 w_sign=4.40e-03 spread=8.7e-14 ov0=0.939 (0 s)
+[11:14:28] nnbf4 [P_S]: dE_tot=0.02700 dE_sign=0.00308 f_E=0.114 w_sign=1.47e-03 spread=6.6e-14 ov0=0.975 (0 s)
+[11:14:28] nnbf4 sampled: E_exact=-5.129 mean=-5.143 stderr=0.02672 z=0.5157 var_mc=0.2041 var_ex=0.1933 kurt_ex=524.3 tail_share=0.1117 max_dev_sigma=4.878 accept=0.4126 n=400 per_amp_check=0 (0 s)
+[11:14:28] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf4 seed=22 shift=0.001
+[11:14:28] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:29] arm nnbf4: {'kind': 'nnbf', 'Hs': 2} n_params=226 (control 356) calib=1.12e-13
+[11:14:29] nnbf4: it     0  E = -4.61974185  |f| = 1.08e+00  (0.01 s/step)
+[11:14:29] nnbf4: it    29  E = -4.91175138  |f| = 3.91e-01  (0.01 s/step)
+[11:14:29] nnbf4 [P]: dE_tot=0.25364 dE_sign=0.01708 f_E=0.067 w_sign=1.41e-02 spread=1.4e-14 ov0=0.766 (0 s)
+[11:14:29] nnbf4 [P_S]: dE_tot=0.12614 dE_sign=0.01775 f_E=0.141 w_sign=1.17e-02 spread=1.3e-13 ov0=0.857 (0 s)
+[11:14:29] nnbf4 sampled: E_exact=-4.936 mean=-4.963 stderr=0.04824 z=0.5614 var_mc=0.7722 var_ex=0.6921 kurt_ex=184 tail_share=0.08759 max_dev_sigma=4.649 accept=0.4141 n=400 per_amp_check=0 (0 s)
+[11:14:29] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf4 seed=22 shift=0.01
+[11:14:29] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:29] arm nnbf4: {'kind': 'nnbf', 'Hs': 2} n_params=226 (control 356) calib=1.12e-13
+[11:14:29] nnbf4: it     0  E = -4.61974185  |f| = 1.08e+00  (0.01 s/step)
+[11:14:29] nnbf4: it    29  E = -5.09787421  |f| = 2.28e-01  (0.01 s/step)
+[11:14:29] nnbf4 [P]: dE_tot=0.06984 dE_sign=0.00017 f_E=0.002 w_sign=1.58e-04 spread=8.9e-14 ov0=0.931 (0 s)
+[11:14:29] nnbf4 [P_S]: dE_tot=0.02496 dE_sign=0.00014 f_E=0.006 w_sign=1.59e-04 spread=4.6e-13 ov0=0.976 (0 s)
+[11:14:29] nnbf4 sampled: E_exact=-5.12 mean=-5.089 stderr=0.02556 z=1.223 var_mc=0.2137 var_ex=0.1926 kurt_ex=80.35 tail_share=0.1722 max_dev_sigma=6.87 accept=0.367 n=400 per_amp_check=0 (0 s)
+[11:14:29] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf4 seed=33 shift=0.001
+[11:14:29] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:29] arm nnbf4: {'kind': 'nnbf', 'Hs': 2} n_params=226 (control 356) calib=7.99e-15
+[11:14:29] nnbf4: it     0  E = -4.62337139  |f| = 1.08e+00  (0.01 s/step)
+[11:14:30] nnbf4: it    29  E = -4.99111170  |f| = 2.58e-01  (0.01 s/step)
+[11:14:30] nnbf4 [P]: dE_tot=0.15196 dE_sign=0.00446 f_E=0.029 w_sign=3.29e-03 spread=9.4e-14 ov0=0.906 (0 s)
+[11:14:30] nnbf4 [P_S]: dE_tot=0.06065 dE_sign=0.00272 f_E=0.045 w_sign=1.48e-03 spread=1.6e-13 ov0=0.948 (0 s)
+[11:14:30] nnbf4 sampled: E_exact=-5.038 mean=-5.012 stderr=0.03671 z=0.7032 var_mc=0.4401 var_ex=0.5195 kurt_ex=23.23 tail_share=0.1413 max_dev_sigma=5.858 accept=0.3933 n=400 per_amp_check=0 (0 s)
+[11:14:30] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf4 seed=33 shift=0.01
+[11:14:30] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:30] arm nnbf4: {'kind': 'nnbf', 'Hs': 2} n_params=226 (control 356) calib=7.99e-15
+[11:14:30] nnbf4: it     0  E = -4.62337139  |f| = 1.08e+00  (0.01 s/step)
+[11:14:30] nnbf4: it    29  E = -5.14428588  |f| = 9.60e-02  (0.01 s/step)
+[11:14:30] nnbf4 [P]: dE_tot=0.04566 dE_sign=0.00581 f_E=0.127 w_sign=6.06e-03 spread=1.2e-13 ov0=0.872 (0 s)
+[11:14:30] nnbf4 [P_S]: dE_tot=0.02434 dE_sign=0.00355 f_E=0.146 w_sign=2.19e-03 spread=4.4e-13 ov0=0.896 (0 s)
+[11:14:30] nnbf4 sampled: E_exact=-5.144 mean=-5.117 stderr=0.01819 z=1.489 var_mc=0.1204 var_ex=0.09927 kurt_ex=1.134e+04 tail_share=0.2576 max_dev_sigma=13.9 accept=0.4119 n=400 per_amp_check=0 (0 s)
+[11:14:30] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdK seed=11 shift=0.001
+[11:14:30] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:30] arm frdK: {'kind': 'frd', 'frame': 'K', 'base_Hs': 2, 'alpha_width': 2, 'E': 32} n_params=356 (control 356) calib=8.88e-15
+[11:14:30] frdK: it     0  E = -4.62221363  |f| = 1.10e+00  (0.03 s/step)
+[11:14:31] frdK: it    29  E = -5.00818540  |f| = 1.81e-01  (0.03 s/step)
+[11:14:31] frdK [P]: dE_tot=0.17792 dE_sign=0.03618 f_E=0.203 w_sign=5.16e-02 spread=1.5e-14 ov0=0.479 (0 s)
+[11:14:31] frdK [P_S]: dE_tot=0.08133 dE_sign=0.03085 f_E=0.379 w_sign=5.97e-02 spread=7.6e-14 ov0=0.706 (0 s)
+[11:14:31] frdK: flip_weight=1.016e-02 E(alpha=0, co-adapted; diagnostic)=-4.753697
+[11:14:31] frdK sampled: E_exact=-5.012 mean=-5.024 stderr=0.02595 z=0.475 var_mc=0.1956 var_ex=0.2857 kurt_ex=1425 tail_share=0.2373 max_dev_sigma=4.405 accept=0.4819 n=400 per_amp_check=0 (0 s)
+[11:14:31] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdK seed=11 shift=0.01
+[11:14:31] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:31] arm frdK: {'kind': 'frd', 'frame': 'K', 'base_Hs': 2, 'alpha_width': 2, 'E': 32} n_params=356 (control 356) calib=8.88e-15
+[11:14:31] frdK: it     0  E = -4.62221363  |f| = 1.10e+00  (0.03 s/step)
+[11:14:32] frdK: it    29  E = -5.15949889  |f| = 7.51e-02  (0.03 s/step)
+[11:14:32] frdK [P]: dE_tot=0.02923 dE_sign=0.00453 f_E=0.155 w_sign=5.68e-03 spread=2.1e-13 ov0=0.885 (0 s)
+[11:14:32] frdK [P_S]: dE_tot=0.00755 dE_sign=0.00101 f_E=0.134 w_sign=7.36e-04 spread=7.1e-13 ov0=0.979 (0 s)
+[11:14:32] frdK: flip_weight=0.000e+00 E(alpha=0, co-adapted; diagnostic)=-4.997761
+[11:14:32] frdK sampled: E_exact=-5.161 mean=-5.151 stderr=0.008165 z=1.18 var_mc=0.02147 var_ex=0.04243 kurt_ex=2434 tail_share=0.463 max_dev_sigma=5.335 accept=0.3478 n=400 per_amp_check=0 (0 s)
+[11:14:32] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdK seed=22 shift=0.001
+[11:14:32] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:32] arm frdK: {'kind': 'frd', 'frame': 'K', 'base_Hs': 2, 'alpha_width': 2, 'E': 32} n_params=356 (control 356) calib=1.12e-13
+[11:14:32] frdK: it     0  E = -4.61932507  |f| = 1.11e+00  (0.03 s/step)
+[11:14:33] frdK: it    29  E = -5.04384145  |f| = 1.82e-01  (0.03 s/step)
+[11:14:33] frdK [P]: dE_tot=0.13952 dE_sign=0.03375 f_E=0.242 w_sign=6.92e-02 spread=3.2e-14 ov0=0.548 (0 s)
+[11:14:33] frdK [P_S]: dE_tot=0.07019 dE_sign=0.02952 f_E=0.421 w_sign=6.21e-02 spread=1.0e-13 ov0=0.698 (0 s)
+[11:14:33] frdK: flip_weight=3.453e-03 E(alpha=0, co-adapted; diagnostic)=-4.602969
+[11:14:33] frdK sampled: E_exact=-5.05 mean=-5.055 stderr=0.02114 z=0.2403 var_mc=0.1664 var_ex=0.2168 kurt_ex=668 tail_share=0.1845 max_dev_sigma=5.243 accept=0.4737 n=400 per_amp_check=0 (0 s)
+[11:14:33] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdK seed=22 shift=0.01
+[11:14:33] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:34] arm frdK: {'kind': 'frd', 'frame': 'K', 'base_Hs': 2, 'alpha_width': 2, 'E': 32} n_params=356 (control 356) calib=1.12e-13
+[11:14:34] frdK: it     0  E = -4.61932507  |f| = 1.11e+00  (0.03 s/step)
+[11:14:34] frdK: it    29  E = -5.17155552  |f| = 6.79e-02  (0.03 s/step)
+[11:14:34] frdK [P]: dE_tot=0.01758 dE_sign=0.00014 f_E=0.008 w_sign=1.59e-04 spread=2.0e-13 ov0=0.946 (0 s)
+[11:14:35] frdK [P_S]: dE_tot=0.01117 dE_sign=0.00265 f_E=0.237 w_sign=1.48e-03 spread=4.0e-13 ov0=0.958 (0 s)
+[11:14:35] frdK: flip_weight=0.000e+00 E(alpha=0, co-adapted; diagnostic)=-4.974577
+[11:14:35] frdK sampled: E_exact=-5.172 mean=-5.177 stderr=0.00814 z=0.6101 var_mc=0.02438 var_ex=0.03584 kurt_ex=163.9 tail_share=0.484 max_dev_sigma=5.306 accept=0.3811 n=400 per_amp_check=0 (0 s)
+[11:14:35] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdK seed=33 shift=0.001
+[11:14:35] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:35] arm frdK: {'kind': 'frd', 'frame': 'K', 'base_Hs': 2, 'alpha_width': 2, 'E': 32} n_params=356 (control 356) calib=7.99e-15
+[11:14:35] frdK: it     0  E = -4.62374850  |f| = 1.11e+00  (0.03 s/step)
+[11:14:36] frdK: it    29  E = -5.00647637  |f| = 2.62e-01  (0.03 s/step)
+[11:14:36] frdK [P]: dE_tot=0.17161 dE_sign=0.03193 f_E=0.186 w_sign=6.91e-02 spread=3.1e-14 ov0=0.535 (0 s)
+[11:14:36] frdK [P_S]: dE_tot=0.09089 dE_sign=0.03461 f_E=0.381 w_sign=5.84e-02 spread=2.9e-14 ov0=0.617 (0 s)
+[11:14:36] frdK: flip_weight=0.000e+00 E(alpha=0, co-adapted; diagnostic)=-4.748335
+[11:14:36] frdK sampled: E_exact=-5.018 mean=-4.973 stderr=0.02945 z=1.553 var_mc=0.2887 var_ex=0.3256 kurt_ex=1014 tail_share=0.1377 max_dev_sigma=5.224 accept=0.42 n=400 per_amp_check=0 (0 s)
+[11:14:36] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdK seed=33 shift=0.01
+[11:14:36] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:36] arm frdK: {'kind': 'frd', 'frame': 'K', 'base_Hs': 2, 'alpha_width': 2, 'E': 32} n_params=356 (control 356) calib=7.99e-15
+[11:14:36] frdK: it     0  E = -4.62374850  |f| = 1.11e+00  (0.03 s/step)
+[11:14:37] frdK: it    29  E = -5.16764948  |f| = 6.17e-02  (0.03 s/step)
+[11:14:37] frdK [P]: dE_tot=0.02089 dE_sign=0.00323 f_E=0.155 w_sign=3.53e-03 spread=6.8e-13 ov0=0.938 (0 s)
+[11:14:37] frdK [P_S]: dE_tot=0.00552 dE_sign=0.00101 f_E=0.183 w_sign=7.36e-04 spread=5.0e-12 ov0=0.985 (0 s)
+[11:14:37] frdK: flip_weight=0.000e+00 E(alpha=0, co-adapted; diagnostic)=-5.039244
+[11:14:37] frdK sampled: E_exact=-5.169 mean=-5.152 stderr=0.009943 z=1.709 var_mc=0.03333 var_ex=0.0324 kurt_ex=321.5 tail_share=0.3563 max_dev_sigma=9.876 accept=0.373 n=400 per_amp_check=0 (0 s)
+[11:14:37] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdX seed=11 shift=0.001
+[11:14:37] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:37] arm frdX: {'kind': 'frd', 'frame': 'X', 'base_Hs': 2, 'alpha_width': 2, 'E': 20} n_params=320 (control 356) calib=8.88e-15
+[11:14:37] frdX: it     0  E = -4.62273406  |f| = 1.09e+00  (0.02 s/step)
+[11:14:37] frdX: it    29  E = -4.94103953  |f| = 3.45e-01  (0.02 s/step)
+[11:14:38] frdX [P]: dE_tot=0.22446 dE_sign=0.01756 f_E=0.078 w_sign=1.89e-02 spread=1.2e-14 ov0=0.741 (0 s)
+[11:14:38] frdX [P_S]: dE_tot=0.10530 dE_sign=0.00676 f_E=0.064 w_sign=8.15e-03 spread=2.5e-14 ov0=0.841 (0 s)
+[11:14:38] frdX: flip_weight=8.222e-04 E(alpha=0, co-adapted; diagnostic)=-4.783273
+[11:14:38] frdX sampled: E_exact=-4.965 mean=-4.921 stderr=0.03898 z=1.145 var_mc=0.5425 var_ex=0.617 kurt_ex=149.2 tail_share=0.1192 max_dev_sigma=3.772 accept=0.4293 n=400 per_amp_check=0 (0 s)
+[11:14:38] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdX seed=11 shift=0.01
+[11:14:38] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:38] arm frdX: {'kind': 'frd', 'frame': 'X', 'base_Hs': 2, 'alpha_width': 2, 'E': 20} n_params=320 (control 356) calib=8.88e-15
+[11:14:38] frdX: it     0  E = -4.62273406  |f| = 1.09e+00  (0.02 s/step)
+[11:14:38] frdX: it    29  E = -5.11649899  |f| = 2.09e-01  (0.02 s/step)
+[11:14:38] frdX [P]: dE_tot=0.04385 dE_sign=0.00573 f_E=0.131 w_sign=6.06e-03 spread=1.4e-13 ov0=0.872 (0 s)
+[11:14:38] frdX [P_S]: dE_tot=0.02431 dE_sign=0.00541 f_E=0.223 w_sign=5.11e-03 spread=1.5e-13 ov0=0.904 (0 s)
+[11:14:38] frdX: flip_weight=0.000e+00 E(alpha=0, co-adapted; diagnostic)=-5.054359
+[11:14:38] frdX sampled: E_exact=-5.146 mean=-5.132 stderr=0.01491 z=0.9342 var_mc=0.07417 var_ex=0.08645 kurt_ex=2175 tail_share=0.2156 max_dev_sigma=4.523 accept=0.4152 n=400 per_amp_check=0 (0 s)
+[11:14:38] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdX seed=22 shift=0.001
+[11:14:38] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:39] arm frdX: {'kind': 'frd', 'frame': 'X', 'base_Hs': 2, 'alpha_width': 2, 'E': 20} n_params=320 (control 356) calib=1.12e-13
+[11:14:39] frdX: it     0  E = -4.61977633  |f| = 1.08e+00  (0.02 s/step)
+[11:14:39] frdX: it    29  E = -4.99691232  |f| = 2.87e-01  (0.02 s/step)
+[11:14:39] frdX [P]: dE_tot=0.17486 dE_sign=0.03307 f_E=0.189 w_sign=6.10e-02 spread=5.6e-14 ov0=0.736 (0 s)
+[11:14:39] frdX [P_S]: dE_tot=0.09592 dE_sign=0.02831 f_E=0.295 w_sign=4.12e-02 spread=4.6e-14 ov0=0.807 (0 s)
+[11:14:39] frdX: flip_weight=2.543e-02 E(alpha=0, co-adapted; diagnostic)=-4.933419
+[11:14:39] frdX sampled: E_exact=-5.015 mean=-4.966 stderr=0.03224 z=1.511 var_mc=0.3782 var_ex=0.4482 kurt_ex=66.87 tail_share=0.136 max_dev_sigma=6.441 accept=0.4174 n=400 per_amp_check=0 (0 s)
+[11:14:39] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdX seed=22 shift=0.01
+[11:14:39] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:39] arm frdX: {'kind': 'frd', 'frame': 'X', 'base_Hs': 2, 'alpha_width': 2, 'E': 20} n_params=320 (control 356) calib=1.12e-13
+[11:14:39] frdX: it     0  E = -4.61977633  |f| = 1.08e+00  (0.02 s/step)
+[11:14:40] frdX: it    29  E = -5.08369906  |f| = 1.93e-01  (0.02 s/step)
+[11:14:40] frdX [P]: dE_tot=0.08985 dE_sign=0.02564 f_E=0.285 w_sign=4.88e-02 spread=3.0e-14 ov0=0.686 (0 s)
+[11:14:40] frdX [P_S]: dE_tot=0.04231 dE_sign=0.00612 f_E=0.145 w_sign=7.42e-03 spread=8.4e-14 ov0=0.835 (0 s)
+[11:14:40] frdX: flip_weight=0.000e+00 E(alpha=0, co-adapted; diagnostic)=-5.035741
+[11:14:40] frdX sampled: E_exact=-5.1 mean=-5.111 stderr=0.02149 z=0.4842 var_mc=0.1848 var_ex=0.1324 kurt_ex=30.42 tail_share=0.1463 max_dev_sigma=10.44 accept=0.4378 n=400 per_amp_check=0 (0 s)
+[11:14:40] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdX seed=33 shift=0.001
+[11:14:40] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:40] arm frdX: {'kind': 'frd', 'frame': 'X', 'base_Hs': 2, 'alpha_width': 2, 'E': 20} n_params=320 (control 356) calib=7.99e-15
+[11:14:40] frdX: it     0  E = -4.62333972  |f| = 1.08e+00  (0.02 s/step)
+[11:14:41] frdX: it    29  E = -4.92955713  |f| = 3.72e-01  (0.02 s/step)
+[11:14:41] frdX [P]: dE_tot=0.22994 dE_sign=0.01899 f_E=0.083 w_sign=2.69e-02 spread=1.5e-14 ov0=0.766 (0 s)
+[11:14:41] frdX [P_S]: dE_tot=0.08715 dE_sign=0.01376 f_E=0.158 w_sign=1.12e-02 spread=2.0e-14 ov0=0.891 (0 s)
+[11:14:41] frdX: flip_weight=6.265e-03 E(alpha=0, co-adapted; diagnostic)=-4.865722
+[11:14:41] frdX sampled: E_exact=-4.96 mean=-4.924 stderr=0.0396 z=0.8981 var_mc=0.6238 var_ex=0.6474 kurt_ex=19.16 tail_share=0.1193 max_dev_sigma=4.169 accept=0.4111 n=400 per_amp_check=0 (0 s)
+[11:14:41] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdX seed=33 shift=0.01
+[11:14:41] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:41] arm frdX: {'kind': 'frd', 'frame': 'X', 'base_Hs': 2, 'alpha_width': 2, 'E': 20} n_params=320 (control 356) calib=7.99e-15
+[11:14:41] frdX: it     0  E = -4.62333972  |f| = 1.08e+00  (0.02 s/step)
+[11:14:42] frdX: it    29  E = -5.13165462  |f| = 1.65e-01  (0.02 s/step)
+[11:14:42] frdX [P]: dE_tot=0.03937 dE_sign=0.00211 f_E=0.054 w_sign=1.21e-03 spread=1.1e-13 ov0=0.956 (0 s)
+[11:14:42] frdX [P_S]: dE_tot=0.01670 dE_sign=0.00016 f_E=0.010 w_sign=1.56e-04 spread=6.4e-13 ov0=0.986 (0 s)
+[11:14:42] frdX: flip_weight=0.000e+00 E(alpha=0, co-adapted; diagnostic)=-5.062489
+[11:14:42] frdX sampled: E_exact=-5.151 mean=-5.121 stderr=0.02243 z=1.336 var_mc=0.1439 var_ex=0.1101 kurt_ex=2150 tail_share=0.2269 max_dev_sigma=14.55 accept=0.4026 n=400 per_amp_check=0 (0 s)
+[11:14:42] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=nnbf6_mc seed=11 shift=0.01
+[11:14:42] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:42] arm nnbf6_mc: {'kind': 'nnbf', 'Hs': 4} n_params=356 (control 356) calib=8.88e-15
+[11:14:42] nnbf6_mc: it     0  E_exact = -4.62278004  E_mc = -4.381711  |f| = 2.76e-01  acc = 0.218  (0.02 s/step)
+[11:14:42] nnbf6_mc: it    29  E_exact = -4.97829091  E_mc = -4.933260  |f| = 7.63e-01  acc = 0.242  (0.01 s/step)
+[11:14:42] nnbf6_mc [P]: dE_tot=0.20650 dE_sign=0.06112 f_E=0.296 w_sign=7.81e-02 spread=8.6e-15 ov0=0.405 (0 s)
+[11:14:42] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdK_mc seed=11 shift=0.01
+[11:14:42] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:42] arm frdK_mc: {'kind': 'frd', 'frame': 'K', 'base_Hs': 2, 'alpha_width': 2, 'E': 32} n_params=356 (control 356) calib=8.88e-15
+[11:14:42] frdK_mc: it     0  E_exact = -4.62221363  E_mc = -4.471492  |f| = 1.12e+01  acc = 0.216  (0.04 s/step)
+[11:14:43] frdK_mc: it    29  E_exact = -5.00087126  E_mc = -4.989997  |f| = 2.06e-01  acc = 0.240  (0.03 s/step)
+[11:14:43] frdK_mc [P]: dE_tot=0.18729 dE_sign=0.03362 f_E=0.180 w_sign=1.39e-02 spread=9.5e-15 ov0=0.405 (0 s)
+[11:14:43] frdK_mc: flip_weight=0.000e+00 E(alpha=0, co-adapted; diagnostic)=-4.992799
+[11:14:43] instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 arm=frdX_mc seed=11 shift=0.01
+[11:14:43] ED [-5.189941065066815, -5.124222850338513, -5.034492217679495, -5.025878568846499] deg 1 |G|=4 chi={'My': 1, 'Mx': 1} S=0; dim P_chi 140, dim P_S P_chi 44 (0 s)
+[11:14:43] arm frdX_mc: {'kind': 'frd', 'frame': 'X', 'base_Hs': 2, 'alpha_width': 2, 'E': 20} n_params=320 (control 356) calib=8.88e-15
+[11:14:43] frdX_mc: it     0  E_exact = -4.62273406  E_mc = -4.715005  |f| = 1.90e+00  acc = 0.203  (0.03 s/step)
+[11:14:44] frdX_mc: it    29  E_exact = -4.98606341  E_mc = -5.023870  |f| = 4.87e-01  acc = 0.236  (0.02 s/step)
+[11:14:44] frdX_mc [P]: dE_tot=0.20194 dE_sign=0.09192 f_E=0.455 w_sign=1.21e-01 spread=4.4e-14 ov0=0.404 (0 s)
+[11:14:44] frdX_mc: flip_weight=0.000e+00 E(alpha=0, co-adapted; diagnostic)=-4.987952
+P1.2 r5 aggregate: SIGN HALF ONLY (no same-sector competitor is claimed)
+pre-committed: premise med dE_sign(nnbf6) >= 0.005; FAIL if rho_sign >= 0.9 or rho_tot > 1.1 or kurt ratio > 10.0 or MC_FAIL; PASS if guards & rho_sign <= 0.7 & seed ranges disjoint & rho_tot <= 1.0 & rho_abl <= 0.8 & kurt ratio <= 10.0 & MC_OK
+
+instance 8 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4}
+  nnbf6  seeds [11, 22, 33] dE_sign med 0.00116 [0.00015,0.00584] dE_tot med 0.03908 w_sign 1.04e-03 ov0 0.889 kurt 84.8 | P_S: dE_sign 0.00208
+  nnbf4  seeds [11, 22, 33] dE_sign med 0.00581 [0.00017,0.00679] dE_tot med 0.06103 w_sign 4.40e-03 ov0 0.931 kurt 524 | P_S: dE_sign 0.00308
+  frdK   seeds [11, 22, 33] dE_sign med 0.00323 [0.00014,0.00453] dE_tot med 0.02089 w_sign 3.53e-03 ov0 0.938 kurt 322 | P_S: dE_sign 0.00101 flip_w 0.00e+00
+  frdX   seeds [11, 22, 33] dE_sign med 0.00573 [0.00211,0.02564] dE_tot med 0.04385 w_sign 6.06e-03 ov0 0.872 kurt 2.15e+03 | P_S: dE_sign 0.00541 flip_w 0.00e+00
+  premise: med dE_sign(nnbf6) = 0.00116 over 3 seeds -> NOT informative
+  [frdK] rho_sign=2.783 rho_tot=0.535 rho_abl=0.556 disjoint=False wins 1/3 kurt ratio 3.79 guards=OK MC stall 6.41 (ctrl 5.28) jumps 0.000 (ctrl 0.000) diverged False -> OK -> FAIL (not counted)
+ROUTE frdK (instance 8): NO-TARGET
+  [frdX] rho_sign=4.934 rho_tot=1.122 rho_abl=0.985 disjoint=False wins 0/3 kurt ratio 25.36 guards=OK MC stall 4.60 (ctrl 5.28) jumps 0.000 (ctrl 0.000) diverged False -> OK -> FAIL (not counted)
+ROUTE frdX (instance 8): NO-TARGET
+[11:14:44] cost L=4 V=16 Ne=14: NNBF 30 evals 6.603e-03 s | FRD-K 494 evals 1.270e-02 s (x1.9) | FRD-X 431 evals 1.113e-02 s (x1.7)
+[11:14:44] cost L=5 V=25 Ne=22: NNBF 43 evals 1.017e-02 s | FRD-K 993 evals 2.477e-02 s (x2.4) | FRD-X 905 evals 2.016e-02 s (x2.0)
+[11:14:44] cost log-log slopes in N_e: T_nnbf=0.96 T_frdK=1.48 T_frdX=1.31 ev_nnbf=0.80 ev_frdK=1.54 ev_frdX=1.64
+[11:14:44] smoke total 31.5 s
+
+real	0m32.017s
+user	1m56.090s
+sys	0m6.528s

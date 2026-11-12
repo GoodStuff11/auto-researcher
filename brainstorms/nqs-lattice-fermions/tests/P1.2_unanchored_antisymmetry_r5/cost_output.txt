@@ -1,0 +1,5 @@
+[11:14:52] cost L=4 V=16 Ne=14: NNBF 29 evals 1.167e-02 s | FRD-K 477 evals 1.719e-02 s (x1.5) | FRD-X 387 evals 1.445e-02 s (x1.2)
+[11:14:52] cost L=5 V=25 Ne=22: NNBF 44 evals 1.366e-02 s | FRD-K 1034 evals 3.644e-02 s (x2.7) | FRD-X 946 evals 3.107e-02 s (x2.3)
+[11:14:53] cost L=6 V=36 Ne=32: NNBF 57 evals 2.030e-02 s | FRD-K 1552 evals 6.570e-02 s (x3.2) | FRD-X 1847 evals 6.961e-02 s (x3.4)
+[11:14:54] cost L=7 V=49 Ne=42: NNBF 87 evals 2.895e-02 s | FRD-K 4105 evals 2.147e-01 s (x7.4) | FRD-X 3510 evals 1.828e-01 s (x6.3)
+[11:14:54] cost log-log slopes in N_e: T_nnbf=0.83 T_frdK=2.17 T_frdX=2.25 ev_nnbf=0.96 ev_frdK=1.83 ev_frdX=1.98

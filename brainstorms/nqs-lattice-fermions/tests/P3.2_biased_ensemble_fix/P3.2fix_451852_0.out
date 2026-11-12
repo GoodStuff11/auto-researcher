@@ -1,0 +1,11 @@
+[11:14:06] instance: 4x3 PBC 4+4 U=8.0 t_y=1.11394; t'_c=-0.470482 min gap 1.001e-03 (7s); irrep dim 1618
+[11:14:07] check [H(t_y=1.11394),U_g] max 3.3e-16; projector idempotent 6.4e-16; [P,H] 7.0e-17
+[11:14:10] check projected gradient (anisotropic H): analytic 2.5999178599e-01 FD 2.5999178632e-01
+[11:14:12] check sampled force vs exact (20000 draws): |fs-f|^2 / sum(SE^2) = 1.09 (unbiased -> ~1), cosine 0.9486, |fs-f|/|f| 0.321
+[11:14:12] check warm start from stored parameters: relative amplitude difference 0.0e+00
+[11:14:12] check MC mixture S_01 0.998142 vs exact 0.998345 (1.2 standard errors)
+[11:14:12] check decision logic: noise->U/noise crossover->B,U/crossover intrinsic->B/intrinsic
+[11:14:12] P3.2-fix CHECKS PASSED
+[11:14:12] projected sector dim range(P_S P_chi) = 1618 (space-group irrep 5214); NNBF width 4: 676 parameters; ratio 2.39
+[11:14:17] snap A t'=-0.55048 W=4 s=1234: it     0  E = -11.51728792  |f| = 1.48e+00  (1.53 s/step)
+[11:15:33] snap A t'=-0.55048 W=4 s=1234: it    50  E = -13.15256235  |f| = 8.04e-01  (1.51 s/step)

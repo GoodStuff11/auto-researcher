@@ -1,0 +1,1 @@
+[     3.4s] target 4x4:6 OBC dim=1681680 npar=426: chunk 50000 grad 2.37s value 0.80s -> full grad+value ~108s, value ~27s per pass

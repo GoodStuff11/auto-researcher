@@ -115,9 +115,9 @@ Command-line options
 --maxiter INT           W: L-BFGS iterations. Default 6000.
 --warm-iters INT        L: L-BFGS iterations of the common warm start. Default 400.
 --batch INT             L: samples per SR step B. Default 500.
---lr FLOAT              L: SR step size. Default 0.05.
---shift FLOAT           L: minSR diagonal shift. Default 1e-3.
---max-dtheta FLOAT      L: step-norm clip. Default 0.05.
+--lr FLOAT              L: SR step size. Default 0.5.
+--shift FLOAT           L: minSR diagonal shift. Default 1e-4.
+--max-dtheta FLOAT      L: step-norm clip. Default 1.0.
 --n-ref INT             L: budget C_b = n-ref EXACT steps. Default 200.
 --max-steps-factor INT  L: cap on steps = factor x n-ref. Default 12.
 --ess-min FLOAT         L: ALE re-anchors when ESS < ess-min * B. Default 0.5.
@@ -174,9 +174,9 @@ def parse_args(argv=None):
     ap.add_argument("--maxiter", type=int, default=6000)
     ap.add_argument("--warm-iters", type=int, default=400)
     ap.add_argument("--batch", type=int, default=500)
-    ap.add_argument("--lr", type=float, default=0.05)
-    ap.add_argument("--shift", type=float, default=1e-3)
-    ap.add_argument("--max-dtheta", type=float, default=0.05)
+    ap.add_argument("--lr", type=float, default=0.5)
+    ap.add_argument("--shift", type=float, default=1e-4)
+    ap.add_argument("--max-dtheta", type=float, default=1.0)
     ap.add_argument("--n-ref", type=int, default=200)
     ap.add_argument("--max-steps-factor", type=int, default=12)
     ap.add_argument("--ess-min", type=float, default=0.5)
@@ -322,39 +322,66 @@ def make_net(K, N, arm, hidden, hj, seed):
 # ----------------------------------------------------------------------------
 # Part L: SR with local-energy estimators
 # ----------------------------------------------------------------------------
-def calibrate(inst, net, th, n_wall, rng):
-    """Single-thread seconds per amplitude (keyx_core.ratio_exact on full rows)
-    and per generated term (SpatialHam.row); real-kernel wall-clock of the
-    EXACT row against the ALE0 inner estimator (Kd = 4, stored anchor)."""
+def calibrate(inst, net, th, n_wall, rng, Kd=4):
+    """Single-thread wall-clock model of the real per-sample kernels, including
+    per-call (interpreter) overhead, fitted on n_wall samples drawn from pi:
+      amplitudes : t = a + b m   (keyx_core.ratio_exact on m terms of one row)
+      generation : t = ag + bg |C| (SpatialHam.row)
+      setup      : ts (net.setup, needed before any incremental amplitude)
+    plus a direct real-kernel comparison: EXACT row (generation + setup + all
+    amplitudes) against the ALE0 inner estimator (setup + Kd drawn amplitudes
+    from a stored anchor), with a paired bootstrap CI."""
     P = net.unpack(th)
     psi, _ = net.amplitudes(th, inst.occ, inst.oi)
     wv = psi ** 2 / (psi @ psi)
     idx = rng.choice(inst.D, size=n_wall, p=wv)
-    tA, tG, nT, wE, wA = 0.0, 0.0, 0, [], []
+    am, at, gm, gt, ts, wE, wA = [], [], [], [], [], [], []
     for n in idx:
         s0 = time.perf_counter()
         row = inst.ham.row(inst.codes[n], inst.oi[n])
         tg = time.perf_counter() - s0
-        st = net.setup(P, inst.oi[n])
-        occ_j = kc.decode(row["code"], inst.ham.M, inst.N)
+        gm.append(len(row["h"])); gt.append(tg)
         s0 = time.perf_counter()
+        st = net.setup(P, inst.oi[n])
+        t_s = time.perf_counter() - s0
+        ts.append(t_s)
+        occ_j = kc.decode(row["code"], inst.ham.M, inst.N)
+        C = len(row["h"])
+        for m_ in sorted({1, 4, 16, 64, C}):
+            m_ = min(m_, C)
+            s0 = time.perf_counter()
+            rx = net.ratio_exact(P, st, row["rem"][:m_], row["add"][:m_], occ_j[:m_])
+            _ = row["h"][:m_] @ rx
+            am.append(m_); at.append(time.perf_counter() - s0)
+        s0 = time.perf_counter()
+        st = net.setup(P, inst.oi[n])
         rx = net.ratio_exact(P, st, row["rem"], row["add"], occ_j)
         _ = row["Hnn"] + row["h"] @ rx
-        ta = time.perf_counter() - s0
-        tA += ta; tG += tg; nT += len(rx)
-        wE.append(tg + ta)
-        # ALE0 inner step: psi(n) (setup) + Kd = 4 drawn amplitudes, anchor stored
+        wE.append(tg + time.perf_counter() - s0)
         xt = row["h"] * rx
         p = 0.9 * np.abs(xt) / np.abs(xt).sum() + 0.1 * np.abs(row["h"]) / np.abs(row["h"]).sum()
         s0 = time.perf_counter()
         st2 = net.setup(P, inst.oi[n])
-        d = rng.choice(len(p), size=4, p=p)
+        d = rng.choice(len(p), size=Kd, p=p)
         r2 = net.ratio_exact(P, st2, row["rem"][d], row["add"][d], occ_j[d])
         _ = xt.sum() + np.mean((row["h"][d] * r2 - xt[d]) / p[d])
         wA.append(time.perf_counter() - s0)
-    return {"t_amp": tA / nT, "t_gen": tG / nT, "wall_EXACT_row": wE, "wall_ALE0_inner_Kd4": wA,
+    b, a = np.polyfit(am, at, 1)
+    bg, ag = np.polyfit(gm, gt, 1) if len(set(gm)) > 1 else (np.mean(gt) / np.mean(gm), 0.0)
+    return {"a": float(max(a, 0)), "b": float(b), "ag": float(max(ag, 0)), "bg": float(bg), "ts": float(np.mean(ts)),
+            "Kd_wall": Kd,
+            "wall_EXACT_row": wE, "wall_ALE0_inner": wA,
             "wall_ratio_ALE0_over_EXACT": float(np.mean(wA) / np.mean(wE)),
             "wall_ratio_CI": kc.boot_ratio_ci(wA, wE)}
+
+
+def cal_amp(c, m):
+    """Seconds for one call of m incremental amplitudes (0 if m == 0)."""
+    return 0.0 if m <= 0 else c["a"] + c["b"] * m
+
+
+def cal_gen(c, m):
+    return c["ag"] + c["bg"] * m
 
 
 def sr_update(O, w, e, lr, shift, maxd):
@@ -429,7 +456,7 @@ def run_sr(inst, net, th0, arm, seed, args, costs, budget_ops, budget_cal, log_e
     rng = np.random.default_rng(10 ** 5 + 97 * seed + 1)
     th = th0.copy()
     amp = costs["amp_ops"]; gen = kc.C_GEN
-    tA, tG = costs["t_amp"], costs["t_gen"]
+    c = costs["cal"]
     B = args.batch
     max_steps = args.max_steps_factor * args.n_ref
     kind = arm["kind"]
@@ -461,12 +488,12 @@ def run_sr(inst, net, th0, arm, seed, args, costs, budget_ops, budget_cal, log_e
                 e = anc.S.copy()
                 nC = sum(len(rw[0]) for rw in anc.rows)
                 o_ = nC * (gen + amp) + (2 * nC * amp if fo else 0)
-                c_ = nC * (tG + tA) + (2 * nC * tA if fo else 0)
+                c_ = sum(cal_gen(c, len(rw[0])) + c["ts"] + cal_amp(c, len(rw[0])) * (3 if fo else 1) for rw in anc.rows)
             else:
                 e = ale_estimate(inst, net, anc, th, psi, arm["Kd"], rng, fo)
                 Kd = arm["Kd"]
                 o_ = B * (amp + Kd * amp + Kd * kc.C_HASH + (2 * Kd * amp if fo else 0))
-                c_ = B * (tA + Kd * tA + (2 * Kd * tA if fo else 0))
+                c_ = B * (c["ts"] + cal_amp(c, Kd) * (3 if fo else 1))
             age += 1
             sidx = anc.sidx
         else:
@@ -478,17 +505,17 @@ def run_sr(inst, net, th0, arm, seed, args, costs, budget_ops, budget_cal, log_e
                 x = h * psi[j] / psi[n]
                 if kind in ("EXACT", "EXACTNF"):
                     e[b] = inst.Hd[n] + x.sum(); m = len(x)
-                    o_ += m * (gen + amp); c_ += m * (tG + tA)
+                    o_ += m * (gen + amp); c_ += cal_gen(c, m) + c["ts"] + cal_amp(c, m)
                 else:
                     mk = np.abs(h) > arm["eps"]; m = int(mk.sum())
                     e[b] = inst.Hd[n] + x[mk].sum()
-                    o_ += m * (gen + amp); c_ += m * (tG + tA)
+                    o_ += m * (gen + amp); c_ += cal_gen(c, m) + c["ts"] + cal_amp(c, m)
                     if kind == "SS" and m < len(x):
                         tl = np.nonzero(~mk)[0]
                         p = np.abs(h[tl]); p /= p.sum()
                         d = rng.choice(len(tl), size=arm["Kd"], p=p)
                         e[b] += np.mean(x[tl[d]] / p[d])
-                        o_ += arm["Kd"] * amp; c_ += arm["Kd"] * tA
+                        o_ += arm["Kd"] * amp; c_ += cal_amp(c, arm["Kd"])
         cum_ops += o_; cum_cal += c_
         traj["ess"].append(float(ess)); traj["anchor"].append(bool(is_anchor))
         _, O = logderiv(net, th, inst.occ[sidx], inst.oi[sidx])
@@ -508,18 +535,18 @@ def run_part_L(args):
                      method="L-BFGS-B", options={"maxiter": args.warm_iters, "maxcor": 30, "gtol": 1e-12, "ftol": 1e-16})
         thw = r.x
         Ew = 1e3 * (r.fun - inst.E0)
-        cal = calibrate(inst, net, thw, args.n_wall, np.random.default_rng(4242))
+        cal = calibrate(inst, net, thw, args.n_wall, np.random.default_rng(4242), arm.get("Kd", 4))
         amp = kc.amp_ops(net)
         mC = inst.Hoff.nnz / inst.D
         psi, _ = net.amplitudes(thw, inst.occ, inst.oi)
         wv = psi ** 2 / (psi @ psi)
         mCpi = float(wv @ np.diff(inst.Hoff.indptr))
-        costs = {"amp_ops": amp, "t_amp": cal["t_amp"], "t_gen": cal["t_gen"]}
+        costs = {"amp_ops": amp, "cal": cal}
         budget_ops = args.n_ref * args.batch * mCpi * (kc.C_GEN + amp)
-        budget_cal = args.n_ref * args.batch * mCpi * (cal["t_gen"] + cal["t_amp"])
+        budget_cal = args.n_ref * args.batch * (cal_gen(cal, mCpi) + cal["ts"] + cal_amp(cal, mCpi))
         print(f"  warm start: {args.warm_iters} L-BFGS its, dE={Ew:.3f} mHa ({time.time()-t0:.0f}s); P={net.theta0.size} "
-              f"<|C|>_pi={mCpi:.0f}; t_amp={cal['t_amp']*1e6:.1f}us t_gen={cal['t_gen']*1e6:.2f}us; real-kernel "
-              f"wall ALE0(Kd=4)/EXACT per sample={cal['wall_ratio_ALE0_over_EXACT']:.4f} CI={cal['wall_ratio_CI']}", flush=True)
+              f"<|C|>_pi={mCpi:.0f}; cal: a={cal['a']*1e6:.0f}us b={cal['b']*1e6:.2f}us/amp ts={cal['ts']*1e6:.0f}us "
+              f"bg={cal['bg']*1e6:.2f}us/term; real-kernel wall ALE0(Kd={cal['Kd_wall']})/EXACT per sample={cal['wall_ratio_ALE0_over_EXACT']:.4f} CI={cal['wall_ratio_CI']}", flush=True)
         rec = {**inst.info, "warm_dE_mHa": Ew, "P": int(net.theta0.size), "mean_conn_pi": mCpi, "calibration": cal,
                "costs": costs, "budget_ops": budget_ops, "budget_cal": budget_cal, "runs": [],
                "cert_bound": cert_bound(inst, net, thw, args.eps_screen, np.random.default_rng(7), 100)}

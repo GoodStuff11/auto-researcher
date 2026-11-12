@@ -159,12 +159,12 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.1 | RESULT (PASS, qualified) | nothing | none |
 | P1.1-P | RESULT: SYMMETRY-DOMINATED (all instances) | nothing | none |
 | P1.2 | MUTATE (redesign onto 4×4 OBC t–J instance) | instance seed confirmation (job 451706) gates submission only | round-5 worker |
-| P1.3 | CRITIC (round 5 basin test) | job 451706 gates submission | per-leaf critic |
+| P1.3 | FIX (round 5 basin test, critic fixes) | job 451706 gates submission | fix worker |
 | P2.1 | SUBMITTED (2 more control seeds) | nothing | Slurm 451706 |
 | P2.2 | MUTATE (round 5; CGK killed) | nothing | round-5 worker |
 | P3.1 | MUTATE (re-scope onto 4×4 OBC instance) | job 451706 gates submission only | round-5 worker |
 | P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
-| P4.1 | FIX (sfb has headroom; KAGP premise unavailable, AGP fit timed out) | nothing | fix worker |
+| P4.1 | SUBMITTED (decisive pilot; completeness probe: one AGP per c incomplete, eps_tab(K=1) at least 6.8e-3, K=2 about 2e-8) | report gates on 451839 | Slurm 451886 (15 tasks), 451839 (completeness) |
 | P4.2 | FIX then reduced decisive run (FAIL expected) | nothing | fix worker |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.

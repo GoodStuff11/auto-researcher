@@ -1,0 +1,19 @@
+[     0.0s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
+[     0.2s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
+[     0.5s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
+[     0.9s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
+[     0.9s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
+[     0.9s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
+[     0.9s] SELFTEST PASSED
+Traceback (most recent call last):
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 707, in <module>
+    main()
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 703, in main
+    run(a)
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 445, in run
+    T = target_setup(a, R)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/obc_transfer.py", line 418, in target_setup
+    assert ok and not deg and abs(s2) < 1e-6, f"target GS not a non-degenerate 1-D singlet: {ev} S2={s2}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: target GS not a non-degenerate 1-D singlet: {'Mx': -1.0000000000000002, 'My': -1.0000000000000004, 'D': -1.0000000000000004} S2=2.0000000000000004

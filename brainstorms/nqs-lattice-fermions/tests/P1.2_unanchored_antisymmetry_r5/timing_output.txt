@@ -1,0 +1,4 @@
+[11:15:46] instance 0 D=1681680 ED+group 32 s |G|=8
+[11:16:12] nnbf6: n_params=1734 (ctrl 1734) {'kind': 'nnbf', 'Hs': 6}: 12.98 s per SR step
+[11:16:37] nnbf4: n_params=1284 (ctrl 1734) {'kind': 'nnbf', 'Hs': 4}: 12.32 s per SR step
+[11:16:53] frdK: edge tables 16.4 s
