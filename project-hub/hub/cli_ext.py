@@ -12,6 +12,7 @@ import yaml
 from .batch import run_batch
 from .clickup import apply_clickup, load_tasks, plan_clickup
 from .ingest_git import ingest_git
+from .pending import load_proposals
 from .sources import source_seen
 from .sync_state import load_state, save_state
 
@@ -94,11 +95,13 @@ def add_ext_parsers(sub) -> None:
     mn.add_argument("date", type=date.fromisoformat, metavar="YYYY-MM-DD", help="date of the next meeting")
     md = _sp(msub, "decided", "list decisions recorded for one meeting",
              "List decisions whose `meeting` is SERIES/DATE or that carry an entry with source "
-             "agenda:SERIES/DATE, with their status, as-decided text and spawned actions.")
+             "agenda:SERIES/DATE, with their status, as-decided text, whether the meeting reached them and "
+             "spawned actions, plus the pending proposals staged by that read-back (source agenda:SERIES/DATE).")
     md.add_argument("series", help="a key of `series` in project.yaml")
     md.add_argument("date", type=date.fromisoformat, metavar="YYYY-MM-DD", help="date of the meeting")
     md.add_argument("--json", action="store_true",
-                    help="print a JSON list of {id, title, status, as_decided, actions} instead of text")
+                    help="print JSON {decisions: [{id, title, status, as_decided, reached, actions}], "
+                         "staged: [P-ids]} instead of text")
 
     so = _sp(sub, "sources", "list the configured ingest sources and their watermarks",
              "One row per source configured under `sources` in project.yaml: clickup, circleback, "
@@ -133,16 +136,24 @@ def _source_rows(cfg) -> list[dict]:
     return rows
 
 
-def _decided(store, series: str, day: date) -> list[dict]:
+def _decided(store, root, series: str, day: date) -> dict:
+    """Decisions recorded for one meeting, and the proposals its read-back staged.
+
+    A decision counts as not reached (`reached: false`) when every agenda entry it has for this meeting
+    is "Not reached at …" and its `meeting` is not this meeting."""
     tag = f"{series}/{day.isoformat()}"
+    source = f"agenda:{tag}"
     actions = store.query(type="action")
     rows = []
     for d in store.query(type="decision"):
-        if d.meta.get("meeting") == tag or any(e.source == f"agenda:{tag}" for e in d.entries):
+        mine = [e for e in d.entries if e.source == source]
+        if d.meta.get("meeting") == tag or mine:
+            reached = d.meta.get("meeting") == tag or not all(e.text.startswith("Not reached at ") for e in mine)
             rows.append({"id": d.id, "title": d.title, "status": d.status,
-                         "as_decided": d.meta.get("as_decided") or "",
+                         "as_decided": d.meta.get("as_decided") or "", "reached": reached,
                          "actions": [a.id for a in actions if d.id in a.links("spawned_by")]})
-    return rows
+    staged = [p.pid for p in load_proposals(root) if p.body.get("source") == source]
+    return {"decisions": rows, "staged": staged}
 
 
 def dispatch_ext(args, cfg, store, *, today, me) -> int | None:
@@ -186,12 +197,15 @@ def dispatch_ext(args, cfg, store, *, today, me) -> int | None:
             save_state(cfg.root, state)
             print(f"next {args.series} meeting: {args.date.isoformat()}")
         else:
-            rows = _decided(store, args.series, args.date)
+            res = _decided(store, cfg.root, args.series, args.date)
             if args.json:
-                print(json.dumps(rows, indent=2, default=str))
-            for r in [] if args.json else rows:
-                print(f"{r['id']}  {r['status']:<9} {r['title']} — {r['as_decided'] or 'as proposed'}"
-                      f"  actions: {' '.join(r['actions']) or 'none'}")
+                print(json.dumps(res, indent=2, default=str))
+            else:
+                for r in res["decisions"]:
+                    outcome = (r["as_decided"] or "as proposed") if r["reached"] else "not reached"
+                    print(f"{r['id']}  {r['status']:<9} {r['title']} — {outcome}"
+                          f"  actions: {' '.join(r['actions']) or 'none'}")
+                print(f"staged: {' '.join(res['staged']) or 'none'}")
     elif cmd == "sources":
         rows = _source_rows(cfg)
         if args.json:

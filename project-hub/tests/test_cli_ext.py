@@ -108,9 +108,10 @@ def test_meeting_next_and_decided(cli, capsys):
     s.create("action", "Do it", owner="bob", author="alice", day=__import__("datetime").date(2026, 11, 19),
              source="m", links={"spawned_by": [d.id]})
     code, out, _ = run(capsys, "meeting", "decided", "group", "2026-11-19", "--json")
-    rows = json.loads(out)
-    assert rows == [{"id": d.id, "title": "Adopt Y", "status": "made", "as_decided": "Only 4x3",
-                     "actions": [s.query(type="action")[0].id]}]
+    assert json.loads(out) == {"decisions": [{"id": d.id, "title": "Adopt Y", "status": "made",
+                                              "as_decided": "Only 4x3", "reached": True,
+                                              "actions": [s.query(type="action")[0].id]}],
+                               "staged": []}
 
 
 def test_sources(cli, capsys):

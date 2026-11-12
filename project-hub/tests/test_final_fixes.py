@@ -216,3 +216,45 @@ def test_store_create_collapses_title_whitespace(hub_root):
     store = Store(hub_root)
     q = store.create("question", "  Line one\n  line two\t end ", owner="alice", author="alice", day=D, source="m")
     assert store.get(q.id).title == "Line one line two end"
+
+
+# ---------------------------------------------------------------- I3: meeting decided says reached / staged
+
+def test_meeting_decided_reports_not_reached_and_staged(hub_root, monkeypatch, capsys):
+    import json
+    from openpyxl import load_workbook
+    from hub.agenda.build import SHEET_D
+    from hub.agenda.draft import save_draft, scaffold
+    from hub.agenda.lifecycle import build_agenda, read_agenda
+    from hub.cli import main
+    from hub.pending import load_proposals
+    store, cfg = Store(hub_root), load_config(hub_root)
+    q = store.create("question", "Why?", owner="alice", author="alice", day=date(2026, 11, 1), source="m",
+                     series=["group"])
+    d1, d2 = (store.create("decision", t, owner="alice", author="alice", day=date(2026, 11, 2), source="m",
+                           series=["group"], links={"answers": [q.id]}).id for t in ("Decide one", "Decide two"))
+    draft = scaffold(store, hub_root, "group", date(2026, 11, 19))
+    draft["summary"] = "S."
+    save_draft(hub_root, draft)
+    path = build_agenda(hub_root, "group")
+    wb = load_workbook(path)
+    ws = wb[SHEET_D]
+    rows = {ws.cell(r, 1).value: r for r in range(1, 40)}
+    ws[f"H{rows[d1]}"], ws[f"I{rows[d1]}"] = "approve", "Do it"
+    new_row = next(r for v, r in rows.items() if str(v or "").startswith("NEW"))
+    ws[f"B{new_row}"], ws[f"H{new_row}"] = "Drop UCJ", "approve"
+    wb.save(path)
+    res = read_agenda(store, cfg, "group", author="alice", today=date(2026, 11, 19))
+    assert res["not_reached"] == [d2] and len(res["staged"]) == 1
+    staged = load_proposals(hub_root)[0]
+    assert staged.body["reason"] == "Decision raised in meeting; after applying, link it to the question(s) it answers."
+    monkeypatch.chdir(hub_root)
+    assert main(["meeting", "decided", "group", "2026-11-19", "--json"]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert {r["id"]: r["reached"] for r in out["decisions"]} == {d1: True, d2: False}
+    assert out["staged"] == res["staged"]
+    assert main(["meeting", "decided", "group", "2026-11-19"]) == 0
+    lines = capsys.readouterr().out.splitlines()
+    assert any(ln.startswith(d1) and "— Do it" in ln for ln in lines)
+    assert any(ln.startswith(d2) and "— not reached" in ln and "as proposed" not in ln for ln in lines)
+    assert lines[-1] == f"staged: {res['staged'][0]}"
