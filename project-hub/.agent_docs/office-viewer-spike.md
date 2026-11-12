@@ -14,7 +14,7 @@ The user then typed `Approve` in C5 and `modify` in C6, saved, and `check_fixtur
 - The `_meta` tab is visible.
 
 ## Survived save
-`check_fixture.py` output after save:
+`check_fixture.py` output after save (controller's run on the user's saved file; the D5 "as proposed" step was not checked, since the checker does not read D5):
 ```
 sheets: ['Decisions', '_meta']
 _meta present: True state: visible
@@ -26,13 +26,14 @@ freeze: B5 | merged: {<MergedCellRange B2:E2>}
 B5 fill: FFE2F0D9 | header font bold: True
 B2 wrap: True | row2 height: 60.0
 ```
+
 Kept: both sheets, both ids, both typed outcomes, the data validation count (1, count only; its list contents were not checked), freeze pane, merge, fill, bold header, wrap, row height.
 Changed: the hidden flags. `_meta` is now visible and column A is no longer hidden. The fill's alpha prefix moved from `00` to `FF`; the colour is the same.
 
-`read_workbook` on the saved file returned series `group`, meeting date `2026-11-19` (taken from the B1 title, since `_meta` has no `meeting_date`), `read_back` False, and rows `D-20261112-abc` with outcome `approve` and `D-20261112-def` with outcome `modify`.
+`read_workbook` on the same saved file (controller's run) returned series `group`, meeting date `2026-11-19` (taken from the B1 title, since `_meta` has no `meeting_date`), `read_back` False, and rows `D-20261112-abc` with outcome `approve` and `D-20261112-def` with outcome `modify`.
 
 ## Consequences for the agenda
-- `_meta`: kept. The sheet survives the save and the reader takes the series from it. Only its hidden state is lost, so attendees can see it. The date fell back to the title row here; the real build writes `meeting_date` into `_meta`, so the fallback is tested by this spike only.
-- Hidden id column: kept. The ids survive and the reader maps them. The column is now visible, which does not affect reading.
+- `_meta`: kept; visibility changed. Office Viewer saves it visible (hidden flag lost), which is harmless to the reader. The reader takes the series from it. The date fell back to the title row here; the real build writes `meeting_date` into `_meta`, so the fallback is tested by this spike only.
+- Hidden id column: kept; visibility changed. Office Viewer saves column A visible (hidden flag lost), which is harmless to the reader. The ids survive and the reader maps them.
 - Dropdown: changed in use. The validation rule survives in the file, but Office Viewer does not show it, so outcomes must be typed. Typed tokens are read exactly as documented in [agenda-workbook.md](agenda-workbook.md) (`parse_outcome`); the Decisions hint row (B2) lists the choices.
 - Styling: kept. No re-styling task is needed.
