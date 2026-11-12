@@ -1,0 +1,72 @@
+[     0.0s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
+[     0.2s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
+[     0.5s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
+[     1.0s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
+[     1.0s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
+[     1.0s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
+[     1.0s] SELFTEST PASSED
+[     1.4s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
+[     1.5s]   [pa anchor 0.01 restart 0] step 1/60 E=-2.98128732,-3.52448409 lr=0.055 relerr=3.462e-01,2.270e-01
+[     1.5s]   [pa anchor 0.01 restart 0] step 7/60 E=-3.02305284,-3.59172157 lr=0.0244 relerr=3.370e-01,2.123e-01
+[     1.6s]   [pa anchor 0.01 restart 0] step 13/60 E=-3.07032875,-3.65651783 lr=0.0432 relerr=3.266e-01,1.981e-01
+[     1.7s]   [pa anchor 0.01 restart 0] step 19/60 E=-3.08451193,-3.72065629 lr=0.0764 relerr=3.235e-01,1.840e-01
+[     1.7s]   [pa anchor 0.01 restart 0] step 25/60 E=-3.08625727,-3.77005608 lr=0.0677 relerr=3.231e-01,1.732e-01
+[     1.8s]   [pa anchor 0.01 restart 0] step 31/60 E=-3.10158012,-3.79524890 lr=0.015 relerr=3.198e-01,1.677e-01
+[     1.9s]   [pa anchor 0.01 restart 0] step 37/60 E=-3.10317009,-3.80233496 lr=0.0266 relerr=3.194e-01,1.661e-01
+[     1.9s]   [pa anchor 0.01 restart 0] step 43/60 E=-3.10652877,-3.81395436 lr=0.0235 relerr=3.187e-01,1.636e-01
+[     2.0s]   [pa anchor 0.01 restart 0] step 49/60 E=-3.10808500,-3.82071215 lr=0.0208 relerr=3.184e-01,1.621e-01
+[     2.1s]   [pa anchor 0.01 restart 0] step 55/60 E=-3.10948091,-3.82806362 lr=0.0185 relerr=3.181e-01,1.605e-01
+[     2.1s]   [pa anchor 0.01 restart 0] step 60/60 E=-3.11060564,-3.83433483 lr=0.0149 relerr=3.178e-01,1.591e-01
+[     2.1s]   [pa anchor 0.01 restart 1] step 1/60 E=-1.91215392,-0.97409373 lr=0.055 relerr=5.806e-01,7.864e-01
+[     2.2s]   [pa anchor 0.01 restart 1] step 7/60 E=-2.04600819,-1.07836487 lr=0.0244 relerr=5.513e-01,7.635e-01
+[     2.3s]   [pa anchor 0.01 restart 1] step 13/60 E=-2.18914474,-1.18349678 lr=0.0432 relerr=5.199e-01,7.404e-01
+[     2.3s]   [pa anchor 0.01 restart 1] step 19/60 E=-2.38083661,-1.32755571 lr=0.0764 relerr=4.779e-01,7.089e-01
+[     2.4s]   [pa anchor 0.01 restart 1] step 25/60 E=-2.67839000,-1.55601757 lr=0.0677 relerr=4.126e-01,6.587e-01
+[     2.5s]   [pa anchor 0.01 restart 1] step 31/60 E=-2.86360810,-1.76025699 lr=0.06 relerr=3.720e-01,6.140e-01
+[     2.5s]   [pa anchor 0.01 restart 1] step 37/60 E=-2.99649951,-1.89095690 lr=0.0531 relerr=3.428e-01,5.853e-01
+[     2.6s]   [pa anchor 0.01 restart 1] step 43/60 E=-3.31819210,-2.20660396 lr=0.0471 relerr=2.723e-01,5.161e-01
+[     2.7s]   [pa anchor 0.01 restart 1] step 49/60 E=-3.44929395,-2.33100470 lr=0.0208 relerr=2.435e-01,4.888e-01
+[     2.7s]   [pa anchor 0.01 restart 1] step 55/60 E=-3.63762640,-2.50683148 lr=0.00923 relerr=2.022e-01,4.502e-01
+[     2.8s]   [pa anchor 0.01 restart 1] step 60/60 E=-3.69543066,-2.56978663 lr=0.0149 relerr=1.896e-01,4.364e-01
+[     2.8s] source pa anchor 0.01: relerr=['3.18e-01', '1.59e-01'] |theta-theta_init|=0.296
+[     2.8s]   [pa anchor 0.001 restart 0] step 1/60 E=-2.98128732,-3.52448409 lr=0.055 relerr=3.462e-01,2.270e-01
+[     2.9s]   [pa anchor 0.001 restart 0] step 7/60 E=-3.15148236,-3.75754780 lr=0.0974 relerr=3.088e-01,1.759e-01
+[     3.0s]   [pa anchor 0.001 restart 0] step 13/60 E=-3.15289703,-3.80820325 lr=0.0863 relerr=3.085e-01,1.648e-01
+[     3.0s]   [pa anchor 0.001 restart 0] step 19/60 E=-3.16818845,-3.87142213 lr=0.0382 relerr=3.052e-01,1.510e-01
+[     3.1s]   [pa anchor 0.001 restart 0] step 25/60 E=-3.16937434,-3.91161765 lr=0.0339 relerr=3.049e-01,1.421e-01
+[     3.2s]   [pa anchor 0.001 restart 0] step 31/60 E=-3.19389853,-3.97288737 lr=0.03 relerr=2.995e-01,1.287e-01
+[     3.2s]   [pa anchor 0.001 restart 0] step 37/60 E=-3.23488496,-4.03308881 lr=0.0531 relerr=2.906e-01,1.155e-01
+[     3.3s]   [pa anchor 0.001 restart 0] step 43/60 E=-3.26683534,-4.07842171 lr=0.0471 relerr=2.835e-01,1.056e-01
+[     3.4s]   [pa anchor 0.001 restart 0] step 49/60 E=-3.41022841,-4.16391954 lr=0.0834 relerr=2.521e-01,8.681e-02
+[     3.4s]   [pa anchor 0.001 restart 0] step 55/60 E=-3.64846105,-4.23570171 lr=0.148 relerr=1.999e-01,7.106e-02
+[     3.5s]   [pa anchor 0.001 restart 0] step 60/60 E=-4.10250463,-4.34975521 lr=0.119 relerr=1.003e-01,4.605e-02
+[     3.5s]   [pa anchor 0.001 restart 1] step 1/60 E=-1.91215392,-0.97409373 lr=0.055 relerr=5.806e-01,7.864e-01
+[     3.6s]   [pa anchor 0.001 restart 1] step 7/60 E=-4.09540324,-2.99051058 lr=0.0974 relerr=1.018e-01,3.441e-01
+[     3.6s]   [pa anchor 0.001 restart 1] step 13/60 E=-4.25895414,-3.25919971 lr=0.173 relerr=6.596e-02,2.852e-01
+[     3.7s]   [pa anchor 0.001 restart 1] step 19/60 E=-4.29885802,-3.42799199 lr=0.2 relerr=5.721e-02,2.482e-01
+[     3.8s]   [pa anchor 0.001 restart 1] step 25/60 E=-4.34791636,-3.64605163 lr=0.133 relerr=4.645e-02,2.004e-01
+[     3.8s]   [pa anchor 0.001 restart 1] step 31/60 E=-4.35841165,-3.78876927 lr=0.0589 relerr=4.415e-02,1.691e-01
+[     3.9s]   [pa anchor 0.001 restart 1] step 37/60 E=-4.35615826,-3.88829616 lr=0.104 relerr=4.465e-02,1.473e-01
+[     4.0s]   [pa anchor 0.001 restart 1] step 43/60 E=-4.37129020,-4.08908968 lr=0.185 relerr=4.133e-02,1.032e-01
+[     4.0s]   [pa anchor 0.001 restart 1] step 49/60 E=-4.47106911,-4.44456007 lr=0.0805 relerr=1.944e-02,2.526e-02
+[     4.1s]   [pa anchor 0.001 restart 1] step 55/60 E=-4.51669931,-4.53572779 lr=0.0713 relerr=9.437e-03,5.264e-03
+[     4.2s]   [pa anchor 0.001 restart 1] step 60/60 E=-4.54015202,-4.54986207 lr=0.0574 relerr=4.294e-03,2.164e-03
+[     4.2s] source pa anchor 0.001: relerr=['4.29e-03', '2.16e-03'] |theta-theta_init|=2.102
+[     5.9s] arm pa@0     : E=-6.95896129 eps=1.6928e-01 (raw 3.0889e-01, irrep weight 0.041) A/V=2.6033e-02 sign-agree=0.8174 Pd=4.6619e-03 fid=0.4112
+[     6.5s]   [pa] step 1/12 eps=8.19986e-02 lr=0.055
+[     7.1s]   [pa] step 2/12 eps=4.52113e-02 lr=0.0605
+[     7.2s] arm pa@2     : E=-8.94413029 eps=4.5211e-02 (raw 1.1318e-01, irrep weight 0.092) sign-agree=0.9441 Pd=6.4680e-03 fid=0.6953
+[     7.8s]   [pa] step 3/12 eps=2.97114e-02 lr=0.0666
+[     8.3s]   [pa] step 4/12 eps=2.01640e-02 lr=0.0732
+[     8.4s] arm pa@4     : E=-9.34488647 eps=2.0164e-02 (raw 5.2934e-02, irrep weight 0.203) sign-agree=0.9765 Pd=6.0693e-03 fid=0.8399
+[     9.0s]   [pa] step 5/12 eps=1.38873e-02 lr=0.0805
+[     9.6s]   [pa] step 6/12 eps=1.00315e-02 lr=0.0886
+[    10.9s] arm pa@6     : E=-9.50700627 eps=1.0032e-02 (raw 3.2797e-02, irrep weight 0.489) A/V=1.8200e-03 sign-agree=0.9882 Pd=5.5602e-03 fid=0.9125
+[    11.5s]   [pa] step 7/12 eps=7.89132e-03 lr=0.0974
+[    12.1s]   [pa] step 8/12 eps=6.74211e-03 lr=0.107
+[    12.6s]   [pa] step 9/12 eps=6.01798e-03 lr=0.118
+[    13.2s]   [pa] step 10/12 eps=5.65276e-03 lr=0.13
+[    13.8s]   [pa] step 11/12 eps=5.24168e-03 lr=0.143
+[    14.3s]   [pa] step 12/12 eps=5.22384e-03 lr=0.157
+[    15.7s] arm pa@12    : E=-9.58392956 eps=5.2238e-03 (raw 2.1241e-02, irrep weight 0.810) A/V=8.9265e-04 sign-agree=0.9936 Pd=5.0926e-03 fid=0.9534
+[    15.7s] done (results_smoke/task7.json)

@@ -28,3 +28,4 @@
 [11:01:18] arm nnbf: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 6, 'Ha': 0} n_params=1734 target=1734 proj=chi calib=1.60e-14 init |P psi|/|psi|=3.931e-01
 [11:01:31] nnbf: it     0  E = -10.74466782  |f| = 2.36e+00  (12.92 s/step)
 [11:12:33] nnbf: it    50  E = -12.66006845  |f| = 2.24e-01  (13.23 s/step)
+[11:23:35] nnbf: it   100  E = -12.72130249  |f| = 1.44e-01  (13.24 s/step)

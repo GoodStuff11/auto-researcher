@@ -877,6 +877,26 @@ def smoke_checks():
     return bool(ok)
 
 
+def verdict_selftest():
+    """Synthetic trajectories: verdict_L must return PASS when the route reaches
+    the control's full-budget energy at half budget, and FAIL when it is worse
+    at equal cost."""
+    def run(level_half, level_full):
+        c = np.linspace(0, 1.0, 101)
+        y = np.where(c <= 0.5, level_half, level_full)
+        return {"ops": list(c), "cal": list(c), "dE_mHa": list(y)}
+    out = {}
+    for name, (rh, rf) in {"pass": (0.9, 0.8), "fail": (1.3, 1.3)}.items():
+        arms = {"EXACT": [run(1.2, 1.0 + 0.01 * s) for s in range(3)],
+                "EXACTNF": [run(1.2, 1.0 + 0.01 * s) for s in range(3)],
+                "SCREEN:1e-2": [run(1.3, 1.1) for _ in range(3)],
+                "ALE0:4:4": [run(rh, rf) for _ in range(3)]}
+        Ls = [{"arm": a, "instances": [{"K": 16, "budget_ops": 1.0, "budget_cal": 1.0, "runs": r}]}
+              for a, r in arms.items()]
+        out[name] = verdict_L(Ls)["verdict"]
+    return out
+
+
 def staleness_precheck(inst, net, thw, B=200, Kd=4, rng=None, steps=16, lr=0.05):
     """Variance increment of ALE0/ALE1 (over Var_pi(E_L)) as a function of the
     anchor age, along an EXACT-SR trajectory from the warm start."""
@@ -910,6 +930,9 @@ def main(argv=None):
         return
     if args.smoke:
         ok = smoke_checks()
+        vs = verdict_selftest()
+        print(f"  verdict_L self-test on synthetic trajectories: {vs} (must be PASS / FAIL)")
+        ok &= vs == {"pass": "PASS", "fail": "FAIL"}
         print(f"SMOKE CHECKS {'PASS' if ok else 'FAIL'}", flush=True)
         sd = os.path.join(HERE, "smoke_results"); os.makedirs(sd, exist_ok=True)
         # tiny Part L: H4 K=8, every arm type
