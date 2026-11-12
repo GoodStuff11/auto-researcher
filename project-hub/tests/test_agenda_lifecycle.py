@@ -296,4 +296,4 @@ def test_action_owner_mapped_to_people_key(env):
     read_agenda(s, cfg, "group", author="bob", today=MEET)
     p = next(x for x in load_proposals(root) if x.title.startswith("Actions"))
     assert [(o["title"], o["owner"]) for o in p.body["ops"]] == [
-        ("Rerun", "bob"), ("Plot", "alice"), ("Ask", "Bob Smith"), ("Mail", "carol")]
+        ("Rerun", "bob"), ("Plot", "alice"), ("Ask (Bob Smith)", None), ("Mail (carol)", None)]

@@ -24,7 +24,8 @@ GITATTRIBUTES_LINES = [
 ]
 GITIGNORE_LINES = ["hub.local.yaml", ".venv/", "__pycache__/", "*.egg-info/", ".obsidian/workspace*.json",
                    "~$*", ".~lock.*#", ".*.tmp"]
-CONFLICT_GUIDANCE = ("re-run after fixing: `git pull --rebase`, fix the file, `git add` it, "
+CONFLICT_GUIDANCE = ("in `hub-item conflict` lines, A is the version already on the remote and B is yours. "
+                     "Re-run after fixing: `git pull --rebase`, fix the file, `git add` it, "
                      "`git rebase --continue`, then `hub validate` and `hub commit`")
 
 

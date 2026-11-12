@@ -76,7 +76,9 @@ class Item:
         return self.meta.get("owner")
 
     def links(self, key: str) -> list[str]:
-        return list((self.meta.get("links") or {}).get(key) or [])
+        links = self.meta.get("links")
+        value = links.get(key) if isinstance(links, dict) else None
+        return [str(v) for v in value] if isinstance(value, list) else []
 
     def last_activity(self) -> date:
         days = [d for d in (self.meta.get("raised"), self.meta.get("closed")) if isinstance(d, date)]

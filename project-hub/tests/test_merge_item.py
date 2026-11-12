@@ -81,8 +81,8 @@ def test_real_conflict_keeps_ours_and_reports(tmp_path, capsys):
     code, out = run(tmp_path, o, a, b)
     err = capsys.readouterr().err
     assert code == 1 and out == a_text
-    assert "hub-item conflict in Q-20261112-abc: title: ours=Title A theirs=Title B" in err
-    assert "description: ours=Desc A theirs=Desc B" in err
+    assert "hub-item conflict in Q-20261112-abc: title: A=Title A B=Title B" in err
+    assert "description: A=Desc A B=Desc B" in err
 
 
 def test_empty_base_add_add(tmp_path):

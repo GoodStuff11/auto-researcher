@@ -11,7 +11,7 @@ turns it into a conflict every time. This driver merges the parsed items instead
   differently → a real conflict.
 
 Exit 0 after writing the merged item to %A. On a real conflict, %A keeps A's version, one line per key
-`hub-item conflict in <id>: <key>: ours=<A> theirs=<B>` goes to stderr, and the exit code is 1 (git
+`hub-item conflict in <id>: <key>: A=<A> B=<B>` goes to stderr, and the exit code is 1 (git
 then reports the file as conflicted). An input that does not parse also exits 1. Registered by
 `gitsync.ensure_repo_files` (`.gitattributes`: `Status/Items/*.md merge=hub-item`).
 """
@@ -112,7 +112,7 @@ def main(argv: list[str] | None = None) -> int:
         if conflicts:
             item_id = a.meta.get("id", "?")
             for key, av, bv in conflicts:
-                print(f"hub-item conflict in {item_id}: {key}: ours={_show(av)} theirs={_show(bv)}",
+                print(f"hub-item conflict in {item_id}: {key}: A={_show(av)} B={_show(bv)}",
                       file=sys.stderr)
             return 1
         atomic_write_text(a_path, render_item(merged))

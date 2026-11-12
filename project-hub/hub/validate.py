@@ -19,6 +19,23 @@ class Violation:
     message: str
 
 
+def _shape_problems(it) -> list[str]:
+    """Frontmatter values whose type is wrong (e.g. hand-edited in Obsidian): reported, never fatal."""
+    probs = []
+    title = it.meta.get("title")
+    if not isinstance(title, str) or not title.strip():
+        probs.append("title must be a non-empty string")
+    links = it.meta.get("links")
+    if links is not None and not (isinstance(links, dict)
+                                  and all(v is None or isinstance(v, list) for v in links.values())):
+        probs.append("links must be a mapping of relation -> list of ids")
+    for key in ("series", "sources"):
+        value = it.meta.get(key)
+        if value is not None and not isinstance(value, list):
+            probs.append(f"{key} must be a list")
+    return probs
+
+
 def validate(store: Store, config: HubConfig) -> list[Violation]:
     items = {i.id: i for i in store.all()}
     out: list[Violation] = [Violation(path.stem, "format", f"cannot load {path.name}: {err}")
@@ -37,6 +54,8 @@ def validate(store: Store, config: HubConfig) -> list[Violation]:
             continue
         if it.status not in STATUSES[it.type]:
             bad(it, "status", f"status '{it.status}' invalid for {it.type}")
+        for msg in _shape_problems(it):
+            bad(it, "shape", msg)
         if not it.id.startswith(TYPE_PREFIX[it.type] + "-"):
             bad(it, "id-prefix", f"id does not start with {TYPE_PREFIX[it.type]}-")
         for k in LINK_KEYS:

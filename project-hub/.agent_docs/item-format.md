@@ -54,7 +54,7 @@ Stored one way only, on the item that points; reverse lookups use `Store.childre
 - `answers`: on a decision, the question(s) it answers.
 - `spawned_by`: on an action or question, the decision or item it came out of.
 - `pivoted_to`: on a question, the question that replaces it (children() also returns those targets).
-Link targets must exist and match the id regex (`StoreError` otherwise).
+Link targets must exist and match the id regex (`StoreError` otherwise). `Item.links(key)` returns `[]` when `links` or the key has the wrong shape (hand-edited files), and reports it as a `shape` violation.
 ## Entries (history)
 Line format, regex `ENTRY_RE` (`hub/items.py:20`): `^- (\d{4}-\d{2}-\d{2}) · (\S+) · (\S+) — (.*)$`, that is `- <date> · <author> · <source> — <text>`. Author is a people key; both author and source must be non-empty with no whitespace (`Entry.render` raises `ValueError`). Text is collapsed to one line. The first entry of every item is `Raised.` (the creation entry). Appended by `Store.entry` / `hub entry`.
 Source id conventions: `circleback:<meeting id>`, `commit:<root>@<short sha>`, `clickup:<task id>`, `agenda:<series>/<date>`, `pending:<P-id>`, `manual`; the default source of ops in proposals is `pending`.
@@ -66,6 +66,7 @@ Items: `<T>-<YYYYMMDD>-<rand3>` with T = `Q`, `D`, `A`, the creation day, and 3 
 | `format` | the file `<id>.md` could not be parsed (item id = file stem); the item is skipped by every reader, the other items are still checked |
 | `type` | `type` not question/decision/action (other rules skipped for that item) |
 | `status` | status not valid for the type |
+| `shape` | frontmatter value has the wrong type: title not a non-empty string; `links` not a mapping of lists; `series` or `sources` not a list (`links` values may be null) |
 | `id-prefix` | id does not start with Q-/D-/A- matching the type |
 | `link-target` | an id in any link list does not exist as an item |
 | `entry-author` | any entry author is not a `people` key (reported once per item) |

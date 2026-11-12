@@ -71,8 +71,15 @@ def owner_key(raw, people: dict):
 
 
 def _action_ops(text, parent, series, source, people):
-    return [{"op": "new", "type": "action", "title": t, "owner": owner_key(o, people), "series": [series],
-             "links": {"spawned_by": [parent]}, "source": source} for t, o in parse_actions(text)]
+    ops = []
+    for title, raw in parse_actions(text):
+        owner = owner_key(raw, people) if raw else None
+        if raw and owner not in people:
+            # "(due Friday)" is not a person: keep the parenthetical in the title, leave the owner empty.
+            title, owner = f"{title} ({raw})", None
+        ops.append({"op": "new", "type": "action", "title": title, "owner": owner, "series": [series],
+                    "links": {"spawned_by": [parent]}, "source": source})
+    return ops
 
 
 def _same_date(value, day: date) -> bool:
@@ -114,7 +121,7 @@ def read_agenda(store: Store, config: HubConfig, series: str, *, author: str, to
         did = row.id if row.planned and row.id in decisions else (by_title.get(row.decide) if row.decide else None)
         if did is None:
             if row.outcome or row.as_decided or row.outcome_text or row.new_actions.strip():
-                snippet = (row.as_decided or row.new_actions or row.outcome_text)[:UNTITLED_CHARS]
+                snippet = " ".join((row.as_decided or row.new_actions or row.outcome_text).split())[:UNTITLED_CHARS]
                 title = row.decide or f"(untitled: {snippet})"
                 ops = [{"op": "new", "ref": "$d", "type": "decision", "title": title, "owner": author,
                         "series": [series], "source": source,
