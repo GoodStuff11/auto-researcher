@@ -1,0 +1,67 @@
+# project-hub/hub/snapshot.py
+"""Generate Status/Snapshot.md — a one-page, never hand-edited view of where the project stands."""
+from __future__ import annotations
+
+from datetime import date
+from pathlib import Path
+
+from .config import HubConfig
+from .store import Store
+from .sync_state import load_state
+from .validate import validate
+
+
+def last_meeting(root, series: str, before: date | None = None) -> date | None:
+    d = Path(root) / "Status" / "Meetings" / series
+    if not d.is_dir():
+        return None
+    days = []
+    for p in d.glob("*.md"):
+        try:
+            day = date.fromisoformat(p.stem)
+        except ValueError:
+            continue
+        if before is None or day < before:
+            days.append(day)
+    return max(days) if days else None
+
+
+def render_snapshot(store: Store, config: HubConfig, today: date) -> str:
+    state = load_state(config.root)
+    items = store.all()
+    out = [f"# Snapshot — {config.name}",
+           f"*Generated {today.isoformat()} by `hub snapshot`. Do not edit; regenerate.*", ""]
+    out += ["## Meetings", "| Series | Last meeting | Next meeting |", "|---|---|---|"]
+    for s in config.series:
+        last = last_meeting(config.root, s)
+        nxt = state["next_meeting"].get(s)
+        out.append(f"| {s} | {last.isoformat() if last else '—'} | {nxt.isoformat() if nxt else '—'} |")
+    qs = sorted((i for i in items if i.type == "question" and i.status == "open"),
+                key=lambda i: (i.meta.get("priority") or 9, i.meta["raised"]))
+    out += ["", f"## Open questions ({len(qs)})", "| ID | Title | Owner | Age (d) | Priority |", "|---|---|---|---|---|"]
+    for q in qs:
+        out.append(f"| [[{q.id}]] | {q.title} | {q.owner or '—'} | {(today - q.meta['raised']).days} | {q.meta.get('priority')} |")
+    ds = [i for i in items if i.type == "decision" and i.status == "proposed"]
+    out += ["", f"## Proposed decisions ({len(ds)})", "| ID | Title | Answers | Owner |", "|---|---|---|---|"]
+    for d in ds:
+        out.append(f"| [[{d.id}]] | {d.title} | {', '.join(d.links('answers')) or '—'} | {d.owner or '—'} |")
+    acts = [i for i in items if i.type == "action" and i.status == "open"]
+    out += ["", f"## Open actions ({len(acts)})"]
+    for owner in sorted({a.owner or "unassigned" for a in acts}):
+        out.append(f"### {owner}")
+        for a in sorted((a for a in acts if (a.owner or "unassigned") == owner),
+                        key=lambda a: (a.meta.get("due") or date.max)):
+            due = f" (due {a.meta['due'].isoformat()})" if a.meta.get("due") else ""
+            out.append(f"- [[{a.id}]] {a.title}{due}")
+    out += ["", "## Flags"]
+    out += [f"- {f}" for f in state["flags"]] or ["None."]
+    n = len(validate(store, config))
+    out += ["", "## Validation", f"{n} issues." + (" Run `hub validate`." if n else "")]
+    return "\n".join(out) + "\n"
+
+
+def write_snapshot(store: Store, config: HubConfig, today: date) -> Path:
+    path = Path(config.root) / "Status" / "Snapshot.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(render_snapshot(store, config, today))
+    return path
