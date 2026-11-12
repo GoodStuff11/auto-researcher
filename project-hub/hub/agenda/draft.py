@@ -24,8 +24,20 @@ def _in_series(item, series) -> bool:
     return not s or series in s
 
 
+def _outcome(d, by_id: dict, items) -> str:
+    qs = [by_id[q] for q in d.links("answers") if q in by_id]
+    if any(q.status == "pivoted" for q in qs):
+        return "pivot"
+    if qs and all(q.status in ("answered", "dropped") for q in qs):
+        return "closed question"
+    if any(i.type == "question" and d.id in i.links("spawned_by") for i in items):
+        return "new question"
+    return "in progress"
+
+
 def scaffold(store: Store, root, series: str, meeting_date: date) -> dict:
     items = store.all()
+    by_id = {i.id: i for i in items}
     prev = last_meeting(root, series, before=meeting_date)
     since_last = []
     if prev:
@@ -36,7 +48,8 @@ def scaffold(store: Store, root, series: str, meeting_date: date) -> dict:
                 since_last.append({
                     "id": d.id, "decision": d.meta.get("as_decided") or d.title,
                     "actions": "; ".join(f"{a.title} ({a.owner}, {a.status})" for a in acts),
-                    "follow_up": "", "outcome": "in progress", "affected": ", ".join(d.links("answers")),
+                    "follow_up": "", "outcome": _outcome(d, by_id, items),
+                    "affected": ", ".join(d.links("answers")),
                 })
     proposed = [d for d in items if d.type == "decision" and d.status == "proposed" and _in_series(d, series)]
     proposed_for = {}
@@ -56,17 +69,47 @@ def scaffold(store: Store, root, series: str, meeting_date: date) -> dict:
             "since_last": since_last, "questions": questions, "decisions": decisions}
 
 
+def _nonblank(v) -> bool:
+    return isinstance(v, str) and bool(v.strip())
+
+
 def validate_draft(draft: dict) -> list[str]:
+    if not isinstance(draft, dict):
+        return ["draft is not a mapping"]
     errs = [f"missing key '{k}'" for k in REQUIRED if k not in draft]
     if errs:
         return errs
-    if not str(draft["summary"]).strip():
+    if not _nonblank(draft["series"]):
+        errs.append("series must be a non-empty string")
+    if not isinstance(draft["meeting_date"], date):
+        errs.append("meeting_date must be a date")
+    if not _nonblank(draft["summary"]):
         errs.append("summary is empty")
-    for row in draft["since_last"]:
-        if row.get("outcome") not in SINCE_OUTCOMES:
-            errs.append(f"since_last {row.get('id')}: outcome '{row.get('outcome')}' not in {SINCE_OUTCOMES}")
-    if len(draft["decisions"]) > MAX_DECISIONS:
-        errs.append(f"decisions: at most {MAX_DECISIONS} allowed, got {len(draft['decisions'])}")
+    for key in ("since_last", "questions", "decisions"):
+        if not isinstance(draft[key], list):
+            errs.append(f"'{key}' must be a list")
+    if isinstance(draft["since_last"], list):
+        for i, row in enumerate(draft["since_last"]):
+            if not isinstance(row, dict):
+                errs.append(f"since_last[{i}] is not a mapping")
+            elif row.get("outcome") not in SINCE_OUTCOMES:
+                errs.append(f"since_last {row.get('id')}: outcome '{row.get('outcome')}' not in {SINCE_OUTCOMES}")
+    if isinstance(draft["questions"], list):
+        for i, row in enumerate(draft["questions"]):
+            if not isinstance(row, dict):
+                errs.append(f"questions[{i}] is not a mapping")
+    if isinstance(draft["decisions"], list):
+        if len(draft["decisions"]) > MAX_DECISIONS:
+            errs.append(f"decisions: at most {MAX_DECISIONS} allowed, got {len(draft['decisions'])}")
+        for i, row in enumerate(draft["decisions"]):
+            if not isinstance(row, dict):
+                errs.append(f"decisions[{i}] is not a mapping")
+                continue
+            if not _nonblank(row.get("decide")):
+                errs.append(f"decisions[{i}]: decide must be a non-empty string")
+            minutes = row.get("minutes")
+            if not isinstance(minutes, int) or isinstance(minutes, bool):
+                errs.append(f"decisions[{i}]: minutes must be an int")
     return errs
 
 
@@ -85,4 +128,10 @@ def load_draft(root, series: str) -> dict:
     p = draft_path(root, series)
     if not p.is_file():
         raise DraftError(f"no draft at {p}; run `hub agenda scaffold {series} --date YYYY-MM-DD` first")
-    return yaml.safe_load(p.read_text())
+    try:
+        data = yaml.safe_load(p.read_text())
+    except yaml.YAMLError as exc:
+        raise DraftError(f"invalid YAML in {p}: {exc}") from exc
+    if not isinstance(data, dict):
+        raise DraftError(f"{p} does not contain a mapping")
+    return data

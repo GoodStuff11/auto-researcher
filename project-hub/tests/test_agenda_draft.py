@@ -1,7 +1,7 @@
 # project-hub/tests/test_agenda_draft.py
 from datetime import date
 import pytest
-from hub.agenda.draft import load_draft, save_draft, scaffold, validate_draft
+from hub.agenda.draft import DraftError, draft_path, load_draft, save_draft, scaffold, validate_draft
 from hub.store import Store
 
 D = date(2026, 11, 5)
@@ -55,3 +55,75 @@ def test_save_load_round_trip(setup):
     path = save_draft(root, d)
     assert path == root / "Agenda" / "group.draft.yaml"
     assert load_draft(root, "group") == d
+
+
+def test_validate_summary_none(setup):
+    s, root, _ = setup
+    d = scaffold(s, root, "group", date(2026, 11, 12))
+    d["summary"] = None
+    assert "summary is empty" in validate_draft(d)
+
+
+def test_validate_non_mapping():
+    assert validate_draft(None) == ["draft is not a mapping"]
+
+
+def test_since_last_not_list(setup):
+    s, root, _ = setup
+    d = scaffold(s, root, "group", date(2026, 11, 12))
+    d["summary"] = "Where we stand."
+    d["since_last"] = None
+    errs = validate_draft(d)
+    assert "'since_last' must be a list" in errs
+
+
+def test_decision_empty_decide(setup):
+    s, root, _ = setup
+    d = scaffold(s, root, "group", date(2026, 11, 12))
+    d["summary"] = "Where we stand."
+    d["decisions"][0]["decide"] = ""
+    assert any("decide" in e for e in validate_draft(d))
+
+
+def test_load_invalid_yaml(setup):
+    s, root, _ = setup
+    p = draft_path(root, "group")
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text("summary: [unclosed\n")
+    with pytest.raises(DraftError):
+        load_draft(root, "group")
+    p.write_text("- just\n- a list\n")
+    with pytest.raises(DraftError):
+        load_draft(root, "group")
+
+
+def test_since_last_outcomes(hub_root):
+    s = Store(hub_root)
+
+    def q(title):
+        return s.create("question", title, owner="alice", author="alice", day=D, source="m", series=["group"])
+
+    def made(title, target):
+        return s.create("decision", title, owner="alice", author="alice", day=D, source="m", series=["group"],
+                        links={"answers": [target.id]},
+                        fields={"status": "made", "meeting": "group/2026-11-05"})
+
+    qa, qp, qo = q("Answered"), q("Pivoted"), q("Still open")
+    target = q("Pivot target")
+    dA, dP, dN = made("Decide A", qa), made("Decide P", qp), made("Decide N", qo)
+
+    s.set_fields(qa.id, {"status": "answered"})
+    s.entry(qa.id, "Answered by decision.", author="alice", source="m", day=D)
+    s.link(qp.id, "pivoted_to", target.id)
+    s.set_fields(qp.id, {"status": "pivoted"})
+    s.entry(qp.id, "Pivoted.", author="alice", source="m", day=D)
+    s.create("question", "Follow-up", owner="alice", author="alice", day=D, source="m", series=["group"],
+             links={"spawned_by": [dN.id]})
+
+    mdir = hub_root / "Status" / "Meetings" / "group"
+    mdir.mkdir(parents=True)
+    (mdir / "2026-11-05.md").write_text("x")
+
+    d = scaffold(s, hub_root, "group", date(2026, 11, 12))
+    outcomes = {r["id"]: r["outcome"] for r in d["since_last"]}
+    assert outcomes == {dA.id: "closed question", dP.id: "pivot", dN.id: "new question"}
