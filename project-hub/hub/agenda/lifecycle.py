@@ -39,15 +39,22 @@ def build_agenda(root, series: str, *, force: bool = False) -> Path:
         if (not force and not rb.read_back and rb.meeting_date and rb.meeting_date < draft["meeting_date"]):
             raise AgendaError(f"the {rb.meeting_date} agenda has not been read back; run "
                               f"`hub agenda read {series}` first (or pass --force to discard its edits)")
-        if not force and not rb.read_back and any(_has_input(r) for r in rb.rows):
+        planned_titles = {d.get("decide") for d in draft.get("decisions") or [] if isinstance(d, dict)}
+        if not force and not rb.read_back and any(_has_input(r, planned_titles) for r in rb.rows):
             raise AgendaError(f"live agenda already contains meeting input; run `hub agenda read {series}` "
                               "or pass --force")
     build_workbook(draft, live)
     return live
 
 
-def _has_input(row) -> bool:
-    return bool(row.outcome_text or row.as_decided or row.new_actions or (not row.planned and row.decide))
+def _has_input(row, planned_titles) -> bool:
+    if row.outcome_text or row.as_decided or row.new_actions:
+        return True
+    if row.planned or not row.decide:
+        return False
+    # A filled NEW-n row. Without ids (a viewer dropped the hidden column) planned rows also look
+    # unplanned, so a title that is one of the draft's planned decisions is not counted as input.
+    return (row.id or "").startswith("NEW") or row.decide not in planned_titles
 
 
 def owner_key(raw, people: dict):

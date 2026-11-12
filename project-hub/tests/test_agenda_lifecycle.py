@@ -223,6 +223,15 @@ def test_same_date_rebuild_refuses_over_meeting_input(env):
         build_agenda(root, "group")
 
 
+def test_same_date_rebuild_allowed_when_viewer_dropped_ids(env):
+    s, cfg, root, ids = env
+    path = build_agenda(root, "group")
+    wb = load_workbook(path)
+    wb[SHEET_D].delete_cols(1)  # a viewer dropped the hidden id column; planned rows now look unplanned
+    wb.save(path)
+    assert build_agenda(root, "group").is_file()
+
+
 def test_read_refuses_draft_workbook_date_mismatch(env):
     s, cfg, root, ids = env
     build_agenda(root, "group")
