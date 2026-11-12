@@ -52,3 +52,21 @@
 [     4.1s]   [pa anchor 0.001 restart 1] step 55/60 E=-4.55129320,-4.55467767 lr=0.148 relerr=1.850e-03,1.108e-03
 [     4.2s]   [pa anchor 0.001 restart 1] step 60/60 E=-4.55282965,-4.55349842 lr=0.119 relerr=1.513e-03,1.367e-03
 [     4.2s] source pa anchor 0.001: relerr=['1.45e-03', '1.43e-03'] |theta-theta_init|=2.006
+[     6.0s] arm pa@0     : E=-4.78621335 eps=3.0508e-01 (raw 3.2873e-01, irrep weight 0.409) A/V=1.1618e-01 sign-agree=0.2318 Pd=4.4835e-03 fid=0.0327
+[     6.5s]   [pa] step 1/12 eps=2.06113e-01 lr=0.055
+[     7.1s]   [pa] step 2/12 eps=1.77083e-01 lr=0.0605
+[     7.2s] arm pa@2     : E=-6.83418512 eps=1.7708e-01 (raw 1.8920e-01, irrep weight 0.781) sign-agree=-0.0017 Pd=7.4684e-03 fid=0.0385
+[     7.8s]   [pa] step 3/12 eps=1.40841e-01 lr=0.0666
+[     8.4s]   [pa] step 4/12 eps=1.15975e-01 lr=0.0732
+[     8.5s] arm pa@4     : E=-7.81190579 eps=1.1598e-01 (raw 1.8823e-01, irrep weight 0.640) sign-agree=0.1366 Pd=9.3274e-03 fid=0.0701
+[     9.1s]   [pa] step 5/12 eps=9.39279e-02 lr=0.0805
+[     9.7s]   [pa] step 6/12 eps=7.56579e-02 lr=0.0886
+[    11.0s] arm pa@6     : E=-8.45698463 eps=7.5658e-02 (raw 1.1520e-01, irrep weight 0.714) A/V=3.5566e-02 sign-agree=0.4075 Pd=1.0035e-02 fid=0.1641
+[    11.6s]   [pa] step 7/12 eps=6.19905e-02 lr=0.0974
+[    12.3s]   [pa] step 8/12 eps=5.15375e-02 lr=0.0536
+[    12.8s]   [pa] step 9/12 eps=4.34412e-02 lr=0.0589
+[    13.4s]   [pa] step 10/12 eps=3.85907e-02 lr=0.0648
+[    14.0s]   [pa] step 11/12 eps=3.38343e-02 lr=0.0713
+[    14.5s]   [pa] step 12/12 eps=2.91663e-02 lr=0.0785
+[    15.9s] arm pa@12    : E=-9.20085069 eps=2.9166e-02 (raw 6.3164e-02, irrep weight 0.806) A/V=1.3069e-02 sign-agree=0.7931 Pd=1.0306e-02 fid=0.5546
+[    15.9s] done (results_smoke/task8.json)

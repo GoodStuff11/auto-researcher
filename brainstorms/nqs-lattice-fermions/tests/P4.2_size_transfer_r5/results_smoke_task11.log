@@ -1,0 +1,22 @@
+[     0.0s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
+[     0.2s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
+[     0.6s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
+[     1.1s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
+[     1.1s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
+[     1.1s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
+[     1.1s] SELFTEST PASSED
+[     1.6s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
+[     2.2s]   [env anchor 0.01 restart 0] step 1/60 E=-2.90794405,-2.06887654,-4.54801861,-4.46895507 lr=0.055 relerr=3.623e-01,5.463e-01,4.984e-01,5.071e-01
+[     3.6s]   [env anchor 0.01 restart 0] step 7/60 E=-3.36901800,-2.40107655,-5.50185084,-5.45690293 lr=0.0974 relerr=2.611e-01,4.734e-01,3.932e-01,3.982e-01
+[     4.9s]   [env anchor 0.01 restart 0] step 13/60 E=-3.77336804,-2.66710667,-6.29589707,-6.27290619 lr=0.173 relerr=1.725e-01,4.151e-01,3.057e-01,3.082e-01
+[     6.3s]   [env anchor 0.01 restart 0] step 19/60 E=-4.11681713,-2.86062040,-6.99312151,-7.05237967 lr=0.2 relerr=9.714e-02,3.726e-01,2.288e-01,2.222e-01
+[     7.6s]   [env anchor 0.01 restart 0] step 25/60 E=-4.21969988,-2.99497556,-7.39021492,-7.55879059 lr=0.2 relerr=7.457e-02,3.432e-01,1.850e-01,1.664e-01
+[     9.1s]   [env anchor 0.01 restart 0] step 31/60 E=-4.23851507,-3.03825167,-7.57098490,-7.77042288 lr=0.0805 relerr=7.045e-02,3.337e-01,1.650e-01,1.430e-01
+[    10.5s]   [env anchor 0.01 restart 0] step 37/60 E=-4.28336073,-3.13169833,-7.78264668,-8.02594562 lr=0.0357 relerr=6.061e-02,3.132e-01,1.417e-01,1.149e-01
+[    11.9s]   [env anchor 0.01 restart 0] step 43/60 E=-4.28354465,-3.17802041,-7.82944303,-8.11274356 lr=0.0632 relerr=6.057e-02,3.030e-01,1.365e-01,1.053e-01
+[    13.3s]   [env anchor 0.01 restart 0] step 49/60 E=-4.30232719,-3.24349871,-7.92097460,-8.22930139 lr=0.056 relerr=5.645e-02,2.887e-01,1.264e-01,9.243e-02
+[    14.7s]   [env anchor 0.01 restart 0] step 55/60 E=-4.31158666,-3.29828917,-7.98408550,-8.31098288 lr=0.0496 relerr=5.442e-02,2.766e-01,1.195e-01,8.342e-02
+[    15.9s]   [env anchor 0.01 restart 0] step 60/60 E=-4.30981200,-3.32369835,-7.99915014,-8.33991481 lr=0.0399 relerr=5.481e-02,2.711e-01,1.178e-01,8.023e-02
+[    15.9s] source env anchor 0.01: relerr=['5.48e-02', '2.71e-01', '1.18e-01', '8.02e-02'] |theta-theta_init|=0.609
+[    16.4s]   [env anchor 0.001 restart 0] step 1/60 E=-2.90794405,-2.06887654,-4.54801861,-4.46895507 lr=0.055 relerr=3.623e-01,5.463e-01,4.984e-01,5.071e-01
+[    17.7s]   [env anchor 0.001 restart 0] step 7/60 E=-4.48389877,-3.53272668,-7.79113352,-8.37216470 lr=0.0974 relerr=1.663e-02,2.252e-01,1.408e-01,7.667e-02
