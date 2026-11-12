@@ -52,6 +52,8 @@ def _sheet(wb, title, cols, draft, first=False):
 def _row(ws, r, values, fill=None):
     for i, v in enumerate(values, 1):
         c = ws.cell(r, i, v)
+        if isinstance(v, str) and v.startswith("="):
+            c.data_type = "s"  # agent text is literal, never a formula
         c.alignment, c.border = WRAP, THIN
         if fill:
             c.fill = fill

@@ -64,12 +64,31 @@ def test_read_without_meta_or_id_column(xlsx):
     del wb[SHEET_META]
     ws = wb[SHEET_D]
     ws.delete_cols(1)
-    ws["G4"] = "Outcome"
     ws["G5"] = "Approve"
+    ws["A6"] = "Drop UCJ"
     wb.save(xlsx)
     rb = read_workbook(xlsx)
     assert rb.series == "group" and rb.meeting_date == date(2026, 11, 19)
-    assert rb.rows[0].id is None and rb.rows[0].decide == "Adopt Y" and rb.rows[0].outcome == "approve"
+    assert len(rb.rows) == 2
+    r0, r1 = rb.rows
+    assert (r0.id, r0.decide, r0.outcome, r0.planned) == (None, "Adopt Y", "approve", False)
+    assert (r1.id, r1.decide, r1.planned) == (None, "Drop UCJ", False)
+
+
+def test_read_meta_garbage_date_falls_back_to_title(xlsx):
+    wb = load_workbook(xlsx)
+    wb[SHEET_META]["B2"] = "garbage"
+    wb.save(xlsx)
+    rb = read_workbook(xlsx)
+    assert rb.meeting_date == date(2026, 11, 19) and rb.series == "group"
+
+
+def test_literal_equals_text_is_not_a_formula(tmp_path):
+    draft = {**DRAFT, "decisions": [{**DRAFT["decisions"][0], "decide": "=SUM(1,2)"}]}
+    p = tmp_path / "eq.xlsx"
+    build_workbook(draft, p)
+    assert load_workbook(p)[SHEET_D]["B5"].data_type == "s"
+    assert read_workbook(p).rows[0].decide == "=SUM(1,2)"
 
 
 def test_set_read_back(xlsx):
@@ -89,3 +108,9 @@ def test_parse_actions():
     assert parse_actions("Rewrite ¶2 (alice); Rerun fig (bob)\nThink more") == [
         ("Rewrite ¶2", "alice"), ("Rerun fig", "bob"), ("Think more", None)]
     assert parse_actions("") == []
+
+
+@pytest.mark.parametrize("text", [
+    "after next run", "another run", "no objection", "not now", "revise", "drop"])
+def test_parse_outcome_rejects_free_text(text):
+    assert parse_outcome(text) is None

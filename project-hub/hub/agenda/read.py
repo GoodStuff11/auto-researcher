@@ -32,18 +32,19 @@ class ReadBack:
     rows: list[DecisionRow]
 
 
+OUTCOME_TOKENS = {
+    "approve": {"approve", "approved", "a", "yes", "y", "✓", "✔"},
+    "modify": {"modify", "modified", "m"},
+    "defer": {"defer", "deferred", "d"},
+    "reject": {"reject", "rejected", "r", "no", "n", "x", "✗", "✘"},
+}
+
+
 def parse_outcome(text) -> str | None:
     t = str(text or "").strip().lower()
-    if not t:
-        return None
-    if t[0] in "✓✔" or t.startswith(("a", "y")):
-        return "approve"
-    if t.startswith("m"):
-        return "modify"
-    if t.startswith("d"):
-        return "defer"
-    if t[0] in "✗✘x" or t.startswith(("r", "n")):
-        return "reject"
+    for outcome, tokens in OUTCOME_TOKENS.items():
+        if t in tokens:
+            return outcome
     return None
 
 
@@ -70,7 +71,10 @@ def read_workbook(path) -> ReadBack:
     if SHEET_META in wb.sheetnames:
         kv = {_cell(r[0].value): _cell(r[1].value) for r in wb[SHEET_META].iter_rows() if len(r) >= 2}
         series = kv.get("series") or None
-        meeting = date.fromisoformat(kv["meeting_date"]) if kv.get("meeting_date") else None
+        try:
+            meeting = date.fromisoformat(kv["meeting_date"]) if kv.get("meeting_date") else None
+        except ValueError:
+            meeting = None  # invalid _meta date: fall back to the sheet title
         read_back = kv.get("read_back") == "true"
     if series is None or meeting is None:
         for ref in ("B1", "A1"):  # A1 if a viewer dropped the hidden id column
