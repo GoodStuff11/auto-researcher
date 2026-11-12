@@ -1,0 +1,81 @@
+# project-hub/tests/test_items.py
+from datetime import date
+import pytest
+from hub.items import (Entry, Item, ItemFormatError, default_meta, parse_item, render_item)
+
+CANONICAL = """---
+id: Q-20261112-a3f
+type: question
+title: Does the HVA beat pruned UCC?
+status: open
+owner: alice
+series:
+- group
+raised: 2026-11-12
+closed:
+priority: 2
+links:
+  answers: []
+  spawned_by: []
+  pivoted_to: []
+sources:
+- circleback:123
+custom_key: kept
+---
+Why this matters.
+## Entries
+- 2026-11-12 · alice · circleback:123 — Raised at group meeting.
+- 2026-11-15 · bob · commit:ML@ab12cd3 — Run finished: F=0.97.
+"""
+
+
+def test_round_trip_is_exact():
+    assert render_item(parse_item(CANONICAL)) == CANONICAL
+
+
+def test_parsed_fields():
+    it = parse_item(CANONICAL)
+    assert it.id == "Q-20261112-a3f"
+    assert it.type == "question" and it.status == "open" and it.owner == "alice"
+    assert it.meta["raised"] == date(2026, 11, 12)
+    assert it.meta["closed"] is None
+    assert it.meta["custom_key"] == "kept"
+    assert it.description == "Why this matters."
+    assert it.entries[1] == Entry(date(2026, 11, 15), "bob", "commit:ML@ab12cd3", "Run finished: F=0.97.")
+    assert it.links("answers") == []
+
+
+def test_last_activity():
+    assert parse_item(CANONICAL).last_activity() == date(2026, 11, 15)
+
+
+def test_entry_render_collapses_newlines():
+    e = Entry(date(2026, 1, 1), "alice", "manual", "two\nlines")
+    assert e.render() == "- 2026-01-01 · alice · manual — two lines"
+
+
+def test_malformed_entry_rejected():
+    bad = CANONICAL.replace("— Raised", "- Raised")
+    with pytest.raises(ItemFormatError, match="malformed entry"):
+        parse_item(bad)
+
+
+def test_missing_frontmatter_rejected():
+    with pytest.raises(ItemFormatError):
+        parse_item("no frontmatter\n")
+
+
+def test_default_meta_by_type():
+    d = default_meta("D-20261112-aaa", "decision", "Pick X", "alice", date(2026, 11, 12), ["group"], 1, ["manual"])
+    assert d["status"] == "proposed" and d["rationale"] == "" and d["meeting"] is None and d["as_decided"] == ""
+    a = default_meta("A-20261112-aaa", "action", "Do X", "bob", date(2026, 11, 12), [], 2, [])
+    assert a["status"] == "open" and a["clickup_id"] is None and a["due"] is None
+    q = default_meta("Q-20261112-aaa", "question", "Why?", "bob", date(2026, 11, 12), [], 3, [])
+    assert q["status"] == "open" and "clickup_id" not in q
+    assert q["links"] == {"answers": [], "spawned_by": [], "pivoted_to": []}
+
+
+def test_no_entries_section():
+    text = CANONICAL.split("## Entries")[0]
+    it = parse_item(text)
+    assert it.entries == [] and it.description == "Why this matters."
