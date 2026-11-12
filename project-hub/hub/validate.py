@@ -52,7 +52,7 @@ def validate(store: Store, config: HubConfig) -> list[Violation]:
             closed = it.meta.get("closed")
             if not isinstance(closed, date):
                 bad(it, "closed-date", f"status '{it.status}' requires a 'closed' date")
-            elif not any(e.day >= closed for e in it.entries):
+            elif not any(e.day >= closed for e in it.entries[1:]):
                 bad(it, "closing-entry", "no entry dated on/after 'closed' explaining the closure")
         if it.status == "pivoted" and not it.links("pivoted_to"):
             bad(it, "pivot-target", "pivoted question needs a pivoted_to link")

@@ -47,7 +47,18 @@ def test_pivot_needs_target(env):
     store, cfg = env
     q = mk(store, "question", "Q")
     store.set_fields(q.id, {"status": "pivoted", "closed": "2026-11-12"})
+    assert rules(store, cfg) == ["closing-entry", "pivot-target"]
+    store.entry(q.id, "Pivoted.", author="alice", source="manual", day=D)
     assert rules(store, cfg) == ["pivot-target"]
+
+
+def test_same_day_close_needs_closing_entry(env):
+    store, cfg = env
+    q = mk(store, "question", "Q")
+    store.set_fields(q.id, {"status": "answered", "closed": "2026-11-12"})
+    assert rules(store, cfg) == ["closing-entry"]
+    store.entry(q.id, "Answered.", author="alice", source="manual", day=D)
+    assert rules(store, cfg) == []
 
 
 def test_made_decision_needs_answers_and_actions(env):
@@ -77,3 +88,19 @@ def test_broken_link_and_status(env, hub_root):
     p.write_text(p.read_text().replace("pivoted_to: []", "pivoted_to:\n  - Q-20990101-zzz")
                               .replace("status: open", "status: weird"))
     assert rules(store, cfg) == ["link-target", "status"]
+
+
+def test_unknown_type_rule(env):
+    store, cfg = env
+    q = mk(store, "question", "Q")
+    p = store.path(q.id)
+    p.write_text(p.read_text().replace("type: question", "type: idea"))
+    assert rules(store, cfg) == ["type"]
+
+
+def test_id_prefix_rule(env):
+    store, cfg = env
+    q = mk(store, "question", "Q")
+    p = store.path(q.id)
+    p.write_text(p.read_text().replace(f"id: {q.id}", f"id: D-{q.id[2:]}"))
+    assert rules(store, cfg) == ["id-prefix"]
