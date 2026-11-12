@@ -161,7 +161,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.2 | SUBMITTED (round 5 on 4×4 OBC; FRD is O(V) more passes per E_loc, so matched-parameter claim only) | nothing (premise read from own control arm) | Slurm 451916 (27 tasks) |
 | P1.3 | SUBMITTED (width-6 basin pilot; premise checked by own control arm) | tasks 12–35 blocked on pilot decision | Slurm 451976 (12 tasks) |
 | P2.1 | SUBMITTED (2 more control seeds) | nothing | Slurm 451706 |
-| P2.2 | FIX (round 5: Godambe–Joshi claim corrected; WIBJ conditional, error grows with K; Part L dropped) | nothing | fix worker |
+| P2.2 | SUBMITTED (round 5 reduced: accuracy trend + equal-cost foils + calibrated cost; no unconditional survivor) | nothing | Slurm 452238 (44 tasks) |
 | P3.1 | MUTATE (round 6; EHX fails injected check, gate formal) | nothing | round-6 worker; Slurm 452146 (gate), 451837 |
 | P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
 | P4.1 | SUBMITTED (decisive pilot; completeness probe: one AGP per c incomplete, eps_tab(K=1) at least 6.8e-3, K=2 about 2e-8) | report gates on 451839 | Slurm 451886 (15 tasks), 451839 (completeness) |
