@@ -1,0 +1,12 @@
+=== width 4: seeds [1234, 2345, 3456]  sector dim 1618  n_params 676  ratio 2.39
+  consistency asserts passed (targets, snapshots, t'_c, settings, distinct seeds, irrep=global E0)
+  snap d=-0.0500 labels BBB majority B seed-agree True eckart nnn collapsed nnn
+  snap d=+0.0500 labels BBB majority B seed-agree True eckart nnn collapsed nnn
+  target d=+0.0020 gap=0.0102 eps_med=1.26e+00 hard=True truth=A R0P:BUU R0P-warm:UUB R0P-warm-abs:UUB EC:UUU ECor:AAA AT:UUU | regime cold:intrinsic,noise,noise warm:noise,noise,intrinsic
+  hard targets 1/1; certified snapshots (Eckart+seed, median seed) 0/2; both blocks False
+  regime R0P       on hard pairs: {'correct': 0, 'noise': 2, 'intrinsic': 1, 'crossover': 0}
+  regime R0P-warm  on hard pairs: {'correct': 0, 'noise': 2, 'intrinsic': 1, 'crossover': 0}
+  warm-start sources not certified (branch-count over hard pairs): 6
+  rule 4 (sampled-force warm control, 3 hard pairs): CW=0.000 DEC=0.000 vs exact-force warm CW=0.333 DEC=0.333; decision agreement 0.67
+  PREMISE-FAIL at this width (easy: fewer than 3 targets with best control error >= gap/2)
+GLOBAL VERDICT SO-EC: PREMISE-FAIL (route untested)  (per width: ['PREMISE-FAIL:easy'])

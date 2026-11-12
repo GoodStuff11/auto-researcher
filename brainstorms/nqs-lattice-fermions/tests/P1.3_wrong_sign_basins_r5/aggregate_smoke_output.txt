@@ -1,0 +1,26 @@
+===== P1.3 r5 instance 8: ED [-6.558475, -6.413964, -6.413964, -6.316371] irrep {'My': 1, 'Mx': 1, 'D': 1}
+      ED level labels [{'chars': {'My': 1.0, 'Mx': 1.0, 'D': 1.0}, 'S2': 0.0, 'in_sector': True}, {'chars': {'My': 0.8233, 'Mx': -0.8233, 'D': 0.5675}, 'S2': 2.0, 'in_sector': False}, {'chars': {'My': -0.8233, 'Mx': 0.8233, 'D': -0.5675}, 'S2': 2.0, 'in_sector': False}, {'chars': {'My': 1.0, 'Mx': 1.0, 'D': 1.0}, 'S2': 2.0, 'in_sector': True}]
+--- width 6 (n_params 546), complete seeds [11, 22, 33]
+  seed 11: Cuhf: sign 0.0001 (mid 0.0008) tot 0.0084 ov0 0.990 PS-sign -0.0000 conv 0 | Cfs: sign 0.0001 (mid 0.0010) tot 0.0058 ov0 0.993 PS-sign -0.0000 conv 0 | Ccdw: sign 0.0000 (mid 0.0004) tot 0.0044 ov0 0.989 PS-sign 0.0004 conv 0 | W: sign 0.0001 (mid 0.0003) tot 0.0060 ov0 0.997 PS-sign 0.0001 conv 0 W0 0.0013/0.984
+  seed 22: Cuhf: sign 0.0000 (mid 0.0026) tot 0.0064 ov0 0.997 PS-sign -0.0000 conv 0 | Cfs: sign 0.0000 (mid 0.0008) tot 0.0045 ov0 0.996 PS-sign 0.0000 conv 0 | Ccdw: sign 0.0006 (mid 0.0082) tot 0.0213 ov0 0.979 PS-sign 0.0000 conv 0 | W: sign 0.0004 (mid 0.0007) tot 0.0090 ov0 0.991 PS-sign 0.0000 conv 0 W0 0.0002/0.989
+  seed 33: Cuhf: sign 0.0006 (mid 0.0087) tot 0.0188 ov0 0.986 PS-sign 0.0003 conv 0 | Cfs: sign 0.0001 (mid 0.0002) tot 0.0039 ov0 0.998 PS-sign 0.0000 conv 0 | Ccdw: sign 0.0000 (mid 0.0004) tot 0.0049 ov0 0.996 PS-sign -0.0000 conv 0 | W: sign 0.0001 (mid 0.0012) tot 0.0036 ov0 0.997 PS-sign -0.0000 conv 0 W0 0.0027/0.971
+  cold medians dE_sign {'Cuhf': 6e-05, 'Cfs': 5e-05, 'Ccdw': 4e-05} Cbest 0.00004 sigma_c 0.00053; dE_tot {'Cuhf': 0.00841, 'Cfs': 0.00446, 'Ccdw': 0.00485} sigma_E 0.01240
+  W: W0 0.00133 mid 0.00068 end 0.00010 dE_tot 0.00601; paired wins 0/3; drift -0.00033; fid plateau 0/3; ov0 W0 0.9842 vs Cuhf 0.9899; cold converged {'Cuhf': False, 'Cfs': False, 'Ccdw': False}
+  B1 False B2 False B3 True B4 True Bc False | K1 False K2 True K3 False  -> CAPACITY
+--- width 4 (n_params 400), complete seeds [11, 22, 33]
+  seed 11: Cuhf: sign 0.0001 (mid 0.0004) tot 0.0047 ov0 0.997 PS-sign 0.0001 conv 0 | Cfs: sign 0.0000 (mid 0.0005) tot 0.0055 ov0 0.997 PS-sign -0.0000 conv 0 | Ccdw: sign 0.0006 (mid 0.0011) tot 0.0326 ov0 0.975 PS-sign 0.0001 conv 0 | W: sign 0.0002 (mid 0.0016) tot 0.0086 ov0 0.995 PS-sign 0.0000 conv 0 W0 0.0032/0.971
+  seed 22: Cuhf: sign 0.0003 (mid 0.0007) tot 0.0172 ov0 0.994 PS-sign 0.0000 conv 0 | Cfs: sign 0.0009 (mid 0.0013) tot 0.0180 ov0 0.974 PS-sign 0.0000 conv 0 | Ccdw: sign 0.0001 (mid 0.0018) tot 0.0041 ov0 0.997 PS-sign -0.0000 conv 0 | W: sign 0.0002 (mid 0.0012) tot 0.0050 ov0 0.998 PS-sign -0.0000 conv 0 W0 0.0017/0.982
+  seed 33: Cuhf: sign 0.0001 (mid 0.0020) tot 0.0110 ov0 0.995 PS-sign 0.0000 conv 0 | Cfs: sign 0.0002 (mid 0.0022) tot 0.0112 ov0 0.992 PS-sign 0.0000 conv 0 | Ccdw: sign 0.0003 (mid 0.0004) tot 0.0067 ov0 0.993 PS-sign -0.0000 conv 0 | W: sign 0.0005 (mid 0.0007) tot 0.0250 ov0 0.989 PS-sign 0.0002 conv 0 W0 0.0051/0.978
+  cold medians dE_sign {'Cuhf': 0.00014, 'Cfs': 0.00024, 'Ccdw': 0.00031} Cbest 0.00014 sigma_c 0.00049; dE_tot {'Cuhf': 0.01098, 'Cfs': 0.01124, 'Ccdw': 0.00672} sigma_E 0.01254
+  W: W0 0.00322 mid 0.00122 end 0.00024 dE_tot 0.00860; paired wins 0/3; drift -0.00104; fid plateau 0/3; ov0 W0 0.9783 vs Cuhf 0.9953; cold converged {'Cuhf': False, 'Cfs': False, 'Ccdw': False}
+  B1 False B2 False B3 True B4 True Bc False | K1 False K2 True K3 False  -> CAPACITY
+--- width 10 (n_params 838), complete seeds [11, 22, 33]
+  seed 11: Cuhf: sign 0.0000 (mid 0.0009) tot 0.0017 ov0 0.998 PS-sign 0.0000 conv 0 | Cfs: sign 0.0001 (mid 0.0001) tot 0.0012 ov0 0.996 PS-sign -0.0000 conv 0 | Ccdw: sign -0.0000 (mid 0.0007) tot 0.0007 ov0 0.999 PS-sign -0.0000 conv 0 | W: sign 0.0000 (mid 0.0001) tot 0.0024 ov0 0.995 PS-sign -0.0000 conv 0 W0 0.0030/0.977
+  seed 22: Cuhf: sign 0.0002 (mid 0.0004) tot 0.0023 ov0 0.998 PS-sign 0.0000 conv 0 | Cfs: sign 0.0000 (mid 0.0003) tot 0.0017 ov0 0.997 PS-sign 0.0000 conv 0 | Ccdw: sign 0.0000 (mid 0.0002) tot 0.0008 ov0 0.999 PS-sign 0.0000 conv 0 | W: sign 0.0000 (mid 0.0001) tot 0.0010 ov0 0.997 PS-sign 0.0000 conv 0 W0 0.0002/0.990
+  seed 33: Cuhf: sign 0.0000 (mid 0.0000) tot 0.0028 ov0 0.996 PS-sign 0.0000 conv 0 | Cfs: sign 0.0000 (mid 0.0001) tot 0.0017 ov0 0.998 PS-sign 0.0000 conv 0 | Ccdw: sign 0.0000 (mid 0.0004) tot 0.0017 ov0 0.997 PS-sign 0.0000 conv 0 | W: sign -0.0000 (mid 0.0001) tot 0.0013 ov0 0.999 PS-sign -0.0000 conv 0 W0 0.0015/0.983
+  cold medians dE_sign {'Cuhf': 0.0, 'Cfs': 5e-05, 'Ccdw': 0.0} Cbest 0.00000 sigma_c 0.00006; dE_tot {'Cuhf': 0.00229, 'Cfs': 0.00165, 'Ccdw': 0.00083} sigma_E 0.00107
+  W: W0 0.00150 mid 0.00006 end 0.00002 dE_tot 0.00133; paired wins 1/3; drift -0.00004; fid plateau 0/3; ov0 W0 0.9831 vs Cuhf 0.9976; cold converged {'Cuhf': False, 'Cfs': False, 'Ccdw': False}
+  B1 False B2 False B3 True B4 True Bc False | K1 False K2 True K3 False  -> CAPACITY
+PREMISE GATE: median dE_sign(Cuhf, w=6) = 0.00006 over 3 seeds (>= 0.005): False; P2.1 r3 control (1200 steps) []
+width trend: Cbest {6: 3.8586103531912386e-05, 4: 0.0001416239024543131, 10: 1.1505950405776844e-06}; width-limited (Cbest(10) <= 0.5 Cbest(4)): True
+GLOBAL VERDICT: NO-TARGET  (BASIN widths [], CAPACITY widths [6, 4, 10])

@@ -1,0 +1,30 @@
+--- expect 4.2 PASS, 4.1 PASS
+    Route 4.2 kagp2: PASS
+    Route 4.1 sfb  : PASS
+--- expect 4.2 FAIL(accuracy), 4.1 FAIL
+    Route 4.2 kagp2: FAIL (accuracy)
+    Route 4.1 sfb  : FAIL (the spin feature recovers < 20% of the gap)
+--- expect 4.1 AMBIGUOUS (median gain but ranges overlap)
+    Route 4.2 kagp2: PASS
+    Route 4.1 sfb  : AMBIGUOUS
+--- expect 4.2 NO-TARGET (tabular ceiling below trained error)
+    Route 4.2 kagp2: NO-TARGET (tabular ceiling below half the trained tocchio error)
+    Route 4.1 sfb  : PASS
+--- expect 4.2 NO-TARGET (completeness json missing)
+    Route 4.2 kagp2: NO-TARGET (completeness json missing)
+    Route 4.1 sfb  : PASS
+--- expect 4.2 NO-TARGET (K=2 does not close)
+    Route 4.2 kagp2: NO-TARGET (K=2 does not close the tabular gap)
+    Route 4.1 sfb  : PASS
+--- expect 4.1 NO-TARGET (no che headroom); 4.2 FAIL since kagp2 is worse than che
+    Route 4.2 kagp2: FAIL (accuracy)
+    Route 4.1 sfb  : NO-TARGET (no resolved che -> nnbf_SG gap)
+--- expect both NO-TARGET (control at floor)
+    Route 4.2 kagp2: NO-TARGET (projected control at floor)
+    Route 4.1 sfb  : NO-TARGET (projected control at floor)
+--- expect both INCOMPLETE (missing seed)
+    Route 4.2 kagp2: INCOMPLETE (fewer than 3 seeds for some arm)
+    Route 4.1 sfb  : INCOMPLETE (fewer than 3 seeds for some arm)
+--- expect 4.1 AMBIGUOUS (capped)
+    Route 4.2 kagp2: PASS
+    Route 4.1 sfb  : AMBIGUOUS (an arm hit the wall-clock cap)

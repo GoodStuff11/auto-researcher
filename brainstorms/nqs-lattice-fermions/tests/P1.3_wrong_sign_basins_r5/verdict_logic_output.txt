@@ -1,0 +1,5 @@
+basin (lower, stable)        -> BASIN  (B1 True B2 True B3 True B4 True Bc True K1 False K2 False K3 False)
+capacity: relaxed back       -> CAPACITY  (B1 False B2 True B3 False B4 True Bc True K1 False K2 True K3 False)
+capacity: trade-off          -> CAPACITY  (B1 True B2 True B3 True B4 False Bc True K1 False K2 False K3 True)
+unclear: cold unconverged    -> UNCLEAR  (B1 True B2 True B3 True B4 True Bc False K1 False K2 False K3 False)
+capacity: oracle no better   -> CAPACITY  (B1 False B2 True B3 False B4 True Bc True K1 True K2 True K3 False)

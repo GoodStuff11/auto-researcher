@@ -1,0 +1,34 @@
+[11:09:36] instance: 4x3 PBC 4+4 U=8.0 t_y=1.11394; t'_c=-0.470482 min gap 1.001e-03 (19s); irrep dim 1618
+[11:09:39] check [H(t_y=1.11394),U_g] max 3.3e-16; projector idempotent 6.4e-16; [P,H] 7.1e-17
+[11:09:41] check projected gradient (anisotropic H): analytic 2.5999178598e-01 FD 2.5999178277e-01
+[11:09:44] check sampled force vs exact (20000 draws): |fs-f|^2 / sum(SE^2) = 1.09 (unbiased -> ~1), cosine 0.9486, |fs-f|/|f| 0.321
+[11:09:44] check warm start from stored parameters: relative amplitude difference 0.0e+00
+[11:09:44] check MC mixture S_01 0.998142 vs exact 0.998345 (1.2 standard errors)
+[11:09:44] check decision logic: noise->U/noise crossover->B,U/crossover intrinsic->B/intrinsic
+[11:09:44] P3.2-fix CHECKS PASSED
+[11:09:44] projected sector dim range(P_S P_chi) = 1618 (space-group irrep 5214); NNBF width 4: 676 parameters; ratio 2.39
+[11:09:50] snap A t'=-0.52048 W=4 s=1234: it     0  E = -11.41643975  |f| = 1.63e+00  (1.32 s/step)
+[11:09:52] snap A t'=-0.52048 W=4 s=1234: it     2  E = -10.80615597  |f| = 4.04e+00  (1.32 s/step)
+[11:09:55] snap B t'=-0.52048 W=4 s=1234: it     0  E = -12.20157405  |f| = 5.55e-01  (1.25 s/step)
+[11:09:57] snap B t'=-0.52048 W=4 s=1234: it     2  E = -12.15719094  |f| = 1.82e+00  (1.27 s/step)
+[11:09:59] snap d=-0.0500: gap=0.2548 c0=+0.248 E0-E0glob=7.1e-15 | A dE=2.07e+00 c=-0.255 | B dE=1.28e+00 c=+0.535 -> B eckart=False
+[11:10:04] snap A t'=-0.42048 W=4 s=1234: it     0  E = -11.15945664  |f| = 1.71e+00  (1.33 s/step)
+[11:10:07] snap A t'=-0.42048 W=4 s=1234: it     2  E = -10.83905940  |f| = 3.41e+00  (1.31 s/step)
+[11:10:09] snap B t'=-0.42048 W=4 s=1234: it     0  E = -11.61793983  |f| = 5.23e-01  (1.29 s/step)
+[11:10:12] snap B t'=-0.42048 W=4 s=1234: it     2  E = -11.16485925  |f| = 2.32e+00  (1.31 s/step)
+[11:10:13] snap d=+0.0500: gap=0.2468 c0=-0.240 E0-E0glob=-5.0e-14 | A dE=1.95e+00 c=-0.263 | B dE=1.49e+00 c=+0.542 -> B eckart=False
+[11:10:13] certified (Eckart) snapshot blocks: A at [], B at []
+[11:10:21] cold A t'=-0.46848 W=4 s=1234: it     0  E = -11.26997178  |f| = 1.64e+00  (1.33 s/step)
+[11:10:23] cold A t'=-0.46848 W=4 s=1234: it     2  E = -11.00340013  |f| = 2.99e+00  (1.33 s/step)
+[11:10:26] cold B t'=-0.46848 W=4 s=1234: it     0  E = -11.88829127  |f| = 5.38e-01  (1.31 s/step)
+[11:10:28] cold B t'=-0.46848 W=4 s=1234: it     2  E = -11.66536017  |f| = 2.14e+00  (1.32 s/step)
+[11:10:31] warm A t'=-0.46848 W=4 s=1234: it     0  E = -11.28431715  |f| = 1.64e+00  (1.32 s/step)
+[11:10:33] warm A t'=-0.46848 W=4 s=1234: it     2  E = -10.52211458  |f| = 3.92e+00  (1.31 s/step)
+[11:10:36] warm B t'=-0.46848 W=4 s=1234: it     0  E = -11.88061486  |f| = 6.16e-01  (1.32 s/step)
+[11:10:38] warm B t'=-0.46848 W=4 s=1234: it     2  E = -11.41083279  |f| = 2.12e+00  (1.32 s/step)
+[11:10:40] warm-sf A t'=-0.46848 W=4 s=1234: it     0  E = -10.93881406  |f| = 2.28e+00  (0.49 s/step)
+[11:10:41] warm-sf A t'=-0.46848 W=4 s=1234: it     2  E = -11.76467879  |f| = 8.20e+00  (0.46 s/step)
+[11:10:42] warm-sf B t'=-0.46848 W=4 s=1234: it     0  E = -11.98251480  |f| = 1.10e+00  (0.45 s/step)
+[11:10:43] warm-sf B t'=-0.46848 W=4 s=1234: it     2  E = -12.30691540  |f| = 1.21e+00  (0.44 s/step)
+[11:10:46] target d=+0.0020 gap=0.0102 truth=A | R0P: dE_AB=+6.18e-01 noise=1.7e-01 ends=AB dec=B [intrinsic] | R0P-warm: dE_AB=+5.96e-01 noise=4.0e-01 ends=AB dec=U [noise] | R0P-warm-sf: dE_AB=+2.90e-01 noise=4.0e-01 ends=AB dec=U [noise] | warm-abs=U EC=U ECor=A AT(diag)=U | sampled EC UUU
+[11:10:46] done (88s) -> /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.2_biased_ensemble_fix/results_smoke/w4_s1234.json

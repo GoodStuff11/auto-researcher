@@ -159,11 +159,11 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.1 | RESULT (PASS, qualified) | nothing | none |
 | P1.1-P | RESULT: SYMMETRY-DOMINATED (all instances) | nothing | none |
 | P1.2 | MUTATE (redesign onto 4×4 OBC t–J instance) | instance seed confirmation (job 451706) gates submission only | round-5 worker |
-| P1.3 | RESULT: premise falsified at 4×3; basin check on 4×4 OBC instance | job 451706 gates submission only | round-5 worker |
+| P1.3 | CRITIC (round 5 basin test) | job 451706 gates submission | per-leaf critic |
 | P2.1 | SUBMITTED (2 more control seeds) | nothing | Slurm 451706 |
 | P2.2 | MUTATE (round 5; CGK killed) | nothing | round-5 worker |
 | P3.1 | MUTATE (re-scope onto 4×4 OBC instance) | job 451706 gates submission only | round-5 worker |
-| P3.2 | FIX (INTRINSIC-BIAS: R0P-warm, certification gate, multi-seed) | nothing | fix worker |
+| P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
 | P4.1 | FIX (sfb has headroom; KAGP premise unavailable, AGP fit timed out) | nothing | fix worker |
 | P4.2 | FIX then reduced decisive run (FAIL expected) | nothing | fix worker |
 

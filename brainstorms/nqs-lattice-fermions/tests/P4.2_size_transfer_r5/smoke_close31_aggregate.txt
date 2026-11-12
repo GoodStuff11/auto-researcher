@@ -1,0 +1,11 @@
+target t'=0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} E0=-12.81808701 gap/V=2.3863e-01 competitor(<0.001)=False  (sign half only unless flagged)
+  pilot: eps_tr0=['0.4439', '0.3424', '0.6922'] eps_tr0_r2=['0.3005', '0.1902', '0.2478'] spread=0.350 sector-rule correct 2/3
+  eps_best=2.1242e-03 (relerr 2.652e-03; VOID-tight 0.01); eps_foil(K)=['0.5834', '0.0424', '0.7005'] (upper bound on eps_foil_opt)
+  B=  2: m eps_scr=3.8252e-01 m eps_tr=1.8027e-01 P1=True moving=False counted=False n_tr=[4, 0, 1] S=2.00 b-pass=True b-fail=False
+  B=  4: m eps_scr=2.0315e-01 m eps_tr=1.2954e-02 P1=True moving=False counted=False n_tr=[6, 2, 2] S=2.00 b-pass=True b-fail=False
+  B=  6: m eps_scr=4.9819e-02 m eps_tr=4.5647e-03 P1=True moving=True counted=True n_tr=[None, 3, 4] S=1.71 b-pass=True b-fail=False
+  FAIL clauses {'F1': False, 'F2': False, 'F3': False, 'F4': False, 'F5': False}
+  PROMOTE conditions {'I': False, 'S': True, 'e': False, 'b20': False, 'speed': False, 'nonvoid': True}
+  [3.2 diagnostic] A zero-shot tr0=['0.915', '0.360', '4.801'] vs MF init ['0.273', '1.115', '0.004']; A tr@B={4: [0.5450887853417505, 0.00028069449285261783, 0.0035752644937030453], 6: [0.16201987289894326, 0.0002806944928490651, 0.0017041011717697785]} scr@B={4: [0.6318691938775984, 1.1151632992359648, 0.14652044351833737], 6: [0.03658088507225621, 0.33346925344147316, 9.758113905533605e-05]}
+  [R5.1 diagnostic] nfp eps at 0 ['0.7917', '0.9810', '0.9470'] (scr0 ['0.6064', '0.4432', '0.5125']), at end ['0.7137', '0.9559', '0.8351']; n_null [115, 115, 115]
+GLOBAL Route 3.1 (TCMN transfer, critic-fixed rule): CLOSED-NOT-PROMOTED (I, e, b20, speed not met)

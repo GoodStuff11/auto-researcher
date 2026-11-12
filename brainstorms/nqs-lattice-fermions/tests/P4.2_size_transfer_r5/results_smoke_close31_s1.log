@@ -1,0 +1,32 @@
+[     0.5s] instance t'=0.25 J=0.4: E0=-12.81808701 E1=-12.79277607 <S2>=-2.91e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
+[     0.5s] target 4x4 t'=0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=105 E0=-12.81808701 (full -12.81808701) gap/V=2.3863e-01 no same-irrep competitor below 0.005 t/site: sign half only
+[     0.5s] projected-sector dimension 105 / route parameters 122 = 0.9
+[     0.5s] calibration: E_sign(exact signs) - E0 = 3.553e-15; Pd(E0)=8.3002e-03
+[     0.8s] arm tr@0     : E=-7.33982611 eps=3.4239e-01 (raw 3.8625e-01, irrep weight 0.446) A/V=2.2494e-02 sign-agree=0.9319 Pd=1.3397e-02 fid=0.4814
+[     1.0s]   [tr] step 1/6 eps=2.09719e-01 lr=0.055
+[     1.3s]   [tr] step 2/6 eps=6.16672e-02 lr=0.0605
+[     1.3s] arm tr@2     : E=-11.83141218 eps=6.1667e-02 (raw 2.4497e-01, irrep weight 0.534) sign-agree=0.9802 Pd=9.8659e-03 fid=0.8726
+[     1.6s]   [tr] step 3/6 eps=6.15616e-03 lr=0.0666
+[     1.8s]   [tr] step 4/6 eps=2.44193e-03 lr=0.0732
+[     1.9s] arm tr@4     : E=-12.77901611 eps=2.4419e-03 (raw 1.6629e-01, irrep weight 0.490) A/V=1.7543e-05 sign-agree=1.0000 Pd=8.5545e-03 fid=0.9953
+[     2.1s]   [tr] step 5/6 eps=2.18787e-03 lr=0.0805
+[     2.4s]   [tr] step 6/6 eps=2.12423e-03 lr=0.0886
+[     2.4s] arm tr@6     : E=-12.78409931 eps=2.1242e-03 (raw 1.5784e-01, irrep weight 0.516) A/V=1.7543e-05 sign-agree=1.0000 Pd=8.4554e-03 fid=0.9957
+[     2.7s] arm scr@0    : E=-5.72615209 eps=4.4325e-01 (raw 4.3283e-01, irrep weight 0.121) A/V=1.7708e-01 sign-agree=0.3243 Pd=2.2209e-02 fid=0.1372
+[     3.0s]   [scr] step 1/6 eps=4.14554e-01 lr=0.055
+[     3.2s]   [scr] step 2/6 eps=3.82524e-01 lr=0.0605
+[     3.3s] arm scr@2    : E=-6.69770353 eps=3.8252e-01 (raw 3.9722e-01, irrep weight 0.126) sign-agree=0.5008 Pd=2.0648e-02 fid=0.1984
+[     3.5s]   [scr] step 3/6 eps=3.48581e-01 lr=0.0666
+[     3.8s]   [scr] step 4/6 eps=2.99311e-01 lr=0.0732
+[     3.8s] arm scr@4    : E=-8.02911893 eps=2.9931e-01 (raw 3.5740e-01, irrep weight 0.130) A/V=6.9698e-02 sign-agree=0.7236 Pd=1.8238e-02 fid=0.3123
+[     4.0s]   [scr] step 5/6 eps=2.38060e-01 lr=0.0805
+[     4.2s]   [scr] step 6/6 eps=1.51958e-01 lr=0.0886
+[     4.3s] arm scr@6    : E=-10.38675153 eps=1.5196e-01 (raw 3.1929e-01, irrep weight 0.093) A/V=2.0842e-02 sign-agree=0.9229 Pd=1.4062e-02 fid=0.6068
+[     4.6s]   [foil] step 1/2 eps=3.61389e-01 lr=0.055
+[     4.7s]   [foil] step 2/2 eps=4.23629e-02 lr=0.0605
+[     4.7s] arm foil@end : E=-12.14028132 eps=4.2363e-02 (raw 3.5503e-01, irrep weight 0.006) sign-agree=0.9998 Pd=1.1941e-02 fid=0.9184
+[     4.8s] nfp: n_null=115 removed shift fraction 0.879; source E tr0 [-8.94621249152517, -8.825468971826025] -> nfp [2.0528376660979375, 1.6543675034573233] (exact [-8.94622016075108, -8.825474080372901])
+[     5.0s] arm nfp@0    : E=2.87815459 eps=9.8102e-01 (raw 1.1689e+00, irrep weight 0.107) A/V=3.7467e-01 sign-agree=-0.1486 Pd=1.0392e-02 fid=0.0005
+[     5.2s]   [nfp] step 1/2 eps=9.68124e-01 lr=0.055
+[     5.4s]   [nfp] step 2/2 eps=9.55860e-01 lr=0.0605
+[     5.4s] done (results_smoke_close31/close31_s1.json); valid=True
