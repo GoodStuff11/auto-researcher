@@ -95,6 +95,9 @@ def test_same_item_conflict_reported(two_clones):
         commit(b, "b2")
     assert f"Status/Items/{q.id}.md" in exc.value.files
     assert not (b / ".git" / "rebase-merge").exists()
+    msg = str(exc.value)
+    assert f"hub-item conflict in {q.id}: title:" in msg and "From A" in msg and "From B" in msg
+    assert "git rebase --continue" in msg and "hub commit" in msg
 
 
 def test_concurrent_proposals_do_not_conflict(two_clones):
@@ -124,3 +127,83 @@ def test_push_to_missing_remote_reports_git_message(two_clones, tmp_path):
     Store(a).create("question", "Lost", owner="alice", author="alice", day=D, source="m")
     with pytest.raises(SyncError, match="does not appear to be a git repository"):
         commit(a, "a")
+
+
+def test_ensure_repo_files_registers_item_driver_and_ignores(tmp_path):
+    git(tmp_path, "init", "-b", "main")
+    ensure_repo_files(tmp_path)
+    attrs = (tmp_path / ".gitattributes").read_text().splitlines()
+    for line in ("Status/Items/*.md merge=hub-item", "*.md text eol=lf", "*.yaml text eol=lf"):
+        assert line in attrs
+    assert "hub.merge_item %O %A %B" in git(tmp_path, "config", "merge.hub-item.driver")
+    assert git(tmp_path, "config", "merge.hub-item.name").strip() == "hub item merge"
+    ignore = (tmp_path / ".gitignore").read_text().splitlines()
+    assert "~$*" in ignore and ".~lock.*#" in ignore
+
+
+def test_office_lock_files_not_committed(tmp_path):
+    git(tmp_path, "init", "-b", "main")
+    git(tmp_path, "config", "user.email", "t@example.com")
+    git(tmp_path, "config", "user.name", "T")
+    (tmp_path / "Agenda").mkdir()
+    (tmp_path / "Agenda" / "~$group.xlsx").write_text("lock")
+    (tmp_path / "Agenda" / ".~lock.group.xlsx#").write_text("lock")
+    (tmp_path / "Agenda" / "group.xlsx").write_text("x")
+    commit(tmp_path, "c")
+    files = git(tmp_path, "ls-files").split()
+    assert "Agenda/group.xlsx" in files and not any("lock" in f or "~$" in f for f in files)
+
+
+def test_concurrent_entries_on_same_item_merge(two_clones):
+    a, b = two_clones
+    q = Store(a).create("question", "Shared", owner="alice", author="alice", day=D, source="m")
+    commit(a, "a")
+    git(b, "pull", "--rebase")
+    Store(a).entry(q.id, "Entry from A.", author="alice", source="circleback:1", day=D)
+    Store(b).entry(q.id, "Entry from B.", author="bob", source="clickup:2", day=D)
+    commit(a, "a2")
+    commit(b, "b2")  # the hub-item driver merges both entries
+    git(a, "pull", "--rebase")
+    for clone in (a, b):
+        item = Store(clone).get(q.id)
+        assert [e.text for e in item.entries] == ["Raised.", "Entry from A.", "Entry from B."]
+        assert item.meta["sources"] == ["m", "circleback:1", "clickup:2"]
+
+
+def test_regenerate_failure_is_warning_and_still_pushes(two_clones, capsys):
+    a, b = two_clones
+    Store(a).create("question", "From A", owner="alice", author="alice", day=D, source="m")
+
+    def regen():
+        raise RuntimeError("snapshot broke")
+
+    commit(a, "a", regenerate=regen)
+    assert "warning: could not regenerate generated files: snapshot broke" in capsys.readouterr().err
+    git(b, "pull", "--rebase")
+    assert [i.title for i in Store(b).all()] == ["From A"]
+
+
+def test_pull_if_possible(two_clones, tmp_path):
+    from hub.gitsync import pull_if_possible
+    a, b = two_clones
+    Store(a).create("question", "From A", owner="alice", author="alice", day=D, source="m")
+    commit(a, "a")
+    assert pull_if_possible(b) is None
+    assert [i.title for i in Store(b).all()] == ["From A"]
+    plain = tmp_path / "plain"
+    plain.mkdir()
+    assert pull_if_possible(plain) is None  # not a git repo: nothing to do
+    git(b, "remote", "set-url", "origin", str(tmp_path / "gone.git"))
+    warning = pull_if_possible(b)
+    assert warning and warning.startswith("warning: could not pull")
+
+
+def test_cli_commit_with_garbage_item_still_pushes(two_clones):
+    from hub.cli import main
+    a, b = two_clones
+    Store(a).create("question", "Good", owner="alice", author="alice", day=D, source="m")
+    (a / "Status" / "Items" / "Q-20261112-bad.md").write_text("garbage\n")
+    assert main(["--root", str(a), "commit", "with garbage"]) == 0
+    git(b, "pull", "--rebase")
+    assert (b / "Status" / "Items" / "Q-20261112-bad.md").is_file()
+    assert "Q-20261112-bad.md" in (b / "Status" / "Snapshot.md").read_text()

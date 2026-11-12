@@ -3,19 +3,28 @@
 
 Strategy: commit locally → `git pull --rebase` → regenerate generated files → push; retry on rejection.
 Append-only files merge with git's built-in `union` driver; Snapshot.md keeps upstream (`ours` driver)
-and is regenerated; item files and .xlsx merge normally so genuine conflicts surface as SyncConflict.
+and is regenerated; item files merge with the `hub-item` driver (hub.merge_item: union of entries and
+lists, three-way on scalars), so only a genuine clash on one field surfaces as SyncConflict.
 """
 from __future__ import annotations
 
+import shlex
 import subprocess
+import sys
 from pathlib import Path
 
 GITATTRIBUTES_LINES = [
     "Status/Log/*.md merge=union",
     "Status/Snapshot.md merge=ours",
+    "Status/Items/*.md merge=hub-item",
     "*.xlsx binary",
+    "*.md text eol=lf",
+    "*.yaml text eol=lf",
 ]
-GITIGNORE_LINES = ["hub.local.yaml", ".venv/", "__pycache__/", "*.egg-info/", ".obsidian/workspace*.json"]
+GITIGNORE_LINES = ["hub.local.yaml", ".venv/", "__pycache__/", "*.egg-info/", ".obsidian/workspace*.json",
+                   "~$*", ".~lock.*#", ".*.tmp"]
+CONFLICT_GUIDANCE = ("re-run after fixing: `git pull --rebase`, fix the file, `git add` it, "
+                     "`git rebase --continue`, then `hub validate` and `hub commit`")
 
 
 class SyncError(Exception):
@@ -24,7 +33,8 @@ class SyncError(Exception):
 
 class SyncConflict(SyncError):
     def __init__(self, files: list[str], detail: str):
-        super().__init__(f"merge conflict in: {', '.join(files) or '(unknown)'}\n{detail}")
+        super().__init__(f"merge conflict in: {', '.join(files) or '(unknown)'}\n{detail.rstrip()}\n"
+                         f"{CONFLICT_GUIDANCE}")
         self.files = files
         self.detail = detail
 
@@ -43,11 +53,57 @@ def _ensure_lines(path: Path, lines: list[str]) -> None:
         path.write_text("\n".join(existing + missing) + "\n")
 
 
+def _configure_drivers(root) -> None:
+    """Register the merge drivers named in .gitattributes in this clone's .git/config."""
+    _git(root, "config", "merge.ours.driver", "true")
+    _git(root, "config", "merge.hub-item.name", "hub item merge")
+    _git(root, "config", "merge.hub-item.driver", f"{shlex.quote(sys.executable)} -m hub.merge_item %O %A %B")
+
+
 def ensure_repo_files(root) -> None:
     root = Path(root)
     _ensure_lines(root / ".gitattributes", GITATTRIBUTES_LINES)
     _ensure_lines(root / ".gitignore", GITIGNORE_LINES)
-    _git(root, "config", "merge.ours.driver", "true")
+    _configure_drivers(root)
+
+
+def _has_upstream(root) -> bool:
+    return _git(root, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}", check=False).returncode == 0
+
+
+def _abort_rebase_if_any(root) -> None:
+    git_dir = _git(root, "rev-parse", "--git-dir", check=False).stdout.strip()
+    if git_dir and any((Path(root) / git_dir / d).exists() for d in ("rebase-merge", "rebase-apply")):
+        _git(root, "rebase", "--abort", check=False)
+
+
+def pull_if_possible(root) -> str | None:
+    """Best-effort `git pull --rebase` before acting on shared state (pending apply, agenda read).
+
+    Does nothing (returns None) when `root` is not a git work tree or the branch has no upstream.
+    On failure the rebase is aborted and a one-line warning is returned for the caller to print;
+    the caller carries on with the local state.
+    """
+    root = Path(root)
+    inside = _git(root, "rev-parse", "--is-inside-work-tree", check=False)
+    if inside.returncode != 0 or inside.stdout.strip() != "true" or not _has_upstream(root):
+        return None
+    _configure_drivers(root)
+    pull = _git(root, "pull", "--rebase", check=False)
+    if pull.returncode == 0:
+        return None
+    _abort_rebase_if_any(root)
+    detail = " ".join((pull.stderr or pull.stdout).split())
+    return f"warning: could not pull before acting (continuing with local state): {detail}"
+
+
+def _regenerate(root, regenerate) -> None:
+    try:
+        regenerate()
+    except Exception as exc:  # a broken generator must never block pushing the user's own changes
+        print(f"warning: could not regenerate generated files: {exc}", file=sys.stderr)
+        return
+    _commit_all(root, "Regenerate generated files")
 
 
 def _commit_all(root, message) -> bool:
@@ -64,10 +120,9 @@ def commit(root, message, *, regenerate=None, retries=3) -> str:
     _commit_all(root, message)
     if not _git(root, "remote").stdout.strip():
         if regenerate:
-            regenerate()
-            _commit_all(root, "Regenerate generated files")
+            _regenerate(root, regenerate)
         return _git(root, "rev-parse", "HEAD").stdout.strip()
-    if _git(root, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}", check=False).returncode != 0:
+    if not _has_upstream(root):
         raise SyncError("no upstream branch configured; run `git push -u origin <branch>` once")
     for _ in range(retries):
         pull = _git(root, "pull", "--rebase", check=False)
@@ -77,12 +132,10 @@ def commit(root, message, *, regenerate=None, retries=3) -> str:
             if files:
                 _git(root, "rebase", "--abort", check=False)
                 raise SyncConflict(files, output)
-            if (root / ".git" / "rebase-merge").exists() or (root / ".git" / "rebase-apply").exists():
-                _git(root, "rebase", "--abort", check=False)
+            _abort_rebase_if_any(root)
             raise SyncError(f"git pull --rebase failed: {output}")
         if regenerate:
-            regenerate()
-            _commit_all(root, "Regenerate generated files")
+            _regenerate(root, regenerate)
         push = _git(root, "push", check=False)
         if push.returncode == 0:
             return _git(root, "rev-parse", "HEAD").stdout.strip()
