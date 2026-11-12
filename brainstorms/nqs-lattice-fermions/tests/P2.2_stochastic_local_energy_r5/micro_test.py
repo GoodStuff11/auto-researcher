@@ -707,7 +707,8 @@ class CASJ:
         g = {"C": (ma * w[:, None]).T @ mb}
         for key, A, k, rows in (("Ua", Aa, w[:, None] * (mb @ P["C"].T), occ_idx[:, :nh]),
                                 ("Ub", Ab, w[:, None] * (ma @ P["C"]), occ_idx[:, nh:] - K)):
-            gX = np.einsum("bi,birc,icw->brw", k, cofactor(A), self.E, optimize=True)
+            Tg = (k[:, :, None, None] * cofactor(A)).transpose(0, 2, 1, 3).reshape(B, nh, -1)
+            gX = Tg @ self.E.reshape(-1, self.KW)          # scatter subset columns to window MOs
             S = sp.csr_matrix((np.ones(B * nh), (rows.ravel(), np.arange(B * nh))), shape=(K, B * nh))
             g[key] = S @ gX.reshape(B * nh, self.KW)
         g["u"] = o.T @ cp

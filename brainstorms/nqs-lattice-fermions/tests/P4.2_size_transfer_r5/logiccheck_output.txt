@@ -1,0 +1,11 @@
+[     0.0s] logiccheck (context) old rule S = B / n_X(l_B) for a 60-step static head start at B=100: 2.50 (>= 2 would PASS)
+[     0.0s] logiccheck static better start, no source cost: PA -> FAIL (slow) | SIGN CLAIM (scr sign share (expect ('FAIL',)) OK
+[     0.0s] logiccheck 3x faster descent, not moot: PA -> PASS | SIGN CLAIM (scr sign share (expect ('PASS',)) OK
+[     0.0s] logiccheck 3x faster descent, moot: PA -> VOID (PASS conditions met, but moot: eps_inf above the NNBF at the same step count) | SIGN CLAIM (scr sign share (expect ('VOID',)) OK
+[     0.0s] logiccheck static better start, moot (FAIL still prints): PA -> FAIL (slow) | SIGN CLAIM (scr sign share (expect ('FAIL',)) OK
+[     0.0s] logiccheck 3x faster but source costs 100 target steps: PA -> FAIL (slow) | SIGN CLAIM (scr sign share (expect ('FAIL',)) OK
+[     0.0s] logiccheck 3x faster, anchor_ok False in one seed: PA -> INVALID (anchor_ok=[False, True, True]) | SIGN CLAIM (scr sign share (expect ('INVALID',)) OK
+[     0.1s] logiccheck sign share 0.3: claim made: PA -> PASS | SIGN CLAIM (scr sign share (expect ('PASS', 'SIGN CLAIM (scr')) OK
+[     0.1s] logiccheck sign share 0.05: claim not made: PA -> PASS | SIGN CLAIM NOT MADE (scr s (expect ('PASS', 'SIGN CLAIM NOT MADE')) OK
+[     0.1s] logiccheck pa no better than cp at b (ablation): PA -> AMBIGUOUS (ablation not met) | SIGN CLAIM (scr sign share (expect ('AMBIGUOUS',)) OK
+[     0.1s] LOGICCHECK PASSED

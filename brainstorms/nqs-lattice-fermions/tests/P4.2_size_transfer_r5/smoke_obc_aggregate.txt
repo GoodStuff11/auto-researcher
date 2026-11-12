@@ -1,10 +1,21 @@
+target 4x4:2 OBC t'=-0.25 J=2.0 E0=-9.6675110278 n_irrep=1395 npar=426
+  scr seed 0: n*=40 done=True eps(n*)=3.40130e-03 eps_inf=3.37578e-03 (geometric extrapolation, r=0.220, drop over last 10 steps = 0.027 of eps(n*))
+  eps_inf=3.37578e-03  relerr_inf=0.0056  (capacity rule threshold 0.03)
+  scr sign share at step 12: 0.1165 (sign claim allowed only if >= 0.1)
+  P2.1 projected NNBF eps at n*=40: {11: 0.004897322361997247, 22: 0.005038176111997306, 33: 0.004792317361997256} median 4.89732e-03 -> not moot
+  FLAG abs 1%: relerr_inf <= 0.01 (flag only)
+CAPACITY DECISION: RUN ARRAY (relerr_inf 0.0056 <= 0.03)
+--- aggregate
+  P2.1 NNBF eps at n*=40 per seed: {11: 0.004897322361997247, 22: 0.005038176111997306, 33: 0.004792317361997256}
 target 4x4:2 OBC t'=-0.25 J=2.0 irrep={'Mx': 1, 'My': 1, 'D': -1} E0=-9.6675110278 n_irrep=1395 npar=426 gap/V=5.4039e-02 -> sign half only
-  premise control (P2.1 projected NNBF): [{'seed': 11, 'dE_sign': 0.012464574121485938, 'dE_tot': 0.05181114840172718}]
-  eps_best=5.2238e-03 relerr=8.646e-03 (VOID unless <= 0.01)
-  B=   6: m_scr=0.01961 counted=True S_cp=0 m_cp=0.1411 S_pa=0.8571 m_pa=0.03745 S_env=0.6 m_env=0.05092
-  B=  12: m_scr=0.006998 counted=True S_cp=0 m_cp=0.05543 S_pa=0 m_pa=0.01031 S_env=0 m_env=0.007996
-  m eps(12)={'scr': 0.007, 'cp': 0.05543, 'pa': 0.01031, 'env': 0.008}  m A(last)={'scr': 0.01457, 'cp': 0.28172, 'pa': 0.04269, 'env': 0.0407}  env coverage=1.0000
-SMOKE: premise gate skipped (--skip-premise); the verdicts below are NOT a test result
-GLOBAL R5.1 PA: FAIL (slow, b-fail)  {'speed': False, 'b20': False, 'ablation': True, 'sign': False, 'coverage': True}
-GLOBAL R5.2 ELT: FAIL (slow, b-fail)  {'speed': False, 'b20': False, 'ablation': True, 'sign': False, 'coverage': True}
-GLOBAL: PENDING-PREMISE (fewer than 3 projected-NNBF control seeds)
+  capacity: x = eps_inf = 3.3758e-03 (relerr 0.0056, n* = 40); NNBF eps at n*: 4.8973e-03 -> not moot
+  FLAG abs 1%: eps_best=3.2889e-03 relerr=5.443e-03 (within 1% of E0; flag only)
+  charged source wall s (median): {'scr': 0.0, 'scrp': 0.0, 'cp': 1.5528161525726318, 'pa': 3.442596197128296}
+  B=   8: m_scrp=0.01535 counted=True S_scr=1.04 Sstep_scr=1 S_cp=0.4784 Sstep_cp=0.4319 S_pa=0.3328 Sstep_pa=0.3387
+  B=  12: m_scrp=0.006646 counted=True S_scr=0.9556 Sstep_scr=0.9231 S_cp=0 Sstep_cp=0 S_pa=0.4313 Sstep_pa=0.4457
+  B=  24: m_scrp=0.003752 counted=False S_scr=1.069 Sstep_scr=1.043 S_cp=0 Sstep_cp=0 S_pa=0 Sstep_pa=0
+  m eps(12)={'scr': 0.007, 'scr+': 0.00665, 'cp': 0.05543, 'pa': 0.01031}
+  pa anchors [0.0001, 0.001, 0.001] anchor_ok [True, True, True] frac of |theta - theta_init| in the source-identified subspace [0.5621, 0.6994, 0.8475]
+GLOBAL R5.1 PA: FAIL (slow, b-fail)  {'counted': True, 'speed': False, 'b': False, 'ablation': True}
+  steps-to-eps by part (pa vs scr+, offset-free, checkpoint resolution, source charged in steps): sign A {8: 0.3732190734394003, 12: 0.5598286101591005}  amplitude E-E0-A {8: 0.20288014425278214, 12: 0.471788396127936}
+SIGN CLAIM (scr sign share at 12 = 0.116 >= 0.1): NOT MET

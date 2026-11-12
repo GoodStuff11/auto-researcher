@@ -1,136 +1,151 @@
 #!/usr/bin/env python3
 r"""
-P4.2 round 5, part 2: decisive test of the mutated size-transfer routes R5.1 and R5.2 on the shared
-4x4 OBC t-t'-J target (6+6 electrons, t' = -0.25, J = 0.4), scored by STEPS-TO-EPS of projected SR
-against a projected from-scratch control, with the P2.1 projected NNBF as the premise control.
+P4.2 round 5, part 2 (critic-fixed): decisive test of the size-transfer route R5.1 (PA) on the shared
+4x4 OBC t-t'-J target (6+6 electrons, t' = -0.25, J = 0.4), scored by OFFSET-FREE WALL-TIME
+speed-up of projected SR against the stronger scratch control scr+, with the source cost charged.
 =================================================================================================
 
-Failed component (Route 3.1, round 3-5): WHAT is transferred. A 122-parameter MFNG fitted exactly on
-8-site sources is an arbitrary point of a ~110-dimensional solution manifold; on the 16-site target
-it is 2-6x worse than the untrained mean-field (MF) state (pilot 410960), and resetting the
-linearised source-null directions to the MF init destroys the source fit (close31 smoke), because
-those directions are null only to first order. Operation A replaces the transferred object:
+Failed component (Route 3.1, rounds 3-5): WHAT is transferred. A 122-parameter MFNG fitted exactly
+on 8-site sources is an arbitrary point of a ~110-dimensional solution manifold; on the 16-site
+target it is 2-6x worse than the untrained mean-field (MF) state (pilot 410960). Operation A:
 
   R5.1 PA  "prior-anchored transfer" (L2-SP). Sources are fitted with a penalty
-           anchor * |theta - theta_init|^2 that pulls every direction the sources do not need back
-           to the source run's own MF initialisation (a nonlinear, exact version of the null
-           filter: the fit, not a linearisation, decides what moves). The whole MFNG is copied
-           (size independent) and fine-tuned at the target by projected SR.
-  R5.2 ELT "environment-library local transfer". Only the LOCAL parts (backflow phi_m and charge
-           Jastrow: functions of the site's hole environment) are transferred; the pair kernel
-           (fields f_m(k)) is rebuilt from the target MF. The library adds 12-site OBC clusters with
-           4 holes, so the 3- and 4-hole environments of the target are seen at the source. Premise
-           (coverage): at least 95% of the target ground state's site-environment weight lies on
-           environment tuples that some library ground state populates (weight >= 1e-4).
-           Also anchored (same ladder rule as PA, --env-restarts restarts).
-Ablation  CP  "copy": same sources as PA, no anchor (Route 3.1 transplanted to OBC).
-Control   SCR MFNG from the target MF init (the matched-architecture scratch control).
-Premise control: projected NNBF width 6 (1734 parameters) of P2.1, results read from
-  ../P2.1_subcubic_amplitudes_r3/results/inst0_nnbf_s{11,22,33}.json (job 410988 and 451706).
+           anchor * |theta - theta_init|^2 toward the source run's own MF initialisation; the
+           whole size-independent MFNG-O is copied and fine-tuned at the target by projected SR.
+  R5.2 ELT was KILLED at Gate 0 by the per-leaf critic (routine VMC warm-starting from a library
+           of small-cluster fits; no amortised one-library / many-target claim is made), so it has
+           no arm here.
+Ablation  cp    unanchored copy from the same sources (Route 3.1 moved to OBC).
+Controls  scr   MFNG-O from the target MF init (capacity reference; also the CAPACITY PILOT).
+          scr+  MFNG-O from the target MF init, steps 1..--scrp-k (default 20) on the KERNEL (field
+                network) and JASTROW parameters only, then all parameters. The k cheap steps are
+                charged (they are steps of its trajectory and of its clock). PA must beat scr+.
+
+Critic fixes applied (P4.2 round-5 per-leaf critic)
+---------------------------------------------------
+ 1 Capacity pilot first (--capacity DIR reads it): one scr task, 600 steps. Its plateau eps_inf
+   replaces the old [0, eps_best] bracket everywhere (x = eps_inf below). Pre-committed: if
+   eps_inf * V / |E0| > 0.03, do NOT run the array; mutate (enlarge --channels / --bf-hidden).
+ 2 VOID gates PASS only. FAIL, AMBIGUOUS and INVALID always print. VOID (moot) means
+   eps_inf > m eps_nnbf(n*), the P2.1 projected NNBF's eps at the pilot's step count n*
+   (parsed from the P2.1 logs; median over the seeds that reached n*). The absolute 1%
+   (eps_best V / |E0| <= 0.01) is printed as a FLAG only.
+ 3 scr+ arm; S is offset-free: for route X and control C = scr+, the common start level is
+   l0 = min(m eps_C(0), m eps_X(0)); each seed's clock starts at the first step reaching l0, so a
+   route that starts above scr+ is counted from when it first matches scr+'s step-0 energy, and a
+   route that only starts lower on scr+'s own curve (a static better start) gets S = 1.
+ 4 S is in WALL TIME with the source cost charged (source ED + all restarts + the whole anchor
+   ladder). Target setup (shared by every arm) and checkpoint records are not charged. The
+   step-count version (source cost converted to target-step equivalents) is reported alongside.
+ 5 No 451706 / NNBF-premise gate. A SIGN claim is made only if MFNG-O's own scr sign share at step
+   --sign-share-step (150), m A_scr / (V m eps_scr), is >= SIGN_SHARE_MIN = 0.10. Steps-to-eps are
+   reported separately for the sign part A and the amplitude part E - E0 - A (checkpoint
+   resolution, offset-free as in 3).
+ 6 PA with anchor_ok = False in any seed -> INVALID. For the selected anchor rung the fraction of
+   |theta - theta_init| inside the source-identified subspace (joint source SR metric, eigenvalues
+   >= --id-tol * max) is recorded and printed.
 
 Model and lattice
 -----------------
 t-t'-J on an Lx x Ly OPEN cluster: t on NN bonds, t' on the two diagonals, J (S.S - n n/4) on NN
-bonds, no double occupancy, H = -sum t_ij c~^+ c~ + ... (sign convention of r3_core.build_H; the
-4x4 6+6 ground energy is checked against P2.1's ED, -11.388010886295234, to 1e-8).
-Size-independent MFNG on OBC (class MFNGO): the pair kernels are
-kappa_m(r) = (1/Q^2) sum_{k in Q x Q grid} cos(k.r) f_m(k) on a FIXED quadrature grid (--kq, default
-8), so kappa_m is the identical function of the displacement r on every cluster and the copy is
-exact; site features v_s = (h_s, sum_nn h~/4, sum_nnn h~/4) with h~ = 1 for a missing neighbour
-("outside the cluster counts as empty"). Exact singlet. Network sizes --channels/--field-hidden/
---bf-hidden/--jas-hidden (defaults 4/16/16/16: 426 parameters; 30220 / 426 = 71 projected-singlet
-states per parameter).
-
-Symmetry: the target is trained and scored in the ED irrep of its point group {1, Mx, My, MxMy} x
-{1, D} (|G| = 8, class OBCSector; isometry U, H_G = U^T H U), by the projected exact-sum SR of
-r3_core (r5_common.optimise_ckpt: one continuous trajectory). Sources are trained unprojected.
+bonds, no double occupancy (sign convention of r3_core.build_H; the 4x4 6+6 ground energy is
+checked against P2.1's ED, -11.388010886295234, to 1e-8). Size-independent MFNG on OBC (MFNGO):
+kappa_m(r) = (1/Q^2) sum_{k in Q x Q grid} cos(k.r) f_m(k) on a FIXED quadrature grid (--kq 8), so
+kappa_m is the same function of r on every cluster; site features v_s = (h_s, sum_nn h~/4,
+sum_nnn h~/4), h~ = 1 for a missing neighbour. Exact singlet. Sizes --channels/--field-hidden/
+--bf-hidden/--jas-hidden (defaults 4/16/16/16: 426 parameters).
+Symmetry: the target is trained and scored in the ED irrep of {1, Mx, My, MxMy} x {1, D} (|G| = 8;
+isometry U, H_G = U^T H U) by projected exact-sum SR (r5_common.optimise_ckpt, one continuous
+trajectory). Sources are trained unprojected.
 
 Arms and Slurm roles (--task-id 0..11: arm = ARMS[task // 3], seed = task % 3)
 ------------------------------------------------------------------------------
-  scr  (tasks 0-2)  target MF init (rng 2000 + seed), --steps target steps
-  cp   (tasks 3-5)  sources --src-a, anchor 0, best of --src-restarts by source loss; copy; --steps
-  pa   (tasks 6-8)  sources --src-a, anchor by the --anchors rule; copy; --steps     [R5.1]
-  env  (tasks 9-11) sources --src-env, --anchors rule; backflow + Jastrow copied, fields from the
-                    target MF init (rng 2000 + seed); --steps                            [R5.2]
-Every arm records its eps trajectory eps(n) = (E_n - E0)/V (projected), full records at 0 and at
-every checkpoint, and the fixed-sign excess A (P1.1 budget in the irrep) at 0 and at the last two
-checkpoints. Roles cp, pa and env also record the source fit, and env the coverage.
+  scr  (0-2)   target MF init (rng 2000 + seed)
+  scr+ (3-5)   same init; first --scrp-k steps on kernel + Jastrow only (arm name "scrp")
+  cp   (6-8)   sources --src-a, anchor 0, best of --src-restarts by source loss; copy
+  pa   (9-11)  sources --src-a, anchor by the --anchors ladder rule; copy            [R5.1]
+Every arm records eps(n) = (E_n - E0)/V, the SR clock (wall s, records excluded), full records
+and the fixed-sign excess A at 0 and every checkpoint, and (cp, pa) the charged source wall time
+and the identified-subspace fraction. JSON is rewritten every 10 steps.
 
-Decision (pre-committed; --aggregate). m(.) = median over 3 seeds.
----------------------------------------------------------------
-  eps_best = lowest eps of any arm, step or seed; eps_opt is bracketed in [0, eps_best] and every
-  ratio criterion is required at both ends ("robust").
-  PREMISE (brief): median dE_sign of the projected NNBF control (P2.1, 3 seeds) >= 0.005 t, else
-           every route UNINFORMATIVE; fewer than 3 control seeds -> PENDING-PREMISE.
-  VOID     unless eps_best * V / |E0| <= --void-tol (0.01): the transferable family must itself
-           come within 1% of E0 for transfer to matter for finite-size work.
-  COUNTED B in --ckpts-rule (default 10,20,50): m eps_scr(B) - eps_best >= 1e-3 t/site and
-           m [eps_scr(B-5) - eps_scr(B)] >= 0.02 m [eps_scr(B) - eps_best] (plateau check).
-  speed-up S_X(B) = B / m n_X(l_B), l_B = m eps_scr(B), n_X = first step with eps_X <= l_B.
-  Route X in {pa (R5.1), env (R5.2)} PASS if all of
-    S_X(B) >= 2 at >= 2 counted B;  robust m eps_X(20) - x <= 0.5 (m eps_scr(20) - x);
-    ablation: m eps_X(20) < m eps_cp(20) (pa) or < m eps_pa(20) (env: the library must add to PA);
-    sign: m A_X(last) <= m A_scr(last);   env only: coverage premise (>= 0.95).
-  FAIL if S_X(B) < 1.25 at every counted B, or robust m eps_X(20) - x >= 0.9 (m eps_scr(20) - x),
-    or (env) coverage < 0.95.  AMBIGUOUS otherwise (not promoted).
-  Hard Core: in-irrep gap per site reported; competitor flag below COMP_TOL = 1e-3 t/site,
-  otherwise "sign half only".
+Decision (pre-committed; --aggregate DIR --capacity-dir DIR). m(.) = median over 3 seeds.
+--------------------------------------------------------------------------------------------
+  x = eps_inf (capacity pilot).  C = scr+.  b = --b-step (50).
+  COUNTED B in --ckpts-rule (20,50,100,150): m eps_C(B) - x >= 1e-3 t/site and
+           m [eps_C(B-5) - eps_C(B)] >= 0.02 (m eps_C(B) - x) (plateau check).
+  S_X(B)   offset-free wall-time speed-up (fix 3, 4): level l_B = m eps_C(B);
+           S = m[T_C(l_B) - T_C(l0)] / m[T_X(l_B) - T_X(l0) + t_src,X]; S = 0 if X misses l_B
+           in 2 or more seeds.
+  PA INVALID  if anchor_ok = False in any pa seed.
+  PA FAIL     S_pa(B) < 1.25 at every counted B, or m eps_pa(b) - x >= 0.9 (m eps_C(b) - x).
+  PA PASS     S_pa(B) >= 2 at >= 2 counted B, m eps_pa(b) - x <= 0.5 (m eps_C(b) - x), and
+              m eps_pa(b) < m eps_cp(b) (ablation); printed as VOID (moot) instead if
+              eps_inf > m eps_nnbf(n*) or that NNBF value is unavailable.
+  AMBIGUOUS   otherwise (also when no B is counted).
+  SIGN claim  only if the scr sign share at 150 >= 0.10: PA sign speed-up S^A >= 2 at >= 2 counted B.
+  Hard Core: in-irrep gap per site; competitor flag below COMP_TOL = 1e-3 t/site, else "sign half
+  only".
+
+Capacity read-out (--capacity DIR, pre-committed). n* = last step of the pilot, w = --plateau-window
+(100). eps_inf = geometric extrapolation eps(n*) - d2 r / (1 - r), with d1 = eps(n*-2w) - eps(n*-w),
+d2 = eps(n*-w) - eps(n*), r = d2 / d1, used only if 0 < r < 1 (else eps_inf = eps(n*)); clipped at
+0. Rule: eps_inf V / |E0| > --capacity-tol (0.03) -> MUTATE (do not run the array); else RUN ARRAY.
 
 Command-line options
 --------------------
   --task-id INT     Slurm index 0..11 (sets --arm, --seed). Default -1 (use --arm/--seed).
-  --arm STR         scr | cp | pa | env.          --seed INT  0, 1, 2 (default 0).
+  --arm STR         scr | scrp | cp | pa.        --seed INT  0, 1, 2 (default 0).
   --tgt STR         Target "LxXLy:nup" OBC (default "4x4:6").
   --tp, --J, --t    Couplings (-0.25, 0.4, 1.0).
   --src-a STR       Sources of cp/pa, comma list of "LxXLy:nup" OBC clusters (default "4x2:3,2x4:3").
-  --src-env STR     Library of env (default "4x2:3,2x4:3,4x3:4,3x4:4").
-  --anchors STR     L2-SP ladder for |theta - theta_init|^2, per parameter (default "1e-2,1e-3,1e-4").
-                    Pre-committed rule (pa and env): the LARGEST anchor whose source fit has max
-                    relative error <= --src-tol (default 1e-2) on every source cluster; if none,
-                    the smallest, flagged anchor_ok = False. cp uses anchor 0.
-  --src-restarts INT (4)  --steps-src INT (800): source restarts (best by source loss) and steps.
-  --env-restarts INT  Restarts per anchor for the env library (default 2; its 12-site clusters
-                    cost ~4.5 s per step).
-  --steps INT       Target steps per arm (default 150).
+  --anchors STR     L2-SP ladder (default "1e-2,1e-3,1e-4"). Rule: the LARGEST anchor whose source
+                    fit has max relative error <= --src-tol (1e-2) on every source; if none, the
+                    smallest, flagged anchor_ok = False (INVALID in the aggregate).
+  --src-restarts INT (4)  --steps-src INT (800): source restarts and steps.
+  --id-tol FLOAT    Identified-subspace eigenvalue threshold (default 1e-6).
+  --scrp-k INT      Charged kernel + Jastrow steps of scr+ (default 20).
+  --steps INT       Target steps per arm (default 150; the capacity pilot uses 600).
   --ckpts STR       Record checkpoints (default "10,20,50,100,150").
-  --ckpts-rule STR  B values of the rule (default "10,20,50").
-  --b-step INT      The matched-budget step of the ratio, ablation criteria (default 20; written
-                    "20" in the rule above).
-  --skip-premise    SMOKE ONLY (--aggregate): skip the P2.1 premise gate so the route logic runs;
-                    the output is then labelled SMOKE and is not a test result.
+  --sign-at STR     Checkpoints with the sign budget A: "all" (default) or a comma list.
+  --ckpts-rule STR  B values of the rule (default "20,50,100,150").
+  --b-step INT      Matched-budget step of the ratio and ablation criteria (default 50).
+  --sign-share-step INT  Step of the scr sign share (default 150).
   --channels, --field-hidden, --bf-hidden, --jas-hidden   MFNG sizes (4, 16, 16, 16).
-  --kq INT          Quadrature grid of the size-independent kernels (default 8).
-  --delta0, --eta   MF-init d-wave amplitude and regulariser (0.3, 0.1).
+  --kq INT          Quadrature grid (8).   --delta0, --eta  MF-init d-wave amplitude, regulariser.
   --lr, --diag-shift  SR step and relative diagonal shift (0.05, 0.01).
   --fn-iters, --fn-floor, --lbfgs-iters  fixed-sign budget settings (6, 1e-3, 3000).
-  --r-min FLOAT     Pd minimal bond distance (2.0; Pd is a diagnostic only, minimum-image distance).
+  --r-min FLOAT     Pd minimal bond distance (2.0; diagnostic).
   --chunk INT       Configurations per chunk (50000).
   --wall-hours FLOAT  Stop target steps after this many hours (default 22).
-  --nnbf-dir PATH   P2.1 results folder (premise control).
+  --nnbf-dir PATH   P2.1 test folder; its *.out logs give the NNBF eps trajectory (moot condition).
   --out PATH        Output JSON (default results/{arm}_s{seed}.json).
-  --aggregate DIR   Decision from every JSON in DIR (no computation).
-  --void-tol, --comp-tol, --plateau-frac, --premise-sign  rule constants (0.01, 1e-3, 0.02, 0.005).
-  --selftest        Checks: OBC lattice vs P2.1 conventions on 3x2 (E0 vs exact diagonalisation of
-                    the dense H, and 3x2 / 4x3 OBC energies vs P2.1 tj_core), [H, P_g] = 0 and U^T U = I on a small OBC cluster, MFNGO
-                    log-derivatives vs finite differences, MFNGO kernel identical on two cluster
-                    sizes, anchored-wrapper gradient identity. Exit 2 on failure.
+  --aggregate DIR   Decision from every JSON in DIR (no computation); needs --capacity-dir.
+  --capacity-dir DIR  Capacity-pilot folder (default results_capacity).
+  --capacity DIR    Capacity read-out and pre-committed MUTATE / RUN ARRAY decision.
+  --plateau-window INT, --capacity-tol FLOAT  capacity rule constants (100, 0.03).
+  --comp-tol, --plateau-frac  rule constants (1e-3, 0.02).
+  --selftest        OBC lattice vs P2.1 conventions, [H, P_g] = 0 and U^T U = I, MFNGO
+                    log-derivatives vs finite differences, kernel identical on two sizes,
+                    anchored-wrapper identity. Exit 2 on failure.
+  --logiccheck      Decision logic on synthetic trajectories (static better start -> not PASS;
+                    VOID gates PASS only; FAIL prints under VOID; anchor_ok False -> INVALID;
+                    source cost charged; sign gate). Exit 2 on failure.
   --timing          One gradient and value pass on --chunk target configurations, extrapolated.
 
 Examples
 --------
-  python3 obc_transfer.py --selftest
-  python3 obc_transfer.py --timing
-  python3 obc_transfer.py --task-id 7                      # one Slurm task
-  python3 obc_transfer.py --aggregate results
-  # login smoke (trivial target, 2+2 electrons; checks the code, not the verdict):
-  for t in 0..11: python3 obc_transfer.py --task-id $t --tgt 4x4:2 --src-a 4x2:1,2x4:1 \
-      --src-env 4x2:1,2x4:1,4x3:2,3x4:2 --steps-src 60 --src-restarts 2 --steps 12 \
-      --ckpts 2,4,6,12 --ckpts-rule 6,12 --lbfgs-iters 300 --out results_smoke/task$t.json
+  python3 obc_transfer.py --selftest ; python3 obc_transfer.py --logiccheck
+  python3 obc_transfer.py --arm scr --seed 0 --steps 600 --ckpts 10,20,50,100,150,300,450,600 \
+      --wall-hours 28 --out results_capacity/scr_s0.json          # capacity pilot (Slurm)
+  python3 obc_transfer.py --capacity results_capacity
+  python3 obc_transfer.py --task-id 7                              # one array task
+  python3 obc_transfer.py --aggregate results --capacity-dir results_capacity
 """
 import argparse
 import glob
 import json
 import os
+import re
 import sys
 import time
 
@@ -140,13 +155,14 @@ import scipy.sparse as sp
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import r3_core as rc  # noqa: E402
-from r5_common import med, optimise_ckpt, steps_to  # noqa: E402
+from r5_common import identified_fraction, med, optimise_ckpt, steps_to  # noqa: E402
 
-ARMS = ("scr", "cp", "pa", "env")
+ARMS = ("scr", "scrp", "cp", "pa")
+LABEL = {"scr": "scr", "scrp": "scr+", "cp": "cp", "pa": "pa"}
 P21_E0 = -11.388010886295234        # P2.1 instance 0 ED ground energy (tests/P2.1_subcubic_amplitudes_r3)
 P21_REF = {"3x2:2": -4.062964411903416, "4x3:3": -9.16758855}   # tj_core.TJ OBC ground energies
 PREM_EPS = 1e-3
-COVER_MIN, COVER_W = 0.95, 1e-4
+SIGN_SHARE_MIN = 0.10
 
 
 # ============================================================================ OBC lattice
@@ -346,11 +362,12 @@ def new_net(lat, nup, a, C=None):
     return MFNGO(lat, nup, a.channels if C is None else C, a.field_hidden, a.bf_hidden, a.jas_hidden)
 
 
-def local_mask(net):
-    """Parameters of the local parts (backflow phi_m and Jastrow)."""
-    m = np.zeros(net.npar, bool)
-    for nm in ("bW", "bb", "ba", "jW", "jb", "ja"):
-        m[net.sl[nm]] = True
+def kernel_jastrow_mask(net):
+    """scr+ cheap phase: kernel (field network fW1, fb1, fW2, fb2) and Jastrow parameters; the
+    backflow (bW, bb, ba) is frozen."""
+    m = np.ones(net.npar, bool)
+    for nm in ("bW", "bb", "ba"):
+        m[net.sl[nm]] = False
     return m
 
 
@@ -370,29 +387,10 @@ def build_cluster(spec, a, target=False):
     return dict(lat=lat, basis=basis, H=H, E0=float(w[0]), psi0=v[:, 0], nup=nup, w=w)
 
 
-def env_weights(lat, basis, psi, chunk=200000):
-    """Weight of each site-environment tuple (h, a, b) (integers: own hole, holes+missing among
-    nn, among nnn) in |psi|^2, averaged over sites."""
-    out = {}
-    p = psi ** 2 / float(psi @ psi)
-    for s0 in range(0, len(basis), chunk):
-        sl = slice(s0, s0 + chunk)
-        _, _, _, v = site_features(lat, basis[sl])
-        key = (v[:, :, 0] * 100 + np.round(v[:, :, 1] * 4) * 10 + np.round(v[:, :, 2] * 4)).astype(np.int64)
-        w = np.repeat(p[sl][:, None], lat.N, 1) / lat.N
-        u, inv = np.unique(key.ravel(), return_inverse=True)
-        acc = np.bincount(inv, weights=w.ravel())
-        for k, x in zip(u.tolist(), acc.tolist()):
-            out[k] = out.get(k, 0.0) + x
-    return out
-
-
-def coverage(tgt_w, srcs_w):
-    seen = set(k for sw in srcs_w for k, x in sw.items() if x >= COVER_W)
-    return float(sum(x for k, x in tgt_w.items() if k in seen)), sorted(k for k in tgt_w if k not in seen)
-
-
 def train_sources(a, specs, anchor, seed, tag):
+    """Best of --src-restarts source fits (by source loss). Wall time (ED + all restarts) and the
+    identified-subspace fraction of the selected fit are returned in info."""
+    t0 = time.time()
     src = [build_cluster(s, a) for s in specs]
     dens = 2 * src[0]["nup"] / src[0]["lat"].N
     best, losses = None, []
@@ -406,29 +404,32 @@ def train_sources(a, specs, anchor, seed, tag):
         L = sum(e / c.V for e, c in zip(Es, cls)) + anchor * float(d @ d)
         losses.append(L)
         if best is None or L < best[0]:
-            best = (L, th_init + d, th_init, Es)
-    _, th, th_init, Es = best
+            best = (L, th_init + d, th_init, Es, cls, d)
+    _, th, th_init, Es, cls, d = best
+    wall = time.time() - t0
+    idf = identified_fraction(cls, d, a.chunk, a.id_tol)
     rel = [float((e - s["E0"]) / abs(s["E0"])) for e, s in zip(Es, src)]
-    rc.log(f"source {tag}: relerr={['%.2e' % x for x in rel]} |theta-theta_init|={np.linalg.norm(th - th_init):.3f}")
+    rc.log(f"source {tag}: relerr={['%.2e' % x for x in rel]} |theta-theta_init|={np.linalg.norm(th - th_init):.3f} "
+           f"identified {idf['n_identified']}/{idf['npar']} frac_identified={idf['frac_identified']:.3f} wall={wall:.1f}s")
     return th, th_init, src, dict(specs=specs, anchor=anchor, E=[float(e) for e in Es], relerr=rel,
-                                  restart_losses=losses, dist_init=float(np.linalg.norm(th - th_init)))
+                                  restart_losses=losses, dist_init=float(np.linalg.norm(th - th_init)),
+                                  identified=idf, wall_s=wall)
 
 
-def anchored_sources(a, specs, restarts, tag):
+def anchored_sources(a, specs, tag):
     """Pre-committed anchor rule: the LARGEST anchor of --anchors (descending) whose source fit has
     max relative error <= --src-tol on every source cluster; if none qualifies, the smallest is
-    used and info['anchor_ok'] = False."""
-    keep = a.src_restarts
-    a.src_restarts = restarts
+    used and info['anchor_ok'] = False. Every rung tried is charged (wall_s_charged)."""
     ladder = sorted((float(x) for x in a.anchors.split(",")), reverse=True)
-    tried = []
+    tried, charged = [], 0.0
     for lam in ladder:
         res = train_sources(a, specs, lam, a.seed, f"{tag} anchor {lam:g}")
-        tried.append(dict(anchor=lam, relerr=res[3]["relerr"]))
+        charged += res[3]["wall_s"]
+        tried.append(dict(anchor=lam, relerr=res[3]["relerr"], identified=res[3]["identified"],
+                          wall_s=res[3]["wall_s"]))
         if max(res[3]["relerr"]) <= a.src_tol:
             break
-    a.src_restarts = keep
-    res[3].update(ladder=tried, anchor_ok=bool(max(res[3]["relerr"]) <= a.src_tol))
+    res[3].update(ladder=tried, anchor_ok=bool(max(res[3]["relerr"]) <= a.src_tol), wall_s_charged=charged)
     return res
 
 
@@ -459,6 +460,7 @@ def target_setup(a, R):
     return dict(lat=lat, basis=basis, H=H, U=U, HG=HG, E0=E0, V=V, psi0=psi0, pair=pair, nup=T["nup"])
 
 
+
 def run(a):
     t0 = time.time()
     out = a.out or os.path.join(HERE, "results", f"{a.arm}_s{a.seed}.json")
@@ -476,33 +478,39 @@ def run(a):
     lat, nup = T["lat"], T["nup"]
     net = new_net(lat, nup, a)
     th_tgt_init = net.init(np.random.default_rng(2000 + a.seed), 2 * nup / lat.N, a.t, a.tp, a.delta0, a.eta)
-    if a.arm == "scr":
+    mask = mask_steps = None
+    if a.arm in ("scr", "scrp"):
         th = th_tgt_init
+        R["source"] = dict(wall_s_charged=0.0, anchor_ok=None)
+        if a.arm == "scrp":
+            mask, mask_steps = kernel_jastrow_mask(net), a.scrp_k
+            R["source"]["scrp_k"] = a.scrp_k
+            R["source"]["n_cheap_params"] = int(mask.sum())
     elif a.arm == "cp":
-        th, _, _, info = train_sources(a, a.src_a.split(","), 0.0, a.seed, a.arm)
-        R["source"] = info
-    elif a.arm == "pa":
-        th, _, _, info = anchored_sources(a, a.src_a.split(","), a.src_restarts, "pa")
+        th, _, _, info = train_sources(a, a.src_a.split(","), 0.0, a.seed, "cp")
+        info.update(anchor_ok=None, wall_s_charged=info["wall_s"])
         R["source"] = info
     else:
-        ths, _, src, info = anchored_sources(a, a.src_env.split(","), a.env_restarts, "env")
-        lm = local_mask(net)
-        th = th_tgt_init.copy()
-        th[lm] = ths[lm]
-        tw = env_weights(lat, T["basis"], T["psi0"])
-        sws = [env_weights(s["lat"], s["basis"], s["psi0"]) for s in src]
-        cov, miss = coverage(tw, sws)
-        cov_a, _ = coverage(tw, [sw for s, sw in zip(a.src_env.split(","), sws) if s in a.src_a.split(",")])
-        info.update(coverage=cov, coverage_src_a=cov_a, uncovered=miss)
+        th, _, _, info = anchored_sources(a, a.src_a.split(","), "pa")
         R["source"] = info
-        rc.log(f"env coverage of target environments: library {cov:.4f}, src-a only {cov_a:.4f}; uncovered {miss}")
+    rc.log(f"arm {LABEL[a.arm]}: charged source wall time {R['source']['wall_s_charged']:.1f}s")
     dump()
     ck = sorted({int(x) for x in a.ckpts.split(",")})
-    sign_at = {0} | set(ck[-2:])
+    sign_at = set([0] + ck) if a.sign_at == "all" else {0} | {int(x) for x in a.sign_at.split(",")}
+    clock = []
+    R["clock"] = clock
+
+    def on_step(n, h):
+        R["hist"] = h
+        if n % 10 == 0:
+            dump()
+
     cl = rc.Cluster(net, T["basis"], T["U"], T["HG"])
-    _, h = optimise_ckpt(cl, th, a.steps, a.lr, a.diag_shift, a.chunk, a.arm, T["E0"], T["V"], ckpts=[0] + ck,
+    _, h = optimise_ckpt(cl, th, a.steps, a.lr, a.diag_shift, a.chunk, LABEL[a.arm], T["E0"], T["V"],
+                         ckpts=[0] + ck,
                          on_ckpt=lambda n, t_: record(f"{a.arm}@{n}", net, t_, sign=(n in sign_at)),
-                         deadline=t0 + a.wall_hours * 3600)
+                         deadline=t0 + a.wall_hours * 3600, mask=mask, mask_steps=mask_steps,
+                         clock=clock, on_step=on_step)
     R["hist"] = h
     R["done"] = True
     R["wall_s"] = time.time() - t0
@@ -510,16 +518,233 @@ def run(a):
     rc.log(f"done ({out})")
 
 
-# ============================================================================ aggregate
-def nnbf_premise(d):
-    fs = sorted(glob.glob(os.path.join(d, "inst0_nnbf_s*.json")))
-    vals = []
-    for f in fs:
+# ============================================================================ decision helpers
+def medi(x):
+    """Median keeping +inf (missing levels), dropping nan / None."""
+    x = [v for v in x if v is not None and not np.isnan(v)]
+    return float(np.median(x)) if x else float("nan")
+
+
+def tgt_V(T):
+    Lx, Ly = rc.parse_lat(T["spec"].split(":")[0])
+    return Lx * Ly
+
+
+def first_reach(series, level):
+    for n, v in series:
+        if v <= level:
+            return n
+    return None
+
+
+def offset_free(X, C, B):
+    """Offset-free speed-up of X over control C at budget B (fix 3, 4). X, C: per-seed dicts with
+    series [(step, value)] sorted by step, clock (list, s) and src (charged source s). Common start
+    level l0 = min(m value_C(0), m value_X(0)); level l_B = m value_C(B). Each seed's span runs from
+    its first step at or below l0 to its first step at or below l_B; X's span is charged src (wall)
+    or src / (its mean target-step time) (steps). S = m span_C / m span_X; 0 if X misses in >= 2 seeds."""
+    v = lambda r, n: dict(r["series"]).get(n, float("nan"))
+    lB = med([v(c, B) for c in C])
+    l0 = min(med([v(c, 0) for c in C]), med([v(x, 0) for x in X]))
+    res = dict(lB=lB, l0=l0, S_wall=float("nan"), S_step=float("nan"))
+    if not lB < l0:
+        return res
+
+    def spans(rr):
+        out = []
+        for r in rr:
+            n0, n1 = first_reach(r["series"], l0), first_reach(r["series"], lB)
+            if n0 is None or n1 is None:
+                out.append((float("inf"), float("inf")))
+                continue
+            step_s = r["clock"][-1] / max(1, len(r["clock"]) - 1)
+            out.append((r["clock"][n1] - r["clock"][n0] + r["src"], n1 - n0 + r["src"] / max(1e-300, step_s)))
+        return out
+
+    sc, sx = spans(C), spans(X)
+    for i, k in enumerate(("S_wall", "S_step")):
+        if sum(not np.isfinite(s[i]) for s in sx) >= 2:
+            res[k] = 0.0
+            continue
+        num, den = medi([s[i] for s in sc]), medi([s[i] for s in sx])
+        res[k] = num / den if den > 0 else (float("inf") if num > 0 else float("nan"))
+    return res
+
+
+def per_seed(rs, k, kind, V):
+    """kind 'E': every step of eps; 'A' / 'amp': checkpoint records of the sign part A / V and the
+    amplitude part (E - E0 - A) / V (per site, so levels compare with eps)."""
+    out = []
+    for r in sorted(rs[k], key=lambda r: r["seed"]):
+        if kind == "E":
+            ser = list(enumerate(r["hist"]))
+        else:
+            ser = []
+            for nm, rec in r["arms"].items():
+                if "A" in rec and np.isfinite(rec.get("eps", float("nan"))):
+                    n = int(nm.split("@")[1])
+                    ser.append((n, rec["A"] / V if kind == "A" else rec["eps"] - rec["A"] / V))
+            ser.sort()
+        out.append(dict(series=ser, clock=r["clock"], src=float((r.get("source") or {}).get("wall_s_charged") or 0.0)))
+    return out
+
+
+def nnbf_eps_at(d, n, E0, V):
+    """P2.1 projected NNBF (instance 0) eps at step n per seed, from the *.out logs ("nnbf: it N
+    E = ..." every 50 steps; the last logged step <= n). None if that seed has not reached n."""
+    traj = {}
+    for f in sorted(glob.glob(os.path.join(d, "*.out"))):
+        seed = None
+        for line in open(f, errors="replace"):
+            m = re.search(r"instance (\d+) \{.*\} D=\d+ arm=(\w+) seed=(\d+)", line)
+            if m:
+                seed = int(m.group(3)) if (m.group(1) == "0" and m.group(2) == "nnbf") else None
+                if seed is not None:
+                    traj[seed] = []
+                continue
+            m = re.search(r"nnbf: it\s+(\d+)\s+E = (-?[0-9.]+)", line)
+            if m and seed is not None:
+                traj[seed].append((int(m.group(1)), float(m.group(2))))
+    out = {}
+    for s, pts in traj.items():
+        ok = [E for it, E in pts if it <= n]
+        out[s] = (ok[-1] - E0) / V if (pts and max(it for it, _ in pts) >= n and ok) else None
+    return out
+
+
+def capacity_estimate(h, w):
+    n = len(h) - 1
+    e = h[n]
+    info = dict(n_star=n, eps_last=e, window=w)
+    if n >= 2 * w:
+        d1, d2 = h[n - 2 * w] - h[n - w], h[n - w] - h[n]
+        r = d2 / d1 if d1 > 0 else float("nan")
+        info.update(d1=d1, d2=d2, r=r, drop_last_window_frac=d2 / max(1e-300, e))
+        if 0 < r < 1:
+            info.update(eps_inf=max(0.0, e - d2 * r / (1 - r)), how="geometric extrapolation")
+        else:
+            info.update(eps_inf=e, how="last value (r not in (0,1))")
+    else:
+        info.update(eps_inf=e, how="last value (fewer than 2w steps)")
+    return info
+
+
+def load_capacity(d, a):
+    rr = []
+    for f in sorted(glob.glob(os.path.join(d, "*.json"))):
         r = json.load(open(f))
-        b = (r.get("budgets") or {}).get("P")
-        if b:
-            vals.append(dict(seed=r["seed"], dE_sign=b["dE_sign"], dE_tot=b["dE_tot"]))
-    return vals
+        if r.get("arm") == "scr" and r.get("hist"):
+            rr.append(r)
+    if not rr:
+        return None
+    T = rr[0]["target"]
+    V = tgt_V(T)
+    ests = [capacity_estimate(r["hist"], a.plateau_window) for r in rr]
+    einf = med([e["eps_inf"] for e in ests])
+    shares = []
+    for r in rr:
+        rec = r["arms"].get(f"scr@{a.sign_share_step}", {})
+        if "A" in rec and rec.get("eps", 0) > 0:
+            shares.append(rec["A"] / (V * rec["eps"]))
+    return dict(T=T, V=V, eps_inf=einf, relerr_inf=einf * V / abs(T["E0"]), n_star=min(e["n_star"] for e in ests),
+                ests=ests, done=[bool(r.get("done")) for r in rr], sign_share=med(shares), seeds=[r["seed"] for r in rr])
+
+
+def capacity(a):
+    cap = load_capacity(a.capacity, a)
+    if cap is None:
+        print(f"CAPACITY: no scr JSON with a trajectory in {a.capacity}")
+        return None
+    T, V = cap["T"], cap["V"]
+    print(f"target {T['spec']} OBC t'={T['tp']} J={T['J']} E0={T['E0']:.10f} n_irrep={T['n_irrep']} npar={T['npar']}")
+    for s, e, dn in zip(cap["seeds"], cap["ests"], cap["done"]):
+        print(f"  scr seed {s}: n*={e['n_star']} done={dn} eps(n*)={e['eps_last']:.5e} eps_inf={e['eps_inf']:.5e} ({e['how']}"
+              + (f", r={e['r']:.3f}, drop over last {e['window']} steps = {e['drop_last_window_frac']:.3f} of eps(n*)" if "r" in e else "") + ")")
+    nn = nnbf_eps_at(a.nnbf_dir, cap["n_star"], T["E0"], V)
+    m_nn = med([v for v in nn.values() if v is not None])
+    print(f"  eps_inf={cap['eps_inf']:.5e}  relerr_inf={cap['relerr_inf']:.4f}  (capacity rule threshold {a.capacity_tol})")
+    print(f"  scr sign share at step {a.sign_share_step}: {cap['sign_share']:.4f} (sign claim allowed only if >= {SIGN_SHARE_MIN})")
+    print(f"  P2.1 projected NNBF eps at n*={cap['n_star']}: {nn} median {m_nn:.5e} -> "
+          + ("moot (VOID would gate PASS)" if not np.isfinite(m_nn) or cap["eps_inf"] > m_nn else "not moot"))
+    print(f"  FLAG abs 1%: relerr_inf {'<=' if cap['relerr_inf'] <= 0.01 else '>'} 0.01 (flag only)")
+    if cap["relerr_inf"] > a.capacity_tol:
+        print(f"CAPACITY DECISION: MUTATE (relerr_inf {cap['relerr_inf']:.4f} > {a.capacity_tol}); do NOT run the array; "
+              "enlarge the size-independent family (--channels, --bf-hidden) and re-pilot")
+    else:
+        print(f"CAPACITY DECISION: RUN ARRAY (relerr_inf {cap['relerr_inf']:.4f} <= {a.capacity_tol})")
+    return cap
+
+
+def decide(rs, cap, m_nn, a, say=print):
+    T = rs["scr"][0]["target"]
+    V, E0 = tgt_V(T), T["E0"]
+    x = cap["eps_inf"]
+    H = {k: [r["hist"] for r in sorted(rs[k], key=lambda r: r["seed"])] for k in ARMS}
+    at = lambda hs, n: [h[n] if n < len(h) else float("nan") for h in hs]
+    eps_best = min(min(h) for k in H for h in H[k])
+    flag1 = eps_best * V / abs(E0) <= 0.01
+    moot = (m_nn is None) or (not np.isfinite(m_nn)) or x > m_nn
+    say(f"target {T['spec']} OBC t'={T['tp']} J={T['J']} irrep={T['irrep']} E0={E0:.10f} n_irrep={T['n_irrep']} "
+        f"npar={T['npar']} gap/V={T['gap_per_site']:.4e} -> {'COMPETITOR' if T['competitor'] else 'sign half only'}")
+    say(f"  capacity: x = eps_inf = {x:.4e} (relerr {cap['relerr_inf']:.4f}, n* = {cap['n_star']}); "
+        f"NNBF eps at n*: {m_nn:.4e} -> {'MOOT: VOID gates PASS' if moot else 'not moot'}")
+    say(f"  FLAG abs 1%: eps_best={eps_best:.4e} relerr={eps_best * V / abs(E0):.3e} "
+        f"({'within' if flag1 else 'NOT within'} 1% of E0; flag only)")
+    E = {k: per_seed(rs, k, "E", V) for k in ARMS}
+    src = {k: med([e["src"] for e in E[k]]) for k in ARMS}
+    say(f"  charged source wall s (median): {src}")
+    rb = sorted({int(v) for v in a.ckpts_rule.split(",")})
+    rows, counted = {}, []
+    for B in rb:
+        mc = med(at(H["scrp"], B))
+        mov = med([h[B - 5] - h[B] if B < len(h) and B >= 5 else float("nan") for h in H["scrp"]])
+        c = bool((mc - x >= PREM_EPS) and (mov >= a.plateau_frac * (mc - x)))
+        row = dict(m_scrp=mc, counted=c)
+        for k in ("scr", "cp", "pa"):
+            s = offset_free(E[k], E["scrp"], B)
+            row[f"S_{k}"], row[f"Sstep_{k}"] = s["S_wall"], s["S_step"]
+        rows[B] = row
+        if c:
+            counted.append(B)
+        say(f"  B={B:4d}: " + " ".join(f"{k}={v:.4g}" if isinstance(v, float) else f"{k}={v}" for k, v in row.items()))
+    mb = {k: med(at(H[k], a.b_step)) for k in ARMS}
+    say(f"  m eps({a.b_step})={ {LABEL[k]: round(v, 5) for k, v in mb.items()} }")
+    srcs = [r["source"] for r in sorted(rs["pa"], key=lambda r: r["seed"])]
+    aok = [s.get("anchor_ok") for s in srcs]
+    say(f"  pa anchors {[s.get('anchor') for s in srcs]} anchor_ok {aok} frac of |theta - theta_init| in the "
+        f"source-identified subspace {[round(s.get('identified', {}).get('frac_identified', float('nan')), 4) for s in srcs]}")
+    fin = [B for B in counted if np.isfinite(rows[B]["S_pa"])]
+    speed = sum(rows[B]["S_pa"] >= 2 for B in counted) >= 2
+    b_ok = mb["pa"] - x <= 0.5 * (mb["scrp"] - x)
+    b_fail = mb["pa"] - x >= 0.9 * (mb["scrp"] - x)
+    slow = len(fin) >= 1 and all(rows[B]["S_pa"] < 1.25 for B in fin)
+    P = dict(counted=len(counted) >= 1, speed=speed, b=b_ok, ablation=mb["pa"] < mb["cp"])
+    if not all(v is True for v in aok):
+        v = f"INVALID (anchor_ok={aok})"
+    elif slow or b_fail:
+        v = "FAIL (" + ", ".join(n for n, f in (("slow", slow), ("b-fail", b_fail)) if f) + ")"
+    elif all(P.values()):
+        v = ("VOID (PASS conditions met, but moot: eps_inf above the NNBF at the same step count)" if moot else "PASS")
+    else:
+        v = "AMBIGUOUS (" + ", ".join(k for k, f in P.items() if not f) + " not met)"
+    say(f"GLOBAL R5.1 PA: {v}  {P}")
+    # sign part (fix 5)
+    ss = a.sign_share_step
+    sh = med([r["arms"][f"scr@{ss}"]["A"] / (V * r["arms"][f"scr@{ss}"]["eps"]) for r in rs["scr"]
+              if "A" in r["arms"].get(f"scr@{ss}", {}) and r["arms"][f"scr@{ss}"]["eps"] > 0])
+    parts = {}
+    for kind in ("A", "amp"):
+        Xs, Cs = per_seed(rs, "pa", kind, V), per_seed(rs, "scrp", kind, V)
+        parts[kind] = {B: offset_free(Xs, Cs, B)["S_step"] for B in counted}
+    say(f"  steps-to-eps by part (pa vs scr+, offset-free, checkpoint resolution, source charged in steps): "
+        f"sign A {parts['A']}  amplitude E-E0-A {parts['amp']}")
+    if np.isfinite(sh) and sh >= SIGN_SHARE_MIN:
+        sv = "PASS" if sum(s >= 2 for s in parts["A"].values()) >= 2 else "NOT MET"
+        sign = f"SIGN CLAIM (scr sign share at {ss} = {sh:.3f} >= {SIGN_SHARE_MIN}): {sv}"
+    else:
+        sign = f"SIGN CLAIM NOT MADE (scr sign share at {ss} = {sh:.3f} < {SIGN_SHARE_MIN} or missing)"
+    say(sign)
+    return dict(pa=v, sign=sign, rows=rows, counted=counted, moot=moot, flag1=flag1)
 
 
 def aggregate(a):
@@ -528,68 +753,69 @@ def aggregate(a):
         r = json.load(open(f))
         if r.get("done"):
             rs.setdefault(r["arm"], []).append(r)
-    miss = [k for k in ARMS if len(rs.get(k, [])) < 3]
+    miss = [LABEL[k] for k in ARMS if len(rs.get(k, [])) < 3]
     if miss:
         print(f"INCOMPLETE: arms with < 3 seeds: {miss}")
         return
+    cap = load_capacity(a.capacity_dir, a)
+    if cap is None:
+        print(f"NO CAPACITY PILOT in {a.capacity_dir}: x = eps_inf is undefined, no decision")
+        return
     T = rs["scr"][0]["target"]
-    V = rc.parse_lat(T["spec"].split(":")[0])[0] * rc.parse_lat(T["spec"].split(":")[0])[1]
-    H = {k: [r["hist"] for r in sorted(rs[k], key=lambda r: r["seed"])] for k in ARMS}
-    at = lambda hs, n: [h[n] if n < len(h) else float("nan") for h in hs]
-    eps_best = min(min(h) for k in H for h in H[k])
-    relerr = eps_best * V / abs(T["E0"])
-    prem = nnbf_premise(a.nnbf_dir)
-    print(f"target {T['spec']} OBC t'={T['tp']} J={T['J']} irrep={T['irrep']} E0={T['E0']:.10f} n_irrep={T['n_irrep']} "
-          f"npar={T['npar']} gap/V={T['gap_per_site']:.4e} -> {'COMPETITOR' if T['competitor'] else 'sign half only'}")
-    print(f"  premise control (P2.1 projected NNBF): {prem}")
-    print(f"  eps_best={eps_best:.4e} relerr={relerr:.3e} (VOID unless <= {a.void_tol})")
-    rb = sorted({int(x) for x in a.ckpts_rule.split(",")})
-    rows, counted = {}, []
-    for B in rb:
-        ms = med(at(H["scr"], B))
-        mov = med([h[B - 5] - h[B] if B < len(h) and B >= 5 else float("nan") for h in H["scr"]])
-        c = (ms - eps_best >= PREM_EPS) and (mov >= a.plateau_frac * (ms - eps_best))
-        row = dict(m_scr=ms, counted=bool(c))
-        for k in ("cp", "pa", "env"):
-            n = [steps_to(h, ms) for h in H[k]]
-            nm = float("inf") if sum(x is None for x in n) >= 2 else med([x if x is not None else float("inf") for x in n])
-            row[f"S_{k}"] = (B / nm if nm > 0 else float("inf")) if np.isfinite(nm) else 0.0
-            row[f"m_{k}"] = med(at(H[k], B))
-        rows[B] = row
-        if c:
-            counted.append(B)
-        print(f"  B={B:4d}: " + " ".join(f"{k}={v:.4g}" if isinstance(v, float) else f"{k}={v}" for k, v in row.items()))
-    m20 = {k: med(at(H[k], a.b_step)) for k in ARMS}
-    Alast = {k: med([r["arms"].get(f"{k}@{max(int(x) for x in a.ckpts.split(','))}", {}).get("A", float("nan"))
-                     for r in rs[k]]) for k in ARMS}
-    cov = med([r["source"].get("coverage") for r in rs["env"]])
-    print(f"  m eps({a.b_step})={ {k: round(v, 5) for k, v in m20.items()} }  m A(last)={ {k: round(v, 5) for k, v in Alast.items()} }  "
-          f"env coverage={cov:.4f}")
-    if a.skip_premise:
-        print("SMOKE: premise gate skipped (--skip-premise); the verdicts below are NOT a test result")
-    elif len(prem) < 3:
-        print("GLOBAL: PENDING-PREMISE (fewer than 3 projected-NNBF control seeds)")
-        return
-    elif med([p["dE_sign"] for p in prem]) < a.premise_sign:
-        print(f"GLOBAL: UNINFORMATIVE (projected NNBF median dE_sign < {a.premise_sign} t)")
-        return
-    if relerr > a.void_tol:
-        print("GLOBAL: VOID (the size-independent family does not reach 1% of E0)")
-        return
-    for X, abl, name in (("pa", "cp", "R5.1 PA"), ("env", "pa", "R5.2 ELT")):
-        sp_ok = sum(rows[B][f"S_{X}"] >= 2 for B in counted) >= 2
-        b_ok = all(m20[X] - x <= 0.5 * (m20["scr"] - x) for x in (0.0, eps_best))
-        b_fail = all(m20[X] - x >= 0.9 * (m20["scr"] - x) for x in (0.0, eps_best))
-        slow = len(counted) >= 1 and all(rows[B][f"S_{X}"] < 1.25 for B in counted)
-        cov_ok = X != "env" or cov >= COVER_MIN
-        P = dict(speed=sp_ok, b20=b_ok, ablation=m20[X] < m20[abl], sign=Alast[X] <= Alast["scr"], coverage=cov_ok)
-        if slow or b_fail or not cov_ok:
-            v = "FAIL (" + ", ".join(n for n, x in (("slow", slow), ("b-fail", b_fail), ("coverage", not cov_ok)) if x) + ")"
-        elif all(P.values()):
-            v = "PASS"
-        else:
-            v = "AMBIGUOUS (" + ", ".join(k for k, x in P.items() if not x) + " not met)"
-        print(f"GLOBAL {name}: {v}  {P}")
+    nn = nnbf_eps_at(a.nnbf_dir, cap["n_star"], T["E0"], tgt_V(T))
+    m_nn = med([v for v in nn.values() if v is not None])
+    print(f"  P2.1 NNBF eps at n*={cap['n_star']} per seed: {nn}")
+    decide(rs, cap, m_nn, a)
+
+
+# ============================================================================ logic check
+def logiccheck(a):
+    """Decision logic on synthetic trajectories (no physics)."""
+    V, E0, x, n = 16, -10.0, 0.002, 150
+    ck = (0, 10, 20, 50, 100, 150)
+    ctrl = lambda m: x + 0.3 * np.exp(-m / 60.0)
+    fast = lambda m: x + 0.3 * np.exp(-m / 20.0)
+    T = dict(spec="4x4:6", tp=-0.25, J=0.4, irrep={}, E0=E0, n_irrep=1, npar=426, gap_per_site=0.05, competitor=False)
+
+    def syn(arm, f, src=0.0, aok=True, share=0.3):
+        out = []
+        for s in range(3):
+            h = [float(f(m)) for m in range(n + 1)]
+            r = dict(arm=arm, seed=s, done=True, hist=h, clock=[100.0 * m for m in range(n + 1)], target=T,
+                     arms={f"{arm}@{c}": dict(eps=h[c], A=share * V * h[c]) for c in ck},
+                     source=dict(anchor_ok=(aok if s == 0 else True) if arm == "pa" else None, wall_s_charged=src,
+                                 anchor=1e-3, identified=dict(frac_identified=0.5)))
+            out.append(r)
+        return out
+
+    b = argparse.Namespace(**vars(a))
+    b.ckpts_rule, b.b_step, b.sign_share_step, b.plateau_frac = "20,50,100,150", 50, 150, 0.02
+    cap = dict(eps_inf=x, relerr_inf=x * V / abs(E0), n_star=600)
+    quiet = lambda *_: None
+    ok = True
+
+    def case(name, pa, m_nn, want, share=0.3, cp=None):
+        nonlocal ok
+        rs = dict(scr=syn("scr", ctrl, share=share), scrp=syn("scrp", ctrl, share=share),
+                  cp=cp or syn("cp", ctrl), pa=pa)
+        d = decide(rs, cap, m_nn, b, say=quiet)
+        good = d["pa"].startswith(want[0]) and (len(want) < 2 or d["sign"].startswith(want[1]))
+        ok &= good
+        rc.log(f"logiccheck {name}: PA -> {d['pa'].split('  ')[0]} | {d['sign'][:26]} (expect {want}) {'OK' if good else 'FAIL'}")
+
+    old_S = 100 / steps_to([ctrl(m + 60) for m in range(n + 1)], ctrl(100))
+    rc.log(f"logiccheck (context) old rule S = B / n_X(l_B) for a 60-step static head start at B=100: {old_S:.2f} (>= 2 would PASS)")
+    case("static better start, no source cost", syn("pa", lambda m: ctrl(m + 60)), 1.0, ("FAIL",))
+    case("3x faster descent, not moot", syn("pa", fast), 1.0, ("PASS",))
+    case("3x faster descent, moot", syn("pa", fast), 1e-4, ("VOID",))
+    case("static better start, moot (FAIL still prints)", syn("pa", lambda m: ctrl(m + 60)), 1e-4, ("FAIL",))
+    case("3x faster but source costs 100 target steps", syn("pa", fast, src=1e4), 1.0, ("FAIL",))
+    case("3x faster, anchor_ok False in one seed", syn("pa", fast, aok=False), 1.0, ("INVALID",))
+    case("sign share 0.3: claim made", syn("pa", fast), 1.0, ("PASS", "SIGN CLAIM (scr"), share=0.3)
+    case("sign share 0.05: claim not made", syn("pa", fast), 1.0, ("PASS", "SIGN CLAIM NOT MADE"), share=0.05)
+    case("pa no better than cp at b (ablation)", syn("pa", fast), 1.0, ("AMBIGUOUS",), cp=syn("cp", fast))
+    rc.log("LOGICCHECK " + ("PASSED" if ok else "FAILED"))
+    return ok
 
 
 # ============================================================================ self-tests
@@ -672,15 +898,16 @@ def parse_args(argv):
     p.add_argument("--J", type=float, default=0.4)
     p.add_argument("--t", type=float, default=1.0)
     p.add_argument("--src-a", default="4x2:3,2x4:3")
-    p.add_argument("--src-env", default="4x2:3,2x4:3,4x3:4,3x4:4")
     p.add_argument("--anchors", default="1e-2,1e-3,1e-4")
     p.add_argument("--src-tol", type=float, default=1e-2)
     p.add_argument("--src-restarts", type=int, default=4)
-    p.add_argument("--env-restarts", type=int, default=2)
     p.add_argument("--steps-src", type=int, default=800)
+    p.add_argument("--id-tol", type=float, default=1e-6)
+    p.add_argument("--scrp-k", type=int, default=20)
     p.add_argument("--steps", type=int, default=150)
     p.add_argument("--ckpts", default="10,20,50,100,150")
-    p.add_argument("--ckpts-rule", default="10,20,50")
+    p.add_argument("--sign-at", default="all")
+    p.add_argument("--ckpts-rule", default="20,50,100,150")
     p.add_argument("--channels", type=int, default=4)
     p.add_argument("--field-hidden", type=int, default=16)
     p.add_argument("--bf-hidden", type=int, default=16)
@@ -696,16 +923,19 @@ def parse_args(argv):
     p.add_argument("--r-min", type=float, default=2.0)
     p.add_argument("--chunk", type=int, default=50000)
     p.add_argument("--wall-hours", type=float, default=22.0)
-    p.add_argument("--nnbf-dir", default=os.path.join(HERE, "..", "P2.1_subcubic_amplitudes_r3", "results"))
+    p.add_argument("--nnbf-dir", default=os.path.join(HERE, "..", "P2.1_subcubic_amplitudes_r3"))
     p.add_argument("--out", default=None)
     p.add_argument("--aggregate", default="")
-    p.add_argument("--void-tol", type=float, default=0.01)
+    p.add_argument("--capacity-dir", default=os.path.join(HERE, "results_capacity"))
+    p.add_argument("--capacity", default="")
+    p.add_argument("--plateau-window", type=int, default=100)
+    p.add_argument("--capacity-tol", type=float, default=0.03)
     p.add_argument("--comp-tol", type=float, default=1e-3)
     p.add_argument("--plateau-frac", type=float, default=0.02)
-    p.add_argument("--premise-sign", type=float, default=0.005)
-    p.add_argument("--b-step", type=int, default=20)
-    p.add_argument("--skip-premise", action="store_true")
+    p.add_argument("--b-step", type=int, default=50)
+    p.add_argument("--sign-share-step", type=int, default=150)
     p.add_argument("--selftest", action="store_true")
+    p.add_argument("--logiccheck", action="store_true")
     p.add_argument("--timing", action="store_true")
     a = p.parse_args(argv)
     if a.task_id >= 0:
@@ -720,6 +950,11 @@ def main(argv=None):
     if a.aggregate:
         aggregate(a)
         return
+    if a.capacity:
+        capacity(a)
+        return
+    if a.logiccheck:
+        sys.exit(0 if logiccheck(a) else 2)
     if a.selftest:
         sys.exit(0 if selftest(a) else 2)
     if a.timing:

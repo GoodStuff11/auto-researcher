@@ -1,26 +1,27 @@
 [     0.0s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
 [     0.2s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
-[     0.5s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
-[     1.0s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
-[     1.0s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
-[     1.0s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
-[     1.0s] SELFTEST PASSED
-[     1.5s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
-[     3.3s] arm scr@0    : E=-2.15596647 eps=4.6947e-01 (raw 1.1874e-01, irrep weight 0.024) A/V=1.1987e-01 sign-agree=-0.0363 Pd=4.2677e-03 fid=0.0094
-[     4.1s]   [scr] step 1/12 eps=4.48710e-01 lr=0.0275
-[     4.7s]   [scr] step 2/12 eps=3.81673e-01 lr=0.0303
-[     4.8s] arm scr@2    : E=-3.56073930 eps=3.8167e-01 (raw 1.2654e-01, irrep weight 0.060) sign-agree=0.2055 Pd=4.3656e-03 fid=0.0069
-[     5.5s]   [scr] step 3/12 eps=3.60435e-01 lr=0.0333
-[     6.1s]   [scr] step 4/12 eps=3.17624e-01 lr=0.0366
-[     6.2s] arm scr@4    : E=-4.58552236 eps=3.1762e-01 (raw 1.2376e-01, irrep weight 0.059) sign-agree=0.2492 Pd=3.9604e-03 fid=0.0437
-[     6.8s]   [scr] step 5/12 eps=2.84935e-01 lr=0.0403
-[     7.4s]   [scr] step 6/12 eps=2.46250e-01 lr=0.0443
-[     8.8s] arm scr@6    : E=-5.72751325 eps=2.4625e-01 (raw 1.2521e-01, irrep weight 0.104) A/V=8.2345e-02 sign-agree=0.4271 Pd=4.8451e-03 fid=0.1517
-[     9.4s]   [scr] step 7/12 eps=1.96184e-01 lr=0.0487
-[    10.0s]   [scr] step 8/12 eps=1.33882e-01 lr=0.0536
-[    10.6s]   [scr] step 9/12 eps=6.94639e-02 lr=0.0589
-[    11.2s]   [scr] step 10/12 eps=3.42104e-02 lr=0.0648
-[    11.7s]   [scr] step 11/12 eps=1.97416e-02 lr=0.0713
-[    12.3s]   [scr] step 12/12 eps=1.38299e-02 lr=0.0785
-[    13.7s] arm scr@12   : E=-9.44623233 eps=1.3830e-02 (raw 7.6304e-02, irrep weight 0.184) A/V=2.2255e-03 sign-agree=0.9776 Pd=1.0814e-02 fid=0.8055
-[    13.7s] done (results_smoke/task1.json)
+[     1.3s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
+[     1.7s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
+[     1.7s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
+[     1.7s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
+[     1.7s] SELFTEST PASSED
+[     2.4s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
+[     2.4s] arm scr: charged source wall time 0.0s
+[     5.2s] arm scr@0    : E=-2.15596647 eps=4.6947e-01 (raw 1.1874e-01, irrep weight 0.024) A/V=1.1987e-01 sign-agree=-0.0363 Pd=4.2677e-03 fid=0.0094
+[     6.6s]   [scr] step 2/24 eps=3.81673e-01 lr=0.0303
+[     7.8s]   [scr] step 4/24 eps=3.17624e-01 lr=0.0366
+[     9.9s] arm scr@4    : E=-4.58552236 eps=3.1762e-01 (raw 1.2376e-01, irrep weight 0.059) A/V=1.0600e-01 sign-agree=0.2496 Pd=3.9604e-03 fid=0.0437
+[    11.2s]   [scr] step 6/24 eps=2.46250e-01 lr=0.0443
+[    12.4s]   [scr] step 8/24 eps=1.33882e-01 lr=0.0536
+[    14.5s] arm scr@8    : E=-7.52539130 eps=1.3388e-01 (raw 1.0923e-01, irrep weight 0.126) A/V=1.4279e-02 sign-agree=0.9115 Pd=8.5571e-03 fid=0.4006
+[    15.7s]   [scr] step 10/24 eps=3.42104e-02 lr=0.0648
+[    16.9s]   [scr] step 12/24 eps=1.38299e-02 lr=0.0785
+[    19.0s] arm scr@12   : E=-9.44623233 eps=1.3830e-02 (raw 7.6304e-02, irrep weight 0.184) A/V=2.3440e-03 sign-agree=0.9774 Pd=1.0814e-02 fid=0.8055
+[    20.2s]   [scr] step 14/24 eps=8.47221e-03 lr=0.0949
+[    21.4s]   [scr] step 16/24 eps=5.50361e-03 lr=0.115
+[    22.6s]   [scr] step 18/24 eps=4.06229e-03 lr=0.139
+[    23.8s]   [scr] step 20/24 eps=3.60000e-03 lr=0.0841
+[    25.0s]   [scr] step 22/24 eps=3.42935e-03 lr=0.102
+[    26.3s]   [scr] step 24/24 eps=3.28887e-03 lr=0.0616
+[    28.4s] arm scr@24   : E=-9.61488916 eps=3.2889e-03 (raw 7.6937e-02, irrep weight 0.169) A/V=8.6909e-04 sign-agree=0.9943 Pd=5.6648e-03 fid=0.9638
+[    28.4s] done (results_smoke/task1.json)

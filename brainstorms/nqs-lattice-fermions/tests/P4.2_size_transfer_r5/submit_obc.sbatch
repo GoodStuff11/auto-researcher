@@ -9,14 +9,14 @@
 #SBATCH --time=24:00:00
 #SBATCH --output=/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/%x_%A_%a.out
 #SBATCH --error=/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/%x_%A_%a.err
-# P4.2 round 5 decisive test (obc_transfer.py docstring): 4x4 OBC t-t'-J, 6+6, t'=-0.25, J=0.4.
-# Tasks 0-2 scr, 3-5 cp, 6-8 pa (R5.1), 9-11 env (R5.2); seed = task % 3.
-# Cost (timing_output.txt, 8 threads, 426 parameters): grad+value pass ~108 s, so ~110-140 s per
-# projected SR step; 150 steps ~5-6 h per arm. Sources: cp/pa 4 x 800 steps on 2 x 560 states
-# (minutes); env adds 2 x 34650-state 4x3 clusters, ~4 h. Target setup (H, ED, isometry) ~5 min.
-# Worst task (env) ~10-11 h; --wall-hours 22 guards the 24 h limit.
-# Premise control: P2.1 projected NNBF (results read from ../P2.1_subcubic_amplitudes_r3/results).
-# Afterwards: python3 obc_transfer.py --aggregate results
+# P4.2 round 5 decisive test (critic-fixed; obc_transfer.py docstring): 4x4 OBC t-t'-J, 6+6,
+# t'=-0.25, J=0.4. Tasks 0-2 scr, 3-5 scr+ (20 charged kernel+Jastrow steps), 6-8 cp, 9-11 pa
+# (R5.1); seed = task % 3. ELT was killed at Gate 0 and has no arm.
+# SUBMIT ONLY IF the capacity pilot (submit_capacity.sbatch) gives CAPACITY DECISION: RUN ARRAY.
+# Cost: ~110-140 s per projected SR step (timing_output.txt), 150 steps ~5-6 h, plus 6 records with
+# the sign budget; cp/pa sources (2 x 560 states, up to 3 anchors x 4 restarts x 800 steps) take
+# minutes and are charged to S. --wall-hours 22 guards the 24 h limit.
+# Afterwards: python3 obc_transfer.py --aggregate results --capacity-dir results_capacity
 set -euo pipefail
 DIR=/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5
 PY=/share/apps/software/anaconda3/bin/python3
