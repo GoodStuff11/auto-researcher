@@ -1,0 +1,2 @@
+# Calendar (next meeting per series)
+`project.yaml` `series.<name>.calendar_match` = words in the meeting's calendar title. For each series with a match: `list_events` (Google Calendar) with `fullText` = the match, `orderBy: startTime`, `pageSize: 5` (default window: the next 7 days; pass `startTime`/`endTime` for up to 5 weeks ahead if nothing is found). Take the first upcoming event's date and run `hub meeting next <series> <YYYY-MM-DD>`. If the calendar connector is not available, report the source as not reachable; never invent a date.
