@@ -80,3 +80,56 @@ def test_log_appends_monthly(store, hub_root):
     assert text == ("# Log 2026-11\n"
                     "- 2026-11-12 · alice · commit:x@1 — Run finished.\n"
                     "- 2026-11-20 · bob · overleaf:2 — Draft pushed.\n")
+
+
+def test_coerce_errors_are_store_errors(store):
+    q = mk(store, "question", "Why?")
+    with pytest.raises(StoreError, match="closed"):
+        store.set_fields(q.id, {"closed": "tomorrow"})
+    with pytest.raises(StoreError, match="priority"):
+        store.set_fields(q.id, {"priority": "high"})
+
+
+def test_children_skips_missing_pivot_and_dedupes(store, hub_root):
+    a = mk(store, "question", "A")
+    b = mk(store, "decision", "B")
+    c = mk(store, "decision", "C")
+    store.link(b.id, "answers", a.id)
+    # link() refuses missing targets, so write the pivot list directly
+    item = store.get(a.id)
+    item.meta["links"]["pivoted_to"] = [b.id, "Q-20990101-zzz", c.id]
+    store.save(item)
+    assert [x.id for x in store.children(a.id)] == [b.id, c.id]
+    with pytest.raises(KeyError):
+        store.children("Q-20990101-zzz")
+
+
+def test_log_invalid_author_creates_nothing(store, hub_root):
+    with pytest.raises(ValueError):
+        store.log("x", author="", source="manual", day=D)
+    assert not (hub_root / "Status" / "Log").exists()
+
+
+def test_malformed_ids_never_read_outside_items(store, hub_root):
+    (hub_root / "Status" / "Items").mkdir(parents=True)
+    (hub_root / "x.md").write_text("---\nid: X\ntype: question\ntitle: t\nstatus: open\n---\n")
+    with pytest.raises(KeyError):
+        store.get("../../x")
+    q = mk(store, "question", "Why?")
+    with pytest.raises(StoreError, match="does not exist"):
+        store.link(q.id, "answers", "../../x")
+
+
+def test_field_shape_validation(store):
+    q = mk(store, "question", "Why?")
+    with pytest.raises(StoreError, match="series"):
+        store.set_fields(q.id, {"series": "group"})
+    with pytest.raises(StoreError, match="sources"):
+        store.set_fields(q.id, {"sources": "manual"})
+    with pytest.raises(StoreError, match="title"):
+        store.set_fields(q.id, {"title": "  "})
+    with pytest.raises(StoreError, match="series"):
+        store.create("question", "x", owner="alice", author="alice", day=D, source="manual",
+                     fields={"series": "group"})
+    store.set_fields(q.id, {"owner": None})
+    assert store.get(q.id).owner is None
