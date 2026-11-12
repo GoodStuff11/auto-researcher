@@ -118,6 +118,9 @@ def validate_draft(draft: dict) -> list[str]:
             minutes = row.get("minutes")
             if not isinstance(minutes, int) or isinstance(minutes, bool):
                 errs.append(f"decisions[{i}]: minutes must be an int")
+            if "weigh_in" in row and not isinstance(row["weigh_in"], str):
+                errs.append(f"decisions[{i}]: weigh_in must be one string of comma-separated people keys "
+                            f"(e.g. \"alice, bob\"), got {row['weigh_in']!r}")
     return errs
 
 

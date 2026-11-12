@@ -11,7 +11,7 @@ import yaml
 
 from .batch import run_batch
 from .clickup import apply_clickup, load_tasks, plan_clickup
-from .ingest_git import ingest_git
+from .ingest_git import IngestError, entry_branch, ingest_git
 from .pending import load_proposals
 from .sources import source_seen
 from .sync_state import load_state, save_state
@@ -62,6 +62,9 @@ def add_ext_parsers(sub) -> None:
     g.add_argument("--advance", action="store_true",
                    help="after listing, move the watermark git.<ROOT> to the newest listed commit; use only "
                         "once the commits have been recorded (e.g. via `hub ingest batch`)")
+    g.add_argument("--to", metavar="SHA",
+                   help="with --advance: move the watermark only to this commit (full sha or 7+ character "
+                        "prefix), which must be one of the commits listed now; pass the newest sha you recorded")
     g.add_argument("--limit", type=_positive, default=500, metavar="N",
                    help="at most N oldest unlisted commits per run; a warning says when more remain "
                         "(default 500)")
@@ -126,7 +129,11 @@ def _source_rows(cfg) -> list[dict]:
         repos.append(("overleaf", src["overleaf"]))
     for kind, r in repos:
         name = f"git.{r.get('root')}"
-        rows.append({"source": name, "detail": f"{kind} {r.get('root')} ({r.get('branch') or 'HEAD'})",
+        try:
+            branch = (entry_branch(r) if isinstance(r, dict) else None) or "HEAD"
+        except IngestError as exc:
+            branch = f"config error: {exc}"
+        rows.append({"source": name, "detail": f"{kind} {r.get('root')} ({branch})",
                      "watermark": wm.get(name)})
     if "calendar" in src:
         rows.append({"source": "calendar", "detail": "next meeting per series", "watermark": None})
@@ -163,7 +170,7 @@ def dispatch_ext(args, cfg, store, *, today, me) -> int | None:
         print("seen " + " ".join(where) if where else "new")
     elif cmd == "ingest" and args.icmd == "git":
         res = ingest_git(cfg, args.root_name, today=today, since=args.since, advance=args.advance,
-                         limit=args.limit)
+                         limit=args.limit, to=args.to)
         print(json.dumps(res, indent=2, default=str))
         if res["warning"]:
             print(f"warning: {res['warning']}", file=sys.stderr)

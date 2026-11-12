@@ -47,7 +47,7 @@ Commands (each has its own --help):
   sync-state get SOURCE | set SOURCE VALUE
                              read/write ingest watermarks (Status/sync-state/watermark.<SOURCE>.yaml)
   seen SOURCE                print `new`, or `seen` and where SOURCE (circleback:<id>, clickup:<id>, …) is recorded
-  ingest git ROOT [--since YYYY-MM-DD] [--advance] [--limit N]
+  ingest git ROOT [--since YYYY-MM-DD] [--advance [--to SHA]] [--limit N]
                              JSON list of commits of a configured repository since watermark git.<ROOT>
   ingest batch FILE          apply an agent-written ingest file (safe ops directly, proposals staged; idempotent)
   clickup plan|apply --tasks FILE

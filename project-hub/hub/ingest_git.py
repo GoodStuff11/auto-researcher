@@ -7,6 +7,8 @@ Configuration (project.yaml):
   sources:
     repos:    [{root: <ROOT>, branch: <name>}]  # branch optional, default HEAD
     overleaf: {root: <ROOT>, branch: <name>}
+An entry may give `branches: [<name>, ...]` instead of `branch` (the first is used) and may carry `remote`
+(ignored); any other key is an error.
 """
 from __future__ import annotations
 
@@ -40,14 +42,34 @@ def resolve_root(config: HubConfig, name: str) -> Path:
     return path
 
 
+ENTRY_KEYS = ("root", "branch", "branches", "remote")
+
+
+def entry_branch(entry: dict) -> str | None:
+    """The branch of one sources.repos[] / sources.overleaf entry (None = HEAD); IngestError if malformed."""
+    where = f"repository entry for root '{entry.get('root')}'"
+    unknown = [k for k in entry if k not in ENTRY_KEYS]
+    if unknown:
+        raise IngestError(f"{where}: unknown key(s) {', '.join(map(str, unknown))} "
+                          f"(allowed: {', '.join(ENTRY_KEYS)})")
+    if "branch" in entry and "branches" in entry:
+        raise IngestError(f"{where}: give either `branch` or `branches`, not both")
+    if "branches" in entry:
+        branches = entry["branches"]
+        if not isinstance(branches, list) or not branches or not str(branches[0] or "").strip():
+            raise IngestError(f"{where}: `branches` must be a non-empty list of branch names, got {branches!r}")
+        return str(branches[0])
+    return str(entry["branch"]) if entry.get("branch") else None
+
+
 def configured_branch(config: HubConfig, name: str) -> str | None:
     sources = config.sources or {}
     entries = list(sources.get("repos") or [])
     if isinstance(sources.get("overleaf"), dict):
         entries.append(sources["overleaf"])
     for entry in entries:
-        if isinstance(entry, dict) and entry.get("root") == name and entry.get("branch"):
-            return str(entry["branch"])
+        if isinstance(entry, dict) and entry.get("root") == name:
+            return entry_branch(entry)
     return None
 
 
@@ -100,9 +122,13 @@ def git_commits(path: Path, branch: str | None, *, since_sha=None, since_date=No
 
 
 def ingest_git(config: HubConfig, name: str, *, today: date, since: date | None = None,
-               advance: bool = False, limit: int = 500) -> dict:
+               advance: bool = False, limit: int = 500, to: str | None = None) -> dict:
     """List commits since the watermark (or since `since`, which ignores the watermark). With `advance`,
-    move the watermark to the newest listed commit; run it only after the commits have been recorded."""
+    move the watermark to the newest listed commit, or with `to` to that commit (a full sha or a prefix of
+    at least 7 characters matching exactly one listed commit); run it only after the commits have been
+    recorded. `to` protects against commits that arrived after the agent listed and recorded them."""
+    if to is not None and not advance:
+        raise IngestError("--to needs --advance")
     path = resolve_root(config, name)
     branch = configured_branch(config, name)
     wm = watermark_name(name)
@@ -110,8 +136,16 @@ def ingest_git(config: HubConfig, name: str, *, today: date, since: date | None 
     since_date = since or (today - timedelta(days=DEFAULT_LOOKBACK_DAYS))
     commits, warning = git_commits(path, branch, since_sha=None if since else before,
                                    since_date=since_date, limit=limit)
-    advanced = bool(advance and commits)
+    target = commits[-1]["sha"] if commits else None
+    if to is not None:
+        want = to.strip().lower()
+        matches = [c["sha"] for c in commits if len(want) >= 7 and c["sha"].startswith(want)]
+        if len(matches) != 1:
+            raise IngestError(f"--to {to}: not {'exactly ' if matches else ''}one of the {len(commits)} commit(s) "
+                              f"listed now (give the full sha, or at least 7 characters, of a commit you recorded)")
+        target = matches[0]
+    advanced = bool(advance and target)
     if advanced:
-        set_watermark(config.root, wm, commits[-1]["sha"])
+        set_watermark(config.root, wm, target)
     return {"root": name, "path": str(path), "branch": branch or "HEAD", "watermark_before": before,
             "commits": commits, "warning": warning, "advanced": advanced}

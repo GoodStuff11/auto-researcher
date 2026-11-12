@@ -258,3 +258,123 @@ def test_meeting_decided_reports_not_reached_and_staged(hub_root, monkeypatch, c
     assert any(ln.startswith(d1) and "— Do it" in ln for ln in lines)
     assert any(ln.startswith(d2) and "— not reached" in ln and "as proposed" not in ln for ln in lines)
     assert lines[-1] == f"staged: {res['staged'][0]}"
+
+
+# ---------------------------------------------------------------- I6 + `--to`: repository entries
+
+@pytest.fixture
+def repo_vault(tmp_path, monkeypatch):
+    monkeypatch.delenv("HUB_ME", raising=False)
+    repo = tmp_path / "code"
+    repo.mkdir()
+    git(repo, "init", "-q", "-b", "main")
+    git(repo, "config", "user.email", "t@example.com")
+    git(repo, "config", "user.name", "Tester")
+    for i in range(3):
+        (repo / f"f{i}.txt").write_text(str(i))
+        git(repo, "add", ".")
+        git(repo, "commit", "-q", "-m", f"c{i}")
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    (vault / "hub.local.yaml").write_text(f"me: alice\nroots:\n  CODE: {repo}\n")
+
+    def configure(entry: str):
+        (vault / "project.yaml").write_text(
+            "name: demo\npeople:\n  alice: {name: Alice}\nseries:\n  group: {attendees: [alice]}\n"
+            f"roots:\n  CODE: /nowhere\nsources:\n  repos:\n    - {entry}\n")
+        return load_config(vault)
+    return configure, repo, vault
+
+
+@pytest.mark.parametrize("entry, branch", [
+    ("{root: CODE, branch: main}", "main"),
+    ("{root: CODE, branches: [main, dev]}", "main"),
+    ("{root: CODE, branch: main, remote: origin}", "main"),
+    ("{root: CODE}", "HEAD"),
+])
+def test_repo_entry_branch_or_branches(repo_vault, entry, branch):
+    from hub.ingest_git import ingest_git
+    configure, _, _ = repo_vault
+    res = ingest_git(configure(entry), "CODE", today=date(2026, 11, 12), since=date(2000, 1, 1))
+    assert res["branch"] == branch and len(res["commits"]) == 3
+
+
+@pytest.mark.parametrize("entry, message", [
+    ("{root: CODE, branchs: main}", "unknown key(s) branchs"),
+    ("{root: CODE, branches: []}", "`branches` must be a non-empty list"),
+    ("{root: CODE, branches: main}", "`branches` must be a non-empty list"),
+    ("{root: CODE, branch: main, branches: [main]}", "either `branch` or `branches`"),
+])
+def test_repo_entry_errors(repo_vault, entry, message):
+    from hub.ingest_git import IngestError, ingest_git
+    configure, _, _ = repo_vault
+    with pytest.raises(IngestError, match=re_escape(message)):
+        ingest_git(configure(entry), "CODE", today=date(2026, 11, 12))
+
+
+def re_escape(text):
+    import re
+    return re.escape(text)
+
+
+def test_advance_to_stops_at_the_recorded_commit(repo_vault):
+    from hub.ingest_git import IngestError, ingest_git
+    from hub.sync_state import get_watermark
+    configure, repo, vault = repo_vault
+    cfg = configure("{root: CODE, branch: main}")
+    today = date(2026, 11, 12)
+    listed = ingest_git(cfg, "CODE", today=today)["commits"]
+    recorded = listed[-1]["sha"]
+    (repo / "late.txt").write_text("late")  # a commit lands after the agent recorded its batch
+    git(repo, "add", ".")
+    git(repo, "commit", "-q", "-m", "late commit")
+    with pytest.raises(IngestError, match="--to needs --advance"):
+        ingest_git(cfg, "CODE", today=today, to=recorded)
+    with pytest.raises(IngestError, match="not one of the 4 commit"):
+        ingest_git(cfg, "CODE", today=today, advance=True, to="0000000")
+    with pytest.raises(IngestError, match="not one of"):
+        ingest_git(cfg, "CODE", today=today, advance=True, to=recorded[:6])  # too short
+    res = ingest_git(cfg, "CODE", today=today, advance=True, to=recorded[:7])
+    assert res["advanced"] and get_watermark(vault, "git.CODE") == recorded
+    after = ingest_git(cfg, "CODE", today=today)["commits"]
+    assert [c["subject"] for c in after] == ["late commit"]  # not skipped
+
+
+def test_cli_advance_to(repo_vault, monkeypatch, capsys):
+    import json
+    from hub.cli import main
+    configure, repo, vault = repo_vault
+    configure("{root: CODE, branch: main}")
+    monkeypatch.chdir(vault)
+    monkeypatch.setenv("HUB_TODAY", "2026-11-12")
+    assert main(["ingest", "git", "CODE"]) == 0
+    first = json.loads(capsys.readouterr().out)["commits"][0]["sha"]
+    assert main(["ingest", "git", "CODE", "--advance", "--to", first]) == 0
+    assert json.loads(capsys.readouterr().out)["advanced"] is True
+    assert main(["ingest", "git", "CODE"]) == 0
+    assert len(json.loads(capsys.readouterr().out)["commits"]) == 2
+
+
+# ---------------------------------------------------------------- minors: load_tasks, validate_draft
+
+@pytest.mark.parametrize("assignees", ["222", 222, {"id": 222}])
+def test_load_tasks_assignees_must_be_a_list(tmp_path, assignees):
+    import json
+    from hub.clickup import ClickUpError, load_tasks
+    p = tmp_path / "t.json"
+    p.write_text(json.dumps([{"id": "t1", "name": "Act", "status": "open", "assignees": assignees}]))
+    with pytest.raises(ClickUpError, match="task t1: assignees must be a list"):
+        load_tasks(p)
+    p.write_text(json.dumps([{"id": "t1", "name": "Act", "status": "open", "assignees": None}]))
+    assert load_tasks(p)[0]["assignees"] == []
+
+
+def test_validate_draft_weigh_in_must_be_a_string():
+    from hub.agenda.draft import validate_draft
+    draft = {"series": "group", "meeting_date": date(2026, 11, 19), "previous_meeting": None, "summary": "S.",
+             "since_last": [], "questions": [],
+             "decisions": [{"decide": "X", "minutes": 10, "weigh_in": ["alice", "bob"]}]}
+    assert validate_draft(draft) == ["decisions[0]: weigh_in must be one string of comma-separated people keys "
+                                     "(e.g. \"alice, bob\"), got ['alice', 'bob']"]
+    draft["decisions"][0]["weigh_in"] = "alice, bob"
+    assert validate_draft(draft) == []

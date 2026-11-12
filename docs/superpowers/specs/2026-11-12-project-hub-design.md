@@ -80,7 +80,7 @@ sources:
   clickup: {list_id: "901307841677"}
   circleback: {folder: "Fermion Unitary", terms: ["UCC", "HVA"]}
   repos:
-    - {root: ML_REPO, branches: [main], remote: https://github.com/…}
+    - {root: ML_REPO, branch: main}       # `branches: [main]` also accepted (first used); `remote` ignored
   overleaf: {root: PAPER}
   calendar: {}
   notes: []                  # opt-in per person, in hub.local.yaml

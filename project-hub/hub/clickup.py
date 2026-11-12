@@ -75,8 +75,13 @@ def load_tasks(path) -> list[dict]:
         status = "" if status is None else str(status)
         if not status.strip():
             raise ClickUpError(f"task {tid}: missing status")
+        raw_assignees = t.get("assignees")
+        if raw_assignees is None:
+            raw_assignees = []
+        if not isinstance(raw_assignees, list):
+            raise ClickUpError(f"task {tid}: assignees must be a list, got {raw_assignees!r}")
         assignees = []
-        for a in t.get("assignees") or []:
+        for a in raw_assignees:
             if isinstance(a, dict):
                 assignees.append([str(a[k]) for k in ("id", "username", "email") if a.get(k) not in (None, "")])
             else:

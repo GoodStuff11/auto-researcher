@@ -16,13 +16,14 @@ Watermarks live in `Status/sync-state/watermark.<name>.yaml` (vault-layout.md; n
 ## hub seen SOURCE
 `source_seen` (`hub/sources.py:21`). Prints `new` when SOURCE appears nowhere. Otherwise `seen` plus space-separated places: an item id (SOURCE is in its `sources` frontmatter list), `log:<YYYY-MM>` (a monthly log line has ` · SOURCE — `), a pending id `P-xxxx` (the proposal's `source` or one of its ops' `source`). Example: `seen S-20261101-ab12 log:2026-11`. Exit 0.
 An `unreadable:<path>` entry (item or proposal file that failed to load) means the answer may be incomplete; fix that file. A monthly log that cannot be decoded is an error (exit 1) rather than a silent `new`.
-## hub ingest git ROOT [--since YYYY-MM-DD] [--advance] [--limit N]
+## hub ingest git ROOT [--since YYYY-MM-DD] [--advance [--to SHA]] [--limit N]
 `ingest_git` (`hub/ingest_git.py:102`).
-- Configuration: ROOT is a key of `roots` (project.yaml, local path overridden in hub.local.yaml); unknown root or a path without `.git` is an error (exit 1). Branch: `branch` of the `sources.repos[]` entry (or `sources.overleaf`) with that `root`; default `HEAD`; a missing branch is an error.
+- Configuration: ROOT is a key of `roots` (project.yaml, local path overridden in hub.local.yaml); unknown root or a path without `.git` is an error (exit 1). Branch (`entry_branch`): `branch` of the `sources.repos[]` entry (or `sources.overleaf`) with that `root`, or the first element of `branches` (which must then be a non-empty list); giving both is an error; default `HEAD`; a branch that does not exist is an error. `remote` is accepted and ignored; any other key in the entry raises `IngestError` naming it (`unknown key(s) branchs (allowed: root, branch, branches, remote)`). `hub sources` shows such an entry as `config error: …` instead of failing.
 - Listing: non-merge commits after the watermark `git.<ROOT>`, oldest first. Without a watermark (or with `--since`, which ignores the watermark) the commits since `--since`, default the last 30 days. A watermark sha that does not exist, or is not an ancestor of the branch, gives a warning and the date fallback (`hub/ingest_git.py:58`).
 - `--limit N` (default 500): at most the N oldest unlisted commits; the warning says how many newer ones remain ("run again after --advance"), so `--advance` never skips a commit.
 - Output (stdout, JSON): `{root, path, branch, watermark_before, commits: [{sha, short, date, author, subject, files}], warning, advanced}`. A non-null `warning` is also printed on stderr as `warning: ...`.
 - `--advance` moves `git.<ROOT>` to the newest listed commit (`advanced: true`, only if any were listed). Use it only after the commits are recorded.
+- `--advance --to SHA` moves it only to SHA (full sha, or a prefix of at least 7 characters), which must match exactly one of the commits listed by this run; otherwise `IngestError` (exit 1), watermark untouched. The skill passes the newest sha it recorded, so a commit pushed between listing and advancing is listed next time instead of being skipped. `--to` without `--advance` is an error.
 ## hub ingest batch FILE
 `run_batch` (`hub/batch.py:219`), validation `check_batch` (`hub/batch.py:158`). YAML mapping with these top-level keys only (`watermark`, `safe`, `proposals`, `flags`); each op's keys must be in its allow-list, an unknown key is an error.
 ```yaml
@@ -58,7 +59,7 @@ Export (JSON or YAML list the agent writes from the list `sources.clickup.list_i
   "assignees": ["<user id | username | email>" or {"id": 1, "username": "x", "email": "x@y"}],
   "due": "2026-11-26", "due_date": 1795737600000}]
 ```
-`status` is required and non-empty (a string, or `{status, type}`). `due` is `YYYY-MM-DD`, an ISO datetime, epoch milliseconds or null; `due_date` (epoch milliseconds, or an ISO date) is read only when `due` is absent. Only the first assignee counts.
+`status` is required and non-empty (a string, or `{status, type}`). `assignees` must be a list (or null/absent = none); anything else is a `ClickUpError`. `due` is `YYYY-MM-DD`, an ISO datetime, epoch milliseconds or null; `due_date` (epoch milliseconds, or an ISO date) is read only when `due` is absent. Only the first assignee counts.
 Configuration: `sources.clickup: {list_id, done_statuses?}` (default done statuses `complete, completed, closed, done`, case-insensitive); `people.<key>.clickup` = ClickUp user id, matched (with the people key, `email` and `name`, case-insensitively) against the assignee ids, usernames and emails.
 `plan` prints JSON `{set, proposals, flags, push}` and writes nothing; `apply` writes, then prints `{updated, staged, flags, push}`.
 | situation | result |
