@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-hub"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["PyYAML>=6.0", "openpyxl>=3.1"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+hub = "hub.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["hub*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
