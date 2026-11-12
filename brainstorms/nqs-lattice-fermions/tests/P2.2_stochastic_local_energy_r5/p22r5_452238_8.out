@@ -1,0 +1,5 @@
+
+=== [W] H4_R4.4_d0.25_g1 K=16 dim=14400 E_FCI=-1.985652 HF wt=0.493 nnz/row=1023 (17.8s)
+  WIBJ     seed=0 dE=   0.047 mHa Var(EL)=2.37e-04 P=9744 (train 638s) KEYX-EL max=5.8e-15 ops KEYX/EXACT(trained |psi|^2)=0.179
+  WIBJ     seed=1 dE=   0.122 mHa Var(EL)=6.11e-04 P=9744 (train 641s) KEYX-EL max=1.2e-14 ops KEYX/EXACT(trained |psi|^2)=0.179
+  WIBJ     seed=2 dE=   0.064 mHa Var(EL)=3.22e-04 P=9744 (train 645s) KEYX-EL max=7.3e-15 ops KEYX/EXACT(trained |psi|^2)=0.179

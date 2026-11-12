@@ -11,3 +11,46 @@
 [  1270.9s] arm tr@20    : E=-13.50624071 eps=2.6741e-02 (raw 5.0408e-02, irrep weight 0.845) A/V=3.9880e-03 sign-agree=0.9674 Pd=4.4579e-03 fid=0.7216
 [  1526.1s]   [tr] step 25/50 eps=2.60025e-02 lr=0.2
 [  1792.0s]   [tr] step 30/50 eps=2.56433e-02 lr=0.146
+[  2054.8s]   [tr] step 35/50 eps=2.53580e-02 lr=0.118
+[  2307.2s]   [tr] step 40/50 eps=2.51334e-02 lr=0.19
+[  2570.5s]   [tr] step 45/50 eps=2.49522e-02 lr=0.153
+[  2833.7s]   [tr] step 50/50 eps=2.48082e-02 lr=0.123
+[  2850.0s] arm tr@50    : E=-13.53717122 eps=2.4808e-02 (raw 4.8081e-02, irrep weight 0.826) A/V=3.4624e-03 sign-agree=0.9715 Pd=4.5617e-03 fid=0.7599
+[  2907.2s] arm scr@0    : E=-8.84372203 eps=3.1815e-01 (raw 3.2079e-01, irrep weight 0.617) A/V=1.2255e-01 sign-agree=0.2513 Pd=3.6289e-03 fid=0.0382
+[  3161.4s]   [scr] step 5/50 eps=1.64226e-01 lr=0.0805
+[  3411.2s]   [scr] step 10/50 eps=5.18399e-02 lr=0.13
+[  3424.7s] arm scr@10   : E=-13.10466304 eps=5.1840e-02 (raw 1.1720e-01, irrep weight 0.627) sign-agree=0.9466 Pd=4.6990e-03 fid=0.6148
+[  3685.2s]   [scr] step 15/50 eps=3.10007e-02 lr=0.104
+[  3945.3s]   [scr] step 20/50 eps=2.60909e-02 lr=0.0841
+[  3961.7s] arm scr@20   : E=-13.51664705 eps=2.6091e-02 (raw 1.4989e-01, irrep weight 0.448) A/V=3.4277e-03 sign-agree=0.9804 Pd=5.0674e-03 fid=0.8569
+[  4224.3s]   [scr] step 25/50 eps=2.28930e-02 lr=0.0677
+[  4478.3s]   [scr] step 30/50 eps=2.13147e-02 lr=0.109
+[  4743.9s]   [scr] step 35/50 eps=2.07409e-02 lr=0.0878
+[  4997.4s]   [scr] step 40/50 eps=1.97806e-02 lr=0.141
+[  5272.7s]   [scr] step 45/50 eps=1.87752e-02 lr=0.0569
+[  5525.0s]   [scr] step 50/50 eps=1.85777e-02 lr=0.0917
+[  5540.5s] arm scr@50   : E=-13.63685830 eps=1.8578e-02 (raw 3.9711e-02, irrep weight 0.905) A/V=2.7218e-03 sign-agree=0.9804 Pd=4.7997e-03 fid=0.8715
+[  5592.8s]   [foil] step 1/10 eps=4.35813e-01 lr=0.055
+[  5623.1s]   [foil] step 2/10 eps=4.11072e-01 lr=0.0605
+[  5653.4s]   [foil] step 3/10 eps=3.44124e-01 lr=0.0666
+[  5683.6s]   [foil] step 4/10 eps=3.01502e-01 lr=0.0732
+[  5713.9s]   [foil] step 5/10 eps=2.49784e-01 lr=0.0805
+[  5743.8s]   [foil] step 6/10 eps=1.77163e-01 lr=0.0886
+[  5773.2s]   [foil] step 7/10 eps=1.10300e-01 lr=0.0974
+[  5802.3s]   [foil] step 8/10 eps=7.08884e-02 lr=0.107
+[  5831.3s]   [foil] step 9/10 eps=5.94232e-02 lr=0.118
+[  5860.6s]   [foil] step 10/10 eps=5.40325e-02 lr=0.13
+[  5870.7s] arm foil@end : E=-13.06958238 eps=5.4032e-02 (raw 1.8214e-01, irrep weight 0.227) sign-agree=0.9238 Pd=3.9865e-03 fid=0.6291
+[  5870.9s] nfp: n_null=107 removed shift fraction 0.792; source E tr0 [-8.281503851029651, -7.080275575134003] -> nfp [-1.9573598247987738, -0.9929048730576853] (exact [-8.281820661071484, -7.080275743918655])
+[  5930.2s] arm nfp@0    : E=0.04579698 eps=8.7374e-01 (raw 8.7808e-01, irrep weight 0.443) A/V=2.4947e-01 sign-agree=0.0165 Pd=3.6288e-03 fid=0.0002
+[  6034.7s]   [nfp] step 2/20 eps=8.62414e-01 lr=0.0605
+[  6139.0s]   [nfp] step 4/20 eps=8.40651e-01 lr=0.0732
+[  6242.9s]   [nfp] step 6/20 eps=8.06561e-01 lr=0.0886
+[  6347.4s]   [nfp] step 8/20 eps=7.26570e-01 lr=0.107
+[  6451.0s]   [nfp] step 10/20 eps=3.81602e-01 lr=0.13
+[  6565.3s]   [nfp] step 12/20 eps=2.68323e-01 lr=0.0785
+[  6667.9s]   [nfp] step 14/20 eps=9.38150e-02 lr=0.0949
+[  6770.2s]   [nfp] step 16/20 eps=3.98842e-02 lr=0.115
+[  6871.5s]   [nfp] step 18/20 eps=3.84312e-02 lr=0.139
+[  6973.2s]   [nfp] step 20/20 eps=3.78579e-02 lr=0.168
+[  6973.2s] done (/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/results_close31/close31_s0.json); valid=True
