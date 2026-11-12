@@ -8,6 +8,7 @@ from hub.pending import add_proposal, load_proposals
 from hub.store import Store
 
 D = date(2026, 11, 12)
+NOOP = [{"op": "new", "type": "question", "title": "Placeholder"}]  # proposals need at least one op
 
 
 def git(cwd, *args):
@@ -102,9 +103,9 @@ def test_same_item_conflict_reported(two_clones):
 
 def test_concurrent_proposals_do_not_conflict(two_clones):
     a, b = two_clones
-    pa = add_proposal(a, "From A", [], proposer="alice", source="s", reason="r", day=D)
+    pa = add_proposal(a, "From A", NOOP, proposer="alice", source="s", reason="r", day=D)
     commit(a, "a")
-    pb = add_proposal(b, "From B", [], proposer="bob", source="s", reason="r", day=D)
+    pb = add_proposal(b, "From B", NOOP, proposer="bob", source="s", reason="r", day=D)
     commit(b, "b")  # rebases over a's push; each proposal is its own file
     git(a, "pull", "--rebase")
     assert {p.pid for p in load_proposals(a)} == {pa, pb}

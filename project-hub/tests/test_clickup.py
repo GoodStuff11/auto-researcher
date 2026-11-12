@@ -112,7 +112,7 @@ def test_flags_proposals_push(env):
         "clickup: assignee 'zed' of task t4 is not in project.yaml people (add their ClickUp id as `clickup:`)"])
     assert plan["proposals"] == [{
         "title": "New ClickUp task: New from ClickUp", "source": "clickup:t5",
-        "reason": "Task created directly in ClickUp; link it (spawned_by) to the decision it serves, then apply.",
+        "reason": "Task created directly in ClickUp; after applying, link it (spawned_by) to the decision it serves.",
         "ops": [{"op": "new", "type": "action", "title": "New  from ClickUp", "owner": "alice",
                  "fields": {"clickup_id": "t5", "due": "2026-12-05"}, "source": "clickup:t5"}]}]
     assert plan["push"] == [{"id": local.id, "title": "Local only", "owner": "bob", "assignee": "222",

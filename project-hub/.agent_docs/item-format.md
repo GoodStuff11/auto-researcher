@@ -37,7 +37,7 @@ Common to all types (written by `default_meta`, `hub/items.py:86`):
 |---|---|---|---|
 | `id` | string | `Store.create` | Immutable id, regex `^[QDA]-\d{8}-[a-z0-9]{3}$`. Not settable. |
 | `type` | string | `Store.create` | `question`, `decision` or `action`. Immutable. |
-| `title` | string | create / `set` | One line, non-empty (empty or whitespace raises `StoreError`). |
+| `title` | string | create / `set` | One line, non-empty (empty or whitespace raises `StoreError`). `Store.create` collapses runs of whitespace, newlines included, to single spaces. |
 | `status` | string | create (first value of the type's list) / `set` | question: `open`, `answered`, `dropped`, `pivoted`. decision: `proposed`, `made`, `rejected`, `deferred`. action: `open`, `done`, `dropped`. `set` rejects values invalid for the type. |
 | `owner` | string or null | create (`--owner`, default `me`) / `set` | A key of `project.yaml` `people`. May be cleared; `validate` flags an unknown owner and an open action without one. |
 | `series` | list of strings | create / `set` | Meeting series the item may appear on; empty list means every series. Must be a list. |
@@ -77,6 +77,7 @@ Items: `<T>-<YYYYMMDD>-<rand3>` with T = `Q`, `D`, `A`, the creation day, and 3 
 | `decision-answers` | decision `made` with empty `links.answers` |
 | `decision-actions` | decision `made`, no item has it in `spawned_by`, and `no_action` is empty |
 | `action-owner` | action `open` and owner null or not a `people` key |
+| `duplicate-clickup-id` | two or more actions carry the same `clickup_id`: one violation per extra action (all but the lowest id), naming the first |
 Practical consequences: when closing, add a closing entry (`hub entry`) on or after the `closed` date; when making a decision, link it to its question and either create an action spawned by it or set `no_action=<reason>`.
 ## CLI errors
 `StoreError` (bad field/status/link/type), `ItemFormatError`, `UnknownItem` (unknown id) all print `error: ...` and exit 1 (see git-sync.md for exit codes).

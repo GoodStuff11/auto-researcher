@@ -129,7 +129,7 @@ def read_agenda(store: Store, config: HubConfig, series: str, *, author: str, to
                                    "as_decided": row.as_decided}}]
                 ops += _action_ops(row.new_actions, "$d", series, source, people)
                 pid = add_proposal(root, f"Raised at {tag}: {title}", ops, proposer=author, source=source,
-                                   reason="Decision raised in meeting; link it to the question(s) it answers before applying.",
+                                   reason="Decision raised in meeting; after applying, link it to the question(s) it answers.",
                                    day=today)
                 staged.append((pid, f"Raised at {tag}: {title}"))
             continue

@@ -123,3 +123,96 @@ def test_same_day_watermark_change_in_two_clones_merges(two_clones, monkeypatch,
     git(pusher_order[0], "pull", "--rebase")
     for clone in (a, b):
         assert load_state(clone)["watermarks"] == {"clickup": "2026-11-12T10:05", "git.CODE": "sha-last"}
+
+
+# ---------------------------------------------------------------- I2: concurrent runs must not duplicate
+
+def _action(store, title, cid=None):
+    a = store.create("action", title, owner="bob", author="alice", day=D, source="manual")
+    if cid:
+        store.set_fields(a.id, {"clickup_id": cid})
+    return a.id
+
+
+def test_plan_clickup_flags_shared_task_and_validate_reports_it(hub_root):
+    from hub.clickup import plan_clickup
+    from hub.validate import validate
+    store, cfg = Store(hub_root), load_config(hub_root)
+    ids = sorted(_action(store, t, "t2") for t in ("Make fig", "Make fig", "Make fig again"))
+    _action(store, "Other", "t9")
+    tasks = [{"id": t, "name": n, "status": "to do", "status_type": "", "assignees": [], "due": None}
+             for t, n in (("t2", "Make fig"), ("t9", "Other"))]
+    plan = plan_clickup(store, cfg, tasks, today=D)
+    assert f"clickup: actions {', '.join(ids)} share task t2" in plan["flags"]
+    assert not any("t9" in f for f in plan["flags"])
+    dup = [v for v in validate(store, cfg) if v.rule == "duplicate-clickup-id"]
+    assert sorted(v.item_id for v in dup) == ids[1:]  # one violation per extra action
+    assert all(f"also on {ids[0]}" in v.message for v in dup)
+
+
+def test_check_ops_rejects_new_action_for_an_already_linked_task(hub_root):
+    from hub.pending import PendingError, add_proposal, apply_proposals, check_ops
+    store = Store(hub_root)
+    linked = _action(store, "Make fig", "t2")
+    op = {"op": "new", "type": "action", "title": "Make fig", "fields": {"clickup_id": "t2"}}
+    assert check_ops(store, [op]) == [f"op 1 (new): ClickUp task t2 already linked to {linked}"]
+    # Two proposals for one new task (two clones staged it the same day): the second fails at apply time.
+    op3 = dict(op, fields={"clickup_id": "t3"})
+    p1 = add_proposal(hub_root, "New ClickUp task: X", [op3], proposer="alice", source="clickup:t3", reason="r",
+                      day=D)
+    p2 = add_proposal(hub_root, "New ClickUp task: X (2)", [op3], proposer="bob", source="clickup:t3", reason="r",
+                      day=D)
+    with pytest.raises(PendingError, match=rf"{p2} cannot be applied:\n  op 1 \(new\): ClickUp task t3 already "
+                                           rf"linked to A-\S+ \(already applied: {p1}\)"):
+        apply_proposals(hub_root, store, [p1, p2], author="alice", day=D)
+    assert len([a for a in store.query(type="action") if a.meta.get("clickup_id") == "t3"]) == 1
+
+
+# ---------------------------------------------------------------- minors: check_ops dry-runs values
+
+@pytest.mark.parametrize("ops, expected", [
+    ([], ["proposal has no ops"]),
+    ([{"op": "new", "type": "decision", "title": "D", "fields": {"status": "answered"}}],
+     ["op 1 (new): status 'answered' invalid for decision; expected one of ('proposed', 'made', 'rejected', "
+      "'deferred')"]),
+    ([{"op": "new", "type": "action", "title": "A", "fields": {"due": "Friday"}}],
+     ["op 1 (new): invalid value for 'due': 'Friday'"]),
+    ([{"op": "new", "type": "action", "ref": "$a", "title": "A"},
+      {"op": "set", "id": "$a", "fields": {"status": "answered", "priority": "high"}}],
+     ["op 2 (set): status 'answered' invalid for action; expected one of ('open', 'done', 'dropped')",
+      "op 2 (set): invalid value for 'priority': 'high'"]),
+], ids=["no-ops", "new-bad-status", "new-bad-date", "set-on-ref"])
+def test_check_ops_dry_runs_values(hub_root, ops, expected):
+    from hub.pending import check_ops
+    assert sorted(check_ops(Store(hub_root), ops)) == sorted(expected)
+
+
+def test_check_ops_set_on_existing_item_checks_status_and_dates(hub_root):
+    from hub.pending import check_ops
+    store = Store(hub_root)
+    a = _action(store, "Act")
+    errs = check_ops(store, [{"op": "set", "id": a, "fields": {"status": "done", "closed": "Nov 12"}},
+                             {"op": "set", "id": a, "fields": {"status": "answered"}},
+                             {"op": "set", "id": a, "fields": {"status": "done", "closed": "2026-11-12"}}])
+    assert errs == ["op 1 (set): invalid value for 'closed': 'Nov 12'",
+                    "op 2 (set): status 'answered' invalid for action; expected one of ('open', 'done', 'dropped')"]
+
+
+def test_batch_rejects_proposals_with_bad_values(hub_root):
+    from hub.batch import BatchError, run_batch
+    store, cfg = Store(hub_root), load_config(hub_root)
+    batch = {"proposals": [{"title": "Bad", "reason": "r", "source": "x:1",
+                            "ops": [{"op": "new", "type": "decision", "title": "D",
+                                     "fields": {"status": "answered"}}]},
+                           {"title": "Empty", "reason": "r", "source": "x:1", "ops": []}]}
+    with pytest.raises(BatchError) as exc:
+        run_batch(hub_root, store, batch, author="alice", day=D, people=cfg.people)
+    assert "status 'answered' invalid for decision" in str(exc.value)
+    assert "proposal has no ops" in str(exc.value)
+    assert not (hub_root / "Status" / "Pending").exists()
+
+
+def test_store_create_collapses_title_whitespace(hub_root):
+    store = Store(hub_root)
+    q = store.create("question", "  Line one\n  line two\t end ", owner="alice", author="alice", day=D, source="m")
+    assert store.get(q.id).title == "Line one line two end"

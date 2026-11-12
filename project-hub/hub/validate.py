@@ -48,6 +48,15 @@ def validate(store: Store, config: HubConfig) -> list[Violation]:
     def bad(it, rule, msg):
         out.append(Violation(it.id, rule, msg))
 
+    by_task: dict[str, list[str]] = defaultdict(list)
+    for it in sorted(items.values(), key=lambda i: i.id):
+        if it.type == "action" and it.meta.get("clickup_id") not in (None, ""):
+            by_task[str(it.meta["clickup_id"])].append(it.id)
+    for cid, ids in by_task.items():
+        for extra in ids[1:]:
+            out.append(Violation(extra, "duplicate-clickup-id",
+                                 f"clickup_id {cid} is also on {ids[0]}; one task, one action"))
+
     for it in items.values():
         if it.type not in TYPES:
             bad(it, "type", f"unknown type '{it.type}'")

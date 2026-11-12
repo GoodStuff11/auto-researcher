@@ -120,6 +120,13 @@ def plan_clickup(store: Store, config, tasks: list[dict], *, today: date) -> dic
     by_id = {t["id"]: t for t in tasks}
     plan: dict = {"set": [], "proposals": [], "flags": [], "push": []}
     linked: set[str] = set()
+    sharing: dict[str, list[str]] = {}
+    for a in store.query(type="action"):
+        if a.meta.get("clickup_id") not in (None, ""):
+            sharing.setdefault(str(a.meta["clickup_id"]), []).append(a.id)
+    for cid, ids in sharing.items():
+        if len(ids) > 1:
+            plan["flags"].append(f"{FLAG_PREFIX}actions {', '.join(sorted(ids))} share task {cid}")
     for a in store.query(type="action"):
         cid = a.meta.get("clickup_id")
         if not cid:
@@ -177,7 +184,8 @@ def plan_clickup(store: Store, config, tasks: list[dict], *, today: date) -> dic
             fields["due"] = t["due"]
         plan["proposals"].append({
             "title": title, "source": f"clickup:{t['id']}",
-            "reason": "Task created directly in ClickUp; link it (spawned_by) to the decision it serves, then apply.",
+            "reason": "Task created directly in ClickUp; after applying, link it (spawned_by) to the decision "
+                      "it serves.",
             "ops": [{"op": "new", "type": "action", "title": t["name"], "owner": owner,
                      "fields": fields, "source": f"clickup:{t['id']}"}]})
     return plan

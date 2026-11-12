@@ -16,8 +16,8 @@ import yaml
 
 from .fsutil import atomic_write_text
 from .ids import new_pending_id
-from .items import LINK_KEYS, TYPES
-from .store import Store, StoreError
+from .items import LINK_KEYS, STATUSES, TYPES
+from .store import PROTECTED_KEYS, Store, StoreError, check_field, coerce_value
 
 FENCE = "`" * 3  # built, not literal, so this file nests inside Markdown fences
 BLOCK_RE = re.compile(r"^## (P-[a-z0-9]{4}) · (.*?)\n" + FENCE + r"yaml\n(.*?)\n" + FENCE + r"\n", re.M | re.S)
@@ -94,9 +94,38 @@ def check_ops(store: Store, ops) -> list[str]:
     """Every problem that would make `ops` fail to apply, as human-readable lines (empty = fine)."""
     if not isinstance(ops, list):
         return [f"ops must be a list, got {type(ops).__name__}"]
+    if not ops:
+        return ["proposal has no ops"]
     errs: list[str] = []
     existing = store.ids()
     refs: set[str] = set()
+    ref_types: dict[str, str] = {}
+    linked = {}  # clickup task id -> the action already carrying it
+    for it in store.query(type="action"):
+        if it.meta.get("clickup_id") not in (None, ""):
+            linked.setdefault(str(it.meta["clickup_id"]), it.id)
+
+    def type_of(value):
+        if isinstance(value, str) and value.startswith("$"):
+            return ref_types.get(value)
+        try:
+            return store.get(value).type
+        except Exception:  # missing or unreadable: reported by target_ok / the load error
+            return None
+
+    def fields_ok(where, fields, item_type):
+        for key, value in fields.items():
+            if key in PROTECTED_KEYS:
+                errs.append(f"{where}: cannot set '{key}' through fields")
+                continue
+            try:
+                value = check_field(key, coerce_value(key, value))
+            except StoreError as exc:
+                errs.append(f"{where}: {exc}")
+                continue
+            if key == "status" and item_type in STATUSES and value not in STATUSES[item_type]:
+                errs.append(f"{where}: status '{value}' invalid for {item_type}; "
+                            f"expected one of {STATUSES[item_type]}")
 
     def target_ok(where, value):
         if isinstance(value, str) and value.startswith("$"):
@@ -128,6 +157,11 @@ def check_ops(store: Store, ops) -> list[str]:
         if kind == "new":
             if op["type"] not in TYPES:
                 errs.append(f"{where}: unknown type {op['type']!r} (expected one of {TYPES})")
+            fields = op.get("fields") if isinstance(op.get("fields"), dict) else {}
+            fields_ok(where, fields, op["type"])
+            cid = fields.get("clickup_id")
+            if cid not in (None, "") and str(cid) in linked:
+                errs.append(f"{where}: ClickUp task {cid} already linked to {linked[str(cid)]}")
             if "series" in op and not isinstance(op["series"], list):
                 errs.append(f"{where}: series must be a list")
             links = op.get("links") or {}
@@ -148,8 +182,11 @@ def check_ops(store: Store, ops) -> list[str]:
                     errs.append(f"{where}: ref must start with '$', got {ref!r}")
                 else:
                     refs.add(ref)
+                    ref_types[ref] = op["type"]
         else:
             target_ok(f"{where} id", op["id"])
+            if kind == "set" and isinstance(op["fields"], dict):
+                fields_ok(where, op["fields"], type_of(op["id"]))
             if kind == "link":
                 if op["rel"] not in LINK_KEYS:
                     errs.append(f"{where}: unknown link {op['rel']!r} (expected one of {LINK_KEYS})")
@@ -286,6 +323,13 @@ def apply_proposals(root, store: Store, pids, *, author, day, on_applied=None) -
             raise PendingError(f"{pr.pid} cannot be applied:\n  " + "\n  ".join(errs))
     created: list[str] = []
     for pr in chosen:
+        # Again just before applying: a proposal applied earlier in this call may have linked the same
+        # ClickUp task or otherwise changed what these ops can do.
+        errs = check_ops(store, pr.body.get("ops") or [])
+        if errs:
+            done = f" (already applied: {', '.join(p.pid for p in chosen[:chosen.index(pr)])})" \
+                if chosen.index(pr) else ""
+            raise PendingError(f"{pr.pid} cannot be applied:\n  " + "\n  ".join(errs) + done)
         undo = _Undo(store)
         try:
             _, made = _run_ops(store, pr.body.get("ops") or [], author=author, day=day, seed=pr.pid, undo=undo)

@@ -72,7 +72,8 @@ Configuration: `sources.clickup: {list_id, done_statuses?}` (default done status
 | `due` differs | set `due` (empty clears it) |
 | action's `clickup_id` missing from the export | flag `... is not in the export (deleted or moved?)` |
 | open owned action without `clickup_id` | listed in `push` (`{id, title, owner, assignee, due}`; create the ClickUp task, then `hub set ID clickup_id=<id>`) |
-| open task with no action carrying its id | proposal `New ClickUp task: <name>` with one `new` action op (owner mapped from the assignee, `fields: {clickup_id, due}`), to be linked `spawned_by` by a human and applied; done tasks are not proposed |
+| open task with no action carrying its id | proposal `New ClickUp task: <name>` with one `new` action op (owner mapped from the assignee, `fields: {clickup_id, due}`); reason "…after applying, link it (spawned_by) to the decision it serves"; done tasks are not proposed |
+| two or more actions carry the same `clickup_id` | flag `clickup: actions A, B share task <id>` (validate also reports `duplicate-clickup-id`) |
 New-task dedup: skipped when a pending proposal has source `clickup:<id>`, or when the log records `Applied`/`Rejected` for the same title. Apply is retry-safe: the whole plan is pre-checked (nothing written on a problem, `ClickUpError`, exit 1); the closing entry is written before the status change and an identical existing entry is not repeated; `apply` replaces all flags starting `clickup: ` in `flags.md` with the plan's flags.
 ## hub meeting next SERIES YYYY-MM-DD
 Stores the date in `Status/sync-state/next_meeting.<SERIES>.yaml`; prints `next <SERIES> meeting: <date>`. SERIES must be a key of `series` in project.yaml, else exit 1 (`unknown series 'x' (project.yaml series: ...)`).

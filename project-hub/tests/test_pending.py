@@ -5,6 +5,7 @@ from hub.pending import (PendingError, add_proposal, apply_proposals, load_propo
 from hub.store import Store
 
 D = date(2026, 11, 12)
+NOOP = [{"op": "new", "type": "question", "title": "Placeholder"}]  # proposals need at least one op
 
 
 @pytest.fixture
@@ -46,7 +47,7 @@ def test_apply_with_refs(hub_root, store):
 
 
 def test_reject_logs_and_removes(hub_root, store):
-    pid = add_proposal(hub_root, "X", [], proposer="alice", source="s", reason="r", day=D)
+    pid = add_proposal(hub_root, "X", NOOP, proposer="alice", source="s", reason="r", day=D)
     reject_proposals(hub_root, store, [pid], author="bob", day=D)
     assert load_proposals(hub_root) == []
     assert f"Rejected {pid}: X" in (hub_root / "Status" / "Log" / "2026-11.md").read_text()
@@ -158,7 +159,7 @@ def test_new_ids_are_deterministic_per_proposal(hub_root, store):
 
 def test_unreadable_proposals_are_reported(hub_root):
     from hub.pending import load_unreadable
-    good = add_proposal(hub_root, "Fine", [], proposer="alice", source="s", reason="r", day=D)
+    good = add_proposal(hub_root, "Fine", NOOP, proposer="alice", source="s", reason="r", day=D)
     bad = hub_root / "Status" / "Pending" / "P-bad1.md"
     bad.write_text("## P-bad1 · Broken\n" + "`" * 3 + "yaml\nops: [unclosed\n" + "`" * 3 + "\n")
     junk = hub_root / "Status" / "Pending" / "P-junk.md"
@@ -189,6 +190,6 @@ def test_bad_author_rejected_before_any_write(hub_root, store):
 
 
 def test_title_is_single_line(hub_root):
-    pid = add_proposal(hub_root, "two\nlines", [], proposer="alice", source="s", reason="r", day=D)
+    pid = add_proposal(hub_root, "two\nlines", NOOP, proposer="alice", source="s", reason="r", day=D)
     props = load_proposals(hub_root)
     assert [(p.pid, p.title) for p in props] == [(pid, "two lines")]

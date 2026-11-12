@@ -101,6 +101,8 @@ class Store:
                links=None, description="", fields=None, rng=None) -> Item:
         if item_type not in TYPES:
             raise StoreError(f"unknown item type '{item_type}' (expected one of {TYPES})")
+        if isinstance(title, str):
+            title = " ".join(title.split())  # one line, as typed titles from sheets/notes may not be
         existing = self.ids()
         for rel, targets in (links or {}).items():
             if rel not in LINK_KEYS:
