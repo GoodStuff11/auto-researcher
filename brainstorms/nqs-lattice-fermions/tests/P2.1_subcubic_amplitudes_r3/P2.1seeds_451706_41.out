@@ -25,3 +25,5 @@
 [10:59:42] instance 1 {'Lx': 4, 'Ly': 4, 'bcx': 'pbc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=nnbf seed=33
 [11:00:12] projected sector dimensions: dim range(P_chi) = 104664, dim range(P_S P_chi) = 15268
 [11:00:12] ED levels [-12.793750659830671, -12.674001042057895, -12.661785781413341, -12.621283365831962] deg 1; |G|=16 chi(psi_0)={'Tx': 1, 'My': 1, 'Mx': 1}; S(psi_0)=0 (30 s)
+[11:01:18] arm nnbf: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 6, 'Ha': 0} n_params=1734 target=1734 proj=chi calib=1.60e-14 init |P psi|/|psi|=3.931e-01
+[11:01:31] nnbf: it     0  E = -10.74466782  |f| = 2.36e+00  (12.92 s/step)
