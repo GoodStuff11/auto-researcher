@@ -43,6 +43,8 @@ actions live in `Status/`; the overview is `Status/Snapshot.md`; meetings run fr
 1. Ask the owner to add you to `people` in `project.yaml`.
 2. Clone this repository, then from its root run `bash tools/setup.sh` (needs Python 3.10+; set `PYTHON=python3.12`
    if `python3` is older). It installs the `hub` command and registers the git merge drivers.
+   Setup needs network access (pip installs PyYAML and openpyxl).
+   `~/.local/bin/hub` points at the vault whose setup.sh ran last; re-run setup.sh in a vault to use its tools.
 3. Create `hub.local.yaml` (never committed) with `me: <your people key>` and your local `roots`.
 4. Start Claude Code in this folder; the hub skills are in `.claude/skills/`.
 Full guide: `tools/project-hub/USER-GUIDE.md`.
@@ -104,16 +106,19 @@ views:
 
 GALLERY_TEMPLATE = "# Figures\nNo figures registered yet (`hub figures add`).\n"
 
+SETUP_MARKER = "# hub-setup: managed by hub init — do not edit"
+
 SETUP_SH = r"""#!/usr/bin/env bash
+# hub-setup: managed by hub init — do not edit
 # Set up this vault's hub tools on this machine: a venv, `hub` on PATH, and the git merge drivers.
 # Usage: bash tools/setup.sh        (PYTHON=python3.12 bash tools/setup.sh if python3 is older than 3.10)
+# Native Windows is not supported; use WSL. Needs network access (pip installs PyYAML and openpyxl).
 set -euo pipefail
 VAULT="$(cd "$(dirname "$0")/.." && pwd)"
 PY="${PYTHON:-python3}"
 "$PY" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else "Python 3.10 or newer is needed: re-run as PYTHON=python3.12 bash tools/setup.sh")'
-"$PY" -m venv "$VAULT/tools/.venv"
+"$PY" -m venv --clear "$VAULT/tools/.venv"
 BIN="$VAULT/tools/.venv/bin"
-[ -d "$BIN" ] || BIN="$VAULT/tools/.venv/Scripts"
 "$BIN/python" -m pip install -q -e "$VAULT/tools/project-hub"
 mkdir -p "$HOME/.local/bin"
 ln -sf "$BIN/hub" "$HOME/.local/bin/hub"
@@ -129,12 +134,33 @@ TEMPLATES = {
 
 
 def _is_git_repo(path: Path) -> bool:
-    res = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], cwd=path, capture_output=True, text=True)
+    try:
+        res = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], cwd=path, capture_output=True, text=True)
+    except FileNotFoundError:  # git is not installed: the folder cannot be a repository we can use
+        return False
     return res.returncode == 0 and res.stdout.strip() == "true"
+
+
+def _skills_source(vendored: Path) -> Path:
+    for cand in (PACKAGE_DIR / "skills", vendored / "skills"):
+        if cand.is_dir():
+            return cand
+    raise ValueError(f"cannot find the hub skills next to the package ({PACKAGE_DIR / 'skills'}); "
+                     "run hub init from a project-hub checkout or a vault's tools/.venv")
+
+
+def _preflight(dest: Path) -> None:
+    """Checks that must pass before anything is written, so a refusal leaves the folder untouched."""
+    setup = dest / "tools" / "setup.sh"
+    if setup.exists() and SETUP_MARKER not in setup.read_text(encoding="utf-8").splitlines():
+        raise ValueError(f"{setup} was not written by hub init (no '{SETUP_MARKER}' line); "
+                         "move it aside and re-run to replace it")
+    _skills_source(dest / "tools" / "project-hub")
 
 
 def update_tools(dest) -> list[str]:
     dest = Path(dest)
+    _preflight(dest)
     done = []
     vendored = dest / "tools" / "project-hub"
     if PACKAGE_DIR.resolve() != vendored.resolve():
@@ -153,7 +179,7 @@ def update_tools(dest) -> list[str]:
             else:
                 shutil.copyfile(src, target)
             done.append(f"tools/project-hub/{name}")
-    skills_src = vendored / "skills" if (vendored / "skills").is_dir() else PACKAGE_DIR / "skills"
+    skills_src = _skills_source(vendored)
     for skill in sorted(p for p in skills_src.iterdir() if p.is_dir()):
         target = dest / ".claude" / "skills" / skill.name
         if target.exists():
@@ -167,8 +193,14 @@ def update_tools(dest) -> list[str]:
     return done
 
 
-def init_vault(dest, *, name: str) -> list[str]:
+def init_vault(dest, *, name: str, force: bool = False) -> list[str]:
     dest = Path(dest)
+    # A fresh `git init` folder (only .git inside) counts as empty.
+    if (dest.is_dir() and any(p.name != ".git" for p in dest.iterdir())
+            and not (dest / "project.yaml").is_file() and not force):
+        raise ValueError(f"{dest} is not empty and has no project.yaml — refusing to turn it into a vault; "
+                         "pass force=True / --force if you are sure")
+    _preflight(dest)
     dest.mkdir(parents=True, exist_ok=True)
     created = []
     files = {"project.yaml": PROJECT_TEMPLATE.format(name=name), **TEMPLATES}
