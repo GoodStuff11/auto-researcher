@@ -1,4 +1,5 @@
 # project-hub
+**People: start with the [user guide](USER-GUIDE.md)** (setup, joining, meetings, troubleshooting).
 A Markdown status store (questions, decisions, actions), staged proposals, an Excel meeting agenda and git sync, driven by the `hub` command line so people and agents can share one project vault. Design: [docs/superpowers/specs/2026-11-12-project-hub-design.md](../docs/superpowers/specs/2026-11-12-project-hub-design.md). Agents: start at [.agent_docs/_INDEX.md](.agent_docs/_INDEX.md).
 ## Install
 `python -m venv .venv && . .venv/bin/activate && pip install -e '.[test]'`, or `uv pip install -e .`
