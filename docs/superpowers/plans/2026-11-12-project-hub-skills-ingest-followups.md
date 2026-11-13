@@ -22,3 +22,11 @@
 - Task 5: assignee flags and the owner mirror are still applied to done/dropped actions; identical-entry skip on a reopen/close cycle; an all-digit due string is read as epoch ms; epoch → date uses the machine's time zone.
 - Task 6: ingest.md rule-table wording gaps (due formats); no CLI test for a missing `me` on writes; a YAML parse error keeps only its first line (no position); ingest.md has an "Exit 0." line above the exit-1 note.
 - Task 7: test_skills checks command names only (not options); `hub pending add` owner check (see above).
+## From the live dry run (Task 9, 2026-11-13)
+- `hub ingest git` could not be exercised from a worktree-isolated Claude session (its sandbox refuses commands naming git outside the worktree); run it from a normal session to confirm against ML-signproblem.
+- `test_plan_clickup_flags_shared_task_and_validate_reports_it` failed once in one run; 25/25 isolated and 6/6 full-suite runs pass since — watch for a flake.
+- clickup.md step 5 "every linked task must be present" should carve out linked tasks whose `clickup_get_task` errors (step 4 leaves them out on purpose so the plan flags them).
+- The post-meeting `git pull --rebase --autostash` has no explicit dry-run skip note (covered by the general dry-run rule).
+- With no linked actions, the ClickUp export is open tasks only; with many done linked actions it costs one `clickup_get_task` per task.
+- Circleback for this project: terms UCC/HVA matched no meetings in the last 4 weeks — set `sources.circleback.folder` (share the project's meetings into one folder) before relying on it.
+- No calendar event matched "Fermion" — set `series.group.calendar_match` to the real meeting title.
