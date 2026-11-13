@@ -55,7 +55,7 @@ You rarely touch files by hand. You ask Claude things like *"what are my todos"*
 
 The meeting cycle in one line: **prep** (anyone, a day or two before; it commits the sheet) → **editor pulls** → **meeting** (one editor types) → **editor says "we just met"** → **next prep** (answer *yes* when the agent asks to overwrite the old draft).
 
-When `hub commit` exits with code 3, follow [If `hub commit` exits with code 3](#if-hub-commit-exits-with-code-3) exactly. A plain `git pull --rebase` and edit loses your side of the conflicted file.
+When `hub commit` exits with code 3, follow [If `hub commit` exits with code 3](#if-hub-commit-exits-with-code-3) exactly.
 
 ---
 
@@ -561,29 +561,20 @@ hub-item conflict in Q-20261113-e6h: title: A=Title from Tamra B=Title from Jon
 ```
 `A=` is the version already on GitHub, `B=` is yours. Your commit is still local, and `hub commit` has already undone its own pull, so nothing has changed in your files yet.
 
-**Important:** when you pull again, the item file will hold **only the GitHub version**, with no `<<<<` conflict markers. *All* your changes to that file are missing from it, not only the conflicting field: entries you added, sources, links and other fields. Recover them as follows. Replace `<ID>` with the item id from the message.
+When you pull again, the item file already holds both sides' changes; only the field(s) named in the message show the GitHub value. Replace `<ID>` with the item id from the message.
 ```bash
-git pull --rebase                                            # 1. stops again with "CONFLICT … Status/Items/<ID>.md"
-git show REBASE_HEAD:Status/Items/<ID>.md > ~/mine-<ID>.md   # 2. save YOUR version, outside the vault
-diff ~/mine-<ID>.md Status/Items/<ID>.md                     # 3. see what differs ("<" = yours, ">" = GitHub)
-# 4. edit Status/Items/<ID>.md (the GitHub version) by hand:
-#    - set the conflicting field to the right value (agree with the other person if unsure);
-#    - copy in every line that only your version has: your entry lines (keep "Raised." first
-#      and the entries in date order), your sources, links and any other field you changed.
-#    Keep every entry from both sides.
-git add Status/Items/<ID>.md                                 # 5. mark it resolved
-GIT_EDITOR=true git rebase --continue                        # 6. finish (keeps your commit message;
-                                                             #    without GIT_EDITOR=true an editor opens: save and close it)
-git show HEAD:Status/Items/<ID>.md | diff ~/mine-<ID>.md -  # 7. check: only the conflicting field (and the other
-                                                             #    person's additions) may differ; nothing of yours missing
-hub validate                                                 #    must not report new violations
-hub commit "Resolve conflict on <ID>"                        # 8. pushes; prints the commit id
-rm ~/mine-<ID>.md
+git pull --rebase
+# edit the named field(s) in Status/Items/<ID>.md
+git add Status/Items/<ID>.md
+GIT_EDITOR=true git rebase --continue
+hub validate
+hub commit "Resolve conflict on <ID>"
 ```
-- In step 7, lines marked `<` are in your saved version but not in the result: each must be either the conflicting field's losing value or something you deliberately dropped.
-- **Several files** listed after `merge conflict in:` → do steps 2–5 for each before step 6. If the rebase stops again on another of your commits, repeat from step 2.
+- In the edit step, set each named field to the right value (agree with the other person if unsure). Every entry, source, link and other field from both sides is already in the file; do not delete them.
+- `GIT_EDITOR=true` keeps your commit message. Without it, an editor opens for the message: save and close it.
+- **Several files** listed after `merge conflict in:` → edit and `git add` each one before `git rebase --continue`. If the rebase stops again on another of your commits, repeat from `git pull --rebase`.
 - A conflicted **`Status/sync-state/*.yaml`** file → compare the two with `git show REBASE_HEAD:<file>` and keep the side with the newer `updated:`.
-- If step 1 succeeds without a conflict (the remote changed again), just run `hub commit` again.
+- If `git pull --rebase` succeeds without a conflict (the remote changed again), just run `hub commit` again.
 - To back out at any point: `git rebase --abort`. You are then back where `hub commit` left you, with your commit still local.
 - Agents never resolve a conflict themselves: they stop and show you the message.
 
@@ -645,7 +636,6 @@ rm ~/mine-<ID>.md
 
 ## Known limitations
 From `docs/superpowers/plans/2026-11-12-project-hub-skills-ingest-followups.md`, `…-core-followups.md`, and testing of this guide:
-- **Conflict resolution drops your side of the file.** On a real conflict the item file keeps only the GitHub version, without markers; follow the [recipe](#if-hub-commit-exits-with-code-3) to bring your changes back.
 - **Rejected titles are never re-staged.** A proposal (or ClickUp task name) whose title was once applied or rejected is skipped forever, even for a different task with the same name.
 - Two people processing the **same source in the same few minutes** can still create a question twice and log a line twice (ClickUp tasks are fully guarded).
 - A clone where `hub commit` has never run has no merge drivers (and Obsidian mobile never runs them): concurrent edits to one item conflict as text there.

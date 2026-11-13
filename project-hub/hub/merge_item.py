@@ -10,9 +10,9 @@ turns it into a conflict every time. This driver merges the parsed items instead
   changed it → that side wins; both changed it to the same value → that value; both changed it
   differently → a real conflict.
 
-Exit 0 after writing the merged item to %A. On a real conflict, %A keeps A's version, one line per key
-`hub-item conflict in <id>: <key>: A=<A> B=<B>` goes to stderr, and the exit code is 1 (git
-then reports the file as conflicted). An input that does not parse also exits 1. Registered by
+Exit 0 after writing the merged item to %A. On a real conflict the merged item (A's value for each
+conflicting key) is written to %A, one line per key `hub-item conflict in <id>: <key>: A=<A> B=<B>`
+goes to stderr, and the exit code is 1 (git then reports the file as conflicted). An input that does not parse also exits 1. Registered by
 `gitsync.ensure_repo_files` (`.gitattributes`: `Status/Items/*.md merge=hub-item`).
 """
 from __future__ import annotations
@@ -109,13 +109,15 @@ def main(argv: list[str] | None = None) -> int:
         a = _load(a_path, allow_empty=False)
         b = _load(b_path, allow_empty=False)
         merged, conflicts = merge_items(o, a, b)
+        # Always write the merge: on a real conflict it keeps A's value for each conflicting key and
+        # everything else from both sides, so nothing is lost while git marks the file conflicted.
+        atomic_write_text(a_path, render_item(merged))
         if conflicts:
             item_id = a.meta.get("id", "?")
             for key, av, bv in conflicts:
                 print(f"hub-item conflict in {item_id}: {key}: A={_show(av)} B={_show(bv)}",
                       file=sys.stderr)
             return 1
-        atomic_write_text(a_path, render_item(merged))
     except (ItemFormatError, OSError, UnicodeDecodeError, ValueError) as exc:
         print(f"hub-item: cannot merge: {exc}", file=sys.stderr)
         return 1

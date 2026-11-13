@@ -77,12 +77,16 @@ def test_real_conflict_keeps_ours_and_reports(tmp_path, capsys):
     b.meta["title"] = "Title B"
     a.description = "Desc A"
     b.description = "Desc B"
-    a_text = render_item(a)
+    a.entries.append(Entry(date(2026, 11, 13), "alice", "manual", "From A."))
+    b.entries.append(Entry(date(2026, 11, 14), "bob", "manual", "From B."))
     code, out = run(tmp_path, o, a, b)
     err = capsys.readouterr().err
-    assert code == 1 and out == a_text
+    m = parse_item(out)
+    assert code == 1
     assert "hub-item conflict in Q-20261112-abc: title: A=Title A B=Title B" in err
     assert "description: A=Desc A B=Desc B" in err
+    assert m.title == "Title A" and m.description == "Desc A"   # conflicting keys: A's values kept
+    assert [e.text for e in m.entries] == ["Raised.", "From A.", "From B."]
 
 
 def test_empty_base_add_add(tmp_path):
