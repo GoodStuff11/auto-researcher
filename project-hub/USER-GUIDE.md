@@ -140,7 +140,7 @@ hub --help                                          # now found on your PATH
 `hub init DIR --name NAME` works anywhere (it needs no vault). It makes `DIR` if it is missing and prints the path of each file it creates or refreshes (the new notes, `tools/project-hub`, the `.claude/skills/hub-*` folders and `tools/setup.sh`; `.gitignore` and `.gitattributes` are created or topped up too, without being listed), then `next: cd DIR && bash tools/setup.sh`. `NAME` may hold any characters (it is quoted in `project.yaml`) but must be one line. It:
 - **creates, only when absent:** `project.yaml` (a commented template with your `name`), `README.md` (setup steps for collaborators), `Vision.md` (the section skeleton), `Locator.md`, `Knowledge/README.md`, `Figures/Gallery.md` and `Status/Items.base`; and it adds the lines the hub needs to `.gitignore` and `.gitattributes` (in a git clone it also registers the merge drivers);
 - **never overwrites** an existing file, whatever it holds, so it is safe to run again; and it refuses a folder that is not empty and has no `project.yaml` (a folder holding only `.git` counts as empty) unless you add `--force`, which only lifts that refusal;
-- **always replaces** `tools/project-hub/` (a copy of the `hub` tool, this guide and the agent docs), the `hub-*` folders under `.claude/skills/` (a `hub-*` skill no longer shipped is removed; your own skills are never touched) and `tools/setup.sh`: this is how a vault's tools are updated ([Updating](#updating-hub-and-the-skills)). It refuses to replace a `tools/setup.sh` that `hub init` did not write.
+- **always replaces** `tools/project-hub/` (a copy of the `hub` tool, this guide and the agent docs), the `hub-*` folders under `.claude/skills/` (a `hub-*` skill no longer shipped is removed, so never give your own skills a `hub-` name; skills with other names are never touched) and `tools/setup.sh`: this is how a vault's tools are updated ([Updating](#updating-hub-and-the-skills)). It refuses to replace a `tools/setup.sh` that `hub init` did not write.
 
 `bash tools/setup.sh` (once per machine, and again whenever `pyproject.toml` changes) does:
 1. checks for Python 3.10 or newer (`PYTHON=python3.12 bash tools/setup.sh` if `python3` is older);
@@ -477,7 +477,7 @@ Say *"import our old notes"* or *"import `<file>`"*. The `hub-init` skill brings
 | a question already answered or dropped | a closed question with its answer |
 | stable knowledge (how the code works, conventions, what a result supports, claims tried and rejected) | a `Knowledge/<name>.md` note |
 | vision material | handed to the `hub-vision` skill |
-| a history narrative | at most a few entries on existing items |
+| a history narrative | entries on the imported items, added in a second pass once the first import is applied |
 | noise, duplicates | skipped |
 
 **Everything is proposed.** An import is all judgement, so the skill applies nothing directly: it writes a batch file, loads it with `hub ingest batch` (every item becomes a proposal in `Status/Pending/`), and shows you a summary: counts by kind and by section, and everything it skipped and why. It never invents facts, owners or dates.
@@ -486,7 +486,9 @@ Say *"import our old notes"* or *"import `<file>`"*. The `hub-init` skill brings
 
 Good to know:
 - The imported items keep the document's own dates in `raised` and `closed`. History entries are dated the day of the import, so each says which document, section and item it came from. Every imported item cites a source like `doc:notes#open-items` (document name and section).
-- A person with no key in `project.yaml` stays in the text and never becomes an owner.
+- Before building the batch, the skill lists the people in the document who have no key in `project.yaml` and asks whether to add them to `people`. Anyone not added stays in the text and never becomes an owner.
+- Task ids from ClickUp or another tracker found in the document are kept in the text only; the item is linked to its task by the ClickUp sync, not by the import.
+- Re-running an import of the same document is safe: proposals already staged, applied or rejected are skipped.
 - Personal assessments, private notes and career material are left out, and the skill tells you it skipped them.
 - A title that was once applied or rejected is never proposed again ([Known limitations](#known-limitations)).
 - *"dry run: import <file>"* shows the summary and writes nothing into the vault.
@@ -675,7 +677,7 @@ Commands that need your people key (`me`): `new`, `entry`, `log`, `list --owner 
 | `hub list --since 2026-11-01` / `hub since 2026-11-01 [--series weekly]` | items with activity on or after a date |
 | `hub show <ID>` / `hub show <ID> --chain` | one item / with everything that descends from it |
 | `hub pending list` (`--source PREFIX`) | proposals awaiting approval, sorted by source; `--source doc:notes#open-items` shows one section |
-| `hub sources` (`--json`) | configured sources and their watermarks |
+| `hub sources` (`--json`) | configured sources and their watermarks (`no sources configured in project.yaml` when there are none) |
 | `hub seen <source id>` | `new`, or `seen` and where it is recorded (item ids, `log:<month>`, proposal ids) |
 | `hub meeting decided weekly 2026-11-19 --json` | what a meeting recorded |
 | `hub validate` | check every rule (exit 1 if any violation) |
@@ -909,7 +911,7 @@ From the plans' follow-up lists and testing of this guide:
 - ClickUp owner and due mirroring still applies to done and dropped actions; due dates sent as epoch milliseconds are converted in the machine's time zone.
 - The meeting note does not record the Circleback meeting id. Circleback meetings outside a configured series get no meeting note (only a log line and items). The note lists configured attendees, not who came.
 - `hub seen manual` lists every item ever typed by hand: `manual` is not a useful id to check.
-- `hub init` replaces `tools/project-hub/` and the `hub-*` skill folders on every run, so edits made to them inside a vault are lost. Skill folders with other names are kept.
+- `hub init` replaces `tools/project-hub/` and the `hub-*` skill folders on every run, so edits made to them inside a vault are lost, and a `hub-*` folder the package no longer ships is deleted. Skill folders with other names are kept.
 - `tools/setup.sh` needs network access and Python 3.10 or newer; native Windows is not supported (use WSL). `~/.local/bin/hub` points at one vault at a time.
 - `hub check-links` checks paths on the machine it runs on, and does not request URLs unless `--online` is given. A path or URL that is not written as described in [The Locator](#the-locator-and-check-links) is not found.
 - An import is Claude's reading of a document, not a parser: check the proposals before approving them.
