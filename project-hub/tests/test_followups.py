@@ -68,11 +68,11 @@ def test_untitled_row_title_is_single_line(env):
 
 def test_multiline_decide_cell_title_is_single_line(env):
     store, cfg, root = env
-    _meeting(store, root, lambda did, ws: {"H6": "approve", "B6": "Drop\nUCJ"})
+    _meeting(store, root, lambda did, ws: {"H6": "approve", "B6": "Drop method\nC"})
     read_agenda(store, cfg, "group", author="bob", today=date(2026, 11, 19))
     props = load_proposals(root)
-    assert [p.title for p in props] == ["Raised at group/2026-11-19: Drop UCJ"]
-    assert props[0].body["ops"][0]["title"] == "Drop UCJ"
+    assert [p.title for p in props] == ["Raised at group/2026-11-19: Drop method C"]
+    assert props[0].body["ops"][0]["title"] == "Drop method C"
 
 
 def test_unmatched_owner_stays_in_title(env):

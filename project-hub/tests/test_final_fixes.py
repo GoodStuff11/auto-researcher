@@ -242,7 +242,7 @@ def test_meeting_decided_reports_not_reached_and_staged(hub_root, monkeypatch, c
     rows = {ws.cell(r, 1).value: r for r in range(1, 40)}
     ws[f"H{rows[d1]}"], ws[f"I{rows[d1]}"] = "approve", "Do it"
     new_row = next(r for v, r in rows.items() if str(v or "").startswith("NEW"))
-    ws[f"B{new_row}"], ws[f"H{new_row}"] = "Drop UCJ", "approve"
+    ws[f"B{new_row}"], ws[f"H{new_row}"] = "Drop method C", "approve"
     wb.save(path)
     res = read_agenda(store, cfg, "group", author="alice", today=date(2026, 11, 19))
     assert res["not_reached"] == [d2] and len(res["staged"]) == 1

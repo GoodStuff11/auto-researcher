@@ -49,14 +49,14 @@ def test_read_back_round_trip(xlsx):
     wb = load_workbook(xlsx)
     ws = wb[SHEET_D]
     ws["H5"], ws["I5"], ws["J5"] = "modify", "Adopt Y but only for 4x3", "Rewrite ¶2 (alice); Rerun fig (bob)"
-    ws["B6"], ws["H6"], ws["I6"] = "Drop UCJ", "✓", "Dropped"
+    ws["B6"], ws["H6"], ws["I6"] = "Drop method C", "✓", "Dropped"
     wb.save(xlsx)
     rb = read_workbook(xlsx)
     assert rb.series == "group" and rb.meeting_date == date(2026, 11, 19) and rb.read_back is False
     assert len(rb.rows) == 2
     r0, r1 = rb.rows
     assert (r0.id, r0.outcome, r0.planned, r0.as_decided) == ("D-20261115-bbb", "modify", True, "Adopt Y but only for 4x3")
-    assert (r1.id, r1.decide, r1.outcome, r1.planned) == ("NEW-1", "Drop UCJ", "approve", False)
+    assert (r1.id, r1.decide, r1.outcome, r1.planned) == ("NEW-1", "Drop method C", "approve", False)
 
 
 def test_read_without_meta_or_id_column(xlsx):
@@ -65,14 +65,14 @@ def test_read_without_meta_or_id_column(xlsx):
     ws = wb[SHEET_D]
     ws.delete_cols(1)
     ws["G5"] = "Approve"
-    ws["A6"] = "Drop UCJ"
+    ws["A6"] = "Drop method C"
     wb.save(xlsx)
     rb = read_workbook(xlsx)
     assert rb.series == "group" and rb.meeting_date == date(2026, 11, 19)
     assert len(rb.rows) == 2
     r0, r1 = rb.rows
     assert (r0.id, r0.decide, r0.outcome, r0.planned) == (None, "Adopt Y", "approve", False)
-    assert (r1.id, r1.decide, r1.planned) == (None, "Drop UCJ", False)
+    assert (r1.id, r1.decide, r1.planned) == (None, "Drop method C", False)
 
 
 def test_read_meta_garbage_date_falls_back_to_title(xlsx):
