@@ -41,3 +41,6 @@
 [08:46:38] nnbf4: it  1150  E = -11.31072241  |f| = 5.97e-02  (13.04 s/step)
 [08:57:10] nnbf4: it  1199  E = -11.31065283  |f| = 8.22e-02  (13.03 s/step)
 [09:03:27] nnbf4 [P]: dE_tot=0.07607 dE_sign=0.01810 f_E=0.238 w_sign=7.77e-03 spread=4.7e-13 ov0=0.896 (368 s)
+[09:09:59] nnbf4 [P_S]: dE_tot=0.04434 dE_sign=0.00854 f_E=0.193 w_sign=4.59e-03 spread=6.8e-13 ov0=0.946 (393 s)
+[09:10:05] nnbf4 sampled: E_exact=-11.31 mean=-11.31 stderr=0.003476 z=0.0732 var_mc=0.1981 var_ex=0.2339 kurt_ex=2.249e+07 tail_share=0.5096 max_dev_sigma=26.89 accept=0.3009 n=2e+04 per_amp_check=2.049e-16 (6 s)
+[09:10:05] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r5/results/inst0_nnbf4_s33_sh0.01.json

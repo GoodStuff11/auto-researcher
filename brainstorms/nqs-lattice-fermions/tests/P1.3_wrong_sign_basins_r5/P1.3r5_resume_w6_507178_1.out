@@ -9,3 +9,4 @@
 [08:58:27] resumed parameters from /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/params/inst0_Cuhf_w6_s22.npz after 900 energy steps (RNG restored)
 [08:58:32] Cuhf-w6-s22: n_params=1734 calib=3.55e-14 init |P psi|/|psi|=6.562e-01 init F=0.9088
 [08:58:49] Cuhf-w6-s22: it   900 [E] E = -11.32648593 F = 0.908777 |f| = 1.17e-02 (0.02 s/step)
+[09:13:10] Cuhf-w6-s22: it   950 [E] E = -11.32211605 F = 0.909435 |f| = 5.29e-02 (0.92 s/step)
