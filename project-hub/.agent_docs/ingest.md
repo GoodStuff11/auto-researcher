@@ -42,7 +42,7 @@ Rules (`check_batch` and its helpers in `hub/batch.py`):
 - `source` is required on every op and proposal, non-empty with no whitespace. `text`, `title`, `reason` and flags are non-empty strings; `priority` is an integer 1-3; `series` a list of strings; `description` a string.
 - `entry.id` must exist. Safe `new` creates only questions and actions (decisions are proposals); `owner` must be a key of `people` (else error `owner X is not a known person`); `links` may only be `spawned_by` to existing ids; `fields` may only set `due`. Closures, answers, pivots and decisions go through `proposals`.
 - Proposal ops are checked with the pending-format.md rules (`check_ops`); in addition every `new` op with an `owner` must name a key of `people` (same error as safe ops).
-- `hub list --json` rows are `{id, type, status, title, owner, priority, due, last_activity}`; `due` is `YYYY-MM-DD` or null (only actions have one). Use it to sort todos.
+- `hub list --json` rows are `{id, type, status, title, owner, priority, due, last_activity, clickup_id}`; `due` is `YYYY-MM-DD` or null (only actions have one); `clickup_id` is the linked ClickUp task id (string) or null. Use it to sort todos.
 - The whole file is checked before anything is written. Any problem raises `BatchError`: stderr `error: nothing written; fix the batch file:` plus one line per problem, exit 1, vault untouched.
 Idempotency (re-running the same file is a no-op, counted as skipped):
 - `entry`: skipped when the item already has an entry with the same source and the same text (whitespace-normalised).

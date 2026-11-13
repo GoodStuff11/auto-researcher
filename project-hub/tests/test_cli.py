@@ -222,3 +222,11 @@ def test_list_json_has_due(cli, capsys):
     assert rows[0]["due"] == "2026-12-01"
     run(capsys, "new", "q", "Why?", "--source", "manual")
     assert json.loads(run(capsys, "list", "--type", "question", "--json")[1])[0]["due"] is None
+
+
+def test_list_json_has_clickup_id(cli, capsys):
+    run(capsys, "new", "a", "Do it", "--source", "manual", "--owner", "alice")
+    aid = Store(cli).query(type="action")[0].id
+    assert json.loads(run(capsys, "list", "--type", "action", "--json")[1])[0]["clickup_id"] is None
+    run(capsys, "set", aid, "clickup_id=86abc")
+    assert json.loads(run(capsys, "list", "--type", "action", "--json")[1])[0]["clickup_id"] == "86abc"
