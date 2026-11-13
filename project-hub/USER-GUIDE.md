@@ -757,7 +757,8 @@ Several people (and their agents) write to the same vault. What makes that safe:
   - Two people changing the same item merge automatically: entries, sources, series and links from both sides are kept. Only two *different* new values for the same field (title, status, owner, description, …) conflict.
   - Watermark and next-meeting files keep the side written most recently (its `updated:` time), even if its value is older. At worst that re-reads work, which `hub seen` then skips; it never skips anything.
   - Logs and the flags file keep both sides' lines.
-  - `Snapshot.md` never conflicts: the incoming copy is taken and then rebuilt.
+  - `Snapshot.md` and `Figures/Gallery.md` never conflict: the incoming copy is taken and then rebuilt.
+  - Notes (`Vision.md`, `Locator.md`, `Knowledge/`) and figure `meta.yaml`/`caption.md` files merge like any text file: edits to different parts merge cleanly; edits to the same lines give ordinary git conflict markers ([below](#if-hub-commit-exits-with-code-3)).
 - **Commit after each source**: an update commits and pushes after every source, so a colleague's run a few minutes later sees your work and does not record the same meeting or task again.
 - **ClickUp duplicates are caught**: a proposal cannot create a second action for a task that is already linked. If two actions still end up on one task (a hand `hub set`, or two clones), `hub validate` reports `duplicate-clickup-id` and the Snapshot shows a flag.
 
@@ -768,7 +769,7 @@ Rules for people:
 - Never commit `hub.local.yaml`. `hub commit` commits everything in the vault folder, so keep scratch files and downloads outside it.
 - Use Obsidian Git only with the [safe settings](#obsidian-and-obsidian-git).
 ### If `hub commit` exits with code 3
-A real conflict: both sides changed the **same field of one item** to different values. The message is long (git's own output is in it). Look for the line:
+A real conflict: both sides changed the **same field of one item** to different values, or the same lines of a plain-text note or figure file (see the last bullets below). The message is long (git's own output is in it). Look for the line:
 ```
 hub-item conflict in Q-20261113-e6h: title: A=Title from Alice B=Title from Bob
 ```
@@ -787,6 +788,8 @@ hub commit "Resolve conflict on <ID>"
 - `GIT_EDITOR=true` keeps your commit message. Without it, an editor opens for the message: save and close it.
 - **Several files** listed after `merge conflict in:` → edit and `git add` each one before `git rebase --continue`. If the rebase stops again on another of your commits, repeat from `git pull --rebase`.
 - A conflicted **`Status/sync-state/*.yaml`** file → compare the two with `git show REBASE_HEAD:<file>` and keep the side with the newer `updated:`.
+- A conflicted **plain-text file**: `Vision.md`, `Locator.md`, `Knowledge/*.md`, `Figures/<id>/meta.yaml` or `Figures/<id>/caption.md` → these have no special merge driver, so git writes normal conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) into the file. Open it, keep what both sides meant (usually both additions), delete the markers, then `git add` it and continue as above (`GIT_EDITOR=true git rebase --continue`, `hub validate`, `hub commit`). For `meta.yaml`, make sure the result is still valid YAML.
+- `Status/Snapshot.md` and `Figures/Gallery.md` never need resolving: they are regenerated automatically.
 - If `git pull --rebase` succeeds without a conflict (the remote changed again), just run `hub commit` again.
 - To back out at any point: `git rebase --abort`. You are then back where `hub commit` left you, with your commit still local.
 - Agents never resolve a conflict themselves: they stop and show you the message.

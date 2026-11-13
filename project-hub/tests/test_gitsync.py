@@ -249,3 +249,11 @@ def test_cli_commit_with_garbage_item_still_pushes(two_clones):
     git(b, "pull", "--rebase")
     assert (b / "Status" / "Items" / "Q-20261112-bad.md").is_file()
     assert "Q-20261112-bad.md" in (b / "Status" / "Snapshot.md").read_text()
+
+
+def test_conflict_guidance_covers_plain_text_files():
+    from hub.gitsync import CONFLICT_GUIDANCE
+    for name in ("Vision.md", "Locator.md", "Knowledge/", "Figures/<id>/meta.yaml", "Figures/<id>/caption.md"):
+        assert name in CONFLICT_GUIDANCE, name
+    assert "conflict markers" in CONFLICT_GUIDANCE
+    assert "Gallery.md" in CONFLICT_GUIDANCE and "regenerated" in CONFLICT_GUIDANCE

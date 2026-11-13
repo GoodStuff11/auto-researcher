@@ -34,6 +34,10 @@ CONFLICT_GUIDANCE = ("in `hub-item conflict` lines, A is the version already on 
                      "keeps A). "
                      "A conflicted Status/sync-state/*.yaml file (watermark or next meeting) means the "
                      "hub-watermark driver could not read one side: keep the side with the newer `updated:`. "
+                     "Plain-text files (Vision.md, Locator.md, Knowledge/*.md, Figures/<id>/meta.yaml, "
+                     "Figures/<id>/caption.md) hold normal git conflict markers: open the file, keep both sides' "
+                     "intent, remove the <<<<<<< ======= >>>>>>> markers, then `git add` it. "
+                     "Status/Snapshot.md and Figures/Gallery.md are regenerated automatically: never edit them. "
                      "Re-run after fixing: `git pull --rebase`, fix the file, `git add` it, "
                      "`git rebase --continue`, then `hub validate` and `hub commit`")
 
