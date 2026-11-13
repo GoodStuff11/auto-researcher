@@ -40,7 +40,7 @@ Block keys:
 - `op: set` — `id` (required), `fields` (mapping, same rules as `hub set`); `Store.set_fields`
 - `op: link` — `id`, `rel`, `target` (all required); `Store.link`
 - `op: note` — writes a human-owned note file (`path`, `text` required)
-  - `path`: exactly `Vision.md`, `Locator.md`, or `Knowledge/<name>.md` (one level under `Knowledge/`; the name starts with a letter or digit and holds letters, digits, space, `_ . , ( )` or `-`). Anything else (`..`, other folders, `.txt`, lowercase `vision.md`, absolute paths) is rejected by `check_ops` and by `note_path(root, rel)` (raises `PendingError`).
+  - `path`: exactly `Vision.md`, `Locator.md`, or `Knowledge/<name>.md` (one level under `Knowledge/`; the name starts with a letter or digit and holds letters, digits, space, `_ . , ( )` or `-`). Anything else (`..`, other folders, `.txt`, lowercase `vision.md`, absolute paths, a trailing newline) is rejected by `check_ops` and by `note_path(root, rel)` (raises `PendingError`). The target's parent must resolve inside the vault and the target must not be a symbolic link, so a symlinked `Knowledge/` or `Vision.md` is rejected both at staging and at apply.
   - `text` (string) — the whole note when `mode` is `replace`, or the text added at the end when `mode` is `append`; a trailing newline is added if missing. `Knowledge/` is created if absent.
   - `mode`: `replace` (default) or `append`. Append joins a newline to the existing text when it does not already end with one.
   - Writes go through `atomic_write_text`. The op is rolled back with the rest of its proposal (see All-or-nothing below): the note's prior bytes are restored, or the file is removed if it did not exist.

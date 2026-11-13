@@ -60,3 +60,51 @@ def test_note_is_never_a_safe_batch_op(hub_root):
                                     "ops": [{"op": "note", "path": "Knowledge/Setup.md", "text": "Run make."}]}]},
                     author="alice", day=D)
     assert len(rep["staged"]) == 1
+
+
+@pytest.mark.parametrize("path", ["Vision.md\n", "Knowledge/x.md\n"])
+def test_note_path_rejects_trailing_newline(hub_root, path):
+    errs = check_ops(Store(hub_root), [{"op": "note", "path": path, "text": "x"}])
+    assert any("note path" in e for e in errs)
+
+
+def test_note_knowledge_symlink_outside_vault_is_rejected(hub_root, tmp_path_factory):
+    outside = tmp_path_factory.mktemp("outside")
+    (hub_root / "Knowledge").symlink_to(outside, target_is_directory=True)
+    ops = [{"op": "note", "path": "Knowledge/Setup.md", "text": "x"}]
+    with pytest.raises(PendingError, match="outside the vault"):
+        add_proposal(hub_root, "Escape", ops, proposer="alice", source="manual", reason="r", day=D)
+    assert list(outside.iterdir()) == []
+
+
+def test_note_knowledge_symlink_outside_vault_is_rejected_at_apply(hub_root, tmp_path_factory):
+    s = Store(hub_root)
+    pid = add_proposal(hub_root, "Setup", [{"op": "note", "path": "Knowledge/Setup.md", "text": "x"}],
+                       proposer="alice", source="manual", reason="r", day=D)
+    outside = tmp_path_factory.mktemp("outside")
+    (hub_root / "Knowledge").symlink_to(outside, target_is_directory=True)
+    with pytest.raises(PendingError, match="outside the vault"):
+        apply_proposals(hub_root, s, [pid], author="alice", day=D)
+    assert list(outside.iterdir()) == []
+
+
+def test_note_vision_symlink_is_rejected(hub_root, tmp_path):
+    target = tmp_path / "elsewhere.md"
+    target.write_text("keep\n")
+    (hub_root / "Vision.md").symlink_to(target)
+    errs = check_ops(Store(hub_root), [{"op": "note", "path": "Vision.md", "text": "x"}])
+    assert any("symbolic link" in e for e in errs)
+    assert target.read_text() == "keep\n"
+
+
+def test_failed_proposal_removes_a_created_note(hub_root, monkeypatch):
+    s = Store(hub_root)
+    pid = add_proposal(hub_root, "New note and a bad item",
+                       [{"op": "note", "path": "Knowledge/New.md", "text": "fresh"},
+                        {"op": "new", "type": "question", "title": "Q", "source": "manual"}],
+                       proposer="alice", source="manual", reason="r", day=D)
+    monkeypatch.setattr(Store, "create", lambda *a, **k: (_ for _ in ()).throw(ValueError("boom")))
+    with pytest.raises(PendingError):
+        apply_proposals(hub_root, s, [pid], author="alice", day=D)
+    assert not (hub_root / "Knowledge" / "New.md").exists()
+    assert [p.pid for p in load_proposals(hub_root)] == [pid]

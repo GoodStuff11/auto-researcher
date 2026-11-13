@@ -28,10 +28,23 @@ NOTE_PATH_RE = re.compile(r"^(Vision\.md|Locator\.md|Knowledge/[A-Za-z0-9][A-Za-
 NOTE_MODES = ("replace", "append")
 
 
+def _note_problem(root, rel) -> str | None:
+    """Why `rel` cannot be a note op target in the vault at `root`, or None if it can."""
+    if not isinstance(rel, str) or not NOTE_PATH_RE.fullmatch(rel) or ".." in rel:
+        return f"note path must be Vision.md, Locator.md or Knowledge/<name>.md, got {rel!r}"
+    path = Path(root) / rel
+    if not path.parent.resolve().is_relative_to(Path(root).resolve()):
+        return f"note path {rel!r} resolves outside the vault"
+    if path.is_symlink():
+        return f"note path {rel!r} is a symbolic link"
+    return None
+
+
 def note_path(root, rel) -> Path:
     """Vault path of a note op target; PendingError unless `rel` is an allowed note path."""
-    if not isinstance(rel, str) or not NOTE_PATH_RE.match(rel) or ".." in rel:
-        raise PendingError(f"note path must be Vision.md, Locator.md or Knowledge/<name>.md, got {rel!r}")
+    problem = _note_problem(root, rel)
+    if problem:
+        raise PendingError(problem)
     return Path(root) / rel
 
 
@@ -194,9 +207,9 @@ def check_ops(store: Store, ops) -> list[str]:
                     refs.add(ref)
                     ref_types[ref] = op["type"]
         elif kind == "note":
-            if not isinstance(op["path"], str) or not NOTE_PATH_RE.match(op["path"]) or ".." in op["path"]:
-                errs.append(f"{where}: note path must be Vision.md, Locator.md or Knowledge/<name>.md, "
-                            f"got {op['path']!r}")
+            problem = _note_problem(store.root, op["path"])
+            if problem:
+                errs.append(f"{where}: {problem}")
             if not isinstance(op["text"], str):
                 errs.append(f"{where}: text must be a string")
             if op.get("mode", "replace") not in NOTE_MODES:
