@@ -2,12 +2,13 @@
 """Figures registry: Figures/<id>/{figure.<ext>, caption.md, meta.yaml} and the generated Figures/Gallery.md.
 
 A figure is produced by the project's own scripts somewhere under a root; the vault keeps a copy so it can
-be read in Obsidian. `sync_figures` re-copies a figure whose source changed and marks it stale when its
-data changed after it was made. caption.md is human-owned: written once at registration, never again.
+be read in Obsidian. `sync_figures` re-copies a figure whose source changed and marks it stale when one of
+its data entries changed after it was made. caption.md is human-owned: written once at registration, never again.
 """
 from __future__ import annotations
 
 import hashlib
+import os
 import re
 import shutil
 from datetime import date
@@ -48,18 +49,16 @@ def _hash_file(path: Path) -> str:
     return h.hexdigest()[:16]
 
 
-def _hash_data(config, specs) -> str | None:
-    if not specs:
-        return None
+def _hash_entry(config, spec) -> str:
+    """Hash one data entry: a file, or a directory over its files."""
+    path = resolve(config, spec)
+    if not path.exists():
+        raise FigureError(f"data path {spec} ({path}) does not exist")
     h = hashlib.sha256()
-    for spec in sorted(specs):
-        path = resolve(config, spec)
-        if not path.exists():
-            raise FigureError(f"data path {spec} ({path}) does not exist")
-        files = sorted(p for p in path.rglob("*") if p.is_file()) if path.is_dir() else [path]
-        for f in files:
-            h.update(str(f.relative_to(path) if path.is_dir() else f.name).encode())
-            _sha_bytes(h, f)
+    files = sorted(p for p in path.rglob("*") if p.is_file()) if path.is_dir() else [path]
+    for f in files:
+        h.update(str(f.relative_to(path) if path.is_dir() else f.name).encode())
+        _sha_bytes(h, f)
     return h.hexdigest()[:16]
 
 
@@ -75,6 +74,12 @@ def _check_specs(source, data) -> tuple[str, list[str]]:
     return source, list(data)
 
 
+def _valid_hashes(value) -> dict | None:
+    if isinstance(value, dict) and all(isinstance(k, str) and isinstance(v, str) for k, v in value.items()):
+        return value
+    return None
+
+
 def load_meta(root, fig_id) -> dict:
     p = _fig_dir(root, fig_id) / "meta.yaml"
     try:
@@ -88,6 +93,19 @@ def load_meta(root, fig_id) -> dict:
 
 def _save_meta(root, fig_id, meta: dict) -> None:
     atomic_write_text(_fig_dir(root, fig_id) / "meta.yaml", yaml.safe_dump(meta, sort_keys=False, allow_unicode=True))
+
+
+def _safe_copy(src: Path, dst: Path) -> None:
+    """Copy src to a fresh temp file beside dst, then rename it onto dst. Never writes through a symlink."""
+    tmp = dst.parent / f".{dst.name}.{os.getpid()}.tmp"
+    try:
+        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o666)
+        with src.open("rb") as fin, os.fdopen(fd, "wb") as fout:
+            shutil.copyfileobj(fin, fout)
+        os.replace(tmp, dst)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise
 
 
 def _replace_old_figure(fig_dir: Path, old, new_name: str) -> None:
@@ -120,18 +138,18 @@ def add_figure(config, fig_id, source, *, title="", script="", data=(), licenses
         raise FigureError(f"source {source} ({src}) does not exist")
     if not src.is_file():
         raise FigureError(f"source {source} ({src}) is not a file")
-    data_hash = _hash_data(config, data)
+    hashes = {spec: _hash_entry(config, spec) for spec in data}
     created = not d.exists()
     d.mkdir(parents=True, exist_ok=True)
     fig_file = f"figure{src.suffix.lower()}"
     try:
-        shutil.copyfile(src, d / fig_file)
+        _safe_copy(src, d / fig_file)
         if not (d / "caption.md").exists():
             atomic_write_text(d / "caption.md", (caption.strip() or CAPTION_PLACEHOLDER) + "\n")
         _save_meta(root, fig_id, {
             "id": fig_id, "title": title, "source": source, "script": script, "data": data,
-            "data_baseline": list(data), "status": "draft", "licenses": licenses, "figure_file": fig_file,
-            "figure_hash": _hash_file(src), "data_hash": data_hash, "synced": None, "stale": False,
+            "data_hashes": hashes, "changed_data": [], "status": "draft", "licenses": licenses,
+            "figure_file": fig_file, "figure_hash": _hash_file(src), "synced": None, "stale": False,
             "problem": None})
     except BaseException:
         if created:
@@ -152,25 +170,42 @@ def sync_figures(config, *, today: date) -> list[dict]:
         row = {"id": fig_id, "copied": False, "stale": False, "problem": None}
         try:
             source, data = _check_specs(meta.get("source"), meta.get("data"))
-            baseline = _check_specs(source, data if meta.get("data_baseline") is None else meta["data_baseline"])[1]
             src = resolve(config, source)
             if not src.is_file():
                 raise FigureError(f"source missing: {source} ({src})")
-            data_hash = _hash_data(config, data)
             src_hash = _hash_file(src)
+            fig_dir = _fig_dir(root, fig_id)
             if src_hash != meta.get("figure_hash"):
+                hashes = {spec: _hash_entry(config, spec) for spec in data}
                 fig_file = f"figure{src.suffix.lower()}"
-                fig_dir = _fig_dir(root, fig_id)
+                _safe_copy(src, fig_dir / fig_file)
                 _replace_old_figure(fig_dir, meta.get("figure_file"), fig_file)
-                shutil.copyfile(src, fig_dir / fig_file)
-                meta.update(figure_file=fig_file, figure_hash=src_hash, data_hash=data_hash, synced=today)
+                meta.update(figure_file=fig_file, figure_hash=src_hash, data_hashes=hashes,
+                            changed_data=[], synced=today)
                 row["copied"] = True
-            elif data != baseline:
-                meta["data_hash"] = data_hash          # data list edited by hand: re-baseline
             else:
-                row["stale"] = data_hash != meta.get("data_hash")
-            meta["data_baseline"] = data
-            meta["stale"], meta["problem"] = row["stale"], None
+                stored = _valid_hashes(meta.get("data_hashes")) or {}
+                kept, changed, problems = {}, [], []
+                for spec in data:
+                    try:
+                        h = _hash_entry(config, spec)
+                    except (FigureError, ValueError, OSError) as exc:
+                        problems.append(str(exc))
+                        if spec in stored:
+                            kept[spec] = stored[spec]
+                        continue
+                    if spec in stored:
+                        kept[spec] = stored[spec]
+                        if h != stored[spec]:
+                            changed.append(spec)
+                    else:
+                        kept[spec] = h
+                meta.update(data_hashes=kept, changed_data=changed)
+                row["stale"] = bool(changed)
+                row["problem"] = "; ".join(problems) or None
+            meta.pop("data_hash", None)
+            meta.pop("data_baseline", None)
+            meta["stale"], meta["problem"] = row["stale"], row["problem"]
         except (FigureError, ValueError, OSError) as exc:
             row = {"id": fig_id, "copied": False, "stale": False, "problem": str(exc)}
             meta["stale"], meta["problem"] = False, str(exc)
@@ -215,7 +250,9 @@ def render_gallery(root) -> str:
         if meta.get("problem"):
             out.append(f"**Problem:** {meta['problem']}")
         elif meta.get("stale"):
-            out.append("**Stale:** its data changed after the figure was made.")
+            changed = meta.get("changed_data") or []
+            detail = f": {', '.join(str(c) for c in changed)}" if changed else ""
+            out.append(f"**Stale:** its data changed after the figure was made{detail}.")
     if len(out) == 2:
         out += ["", "No figures registered yet (`hub figures add`)."]
     return "\n".join(out) + "\n"

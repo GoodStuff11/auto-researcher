@@ -211,7 +211,7 @@ def test_failed_add_removes_only_what_it_created(env, monkeypatch):
     def boom(*args, **kwargs):
         raise OSError("disk full")
 
-    monkeypatch.setattr(figures_mod.shutil, "copyfile", boom)
+    monkeypatch.setattr(figures_mod.shutil, "copyfileobj", boom)
     with pytest.raises(OSError):
         add_figure(cfg, "new", "$SRC/fig.png")
     assert not (vault / "Figures" / "new").exists()
@@ -234,3 +234,121 @@ def test_root_ref_drops_trailing_punctuation(text, expected):
 
 def test_root_ref_needs_a_word_boundary_before_dollar():
     assert ROOT_REF_RE.search("a$SRC/x") is None
+
+
+def test_change_then_list_edit_stays_stale(env):
+    cfg, vault, src = env
+    (src / "more.csv").write_text("x\n")
+    add_figure(cfg, "f", "$SRC/fig.png", data=["$SRC/data"])
+    (src / "data" / "a.csv").write_text("2\n")
+    _edit_meta(vault, "f", lambda m: m.update(data=m["data"] + ["$SRC/more.csv"]))
+    row = sync_figures(cfg, today=D)[0]
+    assert row["stale"] is True and row["problem"] is None
+
+
+def test_stale_survives_adding_an_entry(env):
+    cfg, vault, src = env
+    (src / "more.csv").write_text("x\n")
+    add_figure(cfg, "f", "$SRC/fig.png", data=["$SRC/data"])
+    (src / "data" / "a.csv").write_text("2\n")
+    assert sync_figures(cfg, today=D)[0]["stale"] is True
+    _edit_meta(vault, "f", lambda m: m.update(data=m["data"] + ["$SRC/more.csv"]))
+    assert sync_figures(cfg, today=D)[0]["stale"] is True
+
+
+def test_reordering_the_list_changes_nothing(env):
+    cfg, vault, src = env
+    (src / "more.csv").write_text("x\n")
+    add_figure(cfg, "f", "$SRC/fig.png", data=["$SRC/data", "$SRC/more.csv"])
+    _edit_meta(vault, "f", lambda m: m.update(data=list(reversed(m["data"]))))
+    assert sync_figures(cfg, today=D)[0]["stale"] is False
+    (src / "data" / "a.csv").write_text("2\n")
+    assert sync_figures(cfg, today=D)[0]["stale"] is True
+    _edit_meta(vault, "f", lambda m: m.update(data=list(reversed(m["data"]))))
+    assert sync_figures(cfg, today=D)[0]["stale"] is True
+
+
+def test_revert_clears_stale_after_list_edit(env):
+    cfg, vault, src = env
+    (src / "more.csv").write_text("x\n")
+    add_figure(cfg, "f", "$SRC/fig.png", data=["$SRC/data"])
+    (src / "data" / "a.csv").write_text("2\n")
+    _edit_meta(vault, "f", lambda m: m.update(data=m["data"] + ["$SRC/more.csv"]))
+    assert sync_figures(cfg, today=D)[0]["stale"] is True
+    (src / "data" / "a.csv").write_text("1\n")
+    assert sync_figures(cfg, today=D)[0]["stale"] is False
+    assert stale_figures(vault) == []
+
+
+def test_new_entry_missing_is_a_problem_until_it_exists(env):
+    cfg, vault, src = env
+    add_figure(cfg, "f", "$SRC/fig.png", data=["$SRC/data"])
+    _edit_meta(vault, "f", lambda m: m.update(data=m["data"] + ["$SRC/nope.csv"]))
+    row = sync_figures(cfg, today=D)[0]
+    assert "nope.csv" in row["problem"] and row["stale"] is False
+    (src / "nope.csv").write_text("1\n")
+    row = sync_figures(cfg, today=D)[0]
+    assert row["problem"] is None and row["stale"] is False
+    (src / "data" / "a.csv").write_text("CHANGED\n")
+    assert sync_figures(cfg, today=D)[0]["stale"] is True
+
+
+@pytest.mark.parametrize("stored", [None, "junk", {"$SRC/data": 7}])
+def test_old_or_malformed_meta_is_baselined_not_stale(env, stored):
+    cfg, vault, src = env
+    add_figure(cfg, "f", "$SRC/fig.png", data=["$SRC/data"])
+
+    def old_format(m):
+        m.pop("data_hashes", None)
+        m["data_hash"] = "deadbeefdeadbeef"
+        m["data_baseline"] = "oops"
+        if stored is not None:
+            m["data_hashes"] = stored
+
+    _edit_meta(vault, "f", old_format)
+    (src / "data" / "a.csv").write_text("2\n")
+    row = sync_figures(cfg, today=D)[0]
+    assert row["stale"] is False and row["problem"] is None
+    meta = yaml.safe_load((vault / "Figures" / "f" / "meta.yaml").read_text(encoding="utf-8"))
+    assert "data_hash" not in meta and "data_baseline" not in meta
+    assert set(meta["data_hashes"]) == {"$SRC/data"}
+
+
+def test_regeneration_over_a_symlink_never_writes_through(env):
+    cfg, vault, src = env
+    d = add_figure(cfg, "f", "$SRC/fig.png")
+    outside = vault.parent / "outside.png"
+    outside.write_bytes(b"precious")
+    (d / "figure.png").unlink()
+    (d / "figure.png").symlink_to(outside)
+    (src / "fig.png").write_bytes(b"png-2")
+    assert sync_figures(cfg, today=D)[0]["copied"] is True
+    assert outside.read_bytes() == b"precious"
+    assert (d / "figure.png").read_bytes() == b"png-2" and not (d / "figure.png").is_symlink()
+
+
+def test_extension_change_copies_new_then_removes_old(env):
+    cfg, vault, src = env
+    d = add_figure(cfg, "f", "$SRC/fig.png")
+    (src / "fig.pdf").write_bytes(b"pdf")
+    _edit_meta(vault, "f", lambda m: m.update(source="$SRC/fig.pdf"))
+    assert sync_figures(cfg, today=D)[0]["copied"] is True
+    assert (d / "figure.pdf").read_bytes() == b"pdf"
+    assert not (d / "figure.png").exists()
+    assert _meta(vault, "f")["figure_file"] == "figure.pdf"
+
+
+def test_failed_extension_change_keeps_old_figure(env):
+    cfg, vault, src = env
+    d = add_figure(cfg, "f", "$SRC/fig.png")
+    (src / "fig.pdf").write_bytes(b"pdf")
+    _edit_meta(vault, "f", lambda m: m.update(source="$SRC/fig.pdf"))
+    (d / "figure.pdf").mkdir()
+    row = sync_figures(cfg, today=D)[0]
+    assert row["problem"] and row["copied"] is False
+    assert (d / "figure.png").read_bytes() == b"png-1"
+    assert _meta(vault, "f")["figure_file"] == "figure.png"
+
+
+def _meta(vault, fig_id):
+    return yaml.safe_load((vault / "Figures" / fig_id / "meta.yaml").read_text(encoding="utf-8"))
