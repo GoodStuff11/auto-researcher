@@ -7,6 +7,7 @@ generator seeded with "P:<op index>", so two clones applying the same proposal c
 """
 from __future__ import annotations
 
+import hashlib
 import random
 import re
 from dataclasses import dataclass
@@ -26,6 +27,8 @@ OP_REQUIRED = {"new": ("type", "title"), "entry": ("id", "text"), "set": ("id", 
 # Human-owned notes a proposal may write: the vision, the locator, one level of Knowledge/ notes.
 NOTE_PATH_RE = re.compile(r"^(Vision\.md|Locator\.md|Knowledge/[A-Za-z0-9][A-Za-z0-9 _.,()-]*\.md)$")
 NOTE_MODES = ("replace", "append")
+BASE_ABSENT = "absent"
+BASE_RE = re.compile(r"^(absent|[0-9a-f]{64})$")
 
 
 def _note_problem(root, rel) -> str | None:
@@ -38,6 +41,23 @@ def _note_problem(root, rel) -> str | None:
     if path.is_symlink():
         return f"note path {rel!r} is a symbolic link"
     return None
+
+
+def _base_of(data: bytes | None) -> str:
+    """The `base:` value of a note file's content: sha256 of its bytes, or "absent" when it does not exist."""
+    return BASE_ABSENT if data is None else hashlib.sha256(data).hexdigest()
+
+
+def _stamp_bases(root, ops):
+    """Copies of `ops` where each replace-mode note op without `base` records the target's current content."""
+    out = []
+    for op in ops:
+        if (isinstance(op, dict) and op.get("op") == "note" and op.get("mode", "replace") == "replace"
+                and "base" not in op and _note_problem(root, op.get("path")) is None):
+            path = Path(root) / op["path"]
+            op = {**op, "base": _base_of(path.read_bytes() if path.is_file() else None)}
+        out.append(op)
+    return out
 
 
 def note_path(root, rel) -> Path:
@@ -214,6 +234,8 @@ def check_ops(store: Store, ops) -> list[str]:
                 errs.append(f"{where}: text must be a string")
             if op.get("mode", "replace") not in NOTE_MODES:
                 errs.append(f"{where}: mode must be one of {', '.join(NOTE_MODES)}")
+            if "base" in op and not (isinstance(op["base"], str) and BASE_RE.fullmatch(op["base"])):
+                errs.append(f"{where}: base must be 'absent' or a sha256 hex digest, got {op['base']!r}")
         else:
             target_ok(f"{where} id", op["id"])
             if kind == "set" and isinstance(op["fields"], dict):
@@ -234,7 +256,7 @@ def add_proposal(root, title, ops, *, proposer, source, reason, day, rng=None) -
     existing = {p.stem for p in _dir(root).glob("P-*.md")} if _dir(root).is_dir() else set()
     pid = new_pending_id(existing, rng)
     _write(root, Proposal(pid, title, {"proposer": proposer, "date": day, "source": source,
-                                       "reason": reason, "ops": list(ops)}))
+                                       "reason": reason, "ops": _stamp_bases(root, ops)}))
     return pid
 
 
@@ -323,6 +345,12 @@ def _run_ops(store: Store, ops, *, author, day, seed=None, undo: _Undo | None = 
                 if not isinstance(text, str):
                     raise PendingError("note text must be a string")
                 undo.touch_path(path)
+                if (op.get("mode", "replace") == "replace" and "base" in op
+                        and _base_of(undo.before[path]) != op["base"]):
+                    # Compared with the file as it was before this proposal, so two replaces of one path
+                    # in one proposal still apply.
+                    raise PendingError(f"{op['path']} changed since this proposal was drafted; re-draft it "
+                                       f"(hub pending reject {seed if seed is not None else '<P-id>'})")
                 if op.get("mode", "replace") == "append" and path.is_file():
                     old = path.read_text(encoding="utf-8")
                     text = old + ("" if not old or old.endswith("\n") else "\n") + text

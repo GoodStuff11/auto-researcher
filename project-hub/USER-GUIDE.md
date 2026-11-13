@@ -395,6 +395,8 @@ hub commit "Knowledge: solver conventions"
 ```
 Any other path is refused with `note path must be Vision.md, Locator.md or Knowledge/<name>.md` ([Troubleshooting](#troubleshooting)).
 
+A `replace` proposal remembers the note as it was when it was staged (a `base:` line the hub adds). If the note changes before the proposal is applied (someone edited it by hand, or another replace proposal for the same note was applied first), applying is refused with `<path> changed since this proposal was drafted; re-draft it (hub pending reject P-…)`, and nothing is written: reject it and draft the change again from the current note. `append` proposals are not affected.
+
 ---
 
 ## Figures
@@ -877,6 +879,7 @@ Printed by `hub figures …` (errors start with `error:` and exit 1; `add` leave
 | `note path must be Vision.md, Locator.md or Knowledge/<name>.md, got '…'` | a `note` operation in a proposal names another file. Notes can only be `Vision.md`, `Locator.md` or one level `Knowledge/<name>.md` (letters, digits, spaces and `_ . , ( ) -`). Fix `path:` in the ops file and stage it again. |
 | `note path '…' resolves outside the vault` / `… is a symbolic link` | the target is a link or leaves the vault: replace it with a normal file inside the vault. |
 | `op N (note): text must be a string` (from `hub pending add`) or `note text must be a string` (when applying) | `text:` in the ops file is not text (use a `|` block). |
+| `P-… not applied, nothing changed by it: <path> changed since this proposal was drafted; re-draft it (hub pending reject P-…)` | the note changed after this replace proposal was staged (a hand edit, or another proposal for the same note applied first). Applying it would overwrite that change, so nothing was written. `hub pending reject P-…`, then draft the change again from the current note. |
 ### Other situations
 - **An agent reports a source as "not reachable".** It says why: the connector is not connected or Claude Code is not logged in to your claude.ai account (Step 8), the Circleback folder is not shared with you, or a repository path is not set in your `hub.local.yaml`.
 - **Circleback finds nothing.** Use a `folder:` and file the meetings into it; search terms must appear in the meeting name or notes.

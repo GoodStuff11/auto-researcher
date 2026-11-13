@@ -108,3 +108,104 @@ def test_failed_proposal_removes_a_created_note(hub_root, monkeypatch):
         apply_proposals(hub_root, s, [pid], author="alice", day=D)
     assert not (hub_root / "Knowledge" / "New.md").exists()
     assert [p.pid for p in load_proposals(hub_root)] == [pid]
+
+
+def _replace(hub_root, path, text, title="Replace"):
+    return add_proposal(hub_root, title, [{"op": "note", "path": path, "text": text}],
+                        proposer="alice", source="manual", reason="r", day=D)
+
+
+def test_replace_records_base_when_staged(hub_root):
+    import hashlib
+    (hub_root / "Vision.md").write_text("# Vision\nOld.\n")
+    _replace(hub_root, "Vision.md", "# Vision\nNew.")
+    op = load_proposals(hub_root)[0].body["ops"][0]
+    assert op["base"] == hashlib.sha256(b"# Vision\nOld.\n").hexdigest()
+    pid2 = _replace(hub_root, "Knowledge/New.md", "# New")
+    op2 = next(p for p in load_proposals(hub_root) if p.pid == pid2).body["ops"][0]
+    assert op2["base"] == "absent"
+    append = add_proposal(hub_root, "Append", [{"op": "note", "path": "Vision.md", "text": "x", "mode": "append"}],
+                          proposer="alice", source="manual", reason="r", day=D)
+    assert "base" not in next(p for p in load_proposals(hub_root) if p.pid == append).body["ops"][0]
+
+
+def test_replace_refused_when_file_edited_after_staging(hub_root):
+    (hub_root / "Vision.md").write_text("# Vision\nOld.\n")
+    pid = _replace(hub_root, "Vision.md", "# Vision\nNew.")
+    (hub_root / "Vision.md").write_text("# Vision\nEdited by hand.\n")
+    expected = f"Vision.md changed since this proposal was drafted; re-draft it (hub pending reject {pid})"
+    with pytest.raises(PendingError) as info:
+        apply_proposals(hub_root, Store(hub_root), [pid], author="alice", day=D)
+    assert expected in str(info.value)
+    assert (hub_root / "Vision.md").read_text() == "# Vision\nEdited by hand.\n"
+    assert [p.pid for p in load_proposals(hub_root)] == [pid]
+
+
+def test_second_replace_of_same_path_is_refused(hub_root):
+    (hub_root / "Locator.md").write_text("# Locator\n")
+    s = Store(hub_root)
+    p1 = _replace(hub_root, "Locator.md", "# Locator\nA", "first")
+    p2 = _replace(hub_root, "Locator.md", "# Locator\nB", "second")
+    apply_proposals(hub_root, s, [p1], author="alice", day=D)
+    with pytest.raises(PendingError, match="changed since this proposal was drafted"):
+        apply_proposals(hub_root, s, [p2], author="alice", day=D)
+    assert (hub_root / "Locator.md").read_text() == "# Locator\nA\n"
+
+
+def test_absent_base_refused_when_created_meanwhile(hub_root):
+    pid = _replace(hub_root, "Knowledge/Topic.md", "# Topic\nmine")
+    (hub_root / "Knowledge").mkdir(exist_ok=True)
+    (hub_root / "Knowledge" / "Topic.md").write_text("# Topic\ntheirs\n")
+    with pytest.raises(PendingError, match="Knowledge/Topic.md changed since this proposal was drafted"):
+        apply_proposals(hub_root, Store(hub_root), [pid], author="alice", day=D)
+    assert (hub_root / "Knowledge" / "Topic.md").read_text() == "# Topic\ntheirs\n"
+
+
+def test_failed_base_check_rolls_back_earlier_ops(hub_root):
+    (hub_root / "Vision.md").write_text("v\n")
+    (hub_root / "Locator.md").write_text("l\n")
+    pid = add_proposal(hub_root, "two", [{"op": "note", "path": "Vision.md", "text": "v2"},
+                                         {"op": "note", "path": "Locator.md", "text": "l2"}],
+                       proposer="alice", source="manual", reason="r", day=D)
+    (hub_root / "Locator.md").write_text("l edited\n")
+    with pytest.raises(PendingError):
+        apply_proposals(hub_root, Store(hub_root), [pid], author="alice", day=D)
+    assert (hub_root / "Vision.md").read_text() == "v\n"
+
+
+def test_two_replaces_of_one_path_in_one_proposal_apply(hub_root):
+    (hub_root / "Vision.md").write_text("v\n")
+    pid = add_proposal(hub_root, "two", [{"op": "note", "path": "Vision.md", "text": "a"},
+                                         {"op": "note", "path": "Vision.md", "text": "b"}],
+                       proposer="alice", source="manual", reason="r", day=D)
+    apply_proposals(hub_root, Store(hub_root), [pid], author="alice", day=D)
+    assert (hub_root / "Vision.md").read_text() == "b\n"
+
+
+def test_hand_written_op_without_base_keeps_old_behaviour(hub_root):
+    from hub.pending import Proposal, _write
+    (hub_root / "Vision.md").write_text("v\n")
+    _write(hub_root, Proposal("P-abcd", "hand", {"proposer": "alice", "date": D, "source": "manual", "reason": "r",
+                                                  "ops": [{"op": "note", "path": "Vision.md", "text": "new"}]}))
+    (hub_root / "Vision.md").write_text("edited\n")
+    apply_proposals(hub_root, Store(hub_root), ["P-abcd"], author="alice", day=D)
+    assert (hub_root / "Vision.md").read_text() == "new\n"
+
+
+def test_bad_base_value_is_rejected(hub_root):
+    errs = check_ops(Store(hub_root), [{"op": "note", "path": "Vision.md", "text": "x", "base": 5}])
+    assert any("base" in e for e in errs)
+
+
+def test_ingest_batch_records_base(hub_root):
+    (hub_root / "Knowledge").mkdir(exist_ok=True)
+    (hub_root / "Knowledge" / "Setup.md").write_text("old\n")
+    rep = run_batch(hub_root, Store(hub_root),
+                    {"proposals": [{"title": "Knowledge: setup", "reason": "r", "source": "doc:readme#setup",
+                                    "ops": [{"op": "note", "path": "Knowledge/Setup.md", "text": "Run make."}]}]},
+                    author="alice", day=D)
+    op = load_proposals(hub_root)[0].body["ops"][0]
+    assert len(op["base"]) == 64
+    (hub_root / "Knowledge" / "Setup.md").write_text("changed\n")
+    with pytest.raises(PendingError, match="changed since"):
+        apply_proposals(hub_root, Store(hub_root), rep["staged"], author="alice", day=D)
