@@ -6,6 +6,7 @@ from datetime import date
 from pathlib import Path
 
 from .config import HubConfig
+from .figures import stale_figures
 from .fsutil import atomic_write_text
 from .store import Store
 from .sync_state import load_state
@@ -69,6 +70,7 @@ def render_snapshot(store: Store, config: HubConfig, today: date) -> str:
     flags = [f"- {f}" for f in state["flags"]]
     flags += [f"- cannot load {p.relative_to(config.root) if p.is_relative_to(config.root) else p}: {err}"
               for p, err in store.load_errors]
+    flags += [f"- {f}" for f in stale_figures(config.root)]
     out += flags or ["None."]
     n = len(validate(store, config))
     out += ["", "## Validation", f"{n} issues." + (" Run `hub validate`." if n else "")]
