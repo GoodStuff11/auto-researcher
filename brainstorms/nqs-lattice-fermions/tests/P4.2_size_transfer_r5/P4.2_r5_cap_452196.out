@@ -12,3 +12,4 @@
 [  3317.0s] arm scr@20   : E=-10.08534527 eps=8.1417e-02 (raw 8.2639e-02, irrep weight 0.444) A/V=2.0367e-02 sign-agree=0.4634 Pd=9.3323e-04 fid=0.0622
 [  7523.9s] arm scr@50   : E=-10.56449664 eps=5.1470e-02 (raw 7.5062e-02, irrep weight 0.357) A/V=8.0380e-03 sign-agree=0.8670 Pd=2.6227e-03 fid=0.4734
 [  8888.7s]   [scr] step 60/600 eps=4.96861e-02 lr=0.2
+[ 14471.8s] arm scr@100  : E=-10.63169245 eps=4.7270e-02 (raw 6.9699e-02, irrep weight 0.448) A/V=7.6605e-03 sign-agree=0.8715 Pd=2.5674e-03 fid=0.5053

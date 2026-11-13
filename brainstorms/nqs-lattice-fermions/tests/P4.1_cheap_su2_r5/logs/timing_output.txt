@@ -1,0 +1,2 @@
+[09:04:53] che_rbm: P=2709 H=14 E_init=-6.283217 one energy+gradient 6.4s |g|=6.93e+00
+[09:05:16] che_k4: P=2565 H=13 E_init=-6.278462 one energy+gradient 15.1s |g|=7.43e+00
