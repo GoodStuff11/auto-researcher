@@ -52,7 +52,7 @@ def test_build_and_read_back(env):
     r1, r2 = row_of(path, ids["d1"].id), row_of(path, ids["d2"].id)
     fill(path, {f"H{r1}": "Modify", f"I{r1}": "Only 4x3", f"J{r1}": "Rewrite ¶2 (alice)",
                 f"H{r2}": "Reject", f"I{r2}": "Not worth it",
-                "B8": "Drop UCJ", "H8": "approve", "I8": "Dropped", "J8": "Tell Tamra (bob)"})
+                "B8": "Drop method C", "H8": "approve", "I8": "Dropped", "J8": "Tell Carol (bob)"})
     res = read_agenda(s, cfg, "group", author="bob", today=date(2026, 11, 19))
     d1 = s.get(ids["d1"].id)
     assert d1.status == "made" and d1.meta["meeting"] == "group/2026-11-19" and d1.meta["as_decided"] == "Only 4x3"
@@ -63,7 +63,7 @@ def test_build_and_read_back(env):
     assert res["not_reached"] == [ids["d3"].id]
     props = load_proposals(root)
     titles = sorted(p.title for p in props)
-    assert titles == ["Actions from group/2026-11-19: Adopt Y", "Raised at group/2026-11-19: Drop UCJ"]
+    assert titles == ["Actions from group/2026-11-19: Adopt Y", "Raised at group/2026-11-19: Drop method C"]
     raised = next(p for p in props if p.title.startswith("Raised"))
     assert raised.body["ops"][0]["fields"]["status"] == "made"
     assert raised.body["ops"][1]["owner"] == "bob"
@@ -189,9 +189,9 @@ def test_untitled_row_with_only_actions_is_read(tmp_path):
              "since_last": [], "questions": [], "decisions": []}
     p = tmp_path / "a.xlsx"
     build_workbook(draft, p)
-    fill(p, {"J5": "Email Tamra (alice)"})
+    fill(p, {"J5": "Email Carol (alice)"})
     rows = read_workbook(p).rows
-    assert len(rows) == 1 and rows[0].decide == "" and rows[0].new_actions == "Email Tamra (alice)"
+    assert len(rows) == 1 and rows[0].decide == "" and rows[0].new_actions == "Email Carol (alice)"
 
 
 def test_reworded_planned_row_is_recorded(env):
@@ -282,7 +282,7 @@ def test_deferred_decisions_return_and_match_by_title(env):
 def test_raised_row_without_outcome_stages_proposed(env):
     s, cfg, root, ids = env
     path = build_agenda(root, "group")
-    fill(path, {"B8": "Maybe drop UCJ", "J8": "Check with Tamra (bob)"})
+    fill(path, {"B8": "Maybe drop method C", "J8": "Check with Carol (bob)"})
     read_agenda(s, cfg, "group", author="bob", today=MEET)
     p = next(x for x in load_proposals(root) if x.title.startswith("Raised"))
     assert p.body["ops"][0]["fields"]["status"] == "proposed"

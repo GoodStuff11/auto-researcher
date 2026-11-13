@@ -14,7 +14,7 @@ DRAFT = {
     "questions": [{"id": "Q-20261101-qqq", "title": "Why?", "description": "Because.", "owner": "alice",
                    "age_days": 18, "priority": 1, "proposed_decision": "D-20261115-bbb"}],
     "decisions": [{"id": "D-20261115-bbb", "decide": "Adopt Y", "proposed_action": "Rewrite ¶2",
-                   "reason": "Cheaper", "weigh_in": "eunah", "minutes": 10, "link": "https://example.com/fig"}],
+                   "reason": "Cheaper", "weigh_in": "bob", "minutes": 10, "link": "https://example.com/fig"}],
 }
 
 

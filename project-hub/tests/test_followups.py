@@ -55,13 +55,13 @@ def _meeting(store, root, rows):
 
 def test_untitled_row_title_is_single_line(env):
     store, cfg, root = env
-    _meeting(store, root, lambda did, ws: {"H6": "approve", "J6": "Rerun HVA (bob)\nPlot it (alice)"})
+    _meeting(store, root, lambda did, ws: {"H6": "approve", "J6": "Rerun baseline (bob)\nPlot it (alice)"})
     read_agenda(store, cfg, "group", author="bob", today=date(2026, 11, 19))
-    title = "Raised at group/2026-11-19: (untitled: Rerun HVA (bob) Plot it (alice))"
+    title = "Raised at group/2026-11-19: (untitled: Rerun baseline (bob) Plot it (alice))"
     props = load_proposals(root)
     assert [p.title for p in props] == [title]
     assert "\n" not in props[0].body["ops"][0]["title"]
-    assert props[0].body["ops"][0]["title"] == "(untitled: Rerun HVA (bob) Plot it (alice))"
+    assert props[0].body["ops"][0]["title"] == "(untitled: Rerun baseline (bob) Plot it (alice))"
     note = (root / "Status" / "Meetings" / "group" / "2026-11-19.md").read_text(encoding="utf-8")
     assert f"- {props[0].pid} · {title}" in note.splitlines()
 

@@ -20,9 +20,9 @@ def base(store):
     return q, {
         "watermark": {"name": "circleback", "value": "2026-11-19"},
         "safe": [
-            {"op": "entry", "id": q.id, "text": "Discussed;  HVA plateaus at L=12.", "source": "circleback:m1"},
+            {"op": "entry", "id": q.id, "text": "Discussed;  Method A plateaus at size 12.", "source": "circleback:m1"},
             {"op": "log", "text": "Group meeting: framing settled.", "source": "circleback:m1"},
-            {"op": "new", "type": "action", "title": "Rerun HVA", "owner": "bob", "source": "circleback:m1",
+            {"op": "new", "type": "action", "title": "Rerun baseline", "owner": "bob", "source": "circleback:m1",
              "series": ["group"]},
         ],
         "proposals": [{"title": "Close: Why?", "reason": "Answered in meeting.", "source": "circleback:m1",
@@ -37,8 +37,8 @@ def test_run_batch_applies_safe_stages_proposals(hub_root, store):
     rep = run_batch(hub_root, store, batch, author="alice", day=D)
     assert rep["applied"] == 3 and rep["skipped"] == 0 and len(rep["staged"]) == 1
     assert rep["flags_added"] == 1 and rep["watermark"] == "circleback=2026-11-19"
-    assert store.get(q.id).entries[-1].text == "Discussed; HVA plateaus at L=12."
-    assert [a.title for a in store.query(type="action")] == ["Rerun HVA"]
+    assert store.get(q.id).entries[-1].text == "Discussed; Method A plateaus at size 12."
+    assert [a.title for a in store.query(type="action")] == ["Rerun baseline"]
     assert "Group meeting: framing settled." in (hub_root / "Status" / "Log" / "2026-11.md").read_text()
     assert [p.title for p in load_proposals(hub_root)] == ["Close: Why?"]
     assert get_watermark(hub_root, "circleback") == "2026-11-19"
@@ -141,8 +141,8 @@ def test_log_with_same_source_but_different_text_is_not_a_duplicate(hub_root, st
 
 
 def test_new_item_title_duplicate_ignores_case_and_spacing(hub_root, store):
-    store.create("action", "Rerun HVA", owner="bob", author="alice", day=date(2026, 11, 1), source="circleback:m1")
-    batch = {"safe": [{"op": "new", "type": "action", "title": "rerun hva ", "source": "circleback:m1"}]}
+    store.create("action", "Rerun baseline", owner="bob", author="alice", day=date(2026, 11, 1), source="circleback:m1")
+    batch = {"safe": [{"op": "new", "type": "action", "title": "rerun baseline ", "source": "circleback:m1"}]}
     rep = run_batch(hub_root, store, batch, author="alice", day=D)
     assert rep["applied"] == 0 and rep["skipped"] == 1
     assert len(store.query(type="action")) == 1

@@ -6,7 +6,7 @@ from hub.items import (Entry, Item, ItemFormatError, default_meta, parse_item, r
 CANONICAL = """---
 id: Q-20261112-a3f
 type: question
-title: Does the HVA beat pruned UCC?
+title: Does method A beat method B?
 status: open
 owner: alice
 series:

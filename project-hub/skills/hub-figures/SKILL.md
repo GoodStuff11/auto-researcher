@@ -22,7 +22,7 @@ hub figures add <id> '$SRC/plots/phase.png' --title "<title>" --script '$SRC/plo
 ```
 Quote `$ROOT` paths in single quotes so the shell leaves them alone. Then `hub commit "figures: add <id>"`. The caption is the user's from now on.
 ## Sync
-After figures are regenerated (or whenever asked): `hub figures sync`, then `hub figures gallery`, then `hub commit "figures: sync (<YYYY-MM-DD>)"`.
+After figures are regenerated (or whenever asked): `hub figures sync`, (it exits 1 when any figure has a PROBLEM; that is expected: report it and continue), then `hub figures gallery`, then `hub commit "figures: sync (<YYYY-MM-DD>)"`.
 - **STALE**: the data changed after the figure was made. Regenerate the figure with its script (ask the user to run it, or run it if they say so), then sync again.
 - **PROBLEM**: a source (figure, script or data) is missing on this machine. Check the path with the user: a wrong `$ROOT`, a file not yet created, or a root missing from `hub.local.yaml`.
 ## Editing

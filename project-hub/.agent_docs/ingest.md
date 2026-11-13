@@ -8,7 +8,7 @@ Every derived record carries a source id (no whitespace). `hub seen SOURCE` says
 | `clickup:<task id>` | a ClickUp task |
 | `commit:<ROOT>@<7-char sha>` | a commit of the repository `ROOT` (a key of `roots`) |
 | `agenda:<series>/<YYYY-MM-DD>` | agenda read-back of a meeting |
-| `notes:<people key>@<YYYY-MM-DD>-<slug>` | one private note file of that person: its mtime date, then its file name without extension, lowercased, each run of characters other than a-z/0-9 replaced by `-` (`HVA runs.md` → `notes:alice@2026-11-17-hva-runs`) |
+| `notes:<people key>@<YYYY-MM-DD>-<slug>` | one private note file of that person: its mtime date, then its file name without extension, lowercased, each run of characters other than a-z/0-9 replaced by `-` (`Pilot runs.md` → `notes:alice@2026-11-17-pilot-runs`) |
 | `gmail:<thread id>` | a Gmail thread (opt-in source) |
 | `slack:<channel id>-<ts>` | a Slack message (opt-in source) |
 | `manual` | typed by a person |

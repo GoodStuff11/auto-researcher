@@ -2,7 +2,7 @@
 Throwaway round-trip test of `cweijan.vscode-office` on an agenda-shaped xlsx, run 2026-11-12. Code: `project-hub/spike/make_fixture.py` and `check_fixture.py`.
 
 ## Setup
-`make_fixture.py` wrote `/home/jek354/research/spike.xlsx` with openpyxl. It holds:
+`make_fixture.py` wrote `~/spike.xlsx` with openpyxl. It holds:
 - Sheet `Decisions`: title in B1; merged, wrapped summary B2:E2 (row 2 height 60); bold white header on row 4 with a dark fill; column A hidden and holding ids `D-20261112-abc` (row 5) and `D-20261112-def` (row 6); list dropdown `Approve,Modify,Defer,Reject` on C5:C10; freeze at B5; fill on B5.
 - Hidden sheet `_meta`: `series` = `group`, `read_back` = `false`. No `meeting_date` row.
 

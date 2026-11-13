@@ -5,11 +5,11 @@ description: Use when asked to set up a new project hub, create the vault for a 
 # Hub init
 Creates one project hub vault (an Obsidian vault that is a git repository shared by the project), fills its configuration by interview, imports existing material and runs the first ingest. Work step by step and confirm with the user before every outward-facing action. `hub <command> --help` documents every option.
 ## Dry run
-If the user says "dry run", only describe each step and show the files you would write; run nothing that writes (no `hub init`, `git`, `setup.sh`, `hub commit`, `hub pending add|apply`, `hub ingest batch`, connector writes). Read-only connector calls (`list_events`, `ListFolders`, `clickup_get_list`, `clickup_get_workspace_members`) are allowed. Draft files go in the scratch directory.
+If the user says "dry run", only describe each step and show the files you would write. There is no vault yet, so these cannot or must not run: `hub init`, `git` writes, `setup.sh`, `hub validate`, `hub sources`, `hub check-links`, `hub figures add|sync|gallery`, `hub pending add|apply`, `hub ingest batch`, `hub commit`, and connector writes. The sub-skills (hub-vision, hub-figures, hub-status) and the legacy import also run in dry-run mode: describe them, and tell each so. Read-only connector calls (`list_events`, `ListFolders`, `clickup_get_list`, `clickup_get_workspace_members`) are allowed. Draft files go in the scratch directory.
 ## Scratch files
 `SCRATCH=$(mktemp -d)` outside the vault; every temporary file (ops files, batch files, drafts) goes there, because `hub commit` stages everything in the vault. `rm -rf "$SCRATCH"` at the end.
 ## 0. Before starting
-Ask the user for: the project name, where the vault folder should live, and whether a remote repository already exists. Creating a GitHub repository is outward-facing: ask the user to create it, or get an explicit yes before running `gh repo create --private`. Never make it public.
+Ask the user for: the project name, where the vault folder should live, and whether a remote repository already exists. Creating a GitHub repository is outward-facing: ask the user to create it, or get an explicit yes before running `gh repo create --private`. Never make it public. For an existing remote, check it is private (`gh repo view --json visibility` when `gh` is available, otherwise ask the user); if it is public, stop until the user confirms.
 ## 1. Vault
 1. Clone the empty remote, or `git init` the folder. Do this before `tools/setup.sh`: setup skips the merge-driver step when the folder is not yet a repository.
 2. `hub init <path> --name <name>`, using the user's installed `hub`. If `hub` is not installed, point to USER-GUIDE Step 1 (the project-hub checkout's `USER-GUIDE.md`). Pass `--force` only when the folder already has files but is not a vault; existing files are kept.
@@ -29,7 +29,7 @@ Work from the vault root. Ask about each key in turn, one question at a time, an
 
 Write `project.yaml` (shared) and the user's `hub.local.yaml` (`me: <their people key>` and their local `roots`). Then run `hub validate` and `hub sources`, and fix what they report with the user.
 ## 3. First commit
-`hub commit "Set up project hub"`. If it reports no upstream, run `git push -u origin <branch>` once, then continue.
+Ask the user before the first push; `hub commit` pushes as soon as an upstream exists. Then `hub commit "Set up project hub"`. If it reports no upstream, run `git push -u origin <branch>` once, then continue.
 ## 4. Vision
 Run the hub-vision skill.
 ## 5. Existing material
