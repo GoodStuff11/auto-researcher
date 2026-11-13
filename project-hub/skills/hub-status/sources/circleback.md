@@ -2,15 +2,16 @@
 ## Configuration
 `project.yaml` `sources.circleback`: `folder` (the Circleback folder the project's meetings are shared into) and/or `terms` (search words). `people.<key>.email` helps map attendees to people keys. Watermark `circleback` = date (YYYY-MM-DD) of the newest meeting ingested.
 ## Find new meetings
-1. `ListFolders` → id of the configured folder (if missing: report "Circleback folder not visible to <me>" — the meeting may not be shared with this person — and treat the source as not reachable).
-2. `SearchMeetings` (it requires an `intent` parameter: say what you are doing, e.g. "find new project meetings to ingest") with `folderId` (or `searchTerm` = the terms), `startDate` = watermark (first run: today minus 28 days), `pageIndex` 0, 1, … while a page has 20 results.
+1. Only if `sources.circleback.folder` is set (`hub sources` shows it): `ListFolders` → id of the configured folder (if missing: report "Circleback folder not visible to <me>" — the meeting may not be shared with this person — and treat the source as not reachable). With no `folder`, skip this step and search by terms.
+2. `SearchMeetings` (it requires an `intent` parameter: say what you are doing, e.g. "find new project meetings to ingest") with `folderId` (or, with no folder, `searchTerm`), `startDate` = watermark (first run: today minus 28 days), `pageIndex` 0, 1, … while a page has 20 results. `SearchMeetings` ANDs the keywords of one `searchTerm`, so search each term separately (one call per term, paging each) and de-duplicate the meetings by id. If the terms match nothing there is nothing to ingest: report that. Never fall back to an unfiltered search. Ignore the notes and private notes fields in `SearchMeetings` results as well (they, and long attendee lists, only add noise).
+   - The watermark: `hub sync-state get circleback` printing an empty line means it has never been set (first run).
 3. Drop meetings already recorded: `hub seen circleback:<meeting id>` prints `seen …`.
 4. Series de-dup. A meeting belongs to a configured series when its title matches `series.<name>.calendar_match` in `project.yaml`.
    - Update mode: skip a series meeting whose agenda has not been read back yet (`Agenda/<series>.xlsx` still unread); post-meeting mode handles it. If a series meeting's agenda is still not read back a week after the meeting, tell the user (it holds the Circleback watermark back) and offer to run post-meeting mode, or to ingest it as a non-series meeting.
    - A series meeting that was already read back: compare with `hub meeting decided <series> <date> --json` and propose only what is missing (see *Cross-check* below for what counts as recorded).
 5. `ReadMeetings` (also requires `intent`; up to 50 ids) for notes, action items, attendees. Ignore its "private notes" field. Use `GetTranscriptsForMeetings` only when the notes are ambiguous about a decision or an owner.
 ## Extract → batch file
-Write the batch file in the scratch directory (format in `.agent_docs/ingest.md`), source `circleback:<meeting id>`:
+Write the batch file in the scratch directory (format: the hub package's `.agent_docs/ingest.md`, not a vault path; find it with `python -c "import hub, pathlib; print(pathlib.Path(hub.__file__).parents[1] / '.agent_docs/ingest.md')"` run with hub's Python. The examples below are self-sufficient), source `circleback:<meeting id>`:
 - `safe` `log`: "<meeting name> (<date>, <attendee keys>): <one or two sentences of what moved>".
 - `safe` `entry` on each existing item the meeting added a fact to (find it with `hub list` / `hub show`).
 - `safe` `new` question for each open question raised (owner = who raised or will chase it).
