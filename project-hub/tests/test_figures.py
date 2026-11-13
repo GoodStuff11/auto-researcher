@@ -2,10 +2,12 @@ import textwrap
 from datetime import date
 
 import pytest
+import yaml
 
+import hub.figures as figures_mod
 from hub.config import load_config
 from hub.figures import FigureError, add_figure, render_gallery, stale_figures, sync_figures, write_gallery
-from hub.paths import PathError, resolve
+from hub.paths import ROOT_REF_RE, PathError, resolve
 from hub.snapshot import render_snapshot
 from hub.store import Store
 
@@ -95,3 +97,140 @@ def test_duplicate_and_bad_data(env):
         add_figure(cfg, "f1", "$SRC/fig.png")
     with pytest.raises(FigureError, match="does not exist"):
         add_figure(cfg, "f2", "$SRC/fig.png", data=["$SRC/missing.csv"])
+
+
+def _edit_meta(vault, fig_id, fn):
+    p = vault / "Figures" / fig_id / "meta.yaml"
+    meta = yaml.safe_load(p.read_text(encoding="utf-8"))
+    fn(meta)
+    p.write_text(yaml.safe_dump(meta, sort_keys=False, allow_unicode=True), encoding="utf-8")
+
+
+def test_sync_never_deletes_outside_the_figure(env):
+    cfg, vault, src = env
+    d = add_figure(cfg, "f1", "$SRC/fig.png")
+    (d / "caption.md").write_text("keep caption\n")
+    for bad in ["caption.md", "../../project.yaml"]:
+        _edit_meta(vault, "f1", lambda m, bad=bad: m.update(figure_file=bad))
+        (src / "fig.png").write_bytes(b"png-" + bad.encode())
+        assert sync_figures(cfg, today=D)[0]["copied"] is True
+        assert (d / "caption.md").read_text() == "keep caption\n"
+        assert (vault / "project.yaml").exists()
+
+
+def test_one_bad_meta_does_not_break_the_rest(env):
+    cfg, vault, src = env
+    add_figure(cfg, "bad", "$SRC/fig.png")
+    add_figure(cfg, "good", "$SRC/fig.png")
+    bad_meta = vault / "Figures" / "bad" / "meta.yaml"
+    for content in ["id: bad\nsource: [unclosed\n", b"\xff\xfe\x00junk"]:
+        if isinstance(content, bytes):
+            bad_meta.write_bytes(content)
+        else:
+            bad_meta.write_text(content)
+        rows = {r["id"]: r for r in sync_figures(cfg, today=D)}
+        assert rows["good"] == {"id": "good", "copied": False, "stale": False, "problem": None}
+        assert rows["bad"]["copied"] is False and rows["bad"]["stale"] is False and rows["bad"]["problem"]
+        text = render_gallery(vault)
+        assert "## bad" in text and "**Problem:**" in text and "## good" in text
+        assert any("figure bad" in f for f in stale_figures(vault))
+        assert "figure bad" in render_snapshot(Store(vault), cfg, D)
+        assert bad_meta.read_bytes() == (content if isinstance(content, bytes) else content.encode())
+
+
+def test_stale_is_recomputed_not_sticky(env):
+    cfg, vault, src = env
+    add_figure(cfg, "s", "$SRC/fig.png", data=["$SRC/data"])
+    (src / "data" / "a.csv").write_text("2\n")
+    assert sync_figures(cfg, today=D)[0]["stale"] is True
+    (src / "data" / "a.csv").write_text("1\n")
+    assert sync_figures(cfg, today=D)[0]["stale"] is False
+    assert stale_figures(vault) == []
+
+
+def test_hand_edited_data_list_rebaselines(env):
+    cfg, vault, src = env
+    add_figure(cfg, "s", "$SRC/fig.png", data=["$SRC/data"])
+    (src / "more.csv").write_text("x\n")
+    _edit_meta(vault, "s", lambda m: m.update(data=m["data"] + ["$SRC/more.csv"]))
+    row = sync_figures(cfg, today=D)[0]
+    assert row["stale"] is False and row["problem"] is None
+    assert stale_figures(vault) == []
+
+
+def test_old_meta_without_baseline_is_not_stale(env):
+    cfg, vault, src = env
+    add_figure(cfg, "s", "$SRC/fig.png", data=["$SRC/data"])
+    _edit_meta(vault, "s", lambda m: m.pop("data_baseline", None))
+    row = sync_figures(cfg, today=D)[0]
+    assert row["stale"] is False and row["problem"] is None
+
+
+@pytest.mark.parametrize("key,value,msg", [
+    ("source", "", "source must be"),
+    ("source", None, "source must be"),
+    ("data", "$SRC/data", "data must be"),
+    ("data", [""], "data must be"),
+    ("data", [3], "data must be"),
+])
+def test_sync_reports_bad_types_as_problems(env, key, value, msg):
+    cfg, vault, src = env
+    add_figure(cfg, "t", "$SRC/fig.png")
+    _edit_meta(vault, "t", lambda m: m.update({key: value}))
+    row = sync_figures(cfg, today=D)[0]
+    assert msg in row["problem"] and row["stale"] is False and row["copied"] is False
+    assert "## t" in render_gallery(vault)
+
+
+@pytest.mark.parametrize("source,data,msg", [
+    ("", [], "source must be"),
+    (None, [], "source must be"),
+    ("$SRC/fig.png", "$SRC/data", "data must be"),
+    ("$SRC/fig.png", [""], "data must be"),
+    ("$SRC/fig.png", [3], "data must be"),
+])
+def test_add_rejects_bad_types(env, source, data, msg):
+    cfg, vault, src = env
+    with pytest.raises(FigureError, match=msg):
+        add_figure(cfg, "t1", source, data=data)
+    assert not (vault / "Figures" / "t1").exists()
+
+
+def test_add_keeps_orphan_caption(env):
+    cfg, vault, src = env
+    d = vault / "Figures" / "x"
+    d.mkdir(parents=True)
+    (d / "caption.md").write_text("keep me")
+    add_figure(cfg, "x", "$SRC/fig.png")
+    assert (d / "caption.md").read_text() == "keep me"
+
+
+def test_failed_add_removes_only_what_it_created(env, monkeypatch):
+    cfg, vault, src = env
+
+    def boom(*args, **kwargs):
+        raise OSError("disk full")
+
+    monkeypatch.setattr(figures_mod.shutil, "copyfile", boom)
+    with pytest.raises(OSError):
+        add_figure(cfg, "new", "$SRC/fig.png")
+    assert not (vault / "Figures" / "new").exists()
+    d = vault / "Figures" / "keep"
+    d.mkdir(parents=True)
+    (d / "caption.md").write_text("keep me")
+    with pytest.raises(OSError):
+        add_figure(cfg, "keep", "$SRC/fig.png")
+    assert (d / "caption.md").read_text() == "keep me"
+
+
+@pytest.mark.parametrize("text,expected", [
+    ("see $SRC/a/b.png.", "$SRC/a/b.png"),
+    ("$SRC/x:", "$SRC/x"),
+])
+def test_root_ref_drops_trailing_punctuation(text, expected):
+    m = ROOT_REF_RE.search(text)
+    assert m and m.group(0) == expected
+
+
+def test_root_ref_needs_a_word_boundary_before_dollar():
+    assert ROOT_REF_RE.search("a$SRC/x") is None

@@ -19,6 +19,7 @@ from .fsutil import atomic_write_text
 from .paths import resolve
 
 FIG_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+FIG_FILE_RE = re.compile(r"figure(\.[a-z0-9]+)?")
 FIG_STATUSES = ("draft", "final")
 CAPTION_PLACEHOLDER = "<!-- caption: what the figure shows, findings first; edit freely, the tools never overwrite it -->"
 
@@ -62,9 +63,24 @@ def _hash_data(config, specs) -> str | None:
     return h.hexdigest()[:16]
 
 
+def _check_specs(source, data) -> tuple[str, list[str]]:
+    if not isinstance(source, str) or not source.strip():
+        raise FigureError(f"source must be a non-empty path string, got {source!r}")
+    if data is None:
+        data = []
+    if isinstance(data, tuple):
+        data = list(data)
+    if not isinstance(data, list) or not all(isinstance(x, str) and x.strip() for x in data):
+        raise FigureError(f"data must be a list of non-empty path strings, got {data!r}")
+    return source, list(data)
+
+
 def load_meta(root, fig_id) -> dict:
     p = _fig_dir(root, fig_id) / "meta.yaml"
-    data = yaml.safe_load(p.read_text(encoding="utf-8")) if p.is_file() else None
+    try:
+        data = yaml.safe_load(p.read_text(encoding="utf-8")) if p.is_file() else None
+    except (yaml.YAMLError, UnicodeDecodeError, OSError) as exc:
+        raise FigureError(f"Figures/{fig_id}/meta.yaml cannot be read: {exc}") from exc
     if not isinstance(data, dict):
         raise FigureError(f"Figures/{fig_id}/meta.yaml is missing or not a mapping")
     return data
@@ -72,6 +88,18 @@ def load_meta(root, fig_id) -> dict:
 
 def _save_meta(root, fig_id, meta: dict) -> None:
     atomic_write_text(_fig_dir(root, fig_id) / "meta.yaml", yaml.safe_dump(meta, sort_keys=False, allow_unicode=True))
+
+
+def _replace_old_figure(fig_dir: Path, old, new_name: str) -> None:
+    """Remove the previous figure file, but only if it is a plain figure(.ext) inside fig_dir."""
+    if not isinstance(old, str) or old == new_name or not FIG_FILE_RE.fullmatch(old):
+        return
+    path = fig_dir / old
+    try:
+        if path.resolve().parent == fig_dir.resolve():
+            path.unlink(missing_ok=True)
+    except (OSError, RuntimeError):
+        return
 
 
 def figure_ids(root) -> list[str]:
@@ -86,21 +114,29 @@ def add_figure(config, fig_id, source, *, title="", script="", data=(), licenses
     d = _fig_dir(root, fig_id)
     if (d / "meta.yaml").exists():
         raise FigureError(f"figure {fig_id} is already registered (Figures/{fig_id})")
+    source, data = _check_specs(source, data)
     src = resolve(config, source)
     if not src.exists():
         raise FigureError(f"source {source} ({src}) does not exist")
     if not src.is_file():
         raise FigureError(f"source {source} ({src}) is not a file")
-    data = list(data or [])
     data_hash = _hash_data(config, data)
+    created = not d.exists()
     d.mkdir(parents=True, exist_ok=True)
     fig_file = f"figure{src.suffix.lower()}"
-    shutil.copyfile(src, d / fig_file)
-    atomic_write_text(d / "caption.md", (caption.strip() or CAPTION_PLACEHOLDER) + "\n")
-    _save_meta(root, fig_id, {
-        "id": fig_id, "title": title, "source": str(source), "script": script, "data": data,
-        "status": "draft", "licenses": licenses, "figure_file": fig_file, "figure_hash": _hash_file(src),
-        "data_hash": data_hash, "synced": None, "stale": False, "problem": None})
+    try:
+        shutil.copyfile(src, d / fig_file)
+        if not (d / "caption.md").exists():
+            atomic_write_text(d / "caption.md", (caption.strip() or CAPTION_PLACEHOLDER) + "\n")
+        _save_meta(root, fig_id, {
+            "id": fig_id, "title": title, "source": source, "script": script, "data": data,
+            "data_baseline": list(data), "status": "draft", "licenses": licenses, "figure_file": fig_file,
+            "figure_hash": _hash_file(src), "data_hash": data_hash, "synced": None, "stale": False,
+            "problem": None})
+    except BaseException:
+        if created:
+            shutil.rmtree(d, ignore_errors=True)
+        raise
     return d
 
 
@@ -108,28 +144,40 @@ def sync_figures(config, *, today: date) -> list[dict]:
     root = Path(config.root)
     rows = []
     for fig_id in figure_ids(root):
-        meta = load_meta(root, fig_id)
-        row = {"id": fig_id, "copied": False, "stale": bool(meta.get("stale")), "problem": None}
         try:
-            src = resolve(config, meta.get("source", ""))
+            meta = load_meta(root, fig_id)
+        except FigureError as exc:
+            rows.append({"id": fig_id, "copied": False, "stale": False, "problem": str(exc)})
+            continue
+        row = {"id": fig_id, "copied": False, "stale": False, "problem": None}
+        try:
+            source, data = _check_specs(meta.get("source"), meta.get("data"))
+            baseline = _check_specs(source, data if meta.get("data_baseline") is None else meta["data_baseline"])[1]
+            src = resolve(config, source)
             if not src.is_file():
-                raise FigureError(f"source missing: {meta.get('source')} ({src})")
-            data_hash = _hash_data(config, meta.get("data") or [])
+                raise FigureError(f"source missing: {source} ({src})")
+            data_hash = _hash_data(config, data)
             src_hash = _hash_file(src)
             if src_hash != meta.get("figure_hash"):
                 fig_file = f"figure{src.suffix.lower()}"
-                old = meta.get("figure_file")
-                if old and old != fig_file:
-                    (_fig_dir(root, fig_id) / old).unlink(missing_ok=True)
-                shutil.copyfile(src, _fig_dir(root, fig_id) / fig_file)
+                fig_dir = _fig_dir(root, fig_id)
+                _replace_old_figure(fig_dir, meta.get("figure_file"), fig_file)
+                shutil.copyfile(src, fig_dir / fig_file)
                 meta.update(figure_file=fig_file, figure_hash=src_hash, data_hash=data_hash, synced=today)
-                row["copied"], row["stale"] = True, False
-            elif data_hash != meta.get("data_hash"):
-                row["stale"] = True
+                row["copied"] = True
+            elif data != baseline:
+                meta["data_hash"] = data_hash          # data list edited by hand: re-baseline
+            else:
+                row["stale"] = data_hash != meta.get("data_hash")
+            meta["data_baseline"] = data
+            meta["stale"], meta["problem"] = row["stale"], None
         except (FigureError, ValueError, OSError) as exc:
-            row["problem"] = str(exc)
-        meta["stale"], meta["problem"] = row["stale"], row["problem"]
-        _save_meta(root, fig_id, meta)
+            row = {"id": fig_id, "copied": False, "stale": False, "problem": str(exc)}
+            meta["stale"], meta["problem"] = False, str(exc)
+        try:
+            _save_meta(root, fig_id, meta)
+        except OSError as exc:
+            row = {"id": fig_id, "copied": False, "stale": False, "problem": str(exc)}
         rows.append(row)
     return rows
 
@@ -153,7 +201,11 @@ def stale_figures(root) -> list[str]:
 def render_gallery(root) -> str:
     out = ["# Figures", "*Generated by `hub figures gallery`; captions are edited in each figure's caption.md.*"]
     for fig_id in figure_ids(root):
-        meta = load_meta(root, fig_id)
+        try:
+            meta = load_meta(root, fig_id)
+        except FigureError as exc:
+            out += ["", f"## {fig_id}", f"**Problem:** {exc}"]
+            continue
         title = meta.get("title") or fig_id
         out += ["", f"## {fig_id} — {title} ({meta.get('status') or 'draft'})",
                 f"![[Figures/{fig_id}/{meta.get('figure_file')}]]", f"![[Figures/{fig_id}/caption]]"]

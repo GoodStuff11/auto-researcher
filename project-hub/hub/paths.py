@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-ROOT_REF_RE = re.compile(r"\$([A-Za-z_][A-Za-z0-9_]*)/([^\s)\]>`'\"|*]*)")
+ROOT_REF_RE = re.compile(r"(?<![\w$])\$([A-Za-z_][A-Za-z0-9_]*)/((?:[^\s)\]>`'\"|*]*[^\s)\]>`'\"|*.,;:])?)")
 _FULL_RE = re.compile(r"\$([A-Za-z_][A-Za-z0-9_]*)(/.*)?")
 
 
