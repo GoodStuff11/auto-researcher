@@ -1,2 +1,8 @@
-[09:04:53] che_rbm: P=2709 H=14 E_init=-6.283217 one energy+gradient 6.4s |g|=6.93e+00
-[09:05:16] che_k4: P=2565 H=13 E_init=-6.278462 one energy+gradient 15.1s |g|=7.43e+00
+[09:23:02] che     : P=2637 (+1.85% of 2589) H=16 Hr=- rank=1 E_init=-6.277010 one energy+gradient 15.2s (1.00x che)
+[09:23:11] che_rbm1: P=2589 (+0.00% of 2589) H=15 Hr=7 rank=2 E_init=-6.280018 one energy+gradient 6.2s (0.41x che)
+[09:23:20] che_rbm2: P=2589 (+0.00% of 2589) H=14 Hr=9 rank=4 E_init=-6.283066 one energy+gradient 6.3s (0.42x che)
+[09:23:29] che_rbm3: P=2601 (+0.46% of 2589) H=13 Hr=10 rank=8 E_init=-6.289046 one energy+gradient 6.5s (0.43x che)
+[09:23:41] che_k2  : P=2613 (+0.93% of 2589) H=15 Hr=- rank=2 E_init=-6.278884 one energy+gradient 9.0s (0.59x che)
+[09:24:01] che_k4  : P=2565 (-0.93% of 2589) H=13 Hr=- rank=4 E_init=-6.276790 one energy+gradient 14.9s (0.98x che)
+[09:24:34] che_k8  : P=2614 (+0.97% of 2589) H=10 Hr=- rank=8 E_init=-6.278032 one energy+gradient 26.2s (1.72x che)
+[09:24:52] che_kh4 : P=2580 (-0.35% of 2589) H=4 Hr=- rank=4 E_init=-6.277584 one energy+gradient 14.3s (0.94x che)

@@ -1,7 +1,7 @@
-che      seed=0 P=2637 eps=3.427e-04 S2=-1.1e-17 it=2000 capped=False
-che      seed=1 P=2637 eps=4.260e-04 S2=+1.3e-17 it=2000 capped=False
-che      seed=2 P=2637 eps=3.257e-04 S2=+2.5e-17 it=2000 capped=False
-nnbf_SG  seed=0 P=2637 eps=2.306e-04 S2=+4.3e-18 it=2000 capped=False
-nnbf_SG  seed=1 P=2637 eps=2.070e-04 S2=-3.2e-19 it=2000 capped=False
-nnbf_SG  seed=2 P=2637 eps=1.885e-04 S2=-2.6e-17 it=2000 capped=False
-VERDICT ALL: INCOMPLETE (che_rbm: 0 seeds or S^2 not exact)
+che          seed=0 P=2637 eps=3.427e-04 eps@1000=4.072e-04 S2=-1.1e-17 it=2000 capped=False
+che          seed=1 P=2637 eps=4.260e-04 eps@1000=5.054e-04 S2=+1.3e-17 it=2000 capped=False
+che          seed=2 P=2637 eps=3.257e-04 eps@1000=4.201e-04 S2=+2.5e-17 it=2000 capped=False
+nnbf_SG      seed=0 P=2637 eps=2.306e-04 eps@1000=2.812e-04 S2=+4.3e-18 it=2000 capped=False
+nnbf_SG      seed=1 P=2637 eps=2.070e-04 eps@1000=2.569e-04 S2=-3.2e-19 it=2000 capped=False
+nnbf_SG      seed=2 P=2637 eps=1.885e-04 eps@1000=2.313e-04 S2=-2.6e-17 it=2000 capped=False
+VERDICT ALL: INCOMPLETE (che_rbm1: 0 seeds or S^2 not exact)

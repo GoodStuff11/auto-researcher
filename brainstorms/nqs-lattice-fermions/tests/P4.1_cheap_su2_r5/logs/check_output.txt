@@ -1,8 +1,14 @@
-[rbm PASS spin, k4 FAIL] che_rbm: PASS | che_k4: FAIL | attribution: SPIN-RESOLVED
-[both PASS, gain = rank] che_rbm: PASS | che_k4: PASS | attribution: GAUSSIAN-RANK
-[both FAIL] che_rbm: FAIL | che_k4: FAIL | attribution: n/a
-[overlap AMBIGUOUS] che_rbm: AMBIGUOUS | che_k4: AMBIGUOUS | attribution: n/a
-[cost gate] che_rbm: FAIL (cost gate) | che_k4: FAIL (cost gate) | attribution: n/a
-[missing seed] ALL: INCOMPLETE (che_rbm
-[S^2 not exact] ALL: INCOMPLETE (che_rbm
-[no gap] ALL: NO-TARGET (che -> nnbf_SG gap not resolved)
+[rbm PASS c-varying; k, kh FAIL] rbm: PASS | k: FAIL | kh4: FAIL | attribution: C-VARYING components beat fixed ones at equal rank
+[rbm and k PASS equal -> RANK] rbm: PASS | k: PASS | kh4: FAIL | attribution: RANK (rbm not separated from fixed components at equal rank)
+[all FAIL] rbm: FAIL | k: FAIL | kh4: FAIL | attribution: n/a
+[gain drops with rank] rbm: AMBIGUOUS (gain drops with rank) | k: FAIL | kh4: FAIL | attribution: n/a
+[PASS at 2000 not at 1000] rbm: AMBIGUOUS (che_rbm3 at it 1000: gap fraction < 0.5, gain <= che 1000->2000 drift) | k: FAIL | kh4: FAIL | attribution: n/a
+[gain below che 1000->2000 drift] rbm: AMBIGUOUS (che_rbm3 at it 2000: gain <= che 1000->2000 drift) | k: FAIL | kh4: FAIL | attribution: n/a
+[che_drift(4000) reaches best] rbm: AMBIGUOUS (che_drift at 4000 (2.300e-04) reaches che_rbm3) | k: FAIL | kh4: FAIL | attribution: n/a
+[capped arm -> equal iteration] rbm: PASS | k: FAIL | kh4: FAIL | attribution: INVALID (capped arm(s): che_k8)
+[cost gate] rbm: FAIL (cost gate) | k: FAIL | kh4: FAIL | attribution: n/a
+[capped below 1000] ALL: INCOMPLETE (a capped arm stopped at iteration 800 < 1000)
+[missing seed] ALL: INCOMPLETE (che_k4: 2 seeds or S^2 not exact)
+[S^2 not exact] ALL: INCOMPLETE (che_rbm2: 3 seeds or S^2 not exact)
+[missing drift run] ALL: INCOMPLETE (che_drift4000 missing)
+[no gap] ALL: NO-TARGET (che -> nnbf_SG gap not resolved at iteration 1000)

@@ -1,7 +1,7 @@
-Lx= 8 L= 64 Ne= 56 che_closed      2.65 ms  che_rbm      2.19 ms  che_k4      2.09 ms
-Lx=12 L=144 Ne=126 che_closed      1.62 ms  che_rbm      5.26 ms  che_k4      6.27 ms
-Lx=16 L=256 Ne=224 che_closed      5.78 ms  che_rbm     15.80 ms  che_k4     22.10 ms
-Lx=20 L=400 Ne=350 che_closed     17.09 ms  che_rbm     47.27 ms  che_k4     67.42 ms
-Lx=24 L=576 Ne=504 che_closed     31.13 ms  che_rbm     93.60 ms  che_k4    125.41 ms
-slopes in N_e (three largest): che_closed 2.09  che_rbm 2.20  che_k4 2.15
-ratio to che_closed at largest size: che_rbm 3.01  che_k4 4.03
+Lx= 8 L= 64 Ne= 56 che_closed     2.46 ms  che_rbm1     1.66 ms  che_rbm2     1.95 ms  che_rbm3     3.48 ms  che_k2     1.18 ms  che_k4     2.32 ms  che_k8     4.62 ms  che_kh4     2.36 ms
+Lx=12 L=144 Ne=126 che_closed     1.84 ms  che_rbm1     3.26 ms  che_rbm2     6.13 ms  che_rbm3    11.97 ms  che_k2     3.58 ms  che_k4     7.06 ms  che_k8    14.20 ms  che_kh4     7.35 ms
+Lx=16 L=256 Ne=224 che_closed     7.19 ms  che_rbm1     9.60 ms  che_rbm2    17.18 ms  che_rbm3    32.67 ms  che_k2    10.12 ms  che_k4    20.23 ms  che_k8    39.43 ms  che_kh4    18.00 ms
+Lx=20 L=400 Ne=350 che_closed    17.13 ms  che_rbm1    24.43 ms  che_rbm2    44.29 ms  che_rbm3    84.08 ms  che_k2    26.60 ms  che_k4    53.74 ms  che_k8   108.00 ms  che_kh4    53.67 ms
+Lx=24 L=576 Ne=504 che_closed    27.82 ms  che_rbm1    49.41 ms  che_rbm2    90.48 ms  che_rbm3   172.08 ms  che_k2    54.18 ms  che_k4   108.54 ms  che_k8   216.82 ms  che_kh4   110.87 ms
+slopes in N_e (three largest): che_closed 1.68  che_rbm1 2.02  che_rbm2 2.05  che_rbm3 2.05  che_k2 2.07  che_k4 2.08  che_k8 2.11  che_kh4 2.25
+ratio to che_closed at largest size: che_rbm1 1.78 (rank 2)  che_rbm2 3.25 (rank 4)  che_rbm3 6.19 (rank 8)  che_k2 1.95 (rank 2)  che_k4 3.90 (rank 4)  che_k8 7.79 (rank 8)  che_kh4 3.99 (rank 4)

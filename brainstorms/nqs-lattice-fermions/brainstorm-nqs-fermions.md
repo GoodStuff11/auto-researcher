@@ -164,7 +164,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P2.2 | SUBMITTED (round 5 reduced: accuracy trend + equal-cost foils + calibrated cost; no unconditional survivor) | nothing | Slurm 452238 (44 tasks) |
 | P3.1 | PILOT (ESR0: set A 16/21 G=0 but set W 8/19 and a grade-H real false certificate; Gate 0 FAIL as method, PASS as diagnostic) | step 2 blocked on excited-state pilot (GO: eps/omega at most 0.4 per level, out-of-window weight at most 0.03) | Slurm 456094 (excited pilot); EHX gate 452146 recorded GATE-FAIL (EHX = Route 2.3 restated) |
 | P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
-| P4.1 | FIX (critic: che_rbm is a projected multi-component UHF mixture, no extra spin input; rebuilt as rank ladder K=1–8 with drift control) | nothing | fix worker (will submit) |
+| P4.1 | SUBMITTED (rank ladder of projected UHF mixtures, K=1–8, drift control) | nothing | Slurm 508440 (22 tasks: che_rbm M=1–3, che_k K=2,4,8, containing foil, che drift to 4000 it) |
 | P4.2 | SUBMITTED (capacity pilot; ELT killed Gate 0, PA carried) | array blocked on capacity pilot (ε_scr^∞ at most 3% → run array, else enlarge family) | Slurm 452196 (capacity); Route 3.1 CLOSED-FAIL (451914: warm start slower than scratch at B=10/20/50) |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
