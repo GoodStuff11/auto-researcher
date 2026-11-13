@@ -1,2 +1,11 @@
 
 === [W] H6_R3.6_d0.25_g1 K=14 dim=132496 E_FCI=-3.028790 HF wt=0.535 nnz/row=1486 (229.6s)
+  NNBFJ    seed=0 dE=   1.203 mHa Var(EL)=5.64e-03 P=14142 (train 5736s)
+      SCREEN exact bias (mHa): 1e-05:0.0000 0.0001:0.0002 0.0003:-0.0066 0.001:-0.0053 0.0015:0.1121 0.002:0.1680 0.0025:0.2772 0.003:0.2064 0.01:2.6277 0.03:69.2161
+      SS selected eps=-1 Kd=-1 inc ratio (half B)=inf
+  NNBFJ    seed=1 dE=   1.240 mHa Var(EL)=5.84e-03 P=14142 (train 5723s)
+      SCREEN exact bias (mHa): 1e-05:0.0000 0.0001:0.0001 0.0003:-0.0071 0.001:-0.0067 0.0015:0.1119 0.002:0.1683 0.0025:0.2762 0.003:0.2032 0.01:2.6054 0.03:69.1957
+      SS selected eps=-1 Kd=-1 inc ratio (half B)=inf
+  NNBFJ    seed=2 dE=   0.621 mHa Var(EL)=2.93e-03 P=14142 (train 5744s)
+      SCREEN exact bias (mHa): 1e-05:0.0000 0.0001:0.0002 0.0003:-0.0078 0.001:-0.0062 0.0015:0.1183 0.002:0.1736 0.0025:0.2842 0.003:0.2202 0.01:2.7887 0.03:69.7303
+      SS selected eps=-1 Kd=-1 inc ratio (half B)=inf

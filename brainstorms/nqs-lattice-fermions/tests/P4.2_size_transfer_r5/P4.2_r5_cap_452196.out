@@ -13,3 +13,7 @@
 [  7523.9s] arm scr@50   : E=-10.56449664 eps=5.1470e-02 (raw 7.5062e-02, irrep weight 0.357) A/V=8.0380e-03 sign-agree=0.8670 Pd=2.6227e-03 fid=0.4734
 [  8888.7s]   [scr] step 60/600 eps=4.96861e-02 lr=0.2
 [ 14471.8s] arm scr@100  : E=-10.63169245 eps=4.7270e-02 (raw 6.9699e-02, irrep weight 0.448) A/V=7.6605e-03 sign-agree=0.8715 Pd=2.5674e-03 fid=0.5053
+[ 17214.2s]   [scr] step 120/600 eps=4.67813e-02 lr=0.2
+[ 21363.5s] arm scr@150  : E=-10.64819258 eps=4.6239e-02 (raw 7.0672e-02, irrep weight 0.416) A/V=7.3996e-03 sign-agree=0.8732 Pd=2.4730e-03 fid=0.5206
+[ 25475.8s]   [scr] step 180/600 eps=4.58483e-02 lr=0.2
+[ 33742.7s]   [scr] step 240/600 eps=4.52837e-02 lr=0.2

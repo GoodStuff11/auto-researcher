@@ -11,3 +11,17 @@
 [08:58:34] Cuhf-w6-s11: it   900 [E] E = -11.33546797 F = 0.933664 |f| = 1.86e-02 (0.02 s/step)
 [09:12:50] Cuhf-w6-s11: it   950 [E] E = -11.31951932 F = 0.931537 |f| = 1.62e-01 (0.92 s/step)
 [09:27:08] Cuhf-w6-s11: it  1000 [E] E = -11.33306142 F = 0.934936 |f| = 6.09e-02 (1.73 s/step)
+[09:41:22] Cuhf-w6-s11: it  1050 [E] E = -11.32079129 F = 0.931788 |f| = 1.62e-01 (2.46 s/step)
+[09:55:40] Cuhf-w6-s11: it  1100 [E] E = -11.33548149 F = 0.934619 |f| = 3.71e-02 (3.13 s/step)
+[10:09:58] Cuhf-w6-s11: it  1150 [E] E = -11.33167812 F = 0.935917 |f| = 9.00e-02 (3.74 s/step)
+[10:32:59] Cuhf-w6-s11 [mid @ 1200]: dE_tot=0.05200 dE_sign=0.01240 f_E=0.238 spread=1.4e-12 S2=0.119 ov0=0.9367 ovk=[0.9367, 0.0, 0.0, 0.0] (530 s)
+[10:33:16] Cuhf-w6-s11: it  1200 [E] E = -11.33566570 F = 0.935607 |f| = 3.40e-02 (4.75 s/step)
+[10:46:51] Cuhf-w6-s11: it  1250 [E] E = -11.33581614 F = 0.936417 |f| = 3.21e-02 (5.21 s/step)
+[11:00:22] Cuhf-w6-s11: it  1300 [E] E = -11.33619467 F = 0.934964 |f| = 1.94e-02 (5.63 s/step)
+[11:13:56] Cuhf-w6-s11: it  1350 [E] E = -11.33399333 F = 0.935222 |f| = 5.85e-02 (6.02 s/step)
+[11:27:30] Cuhf-w6-s11: it  1400 [E] E = -11.33559464 F = 0.935122 |f| = 3.08e-02 (6.39 s/step)
+[11:41:05] Cuhf-w6-s11: it  1450 [E] E = -11.33398311 F = 0.935455 |f| = 5.01e-02 (6.73 s/step)
+[12:03:09] Cuhf-w6-s11 [end @ 1500]: dE_tot=0.05159 dE_sign=0.01229 f_E=0.238 spread=1.9e-12 S2=0.120 ov0=0.9357 ovk=[0.9357, 0.0, 0.0, 0.0] (519 s)
+[12:12:14] Cuhf-w6-s11 [end_PS @ 1500]: dE_tot=0.03009 dE_sign=0.00635 f_E=0.211 spread=2.0e-12 S2=0.000 ov0=0.9565 ovk=[0.9565, 0.0, 0.0, 0.0] (545 s)
+[12:12:14] Cuhf-w6-s11: energy drop per 100 steps (slope over last 200) -1.47e-03 (tol 0.0003) converged=True n_fid=0 fid_reached=None total 11795 s
+[12:12:14] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/inst0_Cuhf_w6_s11_ext.json

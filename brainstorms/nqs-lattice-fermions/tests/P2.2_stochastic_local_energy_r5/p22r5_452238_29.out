@@ -1,2 +1,5 @@
 
 === [W] H6_R3.6_d0.25_g1 K=12 dim=48400 E_FCI=-3.028430 HF wt=0.534 nnz/row=1000 (82.7s)
+  CASJ     seed=0 dE=   1.377 mHa Var(EL)=5.98e-03 P=844 (train 6755s)
+  CASJ     seed=1 dE=   1.372 mHa Var(EL)=5.96e-03 P=844 (train 7039s)
+  CASJ     seed=2 dE=   1.372 mHa Var(EL)=5.96e-03 P=844 (train 6807s)
