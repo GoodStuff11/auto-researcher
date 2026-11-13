@@ -55,6 +55,17 @@ Commands (each has its own --help):
   meeting next SERIES YYYY-MM-DD | meeting decided SERIES YYYY-MM-DD [--json]
                              record the next meeting date; list what a meeting decided
   sources [--json]           configured ingest sources and their watermarks
+  init DIR --name NAME [--force]
+                             create or refresh a vault in DIR (works outside any vault): project.yaml, Vision.md,
+                             Locator.md, Knowledge/, Figures/, vendored tools/ and skills; never overwrites notes
+  figures add ID SOURCE [--title T] [--script S] [--data D]... [--licenses L] [--caption C]
+                             register a figure: copy SOURCE ($ROOT/path) into Figures/ID/
+  figures sync               re-copy changed figures, flag stale/problem ones, rewrite Figures/Gallery.md;
+                             exit 1 on a problem
+  figures gallery            rewrite Figures/Gallery.md only
+  check-links [--online] [--json]
+                             check every $ROOT/path and URL in Locator.md and figure metadata; exit 1 if one
+                             fails
   commit MESSAGE             git add -A, commit, pull --rebase, regenerate Snapshot.md, push (3 retries);
                              item files merge field by field (hub-item driver); exit 3 only when both sides
                              changed one field differently (rebase is aborted, nothing lost)
@@ -416,6 +427,9 @@ def _dispatch(args, cfg, store) -> int:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
+        if args.cmd == "init":
+            from .cli_ext import run_init
+            return run_init(args)
         root = args.root or find_root(Path.cwd())
         cfg = load_config(root)
         return _dispatch(args, cfg, Store(root))

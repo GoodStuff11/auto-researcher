@@ -10,6 +10,9 @@ from pathlib import Path
 import yaml
 
 from .batch import run_batch
+from .figures import add_figure, sync_figures, write_gallery
+from .init import init_vault
+from .links import check_links
 from .clickup import apply_clickup, load_tasks, plan_clickup
 from .ingest_git import IngestError, entry_branch, ingest_git
 from .pending import load_proposals
@@ -106,12 +109,61 @@ def add_ext_parsers(sub) -> None:
                     help="print JSON {decisions: [{id, title, status, as_decided, reached, actions}], "
                          "staged: [P-ids]} instead of text")
 
+    i = _sp(sub, "init", "create or refresh a vault in a folder (works outside any vault)",
+            "Create a vault in DIR (made if missing): project.yaml, README.md, Vision.md, Locator.md, "
+            "Knowledge/, Figures/, Status/Items.base, the vendored tools/project-hub, the hub-* skills under "
+            ".claude/skills and tools/setup.sh. Existing notes and templates are kept; tools/project-hub and "
+            "the hub-* skill folders are replaced, so running it again from a newer project-hub updates a "
+            "vault's tools. Prints each created or refreshed path, then the next step.")
+    i.add_argument("dir", metavar="DIR", type=Path, help="folder to create or refresh the vault in")
+    i.add_argument("--name", required=True, help="project name written to project.yaml (used when the file is new)")
+    i.add_argument("--force", action="store_true",
+                   help="initialise even if DIR is a non-empty folder that is not a vault; existing files are kept")
+
+    f = _sp(sub, "figures", "figure registry (Figures/<id>/ and Figures/Gallery.md)",
+            "Register figures produced by the project's own scripts, keep the vault's copies in sync and "
+            "generate Figures/Gallery.md. Subcommands: add, sync, gallery. Format: .agent_docs/figures.md.")
+    fsub = f.add_subparsers(dest="fcmd", required=True, metavar="SUBCOMMAND")
+    fa = _sp(fsub, "add", "register a figure and copy its file into the vault",
+             "Copy SOURCE into Figures/ID/figure.<ext>, write caption.md (once; never overwritten) and "
+             "meta.yaml, and print the figure directory. Fails if ID is already registered.")
+    fa.add_argument("id", help="figure id: lowercase letters, digits and '-', e.g. phase-diagram")
+    fa.add_argument("source", help="the figure file as $ROOT/relative/path, ROOT being a key of `roots`")
+    fa.add_argument("--title", default="", help="figure title shown in the gallery (default: the id)")
+    fa.add_argument("--script", default="", help="the script that produces the figure, as $ROOT/relative/path")
+    fa.add_argument("--data", action="append", default=[], metavar="D",
+                    help="a data file or folder the figure is made from, as $ROOT/relative/path; repeatable. "
+                         "A change to it later marks the figure stale")
+    fa.add_argument("--licenses", default="", help="the claim or section the figure supports (free text)")
+    fa.add_argument("--caption", default="", help="initial caption text, findings first (default: a placeholder)")
+    _sp(fsub, "sync", "re-copy changed figures, flag stale ones and rewrite the gallery",
+        "For every registered figure print `<id>  copied|unchanged|STALE|PROBLEM: <why>`, then write "
+        "Figures/Gallery.md. Exit 1 if any figure has a problem (a stale figure is reported but is not a problem).")
+    _sp(fsub, "gallery", "rewrite Figures/Gallery.md",
+        "Regenerate Figures/Gallery.md from the registered figures and print its path.")
+
+    cl = _sp(sub, "check-links", "check the paths and URLs in Locator.md and figure metadata",
+             "Check every $ROOT/path in Locator.md and Figures/*/meta.yaml exists on this machine, and list "
+             "URLs. One line per reference: `ok`, `BROKEN` or `listed` (an unchecked URL), plus the problem. "
+             "Exit 1 if any reference is broken.")
+    cl.add_argument("--online", action="store_true",
+                    help="also request each URL (HEAD, then GET) with a short timeout; without it URLs are only listed")
+    cl.add_argument("--json", action="store_true",
+                    help="print a JSON list of {file, ref, kind, ok, problem} instead of text lines")
+
     so = _sp(sub, "sources", "list the configured ingest sources and their watermarks",
              "One row per source configured under `sources` in project.yaml: clickup, circleback, "
              "git.<ROOT> per repository and for overleaf, calendar, gmail and slack (when enabled), with its "
              "watermark (empty = never ingested).")
     so.add_argument("--json", action="store_true",
                     help="print a JSON list of {source, detail, watermark} instead of a table")
+
+
+def run_init(args) -> int:
+    for path in init_vault(args.dir, name=args.name, force=args.force):
+        print(path)
+    print(f"next: cd {args.dir} && bash tools/setup.sh")
+    return 0
 
 
 def _source_rows(cfg) -> list[dict]:
@@ -213,6 +265,29 @@ def dispatch_ext(args, cfg, store, *, today, me) -> int | None:
                     print(f"{r['id']}  {r['status']:<9} {r['title']} — {outcome}"
                           f"  actions: {' '.join(r['actions']) or 'none'}")
                 print(f"staged: {' '.join(res['staged']) or 'none'}")
+    elif cmd == "figures":
+        if args.fcmd == "add":
+            print(add_figure(cfg, args.id, args.source, title=args.title, script=args.script, data=args.data,
+                             licenses=args.licenses, caption=args.caption))
+        elif args.fcmd == "sync":
+            rows = sync_figures(cfg, today=today)
+            for r in rows:
+                state = (f"PROBLEM: {r['problem']}" if r["problem"] else "STALE" if r["stale"]
+                         else "copied" if r["copied"] else "unchanged")
+                print(f"{r['id']}  {state}")
+            write_gallery(cfg.root)
+            return 1 if any(r["problem"] for r in rows) else 0
+        else:
+            print(write_gallery(cfg.root))
+    elif cmd == "check-links":
+        rows = check_links(cfg, online=args.online)
+        if args.json:
+            print(json.dumps(rows, indent=2, default=str))
+        else:
+            for r in rows:
+                state = "ok" if r["ok"] else "BROKEN" if r["ok"] is False else "listed"
+                print(f"{state:<7} {r['file']}  {r['ref']}" + (f"  {r['problem']}" if r["problem"] else ""))
+        return 1 if any(r["ok"] is False for r in rows) else 0
     elif cmd == "sources":
         rows = _source_rows(cfg)
         if args.json:

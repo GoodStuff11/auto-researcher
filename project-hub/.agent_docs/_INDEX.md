@@ -6,6 +6,8 @@ Read this first. Each file below is the complete truth for its domain; do not re
 - [git-sync.md](git-sync.md) — `.gitattributes` merge drivers (incl. the `hub-item` item merge driver), `hub commit` sequence, best-effort pull, conflict handling, exit codes (`hub/gitsync.py`, `hub/merge_item.py`, `hub/cli.py`)
 - [vault-layout.md](vault-layout.md) — `project.yaml`, `hub.local.yaml`, vault directory tree, `Status/Log/<YYYY-MM>.md`, `Status/sync-state/`, `Status/Snapshot.md`, `Status/Meetings/` (`hub/config.py`, `hub/sync_state.py`, `hub/snapshot.py`)
 - [ingest.md](ingest.md) — source ids and watermarks, `hub seen`, `ingest git|batch` (batch file schema and rules), `clickup plan|apply` (export format, rule table), `meeting next|decided`, `sources` (`hub/sources.py`, `hub/ingest_git.py`, `hub/batch.py`, `hub/clickup.py`, `hub/cli_ext.py`)
+- [figures.md](figures.md) — `Figures/<id>/` layout, `meta.yaml` keys, sync rules (copied/unchanged/STALE/PROBLEM), `Gallery.md` format, caption ownership, `hub figures add|sync|gallery` (`hub/figures.py`, `hub/cli_ext.py`)
+- [init.md](init.md) — `hub init` (what it creates, never overwrites, always replaces), `tools/setup.sh` steps, updating a vault's tools, `hub check-links` and how to write `Locator.md` so references are found (`hub/init.py`, `hub/links.py`)
 - [office-viewer-spike.md](office-viewer-spike.md) — what VS Code Office Viewer keeps when it saves an agenda xlsx: `_meta` and the id column survive but become visible, the dropdown is not shown, styling survives (`project-hub/spike/`)
 
 Rules of thumb for agents:

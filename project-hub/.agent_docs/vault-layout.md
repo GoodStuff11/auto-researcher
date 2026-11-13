@@ -4,6 +4,13 @@ Code: `hub/config.py` (`find_root`, `load_config`, `HubConfig`), `hub/sync_state
 - `project.yaml` — shared configuration (committed)
 - `hub.local.yaml` — per-user configuration (gitignored)
 - `.gitattributes`, `.gitignore` — maintained by `hub commit` (see git-sync.md)
+- `Vision.md` — the project vision (section skeleton from `hub init`); changed only through a `note` proposal op or by a human
+- `Locator.md` — where code, data, documents and links live, as `$ROOT/relative/path` references checked by `hub check-links`. Put each `$ROOT/...` path alone in backticks; backtick any path with spaces; keep commands with flags out of backticks (a backticked command is read as one path) or put them in a fenced block (init.md)
+- `Knowledge/*.md` — stable project knowledge, one note per topic; changed only through a `note` proposal op or by a human
+- `Figures/<id>/{figure.<ext>, caption.md, meta.yaml}` and `Figures/Gallery.md` — figure registry (figures.md); `caption.md` is written once and never by the tools, `Gallery.md` and `figure.*` are generated
+- `Status/Items.base` — Obsidian Bases views over `Status/Items/` (open questions, open actions, decisions)
+- `tools/` — vendored `project-hub` copy, `setup.sh`, and the gitignored `tools/.venv` (init.md)
+- `.claude/skills/hub-*` — the hub skills, refreshed by `hub init` (init.md)
 - `Status/Items/<ID>.md` — one file per item (item-format.md)
 - `Status/Pending/<P-id>.md` — one file per staged proposal (pending-format.md)
 - `Status/Meetings/<series>/<YYYY-MM-DD>.md` — meeting note written by `hub agenda read`

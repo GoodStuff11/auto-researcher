@@ -122,7 +122,11 @@ BIN="$VAULT/tools/.venv/bin"
 "$BIN/python" -m pip install -q -e "$VAULT/tools/project-hub"
 mkdir -p "$HOME/.local/bin"
 ln -sf "$BIN/hub" "$HOME/.local/bin/hub"
-(cd "$VAULT" && "$BIN/python" -c 'from hub.gitsync import ensure_repo_files; ensure_repo_files(".")')
+if git -C "$VAULT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  (cd "$VAULT" && "$BIN/python" -c 'from hub.gitsync import ensure_repo_files; ensure_repo_files(".")')
+else
+  echo "note: $VAULT is not a git repository; skipping merge-driver setup. Initialise or clone the shared repo, then re-run bash tools/setup.sh"
+fi
 echo "hub installed: $HOME/.local/bin/hub -> $BIN/hub"
 case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) echo "Add ~/.local/bin to your PATH (see tools/project-hub/USER-GUIDE.md, Step 1)." ;; esac
 """
