@@ -18,6 +18,10 @@ from .paths import ROOT_REF_RE, PathError, resolve
 
 URL_RE = re.compile(r"https?://[^\s\]>`'\"|]+")
 SPACED_SPAN_RE = re.compile(r"`(\$[A-Za-z_][A-Za-z0-9_]*/[^`\n]*)`")
+BARE_ROOT_RE = re.compile(r"`(\$[A-Za-z_][A-Za-z0-9_]*)`")
+
+
+_BARE_FULL = re.compile(r"\$[A-Za-z_][A-Za-z0-9_]*")
 
 
 def _clean_url(raw: str) -> str:
@@ -38,7 +42,9 @@ def _refs_in_text(text: str):
         ref = m[1].strip()
         if not ref.endswith("$"):  # `$x/y$` is maths
             yield "path", ref
-    rest = SPACED_SPAN_RE.sub(lambda m: " " * len(m[0]), text)
+    for m in BARE_ROOT_RE.finditer(text):  # `$ROOT` alone is the root itself
+        yield "path", m[1]
+    rest = BARE_ROOT_RE.sub(lambda m: " " * len(m[0]), SPACED_SPAN_RE.sub(lambda m: " " * len(m[0]), text))
     for m in ROOT_REF_RE.finditer(rest):
         # A match that runs into a closing `$` is LaTeX maths, not a path.
         if m[2].endswith("$") or rest[m.end():m.end() + 1] == "$":
@@ -125,6 +131,8 @@ def check_links(config, *, online=False, timeout=5.0, opener=None) -> list[dict]
                     row["ok"] = path.exists()
                     if not row["ok"]:
                         row["problem"] = f"does not exist on this machine: {path}"
+                    elif _BARE_FULL.fullmatch(ref) and not path.is_dir():
+                        row["ok"], row["problem"] = False, f"not a directory: {path}"
                 except PathError as exc:
                     row["ok"], row["problem"] = False, str(exc)
                 except (OSError, ValueError, RuntimeError) as exc:

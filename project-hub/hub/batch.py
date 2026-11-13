@@ -155,6 +155,13 @@ def _check_safe(store: Store, safe: list, people, errs: list[str]) -> None:
             _check_new(op, where, existing, people, errs)
 
 
+def _known_titles(root) -> set[str]:
+    """Titles of proposals already staged, applied or rejected (those a batch re-run skips)."""
+    known = {_key(p.title) for p in load_proposals(root)}
+    known |= {_key(m[1]) for line in _log_text(root).splitlines() if (m := DECIDED_RE.search(line))}
+    return known
+
+
 def check_batch(store: Store, batch, people=None) -> list[str]:
     """Every problem with a batch, as readable lines (empty = fine). Nothing is written."""
     if not isinstance(batch, dict):
@@ -166,6 +173,7 @@ def check_batch(store: Store, batch, people=None) -> list[str]:
     if errs:
         return errs
     _check_safe(store, batch.get("safe") or [], people, errs)
+    known = _known_titles(store.root)
     for i, pr in enumerate(batch.get("proposals") or []):
         where = f"proposal {i + 1}"
         if not isinstance(pr, dict):
@@ -187,6 +195,8 @@ def check_batch(store: Store, batch, people=None) -> list[str]:
         ops = pr["ops"]
         if not isinstance(ops, list) or not all(isinstance(o, dict) and _is_str(o.get("op")) for o in ops):
             errs.append(f"{where}: ops must be a list of mappings, each with an op name")
+            continue
+        if _nonempty(pr["title"]) and _key(pr["title"]) in known:  # already staged, applied or rejected: re-running skips it
             continue
         errs += [f"{where}: {e}" for e in check_ops(store, ops)]
         if people is not None:
@@ -258,8 +268,7 @@ def run_batch(root, store: Store, batch, *, author, day, people=None) -> dict:
                 links={rel: list(t) for rel, t in (op.get("links") or {}).items()},
                 description=op.get("description") or "", fields=fields))
         report["applied"] += 1
-    known = {_key(p.title) for p in load_proposals(root)}
-    known |= {_key(m[1]) for line in _log_text(root).splitlines() if (m := DECIDED_RE.search(line))}
+    known = _known_titles(root)
     for pr in batch.get("proposals") or []:
         title = _key(pr["title"])
         if title in known:

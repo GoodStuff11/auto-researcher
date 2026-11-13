@@ -24,6 +24,7 @@ Checks every `$ROOT/path` in `Locator.md` and in each `Figures/*/meta.yaml` (`so
 Text output: one line per reference, `ok`, `BROKEN` or `listed` (URL not checked), then file, ref and problem. `--json`: list of `{file, ref, kind (path|url), ok (true|false|null), problem}`. Exit 1 if any `ok` is false, else 0.
 How references are read from `Locator.md` (write it so they are found):
 - Put each `$ROOT/...` path alone in backticks, e.g. `` `$SRC/results/run1` ``.
+- A backticked bare `$ROOT` (nothing after it) is the root itself: it must exist and be a directory (`not a directory: <path>` otherwise). Unbackticked, a bare `$ROOT` is not a reference.
 - A path with spaces must be in backticks, else it ends at the first space.
 - A backticked command with flags is read as one path, so keep commands out of the backticks or put them in a fenced block.
 - A `$` not followed by `NAME/` is never a path, so LaTeX `$x$` is safe; `$a/b$` maths is skipped.

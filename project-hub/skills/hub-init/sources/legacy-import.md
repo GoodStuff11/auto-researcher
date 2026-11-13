@@ -1,5 +1,5 @@
 # Legacy import (any document)
-Brings one existing document into the hub as proposals. Used by hub-init step 5, and any time the user names an old document to import. The importer assumes no format.
+Brings one existing document into the hub as proposals. Used by hub-init step 4, and any time the user names an old document to import. The importer assumes no format.
 ## Read
 Any document, any format: Markdown, LaTeX, plain text, exported docs, tracker exports. Read it whole, or section by section if long. Never assume a structure; work out what the document is from its content. Make a scratch directory outside the vault (`SCRATCH=$(mktemp -d)`).
 ## Classify each passage
@@ -12,20 +12,21 @@ Any document, any format: Markdown, LaTeX, plain text, exported docs, tracker ex
 - **history narrative**: at most a few entry proposals (see Batch file).
 - **noise or duplicates**: skip.
 
-When unsure whether something was decided, make it an open question. Never invent facts, owners or dates. Use the document's own dates; otherwise today.
+When unsure whether something was decided, make it an open question. Never invent facts, owners or dates. Use the document's own dates. An undated item gets today's date as `raised`, unless a nearby dated heading of the document applies: then use that heading's date.
 ## People and source ids
-Map names to people keys from `project.yaml`. A person with no key stays in the text and never becomes an `owner` (the batch would be rejected).
+Map names to people keys from `project.yaml`. A person with no key never becomes an `owner` (the batch would be rejected). Before building the batch, list the people without a key who own or decide things and ask the user whether to add them to `people` in `project.yaml` (then commit that). Those the user does not add stay in the text, with `owner` empty (fixed in "close the gaps").
+A tracker id (ClickUp or other) found in a document goes in the entry text. Do NOT set `clickup_id`: linking happens through the ClickUp sync.
 Source id: `doc:<file-stem-slug>#<section-slug>`, lowercase, every run of non-alphanumeric characters replaced by `-` (`notes.md`, section "Open Items" gives `doc:notes#open-items`). No whitespace.
 ## Batch file
 Write it in the scratch directory. An import is all judgement, so everything goes under `proposals` (full format: the hub package's `.agent_docs/ingest.md` and `pending-format.md`). Quote dates. Verified recipe:
 - **Dates.** An item's `raised` and `closed` fields hold the document's dates: set them through `fields` (`raised: "<date>"`, and `closed: "<date>"` when closed). Entry dates are always the day of the import and cannot be set, so cite the document's date and item number in the entry text. Use today only when the document has none (omit `raised`, which then defaults to today).
 - **Statuses.** question: `open|answered|dropped|pivoted`; decision: `proposed|made|rejected|deferred`; action: `open|done|dropped`. A decision also takes `rationale`, `as_decided`, `no_action` in `fields`.
-- **Who.** `owner` only for a known people key (a decision's owner is who decided). Otherwise omit it and name the person in the text or description.
-- **A decision taken**: ONE proposal holding its question, the decision and its actions. The question is a `new` question with `ref: $q`, `status: answered` and the dates, plus a closing `entry` with `id: $q` stating the answer. If the question already exists in the vault (`hub list --type question`), skip that op, use its Q-id in `links: {answers: [Q-…]}`, and close it with a `set` op (`status: answered`, `closed`) and an `entry` op. The decision is a `new` decision with `ref: $d`, `status: made`, `rationale`, and `links: {answers: ["$q"]}`, then an `entry` with `id: $d` saying who decided, when, and why. Each action is a `new` action with `ref: $a` and `links: {spawned_by: ["$d"]}`; if done, `status: done` and `closed`, plus an `entry` with `id: $a` giving the outcome. A decision with no action needs `no_action: "<reason>"` in its `fields`. An open action with no known owner is allowed in the batch; it is fixed in "close the gaps".
+- **Who.** `owner` only for a known people key. Otherwise omit it and name the person in the text or description. A decision taken at a meeting: its owner is the person who carries it out; if that is unclear, ask the user, never guess.
+- **A decision taken**: ONE proposal holding its question, the decision and its actions. The question is a `new` question with `ref: $q`, `status: answered` and the dates, plus a closing `entry` with `id: $q` stating the answer. If the question already exists in the vault (`hub list --type question`), skip that op, use its Q-id in `links: {answers: [Q-…]}`, and close it with a `set` op (`status: answered`, `closed`) and an `entry` op. The decision is a `new` decision with `ref: $d`, `status: made`, `rationale`, and `links: {answers: ["$q"]}`, then an `entry` with `id: $d` saying who decided, when, and why. Each action is a `new` action with `ref: $a` and `links: {spawned_by: ["$d"]}`; if done, `status: done` and `closed`, plus an `entry` with `id: $a` giving the outcome. A decision with no listed actions needs `no_action: "<doc> records no follow-up action"` in its `fields`, and only when that is true; if the document implies work, create the action instead. An open action with no known owner is allowed in the batch; it is fixed in "close the gaps".
 - **One proposal per standalone open question** (`new` question, `raised`).
 - **Closed questions** not part of a decision: `new` question with `ref: $q`, `status: answered` (or `dropped`), `closed`, and an `entry` with `id: $q` giving the answer.
 - **One proposal per Knowledge note**: a `note` op, `path: Knowledge/<Topic>.md`, `mode: replace`.
-- **History narrative**: at most a few proposals, each one `entry` op on the existing item it concerns; skip it when there is no such item (proposals cannot hold `log` lines).
+- **History narrative**: a second pass, after the first batch is applied: a second batch file whose proposals each hold `entry` ops on the now-existing ids (find them with `hub list`), at most a few; skip it when there is no such item (proposals cannot hold `log` lines). Do not mix it into the first batch.
 
 Keep the document's own numbering in the description for traceability, e.g. "Imported from notes.md, item 12". Accepted by `hub ingest batch` and applied to the intended statuses:
 ```yaml
@@ -74,7 +75,8 @@ proposals:
 Counts by kind and by section, plus everything skipped and why. In a dry run, stop here (the batch file stays in the scratch directory).
 ## Otherwise
 1. `hub ingest batch <file>`; if it is rejected, fix every listed problem and re-run (nothing was written).
-2. Approval batch: `hub pending list`; ask the user, by section and at most about 30 proposals at a time, which to apply or reject; then `hub pending apply <P-ids>` / `hub pending reject <P-ids>`.
+2. Approval batch: for each section, `hub pending list --source doc:<stem>#<section>` (the same source id as in the batch; `--source doc:<stem>` lists a whole document). Ask the user, in groups of at most 30 proposals, which to apply or reject; then `hub pending apply <P-ids>` / `hub pending reject <P-ids>`.
+2b. Run the second pass (history narrative) as a second batch file, `hub ingest batch`, and approve it the same way. Re-running an already-ingested batch file is a no-op, so a batch can safely be repeated after an interruption.
 3. Close the gaps as in hub-status update step 7 (for example `hub set <A-id> owner=<key>` for an action left without an owner).
 4. `hub validate`.
 5. `hub commit "import: <doc> (<date>)"`. Exit code 3 is a real conflict: stop and show the message.

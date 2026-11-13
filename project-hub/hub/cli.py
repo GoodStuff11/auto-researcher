@@ -28,7 +28,7 @@ Commands (each has its own --help):
   log TEXT --source S        append to Status/Log/<YYYY-MM>.md
   validate                   check every rule; exit 1 and list violations if any
   snapshot                   regenerate Status/Snapshot.md
-  pending list               show staged proposals; files that cannot be read print as UNREADABLE <path>
+  pending list [--source PREFIX]  show staged proposals (sorted by source); files that cannot be read print as UNREADABLE <path>
   pending apply PID …        apply proposals (P-xxxx) in order, each all-or-nothing; prints `applied <P-id>`
                              then `created <id>` per new item as each completes. Pulls first (best effort)
   pending reject PID …       drop proposals, logging the rejection
@@ -204,9 +204,13 @@ def build_parser() -> argparse.ArgumentParser:
              "Staged proposals, one file per proposal at Status/Pending/<P-id>.md. Subcommands: list, apply, "
              "reject, add.")
     pes = pe.add_subparsers(dest="pcmd", required=True, metavar="SUBCOMMAND")
-    _sp(pes, "list", "show staged proposals",
-        "Show every staged proposal (id, title, proposer, date, reason), or `No pending proposals.` Proposal "
-        "files that cannot be parsed are listed as `UNREADABLE <path>`; fix or delete them by hand.")
+    pl = _sp(pes, "list", "show staged proposals",
+             "Show every staged proposal (id, title, proposer, date, reason), sorted by source then id, or "
+             "`No pending proposals.` Proposal files that cannot be parsed are listed as `UNREADABLE <path>`; fix "
+             "or delete them by hand.")
+    pl.add_argument("--source", metavar="PREFIX",
+                    help="only proposals whose source starts with PREFIX (e.g. `doc:notes#open-items`, or "
+                         "`doc:notes` for a whole document)")
     pa = _sp(pes, "apply", "apply proposals in order",
              "First runs a best-effort `git pull --rebase` (a failure is printed as a warning). Then applies "
              "proposals in the order given. Each proposal is all-or-nothing: its ops are checked first and, if "
@@ -375,7 +379,9 @@ def _dispatch(args, cfg, store) -> int:
         print(write_snapshot(store, cfg, today))
     elif cmd == "pending":
         if args.pcmd == "list":
-            props = load_proposals(cfg.root)
+            props = sorted(load_proposals(cfg.root), key=lambda p: (str(p.body.get("source") or ""), p.pid))
+            if args.source:
+                props = [p for p in props if str(p.body.get("source") or "").startswith(args.source)]
             unreadable = load_unreadable(cfg.root)
             if not props and not unreadable:
                 print("No pending proposals.")

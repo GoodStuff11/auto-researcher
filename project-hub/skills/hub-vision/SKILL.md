@@ -10,6 +10,7 @@ Writes or revises `Vision.md`: what the project is for, why it matters and why t
 3. **Dry run.** If the user says "dry run", only read: `hub validate`, `hub pending list`, reading `Vision.md`. Run the interview, write the draft and ops file to the scratch directory and show them, and skip `hub pending add|apply|reject` and `hub commit`. Say which steps were skipped.
 ## Interview
 One question at a time. Push for specifics and evidence; do not accept slogans.
+If material was already imported into the hub (`Knowledge/`, imported questions and decisions, the documents named in hub-init step 4), read it first and propose answers drawn from it for the user to confirm or correct, instead of asking from scratch. Never put a claim in the vision that the material and the user do not support.
 1. The vision.
 2. The problem as the community poses it, with key references.
 3. Our approach.

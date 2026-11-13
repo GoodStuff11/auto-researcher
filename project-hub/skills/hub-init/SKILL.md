@@ -30,10 +30,10 @@ Work from the vault root. Ask about each key in turn, one question at a time, an
 Write `project.yaml` (shared) and the user's `hub.local.yaml` (`me: <their people key>` and their local `roots`). Then run `hub validate` and `hub sources`, and fix what they report with the user.
 ## 3. First commit
 Ask the user before the first push; `hub commit` pushes as soon as an upstream exists. Then `hub commit "Set up project hub"`. If it reports no upstream, run `git push -u origin <branch>` once, then continue.
-## 4. Vision
-Run the hub-vision skill.
-## 5. Existing material
-For each document the user names, follow `sources/legacy-import.md` (next to this file).
+## 4. Existing material
+For each document the user names, follow `sources/legacy-import.md` (next to this file). Do this before the vision, so the vision can draw on what was imported.
+## 5. Vision
+Run the hub-vision skill; tell it which documents were imported in step 4 so it can use them (and the imported questions and decisions) as source material.
 ## 6. Figures
 Run the hub-figures skill.
 ## 7. Locator

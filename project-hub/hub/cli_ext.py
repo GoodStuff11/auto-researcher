@@ -296,6 +296,8 @@ def dispatch_ext(args, cfg, store, *, today, me) -> int | None:
         rows = _source_rows(cfg)
         if args.json:
             print(json.dumps(rows, indent=2, default=str))
+        elif not rows:
+            print("no sources configured in project.yaml")
         for r in [] if args.json else rows:
             print(f"{r['source']:<20} {r['watermark'] or '—':<28} {r['detail']}")
     else:

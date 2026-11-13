@@ -1,5 +1,5 @@
 # Pending proposals (`Status/Pending/<P-id>.md`)
-Code: `hub/pending.py` (`add_proposal`, `check_ops`, `load_proposals`, `load_unreadable`, `apply_proposals`, `reject_proposals`, `apply_ops`, `note_path`, `PendingError`). Ids: `new_pending_id` in `hub/ids.py`. CLI: `hub pending list | apply PID… | reject PID… | add --title T --ops-file F.yaml --source S --reason R`.
+Code: `hub/pending.py` (`add_proposal`, `check_ops`, `load_proposals`, `load_unreadable`, `apply_proposals`, `reject_proposals`, `apply_ops`, `note_path`, `PendingError`). Ids: `new_pending_id` in `hub/ids.py`. CLI: `hub pending list [--source PREFIX] | apply PID… | reject PID… | add --title T --ops-file F.yaml --source S --reason R`.
 A pending proposal is a judgement call staged for one yes/no from whoever runs the agent. Rule: any new item an agent infers from free text (a Circleback transcript, Slack, a handoff, an agenda cell) goes here instead of straight into the store; so does closing a question and recording a decision as made outside the agenda read-back.
 ## File format
 One file per proposal, so concurrent proposals never touch the same file (no merge conflicts, no union driver needed). There is no `Pending.md`. P-ids are random: `P-` plus 4 characters of `a-z0-9`, e.g. `P-k3x9`; the filename is `<P-id>.md`.
@@ -20,7 +20,7 @@ ops:
   source: agenda:group/2026-11-19
 ```
 ````
-The heading is `## <P-id> · <title>` (title forced onto one line); then a fenced yaml block (regex `BLOCK_RE` in `hub/pending.py`). Files that do not match (or whose YAML does not parse to a mapping) are skipped by `load_proposals` and returned by `load_unreadable(root)`; `hub pending list` prints each as `UNREADABLE <path>` — fix or delete it by hand.
+The heading is `## <P-id> · <title>` (title forced onto one line); then a fenced yaml block (regex `BLOCK_RE` in `hub/pending.py`). Files that do not match (or whose YAML does not parse to a mapping) are skipped by `load_proposals` and returned by `load_unreadable(root)`; `hub pending list` prints each as `UNREADABLE <path>`; it sorts proposals by `source` then P-id and `--source PREFIX` keeps those whose source starts with PREFIX — fix or delete it by hand.
 Block keys:
 - `proposer` (string) — people key of whoever staged it
 - `date` (date) — day staged

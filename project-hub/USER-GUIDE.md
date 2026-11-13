@@ -88,7 +88,7 @@ Supported sources: **ClickUp** (one list per project), **Circleback** (meeting n
 ## One-time setup (project owner)
 Do this once per project. It takes about 30 minutes.
 
-**The recommended path is the `hub-init` skill.** Link it once (Step 1), then start Claude Code in a folder and say *"set up a project hub"*. It asks for the project name and where the vault should live, runs `hub init` and `bash tools/setup.sh` for you, interviews you for `project.yaml` (finding ClickUp ids, the Circleback folder and calendar titles through the connectors), writes the vision with you, imports existing notes, registers figures, drafts the Locator and runs the first ingest. It asks before every step that reaches outside your machine (creating a repository, the first push). Say *"dry run: set up a project hub"* to see what it would do without writing anything.
+**The recommended path is the `hub-init` skill.** Link it once (Step 1), then start Claude Code in a folder and say *"set up a project hub"*. It asks for the project name and where the vault should live, runs `hub init` and `bash tools/setup.sh` for you, interviews you for `project.yaml` (finding ClickUp ids, the Circleback folder and calendar titles through the connectors), imports existing notes, writes the vision with you, registers figures, drafts the Locator and runs the first ingest. It asks before every step that reaches outside your machine (creating a repository, the first push). Say *"dry run: set up a project hub"* to see what it would do without writing anything.
 
 **Or do it by hand with the commands below.** The steps are also the reference for what the skill does. Each step says what `hub init` and `tools/setup.sh` already do for you.
 
@@ -239,8 +239,8 @@ Nothing to link: `hub init` copied the hub skills (`hub-init`, `hub-status`, `hu
 4. **Do not edit files under `Status/` by hand.** Use Claude or the `hub` command. Hand edits to item files can break their format (`hub validate` will report it).
 ### Step 10 — Vision, figures, Locator, existing notes
 In Claude Code, from the vault folder, in this order (the `hub-init` skill walks through them):
-1. *"write the vision"*: [The vision](#the-vision).
-2. *"import our old notes"* for each existing document: [Importing existing notes](#importing-existing-notes).
+1. *"import our old notes"* for each existing document: [Importing existing notes](#importing-existing-notes). This comes first so the vision can draw on what was imported.
+2. *"write the vision"*: [The vision](#the-vision).
 3. *"add this figure"* for each figure: [Figures](#figures).
 4. Draft the Locator (the skill proposes it; by hand see [The Locator](#the-locator-and-check-links)), then `hub check-links`.
 ### Step 11 — First ingest (dry run first)
@@ -482,7 +482,7 @@ Say *"import our old notes"* or *"import `<file>`"*. The `hub-init` skill brings
 
 **Everything is proposed.** An import is all judgement, so the skill applies nothing directly: it writes a batch file, loads it with `hub ingest batch` (every item becomes a proposal in `Status/Pending/`), and shows you a summary: counts by kind and by section, and everything it skipped and why. It never invents facts, owners or dates.
 
-**You approve by section.** It asks about the proposals grouped by section of the document, at most about 30 at a time: apply or reject each group (`hub pending apply` / `hub pending reject`). Then it closes the gaps (for example an action left without an owner), runs `hub validate` and commits as `import: <document> (<date>)`.
+**You approve by section.** It asks about the proposals grouped by section of the document, at most about 30 at a time: apply or reject each group (`hub pending list --source doc:<document>#<section>` shows one section; then `hub pending apply` / `hub pending reject`). Then it closes the gaps (for example an action left without an owner), runs `hub validate` and commits as `import: <document> (<date>)`.
 
 Good to know:
 - The imported items keep the document's own dates in `raised` and `closed`. History entries are dated the day of the import, so each says which document, section and item it came from. Every imported item cites a source like `doc:notes#open-items` (document name and section).
@@ -674,7 +674,7 @@ Commands that need your people key (`me`): `new`, `entry`, `log`, `list --owner 
 | `hub list --type question --series weekly` | questions that name the series `weekly` (add `--status open`). Items with **no** series are not listed here, although they do appear on the agenda: run it without `--series` to see them. |
 | `hub list --since 2026-11-01` / `hub since 2026-11-01 [--series weekly]` | items with activity on or after a date |
 | `hub show <ID>` / `hub show <ID> --chain` | one item / with everything that descends from it |
-| `hub pending list` | proposals awaiting approval |
+| `hub pending list` (`--source PREFIX`) | proposals awaiting approval, sorted by source; `--source doc:notes#open-items` shows one section |
 | `hub sources` (`--json`) | configured sources and their watermarks |
 | `hub seen <source id>` | `new`, or `seen` and where it is recorded (item ids, `log:<month>`, proposal ids) |
 | `hub meeting decided weekly 2026-11-19 --json` | what a meeting recorded |
