@@ -163,7 +163,7 @@ def build_parser() -> argparse.ArgumentParser:
                     help="only items whose last activity is on or after this date")
     ls.add_argument("--json", action="store_true",
                     help="print a JSON list of objects with keys id, type, status, title, owner, priority "
-                         "(1-3 or null), due (YYYY-MM-DD or null; actions only) last_activity (YYYY-MM-DD) and clickup_id (string or null) instead of text lines")
+                         "(1-3 or null), due (YYYY-MM-DD or null; actions only), last_activity (YYYY-MM-DD) and clickup_id (string or null) instead of text lines")
 
     sh = _sp(sub, "show", "print one item",
              "Print an item as its Markdown file, optionally followed by everything descending from it.")
