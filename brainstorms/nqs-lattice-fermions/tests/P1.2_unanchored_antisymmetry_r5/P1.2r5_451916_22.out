@@ -1,0 +1,23 @@
+[07:08:10] check inst 9 D=90 frame K: E=30 edges, max|sum_e c_e y(m_e) - H_K y| = 8.9e-16
+[07:08:10] check inst 9 D=90 frame X: E=18 edges, max|sum_e c_e y(m_e) - H_X y| = 5.6e-17
+[07:08:10] check inst 8 D=560 frame K: E=32 edges, max|sum_e c_e y(m_e) - H_K y| = 8.9e-16
+[07:08:10] check inst 8 D=560 frame X: E=20 edges, max|sum_e c_e y(m_e) - H_X y| = 2.2e-16
+[07:08:10] check FRD-K grad proj=none: analytic 1.1368320329e+00 fd 1.1368320324e+00 (rel 4.3e-10); O vs fd 1.5e-08
+[07:08:10] check FRD-K grad proj=chi: analytic 4.5892863467e+00 fd 4.5892863456e+00 (rel 2.4e-10); per-amplitude psi_P 1.3e-16; O vs fd 5.9e-10
+[07:08:10] check FRD-K per-sample E_loc == (H psi)/psi on all 90 configs: 1.8e-15 (NNBF per-sample path 4.6e-15); flip_weight 0.781; base evals per E_loc mean 102.6
+[07:08:10] check FRD-X grad proj=none: analytic -9.9104166334e-02 fd -9.9104165985e-02 (rel 3.5e-10); O vs fd 2.2e-10
+[07:08:10] check FRD-X grad proj=chi: analytic 5.5831513214e-01 fd 5.5831513190e-01 (rel 2.4e-10); per-amplitude psi_P 1.7e-16; O vs fd 1.7e-10
+[07:08:10] check FRD-X per-sample E_loc == (H psi)/psi on all 90 configs: 9.5e-16 (NNBF per-sample path 4.6e-15); flip_weight 0.004; base evals per E_loc mean 39.4
+[07:08:20] check sampled force (inst 8 D=560): exact expectation of the sampled estimator vs force 9.9e-16; 40000 Metropolis samples rel err 0.140 vs iid-predicted 8.798 (acceptance 0.159)
+[07:08:20] check parameter match inst 0: nnbf6 1734, nnbf4 1284, frdK (base 4, alpha width 3, E=84) 1719
+[07:08:20] check parameter match inst 0: nnbf6 1734, nnbf4 1284, frdX (base 4, alpha width 4, E=48) 1656
+[07:08:20] ALL R5 CHECKS PASSED
+[07:08:34] instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=frdX seed=33 shift=0.001
+[07:09:07] ED [-11.388010886295234, -11.338627749487598, -11.329223800405993, -11.317360511481414] deg 1 |G|=8 chi={'My': 1, 'Mx': 1, 'D': -1} S=0; dim P_chi 210430, dim P_S P_chi 30220 (33 s)
+[07:10:24] arm frdX: {'kind': 'frd', 'frame': 'X', 'base_Hs': 4, 'alpha_width': 4, 'E': 48} n_params=1656 (control 1734) calib=-5.33e-15
+[07:10:49] frdX: it     0  E = -9.59300840  |f| = 2.00e+00  (24.24 s/step)
+[07:30:29] frdX: it    50  E = -11.14776882  |f| = 5.66e-01  (23.61 s/step)
+[07:50:00] frdX: it   100  E = -11.25978626  |f| = 2.63e-01  (23.52 s/step)
+[08:09:40] frdX: it   150  E = -11.26727747  |f| = 2.21e-01  (23.55 s/step)
+[08:29:07] frdX: it   200  E = -11.28604279  |f| = 1.79e-01  (23.50 s/step)
+[08:48:26] frdX: it   250  E = -11.29171193  |f| = 1.41e-01  (23.43 s/step)

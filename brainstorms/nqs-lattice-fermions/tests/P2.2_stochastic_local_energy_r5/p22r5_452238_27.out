@@ -1,0 +1,4 @@
+
+=== [W] H6_R3.6_d0.25_g1 K=12 dim=48400 E_FCI=-3.028430 HF wt=0.534 nnz/row=1000 (61.8s)
+  NNBFJh4  seed=0 dE=   1.198 mHa Var(EL)=5.11e-03 P=1224 (train 1292s)
+  NNBFJh4  seed=1 dE=   1.782 mHa Var(EL)=5.80e-03 P=1224 (train 1328s)

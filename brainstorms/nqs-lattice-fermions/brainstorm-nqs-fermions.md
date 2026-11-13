@@ -164,7 +164,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P2.2 | SUBMITTED (round 5 reduced: accuracy trend + equal-cost foils + calibrated cost; no unconditional survivor) | nothing | Slurm 452238 (44 tasks) |
 | P3.1 | PILOT (ESR0: set A 16/21 G=0 but set W 8/19 and a grade-H real false certificate; Gate 0 FAIL as method, PASS as diagnostic) | step 2 blocked on excited-state pilot (GO: eps/omega at most 0.4 per level, out-of-window weight at most 0.03) | Slurm 456094 (excited pilot); EHX gate 452146 recorded GATE-FAIL (EHX = Route 2.3 restated) |
 | P3.2 | SUBMITTED (corrected decisive array) | nothing | Slurm 451852 (6 tasks: widths 4,8 × 3 seeds) |
-| P4.1 | SUBMITTED (decisive pilot; completeness probe: one AGP per c incomplete, eps_tab(K=1) at least 6.8e-3, K=2 about 2e-8) | report gates on 451839 | Slurm 451886 (15 tasks), 451839 (completeness) |
+| P4.1 | MUTATE (round 5: KAGP and sfb FAIL; exact-S-by-construction 4–7× worse than projection) | nothing | round-5 worker |
 | P4.2 | SUBMITTED (capacity pilot; ELT killed Gate 0, PA carried) | array blocked on capacity pilot (ε_scr^∞ at most 3% → run array, else enlarge family) | Slurm 452196 (capacity); Route 3.1 CLOSED-FAIL (451914: warm start slower than scratch at B=10/20/50) |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
@@ -344,6 +344,24 @@ Every number below was read from the result files by an agent; the orchestrator 
         * Even an oracle energy-window certificate is $9$–$81\times$ looser than $\lvert\delta\rvert$.
         * **Proposition S3:** junk at energy $\varepsilon$ in an excited state recovers only $\omega/(\omega+\varepsilon)$ of that level's error, so trained excited states must reach $\varepsilon\lesssim\omega$.
         * Step 2 (training width-6 excited states) waits on the per-leaf critic.
+* **P4.1 decisive pilot (job 451886, 4×3 OBC $5+5$, $U=8$, $t'=-0.25$; about 2.6k parameters per arm; 3 seeds; medians of relative energy error $\epsilon$; all states exact $S$).**
+
+| Arm | $m(\epsilon)$ | Seed range |
+| :--- | :--- | :--- |
+| tocchio (one singlet AGP per charge configuration, no projector) | $1.47\times10^{-3}$ | 1.47–1.58e-3 |
+| kagp2 (two AGPs per charge configuration) | $1.30\times10^{-3}$ | 1.19–1.64e-3 |
+| che (charge-only broken-symmetry network, exactly projected) | $3.4\times10^{-4}$ | 3.3–4.3e-4 |
+| sfb (che plus one exact-$S$ spin feature) | $3.7\times10^{-4}$ | 3.5–4.5e-4 |
+| nnbf_SG (spin-resolved network, exactly projected, exponential cost) | $2.1\times10^{-4}$ | 1.9–2.3e-4 |
+
+  * **Verdicts:**
+    * Route 4.2 (KAGP): **FAIL** on accuracy. It is only 11% better than tocchio, with overlapping seed ranges, although its completeness premise was MET.
+    * Route 4.1 (sfb): **FAIL**. It recovers $-22\%$ of the che→nnbf_SG gap.
+  * **Findings:**
+    * Exact-$S$-by-construction ansätze (tocchio, kagp2) are $4$–$7\times$ less accurate than an exactly projected broken-symmetry network at matched parameters.
+    * The tabular completeness gain of a second AGP does not survive training at this capacity.
+    * Spin-resolved conditioning is worth about $1.7\times$ over charge-only, and the one-feature polynomial subclass recovers none of it.
+  * P4.1 goes to round-5 mutation on the narrowed open core.
 * **P4.1 completeness result (job 451839, 4×3 OBC, $U=8$, $t'=-0.25$).** This is the best tabular fit of one or two charge-conditioned singlet AGPs per charge configuration to $\psi_0$. All fits are exact singlets ($\lvert\langle S^2\rangle\rvert\le10^{-16}$).
 
 | $N_e$ | Weight on configurations with $N_s\ge10$ | Infidelity, $K=1$ | Infidelity, $K=2$ |

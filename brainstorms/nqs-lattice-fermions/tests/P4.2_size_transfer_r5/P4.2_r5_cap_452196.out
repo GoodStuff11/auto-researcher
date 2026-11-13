@@ -1,0 +1,14 @@
+[     0.0s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
+[     0.3s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
+[     1.0s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
+[     1.9s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
+[     1.9s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
+[     1.9s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
+[     1.9s] SELFTEST PASSED
+[   146.4s] target 4x4o 4x4:6 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=1681680 n_irrep=210430 E0=-11.3880108863 gap/V=4.6974e-03 (sign half only) npar=426
+[   146.4s] arm scr: charged source wall time 0.0s
+[   325.6s] arm scr@0    : E=-6.95563195 eps=2.7702e-01 (raw 2.7350e-01, irrep weight 0.485) A/V=4.3998e-02 sign-agree=0.3867 Pd=1.6769e-03 fid=0.0157
+[  1812.0s] arm scr@10   : E=-9.60160663 eps=1.1165e-01 (raw 1.1395e-01, irrep weight 0.517) A/V=2.0361e-02 sign-agree=0.5345 Pd=9.6006e-04 fid=0.0695
+[  3317.0s] arm scr@20   : E=-10.08534527 eps=8.1417e-02 (raw 8.2639e-02, irrep weight 0.444) A/V=2.0367e-02 sign-agree=0.4634 Pd=9.3323e-04 fid=0.0622
+[  7523.9s] arm scr@50   : E=-10.56449664 eps=5.1470e-02 (raw 7.5062e-02, irrep weight 0.357) A/V=8.0380e-03 sign-agree=0.8670 Pd=2.6227e-03 fid=0.4734
+[  8888.7s]   [scr] step 60/600 eps=4.96861e-02 lr=0.2

@@ -1,0 +1,32 @@
+[17:01:31] check smoke instance: D=1680 E0=-6.55847519 deg=1 |G|=8 chi={'My': 1, 'Mx': 1, 'D': 1} P_chi psi0-psi0 7.6e-15
+[17:01:31] check [Cuhf] ref orthonormal 1.4e-15; grad E analytic 7.2854307294e-02 fd 7.2854307254e-02; grad -logF analytic -8.1805090267e-01 fd -8.1805090391e-01; init F=0.0031
+[17:01:31] check [Cfs] ref orthonormal 1.1e-15; grad E analytic -1.2454992615e-01 fd -1.2454992604e-01; grad -logF analytic 2.4558257154e+01 fd 2.4558257146e+01; init F=0.0001
+[17:01:31] check [Ccdw] ref orthonormal 8.9e-16; grad E analytic -3.5683408521e-01 fd -3.5683408506e-01; grad -logF analytic -3.2014191895e+00 fd -3.2014191897e+00; init F=0.0075
+[17:01:31] check [W] ref orthonormal 1.4e-15; grad E analytic -2.4727108127e-01 fd -2.4727108128e-01; grad -logF analytic 8.4450091066e-01 fd 8.4450091009e-01; init F=0.0018
+[17:01:31] ALL CHECKS PASSED
+[17:01:44] instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=Cfs width=6 seed=33 pre(fid cap)=600 rel(energy steps)=900 init_from=-
+[17:02:20] ED levels [-11.388010886295248, -11.338627749487609, -11.329223800405972, -11.31736051148136] deg 1; |G|=8 chi(psi_0)={'My': 1, 'Mx': 1, 'D': -1}; S(psi_0)=0; level labels [{'chars': {'My': 1.0, 'Mx': 1.0, 'D': -1.0}, 'S2': 0.0, 'in_sector': True}, {'chars': {'My': 1.0, 'Mx': 1.0, 'D': 1.0}, 'S2': 0.0, 'in_sector': False}, {'chars': {'My': -1.0, 'Mx': -1.0, 'D': -1.0}, 'S2': 2.0, 'in_sector': False}, {'chars': {'My': -0.299, 'Mx': 0.299, 'D': -0.9543}, 'S2': 2.0, 'in_sector': False}] (36 s)
+[17:03:32] Cfs-w6-s33: n_params=1734 calib=3.38e-14 init |P psi|/|psi|=5.784e-03 init F=0.0011
+[17:03:46] Cfs-w6-s33: it     0 [E] E = -8.01497017 F = 0.001150 |f| = 2.66e+02 (13.39 s/step)
+[17:14:55] Cfs-w6-s33: it    50 [E] E = -11.05216837 F = 0.003080 |f| = 3.10e-01 (13.38 s/step)
+[17:26:00] Cfs-w6-s33: it   100 [E] E = -11.16155005 F = 0.008488 |f| = 1.15e-01 (13.35 s/step)
+[17:37:05] Cfs-w6-s33: it   150 [E] E = -11.18077126 F = 0.034922 |f| = 1.49e-01 (13.33 s/step)
+[17:48:09] Cfs-w6-s33: it   200 [E] E = -11.20434847 F = 0.135037 |f| = 2.34e-01 (13.32 s/step)
+[17:59:18] Cfs-w6-s33: it   250 [E] E = -11.23110916 F = 0.339689 |f| = 2.41e-01 (13.33 s/step)
+[18:10:29] Cfs-w6-s33: it   300 [E] E = -11.26362097 F = 0.561401 |f| = 2.17e-01 (13.34 s/step)
+[18:21:41] Cfs-w6-s33: it   350 [E] E = -11.27144800 F = 0.701800 |f| = 2.31e-01 (13.36 s/step)
+[18:32:57] Cfs-w6-s33: it   400 [E] E = -11.29091604 F = 0.817080 |f| = 2.02e-01 (13.38 s/step)
+[18:51:38] Cfs-w6-s33 [mid @ 450]: dE_tot=0.08044 dE_sign=0.01855 f_E=0.231 spread=1.1e-12 S2=0.437 ov0=0.8752 ovk=[0.8752, 0.0, 0.0, 0.0] (452 s)
+[18:51:51] Cfs-w6-s33: it   450 [E] E = -11.29160342 F = 0.873145 |f| = 2.41e-01 (14.41 s/step)
+[19:02:40] Cfs-w6-s33: it   500 [E] E = -11.31445082 F = 0.907146 |f| = 1.23e-01 (14.27 s/step)
+[19:13:31] Cfs-w6-s33: it   550 [E] E = -11.32092577 F = 0.923014 |f| = 8.22e-02 (14.15 s/step)
+[19:24:23] Cfs-w6-s33: it   600 [E] E = -11.32447462 F = 0.934988 |f| = 7.08e-02 (14.06 s/step)
+[19:35:14] Cfs-w6-s33: it   650 [E] E = -11.32684135 F = 0.936603 |f| = 6.67e-02 (13.98 s/step)
+[19:46:06] Cfs-w6-s33: it   700 [E] E = -11.31922266 F = 0.935586 |f| = 9.36e-02 (13.91 s/step)
+[19:56:56] Cfs-w6-s33: it   750 [E] E = -11.32658355 F = 0.936737 |f| = 7.69e-02 (13.85 s/step)
+[20:07:47] Cfs-w6-s33: it   800 [E] E = -11.33234969 F = 0.937975 |f| = 3.09e-02 (13.80 s/step)
+[20:18:39] Cfs-w6-s33: it   850 [E] E = -11.33201118 F = 0.938517 |f| = 3.76e-02 (13.76 s/step)
+[20:36:11] Cfs-w6-s33 [end @ 900]: dE_tot=0.05406 dE_sign=0.01219 f_E=0.226 spread=3.0e-13 S2=0.084 ov0=0.9381 ovk=[0.9381, 0.0, 0.0, 0.0] (404 s)
+[20:42:36] Cfs-w6-s33 [end_PS @ 900]: dE_tot=0.03228 dE_sign=0.00691 f_E=0.214 spread=2.7e-12 S2=0.000 ov0=0.9532 ovk=[0.9532, 0.0, 0.0, 0.0] (385 s)
+[20:42:36] Cfs-w6-s33: energy drop per 100 steps (slope over last 200) 3.90e-03 (tol 0.0003) converged=False n_fid=0 fid_reached=None total 13252 s
+[20:42:36] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/inst0_Cfs_w6_s33.json

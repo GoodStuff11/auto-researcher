@@ -26,3 +26,7 @@
 [15:19:49] Cuhf-w6-s11: it   750 [E] E = -11.33534781 F = 0.933283 |f| = 1.94e-02 (17.51 s/step)
 [15:33:53] Cuhf-w6-s11: it   800 [E] E = -11.33541783 F = 0.933346 |f| = 2.06e-02 (17.47 s/step)
 [15:47:55] Cuhf-w6-s11: it   850 [E] E = -11.33336533 F = 0.933958 |f| = 5.09e-02 (17.43 s/step)
+[16:11:32] Cuhf-w6-s11 [end @ 900]: dE_tot=0.05254 dE_sign=0.01258 f_E=0.239 spread=6.4e-13 S2=0.128 ov0=0.9337 ovk=[0.9337, 0.0, 0.0, 0.0] (583 s)
+[16:21:50] Cuhf-w6-s11 [end_PS @ 900]: dE_tot=0.03065 dE_sign=0.00639 f_E=0.208 spread=2.8e-12 S2=0.000 ov0=0.9558 ovk=[0.9558, 0.0, 0.0, 0.0] (618 s)
+[16:21:50] Cuhf-w6-s11: energy drop per 100 steps (slope over last 200) 8.61e-05 (tol 0.0003) converged=True n_fid=0 fid_reached=None total 17039 s
+[16:21:50] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/inst0_Cuhf_w6_s11.json
