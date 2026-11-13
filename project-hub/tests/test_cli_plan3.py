@@ -55,6 +55,9 @@ def test_figures_cli(vault, capsys):
     assert code == 0 and "f1  unchanged" in out and (v / "Figures" / "Gallery.md").is_file()
     (src / "f.png").unlink()
     code, out, _ = run(capsys, "figures", "sync")
+    assert code == 0 and "f1  SKIPPED: not available on this machine ($SRC/f.png)" in out
+    (v / "Figures" / "f1" / "meta.yaml").write_text("source: ''\n")
+    code, out, _ = run(capsys, "figures", "sync")
     assert code == 1 and "f1  PROBLEM" in out
     code, _, err = run(capsys, "figures", "add", "Bad Id", "$SRC/f.png")
     assert code == 1 and "figure id" in err

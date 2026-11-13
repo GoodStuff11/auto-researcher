@@ -16,6 +16,7 @@ from pathlib import Path
 GITATTRIBUTES_LINES = [
     "Status/Log/*.md merge=union",
     "Status/Snapshot.md merge=ours",
+    "Figures/Gallery.md merge=ours",
     "Status/Items/*.md merge=hub-item",
     "Status/sync-state/flags.md merge=union",
     "Status/sync-state/watermark.*.yaml merge=hub-watermark",

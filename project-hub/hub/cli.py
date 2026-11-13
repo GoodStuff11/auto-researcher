@@ -60,13 +60,14 @@ Commands (each has its own --help):
                              Locator.md, Knowledge/, Figures/, vendored tools/ and skills; never overwrites notes
   figures add ID SOURCE [--title T] [--script S] [--data D]... [--licenses L] [--caption C]
                              register a figure: copy SOURCE ($ROOT/path) into Figures/ID/
-  figures sync               re-copy changed figures, flag stale/problem ones, rewrite Figures/Gallery.md;
-                             exit 1 on a problem
+  figures sync               re-copy changed figures, flag stale/problem ones, skip ones whose files are not on
+                             this machine, rewrite Figures/Gallery.md; exit 1 on a problem
   figures gallery            rewrite Figures/Gallery.md only
   check-links [--online] [--json]
                              check every $ROOT/path and URL in Locator.md and figure metadata; exit 1 if one
                              fails
-  commit MESSAGE             git add -A, commit, pull --rebase, regenerate Snapshot.md, push (3 retries);
+  commit MESSAGE             git add -A, commit, pull --rebase, regenerate Snapshot.md and Figures/Gallery.md,
+                             push (3 retries);
                              item files merge field by field (hub-item driver); exit 3 only when both sides
                              changed one field differently (rebase is aborted, nothing lost)
 
@@ -93,6 +94,7 @@ from .gitsync import SyncConflict, SyncError, commit, pull_if_possible
 from .items import LINK_KEYS, ItemFormatError, render_item
 from .pending import (PendingError, add_proposal, apply_proposals, load_proposals, load_unreadable,
                       reject_proposals)
+from .figures import write_gallery
 from .snapshot import write_snapshot
 from .store import Store, StoreError, UnknownItem
 from .sync_state import get_watermark, set_watermark
@@ -259,10 +261,11 @@ def build_parser() -> argparse.ArgumentParser:
     sst.add_argument("value", help="watermark value, typically an ISO timestamp such as 2026-11-12T09:00")
 
     c = _sp(sub, "commit", "commit and push with rebase/retry",
-            "git add -A, commit, pull --rebase, regenerate Snapshot.md, push (3 retries). Item files merge field "
+            "git add -A, commit, pull --rebase, regenerate Snapshot.md and Figures/Gallery.md, push (3 retries). "
+            "Item files merge field "
             "by field through the hub-item git merge driver (entries and lists are unioned). Exit 3 on a genuine "
             "conflict, i.e. both sides changed one field of an item differently; the message names the field and "
-            "both values (the rebase is aborted, nothing is lost). A failure to regenerate Snapshot.md is only a "
+            "both values (the rebase is aborted, nothing is lost). A failure to regenerate them is only a "
             "warning.")
     c.add_argument("message", help="git commit message")
     add_ext_parsers(sub)
@@ -420,7 +423,10 @@ def _dispatch(args, cfg, store) -> int:
         else:
             set_watermark(cfg.root, args.source, args.value)
     elif cmd == "commit":
-        print(commit(cfg.root, args.message, regenerate=lambda: write_snapshot(store, cfg, today)))
+        def regenerate():
+            write_snapshot(store, cfg, today)
+            write_gallery(cfg.root)
+        print(commit(cfg.root, args.message, regenerate=regenerate))
     return 0
 
 

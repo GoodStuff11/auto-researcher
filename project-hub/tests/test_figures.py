@@ -47,15 +47,16 @@ def test_resolve_forms(env):
 
 def test_add_sync_stale_gallery(env):
     cfg, vault, src = env
-    d = add_figure(cfg, "energy-vs-u", "$SRC/fig.png", title="Energy vs U", data=["$SRC/data"],
-                   licenses="Energy error falls with U.", caption="Energy error against U.")
+    d = add_figure(cfg, "results-overview", "$SRC/fig.png", title="Results overview", data=["$SRC/data"],
+                   licenses="Accuracy rises with sample size.", caption="Accuracy against sample size.")
     assert (d / "figure.png").read_bytes() == b"png-1"
-    assert (d / "caption.md").read_text() == "Energy error against U.\n"
-    assert sync_figures(cfg, today=D) == [{"id": "energy-vs-u", "copied": False, "stale": False, "problem": None}]
+    assert (d / "caption.md").read_text() == "Accuracy against sample size.\n"
+    assert sync_figures(cfg, today=D) == [{"id": "results-overview", "copied": False, "stale": False,
+                                           "problem": None, "skipped": None}]
     (d / "caption.md").write_text("Edited by a human.\n")
     (src / "data" / "a.csv").write_text("2\n")                 # data changed, figure not regenerated
     assert sync_figures(cfg, today=D)[0]["stale"] is True
-    assert stale_figures(vault) == ["figure energy-vs-u: its data changed after the figure was made — "
+    assert stale_figures(vault) == ["figure results-overview: its data changed after the figure was made — "
                                     "regenerate it, then run `hub figures sync`"]
     (src / "fig.png").write_bytes(b"png-2")                   # figure regenerated
     row = sync_figures(cfg, today=D)[0]
@@ -64,19 +65,19 @@ def test_add_sync_stale_gallery(env):
     assert (d / "caption.md").read_text() == "Edited by a human.\n"
     assert stale_figures(vault) == []
     text = render_gallery(vault)
-    assert "![[Figures/energy-vs-u/figure.png]]" in text and "![[Figures/energy-vs-u/caption]]" in text
-    assert "Energy error falls with U." in text
+    assert "![[Figures/results-overview/figure.png]]" in text and "![[Figures/results-overview/caption]]" in text
+    assert "Accuracy rises with sample size." in text
     assert write_gallery(vault) == vault / "Figures" / "Gallery.md"
 
 
-def test_missing_source_is_a_problem_and_a_flag(env):
+def test_missing_source_is_skipped_not_a_flag(env):
     cfg, vault, src = env
     add_figure(cfg, "f1", "$SRC/fig.png")
     (src / "fig.png").unlink()
     row = sync_figures(cfg, today=D)[0]
-    assert row["problem"].startswith("source missing")
-    assert any("f1" in f for f in stale_figures(vault))
-    assert "figure f1" in render_snapshot(Store(vault), cfg, D)
+    assert row["skipped"] == "$SRC/fig.png" and row["problem"] is None
+    assert stale_figures(vault) == []
+    assert "figure f1" not in render_snapshot(Store(vault), cfg, D)
 
 
 @pytest.mark.parametrize("fig_id,source,msg", [
@@ -129,7 +130,7 @@ def test_one_bad_meta_does_not_break_the_rest(env):
         else:
             bad_meta.write_text(content)
         rows = {r["id"]: r for r in sync_figures(cfg, today=D)}
-        assert rows["good"] == {"id": "good", "copied": False, "stale": False, "problem": None}
+        assert rows["good"] == {"id": "good", "copied": False, "stale": False, "problem": None, "skipped": None}
         assert rows["bad"]["copied"] is False and rows["bad"]["stale"] is False and rows["bad"]["problem"]
         text = render_gallery(vault)
         assert "## bad" in text and "**Problem:**" in text and "## good" in text
@@ -280,12 +281,12 @@ def test_revert_clears_stale_after_list_edit(env):
     assert stale_figures(vault) == []
 
 
-def test_new_entry_missing_is_a_problem_until_it_exists(env):
+def test_new_entry_missing_is_skipped_until_it_exists(env):
     cfg, vault, src = env
     add_figure(cfg, "f", "$SRC/fig.png", data=["$SRC/data"])
     _edit_meta(vault, "f", lambda m: m.update(data=m["data"] + ["$SRC/nope.csv"]))
     row = sync_figures(cfg, today=D)[0]
-    assert "nope.csv" in row["problem"] and row["stale"] is False
+    assert row["skipped"] == "$SRC/nope.csv" and row["problem"] is None and row["stale"] is False
     (src / "nope.csv").write_text("1\n")
     row = sync_figures(cfg, today=D)[0]
     assert row["problem"] is None and row["stale"] is False

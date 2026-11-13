@@ -80,12 +80,34 @@ def _valid_hashes(value) -> dict | None:
     return None
 
 
+def _folder_problem(root, fig_id) -> str | None:
+    """Why Figures/<fig_id> must not be read or written, or None. Never follows a link out of Figures/."""
+    if not isinstance(fig_id, str) or not FIG_ID_RE.fullmatch(fig_id):
+        return f"Figures/{fig_id}: figure id must be lowercase letters, digits and '-'"
+    d = _fig_dir(root, fig_id)
+    if d.is_symlink():
+        return f"Figures/{fig_id} is a symbolic link; replace it with a real folder"
+    try:
+        inside = d.resolve().is_relative_to(figures_dir(root).resolve())
+    except (OSError, RuntimeError):
+        inside = False
+    if not inside:
+        return f"Figures/{fig_id} resolves outside Figures/"
+    return None
+
+
 def load_meta(root, fig_id) -> dict:
+    problem = _folder_problem(root, fig_id)
+    if problem:
+        raise FigureError(problem)
     p = _fig_dir(root, fig_id) / "meta.yaml"
+    if p.is_symlink():
+        raise FigureError(f"Figures/{fig_id}/meta.yaml is a symbolic link")
     try:
         data = yaml.safe_load(p.read_text(encoding="utf-8")) if p.is_file() else None
     except (yaml.YAMLError, UnicodeDecodeError, OSError) as exc:
-        raise FigureError(f"Figures/{fig_id}/meta.yaml cannot be read: {exc}") from exc
+        detail = exc.strerror if isinstance(exc, OSError) and exc.strerror else str(exc)
+        raise FigureError(f"Figures/{fig_id}/meta.yaml cannot be read: {detail}") from exc
     if not isinstance(data, dict):
         raise FigureError(f"Figures/{fig_id}/meta.yaml is missing or not a mapping")
     return data
@@ -158,62 +180,99 @@ def add_figure(config, fig_id, source, *, title="", script="", data=(), licenses
     return d
 
 
+class _Unavailable(Exception):
+    """A path a figure needs is not available on this machine (another member may have it)."""
+
+    def __init__(self, spec: str):
+        super().__init__(spec)
+        self.spec = spec
+
+
+def _local(config, spec) -> Path:
+    """Resolve `spec` on this machine; _Unavailable if its root is unknown here or the path is missing."""
+    try:
+        path = resolve(config, spec)
+    except ValueError:  # unknown root: it may be defined in another member's hub.local.yaml
+        raise _Unavailable(spec) from None
+    if not path.exists():
+        raise _Unavailable(spec)
+    return path
+
+
+def _row(fig_id, **kw) -> dict:
+    return {"id": fig_id, "copied": False, "stale": False, "problem": None, "skipped": None, **kw}
+
+
+def _sync_one(config, root: Path, fig_id: str, meta: dict, today: date) -> dict:
+    """Compute and save one figure's sync result. meta.yaml is written only for a computable result."""
+    row = _row(fig_id)
+    try:
+        source, data = _check_specs(meta.get("source"), meta.get("data"))
+    except FigureError as exc:  # the shared meta.yaml itself is wrong: the same on every machine
+        meta["stale"], meta["problem"] = False, str(exc)
+        _save_meta(root, fig_id, meta)
+        return _row(fig_id, problem=str(exc))
+    try:
+        src = _local(config, source)
+        for spec in data:
+            _local(config, spec)
+    except _Unavailable as exc:
+        return _row(fig_id, skipped=exc.spec)
+    if not src.is_file():
+        raise FigureError(f"source {source} is not a file")
+    src_hash = _hash_file(src)
+    fig_dir = _fig_dir(root, fig_id)
+    if src_hash != meta.get("figure_hash"):
+        hashes = {spec: _hash_entry(config, spec) for spec in data}
+        fig_file = f"figure{src.suffix.lower()}"
+        _safe_copy(src, fig_dir / fig_file)
+        _replace_old_figure(fig_dir, meta.get("figure_file"), fig_file)
+        meta.update(figure_file=fig_file, figure_hash=src_hash, data_hashes=hashes, changed_data=[], synced=today)
+        row["copied"] = True
+    else:
+        stored = _valid_hashes(meta.get("data_hashes")) or {}
+        kept, changed = {}, []
+        for spec in data:
+            h = _hash_entry(config, spec)
+            kept[spec] = stored.get(spec, h)  # a new entry is baselined, not stale
+            if h != kept[spec]:
+                changed.append(spec)
+        meta.update(data_hashes=kept, changed_data=changed)
+        row["stale"] = bool(changed)
+    meta.pop("data_hash", None)
+    meta.pop("data_baseline", None)
+    meta["stale"], meta["problem"] = row["stale"], None
+    _save_meta(root, fig_id, meta)
+    return row
+
+
+def _local_error(fig_id, exc) -> str:
+    """A message for a failure on this machine, without any absolute local path."""
+    if isinstance(exc, OSError):
+        return f"Figures/{fig_id}: cannot update on this machine: {exc.strerror or type(exc).__name__}"
+    return str(exc)
+
+
 def sync_figures(config, *, today: date) -> list[dict]:
+    """Sync every registered figure; one row per figure: id, copied, stale, problem, skipped.
+
+    `skipped` is the $ROOT/rel spec of a source or data entry not available on this machine; meta.yaml
+    is then left untouched, so one member's missing files never become shared state. `problem` is a
+    vault-side problem (bad meta.yaml or folder, recorded in meta.yaml when it can be read) or a failure
+    to update the vault copy (not recorded). Nothing written ever holds an absolute local path.
+    """
     root = Path(config.root)
     rows = []
     for fig_id in figure_ids(root):
         try:
             meta = load_meta(root, fig_id)
         except FigureError as exc:
-            rows.append({"id": fig_id, "copied": False, "stale": False, "problem": str(exc)})
+            rows.append(_row(fig_id, problem=str(exc)))
             continue
-        row = {"id": fig_id, "copied": False, "stale": False, "problem": None}
         try:
-            source, data = _check_specs(meta.get("source"), meta.get("data"))
-            src = resolve(config, source)
-            if not src.is_file():
-                raise FigureError(f"source missing: {source} ({src})")
-            src_hash = _hash_file(src)
-            fig_dir = _fig_dir(root, fig_id)
-            if src_hash != meta.get("figure_hash"):
-                hashes = {spec: _hash_entry(config, spec) for spec in data}
-                fig_file = f"figure{src.suffix.lower()}"
-                _safe_copy(src, fig_dir / fig_file)
-                _replace_old_figure(fig_dir, meta.get("figure_file"), fig_file)
-                meta.update(figure_file=fig_file, figure_hash=src_hash, data_hashes=hashes,
-                            changed_data=[], synced=today)
-                row["copied"] = True
-            else:
-                stored = _valid_hashes(meta.get("data_hashes")) or {}
-                kept, changed, problems = {}, [], []
-                for spec in data:
-                    try:
-                        h = _hash_entry(config, spec)
-                    except (FigureError, ValueError, OSError) as exc:
-                        problems.append(str(exc))
-                        if spec in stored:
-                            kept[spec] = stored[spec]
-                        continue
-                    if spec in stored:
-                        kept[spec] = stored[spec]
-                        if h != stored[spec]:
-                            changed.append(spec)
-                    else:
-                        kept[spec] = h
-                meta.update(data_hashes=kept, changed_data=changed)
-                row["stale"] = bool(changed)
-                row["problem"] = "; ".join(problems) or None
-            meta.pop("data_hash", None)
-            meta.pop("data_baseline", None)
-            meta["stale"], meta["problem"] = row["stale"], row["problem"]
+            rows.append(_sync_one(config, root, fig_id, meta, today))
         except (FigureError, ValueError, OSError) as exc:
-            row = {"id": fig_id, "copied": False, "stale": False, "problem": str(exc)}
-            meta["stale"], meta["problem"] = False, str(exc)
-        try:
-            _save_meta(root, fig_id, meta)
-        except OSError as exc:
-            row = {"id": fig_id, "copied": False, "stale": False, "problem": str(exc)}
-        rows.append(row)
+            rows.append(_row(fig_id, problem=_local_error(fig_id, exc)))
     return rows
 
 

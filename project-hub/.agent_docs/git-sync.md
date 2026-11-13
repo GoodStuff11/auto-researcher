@@ -3,6 +3,7 @@ Code: `hub/gitsync.py` (`commit`, `ensure_repo_files`, `pull_if_possible`, `GITA
 ## `.gitattributes` lines (added if missing by every `hub commit`)
 - `Status/Log/*.md merge=union` — logs are append-only; git's built-in union driver keeps both sides' appended lines instead of conflicting.
 - `Status/Snapshot.md merge=ours` — generated file; the driver `merge.ours.driver=true` is set in the repo's local git config, so the upstream copy wins and the file is regenerated after the pull.
+- `Figures/Gallery.md merge=ours` — generated from the figures' meta.yaml files; same treatment as the Snapshot.
 - `Status/Items/*.md merge=hub-item` — item files merge with the hub item driver (below).
 - `Status/sync-state/flags.md merge=union` — one flag per line; both sides' flags are kept.
 - `Status/sync-state/watermark.*.yaml merge=hub-watermark` and `Status/sync-state/next_meeting.*.yaml merge=hub-watermark` — per-key sync-state files merge with the watermark driver (below).
@@ -22,9 +23,9 @@ Success: the merged item is written to A, exit 0. Real conflict: the merged item
 ## `hub commit MESSAGE` sequence (commit → pull --rebase → regenerate → push)
 1. `ensure_repo_files`: add the lines above and set `merge.ours.driver`, the `hub-item` driver and the `hub-watermark` driver.
 2. `git add -A -- .` (scoped to the vault directory) and commit with MESSAGE if anything is staged.
-3. No remote configured: regenerate `Status/Snapshot.md`, commit it as `Regenerate generated files` if changed, return HEAD sha (done).
+3. No remote configured: regenerate `Status/Snapshot.md` and `Figures/Gallery.md` (the `regenerate` callback `hub commit` passes), commit them as `Regenerate generated files` if changed, return HEAD sha (done).
 4. Remote but no upstream branch: `SyncError` "no upstream branch configured; run `git push -u origin <branch>` once".
-5. Up to 3 attempts of: `git pull --rebase`; regenerate Snapshot and commit it; `git push`.
+5. Up to 3 attempts of: `git pull --rebase`; regenerate Snapshot and Gallery and commit them; `git push`.
    - pull fails and unmerged files exist: abort the rebase and raise `SyncConflict`. Its message lists the files, the pull output (which carries the driver's per-key `hub-item conflict …` lines) and the guidance (`CONFLICT_GUIDANCE`): A is the remote version and B yours; a conflicted `Status/sync-state/*.yaml` means the watermark driver could not read one side, so keep the side with the newer `updated:`; then "re-run after fixing: `git pull --rebase`, fix the file, `git add` it, `git rebase --continue`, then `hub validate` and `hub commit`". Nothing is lost: your commit is still local.
    - pull fails with no unmerged files: abort any rebase in progress and raise `SyncError`.
    - regenerating fails (e.g. the snapshot code raises): print `warning: could not regenerate generated files: <err>` to stderr and push anyway.

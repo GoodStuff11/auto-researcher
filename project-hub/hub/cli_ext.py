@@ -127,7 +127,7 @@ def add_ext_parsers(sub) -> None:
     fa = _sp(fsub, "add", "register a figure and copy its file into the vault",
              "Copy SOURCE into Figures/ID/figure.<ext>, write caption.md (once; never overwritten) and "
              "meta.yaml, and print the figure directory. Fails if ID is already registered.")
-    fa.add_argument("id", help="figure id: lowercase letters, digits and '-', e.g. phase-diagram")
+    fa.add_argument("id", help="figure id: lowercase letters, digits and '-', e.g. results-overview")
     fa.add_argument("source", help="the figure file as $ROOT/relative/path, ROOT being a key of `roots`")
     fa.add_argument("--title", default="", help="figure title shown in the gallery (default: the id)")
     fa.add_argument("--script", default="", help="the script that produces the figure, as $ROOT/relative/path")
@@ -137,8 +137,10 @@ def add_ext_parsers(sub) -> None:
     fa.add_argument("--licenses", default="", help="the claim or section the figure supports (free text)")
     fa.add_argument("--caption", default="", help="initial caption text, findings first (default: a placeholder)")
     _sp(fsub, "sync", "re-copy changed figures, flag stale ones and rewrite the gallery",
-        "For every registered figure print `<id>  copied|unchanged|STALE|PROBLEM: <why>`, then write "
-        "Figures/Gallery.md. Exit 1 if any figure has a problem (a stale figure is reported but is not a problem).")
+        "For every registered figure print `<id>  copied|unchanged|STALE|PROBLEM: <why>`, or `<id>  SKIPPED: not "
+        "available on this machine (<$ROOT/path>)` when its source or a data entry is missing here (meta.yaml is then "
+        "left untouched), then write Figures/Gallery.md. Exit 1 if any figure has a problem (STALE and SKIPPED are "
+        "not problems).")
     _sp(fsub, "gallery", "rewrite Figures/Gallery.md",
         "Regenerate Figures/Gallery.md from the registered figures and print its path.")
 
@@ -272,8 +274,9 @@ def dispatch_ext(args, cfg, store, *, today, me) -> int | None:
         elif args.fcmd == "sync":
             rows = sync_figures(cfg, today=today)
             for r in rows:
-                state = (f"PROBLEM: {r['problem']}" if r["problem"] else "STALE" if r["stale"]
-                         else "copied" if r["copied"] else "unchanged")
+                state = (f"PROBLEM: {r['problem']}" if r["problem"]
+                         else f"SKIPPED: not available on this machine ({r['skipped']})" if r["skipped"]
+                         else "STALE" if r["stale"] else "copied" if r["copied"] else "unchanged")
                 print(f"{r['id']}  {state}")
             write_gallery(cfg.root)
             return 1 if any(r["problem"] for r in rows) else 0
