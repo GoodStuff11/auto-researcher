@@ -22,7 +22,17 @@ from .store import PROTECTED_KEYS, Store, StoreError, check_field, coerce_value
 FENCE = "`" * 3  # built, not literal, so this file nests inside Markdown fences
 BLOCK_RE = re.compile(r"^## (P-[a-z0-9]{4}) · (.*?)\n" + FENCE + r"yaml\n(.*?)\n" + FENCE + r"\n", re.M | re.S)
 OP_REQUIRED = {"new": ("type", "title"), "entry": ("id", "text"), "set": ("id", "fields"),
-               "link": ("id", "rel", "target")}
+               "link": ("id", "rel", "target"), "note": ("path", "text")}
+# Human-owned notes a proposal may write: the vision, the locator, one level of Knowledge/ notes.
+NOTE_PATH_RE = re.compile(r"^(Vision\.md|Locator\.md|Knowledge/[A-Za-z0-9][A-Za-z0-9 _.,()-]*\.md)$")
+NOTE_MODES = ("replace", "append")
+
+
+def note_path(root, rel) -> Path:
+    """Vault path of a note op target; PendingError unless `rel` is an allowed note path."""
+    if not isinstance(rel, str) or not NOTE_PATH_RE.match(rel) or ".." in rel:
+        raise PendingError(f"note path must be Vision.md, Locator.md or Knowledge/<name>.md, got {rel!r}")
+    return Path(root) / rel
 
 
 class PendingError(Exception):
@@ -183,6 +193,14 @@ def check_ops(store: Store, ops) -> list[str]:
                 else:
                     refs.add(ref)
                     ref_types[ref] = op["type"]
+        elif kind == "note":
+            if not isinstance(op["path"], str) or not NOTE_PATH_RE.match(op["path"]) or ".." in op["path"]:
+                errs.append(f"{where}: note path must be Vision.md, Locator.md or Knowledge/<name>.md, "
+                            f"got {op['path']!r}")
+            if not isinstance(op["text"], str):
+                errs.append(f"{where}: text must be a string")
+            if op.get("mode", "replace") not in NOTE_MODES:
+                errs.append(f"{where}: mode must be one of {', '.join(NOTE_MODES)}")
         else:
             target_ok(f"{where} id", op["id"])
             if kind == "set" and isinstance(op["fields"], dict):
@@ -238,6 +256,10 @@ class _Undo:
         if path not in self.before:
             self.before[path] = path.read_bytes() if path.is_file() else None
 
+    def touch_path(self, path: Path) -> None:
+        if path not in self.before:
+            self.before[path] = path.read_bytes() if path.is_file() else None
+
     def created(self, item_id) -> None:
         self.before.setdefault(self.store.path(item_id), None)
 
@@ -282,6 +304,16 @@ def _run_ops(store: Store, ops, *, author, day, seed=None, undo: _Undo | None = 
                 item_id = _resolve(_req(op, "id"), refs)
                 undo.touch(item_id)
                 store.link(item_id, _req(op, "rel"), _resolve(_req(op, "target"), refs))
+            elif kind == "note":
+                path = note_path(store.root, _req(op, "path"))
+                text = _req(op, "text")
+                if not isinstance(text, str):
+                    raise PendingError("note text must be a string")
+                undo.touch_path(path)
+                if op.get("mode", "replace") == "append" and path.is_file():
+                    old = path.read_text(encoding="utf-8")
+                    text = old + ("" if not old or old.endswith("\n") else "\n") + text
+                atomic_write_text(path, text if text.endswith("\n") else text + "\n")
             else:
                 raise PendingError(f"unknown op '{kind}'")
     except PendingError:
