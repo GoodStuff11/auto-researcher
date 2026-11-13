@@ -8,6 +8,7 @@ lists, three-way on scalars), so only a genuine clash on one field surfaces as S
 """
 from __future__ import annotations
 
+import os
 import shlex
 import subprocess
 import sys
@@ -68,14 +69,22 @@ def _ensure_lines(path: Path, lines: list[str]) -> None:
         path.write_text("\n".join(existing + missing) + "\n")
 
 
+def _driver_python(root) -> str:
+    """The vault's own tools/.venv python when it exists (it survives other venvs being moved), else ours."""
+    vault_py = Path(root).resolve() / "tools" / ".venv" / "bin" / "python"
+    if vault_py.is_file() and os.access(vault_py, os.X_OK):
+        return str(vault_py)
+    return sys.executable
+
+
 def _configure_drivers(root) -> None:
     """Register the merge drivers named in .gitattributes in this clone's .git/config."""
+    py = shlex.quote(_driver_python(root))
     _git(root, "config", "merge.ours.driver", "true")
     _git(root, "config", "merge.hub-item.name", "hub item merge")
-    _git(root, "config", "merge.hub-item.driver", f"{shlex.quote(sys.executable)} -m hub.merge_item %O %A %B")
+    _git(root, "config", "merge.hub-item.driver", f"{py} -m hub.merge_item %O %A %B")
     _git(root, "config", "merge.hub-watermark.name", "hub watermark merge (newer updated wins)")
-    _git(root, "config", "merge.hub-watermark.driver",
-         f"{shlex.quote(sys.executable)} -m hub.merge_watermark %O %A %B")
+    _git(root, "config", "merge.hub-watermark.driver", f"{py} -m hub.merge_watermark %O %A %B")
 
 
 def ensure_repo_files(root) -> None:

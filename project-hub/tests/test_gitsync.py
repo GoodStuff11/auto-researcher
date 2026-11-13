@@ -257,3 +257,18 @@ def test_conflict_guidance_covers_plain_text_files():
         assert name in CONFLICT_GUIDANCE, name
     assert "conflict markers" in CONFLICT_GUIDANCE
     assert "Gallery.md" in CONFLICT_GUIDANCE and "regenerated" in CONFLICT_GUIDANCE
+
+
+def test_drivers_use_the_vault_venv_python_when_present(tmp_path, monkeypatch):
+    import sys
+    git(tmp_path, "init", "-b", "main")
+    ensure_repo_files(tmp_path)
+    assert git(tmp_path, "config", "merge.hub-item.driver").startswith(sys.executable)
+    py = tmp_path / "tools" / ".venv" / "bin" / "python"
+    py.parent.mkdir(parents=True)
+    py.write_text("#!/bin/sh\n")
+    py.chmod(0o755)
+    monkeypatch.chdir(tmp_path)
+    ensure_repo_files(".")
+    for driver in ("hub-item", "hub-watermark"):
+        assert git(tmp_path, "config", f"merge.{driver}.driver").startswith(str(py) + " -m hub.")

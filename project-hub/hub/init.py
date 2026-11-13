@@ -9,7 +9,10 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
+import unicodedata
 from pathlib import Path
+
+import yaml
 
 from .fsutil import atomic_write_text
 from .gitsync import GITATTRIBUTES_LINES, GITIGNORE_LINES, _ensure_lines, ensure_repo_files
@@ -19,10 +22,10 @@ VENDOR_ITEMS = ("pyproject.toml", "README.md", "USER-GUIDE.md", "hub", "skills",
 _IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "*.egg-info", ".venv", ".pytest_cache")
 
 PROJECT_TEMPLATE = """\
-name: {name}
+{name_line}
 # Every key is explained in tools/project-hub/USER-GUIDE.md (Step 4) and tools/project-hub/.agent_docs/vault-layout.md.
 people: {{}}
-#  alice: {{name: Alice Example, clickup: "1234567", email: alice@example.edu}}
+#  alice: {{name: Alice Example, clickup: "1234567", email: <address>}}
 series: {{}}
 #  group: {{attendees: [alice], calendar_match: "Group meeting"}}
 roots: {{}}
@@ -65,7 +68,8 @@ VISION_TEMPLATE = """\
 
 LOCATOR_TEMPLATE = """\
 # Locator
-Where everything is. Paths use `$ROOT/relative/path` (ROOT from `roots` in project.yaml); check with `hub check-links`.
+Where everything is. Paths are written `<ROOT>/relative/path`, where ROOT is a key of `roots` in project.yaml, written with a
+leading $ instead of the angle brackets; check them with `hub check-links`.
 ## Code and data
 ## Documents
 ## External links
@@ -137,6 +141,15 @@ TEMPLATES = {
 }
 
 
+def project_name_line(name) -> str:
+    """The `name:` line of project.yaml, quoted by YAML so any one-line name reads back as the same string."""
+    if not isinstance(name, str) or not name.strip():
+        raise ValueError("project name must be a non-empty string")
+    if any(unicodedata.category(ch) in ("Cc", "Cf", "Zl", "Zp") for ch in name):
+        raise ValueError(f"project name must be one line with no control characters, got {name!r}")
+    return yaml.safe_dump({"name": name}, allow_unicode=True, width=10**6).rstrip("\n")
+
+
 def _is_git_repo(path: Path) -> bool:
     try:
         res = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], cwd=path, capture_output=True, text=True)
@@ -184,6 +197,13 @@ def update_tools(dest) -> list[str]:
                 shutil.copyfile(src, target)
             done.append(f"tools/project-hub/{name}")
     skills_src = _skills_source(vendored)
+    shipped = {p.name for p in skills_src.iterdir() if p.is_dir()}
+    installed = dest / ".claude" / "skills"
+    for old in sorted(installed.glob("hub-*")) if installed.is_dir() else []:
+        # A hub skill this package no longer ships; other skills are the user's and are never touched.
+        if old.name not in shipped and old.is_dir() and not old.is_symlink():
+            shutil.rmtree(old)
+            done.append(f".claude/skills/{old.name} (removed)")
     for skill in sorted(p for p in skills_src.iterdir() if p.is_dir()):
         target = dest / ".claude" / "skills" / skill.name
         if target.exists():
@@ -204,10 +224,11 @@ def init_vault(dest, *, name: str, force: bool = False) -> list[str]:
             and not (dest / "project.yaml").is_file() and not force):
         raise ValueError(f"{dest} is not empty and has no project.yaml — refusing to turn it into a vault; "
                          "use --force (force=True from Python) if you are sure")
+    name_line = project_name_line(name)
     _preflight(dest)
     dest.mkdir(parents=True, exist_ok=True)
     created = []
-    files = {"project.yaml": PROJECT_TEMPLATE.format(name=name), **TEMPLATES}
+    files = {"project.yaml": PROJECT_TEMPLATE.format(name_line=name_line), **TEMPLATES}
     for rel, text in files.items():
         path = dest / rel
         if not path.exists():

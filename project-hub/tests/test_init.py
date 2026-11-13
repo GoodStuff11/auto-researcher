@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 
 import pytest
@@ -6,6 +7,7 @@ import pytest
 from hub import init
 from hub.config import load_config
 from hub.init import TEMPLATES, init_vault
+from hub.paths import ROOT_REF_RE
 from hub.store import Store
 from hub.validate import validate
 
@@ -52,10 +54,48 @@ def test_init_registers_merge_drivers_in_a_git_repo(tmp_path):
     assert "hub.merge_item" in out
 
 
-def test_templates_are_generic():
-    text = "\n".join(TEMPLATES.values()).lower()
-    for word in ("ucc", "hubbard", "fermion", "hva", "clickup list 9"):
-        assert word not in text
+def test_templates_are_generic(tmp_path):
+    text = "\n".join([*TEMPLATES.values(), init.PROJECT_TEMPLATE, init.SETUP_SH])
+    assert "/home/" not in text and "/Users/" not in text
+    assert not re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", text), "templates must not hold email addresses"
+    init_vault(tmp_path / "v", name="My project")
+    assert load_config(tmp_path / "v").name == "My project"
+
+
+def test_fresh_vault_has_no_broken_links(tmp_path):
+    from hub.links import check_links
+    v = tmp_path / "v"
+    init_vault(v, name="demo")
+    assert [r for r in check_links(load_config(v)) if r["ok"] is False] == []
+    for rel, body in TEMPLATES.items():
+        assert not ROOT_REF_RE.search(body), rel
+
+
+@pytest.mark.parametrize("name", ["Demo: project", "#x", "yes", "123", "a 'quoted' \"name\"", "- item"])
+def test_project_name_round_trips(tmp_path, name):
+    init_vault(tmp_path / "v", name=name)
+    assert load_config(tmp_path / "v").name == name
+
+
+@pytest.mark.parametrize("name", ["demo\npeople: oops", "demo\r", "a\x00b", "tab\there"])
+def test_project_name_rejects_control_characters(tmp_path, name):
+    with pytest.raises(ValueError, match="name"):
+        init_vault(tmp_path / "v", name=name)
+    assert not (tmp_path / "v" / "project.yaml").exists()
+
+
+def test_stale_hub_skills_are_removed_but_others_kept(tmp_path):
+    v = tmp_path / "vault"
+    init_vault(v, name="demo")
+    skills = v / ".claude" / "skills"
+    (skills / "hub-retired").mkdir()
+    (skills / "hub-retired" / "SKILL.md").write_text("old\n")
+    (skills / "mine").mkdir()
+    (skills / "mine" / "SKILL.md").write_text("mine\n")
+    init_vault(v, name="demo")
+    assert not (skills / "hub-retired").exists()
+    assert (skills / "mine" / "SKILL.md").read_text() == "mine\n"
+    assert (skills / "hub-status" / "SKILL.md").is_file()
 
 
 def test_refuses_non_empty_folder_without_project_yaml(tmp_path):

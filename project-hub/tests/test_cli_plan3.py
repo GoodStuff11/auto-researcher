@@ -22,6 +22,13 @@ def test_init_runs_outside_a_vault(tmp_path, capsys, monkeypatch):
     assert (tmp_path / "v" / ".claude" / "skills" / "hub-status" / "SKILL.md").is_file()
 
 
+def test_init_next_line_quotes_the_folder(tmp_path, capsys, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    d = tmp_path / "my vault"
+    code, out, _ = run(capsys, "init", str(d), "--name", "demo")
+    assert code == 0 and f"next: cd '{d}' && bash tools/setup.sh" in out
+
+
 def test_init_refuses_non_vault_folder_unless_forced(tmp_path, capsys, monkeypatch):
     monkeypatch.chdir(tmp_path)
     d = tmp_path / "other"

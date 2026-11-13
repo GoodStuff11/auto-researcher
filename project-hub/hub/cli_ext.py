@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shlex
 import sys
 from datetime import date
 from pathlib import Path
@@ -164,7 +165,7 @@ def add_ext_parsers(sub) -> None:
 def run_init(args) -> int:
     for path in init_vault(args.dir, name=args.name, force=args.force):
         print(path)
-    print(f"next: cd {args.dir} && bash tools/setup.sh")
+    print(f"next: cd {shlex.quote(str(args.dir))} && bash tools/setup.sh")
     return 0
 
 

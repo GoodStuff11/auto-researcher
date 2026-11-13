@@ -137,10 +137,10 @@ cd ~/vaults/demo-hub
 bash tools/setup.sh
 hub --help                                          # now found on your PATH
 ```
-`hub init DIR --name NAME` works anywhere (it needs no vault). It makes `DIR` if it is missing and prints the path of each file it creates or refreshes (the new notes, `tools/project-hub`, the `.claude/skills/hub-*` folders and `tools/setup.sh`; `.gitignore` and `.gitattributes` are created or topped up too, without being listed), then `next: cd DIR && bash tools/setup.sh`. It:
+`hub init DIR --name NAME` works anywhere (it needs no vault). It makes `DIR` if it is missing and prints the path of each file it creates or refreshes (the new notes, `tools/project-hub`, the `.claude/skills/hub-*` folders and `tools/setup.sh`; `.gitignore` and `.gitattributes` are created or topped up too, without being listed), then `next: cd DIR && bash tools/setup.sh`. `NAME` may hold any characters (it is quoted in `project.yaml`) but must be one line. It:
 - **creates, only when absent:** `project.yaml` (a commented template with your `name`), `README.md` (setup steps for collaborators), `Vision.md` (the section skeleton), `Locator.md`, `Knowledge/README.md`, `Figures/Gallery.md` and `Status/Items.base`; and it adds the lines the hub needs to `.gitignore` and `.gitattributes` (in a git clone it also registers the merge drivers);
 - **never overwrites** an existing file, whatever it holds, so it is safe to run again; and it refuses a folder that is not empty and has no `project.yaml` (a folder holding only `.git` counts as empty) unless you add `--force`, which only lifts that refusal;
-- **always replaces** `tools/project-hub/` (a copy of the `hub` tool, this guide and the agent docs), the `hub-*` folders under `.claude/skills/` and `tools/setup.sh`: this is how a vault's tools are updated ([Updating](#updating-hub-and-the-skills)). It refuses to replace a `tools/setup.sh` that `hub init` did not write.
+- **always replaces** `tools/project-hub/` (a copy of the `hub` tool, this guide and the agent docs), the `hub-*` folders under `.claude/skills/` (a `hub-*` skill no longer shipped is removed; your own skills are never touched) and `tools/setup.sh`: this is how a vault's tools are updated ([Updating](#updating-hub-and-the-skills)). It refuses to replace a `tools/setup.sh` that `hub init` did not write.
 
 `bash tools/setup.sh` (once per machine, and again whenever `pyproject.toml` changes) does:
 1. checks for Python 3.10 or newer (`PYTHON=python3.12 bash tools/setup.sh` if `python3` is older);
@@ -870,6 +870,7 @@ Printed by `hub figures …` (errors start with `error:` and exit 1; `add` leave
 | Message | What to do |
 |---|---|
 | `error: <dir> is not empty and has no project.yaml — refusing to turn it into a vault; use --force (force=True from Python) if you are sure` | you pointed `hub init` at a folder that is not a vault. Use an empty folder (or one holding only `.git`), or add `--force` if you really mean it (existing files are kept). |
+| `error: project name must be one line with no control characters, got '…'` | `--name` holds a newline or another control character; give a one-line name. Nothing was written. |
 | `error: …/tools/setup.sh was not written by hub init (no '# hub-setup: …' line); move it aside and re-run to replace it` | you have your own `tools/setup.sh`; `hub init` will not overwrite it. Move it away and re-run. Nothing was written. |
 | `error: cannot find the hub skills next to the package …; run hub init from a project-hub checkout or a vault's tools/.venv` | run `hub init` from the project-hub folder's own `hub` ([Step 1](#step-1--get-the-hub-command)). |
 | `Python 3.10 or newer is needed: re-run as PYTHON=python3.12 bash tools/setup.sh` | install a newer Python and re-run as shown. |
