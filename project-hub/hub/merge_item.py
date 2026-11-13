@@ -12,8 +12,8 @@ turns it into a conflict every time. This driver merges the parsed items instead
 
 Exit 0 after writing the merged item to %A. On a real conflict the merged item (A's value for each
 conflicting key) is written to %A, one line per key `hub-item conflict in <id>: <key>: A=<A> B=<B>`
-goes to stderr, and the exit code is 1 (git then reports the file as conflicted). An input that does not parse also exits 1. Registered by
-`gitsync.ensure_repo_files` (`.gitattributes`: `Status/Items/*.md merge=hub-item`).
+goes to stderr, and the exit code is 1 (git then reports the file as conflicted). An input that does
+not parse also exits 1. Registered by `gitsync.ensure_repo_files` (`.gitattributes`: `Status/Items/*.md merge=hub-item`).
 """
 from __future__ import annotations
 

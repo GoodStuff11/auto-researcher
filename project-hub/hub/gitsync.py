@@ -27,6 +27,10 @@ GITATTRIBUTES_LINES = [
 GITIGNORE_LINES = ["hub.local.yaml", ".venv/", "__pycache__/", "*.egg-info/", ".obsidian/workspace*.json",
                    "~$*", ".~lock.*#", ".*.tmp"]
 CONFLICT_GUIDANCE = ("in `hub-item conflict` lines, A is the version already on the remote and B is yours. "
+                     "The item file already holds both sides' changes except the field(s) named in those "
+                     "lines, which show A's value; B's value appears only in those lines, so copy it, then "
+                     "set each named field to the right value before `git add` (a plain `git add` silently "
+                     "keeps A). "
                      "A conflicted Status/sync-state/*.yaml file (watermark or next meeting) means the "
                      "hub-watermark driver could not read one side: keep the side with the newer `updated:`. "
                      "Re-run after fixing: `git pull --rebase`, fix the file, `git add` it, "

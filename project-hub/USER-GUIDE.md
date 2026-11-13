@@ -561,7 +561,7 @@ hub-item conflict in Q-20261113-e6h: title: A=Title from Tamra B=Title from Jon
 ```
 `A=` is the version already on GitHub, `B=` is yours. Your commit is still local, and `hub commit` has already undone its own pull, so nothing has changed in your files yet.
 
-When you pull again, the item file already holds both sides' changes; only the field(s) named in the message show the GitHub value. Replace `<ID>` with the item id from the message.
+When you pull again, the item file already holds both sides' changes except the field(s) named in the message, which show the GitHub value. Your value is only in the message: copy it before you edit. Replace `<ID>` with the item id from the message.
 ```bash
 git pull --rebase
 # edit the named field(s) in Status/Items/<ID>.md
