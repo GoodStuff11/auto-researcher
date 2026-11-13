@@ -159,7 +159,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P1.1 | RESULT (PASS, qualified) | nothing | none |
 | P1.1-P | RESULT: SYMMETRY-DOMINATED (all instances) | nothing | none |
 | P1.2 | SUBMITTED (round 5 on 4×4 OBC; FRD is O(V) more passes per E_loc, so matched-parameter claim only) | nothing (premise read from own control arm) | Slurm 451916 (27 tasks) |
-| P1.3 | SUBMITTED (width-6 basin pilot; premise checked by own control arm) | tasks 12–35 blocked on pilot decision | Slurm 451976 (12 tasks) |
+| P1.3 | SUBMITTED (pilot UNCLEAR-CONV: W ends 0.0116 vs cold best 0.0122, inside the 0.003 BASIN margin; pre-committed resume + widths 4 and 10) | nothing | Slurm 507178 (width-6 resume, +600 steps), 507179 (tasks 12–35) |
 | P2.1 | MUTATE (inst0 confirmed: median dE_sign 0.0125t over 3 seeds; inst1 0.0038t below bar, only one qualifying instance → UNINFORMATIVE unless a second is found) | decisive array (85 tasks) blocked on second-instance pilot (qualify if dE_sign at least 0.01t) | Slurm 457482 (4×4 OBC 5+5; 5×3 OBC 6+6) |
 | P2.2 | SUBMITTED (round 5 reduced: accuracy trend + equal-cost foils + calibrated cost; no unconditional survivor) | nothing | Slurm 452238 (44 tasks) |
 | P3.1 | PILOT (ESR0: set A 16/21 G=0 but set W 8/19 and a grade-H real false certificate; Gate 0 FAIL as method, PASS as diagnostic) | step 2 blocked on excited-state pilot (GO: eps/omega at most 0.4 per level, out-of-window weight at most 0.03) | Slurm 456094 (excited pilot); EHX gate 452146 recorded GATE-FAIL (EHX = Route 2.3 restated) |

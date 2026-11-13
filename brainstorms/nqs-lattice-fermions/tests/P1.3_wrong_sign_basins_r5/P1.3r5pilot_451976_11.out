@@ -32,3 +32,6 @@
 [08:15:07] W-w6-s33: it   850 [E] E = -11.33754327 F = 0.946861 |f| = 1.51e-02 (17.54 s/step)
 [08:28:28] W-w6-s33: it   900 [E] E = -11.33683890 F = 0.947807 |f| = 2.11e-02 (17.46 s/step)
 [08:43:56] W-w6-s33 [end @ 900]: dE_tot=0.05024 dE_sign=0.01019 f_E=0.203 spread=1.2e-12 S2=0.040 ov0=0.9480 ovk=[0.948, 0.0, 0.0, 0.0] (533 s)
+[08:52:22] W-w6-s33 [end_PS @ 900]: dE_tot=0.03361 dE_sign=0.00702 f_E=0.209 spread=9.1e-12 S2=0.000 ov0=0.9563 ovk=[0.9563, 0.0, 0.0, 0.0] (506 s)
+[08:52:22] W-w6-s33: energy drop per 100 steps (slope over last 200) -4.58e-06 (tol 0.0003) converged=True n_fid=25 fid_reached=True total 17318 s
+[08:52:22] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/inst0_W_w6_s33.json

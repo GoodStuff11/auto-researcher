@@ -14,3 +14,5 @@
 [08:49:20] ALL R5 CHECKS PASSED
 [08:49:40] instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=nnbf6_mc seed=11 shift=0.01
 [08:50:25] ED [-11.388010886295234, -11.338627749487598, -11.329223800405993, -11.317360511481414] deg 1 |G|=8 chi={'My': 1, 'Mx': 1, 'D': -1} S=0; dim P_chi 210430, dim P_S P_chi 30220 (46 s)
+[08:52:27] arm nnbf6_mc: {'kind': 'nnbf', 'Hs': 6} n_params=1734 (control 1734) calib=1.60e-14
+[08:52:33] nnbf6_mc: it     0  E_exact = -9.58915387  E_mc = -9.712026  |f| = 2.77e+00  acc = 0.165  (5.74 s/step)

@@ -1,0 +1,117 @@
+{
+ "instance": 0,
+ "pilot": "w6",
+ "widths": {
+  "6": {
+   "verdict": "UNCLEAR-CONV",
+   "width": 6,
+   "n": 3,
+   "c": {
+    "Cuhf": 0.013182002896888534,
+    "Cfs": 0.012190886108633947,
+    "Ccdw": 0.012724044654460087
+   },
+   "cE": {
+    "Cuhf": 0.060300647674720764,
+    "Cfs": 0.0540612106974514,
+    "Ccdw": 0.05922723832657972
+   },
+   "Cbest": 0.012190886108633947,
+   "sigma_c": 0.001346649741368111,
+   "sigma_E": 0.006015084347913202,
+   "margin": 0.0030477215271584868,
+   "tolE": 0.012030168695826404,
+   "Wr": 0.01159882645761634,
+   "Wm": 0.011535501285219851,
+   "W0": 0.019481671522246558,
+   "W_dE_tot": 0.05424055686815521,
+   "paired": 2,
+   "drift": -4.875008969662531e-05,
+   "noise_max": 1.1191048088221578e-13,
+   "calib_max": 4.085620730620576e-14,
+   "converged": {
+    "Cuhf": [
+     true,
+     false,
+     false
+    ],
+    "Cfs": [
+     false,
+     false,
+     false
+    ],
+    "Ccdw": [
+     false,
+     false,
+     false
+    ],
+    "W": [
+     false,
+     false,
+     true
+    ]
+   },
+   "stable": {
+    "Cuhf": [
+     false,
+     false,
+     false
+    ],
+    "Cfs": [
+     false,
+     false,
+     false
+    ],
+    "Ccdw": [
+     false,
+     false,
+     false
+    ]
+   },
+   "fid_reached": [
+    true,
+    true,
+    true
+   ],
+   "n_fid": [
+    36,
+    28,
+    25
+   ],
+   "ov0_W0": 0.935403906607375,
+   "ov0_Cuhf": 0.9087774563597196,
+   "Bm": true,
+   "Bc": false,
+   "B1": false,
+   "B2": true,
+   "B3": true,
+   "B4": false,
+   "SD": false,
+   "K1": true,
+   "K2": false,
+   "K3": false
+  }
+ },
+ "premise": true,
+ "control": [
+  0.012582576413581847,
+  0.014188801265888173,
+  0.013182002896888534
+ ],
+ "p21_control": [
+  [
+   11,
+   0.01246
+  ],
+  [
+   22,
+   0.01364
+  ],
+  [
+   33,
+   0.01254
+  ]
+ ],
+ "verdict": "UNCLEAR-CONV",
+ "note": "SUBMIT tasks 12-35: sbatch --array=12-35%12 submit_test.sbatch; width-6 action: resume every run of this width: --init-from <json> --rel 600"
+}
