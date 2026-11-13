@@ -46,6 +46,6 @@ Maintains the shared status store of one project hub vault (an Obsidian vault th
 4. Run steps 1–5 of **update** for the other sources (ClickUp especially), committing each source, not a full update, so approvals happen once in step 5.
 5. Then steps 6–10 of update, in that order: approval batch → close the gaps (`hub validate` ends with no new violations) → ClickUp push (new actions need tasks, including the ones from the proposals just applied) → snapshot and commit → report.
 ## Writing entries
-One factual sentence each, with numbers when there are numbers ("4×3 open-boundary run finished: F = 0.97 at 1092 parameters"). Name the item the fact serves. Cite the source id in `--source` (formats in each source file).
+One factual sentence each, with numbers when there are numbers ("Pilot run finished: accuracy 0.97 on 1,092 samples"). Name the item the fact serves. Cite the source id in `--source` (formats in each source file).
 ## Privacy (the vault is read by everyone on the project)
 Record decisions, stated positions ("Alice prefers framing B") and actions with their source. Never record personal assessments of people, career or 1:1 material, health, or anything from someone's private notes verbatim. Ignore private notes in Circleback results (`ReadMeetings` and `SearchMeetings`). When unsure whether something belongs, leave it out and mention it to the user.

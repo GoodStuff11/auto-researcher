@@ -172,7 +172,7 @@ def test_build_refuses_unreadable_live_date(env):
 def test_untitled_meeting_row_is_staged(env):
     s, cfg, root, ids = env
     path = build_agenda(root, "group")
-    text = "Use the 4x4 lattice for every production run from now on, agreed by all"
+    text = "Use the large dataset for every production run from now on, agreed by all"
     fill(path, {"H8": "approve", "I8": text, "J8": "Rerun (bob)"})
     res = read_agenda(s, cfg, "group", author="bob", today=MEET)
     p = next(x for x in load_proposals(root) if x.title.startswith("Raised"))
