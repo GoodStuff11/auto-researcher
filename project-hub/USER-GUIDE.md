@@ -1,7 +1,7 @@
 # Project hub — user guide
 How to set up and use the project hub. A project hub is a shared Obsidian vault, one per research project. Every open question, decision and action lives in it as a small Markdown file, kept up to date mostly by Claude agents. Each meeting is run from an Excel sheet that the agents prepare and read back. The vault also holds the project's vision, a Locator of where everything is, and a gallery of its figures.
 
-This guide is the complete manual: everything described here is built. The one part whose behaviour is still unconfirmed (the Obsidian Bases view of the items) is listed in [What is not built yet](#what-is-not-built-yet). Words in **bold** on first use are explained in the [Glossary](#glossary). The examples use an invented project called `demo` with people `alice` and `bob`, code and data folders `$SRC` and `$DATA`, and a meeting series `weekly`; replace them with your own.
+This guide is the complete manual for what is built today. The few things that are not (a preconfigured Obsidian Git, the meeting-note extras) or not yet confirmed (the Obsidian Bases view of the items) are listed in [What is not built yet](#what-is-not-built-yet). Words in **bold** on first use are explained in the [Glossary](#glossary). The examples use an invented project called `demo` with people `alice` and `bob`, code and data folders `$SRC` and `$DATA`, and a meeting series `weekly`; replace them with your own.
 
 ---
 
@@ -80,7 +80,6 @@ When `hub commit` exits with code 3, follow [If `hub commit` exits with code 3](
 | `hub-figures` skill | Claude skill: register and sync figures | `.claude/skills/hub-figures/` in the vault |
 | `tools/setup.sh` | script that installs the vault's copy of `hub` on a machine and registers the git merge drivers | in the vault |
 | Agent docs | Exact file formats and rules, written for agents but readable by people | `tools/project-hub/.agent_docs/` in the vault |
-| Design spec | Why it is built this way | `docs/superpowers/specs/2026-11-12-project-hub-design.md` in the `project-hub` source repository (not copied into vaults) |
 
 Supported sources: **ClickUp** (one list per project), **Circleback** (meeting notes), **git repositories** (code), an **Overleaf** git clone, **Google Calendar** (next meeting date), your own **private notes folders** (opt-in), **Gmail** and **Slack** (opt-in per project). The `hub` command never talks to these services itself: the agent reads them through Claude's connectors and writes the results through `hub`.
 
@@ -109,7 +108,7 @@ At a glance:
 | 11 | First ingest | the hub-status skill |
 
 ### Step 1 — Get the `hub` command
-`hub init` needs a `hub` command, and a new vault has none yet. Get the **project-hub folder** (the folder that holds `pyproject.toml`, `hub/` and `skills/`; ask whoever maintains the tool for your group, or use the copy in any existing vault's `tools/project-hub/`). You need **Python 3.10 or newer**: check with `python3 --version`. In that folder:
+`hub init` needs a `hub` command, and a new vault has none yet. Get the **project-hub folder** (the folder that holds `pyproject.toml`, `hub/` and `skills/`). Your group or the tool's maintainer supplies it; a copy of another vault's `tools/project-hub/` works too. You need **Python 3.10 or newer**: check with `python3 --version`. In that folder:
 ```bash
 python3 -m venv .venv              # or: python3.12 -m venv .venv, if python3 is older than 3.10
 .venv/bin/pip install -e '.[test]'
@@ -138,7 +137,7 @@ cd ~/vaults/demo-hub
 bash tools/setup.sh
 hub --help                                          # now found on your PATH
 ```
-`hub init DIR --name NAME` works anywhere (it needs no vault). It makes `DIR` if it is missing and prints each file it creates or refreshes, then `next: cd DIR && bash tools/setup.sh`. It:
+`hub init DIR --name NAME` works anywhere (it needs no vault). It makes `DIR` if it is missing and prints the path of each file it creates or refreshes (the new notes, `tools/project-hub`, the `.claude/skills/hub-*` folders and `tools/setup.sh`; `.gitignore` and `.gitattributes` are created or topped up too, without being listed), then `next: cd DIR && bash tools/setup.sh`. It:
 - **creates, only when absent:** `project.yaml` (a commented template with your `name`), `README.md` (setup steps for collaborators), `Vision.md` (the section skeleton), `Locator.md`, `Knowledge/README.md`, `Figures/Gallery.md` and `Status/Items.base`; and it adds the lines the hub needs to `.gitignore` and `.gitattributes` (in a git clone it also registers the merge drivers);
 - **never overwrites** an existing file, whatever it holds, so it is safe to run again; and it refuses a folder that is not empty and has no `project.yaml` (a folder holding only `.git` counts as empty) unless you add `--force`, which only lifts that refusal;
 - **always replaces** `tools/project-hub/` (a copy of the `hub` tool, this guide and the agent docs), the `hub-*` folders under `.claude/skills/` and `tools/setup.sh`: this is how a vault's tools are updated ([Updating](#updating-hub-and-the-skills)). It refuses to replace a `tools/setup.sh` that `hub init` did not write.
@@ -172,7 +171,7 @@ roots:                             # named paths; each person sets their own cop
 sources:                           # every key is optional; leave out what you do not use
   clickup:
     list_id: "900000000000"        # the project's ClickUp list: the number after /li/ in the list's URL
-                                   # (…/v/li/901307841677), or ask Claude "get the ClickUp list named <name>"
+                                   # (…/v/li/900000000000), or ask Claude "get the ClickUp list named <name>"
     # done_statuses: [complete, closed]   # optional. Default: complete, completed, closed, done
     #                                     # (any case). Statuses of type closed/done always count.
   circleback:
@@ -208,7 +207,7 @@ roots:                             # your machine's paths (override project.yaml
 notes:                             # optional, opt-in: your private note folders the agent may summarise
   - /home/<you>/obsidian/personal/demo
 ```
-- `me` must be a key of `people` in `project.yaml`. If it is not, **every** `hub` command fails (`me='x' is not a key of project.yaml people`), reads included.
+- `me` must be a key that is already in `people` in `project.yaml` (Step 4). If it is not, **every** `hub` command fails (`me='x' is not a key of project.yaml people`), reads included.
 - Instead of `me:` you can set the environment variable `HUB_ME=alice`.
 - This file is git-ignored by the `.gitignore` that `hub init` wrote. Never commit it.
 ### Step 6 — First commit
@@ -861,7 +860,7 @@ Printed by `hub figures …` (errors start with `error:` and exit 1; `add` leave
 ### Setup, init and note messages
 | Message | What to do |
 |---|---|
-| `error: <dir> is not empty and has no project.yaml — refusing to turn it into a vault; pass force=True / --force if you are sure` | you pointed `hub init` at a folder that is not a vault. Use an empty folder (or one holding only `.git`), or add `--force` if you really mean it (existing files are kept). |
+| `error: <dir> is not empty and has no project.yaml — refusing to turn it into a vault; use --force (force=True from Python) if you are sure` | you pointed `hub init` at a folder that is not a vault. Use an empty folder (or one holding only `.git`), or add `--force` if you really mean it (existing files are kept). |
 | `error: …/tools/setup.sh was not written by hub init (no '# hub-setup: …' line); move it aside and re-run to replace it` | you have your own `tools/setup.sh`; `hub init` will not overwrite it. Move it away and re-run. Nothing was written. |
 | `error: cannot find the hub skills next to the package …; run hub init from a project-hub checkout or a vault's tools/.venv` | run `hub init` from the project-hub folder's own `hub` ([Step 1](#step-1--get-the-hub-command)). |
 | `Python 3.10 or newer is needed: re-run as PYTHON=python3.12 bash tools/setup.sh` | install a newer Python and re-run as shown. |
@@ -870,7 +869,7 @@ Printed by `hub figures …` (errors start with `error:` and exit 1; `add` leave
 | `Add ~/.local/bin to your PATH …` | see Step 1. |
 | `note path must be Vision.md, Locator.md or Knowledge/<name>.md, got '…'` | a `note` operation in a proposal names another file. Notes can only be `Vision.md`, `Locator.md` or one level `Knowledge/<name>.md` (letters, digits, spaces and `_ . , ( ) -`). Fix `path:` in the ops file and stage it again. |
 | `note path '…' resolves outside the vault` / `… is a symbolic link` | the target is a link or leaves the vault: replace it with a normal file inside the vault. |
-| `note text must be a string` | `text:` in the ops file is not text (use a `|` block). |
+| `op N (note): text must be a string` (from `hub pending add`) or `note text must be a string` (when applying) | `text:` in the ops file is not text (use a `|` block). |
 ### Other situations
 - **An agent reports a source as "not reachable".** It says why: the connector is not connected or Claude Code is not logged in to your claude.ai account (Step 8), the Circleback folder is not shared with you, or a repository path is not set in your `hub.local.yaml`.
 - **Circleback finds nothing.** Use a `folder:` and file the meetings into it; search terms must appear in the meeting name or notes.
@@ -907,7 +906,7 @@ From the plans' follow-up lists and testing of this guide:
 ---
 
 ## What is not built yet
-Everything else in this guide is built. What remains is small:
+Everything else in this guide is built. What is not, or not confirmed, is small:
 - **Obsidian Bases views are untested.** `hub init` creates `Status/Items.base` (tables of open questions, open actions and decisions), but its view syntax has not been tried in Obsidian: it may need adjusting for your Obsidian version, or may not open. Nothing else depends on it; `Status/Snapshot.md` and `hub list` show the same information.
 - **Obsidian Git preconfigured.** The vault does not ship a committed `.obsidian/` with Obsidian Git set up, and `hub` is not run as `uv run hub`. Install the plugin by hand with the [safe settings](#obsidian-and-obsidian-git); `bash tools/setup.sh` provides `hub`.
 - **Meeting note extras**: the Circleback meeting id and the items opened and closed in the meeting. Re-styling of the archived workbook is also not done.
@@ -964,4 +963,3 @@ Everything else in this guide is built. What remains is small:
   - `init.md`: `hub init`, `tools/setup.sh` and `hub check-links`;
   - `figures.md`: the figure registry and the gallery.
 - `.claude/skills/hub-*/SKILL.md` in the vault (and `hub-status/sources/*.md`, `hub-init/sources/legacy-import.md`): exactly what the agents do.
-- `docs/superpowers/specs/2026-11-12-project-hub-design.md` in the project-hub source repository: the design and its reasons (not copied into vaults).

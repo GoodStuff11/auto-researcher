@@ -20,7 +20,7 @@ _IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "*.egg-info", ".venv", 
 
 PROJECT_TEMPLATE = """\
 name: {name}
-# Every key is explained in tools/project-hub/USER-GUIDE.md (Step 3) and tools/project-hub/.agent_docs/vault-layout.md.
+# Every key is explained in tools/project-hub/USER-GUIDE.md (Step 4) and tools/project-hub/.agent_docs/vault-layout.md.
 people: {{}}
 #  alice: {{name: Alice Example, clickup: "1234567", email: alice@example.edu}}
 series: {{}}
@@ -203,7 +203,7 @@ def init_vault(dest, *, name: str, force: bool = False) -> list[str]:
     if (dest.is_dir() and any(p.name != ".git" for p in dest.iterdir())
             and not (dest / "project.yaml").is_file() and not force):
         raise ValueError(f"{dest} is not empty and has no project.yaml — refusing to turn it into a vault; "
-                         "pass force=True / --force if you are sure")
+                         "use --force (force=True from Python) if you are sure")
     _preflight(dest)
     dest.mkdir(parents=True, exist_ok=True)
     created = []

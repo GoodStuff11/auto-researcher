@@ -35,11 +35,11 @@ def test_init_is_idempotent_and_keeps_human_files(tmp_path):
     init_vault(v, name="demo")
     (v / "Vision.md").write_text("# Our vision\nEdited.\n")
     (v / "project.yaml").write_text((v / "project.yaml").read_text().replace("name: demo", "name: renamed"))
-    (v / "tools" / "project-hub" / "hub" / "cli.py").write_text("broken\n")
+    (v / "tools" / "project-hub" / "hub" / "cli.py").write_text("HUB_TEST_SENTINEL_9F3\n")
     created = init_vault(v, name="demo")
     assert (v / "Vision.md").read_text() == "# Our vision\nEdited.\n"
     assert load_config(v).name == "renamed"
-    assert "broken" not in (v / "tools" / "project-hub" / "hub" / "cli.py").read_text()
+    assert "HUB_TEST_SENTINEL_9F3" not in (v / "tools" / "project-hub" / "hub" / "cli.py").read_text()
     assert "Vision.md" not in created and "project.yaml" not in created
 
 
