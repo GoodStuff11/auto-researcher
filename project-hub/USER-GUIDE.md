@@ -1,7 +1,7 @@
 # Project hub — user guide
 How to set up and use the project hub. A project hub is a shared Obsidian vault, one per research project. Every open question, decision and action lives in it as a small Markdown file, kept up to date mostly by Claude agents. Each meeting is run from an Excel sheet that the agents prepare and read back.
 
-This guide covers everything that is built today (Plans 1 and 2). Parts that are designed but not built yet are listed in [What is not built yet](#what-is-not-built-yet); nothing else in this guide depends on them. Words in **bold** on first use are explained in the [Glossary](#glossary).
+This guide covers everything that is built today: Plans 1 and 2, the first two of the three build stages (Plan 1 is the `hub` command and the agenda sheet, Plan 2 the Claude skills and the source syncing; Plan 3 is not built yet). Parts that are designed but not built yet are listed in [What is not built yet](#what-is-not-built-yet); nothing else in this guide depends on them. Words in **bold** on first use are explained in the [Glossary](#glossary).
 
 ---
 
@@ -77,7 +77,7 @@ Do this once per project. It takes about 30 minutes. A future `hub-init` skill w
 ### Step 1 — Get and install the `hub` command
 On every machine where you (or your agent) will work. You need **Python 3.10 or newer**: check with `python3 --version`.
 ```bash
-cd ~/research/project-hub          # the project-hub folder of the research repository
+cd ~/research/project-hub          # the project-hub folder of the research repository (owner: your checkout; collaborators: Joining step 3)
 python3 -m venv .venv              # or: python3.12 -m venv .venv, if python3 is older than 3.10
 .venv/bin/pip install -e '.[test]'
 mkdir -p ~/.local/bin
@@ -112,7 +112,8 @@ roots:                             # named paths; each person sets their own cop
   PAPER:   /path/on/the/owners/machine/overleaf-clone
 sources:                           # every key is optional; leave out what you do not use
   clickup:
-    list_id: "900000000000"        # the project's ClickUp list
+    list_id: "900000000000"        # the project's ClickUp list: the number after /li/ in the list's URL
+                                   # (…/v/li/901307841677), or ask Claude "get the ClickUp list named <name>"
     # done_statuses: [complete, closed]   # optional. Default: complete, completed, closed, done
     #                                     # (any case). Statuses of type closed/done always count.
   circleback:
@@ -202,8 +203,9 @@ Do these in order. Steps 1 and 2 need the owner.
 3. **Get `project-hub/`.** If you do not have the research repository yet, take only the folder you need with a sparse clone:
    ```bash
    git clone --filter=blob:none --sparse git@github.com:GoodStuff11/auto-researcher.git ~/research
-   git -C ~/research sparse-checkout set project-hub
+   git -C ~/research sparse-checkout set project-hub docs/superpowers
    ```
+   (`docs/superpowers` holds the design spec and plans that [Where to look for more](#where-to-look-for-more) points to.)
    This gives `~/research/project-hub`, the path the commands in this guide use. If you put it elsewhere, use your path in Steps 1 and 6. To update later, see [Updating `hub` and the skills](#updating-hub-and-the-skills).
 4. **Install `hub`** ([Step 1](#step-1--get-and-install-the-hub-command)): Python 3.10 or newer.
 5. **Clone the vault:** `git clone git@github.com:<owner>/<project>-hub.git ~/vaults/<project>-hub` (SSH, so agents never meet a password prompt). Check that `project.yaml` lists you under `people`; if not, `git pull` until the owner's change arrives.
@@ -507,6 +509,9 @@ Commands that need your people key (`me`): `new`, `entry`, `log`, `list --owner 
 What the agenda skill does, step by step:
 ```bash
 git pull --rebase
+# first: every decision to take must exist in the hub as a proposed decision
+#   hub new d "What to decide" --link answers:Q-… --series group --source manual
+# (the Decisions sheet is filled only from proposed/deferred decisions; see the notes below)
 hub agenda scaffold group --date 2026-11-19    # from the second meeting on, add --force (the old draft is no longer needed)
 # edit Agenda/group.draft.yaml (see below)
 hub agenda build group
@@ -569,10 +574,13 @@ diff ~/mine-<ID>.md Status/Items/<ID>.md                     # 3. see what diffe
 git add Status/Items/<ID>.md                                 # 5. mark it resolved
 GIT_EDITOR=true git rebase --continue                        # 6. finish (keeps your commit message;
                                                              #    without GIT_EDITOR=true an editor opens: save and close it)
-hub validate                                                 # 7. must not report new violations
+git show HEAD:Status/Items/<ID>.md | diff ~/mine-<ID>.md -  # 7. check: only the conflicting field (and the other
+                                                             #    person's additions) may differ; nothing of yours missing
+hub validate                                                 #    must not report new violations
 hub commit "Resolve conflict on <ID>"                        # 8. pushes; prints the commit id
 rm ~/mine-<ID>.md
 ```
+- In step 7, lines marked `<` are in your saved version but not in the result: each must be either the conflicting field's losing value or something you deliberately dropped.
 - **Several files** listed after `merge conflict in:` → do steps 2–5 for each before step 6. If the rebase stops again on another of your commits, repeat from step 2.
 - A conflicted **`Status/sync-state/*.yaml`** file → compare the two with `git show REBASE_HEAD:<file>` and keep the side with the newer `updated:`.
 - If step 1 succeeds without a conflict (the remote changed again), just run `hub commit` again.
