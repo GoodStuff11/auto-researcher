@@ -35,7 +35,7 @@ Leave no blank line directly after a heading.
 ```
 2. Show the user the diff between the current `Vision.md` and the draft (`diff -u Vision.md <draft>`).
 3. `hub pending add --title "Vision: <what changed>" --ops-file <file> --source manual --reason "<why>"`.
-4. After the user's yes, `hub pending apply <P-id>` (on a no, `hub pending reject <P-id>`).
+4. After the user's yes, `hub pending apply <P-id>` (on a no, `hub pending reject <P-id>`). If apply refuses with `Vision.md changed since this proposal was drafted`, someone changed the vision meanwhile: `hub pending reject <P-id>`, re-read `Vision.md` and draft the revision again from it.
 5. `hub validate`, then `hub commit "Vision: <what changed>"`.
 ## Revisions later
 Triggered by a pivot (a question pivoted, or a decision that changes direction) or by the user. Read the current `Vision.md`, re-interview only the affected sections, keep unchanged sections verbatim, and add a Revisions line (for a decision, `after [[D-…]]`). Stage and apply as above.
