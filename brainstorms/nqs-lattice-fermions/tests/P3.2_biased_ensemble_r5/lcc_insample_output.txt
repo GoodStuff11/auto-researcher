@@ -1,0 +1,46 @@
+=== results width 4: seeds [1234, 2345, 3456]  truths BBBAAA
+  E0_hat - E0 per target: -4.0e-04 +2.2e-03 +7.3e-04 -1.1e-03 -2.2e-03 -9.2e-03
+  LCC-warm-est-loo         UUUUUA  CW=0.000 DEC=0.17  inner DEC=0.00 wrong=0
+  LCC-warm-est-in          UUUUUA  CW=0.000 DEC=0.17  inner DEC=0.00 wrong=0
+  LCC-warm-oracle-loo      UUUUUA  CW=0.000 DEC=0.17  inner DEC=0.00 wrong=0
+  LCC-warm-oracle-in       UUUUUA  CW=0.000 DEC=0.17  inner DEC=0.00 wrong=0
+  LCC-cold-est-loo         UUUUUA  CW=0.000 DEC=0.17  inner DEC=0.00 wrong=0
+  LCC-cold-est-in          UUUUUA  CW=0.000 DEC=0.17  inner DEC=0.00 wrong=0
+  LCC-cold-oracle-loo      UUUUUU  CW=0.000 DEC=0.00  inner DEC=0.00 wrong=0
+  LCC-cold-oracle-in       UUUUUA  CW=0.000 DEC=0.17  inner DEC=0.00 wrong=0
+    d=-0.0020 dc=-6.43e-04 tSE=1.0e-03 eps_hat=4.0e-03 b=8.4e-04 half=1.9e-03
+    d=-0.0005 dc=-6.33e-04 tSE=1.1e-03 eps_hat=4.8e-03 b=9.6e-04 half=2.0e-03
+    d=-0.0002 dc=-6.33e-04 tSE=1.0e-03 eps_hat=4.8e-03 b=9.7e-04 half=2.0e-03
+    d=+0.0002 dc=-6.31e-04 tSE=1.1e-03 eps_hat=4.0e-03 b=8.0e-04 half=1.9e-03
+    d=+0.0005 dc=-6.37e-04 tSE=1.0e-03 eps_hat=4.0e-03 b=7.9e-04 half=1.8e-03
+    d=+0.0020 dc=-6.37e-04 tSE=1.0e-03 eps_hat=3.9e-03 b=7.8e-04 half=1.8e-03
+  rule-4 emulation (1000000 draws, 50 reps): CW=0.000 DEC=0.17 flip=0.000
+  R0P           UUU UUU UUU UUU UUU AAU  CW=0.000 DEC=0.11 (per seed)
+  R0P-warm      UUU UUU UUU UUU UUU AUA  CW=0.000 DEC=0.11 (per seed)
+  R0P-warm-abs  UUU UUU UUU UUU UUU AUA  CW=0.000 DEC=0.11 (per seed)
+  EC            BBB ABA AAA AAA AAA AAA  CW=0.278 DEC=1.00 (per seed)
+  ECor          BBB BBB BBB AAA AAA AAA  CW=0.000 DEC=1.00 (per seed)
+=== results width 8: seeds [1234, 2345, 3456]  truths BBBAAA
+  E0_hat - E0 per target: -4.8e-03 -2.3e-03 -1.1e-04 -1.6e-04 -1.9e-03 -1.6e-02
+  LCC-warm-est-loo         BBUUAA  CW=0.000 DEC=0.67  inner DEC=0.50 wrong=0
+  LCC-warm-est-in          BBBAAA  CW=0.000 DEC=1.00  inner DEC=1.00 wrong=0
+  LCC-warm-oracle-loo      BBBAAA  CW=0.000 DEC=1.00  inner DEC=1.00 wrong=0
+  LCC-warm-oracle-in       BBBAAA  CW=0.000 DEC=1.00  inner DEC=1.00 wrong=0
+  LCC-cold-est-loo         BUUUUA  CW=0.000 DEC=0.33  inner DEC=0.00 wrong=0
+  LCC-cold-est-in          BUUUUA  CW=0.000 DEC=0.33  inner DEC=0.00 wrong=0
+  LCC-cold-oracle-loo      BUUUUA  CW=0.000 DEC=0.33  inner DEC=0.00 wrong=0
+  LCC-cold-oracle-in       BUUUUA  CW=0.000 DEC=0.33  inner DEC=0.00 wrong=0
+    d=-0.0020 dc=-2.65e-06 tSE=2.4e-05 eps_hat=8.6e-04 b=1.7e-04 half=1.9e-04
+    d=-0.0005 dc=-3.09e-06 tSE=2.9e-05 eps_hat=8.6e-04 b=1.7e-04 half=2.0e-04
+    d=-0.0002 dc=-2.64e-06 tSE=2.6e-05 eps_hat=2.9e-03 b=5.8e-04 half=6.0e-04
+    d=+0.0002 dc=-2.44e-06 tSE=2.7e-05 eps_hat=2.9e-03 b=5.8e-04 half=6.0e-04
+    d=+0.0005 dc=-2.70e-06 tSE=2.6e-05 eps_hat=8.6e-04 b=1.7e-04 half=2.0e-04
+    d=+0.0020 dc=-2.92e-06 tSE=2.6e-05 eps_hat=8.6e-04 b=1.7e-04 half=2.0e-04
+  rule-4 emulation (1000000 draws, 50 reps): CW=0.000 DEC=0.67 flip=0.000
+  R0P           BUU UUU UUU UUU UUU AAA  CW=0.000 DEC=0.22 (per seed)
+  R0P-warm      BBB UUU UUU UUU UUU AAA  CW=0.000 DEC=0.33 (per seed)
+  R0P-warm-abs  BBB UUU UUU UUU UUU AAA  CW=0.000 DEC=0.33 (per seed)
+  EC            BBB BBB BBB AAA AAA AAA  CW=0.000 DEC=1.00 (per seed)
+  ECor          BBB BBB BBB AAA AAA AAA  CW=0.000 DEC=1.00 (per seed)
+no fresh runs present: in-sample evaluation only, no verdict
+-> /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.2_biased_ensemble_r5/results_lcc/lcc_summary.json

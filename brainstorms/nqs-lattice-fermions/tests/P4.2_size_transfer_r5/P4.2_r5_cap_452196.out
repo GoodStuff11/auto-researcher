@@ -24,3 +24,6 @@
 [ 62603.2s] arm scr@450  : E=-10.68333124 eps=4.4042e-02 (raw 8.1528e-02, irrep weight 0.205) A/V=7.2119e-03 sign-agree=0.8695 Pd=2.3237e-03 fid=0.5572
 [ 66648.6s]   [scr] step 480/600 eps=4.39221e-02 lr=0.2
 [ 74799.9s]   [scr] step 540/600 eps=4.37090e-02 lr=0.121
+[ 82919.5s]   [scr] step 600/600 eps=4.35294e-02 lr=0.2
+[ 82978.3s] arm scr@600  : E=-10.69154081 eps=4.3529e-02 (raw 8.3665e-02, irrep weight 0.174) A/V=7.1975e-03 sign-agree=0.8690 Pd=2.3088e-03 fid=0.5640
+[ 82978.3s] done (/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/results_capacity/scr_s0.json)

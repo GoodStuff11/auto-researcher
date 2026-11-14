@@ -165,7 +165,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P3.1 | PILOT (ESR0: set A 16/21 G=0 but set W 8/19 and a grade-H real false certificate; Gate 0 FAIL as method, PASS as diagnostic) | step 2 blocked on excited-state pilot (GO: eps/omega at most 0.4 per level, out-of-window weight at most 0.03) | Slurm 456094 (excited pilot); EHX gate 452146 recorded GATE-FAIL (EHX = Route 2.3 restated) |
 | P3.2 | MUTATE (round 5; 451852: SO-EC FAIL, CW 5/15 biased toward one order; all energy controls abstain because branch ΔE is below SR noise; oracle ECor correct everywhere; width 8 already ε < gap/2) | nothing | round-5 worker (certified single-state decision) |
 | P4.1 | SUBMITTED (rank ladder of projected UHF mixtures, K=1–8, drift control) | nothing | Slurm 508440 (22 tasks: che_rbm M=1–3, che_k K=2,4,8, containing foil, che drift to 4000 it) |
-| P4.2 | SUBMITTED (capacity pilot; ELT killed Gate 0, PA carried) | array blocked on capacity pilot (ε_scr^∞ at most 3% → run array, else enlarge family) | Slurm 452196 (capacity); Route 3.1 CLOSED-FAIL (451914: warm start slower than scratch at B=10/20/50) |
+| P4.2 | SUBMITTED (capacity pilot MUTATE: 426-param MFNG-O plateaus at 6.0% rel. error, above 3%; projected NNBF reaches 0.35% at the same step count; re-pilot with enlarged family) | array blocked on enlarged re-pilot (at most 3%) | Slurm 604157 (channels 8, bf-hidden 32) |
 
 Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
 * **P3.2 round 3: first Hard-Core-scale same-irrep competitor (2026-11-11)**:

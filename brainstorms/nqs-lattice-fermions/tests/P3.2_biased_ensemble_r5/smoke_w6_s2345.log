@@ -1,0 +1,75 @@
+[03:57:06] instance: 4x3 PBC 4+4 U=8.0 t_y=1.11394; t'_c=-0.470482 min gap 1.001e-03 (10s); irrep dim 1618
+[03:57:08] check [H(t_y=1.11394),U_g] max 3.3e-16; projector idempotent 6.2e-16; [P,H] 7.0e-17
+[03:57:10] check projected gradient (anisotropic H): analytic 5.8747623382e-01 FD 5.8747623344e-01
+[03:57:12] check sampled force vs exact (20000 draws): |fs-f|^2 / sum(SE^2) = 1.59 (unbiased -> ~1), cosine 0.9903, |fs-f|/|f| 0.144
+[03:57:12] check warm start from stored parameters: relative amplitude difference 0.0e+00
+[03:57:13] check MC mixture S_01 0.998422 vs exact 0.998345 (0.8 standard errors)
+[03:57:13] check decision logic: noise->U/noise crossover->B,U/crossover intrinsic->B/intrinsic
+[03:57:13] P3.2-fix CHECKS PASSED
+[03:57:13] projected sector dim range(P_S P_chi) = 1618 (space-group irrep 5214); NNBF width 6: 918 parameters; ratio 1.76
+[03:57:17] snap A t'=-0.52048 W=6 s=2345: it     0  E = -11.41147678  |f| = 1.79e+00  (1.18 s/step)
+[03:57:20] snap A t'=-0.52048 W=6 s=2345: it     2  E = -11.08050017  |f| = 3.08e+00  (1.19 s/step)
+[03:57:22] snap B t'=-0.52048 W=6 s=2345: it     0  E = -12.20262006  |f| = 6.94e-01  (1.18 s/step)
+[03:57:24] snap B t'=-0.52048 W=6 s=2345: it     2  E = -11.79699568  |f| = 3.69e+00  (1.18 s/step)
+[03:57:26] snap d=-0.0500: gap=0.2548 c0=+0.248 E0-E0glob=-3.2e-14 | A dE=2.07e+00 c=-0.255 | B dE=1.21e+00 c=+0.500 -> B eckart=False
+[03:57:31] snap A t'=-0.42048 W=6 s=2345: it     0  E = -11.54667064  |f| = 2.41e+00  (1.18 s/step)
+[03:57:33] snap A t'=-0.42048 W=6 s=2345: it     2  E = -10.03080203  |f| = 5.58e+00  (1.18 s/step)
+[03:57:35] snap B t'=-0.42048 W=6 s=2345: it     0  E = -11.61666131  |f| = 6.52e-01  (1.19 s/step)
+[03:57:37] snap B t'=-0.42048 W=6 s=2345: it     2  E = -10.81285396  |f| = 3.59e+00  (1.19 s/step)
+[03:57:39] snap d=+0.0500: gap=0.2468 c0=-0.240 E0-E0glob=2.8e-14 | A dE=1.57e+00 c=-0.211 | B dE=1.50e+00 c=+0.543 -> B eckart=False
+[03:57:39] certified (Eckart) snapshot blocks: A at [], B at []
+[03:57:45] cold A t'=-0.47248 W=6 s=2345: it     0  E = -11.28031040  |f| = 1.80e+00  (1.14 s/step)
+[03:57:47] cold A t'=-0.47248 W=6 s=2345: it     2  E = -9.54960168  |f| = 6.36e+00  (1.13 s/step)
+[03:57:49] cold B t'=-0.47248 W=6 s=2345: it     0  E = -11.91150209  |f| = 6.70e-01  (1.14 s/step)
+[03:57:51] cold B t'=-0.47248 W=6 s=2345: it     2  E = -11.83902449  |f| = 1.54e+00  (1.14 s/step)
+[03:57:54] warm A t'=-0.47248 W=6 s=2345: it     0  E = -11.23342316  |f| = 1.91e+00  (1.20 s/step)
+[03:57:56] warm A t'=-0.47248 W=6 s=2345: it     2  E = -10.41619203  |f| = 4.60e+00  (1.19 s/step)
+[03:57:58] warm B t'=-0.47248 W=6 s=2345: it     0  E = -11.96764714  |f| = 1.14e+00  (1.19 s/step)
+[03:58:00] warm B t'=-0.47248 W=6 s=2345: it     2  E = -11.23816152  |f| = 3.56e+00  (1.18 s/step)
+[03:58:02] target d=-0.0020 gap=0.0102 truth=B | R0P: dE_AB=+6.31e-01 noise=7.9e-01 ends=AB dec=U [noise] | R0P-warm: dE_AB=+7.34e-01 noise=4.6e-01 ends=AB dec=U [noise] | warm-abs=U EC=U ECor=B AT(diag)=U | sampled EC UU
+[03:58:09] cold A t'=-0.47098 W=6 s=2345: it     0  E = -11.27652043  |f| = 1.80e+00  (1.21 s/step)
+[03:58:11] cold A t'=-0.47098 W=6 s=2345: it     2  E = -10.04776430  |f| = 5.51e+00  (1.20 s/step)
+[03:58:13] cold B t'=-0.47098 W=6 s=2345: it     0  E = -11.90271021  |f| = 6.70e-01  (1.19 s/step)
+[03:58:16] cold B t'=-0.47098 W=6 s=2345: it     2  E = -11.62489099  |f| = 2.25e+00  (1.20 s/step)
+[03:58:18] warm A t'=-0.47098 W=6 s=2345: it     0  E = -11.22785898  |f| = 1.92e+00  (1.18 s/step)
+[03:58:20] warm A t'=-0.47098 W=6 s=2345: it     2  E = -10.68793781  |f| = 3.79e+00  (1.18 s/step)
+[03:58:22] warm B t'=-0.47098 W=6 s=2345: it     0  E = -11.95805093  |f| = 1.14e+00  (1.21 s/step)
+[03:58:25] warm B t'=-0.47098 W=6 s=2345: it     2  E = -11.59032513  |f| = 2.55e+00  (1.20 s/step)
+[03:58:27] target d=-0.0005 gap=0.0027 truth=B | R0P: dE_AB=+6.26e-01 noise=6.9e-01 ends=AB dec=U [noise] | R0P-warm: dE_AB=+7.30e-01 noise=3.2e-01 ends=AB dec=B [correct] | warm-abs=B EC=U ECor=A AT(diag)=U | sampled EC UU
+[03:58:33] cold A t'=-0.47068 W=6 s=2345: it     0  E = -11.27028491  |f| = 1.82e+00  (1.22 s/step)
+[03:58:36] cold A t'=-0.47068 W=6 s=2345: it     2  E = -10.15240394  |f| = 4.62e+00  (1.20 s/step)
+[03:58:38] cold B t'=-0.47068 W=6 s=2345: it     0  E = -11.90095430  |f| = 6.70e-01  (1.19 s/step)
+[03:58:40] cold B t'=-0.47068 W=6 s=2345: it     2  E = -11.54188776  |f| = 2.56e+00  (1.19 s/step)
+[03:58:42] warm A t'=-0.47068 W=6 s=2345: it     0  E = -11.22674615  |f| = 1.92e+00  (1.18 s/step)
+[03:58:45] warm A t'=-0.47068 W=6 s=2345: it     2  E = -10.94419477  |f| = 3.20e+00  (1.18 s/step)
+[03:58:47] warm B t'=-0.47068 W=6 s=2345: it     0  E = -11.95613168  |f| = 1.14e+00  (1.21 s/step)
+[03:58:49] warm B t'=-0.47068 W=6 s=2345: it     2  E = -11.11624426  |f| = 3.62e+00  (1.20 s/step)
+[03:58:51] target d=-0.0002 gap=0.0014 truth=B | R0P: dE_AB=+6.31e-01 noise=4.9e-01 ends=AB dec=U [noise] | R0P-warm: dE_AB=+5.95e-01 noise=4.3e-01 ends=AB dec=U [noise] | warm-abs=U EC=U ECor=A AT(diag)=U | sampled EC UU
+[03:58:58] cold A t'=-0.47028 W=6 s=2345: it     0  E = -11.26993209  |f| = 1.81e+00  (1.22 s/step)
+[03:59:00] cold A t'=-0.47028 W=6 s=2345: it     2  E = -10.76113801  |f| = 4.09e+00  (1.21 s/step)
+[03:59:02] cold B t'=-0.47028 W=6 s=2345: it     0  E = -11.89861339  |f| = 6.70e-01  (1.18 s/step)
+[03:59:05] cold B t'=-0.47028 W=6 s=2345: it     2  E = -11.43773311  |f| = 2.74e+00  (1.19 s/step)
+[03:59:07] warm A t'=-0.47028 W=6 s=2345: it     0  E = -11.63243469  |f| = 2.34e+00  (1.19 s/step)
+[03:59:09] warm A t'=-0.47028 W=6 s=2345: it     2  E = -9.83101016  |f| = 5.40e+00  (1.19 s/step)
+[03:59:11] warm B t'=-0.47028 W=6 s=2345: it     0  E = -11.88904768  |f| = 7.58e-01  (1.19 s/step)
+[03:59:14] warm B t'=-0.47028 W=6 s=2345: it     2  E = -11.45613700  |f| = 2.68e+00  (1.20 s/step)
+[03:59:16] target d=+0.0002 gap=0.0014 truth=A | R0P: dE_AB=+6.29e-01 noise=4.0e-01 ends=AB dec=U [noise] | R0P-warm: dE_AB=+2.57e-01 noise=8.2e-01 ends=AB dec=U [noise] | warm-abs=U EC=U ECor=A AT(diag)=U | sampled EC UU
+[03:59:22] cold A t'=-0.46998 W=6 s=2345: it     0  E = -11.26851694  |f| = 1.82e+00  (1.22 s/step)
+[03:59:25] cold A t'=-0.46998 W=6 s=2345: it     2  E = -10.65598905  |f| = 3.59e+00  (1.21 s/step)
+[03:59:27] cold B t'=-0.46998 W=6 s=2345: it     0  E = -11.89685853  |f| = 6.69e-01  (1.18 s/step)
+[03:59:29] cold B t'=-0.46998 W=6 s=2345: it     2  E = -11.44164732  |f| = 2.81e+00  (1.19 s/step)
+[03:59:31] warm A t'=-0.46998 W=6 s=2345: it     0  E = -11.63191804  |f| = 2.34e+00  (1.18 s/step)
+[03:59:34] warm A t'=-0.46998 W=6 s=2345: it     2  E = -9.45318292  |f| = 6.20e+00  (1.19 s/step)
+[03:59:36] warm B t'=-0.46998 W=6 s=2345: it     0  E = -11.88740680  |f| = 7.57e-01  (1.19 s/step)
+[03:59:38] warm B t'=-0.46998 W=6 s=2345: it     2  E = -11.19422127  |f| = 3.36e+00  (1.19 s/step)
+[03:59:40] target d=+0.0005 gap=0.0027 truth=A | R0P: dE_AB=+6.28e-01 noise=7.0e-01 ends=AB dec=U [noise] | R0P-warm: dE_AB=+2.55e-01 noise=9.6e-01 ends=AB dec=U [noise] | warm-abs=U EC=U ECor=A AT(diag)=U | sampled EC UU
+[03:59:46] cold A t'=-0.46848 W=6 s=2345: it     0  E = -11.26540719  |f| = 1.81e+00  (1.22 s/step)
+[03:59:49] cold A t'=-0.46848 W=6 s=2345: it     2  E = -10.34195008  |f| = 4.45e+00  (1.21 s/step)
+[03:59:51] cold B t'=-0.46848 W=6 s=2345: it     0  E = -11.88809496  |f| = 6.69e-01  (1.19 s/step)
+[03:59:53] cold B t'=-0.46848 W=6 s=2345: it     2  E = -11.72300646  |f| = 2.29e+00  (1.19 s/step)
+[03:59:55] warm A t'=-0.46848 W=6 s=2345: it     0  E = -11.62933479  |f| = 2.34e+00  (1.19 s/step)
+[03:59:58] warm A t'=-0.46848 W=6 s=2345: it     2  E = -9.58921194  |f| = 5.09e+00  (1.19 s/step)
+[04:00:00] warm B t'=-0.46848 W=6 s=2345: it     0  E = -11.87920239  |f| = 7.51e-01  (1.19 s/step)
+[04:00:02] warm B t'=-0.46848 W=6 s=2345: it     2  E = -11.45276802  |f| = 2.66e+00  (1.20 s/step)
+[04:00:04] target d=+0.0020 gap=0.0102 truth=A | R0P: dE_AB=+6.23e-01 noise=5.4e-01 ends=AB dec=U [noise] | R0P-warm: dE_AB=+2.50e-01 noise=8.9e-01 ends=AB dec=U [noise] | warm-abs=U EC=U ECor=A AT(diag)=U | sampled EC UU
+[04:00:04] done (188s) -> /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.2_biased_ensemble_r5/results_smoke/w6_s2345.json

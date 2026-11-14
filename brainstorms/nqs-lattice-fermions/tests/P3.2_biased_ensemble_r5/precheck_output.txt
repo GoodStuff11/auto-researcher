@@ -1,0 +1,46 @@
+t'_c=-0.470482 min gap 1.001e-03; O spread in projected sector [-0.440, +0.436] -> DeltaO = 0.876 (full-space spread 1.833)
+d=-0.0020 D1=0.0102 D2=0.6775 c0=+0.242 c1=-0.229 c2=+0.001 O01=-0.016 sigma0(O)=0.291 | max eta to commit at |c|=|c0|: RIG 0.0763 SIG 0.0881 (eps <= 7.8e-04 / 9.0e-04)
+d=-0.0005 D1=0.0027 D2=0.6735 c0=+0.229 c1=-0.217 c2=+0.001 O01=+0.079 sigma0(O)=0.302 | max eta to commit at |c|=|c0|: RIG 0.0681 SIG 0.0771 (eps <= 1.9e-04 / 2.1e-04)
+d=-0.0002 D1=0.0014 D2=0.6728 c0=+0.180 c1=-0.168 c2=+0.001 O01=-0.160 sigma0(O)=0.329 | max eta to commit at |c|=|c0|: RIG 0.0420 SIG 0.0467 (eps <= 6.0e-05 / 6.7e-05)
+d=+0.0002 D1=0.0014 D2=0.6727 c0=-0.157 c1=+0.169 c2=+0.001 O01=-0.171 sigma0(O)=0.287 | max eta to commit at |c|=|c0|: RIG 0.0322 SIG 0.0444 (eps <= 4.6e-05 / 6.3e-05)
+d=+0.0005 D1=0.0027 D2=0.6733 c0=-0.211 c1=+0.223 c2=+0.001 O01=-0.094 sigma0(O)=0.235 | max eta to commit at |c|=|c0|: RIG 0.0581 SIG 0.0884 (eps <= 1.6e-04 / 2.4e-04)
+d=+0.0020 D1=0.0102 D2=0.6766 c0=-0.229 c1=+0.240 c2=+0.001 O01=-0.031 sigma0(O)=0.212 | max eta to commit at |c|=|c0|: RIG 0.0682 SIG 0.1100 (eps <= 7.0e-04 / 1.1e-03)
+  W=4 s=1234 d=-0.0020 best=R0P-warmB eps=6.66e-03 eta=0.651 c=+0.245 (c0=+0.242) bounds RIG:0.707 SIG:0.848 TWO:0.361
+  W=4 s=1234 d=-0.0005 best=R0P-warmA eps=5.32e-03 eta=1.946 c=-0.231 (c0=+0.229) bounds RIG:inf SIG:inf TWO:0.621
+  W=4 s=1234 d=-0.0002 best=R0P-warmA eps=3.96e-03 eta=2.770 c=-0.230 (c0=+0.180) bounds RIG:inf SIG:inf TWO:0.568
+  W=4 s=1234 d=+0.0002 best=R0P-warmA eps=2.87e-03 eta=2.008 c=-0.231 (c0=-0.157) bounds RIG:inf SIG:inf TWO:0.522
+  W=4 s=1234 d=+0.0005 best=R0P-warmA eps=2.85e-03 eta=1.044 c=-0.231 (c0=-0.211) bounds RIG:inf SIG:inf TWO:0.508
+  W=4 s=1234 d=+0.0020 best=R0PA eps=2.38e-03 eta=0.233 c=-0.231 (c0=-0.229) bounds RIG:0.423 SIG:0.383 TWO:0.156*
+  W=4 s=2345 d=-0.0020 best=R0P-warmB eps=4.47e-03 eta=0.437 c=+0.245 (c0=+0.242) bounds RIG:0.580 SIG:0.672 TWO:0.252
+  W=4 s=2345 d=-0.0005 best=R0P-warmB eps=4.59e-03 eta=1.678 c=+0.245 (c0=+0.229) bounds RIG:inf SIG:inf TWO:0.598
+  W=4 s=2345 d=-0.0002 best=R0P-warmB eps=4.72e-03 eta=3.303 c=+0.244 (c0=+0.180) bounds RIG:inf SIG:inf TWO:0.589
+  W=4 s=2345 d=+0.0002 best=R0PA eps=3.58e-03 eta=2.508 c=-0.231 (c0=-0.157) bounds RIG:inf SIG:inf TWO:0.546
+  W=4 s=2345 d=+0.0005 best=R0PA eps=2.91e-03 eta=1.065 c=-0.231 (c0=-0.211) bounds RIG:inf SIG:inf TWO:0.513
+  W=4 s=2345 d=+0.0020 best=R0PA eps=2.31e-03 eta=0.226 c=-0.231 (c0=-0.229) bounds RIG:0.417 SIG:0.376 TWO:0.152*
+  W=4 s=3456 d=-0.0020 best=R0P-warmB eps=7.12e-03 eta=0.695 c=+0.246 (c0=+0.242) bounds RIG:0.731 SIG:0.877 TWO:0.384
+  W=4 s=3456 d=-0.0005 best=R0P-warmA eps=4.77e-03 eta=1.745 c=-0.230 (c0=+0.229) bounds RIG:inf SIG:inf TWO:0.604
+  W=4 s=3456 d=-0.0002 best=R0P-warmA eps=3.37e-03 eta=2.361 c=-0.231 (c0=+0.180) bounds RIG:inf SIG:inf TWO:0.550
+  W=4 s=3456 d=+0.0002 best=R0P-warmA eps=2.35e-03 eta=1.648 c=-0.231 (c0=-0.157) bounds RIG:inf SIG:inf TWO:0.502
+  W=4 s=3456 d=+0.0005 best=R0P-warmA eps=2.20e-03 eta=0.806 c=-0.231 (c0=-0.211) bounds RIG:0.787 SIG:0.892 TWO:0.443
+  W=4 s=3456 d=+0.0020 best=R0P-warmA eps=2.13e-03 eta=0.208 c=-0.231 (c0=-0.229) bounds RIG:0.400 SIG:0.354 TWO:0.142*
+W=4: RIG DEC 0/18 wrong 0 | inner DEC 0/12; SIG DEC 0/18 wrong 0 | inner DEC 0/12; TWO DEC 3/18 wrong 0 | inner DEC 0/12
+  W=8 s=1234 d=-0.0020 best=R0P-warmB eps=4.78e-04 eta=0.047 c=+0.243 (c0=+0.242) bounds RIG:0.189* SIG:0.164* TWO:0.038*
+  W=8 s=1234 d=-0.0005 best=R0P-warmB eps=5.75e-04 eta=0.210 c=+0.243 (c0=+0.229) bounds RIG:0.402 SIG:0.430 TWO:0.163*
+  W=8 s=1234 d=-0.0002 best=R0P-warmB eps=6.66e-04 eta=0.467 c=+0.242 (c0=+0.180) bounds RIG:0.599 SIG:0.737 TWO:0.328
+  W=8 s=1234 d=+0.0002 best=R0P-warmA eps=7.01e-04 eta=0.491 c=-0.230 (c0=-0.157) bounds RIG:0.614 SIG:0.717 TWO:0.338
+  W=8 s=1234 d=+0.0005 best=R0P-warmA eps=5.89e-04 eta=0.215 c=-0.231 (c0=-0.211) bounds RIG:0.407 SIG:0.383 TWO:0.176*
+  W=8 s=1234 d=+0.0020 best=R0P-warmA eps=5.38e-04 eta=0.053 c=-0.231 (c0=-0.229) bounds RIG:0.201* SIG:0.141* TWO:0.048*
+  W=8 s=2345 d=-0.0020 best=R0P-warmB eps=5.02e-04 eta=0.049 c=+0.243 (c0=+0.242) bounds RIG:0.194* SIG:0.169* TWO:0.040*
+  W=8 s=2345 d=-0.0005 best=R0P-warmB eps=5.23e-04 eta=0.191 c=+0.243 (c0=+0.229) bounds RIG:0.383 SIG:0.405 TWO:0.152*
+  W=8 s=2345 d=-0.0002 best=R0P-warmB eps=6.40e-04 eta=0.448 c=+0.242 (c0=+0.180) bounds RIG:0.587 SIG:0.720 TWO:0.321
+  W=8 s=2345 d=+0.0002 best=R0P-warmA eps=6.30e-04 eta=0.441 c=-0.230 (c0=-0.157) bounds RIG:0.582 SIG:0.672 TWO:0.320
+  W=8 s=2345 d=+0.0005 best=R0P-warmA eps=5.43e-04 eta=0.198 c=-0.231 (c0=-0.211) bounds RIG:0.390 SIG:0.362 TWO:0.166*
+  W=8 s=2345 d=+0.0020 best=R0P-warmA eps=4.63e-04 eta=0.045 c=-0.231 (c0=-0.229) bounds RIG:0.186* SIG:0.128* TWO:0.043*
+  W=8 s=3456 d=-0.0020 best=R0PB eps=5.83e-04 eta=0.057 c=+0.243 (c0=+0.242) bounds RIG:0.209* SIG:0.185* TWO:0.045*
+  W=8 s=3456 d=-0.0005 best=R0P-warmB eps=6.55e-04 eta=0.240 c=+0.243 (c0=+0.229) bounds RIG:0.429 SIG:0.468 TWO:0.180*
+  W=8 s=3456 d=-0.0002 best=R0P-warmB eps=7.83e-04 eta=0.548 c=+0.243 (c0=+0.180) bounds RIG:0.649 SIG:0.808 TWO:0.358
+  W=8 s=3456 d=+0.0002 best=R0P-warmA eps=7.04e-04 eta=0.493 c=-0.231 (c0=-0.157) bounds RIG:0.616 SIG:0.720 TWO:0.339
+  W=8 s=3456 d=+0.0005 best=R0P-warmA eps=6.03e-04 eta=0.221 c=-0.231 (c0=-0.211) bounds RIG:0.412 SIG:0.389 TWO:0.179*
+  W=8 s=3456 d=+0.0020 best=R0P-warmA eps=5.32e-04 eta=0.052 c=-0.231 (c0=-0.229) bounds RIG:0.200* SIG:0.140* TWO:0.048*
+W=8: RIG DEC 6/18 wrong 0 | inner DEC 0/12; SIG DEC 6/18 wrong 0 | inner DEC 0/12; TWO DEC 12/18 wrong 0 | inner DEC 6/12
+-> /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.2_biased_ensemble_r5/results_precheck/precheck.json
