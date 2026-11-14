@@ -158,7 +158,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | :--- | :--- | :--- | :--- |
 | P1.1 | RESULT (PASS, qualified) | nothing | none |
 | P1.1-P | RESULT: SYMMETRY-DOMINATED (all instances) | nothing | none |
-| P1.2 | SUBMITTED (round 5 on 4×4 OBC; FRD is O(V) more passes per E_loc, so matched-parameter claim only) | nothing (premise read from own control arm) | Slurm 451916 (27 tasks) |
+| P1.2 | SUBMITTED (round 5 on 4×4 OBC: frdK AMBIGUOUS, rho_sign 0.84, rho_tot 0.92, 3/3 seed wins, disjoint ranges, beats separately trained ablation; frdX FAIL) | final 5-seed verdict blocked on seeds 44 and 55 | Slurm 553724 (8 tasks) |
 | P1.3 | SUBMITTED (pilot UNCLEAR-CONV: W ends 0.0116 vs cold best 0.0122, inside the 0.003 BASIN margin; pre-committed resume + widths 4 and 10) | nothing | Slurm 507178 (width-6 resume, +600 steps), 507179 (tasks 12–35) |
 | P2.1 | SUBMITTED (decisive array; second instance qualified: 4×4 OBC 5+5 dE_sign 0.0147t, 5×3 OBC 6+6 0.0159t, both above the 0.01t bar; inst3 used per rule) | nothing | Slurm 526080 (85 tasks: inst0 + inst3) |
 | P2.2 | SUBMITTED (round 5 reduced: accuracy trend + equal-cost foils + calibrated cost; no unconditional survivor) | nothing | Slurm 452238 (44 tasks) |

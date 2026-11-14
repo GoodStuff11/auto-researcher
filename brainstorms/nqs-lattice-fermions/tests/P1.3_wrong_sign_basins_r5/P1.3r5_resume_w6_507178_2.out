@@ -9,3 +9,19 @@
 [16:26:13] resumed parameters from /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/params/inst0_Cuhf_w6_s33.npz after 900 energy steps (RNG restored)
 [16:26:17] Cuhf-w6-s33: n_params=1734 calib=3.38e-14 init |P psi|/|psi|=6.275e-01 init F=0.9035
 [16:26:34] Cuhf-w6-s33: it   900 [E] E = -11.32771024 F = 0.903542 |f| = 2.10e-02 (0.02 s/step)
+[16:39:30] Cuhf-w6-s33: it   950 [E] E = -11.32384346 F = 0.906301 |f| = 5.42e-02 (0.83 s/step)
+[16:52:18] Cuhf-w6-s33: it  1000 [E] E = -11.31902549 F = 0.905847 |f| = 7.88e-02 (1.56 s/step)
+[17:05:06] Cuhf-w6-s33: it  1050 [E] E = -11.32836433 F = 0.907626 |f| = 1.30e-02 (2.22 s/step)
+[17:17:54] Cuhf-w6-s33: it  1100 [E] E = -11.32341097 F = 0.907844 |f| = 6.95e-02 (2.81 s/step)
+[17:30:43] Cuhf-w6-s33: it  1150 [E] E = -11.32209337 F = 0.906341 |f| = 6.45e-02 (3.36 s/step)
+[17:52:51] Cuhf-w6-s33 [mid @ 1200]: dE_tot=0.05959 dE_sign=0.01307 f_E=0.219 spread=3.0e-12 S2=0.282 ov0=0.9082 ovk=[0.9082, 0.0, 0.0, 0.0] (562 s)
+[17:53:07] Cuhf-w6-s33: it  1200 [E] E = -11.32769116 F = 0.910754 |f| = 3.22e-02 (4.34 s/step)
+[18:06:28] Cuhf-w6-s33: it  1250 [E] E = -11.32693933 F = 0.911716 |f| = 4.32e-02 (4.80 s/step)
+[18:19:42] Cuhf-w6-s33: it  1300 [E] E = -11.31698444 F = 0.909056 |f| = 8.96e-02 (5.23 s/step)
+[18:32:56] Cuhf-w6-s33: it  1350 [E] E = -11.31757797 F = 0.908256 |f| = 1.01e-01 (5.62 s/step)
+[18:46:14] Cuhf-w6-s33: it  1400 [E] E = -11.32832432 F = 0.910716 |f| = 3.33e-02 (5.99 s/step)
+[18:59:40] Cuhf-w6-s33: it  1450 [E] E = -11.32927827 F = 0.911624 |f| = 2.07e-02 (6.34 s/step)
+[19:22:11] Cuhf-w6-s33 [end @ 1500]: dE_tot=0.05818 dE_sign=0.01260 f_E=0.217 spread=3.7e-13 S2=0.255 ov0=0.9126 ovk=[0.9126, 0.0, 0.0, 0.0] (553 s)
+[19:31:30] Cuhf-w6-s33 [end_PS @ 1500]: dE_tot=0.03361 dE_sign=0.00710 f_E=0.211 spread=2.4e-12 S2=0.000 ov0=0.9537 ovk=[0.9537, 0.0, 0.0, 0.0] (559 s)
+[19:31:30] Cuhf-w6-s33: energy drop per 100 steps (slope over last 200) 2.31e-03 (tol 0.0003) converged=False n_fid=0 fid_reached=None total 11276 s
+[19:31:30] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/inst0_Cuhf_w6_s33_ext.json

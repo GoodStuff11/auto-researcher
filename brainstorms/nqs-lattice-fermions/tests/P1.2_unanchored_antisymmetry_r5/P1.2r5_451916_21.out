@@ -36,3 +36,12 @@
 [15:10:16] frdX: it   900  E = -11.32003092  |f| = 1.80e-01  (32.25 s/step)
 [15:37:11] frdX: it   950  E = -11.32233704  |f| = 6.00e-02  (32.25 s/step)
 [16:02:36] frdX: it  1000  E = -11.32440894  |f| = 2.36e-02  (32.16 s/step)
+[16:29:20] frdX: it  1050  E = -11.32220579  |f| = 9.34e-02  (32.16 s/step)
+[16:55:07] frdX: it  1100  E = -11.32402923  |f| = 5.18e-02  (32.10 s/step)
+[17:20:13] frdX: it  1150  E = -11.31345860  |f| = 1.64e-01  (32.02 s/step)
+[17:44:57] frdX: it  1199  E = -11.32348398  |f| = 9.63e-02  (31.95 s/step)
+[17:54:30] frdX [P]: dE_tot=0.06307 dE_sign=0.01414 f_E=0.224 w_sign=5.59e-03 spread=1.6e-12 ov0=0.915 (556 s)
+[18:03:23] frdX [P_S]: dE_tot=0.03520 dE_sign=0.00706 f_E=0.200 w_sign=3.74e-03 spread=2.4e-12 ov0=0.955 (533 s)
+[18:03:31] frdX: flip_weight=4.134e-05 E(alpha=0, co-adapted; diagnostic)=-11.253452
+[18:03:43] frdX sampled: E_exact=-11.32 mean=-11.33 stderr=0.0034 z=0.6076 var_mc=0.1949 var_ex=0.2111 kurt_ex=2.141e+06 tail_share=0.5161 max_dev_sigma=24.76 accept=0.3014 n=2e+04 per_amp_check=2.114e-16 (12 s)
+[18:03:43] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r5/results/inst0_frdX_s22_sh0.01.json

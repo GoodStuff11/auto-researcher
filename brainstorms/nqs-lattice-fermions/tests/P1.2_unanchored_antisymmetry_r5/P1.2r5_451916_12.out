@@ -33,3 +33,15 @@
 [14:42:52] frdK: it   750  E = -11.33851502  |f| = 3.57e-02  (47.35 s/step)
 [15:25:02] frdK: it   800  E = -11.33807787  |f| = 3.02e-02  (47.55 s/step)
 [16:06:53] frdK: it   850  E = -11.33405623  |f| = 6.04e-02  (47.71 s/step)
+[16:47:38] frdK: it   900  E = -11.33934793  |f| = 2.85e-02  (47.77 s/step)
+[17:29:03] frdK: it   950  E = -11.33479910  |f| = 6.26e-02  (47.88 s/step)
+[18:10:50] frdK: it  1000  E = -11.33964708  |f| = 2.31e-02  (47.99 s/step)
+[18:52:29] frdK: it  1050  E = -11.34013637  |f| = 2.42e-02  (48.08 s/step)
+[19:33:43] frdK: it  1100  E = -11.33999965  |f| = 2.35e-02  (48.15 s/step)
+[20:14:44] frdK: it  1150  E = -11.33965332  |f| = 2.99e-02  (48.19 s/step)
+[20:54:18] frdK: it  1199  E = -11.33968645  |f| = 2.94e-02  (48.20 s/step)
+[21:04:36] frdK [P]: dE_tot=0.04684 dE_sign=0.00975 f_E=0.208 w_sign=4.20e-03 spread=7.2e-13 ov0=0.942 (590 s)
+[21:14:43] frdK [P_S]: dE_tot=0.02438 dE_sign=0.00498 f_E=0.204 w_sign=2.66e-03 spread=5.4e-12 ov0=0.967 (607 s)
+[21:14:59] frdK: flip_weight=2.673e-03 E(alpha=0, co-adapted; diagnostic)=-11.012836
+[21:15:16] frdK sampled: E_exact=-11.34 mean=-11.34 stderr=0.003402 z=0.6512 var_mc=0.1689 var_ex=0.1708 kurt_ex=2.332e+05 tail_share=0.4786 max_dev_sigma=23.97 accept=0.3061 n=2e+04 per_amp_check=2.207e-16 (17 s)
+[21:15:16] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r5/results/inst0_frdK_s11_sh0.001.json

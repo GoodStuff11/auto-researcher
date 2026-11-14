@@ -39,3 +39,9 @@
 [15:13:49] frdK: it  1050  E = -11.33930998  |f| = 7.27e-02  (35.23 s/step)
 [15:42:31] frdK: it  1100  E = -11.33876152  |f| = 6.08e-02  (35.20 s/step)
 [16:11:37] frdK: it  1150  E = -11.33970339  |f| = 5.57e-02  (35.19 s/step)
+[16:40:35] frdK: it  1199  E = -11.33965962  |f| = 6.25e-02  (35.20 s/step)
+[16:46:49] frdK [P]: dE_tot=0.04732 dE_sign=0.01009 f_E=0.213 w_sign=4.19e-03 spread=2.6e-13 ov0=0.936 (353 s)
+[16:52:53] frdK [P_S]: dE_tot=0.02660 dE_sign=0.00525 f_E=0.197 w_sign=2.69e-03 spread=3.3e-12 ov0=0.964 (364 s)
+[16:53:04] frdK: flip_weight=1.441e-04 E(alpha=0, co-adapted; diagnostic)=-11.086040
+[16:53:16] frdK sampled: E_exact=-11.34 mean=-11.34 stderr=0.00347 z=1.047 var_mc=0.2122 var_ex=0.1688 kurt_ex=1.756e+06 tail_share=0.4837 max_dev_sigma=58.89 accept=0.3085 n=2e+04 per_amp_check=3.347e-16 (12 s)
+[16:53:16] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r5/results/inst0_frdK_s11_sh0.01.json
