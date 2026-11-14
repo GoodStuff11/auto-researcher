@@ -163,7 +163,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P2.1 | SUBMITTED (decisive array; second instance qualified: 4×4 OBC 5+5 dE_sign 0.0147t, 5×3 OBC 6+6 0.0159t, both above the 0.01t bar; inst3 used per rule) | nothing | Slurm 526080 (85 tasks: inst0 + inst3) |
 | P2.2 | SUBMITTED (round 5 reduced: accuracy trend + equal-cost foils + calibrated cost; no unconditional survivor) | nothing | Slurm 452238 (44 tasks) |
 | P3.1 | PILOT (ESR0: set A 16/21 G=0 but set W 8/19 and a grade-H real false certificate; Gate 0 FAIL as method, PASS as diagnostic) | step 2 blocked on excited-state pilot (GO: eps/omega at most 0.4 per level, out-of-window weight at most 0.03) | Slurm 456094 (excited pilot); EHX gate 452146 recorded GATE-FAIL (EHX = Route 2.3 restated) |
-| P3.2 | CRITIC (round 5: Eckart decision killed by exact pre-check, eps/Delta 0.19–0.55 so certified DEC 0/12; survivor LCC, linear crossing location from smooth branch energies) | nothing | per-leaf critic |
+| P3.2 | BLOCKED (round 5: LCC killed; width-8 naive energy comparison already decides correctly, width-4 impossible from energies → refined saturation; merged with P3.1 ESR0 via mechanism transfer) | P3.1 excited-state pilot job 456094 | none |
 | P4.1 | SUBMITTED (rank ladder of projected UHF mixtures, K=1–8, drift control) | nothing | Slurm 508440 (22 tasks: che_rbm M=1–3, che_k K=2,4,8, containing foil, che drift to 4000 it) |
 | P4.2 | SUBMITTED (capacity pilot MUTATE: 426-param MFNG-O plateaus at 6.0% rel. error, above 3%; projected NNBF reaches 0.35% at the same step count; re-pilot with enlarged family) | array blocked on enlarged re-pilot (at most 3%) | Slurm 604157 (channels 8, bf-hidden 32) |
 
@@ -344,6 +344,12 @@ Every number below was read from the result files by an agent; the orchestrator 
         * Even an oracle energy-window certificate is $9$–$81\times$ looser than $\lvert\delta\rvert$.
         * **Proposition S3:** junk at energy $\varepsilon$ in an excited state recovers only $\omega/(\omega+\varepsilon)$ of that level's error, so trained excited states must reach $\varepsilon\lesssim\omega$.
         * Step 2 (training width-6 excited states) waits on the per-leaf critic.
+* **P3.2 round-5 critic and refined Saturation Diagnostic (2026-11-14).**
+    * **LCC killed.** Linear crossing location is the killed round-3 crossing detector (the Corboz–Mila hysteresis protocol, arXiv:1802.00874) plus a margin. Its margin $b=\hat\varepsilon/\beta$ rests on a single-width zero-variance $\hat E_0$ that is off by up to $+2.2\times10^{-3}t$ in the risky direction. Its test ladder was centred on the exact ED crossing, so "the centre of the ladder" also scores perfectly.
+    * **Key finding (recomputed by the critic from job 451852).** At width 8, plain "the lower final branch energy wins" decides all 6 targets correctly on all 3 seeds, including $d=\pm0.0002$ (gap $1.4\times10^{-3}t$). The energy controls abstained only because their SR-window noise estimate was too pessimistic. At width 4 the same rule is wrong on 2 of 3 seeds, and by the leaf's $2\times2$ lemma no energy-based rule can fix that.
+    * **Saturation at ED size.** Deciding competing orders is either **easy** (enough capacity: plain energy comparison with final-state sampling noise works) or **impossible from energies** (capacity-limited: differential bias exceeds the gap). The only remaining lever is non-energy information about the low-energy in-irrep subspace.
+    * **Mechanism transfer.** P3.1's ESR0 (excited-state subspace Ritz) supplies exactly that information: Ritz in the low-lying in-irrep states gives the two-state mixing at a crossing. P3.2 is therefore **blocked on P3.1's excited-state pilot (job 456094)** rather than mutated independently.
+    * **Requirements for any further P3.2 test:** a ladder placed off the crossing and pre-registered blind to $t'_c$; the naive final-energy comparison with $\sigma_{\mathrm{MC}}$ abstention as a baseline it must beat; saved target parameters for real MCMC.
 * **P4.1 decisive pilot (job 451886, 4×3 OBC $5+5$, $U=8$, $t'=-0.25$; about 2.6k parameters per arm; 3 seeds; medians of relative energy error $\epsilon$; all states exact $S$).**
 
 | Arm | $m(\epsilon)$ | Seed range |
