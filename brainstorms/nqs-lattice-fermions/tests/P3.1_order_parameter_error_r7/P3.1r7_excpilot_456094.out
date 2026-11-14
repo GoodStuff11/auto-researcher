@@ -70,3 +70,24 @@
 [03:15:53] phi_3: it   650  F = -11.02052223  E = -11.02066765  pen = 1.45e-04  |<psi0|phi>|^2=2.457e-03 |<3|phi>|^2=0.9463 P3=0.9465 argmax=3  (20.51 s/step)
 [03:32:56] phi_3: it   700  F = -11.01849718  E = -11.01866883  pen = 1.72e-04  |<psi0|phi>|^2=2.467e-03 |<3|phi>|^2=0.9454 P3=0.9456 argmax=3  (20.50 s/step)
 [03:50:00] phi_3: it   750  F = -11.02117230  E = -11.02132687  pen = 1.55e-04  |<psi0|phi>|^2=2.534e-03 |<3|phi>|^2=0.9479 P3=0.9481 argmax=3  (20.50 s/step)
+[04:07:09] phi_3: it   800  F = -11.01475233  E = -11.01487300  pen = 1.21e-04  |<psi0|phi>|^2=2.442e-03 |<3|phi>|^2=0.9457 P3=0.9459 argmax=3  (20.51 s/step)
+[04:24:16] phi_3: it   850  F = -11.02001077  E = -11.02020054  pen = 1.90e-04  |<psi0|phi>|^2=2.844e-03 |<3|phi>|^2=0.9509 P3=0.9511 argmax=3  (20.51 s/step)
+[04:41:23] phi_3: it   900  F = -11.02234357  E = -11.02246332  pen = 1.20e-04  |<psi0|phi>|^2=2.645e-03 |<3|phi>|^2=0.9527 P3=0.9529 argmax=3  (20.51 s/step)
+[04:58:27] phi_3: it   950  F = -11.02109364  E = -11.02133161  pen = 2.38e-04  |<psi0|phi>|^2=2.607e-03 |<3|phi>|^2=0.9532 P3=0.9535 argmax=3  (20.51 s/step)
+[05:15:32] phi_3: it  1000  F = -11.01757166  E = -11.01773119  pen = 1.60e-04  |<psi0|phi>|^2=2.748e-03 |<3|phi>|^2=0.9520 P3=0.9521 argmax=3  (20.51 s/step)
+[05:32:33] phi_3: it  1050  F = -11.02247876  E = -11.02261685  pen = 1.38e-04  |<psi0|phi>|^2=2.577e-03 |<3|phi>|^2=0.9541 P3=0.9543 argmax=3  (20.50 s/step)
+[05:49:35] phi_3: it  1100  F = -11.02249414  E = -11.02262666  pen = 1.33e-04  |<psi0|phi>|^2=2.633e-03 |<3|phi>|^2=0.9544 P3=0.9546 argmax=3  (20.50 s/step)
+[06:06:37] phi_3: it  1150  F = -11.02336073  E = -11.02349538  pen = 1.35e-04  |<psi0|phi>|^2=2.714e-03 |<3|phi>|^2=0.9561 P3=0.9563 argmax=3  (20.50 s/step)
+[06:23:08] phi_3: it  1199  F = -11.02232352  E = -11.02244896  pen = 1.25e-04  |<psi0|phi>|^2=2.683e-03 |<3|phi>|^2=0.9553 P3=0.9554 argmax=3  (20.49 s/step)
+[06:23:20] phi_3: training wall 24591 s (20.49 s/step); ground-state training 15229 s -> ratio 1.61
+[06:23:21] phi_1: E=-11.141519 matched level 1 (omega=0.2089) eps=+0.0376 eps/omega=0.180 | |<1|phi>|^2=0.6245 ||P3 phi||^2=0.9675 out-of-24-window=0.0089 |<psi0|phi>|^2=0.0191 |<psi|phi>|^2=3.03e-04 S2=6.34e-30 top levels [1, 2, 0, 5, 7]
+[06:23:21] phi_2: E=-11.123716 matched level 2 (omega=0.2342) eps=+0.0301 eps/omega=0.129 | |<2|phi>|^2=0.6165 ||P3 phi||^2=0.9729 out-of-24-window=0.0105 |<psi0|phi>|^2=0.0080 |<psi|phi>|^2=8.51e-05 S2=2.10e-30 top levels [2, 1, 0, 5, 6]
+[06:23:21] phi_3: E=-11.023740 matched level 3 (omega=0.3138) eps=+0.0505 eps/omega=0.161 | |<3|phi>|^2=0.9558 ||P3 phi||^2=0.9559 out-of-24-window=0.0136 |<psi0|phi>|^2=0.0027 |<psi|phi>|^2=3.32e-05 S2=3.03e-30 top levels [3, 6, 8, 14, 0]
+[06:23:21] principal angles span(phi_1..3) vs span(|1..3>): [7.72, 11.51, 12.35] deg (cosines [0.9909, 0.9799, 0.9769])
+[06:23:32] estimated epsh/omegah (one Krylov step) = [0.143, 0.097, 0.119] vs exact eps/omega = [0.18, 0.129, 0.161]
+[06:23:33] pair: delta=+2.895e-05 | ESR0(K=3) +3.395e-05 ratio 1.173 | ORC(K=3) +3.069e-05 ratio 1.060 | L1R ratio 0.095 | ESR0/ORC 1.106 (K_1/2=2) | S3 interval delta_hat*[1,1.14] = ratio [1.173,1.341] report
+[06:23:33] spin: delta=+7.876e-03 | ESR0(K=3) +1.471e-03 ratio 0.187 | ORC(K=3) +1.486e-03 ratio 0.189 | L1R ratio 0.139 | ESR0/ORC 0.990 (K_1/2=6) | S3 interval delta_hat*[1,1.14] = ratio [0.187,0.214] report
+[06:23:33] charge: delta=-3.122e-04 | ESR0(K=3) -3.200e-05 ratio 0.102 | ORC(K=3) -1.877e-05 ratio 0.060 | L1R ratio -0.019 | ESR0/ORC 1.705 (K_1/2=11) | S3 interval delta_hat*[1,1.14] = ratio [0.102,0.117] report
+[06:23:33] PRE-REGISTERED RULE: GO to step 2 iff eps_k/omega_k <= 0.4 (k=1..3) AND out-of-24-window weight <= 0.03 (k=1..3) AND |<psi0|phi_k>|^2 <= 0.02 (k=1..3) AND exact pair ESR0/ORC in [0.7,1.3]; MUTATE iff eps_1/omega_1 > 1 or any out-of-window weight > 0.05; otherwise CONDITIONAL (step 2 scored on spin and pair only).
+[06:23:33] EXCITED PILOT VERDICT: GO | eps/omega [0.18, 0.129, 0.161] out-of-window [0.0089, 0.0105, 0.0136] psi0 weight [0.0191, 0.008, 0.0027] pair ESR0/ORC 1.106
+[06:23:33] done (72653 s)
