@@ -163,7 +163,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | P2.1 | SUBMITTED (decisive array; second instance qualified: 4×4 OBC 5+5 dE_sign 0.0147t, 5×3 OBC 6+6 0.0159t, both above the 0.01t bar; inst3 used per rule) | nothing | Slurm 526080 (85 tasks: inst0 + inst3) |
 | P2.2 | SUBMITTED (round 5 reduced: accuracy trend + equal-cost foils + calibrated cost; no unconditional survivor) | nothing | Slurm 452238 (44 tasks) |
 | P3.1 | PILOT (ESR0: set A 16/21 G=0 but set W 8/19 and a grade-H real false certificate; Gate 0 FAIL as method, PASS as diagnostic) | step 2 blocked on excited-state pilot (GO: eps/omega at most 0.4 per level, out-of-window weight at most 0.03) | Slurm 456094 (excited pilot); EHX gate 452146 recorded GATE-FAIL (EHX = Route 2.3 restated) |
-| P3.2 | MUTATE (round 5; 451852: SO-EC FAIL, CW 5/15 biased toward one order; all energy controls abstain because branch ΔE is below SR noise; oracle ECor correct everywhere; width 8 already ε < gap/2) | nothing | round-5 worker (certified single-state decision) |
+| P3.2 | CRITIC (round 5: Eckart decision killed by exact pre-check, eps/Delta 0.19–0.55 so certified DEC 0/12; survivor LCC, linear crossing location from smooth branch energies) | nothing | per-leaf critic |
 | P4.1 | SUBMITTED (rank ladder of projected UHF mixtures, K=1–8, drift control) | nothing | Slurm 508440 (22 tasks: che_rbm M=1–3, che_k K=2,4,8, containing foil, che drift to 4000 it) |
 | P4.2 | SUBMITTED (capacity pilot MUTATE: 426-param MFNG-O plateaus at 6.0% rel. error, above 3%; projected NNBF reaches 0.35% at the same step count; re-pilot with enlarged family) | array blocked on enlarged re-pilot (at most 3%) | Slurm 604157 (channels 8, bf-hidden 32) |
 

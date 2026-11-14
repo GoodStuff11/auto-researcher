@@ -6,3 +6,5 @@
 [04:00:21] ALL CHECKS PASSED
 [04:00:38] instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=Ccdw width=4 seed=11 pre(fid cap)=600 rel(energy steps)=900 init_from=-
 [04:01:22] ED levels [-11.388010886295248, -11.338627749487609, -11.329223800405972, -11.31736051148136] deg 1; |G|=8 chi(psi_0)={'My': 1, 'Mx': 1, 'D': -1}; S(psi_0)=0; level labels [{'chars': {'My': 1.0, 'Mx': 1.0, 'D': -1.0}, 'S2': 0.0, 'in_sector': True}, {'chars': {'My': 1.0, 'Mx': 1.0, 'D': 1.0}, 'S2': 0.0, 'in_sector': False}, {'chars': {'My': -1.0, 'Mx': -1.0, 'D': -1.0}, 'S2': 2.0, 'in_sector': False}, {'chars': {'My': -0.299, 'Mx': 0.299, 'D': -0.9543}, 'S2': 2.0, 'in_sector': False}] (44 s)
+[04:03:19] Ccdw-w4-s11: n_params=1284 calib=4.09e-14 init |P psi|/|psi|=3.537e-01 init F=0.0004
+[04:03:36] Ccdw-w4-s11: it     0 [E] E = -9.50165823 F = 0.000436 |f| = 1.56e+00 (16.54 s/step)
