@@ -16,3 +16,12 @@
 [20:44:19] Cfs-w6-s33: it  1150 [E] E = -11.33277258 F = 0.937041 |f| = 5.58e-02 (3.63 s/step)
 [21:07:18] Cfs-w6-s33 [mid @ 1200]: dE_tot=0.05288 dE_sign=0.01194 f_E=0.226 spread=2.3e-12 S2=0.093 ov0=0.9378 ovk=[0.9378, 0.0, 0.0, 0.0] (558 s)
 [21:07:34] Cfs-w6-s33: it  1200 [E] E = -11.33513125 F = 0.937758 |f| = 2.29e-02 (4.64 s/step)
+[21:21:05] Cfs-w6-s33: it  1250 [E] E = -11.32586411 F = 0.937161 |f| = 9.09e-02 (5.10 s/step)
+[21:34:38] Cfs-w6-s33: it  1300 [E] E = -11.33458976 F = 0.938968 |f| = 3.29e-02 (5.53 s/step)
+[21:48:08] Cfs-w6-s33: it  1350 [E] E = -11.33585734 F = 0.938694 |f| = 1.80e-02 (5.92 s/step)
+[22:01:39] Cfs-w6-s33: it  1400 [E] E = -11.33488073 F = 0.938825 |f| = 3.11e-02 (6.29 s/step)
+[22:15:08] Cfs-w6-s33: it  1450 [E] E = -11.33103667 F = 0.936445 |f| = 5.92e-02 (6.63 s/step)
+[22:37:45] Cfs-w6-s33 [end @ 1500]: dE_tot=0.05167 dE_sign=0.01172 f_E=0.227 spread=7.6e-13 S2=0.095 ov0=0.9381 ovk=[0.9381, 0.0, 0.0, 0.0] (553 s)
+[22:47:24] Cfs-w6-s33 [end_PS @ 1500]: dE_tot=0.03112 dE_sign=0.00688 f_E=0.221 spread=3.9e-12 S2=0.000 ov0=0.9549 ovk=[0.9549, 0.0, 0.0, 0.0] (579 s)
+[22:47:24] Cfs-w6-s33: energy drop per 100 steps (slope over last 200) 1.12e-05 (tol 0.0003) converged=True n_fid=0 fid_reached=None total 11722 s
+[22:47:24] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/inst0_Cfs_w6_s33_ext.json

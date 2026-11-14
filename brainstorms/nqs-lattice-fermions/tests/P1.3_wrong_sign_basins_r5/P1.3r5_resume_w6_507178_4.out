@@ -19,3 +19,9 @@
 [20:55:01] Cfs-w6-s22: it  1250 [E] E = -11.33252279 F = 0.927966 |f| = 4.57e-02 (4.08 s/step)
 [21:06:09] Cfs-w6-s22: it  1300 [E] E = -11.32641222 F = 0.930408 |f| = 9.12e-02 (4.43 s/step)
 [21:17:14] Cfs-w6-s22: it  1350 [E] E = -11.33359369 F = 0.932099 |f| = 4.50e-02 (4.76 s/step)
+[21:28:18] Cfs-w6-s22: it  1400 [E] E = -11.33306723 F = 0.930593 |f| = 3.96e-02 (5.07 s/step)
+[21:39:22] Cfs-w6-s22: it  1450 [E] E = -11.33182278 F = 0.930247 |f| = 5.52e-02 (5.35 s/step)
+[21:56:59] Cfs-w6-s22 [end @ 1500]: dE_tot=0.05310 dE_sign=0.01244 f_E=0.234 spread=2.5e-12 S2=0.157 ov0=0.9303 ovk=[0.9303, 0.0, 0.0, 0.0] (396 s)
+[22:03:43] Cfs-w6-s22 [end_PS @ 1500]: dE_tot=0.02927 dE_sign=0.00630 f_E=0.215 spread=1.9e-12 S2=0.000 ov0=0.9566 ovk=[0.9566, 0.0, 0.0, 0.0] (404 s)
+[22:03:43] Cfs-w6-s22: energy drop per 100 steps (slope over last 200) 9.17e-04 (tol 0.0003) converged=False n_fid=0 fid_reached=None total 9332 s
+[22:03:43] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/inst0_Cfs_w6_s22_ext.json
