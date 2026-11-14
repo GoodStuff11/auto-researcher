@@ -1,0 +1,22 @@
+[06:31:34] instance 4x3 PBC 4+4 U=8.0 t_y=1.11394: t'_c=-0.470482 min gap 1.001e-03
+[06:31:34] check Ritz vs ED: span{v0,v1,r} theta0-E0=2.0e-11 theta1-E1=2.1e-11
+[06:31:36] check penalty force: analytic 2.1455014937e-02 FD 2.1455012877e-02
+[06:31:37] check penalty identity: -11.886330864458 vs -11.886330864458
+[06:31:37] ESR-KC CHECKS PASSED
+[06:31:38] warm A t'=-0.47098 W=4 s=1234: it     0  E = -13.14698654  |f| = 4.56e-02  (1.18 s/step)
+[06:31:41] warm A t'=-0.47098 W=4 s=1234: it     2  E = -12.99886640  |f| = 4.37e-01  (1.18 s/step)
+[06:31:43] warm B t'=-0.47098 W=4 s=1234: it     0  E = -13.14427434  |f| = 7.87e-02  (1.14 s/step)
+[06:31:45] warm B t'=-0.47098 W=4 s=1234: it     2  E = -12.92765885  |f| = 1.10e+00  (1.14 s/step)
+[06:31:48] phi1(B) t'=-0.47098 W=4 s=1234: it     0  E = -13.14410021  |f| = 7.91e-02  (1.15 s/step)
+[06:31:50] phi1(B) t'=-0.47098 W=4 s=1234: it     2  E = -13.01730454  |f| = 5.36e-01  (1.15 s/step)
+[06:31:51] d=-0.0005 gap=2.74e-03 truth=B | b_A=7.80e-03 b_B=1.32e-02 naive=U | phi: dE=1.32e-02 c=+0.250 |<psi|phi>|^2=3.5e-04 | K1:A(c=-0.103,w_psi=0.716,err=8.8e-03) ESR0:A(c=-0.181,w_psi=0.878,err=5.8e-03) PAIR:A(c=-0.103,w_psi=0.716,err=8.8e-03) BL:B(c=+0.060,w_psi=0.381,err=3.4e-03) POS:B(c=+0.229,w_psi=0.027,err=7.1e-15) NEG:A(c=-0.238,w_psi=1.000,err=1.1e-02) | lowdiag(K1)=A
+[06:31:51] done, wall 26s -> /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.2_esr_crossing_r6/results_smoke/w4_s1234.json
+
+real	0m26.888s
+user	2m56.851s
+sys	0m11.973s
+### aggregate of the smoke JSON (plumbing only; 3 SR steps)
+ seed        d truth naive  K1 ESR0 PAIR  BL POS NEG lowdiag |<psi|phi>|^2 w_psi(K1)
+ 1234  -0.0005   B     U    A   A    A    B   B   A      A     3.5e-04       0.716
+|N| (naive committed wrong) = 0; K1/ESR0 best fixes 0/0; new wrong on naive-right instances: False; BL (alternative, in-sample) fixes 0/0
+VERDICT ESR-K1 kill check: INCONCLUSIVE

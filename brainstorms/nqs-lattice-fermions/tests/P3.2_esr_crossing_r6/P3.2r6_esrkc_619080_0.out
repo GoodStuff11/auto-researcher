@@ -1,0 +1,6 @@
+[06:34:46] instance 4x3 PBC 4+4 U=8.0 t_y=1.11394: t'_c=-0.470482 min gap 1.001e-03
+[06:34:46] check Ritz vs ED: span{v0,v1,r} theta0-E0=2.0e-11 theta1-E1=2.1e-11
+[06:34:49] check penalty force: analytic 2.1455014937e-02 FD 2.1455012877e-02
+[06:34:49] check penalty identity: -11.886330864458 vs -11.886330864458
+[06:34:49] ESR-KC CHECKS PASSED
+[06:34:51] warm A t'=-0.47098 W=4 s=1234: it     0  E = -13.14698654  |f| = 4.56e-02  (1.73 s/step)
