@@ -1,0 +1,18 @@
+[A: both qualify] cyl QUALIFIES | fill QUALIFIES -> PROMOTE (qualifies on premise-valid instance(s): cyl, fill)
+[A: qualify + NO-TARGET] cyl QUALIFIES | fill NO-TARGET -> PROMOTE (qualifies on premise-valid instance(s): cyl)
+[A: both NO-TARGET] cyl NO-TARGET | fill NO-TARGET -> NO-TARGET on both instances (generality untested; P4.1 stays a single-instance narrow PASS)
+[A: one flat (k = che)] cyl QUALIFIES | fill FAILS -> KILL-GENERALITY (fails qualification on premise-valid instance(s): fill)
+[A: drift run reaches best k] cyl QUALIFIES | fill FAILS -> KILL-GENERALITY (fails qualification on premise-valid instance(s): fill)
+[A: gain absent at 1000] cyl QUALIFIES | fill FAILS -> KILL-GENERALITY (fails qualification on premise-valid instance(s): fill)
+[A: missing seed] cyl QUALIFIES | fill INCOMPLETE -> INCOMPLETE
+[A: S^2 not exact] cyl INCOMPLETE | fill QUALIFIES -> INCOMPLETE
+[A: capped below 1000] cyl QUALIFIES | fill INCOMPLETE -> INCOMPLETE
+[A: capped at 1500 (equal-iteration comparison)] cyl QUALIFIES | fill QUALIFIES -> PROMOTE (qualifies on premise-valid instance(s): cyl, fill)
+[A: flat + NO-TARGET] cyl FAILS | fill NO-TARGET -> KILL-GENERALITY (fails qualification on premise-valid instance(s): cyl)
+[B: rbm stays at che (g ~ 0) -> FAIL] FAIL -> rbm closed: c-varying row scalings add nothing at 2x budget
+[B: rbm separates -> PASS] PASS -> attribution DEFERRED: extend che_k2/4/8 to 4000 the same way before crediting c-varying components
+[B: rbm modest gain (g ~ 0.3) -> AMBIGUOUS] AMBIGUOUS (che_rbm1_ext4000 at it 4000: gap fraction < 0.5, gain <= che drift 4.30e-05 -> rbm closed as unresolved at 2x budget; no further extension
+[B: PASS at 4000 not at 3000 -> AMBIGUOUS] AMBIGUOUS (che_rbm3_ext4000 at it 3000: gap fraction < 0.5, gain <= che drift 4.30e-05) -> rbm closed as unresolved at 2x budget; no further extension
+[B: che closes on SG at 4000 -> NO-TARGET] NO-TARGET (P_gap fails at iteration 3000: m_che/m_SG=1.35, lo_che=3.080e-04, hi_SG=2.455e-04)
+[B: missing seed -> INCOMPLETE] INCOMPLETE (che_rbm1_ext4000: 2 seeds or S^2 not exact)
+[B: cost gate] FAIL (cost gate) -> rbm closed: c-varying row scalings add nothing at 2x budget

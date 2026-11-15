@@ -1,0 +1,7 @@
+[23:48:50] ED: E0=-9.0229100215 <S^2>=-4.2e-18 irrep={'Tx': 1, 'My': 1, 'Mx': 1} (248s)
+[23:48:59] prep cyl (L4x3xpbcobc_N10_U8_tp-0.25): dim=627264 Fermi gap=1.1716 E0(singlet)=-9.0229100215 <S^2>(psi0)=-4.2e-18 irrep={'Tx': 1, 'My': 1, 'Mx': 1}
+[23:48:59]   unpenalised lowest levels (whole S_z=0 space): E=-9.0229100215 <S^2>=0.0000, E=-8.7676429705 <S^2>=2.0000, E=-8.5823444918 <S^2>=0.0000 -> ground state is the singlet: True
+[23:48:59]   P_ref (che = nnbf_SG, width 16) = 2637; che_k2: H=15 P=2613 (-0.91%), che_k4: H=13 P=2565 (-2.73%), che_k8: H=10 P=2614 (-0.87%)
+[23:49:13]   timing che: P=2637 one energy+gradient 14.1s (threads 16)
+[23:49:28]   timing nnbf_SG: P=2637 one energy+gradient 14.3s (threads 16)
+[23:49:55]   timing che_k8: P=2614 one energy+gradient 27.0s (threads 16)

@@ -1,0 +1,6 @@
+[23:44:25] prep fill (L4x3xobcobc_N8_U8_tp-0.25): dim=245025 Fermi gap=0.2388 E0(singlet)=-9.3617101438 <S^2>(psi0)=-8.4e-18 irrep={'My': 1, 'Mx': 1}
+[23:44:25]   unpenalised lowest levels (whole S_z=0 space): E=-9.3617101438 <S^2>=-0.0000, E=-9.2292170739 <S^2>=2.0000, E=-9.2183220164 <S^2>=2.0000 -> ground state is the singlet: True
+[23:44:25]   P_ref (che = nnbf_SG, width 16) = 2205; che_k2: H=15 P=2181 (-1.09%), che_k4: H=13 P=2133 (-3.27%), che_k8: H=10 P=2158 (-2.13%)
+[23:44:29]   timing che: P=2205 one energy+gradient 3.9s (threads 16)
+[23:44:33]   timing nnbf_SG: P=2205 one energy+gradient 3.8s (threads 16)
+[23:44:41]   timing che_k8: P=2158 one energy+gradient 7.5s (threads 16)
