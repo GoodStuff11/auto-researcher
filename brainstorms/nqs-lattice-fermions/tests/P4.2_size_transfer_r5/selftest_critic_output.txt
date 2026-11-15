@@ -1,0 +1,8 @@
+[     0.1s] selftest free_f=False spin_feat=False jas2=none bnd_f=0: npar=110 rel grad err 3.33e-09, zero-init equals base MFNG-O: True -> OK
+[     0.1s] selftest free_f=True spin_feat=False jas2=none bnd_f=0: npar=146 rel grad err 8.02e-09, zero-init equals base MFNG-O: True -> OK
+[     0.1s] selftest free_f=False spin_feat=True jas2=none bnd_f=0: npar=137 rel grad err 2.66e-09, zero-init equals base MFNG-O: True -> OK
+[     0.1s] selftest free_f=False spin_feat=False jas2=cs bnd_f=0: npar=122 rel grad err 2.07e-09, zero-init equals base MFNG-O: True -> OK
+[     0.1s] selftest free_f=True spin_feat=True jas2=cs bnd_f=0: npar=185 rel grad err 3.69e-09, zero-init equals base MFNG-O: True -> OK
+[     0.2s] selftest free_f=False spin_feat=False jas2=none bnd_f=3: npar=119 rel grad err 5.04e-09, zero-init equals base MFNG-O: True -> OK
+[     0.2s] selftest free_f=False spin_feat=True jas2=cs bnd_f=3: npar=158 rel grad err 1.15e-09, zero-init equals base MFNG-O: True -> OK
+[     0.2s] SELFTEST PASSED

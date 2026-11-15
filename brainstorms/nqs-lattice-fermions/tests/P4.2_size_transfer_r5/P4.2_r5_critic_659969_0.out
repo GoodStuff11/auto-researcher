@@ -1,0 +1,7 @@
+[   113.8s] target 4x4o 4x4:6 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=1681680 n_irrep=210430 E0=-11.3880108863 gap/V=4.6974e-03 (sign half only) npar=426
+[   184.0s] LM: B built ((210430, 426)) in 70s
+[   186.5s] LM results_capacity/scr_s0.json scr@600: npar=426 E=-10.69154081 relerr=6.1158% |g|=1.213e+00
+[   186.5s]   cut 1e-06: kept 20/426 E_LM=-10.69154252 relerr_LM=6.1158% LM gain fraction (E-E_LM)/(E-E0)=0.0000
+[   186.5s]   cut 1e-08: kept 34/426 E_LM=-10.69272462 relerr_LM=6.1054% LM gain fraction (E-E_LM)/(E-E0)=0.0017
+[   186.5s]   cut 1e-10: kept 67/426 E_LM=-10.72689646 relerr_LM=5.8054% LM gain fraction (E-E_LM)/(E-E0)=0.0508
+[   186.6s] done (results_critic/lm_c4h16.json)

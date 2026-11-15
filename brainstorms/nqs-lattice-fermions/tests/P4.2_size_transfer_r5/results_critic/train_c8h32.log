@@ -1,0 +1,14 @@
+[     0.5s] target 4x3o 4x3:5 irrep={'Mx': 1, 'My': 1} dim=16632 n_irrep=4152 E0=-7.2330203724 gap/V=1.2985e-02 (sign half only) npar=818
+[     0.5s] train 4x3:5 free_f=False spin_feat=False jas2=none npar=818 lr=0.05 shift=0.01
+[   108.2s]   [train] step 60/600 eps=1.88925e-02 lr=0.115
+[   214.1s]   [train] step 120/600 eps=1.73430e-02 lr=0.19
+[   319.9s]   [train] step 180/600 eps=1.60837e-02 lr=0.102
+[   423.4s]   [train] step 240/600 eps=1.52020e-02 lr=0.11
+[   526.2s]   [train] step 300/600 eps=1.45519e-02 lr=0.114
+[   620.0s]   [train] step 360/600 eps=1.39518e-02 lr=0.133
+[   707.7s]   [train] step 420/600 eps=1.33983e-02 lr=0.152
+[   797.2s]   [train] step 480/600 eps=1.29204e-02 lr=0.18
+[   888.2s]   [train] step 540/600 eps=1.25119e-02 lr=0.0991
+[   981.0s]   [train] step 600/600 eps=1.21855e-02 lr=0.118
+[   981.5s] RESULT 4x3:5 free_f=False spin_feat=False jas2=none npar=818: E=-7.08679465 relerr=2.0216% A=0.0206 sign share=0.141 irrep weight=1.000 eps(150)=1.6701e-02 eps(end)=1.2185e-02
+[   981.5s] done (results_critic/train_c8h32.json)

@@ -1,0 +1,9 @@
+Written 2026-11-15T14:25:57-05:00, before the two runs below start.
+4x3 OBC 5+5, 600 steps, seed 0, lr 0.05, shift 0.01:
+  bnd          = base + --bnd-f 3
+  bnd_spin_jas = base + --bnd-f 3 --spin-feat --jas2 cs   (all size-independent)
+Oracle reference already measured: all (free-F + spin-feat + jas2 cs) relerr 0.638%; base 1.536%.
+Rule: bnd_spin_jas relerr(600) <= 0.85%  -> the size-independent boundary-aware family earns ONE
+      4x4 re-pilot (no further enlargement rounds after it).
+      bnd_spin_jas relerr(600) >  0.85%  -> close P4.2 with a Saturation Diagnostic (site-resolved,
+      non-transferable pairing is needed).

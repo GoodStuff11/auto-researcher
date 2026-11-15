@@ -1,0 +1,11 @@
+all: npar=616: E=-7.18689074 relerr=0.6378% A=0.0063 sign share=0.137 irrep weight=0.262 eps(150)=1.1675e-02 eps(end)=3.8441e-03
+base: npar=426: E=-7.12190193 relerr=1.5363% A=0.0096 sign share=0.086 irrep weight=1.000 eps(150)=1.2407e-02 eps(end)=9.2599e-03
+bnd: npar=445: E=-7.00664932 relerr=3.1297% A=0.0537 sign share=0.237 irrep weight=1.000 eps(150)=2.2761e-02 eps(end)=1.8864e-02
+bnd_spin_jas: npar=557: E=-6.91395483 relerr=4.4112% A=0.1717 sign share=0.538 irrep weight=1.000 eps(150)=2.9251e-02 eps(end)=2.6589e-02
+c8h32: npar=818: E=-7.08679465 relerr=2.0216% A=0.0206 sign share=0.141 irrep weight=1.000 eps(150)=1.6701e-02 eps(end)=1.2185e-02
+freeF: npar=504: E=-7.15932399 relerr=1.0189% A=0.0108 sign share=0.146 irrep weight=0.443 eps(150)=9.9929e-03 eps(end)=6.1414e-03
+jas2c: npar=434: E=-7.10577791 relerr=1.7592% A=0.0121 sign share=0.095 irrep weight=1.000 eps(150)=1.2239e-02 eps(end)=1.0604e-02
+jas2cs: npar=442: E=-7.12492811 relerr=1.4944% A=0.0095 sign share=0.088 irrep weight=1.000 eps(150)=1.0889e-02 eps(end)=9.0077e-03
+shift1e-3: npar=426: E=-6.78042066 relerr=6.2574% A=0.2408 sign share=0.532 irrep weight=1.000 eps(150)=4.1805e-02 eps(end)=3.7717e-02
+spin_jas2cs: npar=538: E=-7.13085399 relerr=1.4125% A=0.0107 sign share=0.105 irrep weight=1.000 eps(150)=9.6134e-03 eps(end)=8.5139e-03
+spinfeat: npar=522: E=-7.13154559 relerr=1.4029% A=0.0109 sign share=0.107 irrep weight=1.000 eps(150)=9.5058e-03 eps(end)=8.4562e-03
