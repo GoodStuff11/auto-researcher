@@ -96,65 +96,65 @@
    "width": 4,
    "n": 3,
    "c": {
-    "Cuhf": 0.019358658473734636,
-    "Cfs": 0.02227946659472657,
-    "Ccdw": 0.02217967558213374
+    "Cuhf": 0.01921214629810919,
+    "Cfs": 0.02192234421871575,
+    "Ccdw": 0.02212510764235276
    },
    "cE": {
-    "Cuhf": 0.08048871209494024,
-    "Cfs": 0.08510599466225877,
-    "Ccdw": 0.08500163994484033
+    "Cuhf": 0.07880952636499039,
+    "Cfs": 0.08108213028636868,
+    "Ccdw": 0.08306448038561065
    },
-   "Cbest": 0.019358658473734636,
-   "sigma_c": 0.0007785199471133097,
-   "sigma_E": 0.004401009092655173,
-   "margin": 0.004839664618433659,
-   "tolE": 0.008802018185310345,
-   "Wr": 0.01957825530250723,
-   "Wm": 0.020377861370208805,
+   "Cbest": 0.01921214629810919,
+   "sigma_c": 0.0010986103339405418,
+   "sigma_E": 0.0023695764225202254,
+   "margin": 0.004803036574527297,
+   "tolE": 0.004739152845040451,
+   "Wr": 0.01889566306181223,
+   "Wm": 0.018930690956663554,
    "W0": 0.02125965662986573,
-   "W_dE_tot": 0.07914656569492884,
+   "W_dE_tot": 0.07742595903589589,
    "paired": 2,
-   "drift": -0.00016824358759670588,
-   "noise_max": 9.947598300641403e-14,
+   "drift": -3.502789485132496e-05,
+   "noise_max": 2.0250467969162855e-13,
    "calib_max": 4.085620730620576e-14,
    "converged": {
     "Cuhf": [
-     false,
+     true,
      true,
      false
     ],
     "Cfs": [
      false,
-     false,
+     true,
      true
     ],
     "Ccdw": [
-     false,
-     false,
-     false
+     true,
+     true,
+     true
     ],
     "W": [
-     false,
-     false,
+     true,
+     true,
      false
     ]
    },
    "stable": {
     "Cuhf": [
-     false,
-     false,
-     false
+     true,
+     true,
+     true
     ],
     "Cfs": [
-     false,
-     false,
-     false
+     true,
+     true,
+     true
     ],
     "Ccdw": [
-     false,
-     false,
-     false
+     true,
+     true,
+     true
     ]
    },
    "fid_reached": [
@@ -168,7 +168,7 @@
     39
    ],
    "ov0_W0": 0.9356072561552364,
-   "ov0_Cuhf": 0.8690323844321759,
+   "ov0_Cuhf": 0.873187827779561,
    "Bm": true,
    "Bc": false,
    "B1": false,
@@ -185,46 +185,46 @@
    "width": 10,
    "n": 3,
    "c": {
-    "Cuhf": 0.0076555761733807515,
-    "Cfs": 0.008739524078530181,
-    "Ccdw": 0.007489854509858063
+    "Cuhf": 0.007558536625058565,
+    "Cfs": 0.007813364629814856,
+    "Ccdw": 0.006971980627406893
    },
    "cE": {
-    "Cuhf": 0.036545134615966646,
-    "Cfs": 0.03748791135039653,
-    "Ccdw": 0.037863794437054565
+    "Cuhf": 0.03468494870658212,
+    "Cfs": 0.034585940739004783,
+    "Ccdw": 0.03585843148283985
    },
-   "Cbest": 0.007489854509858063,
-   "sigma_c": 0.0015134142363866232,
-   "sigma_E": 0.0019055237278511328,
-   "margin": 0.0030268284727732464,
-   "tolE": 0.0038110474557022656,
-   "Wr": 0.007167218585680146,
-   "Wm": 0.007638360548634537,
+   "Cbest": 0.006971980627406893,
+   "sigma_c": 0.0012519571785567507,
+   "sigma_E": 0.0018861153752869342,
+   "margin": 0.0025039143571135014,
+   "tolE": 0.0037722307505738684,
+   "Wr": 0.007002644365828203,
+   "Wm": 0.007095499166441144,
    "W0": 0.013791876603441722,
-   "W_dE_tot": 0.03431288378271269,
-   "paired": 2,
-   "drift": -0.000278622401435058,
-   "noise_max": 2.611244553918368e-13,
+   "W_dE_tot": 0.03285719587370828,
+   "paired": 0,
+   "drift": -2.499624195095862e-05,
+   "noise_max": 2.255973186038318e-13,
    "calib_max": 4.085620730620576e-14,
    "converged": {
     "Cuhf": [
-     false,
-     false,
-     false
+     true,
+     true,
+     true
     ],
     "Cfs": [
-     false,
+     true,
      false,
      false
     ],
     "Ccdw": [
      false,
-     false,
+     true,
      false
     ],
     "W": [
-     false,
+     true,
      true,
      true
     ]
@@ -232,11 +232,11 @@
    "stable": {
     "Cuhf": [
      true,
-     false,
-     false
+     true,
+     true
     ],
     "Cfs": [
-     false,
+     true,
      false,
      false
     ],
@@ -257,11 +257,11 @@
     22
    ],
    "ov0_W0": 0.9435901188203245,
-   "ov0_Cuhf": 0.9627674253702363,
+   "ov0_Cuhf": 0.962392045879875,
    "Bm": true,
    "Bc": false,
    "B1": false,
-   "B2": true,
+   "B2": false,
    "B3": true,
    "B4": false,
    "SD": false,
@@ -291,5 +291,5 @@
   ]
  ],
  "verdict": "UNCLEAR",
- "note": "w6: UNCLEAR-CONV -> resume every run of this width: --init-from <json> --rel 600; w4: UNCLEAR-CONV -> resume every run of this width: --init-from <json> --rel 600; w10: UNCLEAR-CONV -> resume every run of this width: --init-from <json> --rel 600; tie-breaker if still UNCLEAR after these actions: width-limited (Cbest(10)=0.00749 <= 0.5 Cbest(4)=0.00968) is True -> CAPACITY"
+ "note": "w6: UNCLEAR-CONV -> resume every run of this width: --init-from <json> --rel 600; w4: UNCLEAR-CONV -> resume every run of this width: --init-from <json> --rel 600; w10: UNCLEAR-CONV -> resume every run of this width: --init-from <json> --rel 600; tie-breaker if still UNCLEAR after these actions: width-limited (Cbest(10)=0.00697 <= 0.5 Cbest(4)=0.00961) is True -> CAPACITY"
 }

@@ -4,3 +4,24 @@
 [14:01:35] check [Ccdw] ref orthonormal 8.9e-16; grad E analytic -3.5683408521e-01 fd -3.5683408506e-01; grad -logF analytic -3.2014191895e+00 fd -3.2014191897e+00; init F=0.0075
 [14:01:36] check [W] ref orthonormal 1.4e-15; grad E analytic -2.4727108127e-01 fd -2.4727108128e-01; grad -logF analytic 8.4450091066e-01 fd 8.4450091009e-01; init F=0.0018
 [14:01:36] ALL CHECKS PASSED
+[14:01:53] instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=Cuhf width=4 seed=33 pre(fid cap)=600 rel(energy steps)=600 init_from=results/inst0_Cuhf_w4_s33.json
+[14:02:36] ED levels [-11.388010886295248, -11.338627749487609, -11.329223800405972, -11.31736051148136] deg 1; |G|=8 chi(psi_0)={'My': 1, 'Mx': 1, 'D': -1}; S(psi_0)=0; level labels [{'chars': {'My': 1.0, 'Mx': 1.0, 'D': -1.0}, 'S2': 0.0, 'in_sector': True}, {'chars': {'My': 1.0, 'Mx': 1.0, 'D': 1.0}, 'S2': 0.0, 'in_sector': False}, {'chars': {'My': -1.0, 'Mx': -1.0, 'D': -1.0}, 'S2': 2.0, 'in_sector': False}, {'chars': {'My': -0.299, 'Mx': 0.299, 'D': -0.9543}, 'S2': 2.0, 'in_sector': False}] (43 s)
+[14:04:31] resumed parameters from /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/params/inst0_Cuhf_w4_s33.npz after 900 energy steps (RNG restored)
+[14:04:36] Cuhf-w4-s33: n_params=1284 calib=3.38e-14 init |P psi|/|psi|=6.146e-01 init F=0.8660
+[14:04:53] Cuhf-w4-s33: it   900 [E] E = -11.30752217 F = 0.866000 |f| = 3.49e-02 (0.02 s/step)
+[14:18:41] Cuhf-w4-s33: it   950 [E] E = -11.29936650 F = 0.865256 |f| = 1.12e-01 (0.89 s/step)
+[14:32:25] Cuhf-w4-s33: it  1000 [E] E = -11.30370918 F = 0.870747 |f| = 7.39e-02 (1.67 s/step)
+[14:46:16] Cuhf-w4-s33: it  1050 [E] E = -11.30415252 F = 0.863804 |f| = 7.47e-02 (2.38 s/step)
+[14:59:59] Cuhf-w4-s33: it  1100 [E] E = -11.30630304 F = 0.869269 |f| = 5.97e-02 (3.02 s/step)
+[15:13:44] Cuhf-w4-s33: it  1150 [E] E = -11.30341098 F = 0.871293 |f| = 6.12e-02 (3.60 s/step)
+[15:36:53] Cuhf-w4-s33 [mid @ 1200]: dE_tot=0.07959 dE_sign=0.01947 f_E=0.245 spread=4.9e-13 S2=0.473 ov0=0.8683 ovk=[0.8683, 0.0, 0.0, 0.0] (573 s)
+[15:37:09] Cuhf-w4-s33: it  1200 [E] E = -11.30685652 F = 0.872285 |f| = 7.07e-02 (4.62 s/step)
+[15:50:17] Cuhf-w4-s33: it  1250 [E] E = -11.30385468 F = 0.871592 |f| = 6.46e-02 (5.07 s/step)
+[16:03:23] Cuhf-w4-s33: it  1300 [E] E = -11.30357286 F = 0.873302 |f| = 7.35e-02 (5.48 s/step)
+[16:16:31] Cuhf-w4-s33: it  1350 [E] E = -11.30365882 F = 0.870965 |f| = 5.99e-02 (5.86 s/step)
+[16:29:32] Cuhf-w4-s33: it  1400 [E] E = -11.30176785 F = 0.870692 |f| = 9.76e-02 (6.21 s/step)
+[16:42:29] Cuhf-w4-s33: it  1450 [E] E = -11.30371127 F = 0.871965 |f| = 7.62e-02 (6.53 s/step)
+[17:04:16] Cuhf-w4-s33 [end @ 1500]: dE_tot=0.07881 dE_sign=0.01959 f_E=0.249 spread=2.5e-13 S2=0.443 ov0=0.8732 ovk=[0.8732, 0.0, 0.0, 0.0] (536 s)
+[17:13:47] Cuhf-w4-s33 [end_PS @ 1500]: dE_tot=0.04404 dE_sign=0.00853 f_E=0.194 spread=1.2e-12 S2=0.000 ov0=0.9433 ovk=[0.9433, 0.0, 0.0, 0.0] (572 s)
+[17:13:47] Cuhf-w4-s33: energy drop per 100 steps (slope over last 200) 1.64e-03 (tol 0.0003) converged=False n_fid=0 fid_reached=None total 11514 s
+[17:13:47] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/inst0_Cuhf_w4_s33_ext.json
