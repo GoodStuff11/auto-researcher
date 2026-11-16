@@ -46,3 +46,10 @@
 [02:20:58] sk1_PS: it   850  E = -12.49181178  |f| = 5.34e-02  (35.63 s/step)
 [02:50:32] sk1_PS: it   900  E = -12.49190284  |f| = 2.19e-02  (35.62 s/step)
 [03:20:05] sk1_PS: it   950  E = -12.49167560  |f| = 8.47e-02  (35.62 s/step)
+[03:49:38] sk1_PS: it  1000  E = -12.49184274  |f| = 9.00e-02  (35.61 s/step)
+[04:19:11] sk1_PS: it  1050  E = -12.49227029  |f| = 1.51e-02  (35.60 s/step)
+[04:48:45] sk1_PS: it  1100  E = -12.48595598  |f| = 3.65e-01  (35.60 s/step)
+[05:18:16] sk1_PS: it  1150  E = -12.49217794  |f| = 2.74e-02  (35.59 s/step)
+[05:47:11] sk1_PS: it  1199  E = -12.49157650  |f| = 1.61e-01  (35.58 s/step)
+[05:59:29] sk1_PS [PS]: dE_tot=0.01090 dE_sign=0.00042 f_E=0.038 eC=2.75e-04 spread=3.9e-12 S2=0.000 ov0=0.997 (720 s)
+[05:59:29] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r5/results/inst3_sk1_PS_s22.json

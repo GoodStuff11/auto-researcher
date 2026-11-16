@@ -1,0 +1,29 @@
+size 0 4x2 3+3 D=560 E0=-5.189941 gap=0.0657 valid=True checks={'amp_vs_LRAnsatz': 0.0, 'frame_H_vs_Hoff': 1.3322676295501878e-15, 'pos_ctrl_flags': 0, 'pos_ctrl_err': 1.0729017674293573e-10, 'neg_ctrl_lift_H': 1.009278945541089} E0<H_nn frac=1.000 (0 s)
+  [U] w_b=0.0455 dEs_base=0.03783
+     K: flag_w=0.0763 recall=0.221 lift=2.900 | max-edge recall=0.817 lift=2.615 | dEs repaired=0.09715
+     X: flag_w=0.1314 recall=0.282 lift=2.144 | max-edge recall=0.624 lift=3.960 | dEs repaired=0.16323
+     H: flag_w=0.0495 recall=0.095 lift=1.929 | max-edge recall=0.884 lift=2.418 | dEs repaired=0.07086
+  [G] w_b=0.0099 dEs_base=0.02523
+     K: flag_w=0.0175 recall=0.926 lift=52.851 | max-edge recall=0.821 lift=5.238 | dEs repaired=0.01658
+     X: flag_w=0.1425 recall=0.070 lift=0.491 | max-edge recall=0.070 lift=2.869 | dEs repaired=0.10301
+     H: flag_w=0.0077 recall=0.025 lift=3.235 | max-edge recall=0.866 lift=5.386 | dEs repaired=0.03642
+size 1 5x2 4+4 D=3150 E0=-6.069006 gap=0.0041 valid=True checks={'amp_vs_LRAnsatz': 0.0, 'frame_H_vs_Hoff': 2.6645352591003757e-15, 'pos_ctrl_flags': 0, 'pos_ctrl_err': 1.6473578057230043e-10, 'neg_ctrl_lift_H': 1.0234439764147494} E0<H_nn frac=1.000 (2 s)
+  [U] w_b=0.1880 dEs_base=0.08836
+     K: flag_w=0.2011 recall=0.255 lift=1.269 | max-edge recall=0.589 lift=1.200 | dEs repaired=0.13917
+     X: flag_w=0.1537 recall=0.395 lift=2.570 | max-edge recall=0.513 lift=2.106 | dEs repaired=0.18628
+     H: flag_w=0.0829 recall=0.221 lift=2.662 | max-edge recall=0.692 lift=1.178 | dEs repaired=0.10816
+  [G] w_b=0.0917 dEs_base=0.09773
+     K: flag_w=0.1415 recall=0.249 lift=1.761 | max-edge recall=0.802 lift=1.751 | dEs repaired=0.19902
+     X: flag_w=0.0931 recall=0.529 lift=5.678 | max-edge recall=0.498 lift=3.429 | dEs repaired=0.15123
+     H: flag_w=0.0672 recall=0.250 lift=3.714 | max-edge recall=0.822 lift=1.668 | dEs repaired=0.13697
+size 2 6x2 5+5 D=16632 E0=-7.017293 gap=0.1181 valid=True checks={'amp_vs_LRAnsatz': 0.0, 'frame_H_vs_Hoff': 3.552713678800501e-15, 'pos_ctrl_flags': 0, 'pos_ctrl_err': 4.455724678109618e-11, 'neg_ctrl_lift_H': 1.0621058205938987} E0<H_nn frac=1.000 (6 s)
+  [U] w_b=0.1112 dEs_base=0.10838
+     K: flag_w=0.1087 recall=0.222 lift=2.046 | max-edge recall=0.685 lift=1.773 | dEs repaired=0.16553
+     X: flag_w=0.1143 recall=0.370 lift=3.236 | max-edge recall=0.530 lift=2.254 | dEs repaired=0.17996
+     H: flag_w=0.0833 recall=0.332 lift=3.992 | max-edge recall=0.762 lift=1.630 | dEs repaired=0.13120
+  [G] w_b=0.0445 dEs_base=0.07217
+     K: flag_w=0.0806 recall=0.436 lift=5.416 | max-edge recall=0.818 lift=3.182 | dEs repaired=0.15617
+     X: flag_w=0.0755 recall=0.546 lift=7.229 | max-edge recall=0.701 lift=5.012 | dEs repaired=0.15294
+     H: flag_w=0.0409 recall=0.485 lift=11.880 | max-edge recall=0.882 lift=2.849 | dEs repaired=0.07939
+VERDICT: {"R1_frdK_gate4": "UNDECIDED (V = 16 lift of the T2 job decides)", "R2_frdH": "KILLED", "lift_K": [2.8998608467574583, 1.268895722893967, 2.0460694489315316], "lift_H": [1.9293008963918292, 2.6618041441000706, 3.991691429666599], "lift_X": [2.1435751187807965, 2.5697096734108857, 3.2360798632268346], "recall_K": [0.2213788070497912, 0.25516733156495647, 0.22235527871093855], "recall_H": [0.09547215914433407, 0.22078724456029045, 0.3324281269321705], "prediction_liftX_below_liftK": false}
+8.55 s wall 25.63 user

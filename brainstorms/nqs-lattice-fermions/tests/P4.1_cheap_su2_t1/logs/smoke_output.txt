@@ -1,0 +1,8 @@
+[09:32:24] 3x2 Ne=4 dim=225 E0=-4.12617014 irrep={'My': 1, 'Mx': 1}
+[09:32:24]   che      P= 222 E=-3.465215 <S^2>=+2.1e-18 grad FD rel.err=8.5e-09 [PASS]
+[09:32:24]   che_k2   P= 247 E=-3.146385 <S^2>=-7.7e-18 grad FD rel.err=7.1e-10 [PASS]
+[09:32:24]   che_k8   P= 397 E=-3.371064 <S^2>=+1.8e-21 grad FD rel.err=1.8e-10 [PASS]
+[09:32:24]   pcg      P= 338 E=-2.470782 <S^2>=+1.3e-18 grad FD rel.err=2.8e-09 [PASS]
+[09:32:24]   che_loc  P= 146 E=-3.491713 <S^2>=+9.6e-18 grad FD rel.err=3.3e-10 [PASS]
+[09:32:24]   che_loc: |closed-form Che single amplitude - full-vector P_S| = 1.5e-16 (max|amp| 4.61e-01) [PASS]
+[09:32:24] SMOKE PASS (0.7s)

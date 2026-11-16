@@ -1,0 +1,20 @@
+[09:35:15] loaded inst 8 D=560 |G|=4 ED -5.1899410651 (stored -5.1899410651) (0 s)
+[09:35:15] ident: E=-5.01201790 dE_sign=0.036175 dE_tot=0.177923 (0 s)
+[09:35:15] abs: E=-5.01200915 dE_sign=0.036175 dE_tot=0.177932 (0 s)
+[09:35:15] frozen: E=-4.96216282 dE_sign=0.036175 dE_tot=0.227778 (0 s)
+[09:35:15] rflip: E=-4.75388941 dE_sign=0.077407 dE_tot=0.436052 (0 s)
+[09:35:15] lift: lift_K_U=3.501 recall_K_U=0.430 lift_X_U=0.949 recall_X_U=0.338 lift_H_U=3.309 recall_H_U=0.400 w_b_U=0.193 lift_K_G=17.946 recall_K_G=0.152 lift_X_G=1.832 recall_X_G=0.798 lift_H_G=18.532 recall_H_G=0.152 w_b_G=0.051 (0 s)
+DRYRUN verdicts: {"valid": true, "gap": 0.020000000000000892, "v_abs": 0.0, "T2a_abs": "VOTE-INERT", "v_rflip": 2.061571255336544, "T2a_rflip": "VOTE-CARRIES", "v_ident": 0.0, "T2a_ident": "VOTE-INERT", "u_frozen": 4.440892098500428e-14, "T2b": "DROP-IN-PASS", "gate4_lift": "EXTENSIVE-OK"}
+DRYRUN controls give intended verdicts: True
+synthetic abs inert         : {"valid": true, "gap": 0.002, "v_abs": 0.10000000000000026, "T2a_abs": "VOTE-INERT", "v_ident": 0.0, "T2a_ident": "VOTE-INERT"}
+synthetic abs mixed         : {"valid": true, "gap": 0.002, "v_abs": 0.4000000000000002, "T2a_abs": "MIXED", "v_ident": 0.0, "T2a_ident": "VOTE-INERT"}
+synthetic abs carries       : {"valid": true, "gap": 0.002, "v_abs": 0.7499999999999998, "T2a_abs": "VOTE-CARRIES", "v_ident": 0.0, "T2a_ident": "VOTE-INERT"}
+synthetic frozen pass       : {"valid": true, "gap": 0.002, "v_ident": 0.0, "T2a_ident": "VOTE-INERT", "u_frozen": 0.19999999999999965, "T2b": "DROP-IN-PASS"}
+synthetic frozen ambiguous  : {"valid": true, "gap": 0.002, "v_ident": 0.0, "T2a_ident": "VOTE-INERT", "u_frozen": 0.5500000000000002, "T2b": "AMBIGUOUS"}
+synthetic frozen killed     : {"valid": true, "gap": 0.002, "v_ident": 0.0, "T2a_ident": "VOTE-INERT", "u_frozen": 1.2500000000000002, "T2b": "KILLED"}
+synthetic lift finite       : {"valid": true, "gap": 0.002, "v_ident": 0.0, "T2a_ident": "VOTE-INERT", "gate4_lift": "FINITE-SIZE"}
+synthetic lift undecided    : {"valid": true, "gap": 0.002, "v_ident": 0.0, "T2a_ident": "VOTE-INERT", "gate4_lift": "UNDECIDED"}
+synthetic lift ok           : {"valid": true, "gap": 0.002, "v_ident": 0.0, "T2a_ident": "VOTE-INERT", "gate4_lift": "EXTENSIVE-OK"}
+synthetic invalid E0        : {"valid": false, "note": "INVALID: validity assert failed", "gap": 0.002, "v_ident": 0.0, "T2a_ident": "VOTE-INERT"}
+synthetic invalid budget    : {"valid": false, "note": "INVALID: validity assert failed", "gap": 0.0019000000000000006, "v_abs": 0.052631578947369, "T2a_abs": "VOTE-INERT", "v_ident": 0.0, "T2a_ident": "VOTE-INERT"}
+synthetic no gain           : {"valid": true, "gap": -0.0010000000000000009, "note": "no gain over the control: read-outs undefined"}

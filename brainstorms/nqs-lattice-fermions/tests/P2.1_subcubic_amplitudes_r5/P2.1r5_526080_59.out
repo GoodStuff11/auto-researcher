@@ -49,3 +49,8 @@
 [01:36:43] sk2: it  1000  E = -12.42261315  |f| = 2.60e-01  (55.50 s/step)
 [02:22:41] sk2: it  1050  E = -12.40893991  |f| = 9.45e-01  (55.49 s/step)
 [03:08:36] sk2: it  1100  E = -12.42276589  |f| = 4.52e-01  (55.47 s/step)
+[03:54:29] sk2: it  1150  E = -12.42353484  |f| = 2.53e-01  (55.45 s/step)
+[04:39:37] sk2: it  1199  E = -12.39916276  |f| = 1.43e+00  (55.44 s/step)
+[04:52:45] sk2 [P]: dE_tot=0.07916 dE_sign=0.01082 f_E=0.137 eC=2.45e-03 spread=1.8e-13 S2=0.087 ov0=0.908 (761 s)
+[05:04:45] sk2 [P_S]: dE_tot=0.04085 dE_sign=0.00648 f_E=0.159 eC=2.45e-03 spread=1.2e-12 S2=0.000 ov0=0.922 (721 s)
+[05:04:45] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r5/results/inst3_sk2_s33.json

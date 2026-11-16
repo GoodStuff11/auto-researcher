@@ -1,0 +1,29 @@
+selftest: expected NO-TARGET got NO-TARGET {'scored_seeds': {'pairSF': [11, 22], 'spinSF': [], 'chargeSF': []}}
+selftest: expected PASS      got PASS      {'scored_seeds': {'pairSF': [11, 22], 'spinSF': [], 'chargeSF': [11, 22]}, 'medKhalf': {'pairSF': 1.0, 'chargeSF': 2.5}, 'ESR0': {'pairSF': 1.1, 'chargeSF': 0.8}}
+selftest: expected KILL      got KILL      {'scored_seeds': {'pairSF': [11, 22], 'spinSF': [11, 22], 'chargeSF': [11, 22]}, 'medKhalf': {'pairSF': 9.0, 'spinSF': 13.5, 'chargeSF': 1.0}, 'ESR0': {'pairSF': 0.2, 'spinSF': 0.1, 'chargeSF': 0.3}}
+selftest: expected AMBIGUOUS got AMBIGUOUS {'scored_seeds': {'pairSF': [11, 22], 'spinSF': [], 'chargeSF': [11, 22]}, 'medKhalf': {'pairSF': 4.5, 'chargeSF': 2.0}, 'ESR0': {'pairSF': 1.0, 'chargeSF': 0.3}}
+SELFTEST PASS
+[09:39:35] small: D=10920 ED [-8.476395575934244, -8.37584026628098, -8.30965898809856, -8.268710215368367] |G|=8 chi={'My': -1, 'Mx': -1, 'D': -1} S0=1 (0 s)
+[09:39:36] 14 in-irrep levels: omega = [0.943, 1.1107, 1.184, 1.361, 1.493, 1.7298, 1.7434, 2.0493, 2.1532, 2.2066, 2.2877, 2.3324, 2.3737, 2.4584] (1 s)
+[09:39:36] a0 = pair -1.1446e-03 spin +7.0974e-03 charge -5.5672e-03 pairSF +1.1700e-03 spinSF -1.6643e-03 chargeSF +6.4522e-02
+[09:39:36] small: synthetic targets and synthetic phi (machinery only)
+[09:39:36] seed 11 pair     a0 -1.1446e-03 delta -1.707e-06 (rel +0.001) not scored | L1R +9.225 ORC3 +14.761 ORC6 +0.564 ORC14 +23.736 K_1/2 inf | ESR0 K=1:+4.737 K=2:+13.589 K=3:+14.108
+[09:39:36] seed 11 spin     a0 +7.0974e-03 delta +3.134e-04 (rel +0.044) not scored | L1R +0.280 ORC3 +0.621 ORC6 +0.769 ORC14 +0.938 K_1/2 2 | ESR0 K=1:+0.351 K=2:+0.533 K=3:+0.619
+[09:39:36] seed 11 charge   a0 -5.5672e-03 delta -6.279e-06 (rel +0.001) not scored | L1R -4.019 ORC3 -15.780 ORC6 -26.589 ORC14 +4.425 K_1/2 inf | ESR0 K=1:-0.533 K=2:-10.807 K=3:-14.809
+[09:39:36] seed 11 pairSF   a0 +1.1700e-03 delta -2.156e-04 (rel -0.184) scored | L1R +0.660 ORC3 +0.503 ORC6 +0.474 ORC14 +0.761 K_1/2 12 | ESR0 K=1:+0.890 K=2:+0.798 K=3:+0.557
+[09:39:36] seed 11 spinSF   a0 -1.6643e-03 delta +1.479e-03 (rel -0.889) scored | L1R +0.726 ORC3 +0.724 ORC6 +0.733 ORC14 +0.739 K_1/2 1 | ESR0 K=1:+0.720 K=2:+0.717 K=3:+0.722
+[09:39:36] seed 11 chargeSF a0 +6.4522e-02 delta +2.399e-03 (rel +0.037) not scored | L1R +1.003 ORC3 +1.008 ORC6 +1.000 ORC14 +1.006 K_1/2 1 | ESR0 K=1:+1.010 K=2:+1.010 K=3:+1.010
+[09:39:36] seed 11 done (0 s); dE 0.12508 overlap^2 0.9849
+[09:39:36] seed 22 pair     a0 -1.1446e-03 delta -4.014e-05 (rel +0.035) not scored | L1R +0.684 ORC3 +0.705 ORC6 +0.890 ORC14 +0.847 K_1/2 1 | ESR0 
+[09:39:36] seed 22 spin     a0 +7.0974e-03 delta +3.203e-05 (rel +0.005) not scored | L1R +1.380 ORC3 +2.599 ORC6 -0.426 ORC14 +0.045 K_1/2 inf | ESR0 
+[09:39:36] seed 22 charge   a0 -5.5672e-03 delta +2.475e-04 (rel -0.044) not scored | L1R +0.274 ORC3 +0.323 ORC6 -0.292 ORC14 +0.286 K_1/2 inf | ESR0 
+[09:39:36] seed 22 pairSF   a0 +1.1700e-03 delta -4.071e-04 (rel -0.348) scored | L1R +0.594 ORC3 +0.629 ORC6 +0.672 ORC14 +0.831 K_1/2 1 | ESR0 
+[09:39:36] seed 22 spinSF   a0 -1.6643e-03 delta -2.629e-03 (rel +1.580) scored | L1R +0.970 ORC3 +0.972 ORC6 +0.981 ORC14 +0.980 K_1/2 1 | ESR0 
+[09:39:36] seed 22 chargeSF a0 +6.4522e-02 delta +4.225e-03 (rel +0.065) not scored | L1R +0.883 ORC3 +0.885 ORC6 +0.893 ORC14 +0.888 K_1/2 1 | ESR0 
+[09:39:36] seed 22 done (0 s); dE 0.11346 overlap^2 0.9863
+[09:39:36] ROUTE 8.3 T2 VERDICT (K=3): AMBIGUOUS | {'scored_seeds': {'pairSF': [11, 22], 'spinSF': [11, 22], 'chargeSF': []}, 'medKhalf': {'pairSF': 6.5, 'spinSF': 1.0}, 'ESR0': {'pairSF': 0.5570094261769303, 'spinSF': 0.721781348923106}}
+[09:39:36] done (1 s)
+
+real	0m1.329s
+user	0m3.687s
+sys	0m0.196s
