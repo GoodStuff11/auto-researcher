@@ -1,0 +1,9 @@
+[11:37:11] instance 4 D=420420 arm=nnbf seed=22 E0=-9.7918583301 gap=0.02492 |G|=4 dim_S_chi=15080
+[11:37:38] arm nnbf: {'mode': 'full', 'Hs': 6} n_params=1626 target=1626 calib=1.65e-13
+[11:37:44] nnbf: it     0  E = -8.06124350  |f| = 2.03e+00  (5.25 s/step)
+[11:39:50] nnbf: it    25  E = -9.24437403  |f| = 4.72e-01  (5.08 s/step)
+[11:41:57] nnbf: it    50  E = -9.46834965  |f| = 2.88e-01  (5.08 s/step)
+[11:43:59] nnbf: it    74  E = -9.55076114  |f| = 2.23e-01  (5.08 s/step)
+[11:46:56] nnbf [P]: dE_tot=0.24045 dE_sign=0.07861 f_E=0.327 spread=9.6e-14 ov0=0.417 (174 s)
+[11:49:31] nnbf [P_S]: dE_tot=0.12796 dE_sign=0.03805 f_E=0.297 spread=2.2e-13 ov0=0.684 (155 s)
+[11:49:31] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r9/results/t2_nnbf_inst4_s22.json
