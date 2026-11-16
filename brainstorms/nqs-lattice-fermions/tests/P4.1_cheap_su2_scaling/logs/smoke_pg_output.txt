@@ -60,3 +60,11 @@
 [02:47:00]   (e) che_k4  E_sampled -5.301637 +- 0.036602 vs exact -5.271304: z = -0.83 (20480 samples)
 [02:47:00]   (e) che_k4  gradient: cos(g_sampled, g_exact) = 0.9981, frac |z|>3 = 0.0012 [PASS]
 [02:47:39]   (b) che_k8  |psi_torch - P_G psi_numpy|_inf: 1.27e-14 (tol 1e-09) [PASS]
+[03:03:14]   (c) che_k8  |sum w E_loc - <H>|/|<H>|: 1.44e-16 (tol 1e-09) [PASS]
+[03:04:50]   (e) che_k8  E_sampled -6.115672 +- 0.029841 vs exact -6.150023: z = +1.15 (20480 samples)
+[03:04:50]   (e) che_k8  gradient: cos(g_sampled, g_exact) = 0.9930, frac |z|>3 = 0.0008 [PASS]
+[03:04:54]   (b) nnbf    |psi_torch - P_G psi_numpy|_inf: 2.78e-17 (tol 1e-09) [PASS]
+[03:06:21]   (c) nnbf    |sum w E_loc - <H>|/|<H>|: 0.00e+00 (tol 1e-09) [PASS]
+[03:06:49]   (e) nnbf    E_sampled -5.159024 +- 0.035688 vs exact -5.172745: z = +0.38 (20480 samples)
+[03:06:49]   (e) nnbf    gradient: cos(g_sampled, g_exact) = 0.9817, frac |z|>3 = 0.0000 [PASS]
+[03:06:49] SMOKE-PG PASS (2532 s)
