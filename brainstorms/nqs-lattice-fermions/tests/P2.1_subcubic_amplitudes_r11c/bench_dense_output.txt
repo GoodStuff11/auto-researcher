@@ -1,0 +1,10 @@
+L=16 N=112: dense2 (carried gather) ratio 192 us = 1.87 x bare LU
+L=16 N=112: compiled dense ratio 199 us; bare LU (numpy slogdet) 103 us (9.1 GFLOP/s); ratio/LU = 1.94
+L=24 N=252: dense2 (carried gather) ratio 1180 us = 1.70 x bare LU
+L=24 N=252: compiled dense ratio 1203 us; bare LU (numpy slogdet) 693 us (15.4 GFLOP/s); ratio/LU = 1.74
+L=16 full   : proposals+updates 0.0587s per sweep, local energy 0.0302s
+L=16 half   : proposals+updates 0.0173s per sweep, local energy 0.0098s
+L=16 quarter: proposals+updates 0.0091s per sweep, local energy 0.0056s
+L=16 dense  : proposals+updates 0.0678s per sweep, local energy 0.0846s
+L=16 dense2 : proposals+updates 0.0586s per sweep, local energy 0.0773s
+CPU user=6.02 sys=0.23

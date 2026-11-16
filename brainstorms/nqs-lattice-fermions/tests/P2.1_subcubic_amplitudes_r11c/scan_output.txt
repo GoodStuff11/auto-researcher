@@ -1,0 +1,4 @@
+[scan L=16] full    rmax=0: t_sw=0.0948s  rmax=16: t_sw=0.0913s  rmax=32: t_sw=0.0837s  rmax=64: t_sw=0.0898s
+[scan L=16] half    rmax=0: t_sw=0.0306s  rmax=16: t_sw=0.0278s  rmax=32: t_sw=0.0310s  rmax=64: t_sw=0.0290s
+[scan L=16] quarter rmax=0: t_sw=0.0170s  rmax=16: t_sw=0.0138s  rmax=32: t_sw=0.0166s  rmax=64: t_sw=0.0169s
+CPU user=7.32 sys=0.22 wall=7.59

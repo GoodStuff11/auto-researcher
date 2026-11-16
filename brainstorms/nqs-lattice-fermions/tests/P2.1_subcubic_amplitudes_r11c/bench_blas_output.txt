@@ -1,0 +1,7 @@
+LU N=112: numpy 103 us (9.1 GFLOP/s), numba 115 us (8.2 GFLOP/s); numba/numpy 1.11
+LU N=252: numpy 697 us (15.3 GFLOP/s), numba 770 us (13.8 GFLOP/s); numba/numpy 1.10
+GEMM 10x368x368: numpy 155 us (17.5 GFLOP/s), numba 132 us (20.5 GFLOP/s); numba/numpy 0.85
+GEMM 368x32x368: numpy 824 us (10.5 GFLOP/s), numba 186 us (46.6 GFLOP/s); numba/numpy 0.23
+GEMM 6x240x240: numpy 18 us (37.4 GFLOP/s), numba 13 us (52.6 GFLOP/s); numba/numpy 0.71
+GEMM 240x16x240: numpy 260 us (7.1 GFLOP/s), numba 39 us (47.0 GFLOP/s); numba/numpy 0.15
+CPU user=2.78 sys=0.59
