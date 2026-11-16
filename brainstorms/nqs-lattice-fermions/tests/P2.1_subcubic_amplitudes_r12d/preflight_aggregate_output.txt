@@ -1,0 +1,38 @@
+inst   V       arm  n_eff  conv  steps    dE_tot   dE_sign   spread   cpu_s
+  20   8   full_F4    464  True   1050  1.12e-02  1.47e-03  4.7e-13      54
+  20       full_F8  missing
+  20       half_F8  missing
+  20      half_F16  missing
+  23  12   full_F4    986  True   1550  4.69e-02  7.95e-03  9.8e-13     684
+  23       full_F8  missing
+  23       half_F8  missing
+  23  12  half_F16   1622 False     60  1.25e-01  1.17e-02  8.5e-14      30
+  24  14   full_F4   1325  True   1250  5.86e-02  3.76e-03  8.6e-13    2276
+  24       full_F8  missing
+  24       half_F8  missing
+  24      half_F16  missing
+  25  15   full_F4   1514  True    650  1.38e-02  1.48e-03  2.9e-12     915
+  25       full_F8  missing
+  25       half_F8  missing
+  25      half_F16  missing
+total CPU-s (Round 12d runs only): 30
+A half_F16 vs full_F4 (PRIMARY): INCONCLUSIVE  (0 counted sizes < 3)
+    inst 20 V=None: missing
+    inst 23 V=12: not counted: unconverged
+    inst 24 V=None: missing
+    inst 25 V=None: missing
+B half_F8 vs full_F4 (matched parameters): INCONCLUSIVE  (0 counted sizes < 3)
+    inst 20 V=None: missing
+    inst 23 V=None: missing
+    inst 24 V=None: missing
+    inst 25 V=None: missing
+C half_F16 vs full_F8 (matched parameters, reported): INCONCLUSIVE  (0 counted sizes < 3)
+    inst 20 V=None: missing
+    inst 23 V=None: missing
+    inst 24 V=None: missing
+    inst 25 V=None: missing
+D full_F8 vs full_F4 (reported only): INCONCLUSIVE  (0 counted sizes < 3)
+    inst 20 V=None: missing
+    inst 23 V=None: missing
+    inst 24 V=None: missing
+    inst 25 V=None: missing

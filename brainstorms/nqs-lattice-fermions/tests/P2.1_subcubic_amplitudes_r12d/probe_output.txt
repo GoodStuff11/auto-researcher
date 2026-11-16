@@ -1,0 +1,4 @@
+[16:02:08] PROBE inst 25 full: D=51480 n_eff=2458 15 steps, 1.274 CPU-s/step, peak RSS 0.58 GB
+[16:01:52] PROBE inst 24 half: D=84084 n_eff=2143 15 steps, 2.282 CPU-s/step, peak RSS 0.66 GB
+[16:02:19] PROBE inst 25 half: D=51480 n_eff=2561 15 steps, 1.570 CPU-s/step, peak RSS 0.71 GB
+[16:01:45] PROBE inst 24 full: D=84084 n_eff=2153 15 steps, 1.817 CPU-s/step, peak RSS 0.54 GB

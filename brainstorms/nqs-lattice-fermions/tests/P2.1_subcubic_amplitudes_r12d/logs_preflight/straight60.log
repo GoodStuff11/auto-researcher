@@ -1,0 +1,7 @@
+[16:01:12] instance 23 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 5, 'ndn': 5, 'tp': -0.25, 'J': 0.4} D=16632 E0=-7.2330203724 gap=0.0847 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=724 arm=half seed=11 threads=1
+[16:01:12] arm half: F=16 Ha=0 n_eff=1622 P/dim_S_chi=2.24 calib=2.40e-14
+[16:01:13] half: it     0 E-E0 = 0.884660 best = 0.884660 (0.531 CPU-s/step)
+[16:01:33] half: it    50 E-E0 = 0.130410 best = 0.128900 (0.410 CPU-s/step)
+[16:01:37] half: stop = max-steps; best E - E0 = 0.125202; SR CPU 25 s
+[16:01:42] half [P]: dE_tot=0.125202 dE_sign=0.011657 f_E=0.093 spread=8.5e-14; max |masked entry| proposed by SR = 0.0e+00
+[16:01:42] wrote results_preflight/straight/half_F16/t1_half_inst23_s11.json
