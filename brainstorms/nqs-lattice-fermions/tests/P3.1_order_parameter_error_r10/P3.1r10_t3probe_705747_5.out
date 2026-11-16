@@ -1,0 +1,4 @@
+[15:31:28] 4x3: D=34650 sector levels found 17 (N_LOW=15) E0=-8.948665 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.59 (10 pairs) R_SITE=2.96 (9 pairs) (4.1s)
+[15:42:14]   phase A ground state w3: 1200 steps, best -8.85375520, 1290 CPU-s (1.075 CPU-s/step)
+[15:42:14] seed 66: |<psi0|psi>|^2 0.9380 dE 0.09491 | pair delta +1.818e-04 (+0.10 a0) ns spin delta -3.630e-03 (+0.27 a0) scored charge delta -4.695e-04 (+0.17 a0) scored
+[15:42:14] seed 66: --stop-after A (target probe); phases B-D not run
