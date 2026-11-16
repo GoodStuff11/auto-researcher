@@ -1,0 +1,12 @@
+size=0 V=8 D=560 w_wrong=0.0455 auc_true=1.0000 auc_A=0.7358 auc_B=0.7647 auc_C=0.6581 dAUC=0.0288
+size=1 V=10 D=3150 w_wrong=0.1885 auc_true=1.0000 auc_A=0.7933 auc_B=0.8752 auc_C=0.7738 dAUC=0.0820
+size=2 V=12 D=16632 w_wrong=0.1032 auc_true=1.0000 auc_A=0.6973 auc_B=0.8238 auc_C=0.6824 dAUC=0.1265
+VERDICT DRF information premise: UNDECIDED (dAUC [0.0288, 0.082, 0.1265]) 4.3 s
+size=0 V=8 D=560 w_wrong=0.0455 auc_true=1.0000 auc_A=0.7358 auc_B=0.8710 auc_C=0.6062 dAUC=0.1352
+size=1 V=10 D=3150 w_wrong=0.1885 auc_true=1.0000 auc_A=0.7933 auc_B=0.8946 auc_C=0.7513 dAUC=0.1014
+size=2 V=12 D=16632 w_wrong=0.1032 auc_true=1.0000 auc_A=0.6973 auc_B=0.9271 auc_C=0.6859 dAUC=0.2299
+VERDICT DRF-X information premise: PASS (dAUC [0.1352, 0.1014, 0.2299]) 0.8 s
+size=0 V=8 D=560 w_wrong=0.0455 auc_true=1.0000 auc_A=0.7358 auc_B=0.8571 auc_C=0.5904 dAUC=0.1212
+size=1 V=10 D=3150 w_wrong=0.1885 auc_true=1.0000 auc_A=0.7933 auc_B=0.9399 auc_C=0.7303 dAUC=0.1467
+size=2 V=12 D=16632 w_wrong=0.1032 auc_true=1.0000 auc_A=0.6973 auc_B=0.9488 auc_C=0.6659 dAUC=0.2515
+VERDICT DRF-H information premise: PASS (dAUC [0.1212, 0.1467, 0.2515]) 5.8 s

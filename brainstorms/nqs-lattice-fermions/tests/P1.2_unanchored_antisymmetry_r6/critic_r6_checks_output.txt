@@ -1,0 +1,14 @@
+(1) nnbf6 selected per seed: [(11, 0.01246, 0.001), (22, 0.01205, 0.01), (33, 0.01176, 0.01), (44, 0.01292, 0.001), (55, 0.01319, 0.01)]
+    frdK  selected per seed: [(11, 0.00975, 0.001), (22, 0.01011, 0.001), (33, 0.01038, 0.001)]
+    nnbf6 seeds 5, med_5 dEs = 0.01246; frdK seeds 3; rho_sign lower bound = 0.782 (3-seed frdK median gives 0.811)
+    553724 final verdict: FAIL is certain (bound > 0.7)
+(2) T2-a: dEs_K 0.009751 dEs_abs 0.009757 gap 0.00229 v = 0.0026; E_abs - E_ident = 5.21e-05
+(3) precision = lift * w_b (upper bound of lift is 1/w_b)
+    toy V=8 U: w_b 0.0455 1/w_b 22.0 | K: lift 2.90 prec 0.132 X: lift 2.14 prec 0.098 H: lift 1.93 prec 0.088
+    toy V=8 G: w_b 0.0099 1/w_b 101.5 | K: lift 52.85 prec 0.521 X: lift 0.49 prec 0.005 H: lift 3.23 prec 0.032
+    toy V=10 U: w_b 0.1880 1/w_b 5.3 | K: lift 1.27 prec 0.239 X: lift 2.57 prec 0.483 H: lift 2.66 prec 0.500
+    toy V=10 G: w_b 0.0917 1/w_b 10.9 | K: lift 1.76 prec 0.162 X: lift 5.68 prec 0.521 H: lift 3.71 prec 0.341
+    toy V=12 U: w_b 0.1112 1/w_b 9.0 | K: lift 2.05 prec 0.228 X: lift 3.24 prec 0.360 H: lift 3.99 prec 0.444
+    toy V=12 G: w_b 0.0445 1/w_b 22.5 | K: lift 5.42 prec 0.241 X: lift 7.23 prec 0.321 H: lift 11.88 prec 0.528
+    trained V=16 U: w_b 0.1183 1/w_b 8.5 | K: lift 6.30 prec 0.745 recall 0.347 X: lift 3.01 prec 0.356 recall 0.425 H: lift 7.11 prec 0.840 recall 0.380
+    trained V=16 G: w_b 0.0062 1/w_b 161.5 | K: lift 128.61 prec 0.796 recall 0.478 X: lift 4.22 prec 0.026 recall 0.434 H: lift 148.01 prec 0.916 recall 0.474
