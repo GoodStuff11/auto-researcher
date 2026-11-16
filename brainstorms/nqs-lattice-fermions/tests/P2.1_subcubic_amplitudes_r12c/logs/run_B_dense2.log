@@ -1,0 +1,3 @@
+[B_dense2] L=12 Ne=126 V_h=None sweeps=  852 t_sw=2.351e-02s tau=1.66+-0.39 cost=3.910e-02s acc=0.31 <E>/Ne=-0.464 cpu=20s
+[B_dense2] L=16 Ne=224 V_h=None sweeps=  727 t_sw=1.240e-01s tau=1.30+-0.30 cost=1.609e-01s acc=0.31 <E>/Ne=-0.442 cpu=90s
+CPU user=110.91 sys=0.21 wall=111.62

@@ -1,0 +1,19 @@
+== engine objects (sub_hfps.SubHFPS / cost_8c.DenseHFPS) at L x L PBC
+L=12 half_F4  V_h=72 params=72620  (F0 20736, K 10368, Om 41472, W+b 44)
+L=12 half_F8  V_h=72 params=114136  (F0 20736, K 10368, Om 82944, W+b 88)
+L=12 half_F12 V_h=72 params=155652  (F0 20736, K 10368, Om 124416, W+b 132)
+L=12 half_F16 V_h=72 params=197168  (F0 20736, K 10368, Om 165888, W+b 176)
+L=12 full_F4   params=124460
+L=12 dense2_F4 float arrays held by DenseHFPS: 104836
+L=16 half_F4  V_h=128 params=229420  (F0 65536, K 32768, Om 131072, W+b 44)
+L=16 half_F8  V_h=128 params=360536  (F0 65536, K 32768, Om 262144, W+b 88)
+L=16 half_F12 V_h=128 params=491652  (F0 65536, K 32768, Om 393216, W+b 132)
+L=16 half_F16 V_h=128 params=622768  (F0 65536, K 32768, Om 524288, W+b 176)
+L=16 full_F4   params=393260
+L=16 dense2_F4 float arrays held by DenseHFPS: 329732
+== toy SubHFPSAnsatz (t1_sub, read-only) n_eff on the ladder clusters (masked entries excluded)
+inst 20 V=8: half_F4=304  half_F8=476  half_F12=648  half_F16=820  full_F4=464
+inst 23 V=12: half_F4=626  half_F8=958  half_F12=1290  half_F16=1622  full_F4=986
+inst 24 V=14: half_F4=835  half_F8=1271  half_F12=1707  half_F16=2143  full_F4=1325
+inst 25 V=15: half_F4=989  half_F8=1513  half_F12=2037  half_F16=2561  full_F4=1514
+CPU user=1.53 sys=0.26 wall=2.24

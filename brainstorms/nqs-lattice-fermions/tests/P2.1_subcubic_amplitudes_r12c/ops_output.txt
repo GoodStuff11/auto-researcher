@@ -1,0 +1,13 @@
+L=12 N=63 V_h=72: ratios/sweep=490 accepts/sweep=72 <b>=3.96 <k>=4.77 down-move fraction=0.79 <r>=8.4
+   half_F4 : ops/sweep=2.787e+07  F-dependent share=0.03  R_ops=dense2/half=1.81  ops(F)/ops(4)=1.00
+   half_F8 : ops/sweep=2.860e+07  F-dependent share=0.05  R_ops=dense2/half=1.77  ops(F)/ops(4)=1.03
+   half_F12: ops/sweep=2.933e+07  F-dependent share=0.07  R_ops=dense2/half=1.72  ops(F)/ops(4)=1.05
+   half_F16: ops/sweep=3.006e+07  F-dependent share=0.10  R_ops=dense2/half=1.68  ops(F)/ops(4)=1.08
+   dense2_F4: ops/sweep=5.057e+07
+L=16 N=112 V_h=128: ratios/sweep=843 accepts/sweep=127 <b>=4.03 <k>=4.82 down-move fraction=0.80 <r>=10.0
+   half_F4 : ops/sweep=1.404e+08  F-dependent share=0.02  R_ops=dense2/half=3.19  ops(F)/ops(4)=1.00  predicted R_D(16)=5.05
+   half_F8 : ops/sweep=1.426e+08  F-dependent share=0.03  R_ops=dense2/half=3.14  ops(F)/ops(4)=1.02  predicted R_D(16)=4.97
+   half_F12: ops/sweep=1.448e+08  F-dependent share=0.05  R_ops=dense2/half=3.09  ops(F)/ops(4)=1.03  predicted R_D(16)=4.90
+   half_F16: ops/sweep=1.469e+08  F-dependent share=0.06  R_ops=dense2/half=3.05  ops(F)/ops(4)=1.05  predicted R_D(16)=4.82
+   dense2_F4: ops/sweep=4.478e+08
+CPU user=20.88 sys=0.84 wall=21.92
