@@ -1,0 +1,11 @@
+[10:26:54] instance 4 {'Lx': 5, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=420420 arm=nnbf seed=11
+[10:27:02] E0=-9.7918583301 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=15080
+[10:27:22] arm nnbf: {'mode': 'full', 'Hs': 6} n_params=1626 target=1626 calib=7.82e-14
+[10:27:26] nnbf: it     0  E = -8.06278092  |f| = 2.12e+00  (4.13 s/step)
+[10:28:57] nnbf: it    25  E = -9.25684875  |f| = 4.61e-01  (3.67 s/step)
+[10:30:29] nnbf: it    50  E = -9.45132438  |f| = 3.11e-01  (3.67 s/step)
+[10:31:57] nnbf: it    74  E = -9.52814325  |f| = 3.10e-01  (3.67 s/step)
+[10:31:58] reference reproduction: E(it 0) = -8.06278092 vs pilot -8.06278092 (|d| = 3.5e-09); E(it 50) = -9.45132438 vs pilot -9.45132438
+[10:34:05] nnbf [P]: dE_tot=0.24804 dE_sign=0.08799 f_E=0.355 spread=2.6e-13 ov0=0.381 (126 s)
+[10:35:59] nnbf [P_S]: dE_tot=0.13869 dE_sign=0.04377 f_E=0.316 spread=2.2e-13 ov0=0.639 (114 s)
+[10:35:59] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results/t2_nnbf_inst4_s11.json

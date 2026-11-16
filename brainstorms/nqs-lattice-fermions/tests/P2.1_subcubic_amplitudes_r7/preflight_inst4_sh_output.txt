@@ -1,0 +1,7 @@
+[10:38:41] instance 4: E0=-9.7918583301 (pilot -9.7918583301) |G|=4 S=0 dim_S_chi=15080 deg=1 N_up=N_dn=6
+[10:39:40] instance 4 sh_plus   {'mode': 'sh', 'patch': 'plus', 'F': 5, 'Ha': 0} P=1625 (target 1626, matched True) E(it0)=-8.05691517 29.53 s/step at 4 threads
+
+real	1m7.297s
+user	2m12.667s
+sys	0m10.505s
+exit 0

@@ -1,0 +1,59 @@
+== LH-HFPS (Route 7.1): drift over >= 10000 accepted moves, no refresh, patch=plus F=8
+   [LH-HFPS (7.1)] 5x3obc: Ne=12 n=21 one accept: table err 2.2e-15, E_loc err 1.5e-15 -> algebra OK
+      accepts=  1000 proposals=  2577 table err=5.8e-14 E_loc err=2.5e-14 E_loc/Ne=-0.760 (1s)
+      accepts=  2000 proposals=  5031 table err=2.0e-13 E_loc err=4.6e-14 E_loc/Ne=-1.275 (1s)
+      accepts=  3000 proposals=  7521 table err=2.6e-12 E_loc err=2.3e-13 E_loc/Ne=-0.589 (2s)
+      accepts=  4000 proposals= 10074 table err=1.1e-12 E_loc err=1.7e-13 E_loc/Ne=-0.664 (3s)
+      accepts=  5000 proposals= 12530 table err=4.5e-12 E_loc err=7.9e-13 E_loc/Ne=-0.745 (4s)
+      accepts=  6000 proposals= 15209 table err=5.7e-12 E_loc err=1.6e-11 E_loc/Ne=+0.233 (4s)
+      accepts=  7000 proposals= 17799 table err=1.1e-12 E_loc err=2.1e-13 E_loc/Ne=-0.521 (5s)
+      accepts=  8000 proposals= 20503 table err=2.0e-12 E_loc err=3.3e-13 E_loc/Ne=-0.477 (6s)
+      accepts=  9000 proposals= 23059 table err=9.7e-13 E_loc err=3.7e-14 E_loc/Ne=-0.929 (6s)
+      accepts= 10000 proposals= 25586 table err=1.3e-12 E_loc err=2.0e-13 E_loc/Ne=-0.347 (7s)
+   [LH-HFPS (7.1)] 5x3obc: n_aug=21 accepts=10000 acceptance=0.39 max drift=1.6e-11 K*=inf
+   [LH-HFPS (7.1)] 6: Ne=32 n=52 one accept: table err 1.1e-14, E_loc err 6.1e-16 -> algebra OK
+      accepts=  1000 proposals=  2965 table err=4.8e-13 E_loc err=8.1e-14 E_loc/Ne=-0.579 (1s)
+      accepts=  2000 proposals=  5984 table err=8.7e-13 E_loc err=1.5e-14 E_loc/Ne=-0.563 (2s)
+      accepts=  3000 proposals=  8972 table err=2.2e-12 E_loc err=6.2e-14 E_loc/Ne=-0.430 (3s)
+      accepts=  4000 proposals= 12100 table err=4.1e-12 E_loc err=4.3e-13 E_loc/Ne=-0.437 (5s)
+      accepts=  5000 proposals= 14988 table err=3.1e-12 E_loc err=1.5e-13 E_loc/Ne=-0.676 (6s)
+      accepts=  6000 proposals= 18074 table err=3.7e-12 E_loc err=1.2e-12 E_loc/Ne=-0.656 (7s)
+      accepts=  7000 proposals= 20892 table err=4.1e-12 E_loc err=9.2e-13 E_loc/Ne=-0.558 (8s)
+      accepts=  8000 proposals= 23896 table err=4.3e-12 E_loc err=4.0e-13 E_loc/Ne=-0.443 (9s)
+      accepts=  9000 proposals= 27031 table err=7.0e-12 E_loc err=4.0e-13 E_loc/Ne=-0.425 (10s)
+      accepts= 10000 proposals= 30233 table err=2.7e-12 E_loc err=1.5e-13 E_loc/Ne=-0.532 (12s)
+   [LH-HFPS (7.1)] 6: n_aug=52 accepts=10000 acceptance=0.33 max drift=7.0e-12 K*=inf
+   [LH-HFPS (7.1)] 8: Ne=56 n=92 one accept: table err 3.4e-15, E_loc err 3.8e-16 -> algebra OK
+      accepts=  1000 proposals=  3196 table err=4.3e-13 E_loc err=1.1e-13 E_loc/Ne=-0.521 (2s)
+      accepts=  2000 proposals=  6322 table err=8.4e-12 E_loc err=4.1e-13 E_loc/Ne=-0.512 (3s)
+      accepts=  3000 proposals=  9503 table err=7.1e-12 E_loc err=3.1e-15 E_loc/Ne=-0.557 (5s)
+      accepts=  4000 proposals= 12691 table err=9.4e-12 E_loc err=3.8e-15 E_loc/Ne=-0.582 (7s)
+      accepts=  5000 proposals= 15751 table err=6.4e-12 E_loc err=5.1e-13 E_loc/Ne=-0.805 (9s)
+      accepts=  6000 proposals= 18944 table err=5.6e-11 E_loc err=4.4e-12 E_loc/Ne=-0.470 (11s)
+      accepts=  7000 proposals= 22038 table err=1.8e-11 E_loc err=9.6e-13 E_loc/Ne=-0.584 (12s)
+      accepts=  8000 proposals= 24985 table err=2.2e-11 E_loc err=8.1e-12 E_loc/Ne=-0.551 (14s)
+      accepts=  9000 proposals= 28025 table err=2.8e-11 E_loc err=7.6e-12 E_loc/Ne=-0.465 (16s)
+      accepts= 10000 proposals= 31078 table err=3.3e-11 E_loc err=2.2e-12 E_loc/Ne=-0.440 (17s)
+   [LH-HFPS (7.1)] 8: n_aug=92 accepts=10000 acceptance=0.32 max drift=5.6e-11 K*=inf
+   [LH-HFPS (7.1)] 16: Ne=224 n=368 one accept: table err 1.4e-13, E_loc err 2.3e-14 -> algebra OK
+      accepts=  1000 proposals=  2878 table err=4.6e-12 E_loc err=6.0e-13 E_loc/Ne=-0.487 (7s)
+      accepts=  2000 proposals=  6006 table err=6.8e-12 E_loc err=7.9e-13 E_loc/Ne=-0.529 (14s)
+      accepts=  3000 proposals=  9104 table err=8.2e-12 E_loc err=9.0e-13 E_loc/Ne=-0.601 (21s)
+      accepts=  4000 proposals= 12030 table err=1.6e-11 E_loc err=3.2e-13 E_loc/Ne=-0.507 (28s)
+      accepts=  5000 proposals= 14942 table err=8.7e-12 E_loc err=4.6e-13 E_loc/Ne=-0.476 (35s)
+      accepts=  6000 proposals= 18153 table err=8.7e-12 E_loc err=2.3e-12 E_loc/Ne=-0.311 (43s)
+      accepts=  7000 proposals= 21320 table err=1.1e-11 E_loc err=1.8e-13 E_loc/Ne=-0.478 (50s)
+      accepts=  8000 proposals= 24329 table err=9.3e-12 E_loc err=1.2e-12 E_loc/Ne=-0.542 (57s)
+      accepts=  9000 proposals= 27235 table err=9.9e-12 E_loc err=5.3e-13 E_loc/Ne=-0.438 (64s)
+      accepts= 10000 proposals= 30180 table err=9.2e-12 E_loc err=6.2e-13 E_loc/Ne=-0.432 (71s)
+   [LH-HFPS (7.1)] 16: n_aug=368 accepts=10000 acceptance=0.33 max drift=1.6e-11 K*=inf
+== LH-HFPS (Route 7.1): cost per accepted move
+   L= 8 Ne=  56 n=  92 t_accept=3.028e-04s ops/accept=4.384e+05 t_rebuild=4.140e-04s (rebuild/accept = 1)
+   L=16 Ne= 224 n= 368 t_accept=2.036e-03s ops/accept=6.952e+06 t_rebuild=4.864e-03s (rebuild/accept = 2)
+   L=24 Ne= 504 n= 828 t_accept=1.001e-02s ops/accept=3.534e+07 t_rebuild=3.223e-02s (rebuild/accept = 3)
+== LH-HFPS (Route 7.1): max drift=5.6e-11 K*=inf slope(t_accept)=1.57 slope(ops/accept)=2.00 [timing overhead-bound] -> PASS (no refresh needed)
+total 113.8s
+
+real	1m54.430s
+user	6m31.412s
+sys	0m14.111s

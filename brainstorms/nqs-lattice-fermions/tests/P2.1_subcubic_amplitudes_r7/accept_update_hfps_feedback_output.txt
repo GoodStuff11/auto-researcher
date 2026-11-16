@@ -1,0 +1,13 @@
+== LH-HFPS (Route 7.1): drift over >= 1000 accepted moves, no refresh, patch=plus F=8
+   [LH-HFPS (7.1)] 6: Ne=32 n=52 one accept: table err 1.5e-15, E_loc err 4.3e-16 -> algebra OK
+      accepts=   200 proposals=   593 table err=1.2e-07 E_loc err=2.6e-08 E_loc/Ne=-0.529 (0s)
+      accepts=   400 proposals=  1217 table err=3.2e-01 E_loc err=3.6e-02 E_loc/Ne=-0.558 (1s)
+      accepts=   600 proposals=  1485 table err=5.9e+16 E_loc err=7.8e+15 E_loc/Ne=-0.408 (1s)
+      accepts=   800 proposals=  1713 table err=2.5e+47 E_loc err=5.7e+46 E_loc/Ne=-0.093 (1s)
+      accepts=  1000 proposals=  1933 table err=9.1e+82 E_loc err=1.5e+82 E_loc/Ne=-0.411 (1s)
+   [LH-HFPS (7.1)] 6: n_aug=52 accepts=1000 acceptance=0.52 max drift=9.1e+82 K*=200
+== LH-HFPS (Route 7.1): cost per accepted move
+   L= 8 Ne=  56 n=  92 t_accept=2.928e-04s ops/accept=4.308e+05 t_rebuild=4.595e-04s (rebuild/accept = 2)
+   L=12 Ne= 126 n= 207 t_accept=7.423e-04s ops/accept=2.226e+06 t_rebuild=1.781e-03s (rebuild/accept = 2)
+== LH-HFPS (Route 7.1): max drift=9.1e+82 K*=200 slope(t_accept)=1.15 slope(ops/accept)=2.03 [timing overhead-bound] -> PASS-with-refresh (K* = 200 >= n_t/b = 37; refresh every 100)
+total 1.1s

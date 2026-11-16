@@ -1,0 +1,9 @@
+[10:38:07] instance 4: E0=-9.7918583301 (pilot -9.7918583301) |G|=4 S=0 dim_S_chi=15080 deg=1 N_up=N_dn=6
+[10:38:20] instance 4 hfps_plus {'mode': 'hfps', 'patch': 'plus', 'F': 4, 'Ha': 4} P=1642 (target 1626, matched True) E(it0)=-8.43108526 6.44 s/step at 4 threads
+[10:38:30] instance 4 hfps_site {'mode': 'hfps', 'patch': 'site', 'F': 4, 'Ha': 4} P=1610 (target 1626, matched True) E(it0)=-8.43117910 5.04 s/step at 4 threads
+[10:38:33] instance 4 agpj      {'mode': 'agp', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 44} P=1633 (target 1626, matched True) E(it0)=-8.42908846 1.30 s/step at 4 threads
+
+real	0m34.217s
+user	1m58.814s
+sys	0m6.862s
+exit 0
