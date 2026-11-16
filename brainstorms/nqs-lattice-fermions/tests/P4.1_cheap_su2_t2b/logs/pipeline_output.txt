@@ -1,0 +1,23 @@
+[11:25:49] results_preflight/s24/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0.json exists; skipping
+[11:25:49] results_preflight/s24/S4x2_N6_U8_tp-0.25_pg11_pcg_H11_seed0.json exists; skipping
+[11:25:49] results_preflight/s24/S4x2_N6_U8_tp-0.25_pg11_r1_H19_seed0.json exists; skipping
+[11:25:49] results_preflight/s12/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0.json exists; skipping
+[11:25:49] results_preflight/s12/S4x2_N6_U8_tp-0.25_pg11_pcg_H11_seed0.json exists; skipping
+[11:25:49] results_preflight/s12/S4x2_N6_U8_tp-0.25_pg11_r1_H19_seed0.json exists; skipping
+[11:25:49] S4x2_N6_U8_tp-0.25_pg11_pcg_H11_seed0: L=8 Ne=6 H=11 P=1170 (che@16 P=1175) threads=4 pf=fast host=kim-compute-03.physics.cornell.edu
+[11:25:50] thermalised: acceptance 0.400
+[11:25:50] it 1 E -5.007141 std 1.317 acc 0.336 |upd| 1.88e-01 t(mcmc/eloc/grad/sr) 0.03/0.04/0.03/0.00s elapsed 0.000 h
+[11:25:53] CHECKPOINT it 5: E -5.393059 +- 0.020315 (2048 samples); rho_ck 2.420 +- 0.538 vs futility multiple -1.0 -> EARLY-KILL (pre-registered futility) (3 s)
+[11:25:57] final E (current state) -5.4071596 +- 0.0114969 (4096 samples, 4 s)
+[11:25:57] wrote results_preflight/futility_ctrl/S4x2_N6_U8_tp-0.25_pg11_pcg_H11_seed0.json
+[11:25:57] S4x2_N6_U8_tp-0.25_pg11_pcg_H11_seed0: L=8 Ne=6 H=11 P=1170 (che@16 P=1175) threads=4 pf=fast host=kim-compute-03.physics.cornell.edu
+[11:25:57] thermalised: acceptance 0.400
+[11:25:57] it 1 E -5.007141 std 1.317 acc 0.336 |upd| 1.88e-01 t(mcmc/eloc/grad/sr) 0.02/0.03/0.02/0.00s elapsed 0.000 h
+[11:26:00] CHECKPOINT it 5: E -5.393059 +- 0.020315 (2048 samples); futility at 5 DISARMED (disarmed (no valid reference)) (2 s)
+[11:26:03] CHECKPOINT it 10: E -5.491158 +- 0.016511 (2048 samples) (2 s)
+[11:26:08] final E (average of last 5 steps) -5.4836987 +- 0.0088807 (4096 samples, 4 s)
+[11:26:08] wrote results_preflight/disarmed_ctrl/S4x2_N6_U8_tp-0.25_pg11_pcg_H11_seed0.json
+
+real	0m21.914s
+user	1m18.203s
+sys	0m3.139s
