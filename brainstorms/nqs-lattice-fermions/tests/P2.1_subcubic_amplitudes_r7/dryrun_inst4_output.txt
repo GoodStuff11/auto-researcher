@@ -1,0 +1,11 @@
+[10:16:26] instance 4 {'Lx': 5, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=420420 arm=lh_plus seed=11
+[10:16:39] E0=-9.7918583301 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=15080
+[10:17:05] arm lh_plus: {'mode': 'lh', 'patch': 'plus', 'F': 5, 'Ha': 1} n_params=1617 target=1626 calib=7.82e-14
+[10:17:15] lh_plus: it     0  E = -8.05776889  |f| = 1.70e+00  (10.14 s/step)
+[10:17:25] lh_plus: it     1  E = -7.51803764  |f| = 1.85e+00  (10.21 s/step)
+[10:19:13] lh_plus [P]: dE_tot=1.73409 dE_sign=0.18847 f_E=0.109 spread=1.7e-14 ov0=0.031 (103 s)
+/bin/bash: line 1: 1036065 Killed                  python3 lh_train.py --mode train --task 0 --instance 4 --sr-iters 2 --lbfgs-iters 200 --fn-iters 2 --results results_dryrun_inst4
+
+real	2m57.663s
+user	9m36.620s
+sys	0m24.373s

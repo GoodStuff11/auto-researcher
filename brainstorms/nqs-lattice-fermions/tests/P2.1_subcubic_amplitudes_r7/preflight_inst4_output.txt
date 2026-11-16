@@ -1,0 +1,12 @@
+[10:15:18] instance 4: E0=-9.7918583301 (pilot -9.7918583301) |G|=4 S=0 dim_S_chi=15080 deg=1
+[10:15:30] instance 4 lh_plus  {'mode': 'lh', 'patch': 'plus', 'F': 5, 'Ha': 1} P=1617 (target 1626) E(it0)=-8.05776889 11.66 s/step at 4 threads
+[10:15:37] instance 4 lh_site  {'mode': 'lh', 'patch': 'site', 'F': 5, 'Ha': 3} P=1641 (target 1626) E(it0)=-8.05657705 6.74 s/step at 4 threads
+[10:15:41] instance 4 nnbf     {'mode': 'full', 'Hs': 6} P=1626 (target 1626) E(it0)=-8.06278092 4.17 s/step at 4 threads
+[10:15:41] reference reproduces pilot E(it 0) = -8.06278092: True
+[10:15:59] instance 4 lh_3x3   {'mode': 'lh', 'patch': '3x3', 'F': 5, 'Ha': 0} P=1625 (target 1626) E(it0)=-8.05608897 18.36 s/step at 4 threads
+[10:15:59] step-time ratio route/NNBF = 2.80 (budget rule: <= 1.5 for 16 CPUs)
+[10:15:59] PREFLIGHT PASSED
+
+real	0m53.681s
+user	1m35.842s
+sys	0m9.944s
