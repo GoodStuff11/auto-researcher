@@ -1,0 +1,3 @@
+[10:28:59] L=48 Ne=40 n_q=11: che H=16 P=37251 t=1.336s [mcmc 0.17 eloc 1.12 grad 0.04] | pcg H=46 P=37529 t=4.521s [mcmc 0.39 eloc 4.05 grad 0.08] | ratio 3.38 (median of pairs 3.37) | wall 51s
+[10:28:59]     profile (2048 configs, no P_G): che_logpsi0 128.0 ms, pcg_fc 73.8 ms, pcg_X 237.5 ms, pcg_pf 117.5 ms, pcg_logpsi0 457.4 ms
+[10:28:59] wrote results/repeat48/retime_kim-compute-03.physics.cornell.edu_t4.json

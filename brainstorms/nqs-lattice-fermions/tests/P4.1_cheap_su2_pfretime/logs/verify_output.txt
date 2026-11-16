@@ -1,0 +1,23 @@
+[10:25:43] (1) m= 2: max rel |Pf_fast - Pf_torch| = 0.00e+00   max rel |Pf_fast - Pf_pfapack| = 0.00e+00   | vs exact (mpmath, first 40): fast 1.22e-16 (median 0.0e+00), torch 1.22e-16, pfapack 0.00e+00
+[10:25:43] (1) m= 4: max rel |Pf_fast - Pf_torch| = 9.77e-15   max rel |Pf_fast - Pf_pfapack| = 8.88e-15   | vs exact (mpmath, first 40): fast 4.22e-16 (median 1.3e-16), torch 3.51e-16, pfapack 3.51e-16
+[10:25:43] (1) m=10: max rel |Pf_fast - Pf_torch| = 1.60e-14   max rel |Pf_fast - Pf_pfapack| = 2.60e-14   | vs exact (mpmath, first 40): fast 7.44e-15 (median 3.9e-16), torch 2.92e-15, pfapack 3.97e-15
+[10:25:43] (1) m=20: max rel |Pf_fast - Pf_torch| = 1.22e-12   max rel |Pf_fast - Pf_pfapack| = 1.05e-13   | vs exact (mpmath, first 40): fast 6.18e-14 (median 1.5e-15), torch 9.25e-15, pfapack 4.32e-14
+[10:25:44] (1) m=30: max rel |Pf_fast - Pf_torch| = 1.88e-13   max rel |Pf_fast - Pf_pfapack| = 5.83e-13   | vs exact (mpmath, first 40): fast 2.00e-14 (median 1.4e-15), torch 1.44e-14, pfapack 3.47e-14
+[10:25:46] (1) m=40: max rel |Pf_fast - Pf_torch| = 5.44e-13   max rel |Pf_fast - Pf_pfapack| = 2.20e-12   | vs exact (mpmath, first 40): fast 1.21e-14 (median 4.1e-15), torch 3.03e-14, pfapack 1.14e-13
+[10:25:48] (1) m=60: max rel |Pf_fast - Pf_torch| = 2.84e-13   max rel |Pf_fast - Pf_pfapack| = 3.77e-13   | vs exact (mpmath, first 10): fast 5.01e-13 (median 1.1e-14), torch 5.29e-13, pfapack 2.41e-13
+[10:25:48] (1) worst fast-vs-existing disagreement = 2.20e-12 (target <= 1e-12: NOT met)
+[10:25:48] (1) vs exact: worst fast 5.01e-13, worst torch/pfapack 5.29e-13 -> fast is as accurate as the existing and the C reference: PASS (fast <= max(1e-12, 2 x existing))
+[10:25:48] (2) pcg L=12 Ne=10 seed 0: 254 nonzero amplitudes, max |1 - psi_fast/psi_torch| = 3.02e-14, signs agree: True | 3 worst configs vs exact-Pfaffian amplitude: fast 3.20e-14, torch 1.78e-14
+[10:25:49] (2) pcg L=12 Ne=10 seed 1: 254 nonzero amplitudes, max |1 - psi_fast/psi_torch| = 3.09e-13, signs agree: True | 3 worst configs vs exact-Pfaffian amplitude: fast 1.81e-13, torch 1.28e-13
+[10:25:49] (2) pcg L=24 Ne=20 seed 0: 256 nonzero amplitudes, max |1 - psi_fast/psi_torch| = 5.15e-13, signs agree: True | 3 worst configs vs exact-Pfaffian amplitude: fast 3.55e-13, torch 5.83e-13
+[10:25:50] (2) pcg L=24 Ne=20 seed 1: 256 nonzero amplitudes, max |1 - psi_fast/psi_torch| = 1.17e-13, signs agree: True | 3 worst configs vs exact-Pfaffian amplitude: fast 9.24e-14, torch 1.74e-13
+[10:25:52] (2) pcg L=36 Ne=30 seed 0: 256 nonzero amplitudes, max |1 - psi_fast/psi_torch| = 3.41e-13, signs agree: True | 3 worst configs vs exact-Pfaffian amplitude: fast 4.97e-14, torch 3.41e-13
+[10:25:54] (2) pcg L=36 Ne=30 seed 1: 256 nonzero amplitudes, max |1 - psi_fast/psi_torch| = 4.97e-13, signs agree: True | 3 worst configs vs exact-Pfaffian amplitude: fast 2.86e-11, torch 2.81e-11
+[10:26:01] (2) pcg L=48 Ne=40 seed 0: 256 nonzero amplitudes, max |1 - psi_fast/psi_torch| = 1.48e-11, signs agree: True | 3 worst configs vs exact-Pfaffian amplitude: fast 1.35e-12, torch 1.62e-11
+[10:26:09] (2) pcg L=48 Ne=40 seed 1: 256 nonzero amplitudes, max |1 - psi_fast/psi_torch| = 1.21e-13, signs agree: True | 3 worst configs vs exact-Pfaffian amplitude: fast 9.24e-14, torch 8.53e-14
+[10:26:09] (2) worst fast-vs-existing amplitude disagreement = 1.48e-11 (target <= 1e-12: NOT met)
+[10:26:09] (2) vs exact-Pfaffian amplitudes: worst fast 2.86e-11, worst torch 2.81e-11: PASS (fast <= max(1e-12, 2 x existing))
+[10:26:09] (3) pcg L=12: log-derivatives (63 x 2696), max |dO| / max |O| = 2.68e-14
+[10:26:09] (3) pcg L=24: log-derivatives (64 x 9788), max |dO| / max |O| = 1.99e-13
+[10:26:09] (3) worst = 1.99e-13  PASS (<= 1e-9)
+[10:26:09] VERIFY PASS
