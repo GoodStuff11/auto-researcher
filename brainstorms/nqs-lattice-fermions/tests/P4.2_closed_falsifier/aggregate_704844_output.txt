@@ -1,0 +1,4 @@
+base         npar= 426 iters=4494 relerr=1.7784% accepted={'lm': 3678, 'sr': 816, 'none': 0} wall=7001s
+c8h32        npar= 818 iters=2564 relerr=1.6582% accepted={'lm': 2456, 'sr': 108, 'none': 0} wall=7003s
+spin_jas2cs  npar= 538 iters=2659 relerr=1.9520% accepted={'lm': 586, 'sr': 2073, 'none': 0} wall=7001s
+VERDICT: INCONCLUSIVE (LM base not below SR-600 base)
