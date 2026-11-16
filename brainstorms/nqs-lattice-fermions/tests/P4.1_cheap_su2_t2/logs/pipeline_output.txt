@@ -1,0 +1,41 @@
+[10:15:53] S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0: L=8 Ne=6 H=16 P=1175 (che@16 P=1175) threads=4 host=kim-compute-03.physics.cornell.edu
+[10:16:10] thermalised: acceptance 0.365
+[10:16:11] it 1 E -5.091947 std 1.410 acc 0.345 |upd| 1.90e-01 t(mcmc/eloc/grad/sr) 0.05/0.08/0.10/0.11s elapsed 0.000 h
+[10:16:27] CHECKPOINT it 20: exact E -5.5151608 eps 3.6428e-03 (0 s)
+[10:16:30] final E (average of last 10 steps) -5.5212485 +- 0.0000000 (3136 samples, 0 s), <S^2> -4.9e-17
+[10:16:30] wrote results_preflight/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0.json
+[10:16:30] S4x2_N6_U8_tp-0.25_pg11_pcg_H11_seed0: L=8 Ne=6 H=11 P=1170 (che@16 P=1175) threads=4 host=kim-compute-03.physics.cornell.edu
+[10:16:35] thermalised: acceptance 0.346
+[10:16:35] it 1 E -4.898765 std 1.478 acc 0.325 |upd| 1.98e-01 t(mcmc/eloc/grad/sr) 0.06/0.09/0.03/0.00s elapsed 0.000 h
+[10:16:38] CHECKPOINT it 20: exact E -5.5093191 eps 4.6981e-03 (0 s)
+[10:16:41] final E (average of last 10 steps) -5.5139399 +- 0.0000000 (3136 samples, 0 s), <S^2> -2.3e-17
+[10:16:41] wrote results_preflight/S4x2_N6_U8_tp-0.25_pg11_pcg_H11_seed0.json
+[10:16:41] S4x2_N6_U8_tp-0.25_pg11_r1_H19_seed0: L=8 Ne=6 H=19 P=1186 (che@16 P=1175) threads=4 host=kim-compute-03.physics.cornell.edu
+[10:16:43] thermalised: acceptance 0.353
+[10:16:43] it 1 E -4.797854 std 1.656 acc 0.345 |upd| 1.65e-01 t(mcmc/eloc/grad/sr) 0.02/0.04/0.02/0.00s elapsed 0.000 h
+[10:16:44] CHECKPOINT it 20: exact E -5.4976832 eps 6.8002e-03 (0 s)
+[10:16:46] final E (average of last 10 steps) -5.5118565 +- 0.0000000 (3136 samples, 0 s), <S^2> 3.8e-17
+[10:16:46] wrote results_preflight/S4x2_N6_U8_tp-0.25_pg11_r1_H19_seed0.json
+[10:16:46] S4x2_N6_U8_tp-0.25_pg11_foil_H0_seed0: L=8 Ne=6 H=0 P=103 (che@16 P=1175) threads=4 host=kim-compute-03.physics.cornell.edu
+[10:16:49] thermalised: acceptance 0.355
+[10:16:49] it 1 E -4.718803 std 2.271 acc 0.299 |upd| 3.37e-01 t(mcmc/eloc/grad/sr) 0.04/0.06/0.02/0.00s elapsed 0.000 h
+[10:16:51] CHECKPOINT it 20: exact E -5.4922769 eps 7.7769e-03 (0 s)
+[10:16:54] final E (average of last 10 steps) -5.4860027 +- 0.0000000 (3136 samples, 0 s), <S^2> -1.5e-17
+[10:16:54] wrote results_preflight/S4x2_N6_U8_tp-0.25_pg11_foil_H0_seed0.json
+[10:16:54] S4x2_N6_U8_tp-0.25_pg11_che_H2_seed0: L=8 Ne=6 H=2 P=265 (che@16 P=1175) threads=4 host=kim-compute-03.physics.cornell.edu
+[10:16:56] thermalised: acceptance 0.365
+[10:16:56] it 1 E -4.909747 std 1.643 acc 0.369 |upd| 3.16e-01 t(mcmc/eloc/grad/sr) 0.02/0.04/0.02/0.00s elapsed 0.000 h
+[10:16:57] CHECKPOINT it 20: exact E -5.5045863 eps 5.5531e-03 (0 s)
+[10:16:59] final E (average of last 10 steps) -5.5102532 +- 0.0000000 (3136 samples, 0 s), <S^2> 2.3e-17
+[10:16:59] wrote results_preflight/S4x2_N6_U8_tp-0.25_pg11_che_H2_seed0.json
+[10:16:59] S4x2_N6_U8_tp-0.25_pg11_pcg_H11_seed0: L=8 Ne=6 H=11 P=1170 (che@16 P=1175) threads=4 host=kim-compute-03.physics.cornell.edu
+[10:17:02] thermalised: acceptance 0.346
+[10:17:02] it 1 E -4.898765 std 1.478 acc 0.325 |upd| 1.98e-01 t(mcmc/eloc/grad/sr) 0.04/0.08/0.03/0.00s elapsed 0.000 h
+[10:17:05] CHECKPOINT it 20: exact E -5.5093191 eps 4.6981e-03 (0 s)
+[10:17:05] EARLY-KILL (pre-registered futility): eps(20) = 4.6981e-03 > -1.0000e+00
+[10:17:06] final E (current state) -5.5093191 +- 0.0000000 (3136 samples, 0 s), <S^2> 4.4e-17
+[10:17:06] wrote results_preflight/futility_ctrl/S4x2_N6_U8_tp-0.25_pg11_pcg_H11_seed0.json
+
+real	1m16.075s
+user	3m52.175s
+sys	0m1.190s

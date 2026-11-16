@@ -1,0 +1,10 @@
+[10:11:51] L=48 Ne=40 che   H= 16 P= 37251 t_step=   1.635s (mcmc 0.19 eloc 1.34 grad 0.06 sr 0.00) [32 chains]
+[10:13:31] L=48 Ne=40 pcg   H= 46 P= 37529 t_step=  49.906s (mcmc 1.03 eloc 58.14 grad 2.07 sr 0.01) [32 chains]
+[10:13:35] L=48 Ne=40 r1    H= 81 P= 37382 t_step=   1.785s (mcmc 0.59 eloc 1.07 grad 0.05 sr 0.00) [32 chains]
+[10:13:35] L=48: t_step(pcg, H=46) / t_step(che, H=16) = 30.53
+[10:13:35] L=48: t_step(r1, H=81) / t_step(che, H=16) = 1.09
+[10:13:35] wrote logs/timing/L48/timing_t2_kim-compute-03.physics.cornell.edu_t4.json
+
+real	1m50.645s
+user	2m58.072s
+sys	1m21.234s

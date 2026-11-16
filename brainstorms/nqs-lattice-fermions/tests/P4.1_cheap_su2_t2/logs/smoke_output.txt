@@ -1,0 +1,49 @@
+[10:04:06] (v) 4x3 open N_e=10: dim(S^z=0) = 627264, dim(S=0) = 169884; the (+,+) part is about dim(S=0)/4 = 42471
+[10:04:06]   (v) pcg  H=15 P=2696 < (+,+) S=0 dimension ~42471: [PASS]
+[10:04:06]   (v) r1   H=25 P=2596 < (+,+) S=0 dimension ~42471: [PASS]
+[10:04:06]   (v) foil H=0 P=221 < (+,+) S=0 dimension ~42471: [PASS]
+[10:04:06]   (v) 4x3 Fermi-sea gap (closed shell): 1.58e-01 (> 1e-08) [PASS]
+[10:04:06] 4x2 open Ne=6 dim=3136 P_G=None
+[10:04:06]   (a) pcg  H=11 P=1170 |psi_torch - psi_numpy|_inf: 2.50e-16 (<= 1e-09) [PASS]
+[10:04:07]   (c) pcg  |sum w E_loc - <H>|/|<H>|: 0.00e+00 (<= 1e-09) [PASS]
+[10:04:07]   (d) pcg  |g_torch - g_numpy|/|g_numpy| (E diff 8.9e-16): 2.44e-15 (<= 1e-07) [PASS]
+[10:04:07]   (e) pcg  |<S^2>|: 2.26e-18 (<= 1e-12) [PASS]
+[10:04:07]   (f-) pcg generic: 1 - |<P_S phi|phi>| (projection acts): 4.80e-01 (> 1e-03) [PASS]
+[10:04:07]   (f+) pcg(sym f0, V2=V1) vs r1: 1 - |overlap|: 0.00e+00 (<= 1e-09) [PASS]
+[10:04:07]   (a) r1   H=19 P=1186 |psi_torch - psi_numpy|_inf: 8.33e-17 (<= 1e-09) [PASS]
+[10:04:07]   (c) r1   |sum w E_loc - <H>|/|<H>|: 1.13e-16 (<= 1e-09) [PASS]
+[10:04:07]   (d) r1   |g_torch - g_numpy|/|g_numpy| (E diff 1.3e-15): 2.47e-15 (<= 1e-07) [PASS]
+[10:04:07]   (e) r1   |<S^2>|: 2.86e-17 (<= 1e-12) [PASS]
+[10:04:07]   (a) foil H=0 P=103 |psi_torch - psi_numpy|_inf: 3.61e-16 (<= 1e-09) [PASS]
+[10:04:07]   (c) foil |sum w E_loc - <H>|/|<H>|: 0.00e+00 (<= 1e-09) [PASS]
+[10:04:07]   (d) foil |g_torch - g_numpy|/|g_numpy| (E diff 8.9e-16): 2.90e-15 (<= 1e-07) [PASS]
+[10:04:07]   (e) foil |<S^2>|: 1.31e-17 (<= 1e-12) [PASS]
+[10:04:07] 4x2 open Ne=6 dim=3136 P_G=(1, 1)
+[10:04:07]   (b) pcg  H=11 P=1170 |psi_torch - psi_numpy|_inf: 1.11e-16 (<= 1e-09) [PASS]
+[10:04:08]   (c) pcg  |sum w E_loc - <H>|/|<H>|: 3.35e-16 (<= 1e-09) [PASS]
+[10:04:09]   (d) pcg  |g_torch - g_numpy|/|g_numpy| (E diff 0.0e+00): 2.71e-15 (<= 1e-07) [PASS]
+[10:04:09]   (b) r1   H=19 P=1186 |psi_torch - psi_numpy|_inf: 5.55e-17 (<= 1e-09) [PASS]
+[10:04:09]   (c) r1   |sum w E_loc - <H>|/|<H>|: 1.80e-16 (<= 1e-09) [PASS]
+[10:04:09]   (d) r1   |g_torch - g_numpy|/|g_numpy| (E diff 8.9e-16): 2.49e-15 (<= 1e-07) [PASS]
+[10:04:09]   (b) foil H=0 P=103 |psi_torch - psi_numpy|_inf: 1.46e-16 (<= 1e-09) [PASS]
+[10:04:10]   (c) foil |sum w E_loc - <H>|/|<H>|: 3.42e-16 (<= 1e-09) [PASS]
+[10:04:10]   (d) foil |g_torch - g_numpy|/|g_numpy| (E diff 4.4e-16): 3.19e-15 (<= 1e-07) [PASS]
+[10:04:10] 4x3 open Ne=10 dim=627264 P_G=None
+[10:04:21]   (a) pcg  H=15 P=2696 |psi_torch - psi_numpy|_inf: 5.55e-16 (<= 1e-09) [PASS]
+[10:07:04]   (c) pcg  |sum w E_loc - <H>|/|<H>|: 3.32e-16 (<= 1e-09) [PASS]
+[10:07:04]   (e) pcg  |<S^2>|: 3.29e-18 (<= 1e-12) [PASS]
+[10:07:04]   (f-) pcg generic: 1 - |<P_S phi|phi>| (projection acts): 5.62e-01 (> 1e-03) [PASS]
+[10:07:09]   (f+) pcg(sym f0, V2=V1) vs r1: 1 - |overlap|: 0.00e+00 (<= 1e-09) [PASS]
+[10:07:12]   (a) r1   H=25 P=2596 |psi_torch - psi_numpy|_inf: 3.82e-17 (<= 1e-09) [PASS]
+[10:07:44]   (c) r1   |sum w E_loc - <H>|/|<H>|: 5.01e-16 (<= 1e-09) [PASS]
+[10:07:45]   (e) r1   |<S^2>|: 4.92e-18 (<= 1e-12) [PASS]
+[10:07:53]   (a) foil H=0 P=221 |psi_torch - psi_numpy|_inf: 1.03e-15 (<= 1e-09) [PASS]
+[10:11:35]   (c) foil |sum w E_loc - <H>|/|<H>|: 3.90e-16 (<= 1e-09) [PASS]
+[10:11:36]   (e) foil |<S^2>|: 4.52e-17 (<= 1e-12) [PASS]
+[10:11:36]   (p) Pf vs det (block form), max |diff|: 8.88e-16 (<= 1e-12) [PASS]
+[10:11:36]   (p) Pf^2 vs det (general antisymmetric), max rel diff: 9.55e-16 (<= 1e-10) [PASS]
+[10:11:36] SMOKE PASS (449 s)
+
+real	7m34.090s
+user	23m39.302s
+sys	3m32.074s

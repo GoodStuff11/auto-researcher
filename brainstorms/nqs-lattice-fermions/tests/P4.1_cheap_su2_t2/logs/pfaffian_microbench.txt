@@ -1,0 +1,2 @@
+batch 11264: slogpf 40x40 1.478s | LAPACK slogdet 40x40 0.072s | slogdet 20x20 0.041s
+ratios: slogpf/det20 36.5, det40/det20 1.8 (an optimised Pfaffian costs about half of det40)

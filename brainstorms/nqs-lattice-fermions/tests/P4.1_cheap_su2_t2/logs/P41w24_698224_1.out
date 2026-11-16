@@ -1,0 +1,1 @@
+task 1 on kim-compute-04.physics.cornell.edu: vmc_t2.py --mode train --arm che --width 48 --Lx 8 --Ly 3 --pg=1,1 --iters 1000 --n-chains 1024 --n-eval 65536 --threads 4 --max-hours 1.5 --outdir /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/w24
