@@ -1,0 +1,19 @@
+base seed 0: eps 7.3021e-03 (T/2 current 0.010360787489970607) wall 15.8 s; CPU-min used 0.62
+spring seed 0: eps 1.6817e-02 (T/2 current 0.03826088481591444) wall 14.9 s; CPU-min used 1.20
+base4 seed 0: eps 4.4662e-03 (T/2 current 0.006918112857610563) wall 15.9 s; CPU-min used 1.82
+ctrl seed 0: eps 2.6630e-03 (T/2 current 0.004764566984448605) wall 26.8 s; CPU-min used 2.82
+base seed 1: eps 6.6681e-03 (T/2 current 0.00944563940598586) wall 16.0 s; CPU-min used 3.44
+spring seed 1: eps 1.7210e-02 (T/2 current 0.052983561487029415) wall 15.3 s; CPU-min used 4.04
+base4 seed 1: eps 3.1337e-03 (T/2 current 0.004632209011191052) wall 16.4 s; CPU-min used 4.68
+ctrl seed 1: eps 2.6124e-03 (T/2 current 0.003847908230099078) wall 26.7 s; CPU-min used 5.67
+base seed 2: eps 6.5918e-03 (T/2 current 0.010547102167741875) wall 14.9 s; CPU-min used 6.25
+spring seed 2: eps 2.0863e-02 (T/2 current 0.05261892824727486) wall 15.1 s; CPU-min used 6.84
+base4 seed 2: eps 5.0720e-03 (T/2 current 0.007203539216559999) wall 16.2 s; CPU-min used 7.47
+ctrl seed 2: eps 4.1265e-03 (T/2 current 0.0057921810414187916) wall 27.2 s; CPU-min used 8.48
+  base    eps 6.8540e-03 +- 2.3e-04   wall 15.6 s   per seed 7.302e-03 6.668e-03 6.592e-03
+  spring  eps 1.8297e-02 +- 1.3e-03   wall 15.1 s   per seed 1.682e-02 1.721e-02 2.086e-02
+  base4   eps 4.2240e-03 +- 5.7e-04   wall 16.1 s   per seed 4.466e-03 3.134e-03 5.072e-03
+  ctrl    eps 3.1339e-03 +- 5.0e-04   wall 26.9 s   per seed 2.663e-03 2.612e-03 4.127e-03
+  e_base4/e_base = 0.616; e_spring/e_base = 2.669; wall ratio spring/base = 0.970, base4/base = 1.037
+VERDICT: KILL
+256.89 s wall 502.61 user 7.70 sys

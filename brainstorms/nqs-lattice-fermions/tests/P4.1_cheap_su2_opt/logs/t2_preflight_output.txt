@@ -1,0 +1,19 @@
+[14:03:30] S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0: L=8 Ne=6 H=16 P=1175 (che@16 P=1175) threads=2 host=kim-compute-03.physics.cornell.edu
+[14:03:31] thermalised: acceptance 0.363
+[14:03:36] final E (average of last 10 steps) -5.5002241 +- 0.0098011 (2048 samples, 3 s)
+[14:03:36] wrote results_preflight/preflight/seedrun/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0.json
+warm checkpoint written for A: True
+[14:03:36] S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0: L=8 Ne=6 H=16 P=1175 (che@16 P=1175) threads=2 host=kim-compute-03.physics.cornell.edu
+[14:03:36] resumed from results_preflight/preflight/A/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_ckpt.npz at step 0 (t_used 0.00 h)
+[14:03:38] thermalised: acceptance 0.321
+[14:03:41] final E (average of last 4 steps) -5.4966806 +- 0.0112041 (2048 samples, 3 s)
+[14:03:41] wrote results_preflight/preflight/A/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0.json
+warm checkpoint written for B: True
+[14:03:41] S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0: L=8 Ne=6 H=16 P=1175 (che@16 P=1175) threads=2 host=kim-compute-03.physics.cornell.edu
+[14:03:41] resumed from results_preflight/preflight/B/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_ckpt.npz at step 0 (t_used 0.00 h)
+[14:03:43] thermalised: acceptance 0.326
+[14:03:45] final E (average of last 2 steps) -5.5116652 +- 0.0064538 (2048 samples, 1 s)
+[14:03:45] wrote results_preflight/preflight/B/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0.json
+preflight: A iters_done 16 chains 64; B iters_done 8 chains 256
+preflight rule output (toy, meaningless energies): INVALID
+18.01 s wall 32.11 user

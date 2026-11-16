@@ -1,0 +1,9 @@
+  want PASS            got PASS
+  want KILL            got KILL
+  want KILL            got KILL
+  want AMBIGUOUS       got AMBIGUOUS
+  want INCOMPLETE      got INCOMPLETE
+  want INCOMPLETE      got INCOMPLETE
+  want INCOMPLETE-WALL got INCOMPLETE-WALL
+  want INVALID         got INVALID
+CHECK PASS 8/8
