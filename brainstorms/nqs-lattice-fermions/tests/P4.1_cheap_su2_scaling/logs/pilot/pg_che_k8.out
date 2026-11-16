@@ -20,3 +20,7 @@
 [03:02:02] it 850 E -7.827592 std 0.199 acc 0.235 |upd| 1.83e-02 t(mcmc/eloc/grad/sr) 0.16/1.91/0.19/0.04s elapsed 0.77 h
 [03:03:58] it 900 E -7.823498 std 0.195 acc 0.240 |upd| 1.32e-02 t(mcmc/eloc/grad/sr) 0.18/1.90/0.21/0.04s elapsed 0.81 h
 [03:05:55] it 950 E -7.834371 std 0.206 acc 0.225 |upd| 6.98e-03 t(mcmc/eloc/grad/sr) 0.16/1.86/0.20/0.04s elapsed 0.84 h
+[03:07:51] it 1000 E -7.823961 std 0.221 acc 0.240 |upd| 7.27e-03 t(mcmc/eloc/grad/sr) 0.15/1.75/0.18/0.04s elapsed 0.87 h
+[03:08:27] final E (average of last 250 steps) -7.821554 +- 0.000000 (627264 samples, 35 s)
+[03:09:02] last-step parameters: exact E -7.821577 (reported only)
+[03:09:02] wrote logs/pilot/pg_che_k8/S4x3_N10_U8_tp-0.25_pg11_che_k8_seed0.json
