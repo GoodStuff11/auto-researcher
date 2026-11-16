@@ -177,6 +177,16 @@ Provide each worker with:
 
 Every leaf artifact ends with `## Leaf Status Summary`. It is the **last** heading of the file: rounds, results and notes are inserted *above* it, never after it, and the summary is rewritten (not appended to) whenever the leaf's state changes or a result lands. It is written for a reader who reads nothing else in the leaf.
 
+**Self-contained argument (the standard every summary must meet).** After reading only the summary, the user must be able to explain the idea or the closure to a colleague and defend it against obvious objections. Field lists are not enough. The summary therefore contains, in prose (about 400–900 words; longer only if the argument needs it):
+* **The question in plain terms**: what problem this leaf attacks and why it matters for NQS of fermions (or the domain at hand), with every symbol and acronym defined at first use. No route labels ("7.1", "R2", "frdK") without saying what they are.
+* **The idea or mechanism**: what the approach does and *why it should work*, explained physically or mathematically, not by name.
+* **The chain of evidence**: premise → test → result → inference, step by step. For each step: what was compared with what (the arm and its foil), on which instance and size, the key numbers side by side with their uncertainties, and why that comparison is fair (matched parameters, matched wall time, pre-registered rule).
+* **Why the alternatives fail or are worse**: the strongest competing routes or baselines and the evidence against them.
+* **The strongest objection and the answer to it**: the best counterargument a skeptical referee would raise (from the critics, the cross-node critic, or a confound found later), and how the evidence answers it, or an honest statement that it is not answered.
+* **Limits**: what the conclusion does not cover (sizes, instances, sectors, optimisation regime, sampled versus exact arithmetic).
+
+Write it so that each claim is traceable: cite the section or job id where the number comes from in parentheses, but make the argument readable without following those pointers.
+
 **Common fields (all states):** `State`, `Updated` (date and the result that triggered the update), `Conclusion`, `Scope` (instances, sizes, sectors and compute regime the conclusion covers), and `Compute spent` (CPU-hours, from the master compute ledger).
 
 **Leaf still live: `State: OPEN` or `DORMANT`.** Add:
