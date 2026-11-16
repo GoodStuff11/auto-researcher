@@ -31,7 +31,7 @@ Files in this skill's base directory:
 4. **Problem-Specific Anti-Patterns as Mutation Fuel**: Failures are stored locally within the working file (`brainstorm-<slug>.md`). Killed ideas are not dead ends; their specific failure mechanisms form the boundary conditions for the next generation of mutated ideas.
 5. **Zero Subjective Scoring**: Never assign numeric ratings, promise multipliers, or arbitrary tractability scores. Ideas survive or die based on explicit binary gates.
 6. **Decisive Termination**: For every live route, the next step is the cheapest analytical derivation or numerical micro-step that could kill it (Stage 3.5 tiers). A multi-seed decisive test (T3, at most 24 CPU-hours per task by default) is reserved for routes that already passed the cheaper tiers.
-7. **Cluster & Compute Environment Awareness**: Before running any diagnostic scripts or benchmarks, detect if the environment is an HPC cluster (check for `sbatch`, Slurm environment variables, or module systems). If on a cluster, never run heavy workloads interactively or directly on login nodes—generate and submit jobs via Slurm `sbatch` scripts with appropriate partition, walltime, and resource allocations.
+7. **Cluster & Compute Environment Awareness**: Before running any diagnostic scripts or benchmarks, detect if the environment is an HPC cluster (check for `sbatch`, Slurm environment variables, or module systems). If on a cluster, never run heavy workloads interactively or directly on login nodes—generate and submit jobs via Slurm `sbatch` scripts with appropriate partition, walltime, and resource allocations. **Every job must pass the Compute Value Gate (Stage 3.5.6)**: a written value-of-information note, cost tiers with escalating justification, incremental ladders, a compute ledger, and a standing queue review that cancels, without asking, any job that can no longer change a decision. Jobs above 1000 CPU-hours always need the user's approval.
 8. **Mathematical Rigor**: Write all variables, operators, inequalities, and expressions in explicit LaTeX ($...$ inline, $$...$$ display). Every symbol must be defined at first use.
 9. **Markdown Hygiene (Every `.md` Must Lint Clean)**: Every Markdown file this procedure writes or edits must pass `check_brainstorm.py` with **zero errors and zero warnings** before it is handed back or synthesized. That includes the master `brainstorm-<slug>.md`, every `.subproblems/P{i}_*.md` leaf artifact, and any brief or note. Lint the whole working directory in one call with `python3 check_brainstorm.py <working-dir>`. The linter detects each file's role (master, leaf or other). Rules that are easy to break when pasting logs or appending sections:
    - Put a blank line before every opening code fence and after every closing fence, even inside a list item. Otherwise Obsidian merges the fence into the preceding list item or paragraph, pairs every later fence off by one, and leaves an extra code block that never closes (M2, M3).
@@ -312,7 +312,7 @@ The orchestrator (and any worker that owns a leaf) follows this loop. It replace
    * **open gaps and caveats named by critics or results** that a cheap T0 or T1 check can settle (e.g. "the sampled force is untested", "the foil may be confounded", "the toy did not test X");
    * **falsifiers of closed leaves.** Every Saturation Diagnostic names the experiment that would falsify it. Run the ones that fit T0 or T1 caps; a falsified diagnostic reopens its leaf with that route only;
    * **cross-node critic and master synthesis.** Run the cross-node critic whenever two or more leaves have changed status (closed, promoted, killed) since the last one, and keep the master Summary and Cross-Pollination current with every closure;
-   * **cleanup of the compute queue.** Cancel any queued or running job whose verdict can no longer change a decision (e.g. a pre-registered rule that is already decided from data on disk), and record why.
+   * **cleanup of the compute queue.** Cancel any queued or running job whose verdict can no longer change a decision (e.g. a pre-registered rule that is already decided from data on disk), and record why (Stage 3.5.6 queue review; no confirmation needed).
 4. **On every job checkpoint or completion**, apply the early-stop rule (3.5.5) or the verdict rule, update the portfolio row, and launch the pre-planned next action.
 5. **Idle waiting is legitimate only when every item of the list in step 3 is empty**, not merely when every live route is `IN-FLIGHT` or dependency-blocked. Before waiting, write one line per item stating why it is empty (for example "P2.1 closed; its compiled-update falsifier already ran"). If any line cannot be written, that item is the next action. A long wait is the most common way this procedure stalls: treat "all routes are in flight" as a prompt to check step 3, never as permission to stop.
 
@@ -331,11 +331,37 @@ Run the complete pipeline (train, aggregate, verdict) on a toy instance with a d
 * **Checkpointed early stops.** T2 and T3 jobs write checkpoints and per-checkpoint metrics. The pre-registered rule includes futility and early-kill clauses at fixed fractions of the budget (e.g. 25% and 50%): if the metric at a checkpoint is already outside the PASS region by more than its projected remaining improvement (measured on the pilot's trajectory), cancel the job and record the verdict at that checkpoint.
 * **Anytime reporting.** Partial checkpoint metrics are read and logged when they appear. They may *kill* early under the pre-registered rule, but never *promote* early.
 
+### 3.5.6 Compute Value Gate (Every Job Must Earn Its Cost)
+
+Compute is a scarce, shared resource. A job is submitted only if what it can teach is worth its cost. "The rule says to test it" is not a justification; the decision the result changes is.
+
+**Value-of-information note (written in the leaf before every T2 or T3 submission).** It has five lines, and a job without them is not submitted:
+1. **Decision.** For each pre-registered verdict, the concrete next action it triggers. If two verdicts trigger the same action, they are one verdict for this purpose.
+2. **Prediction.** The outcome expected from the T0 analysis and T1 data, with a rough probability. If one outcome is predicted with probability at least 0.8 *and* that outcome leaves the leaf's decision unchanged, **do not run the job**: record the prediction and act on it, naming the cheap evidence that would overturn it.
+3. **Cost.** Expected and capped CPU-hours (CPUs per task × wall time × tasks), and the leaf's running total from the compute ledger.
+4. **Cheapest decisive version.** Why no smaller instance, fewer seeds, fewer steps, fewer arms, or a single rung of a ladder decides the same question. Arms that are "reported only" must be justified separately or dropped.
+5. **Power.** With the measured run-to-run spread (not the per-run error bar), the probability that the job returns AMBIGUOUS or INCOMPLETE. If it is above about 0.3, redesign before submitting.
+
+**Cost tiers (CPU-hours per job, capped).**
+
+| Tier | Requirement before submission |
+| :--- | :--- |
+| at most 10 | value-of-information note |
+| 10–100 | note, plus the per-leaf critic agrees in writing that the job is the cheapest decisive version |
+| 100–1000 | note and critic, plus the route has already passed T2, and the leaf's cumulative spend is stated; ladders and seed sweeps must be incremental (below) |
+| above 1000 | **never automatic: ask the user**, with the note, the cost in plain numbers, and the cheaper alternative that was rejected and why |
+
+**Incremental ladders and sweeps.** Size ladders, seed sweeps and multi-arm grids are submitted one rung at a time: the smallest rung that can kill first, each later rung only if the earlier rung leaves the question open. A pre-registered rule may span several rungs, but the compute is released rung by rung. A single large array for a whole ladder is not allowed above 100 CPU-hours.
+
+**Compute ledger.** The master document keeps a table with one row per submitted job: leaf, job id, tier, CPU-hours requested, CPU-hours used, verdict, and whether the verdict changed a decision. Report the running totals per leaf and overall with every synthesis. A leaf whose spend is high and whose verdicts rarely changed a decision is a signal to close it with a Saturation Diagnostic.
+
+**Queue review (cancel without asking).** Every time a result lands, and before any wait, re-check every queued and running job against its value-of-information note. Cancel immediately, without asking, any job whose result can no longer change a decision: its verdict is already decided from data on disk, its leaf is closed, its question has moved to another job, or its outcome is now predicted with probability at least 0.8 by cheaper evidence. Record the cancellation and the reason in the leaf and the ledger. Partially needed array jobs are trimmed to the tasks that still matter (`scancel` by task index).
+
 ---
 
 ## Stage 4 — The Decisive Test (Tier 3) & Compute Execution
 
-Take a route that has passed T0–T2 (Stage 3.5) and design the minimal decisive calculation that can falsify it. Respect the T3 budget cap, the pre-flight dry run (3.5.4) and power sizing (3.5.5).
+Take a route that has passed T0–T2 (Stage 3.5) and design the minimal decisive calculation that can falsify it. Respect the T3 budget cap, the pre-flight dry run (3.5.4), power sizing (3.5.5) and the Compute Value Gate (3.5.6). A T3 whose outcome the T0 and T1 evidence already predicts with high confidence is not run.
 
 ### 1. Test Specification
 1. **Target Instance**: The minimal non-trivial instance preserving the Hard Core (e.g., 2x2 cluster, N=2 particle sector, smallest non-Abelian group).
@@ -401,6 +427,7 @@ Spawn a fresh adversarial critic agent with this mandate:
 > 6. Check whether any proposed step repeats a mechanism logged in the Problem Anti-Patterns section.
 > 7. Check tier discipline: could this route have been killed at a cheaper tier (a T0 argument such as a small effective-model lemma, an operation count, or an extensivity argument; or a T1 toy run)? Is a T2 or T3 job requested without a passed T0 and T1, without a pre-flight dry run whose controls behave, without power sizing, or above the budget cap without a written exception?
 > 8. Check Gate 4: does the claimed gain survive with system size, or is it a finite-size bonus or an exponential-cost operation in disguise?
+> 9. Check compute value (Stage 3.5.6): is every requested job the cheapest decisive version, is its outcome already predictable from cheaper evidence, would any verdict leave the decision unchanged, and is its cost tier justified?
 > Return only a numbered list of concrete, fatal objections categorized as Major or Minor. Do not provide praise or vague commentary."
 
 Address all major critiques in place. Log every action in the `Revision & Critic Log`.
