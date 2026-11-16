@@ -1,0 +1,2 @@
+E_A -16.43988 +- 0.00668 (300 steps, 1024 chains); E_B -16.43576 +- 0.00430 (75 steps, 4096 chains); d = -0.00411 +- 0.00794 (-0.52 sigma); wall ratio B/A 0.630; E_A - E_warm -0.00915; eps_A 9.920e-03, eps_B 1.017e-02 (chi = 1000 DMRG)
+VERDICT: KILL
