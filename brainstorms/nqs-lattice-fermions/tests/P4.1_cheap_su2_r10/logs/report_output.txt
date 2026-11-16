@@ -1,0 +1,23 @@
+che: eps 2.8581e-03, gap 2.237276e-02, checks {'pg_overlap': 1.0, 'E_Psi': -7.805526273788165, 'E_stored': -7.805526273788165, 'dE_stored': 0.0, 'S2_Psi': 4.175177794563984e-18, 'S2_tangent_max': 2.621253297695545e-13, 'pos_delta_over_gap': 0.9999999999997619, 'pos_abs_err': 5.329070518200751e-15, 'neg_G': 0.001893289132879452}
+   Delta(C1) / gap = 0.0067  (rank 74 of 78)
+   Delta(C1+C3) / gap = 0.0853  (rank 194 of 198)
+   Delta(C1+C3+SQ) / gap = 0.1035  (rank 284 of 318)
+   Delta(C1+C3+W) / gap = 0.1015  (rank 314 of 318)
+   Delta(C1+NJ) / gap = 0.0119  (rank 144 of 159)
+   Delta(C1+RF) / gap = 0.0143  (rank 155 of 159)
+pcg: eps 1.2842e-03, gap 1.005234e-02, checks {'pg_overlap': 1.0000000000000002, 'E_Psi': -7.817846695693154, 'E_stored': -7.817846695693153, 'dE_stored': 8.881784197001252e-16, 'S2_Psi': 1.321805617713262e-17, 'S2_tangent_max': 3.00204853932014e-15, 'pos_delta_over_gap': 0.9999999999997349, 'pos_abs_err': 2.6645352591003757e-15, 'neg_G': 0.0023602100839389814}
+   Delta(C1) / gap = 0.0108  (rank 74 of 78)
+   Delta(C1+C3) / gap = 0.0670  (rank 218 of 222)
+   Delta(C1+C3+SQ) / gap = 0.0933  (rank 314 of 366)
+   Delta(C1+C3+W) / gap = 0.0941  (rank 362 of 366)
+   Delta(C1+NJ) / gap = 0.0233  (rank 144 of 159)
+   Delta(C1+RF) / gap = 0.0181  (rank 155 of 159)
+r1: eps 2.3133e-03, gap 1.810834e-02, checks {'pg_overlap': 1.0, 'E_Psi': -7.809790689566155, 'E_stored': -7.809790689566152, 'dE_stored': 2.6645352591003757e-15, 'S2_Psi': 1.9634015241794258e-17, 'S2_tangent_max': 3.376522689740612e-15, 'pos_delta_over_gap': 0.9999999999997548, 'pos_abs_err': 4.440892098500626e-15, 'neg_G': 0.001953590179440013}
+   Delta(C1) / gap = 0.0086  (rank 74 of 78)
+   Delta(C1+C3) / gap = 0.0588  (rank 152 of 222)
+   Delta(C1+C3+SQ) / gap = 0.0722  (rank 204 of 366)
+   Delta(C1+C3+W) / gap = 0.0723  (rank 230 of 366)
+   Delta(C1+NJ) / gap = 0.0275  (rank 144 of 159)
+   Delta(C1+RF) / gap = 0.0201  (rank 155 of 159)
+VERDICT R16 squeezed frame: AMBIGUOUS   che: G_route 0.0183, G_foil 0.0162; pcg: G_route 0.0263, G_foil 0.0271; r1: G_route 0.0134, G_foil 0.0134
+VERDICT R17 local charge Jastrow: AMBIGUOUS   che: G_route 0.0052, G_foil 0.0075; pcg: G_route 0.0124, G_foil 0.0073; r1: G_route 0.0189, G_foil 0.0115

@@ -1,0 +1,14 @@
+[16:50:10] assembly vs autograd: max relative error 4.21e-17 (4 s)
+[16:50:10] E(Psi) -7.8055262738 (stored -7.8055262738); gap 2.237276e-02
+[16:50:38] tangent matrix (627264, 839) built (31 s)
+[16:51:10] Gram and H matrices (64 s)
+[16:51:10] Delta(full) = 4.458833e-03 = 0.1993 of gap (rank 698 of 838)
+[16:51:10] Delta(P0+b2) = 1.566945e-03 = 0.0700 of gap (rank 121 of 241)
+[16:51:10] Delta(jv) = 1.508095e-04 = 0.0067 of gap (rank 74 of 78)
+[16:51:10] Delta(W1+b1) = 2.716597e-03 = 0.1214 of gap (rank 385 of 401)
+[16:51:10] Delta(W2) = 8.033258e-04 = 0.0359 of gap (rank 121 of 121)
+[16:51:10] positive control |Delta - g| = 8.0e-15; PREMISE L: DRY-RUN (subset; not a reading) (L = 0.1993)
+
+real	1m8.985s
+user	1m53.190s
+sys	0m11.649s

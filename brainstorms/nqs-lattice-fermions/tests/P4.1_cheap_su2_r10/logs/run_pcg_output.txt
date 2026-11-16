@@ -1,0 +1,18 @@
+[16:40:26] pcg: P=2696, dim=627264, threads=4
+[16:40:34] phi0 and orbital gradients done (9 s)
+[16:40:48] validation: P_G overlap 1.000000000000000, E(Psi) -7.8178466957 (stored -7.8178466957), <S^2> 1.3e-17
+[16:40:56] families built (31 s): C1 77, C3 144, SQ 144, W 144, NJ 81, RF 81
+[16:41:16] max relative <S^2> of sampled tangents 3.0e-15
+[16:42:43] Gram and H matrices over 672 vectors (138 s)
+[16:42:43] Delta(C1) = 1.088156e-04 (= 0.0108 of gap; rank 74 of 78)
+[16:42:43] Delta(C1+C3) = 6.737357e-04 (= 0.0670 of gap; rank 218 of 222)
+[16:42:43] Delta(C1+C3+SQ) = 9.382404e-04 (= 0.0933 of gap; rank 314 of 366)
+[16:42:43] Delta(C1+C3+W) = 9.460336e-04 (= 0.0941 of gap; rank 362 of 366)
+[16:42:43] Delta(C1+NJ) = 2.339099e-04 (= 0.0233 of gap; rank 144 of 159)
+[16:42:43] Delta(C1+RF) = 1.823205e-04 (= 0.0181 of gap; rank 155 of 159)
+[16:42:47] controls: positive Delta/g = 1.0000000000; negative (81 random S=0 vectors) G = 0.0024
+[16:42:47] wrote results/tangent_pcg.json (142 s)
+
+real	2m25.250s
+user	7m27.160s
+sys	0m13.582s

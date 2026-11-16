@@ -1,0 +1,1 @@
+slack.py --mode run --threads 8 on kim-compute-05.physics.cornell.edu

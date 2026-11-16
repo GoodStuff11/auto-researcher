@@ -1,0 +1,7 @@
+[16:46:50] assembly vs autograd: max relative error 4.21e-17 (5 s)
+[16:46:50] E(Psi) -7.8055262738 (stored -7.8055262738); gap 2.237276e-02
+[16:48:22] tangent matrix (627264, 2639) built (96 s)
+
+real	2m50.364s
+user	4m7.515s
+sys	0m27.903s
