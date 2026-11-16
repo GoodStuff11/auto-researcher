@@ -1,0 +1,2 @@
+[14:20:47] threads 1
+[14:20:47] size 0 group {'My': 1, 'Mx': 1}: CHECK F fidelity force vs FD worst rel 2.86e-08; target in sector 4.0e-17; valid True

@@ -1,0 +1,44 @@
+[
+ {
+  "time": "2026-11-16 14:15:02",
+  "mode": "checks",
+  "cpu": 12.67584666,
+  "note": ""
+ },
+ {
+  "time": "2026-11-16 14:15:47",
+  "mode": "trainA",
+  "cpu": 39.715498033,
+  "note": "sizes 0 arms lrk,wid seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 14:15:52",
+  "mode": "trainA-abort",
+  "cpu": 5.45841196,
+  "note": "1 lrk,wid"
+ },
+ {
+  "time": "2026-11-16 14:21:22",
+  "mode": "trainA",
+  "cpu": 306.267056363,
+  "note": "sizes 1 arms lrk,wid seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 14:26:41",
+  "mode": "trainA",
+  "cpu": 318.205085859,
+  "note": "sizes 2 arms lrk,wid seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 14:28:16",
+  "mode": "foilP",
+  "cpu": 94.875195594,
+  "note": "sizes 2 seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 14:29:52",
+  "mode": "foilP",
+  "cpu": 89.295771694,
+  "note": "sizes 1 seeds 11,22"
+ }
+]

@@ -1,0 +1,26 @@
+[14:14:49] threads 1
+[14:14:49] CHECK A size 0 seed 11 lrk: n_params 606 (foil 486) rel 0.0e+00
+[14:14:50] CHECK A size 0 seed 11 lrkO: n_params 606 (foil 486) rel 0.0e+00
+[14:14:50] CHECK A size 0 seed 11 wid: n_params 616 (foil 486) rel 0.0e+00
+[14:14:50] CHECK A size 0 seed 22 lrk: n_params 606 (foil 486) rel 0.0e+00
+[14:14:50] CHECK A size 0 seed 22 lrkO: n_params 606 (foil 486) rel 0.0e+00
+[14:14:50] CHECK A size 0 seed 22 wid: n_params 616 (foil 486) rel 0.0e+00
+[14:14:51] CHECK A size 1 seed 11 lrk: n_params 1230 (foil 1110) rel 0.0e+00
+[14:14:52] CHECK A size 1 seed 11 lrkO: n_params 1230 (foil 1110) rel 0.0e+00
+[14:14:52] CHECK A size 1 seed 11 wid: n_params 1255 (foil 1110) rel 0.0e+00
+[14:14:52] CHECK A size 1 seed 22 lrk: n_params 1230 (foil 1110) rel 0.0e+00
+[14:14:53] CHECK A size 1 seed 22 lrkO: n_params 1230 (foil 1110) rel 0.0e+00
+[14:14:53] CHECK A size 1 seed 22 wid: n_params 1255 (foil 1110) rel 0.0e+00
+[14:14:54] CHECK A size 2 seed 11 lrk: n_params 1230 (foil 1110) rel 0.0e+00
+[14:14:55] CHECK A size 2 seed 11 lrkO: n_params 1230 (foil 1110) rel 0.0e+00
+[14:14:55] CHECK A size 2 seed 11 wid: n_params 1255 (foil 1110) rel 0.0e+00
+[14:14:56] CHECK A size 2 seed 22 lrk: n_params 1230 (foil 1110) rel 0.0e+00
+[14:14:56] CHECK A size 2 seed 22 lrkO: n_params 1230 (foil 1110) rel 0.0e+00
+[14:14:57] CHECK A size 2 seed 22 wid: n_params 1255 (foil 1110) rel 0.0e+00
+[14:14:57] CHECK B lrk feat G: force vs FD worst rel 3.42e-07; CHECK C per-sample O vs force rows 2.6e-16
+[14:14:57] CHECK B lrk feat O: force vs FD worst rel 3.28e-08; CHECK C per-sample O vs force rows 1.1e-16
+[14:14:57] size 2 group: |G| 4 characters {'My': 1, 'Mx': 1}
+[14:15:00] CHECK P lrk: projected per-sample O vs force(P e_n)/psi_P rel 1.6e-15
+[14:15:01] CHECK P drf: projected per-sample O vs force(P e_n)/psi_P rel 5.3e-16
+[14:15:02] CHECK P nnbf: projected per-sample O vs force(P e_n)/psi_P rel 2.3e-16
+[14:15:02] CHECKS valid: True

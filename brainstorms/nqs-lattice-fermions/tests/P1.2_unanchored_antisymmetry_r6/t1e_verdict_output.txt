@@ -1,0 +1,16 @@
+[14:30:16] threads 1
+synthetic A [1.0, 0.95]: KILL (want KILL)
+synthetic A [0.5, 0.55]: PASS-W (want PASS-W)
+synthetic A [0.8, 0.95]: UNDECIDED (want UNDECIDED)
+synthetic B 0.95: KILL-CONFIRMED (want KILL-CONFIRMED)
+synthetic B 0.6: REVERSAL (want REVERSAL)
+synthetic B 0.8: UNDECIDED-P (want UNDECIDED-P)
+checks valid: True
+  A size 0: dEs foil 0.00401 wid 0.00168 lrk 0.00204 r 1.210 counted False
+  A size 1: dEs foil 0.01107 wid 0.00850 lrk 0.00892 r 1.050 counted True
+  A size 2: dEs foil 0.04962 wid 0.04267 lrk 0.04269 r 1.000 counted True
+VERDICT A (diagnostic falsifier, route LRK): KILL
+  B size 2: projected foil median dEs 0.00448 counted False
+  B size 1: projected foil median dEs 0.00166 counted False
+VERDICT B (projected re-check of 8.3): NO-TARGET-P at size 1
+leaf CPU ledger: 866 s
