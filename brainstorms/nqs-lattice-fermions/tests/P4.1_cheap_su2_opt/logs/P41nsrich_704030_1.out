@@ -1,0 +1,9 @@
+task 1 on kim-compute-03.physics.cornell.edu: t2_samples.py --mode warm --arm B --iters 75 --threads 4 --max-hours 0.45 --n-eval 65536 --lr 0.02 --outdir /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_opt/results_t2
+wrote warm-start checkpoint in /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_opt/results_t2/B (theta = W-24 averaged parameters)
+[14:44:53] S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0: L=24 Ne=20 H=16 P=9711 (che@16 P=9711) threads=4 host=kim-compute-03.physics.cornell.edu
+[14:44:53] resumed from /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_opt/results_t2/B/S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0_ckpt.npz at step 0 (t_used 0.00 h)
+[14:46:35] thermalised: acceptance 0.254
+[14:46:51] it 1 E -16.442715 std 1.113 acc 0.230 |upd| 1.80e-01 t(mcmc/eloc/grad/sr) 1.18/12.41/1.18/1.30s elapsed 0.004 h
+[14:58:42] it 50 E -16.439098 std 1.018 acc 0.228 |upd| 1.30e-01 t(mcmc/eloc/grad/sr) 0.83/11.30/1.17/1.31s elapsed 0.202 h
+[15:08:36] final E (average of last 19 steps) -16.4357642 +- 0.0043029 (65536 samples, 241 s)
+[15:08:36] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_opt/results_t2/B/S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0.json
