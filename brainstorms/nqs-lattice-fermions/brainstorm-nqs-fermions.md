@@ -158,7 +158,7 @@ All nine workers finished, each with one route that passed its own gates. The ad
 | :--- | :--- | :--- | :--- |
 | P1.1 | RESULT (PASS, qualified) | nothing | none |
 | P1.1-P | RESULT: SYMMETRY-DOMINATED (all instances) | nothing | none |
-| P1.2 | PORTFOLIO (round 7): every DRF route KILLED at trained T1 (r_W 1.4–2.3 against matched-width NNBF at the counted sizes); 6.7 KILLED at T0 (exact projected vote costs (1+E_act)|G| passes per amplitude), 6.7F KILLED at T1 (frozen vote raises dE_sign 1.3–1.7x); refill 8.1 exact vote on a local backflow, 8.2 DRF with exact ratios, 8.3 warm-started DRF (gates only) | critic: T0 for 8.1–8.3, and whether P1.2 closes with a Saturation Diagnostic (matched width has beaten every sign mechanism tested) | Slurm 553724 (known FAIL) |
+| P1.2 | PORTFOLIO (round 7, after critic): stays OPEN (no Saturation Diagnostic yet). Round-7 cause refuted: frozen ratios of the trained matched-width foil predict its own wrong signs (held-out AUC 0.93 vs 0.65 at V=12, rising with size); only the fixed thresholded vote is harmful. DRF kills stand but rest on one clean size and are confounded by a cold start and a 2-unit second pass. 8.1 KILLED at T0; 8.3 (warm-started DRF) to T1 first; 8.2 survives with a full-width foil; 8.4 (features into the first pass) gated. Conditional Saturation Diagnostic written, applies only if 8.2–8.4 all fail | 8.3 trained T1 on gapped toys (4x3 5+5 or 7x2 6+6, assert gap at least 0.02t) | Slurm 553724 (known FAIL) |
 | P1.3 | CLOSED: CAPACITY (625182 resume left every width UNCLEAR-CONV; pre-committed width-trend tie-break: Cbest 0.0192 → 0.0117 → 0.0070 for 1284 → 1734 → 2634 params; W ends at the cold level at every width, no basin) | none | none |
 | P2.1 | PORTFOLIO (round 8): accepted-move update PASS for 6.1′, 7.1, 7.3 (drift at most 6e-11 after 1e4 moves, no refresh; op-count slope 2.00, so O(N_e^3) per sweep); 6.1′ LH-HFDS T2 in flight (698229); 7.1 LH-HFPS T2 submitted (699118, same rule, foil hfps_site, reference 698229 nnbf); 7.3 SH-HFDS T2 prepared, gated on 698229 not INVALID or UNINFORMATIVE (`submit_t2_sh.sbatch`) | cost per decorrelated sample vs NNBF at L=16 needed before T3 | Slurm 698229, 699118 |
 | P2.2 | CLOSED (R5.1 WIBJ KILLED: cost FAIL M_wall(136) 4.0 with robust margins; screened-WIBJ rescue rejected by critic — constant F_A1 prefactor, SCREEN bias grows with K (WIBJ+SCREEN 0.29 mHa at K=20, above tau), expressivity floor in K, prior art arXiv:2604.06841. Result = Saturation Diagnostic: black-box query bound + four regimes) | follow-ups named only: R5.2 cold-start pilot, F_A2 contraction | none (critic job 621074 done) |
@@ -560,6 +560,12 @@ The two conditional leaves wait for redesign before they spend compute:
         * With $R_{\mathrm{corr}}=1$, the transferred residual is a few Jastrow-like scalars, i.e. foil transfer.
         * The smoke pre-check gave $M=1.30$.
 * **P4.2**: unit-cell gluing (Gate 1; zero pair correlation across the cut); twist-folded transfer (Gate 0; Gerard et al. arXiv:2405.07599).
+* **Cross-leaf anti-patterns added 2026-11-16 (evidence tiers, rounds 6–8):**
+    * *A counted toy size must have a gap.* A near-degenerate toy (P1.2: 5×2, 4+4, $E_1-E_0=0.0041t$) lets wrong-sign labels follow the partner state. Every T1 asserts $E_1-E_0\ge0.02t$ on counted sizes.
+    * *A fixed thresholded vote on frozen ratios is harmful on a trained backflow, but the same ratios used as learned features are informative* (P1.2 round-7 critic: held-out AUC 0.93 against 0.65 at $V=12$). Do not conclude that ratio information is absent from a failed hard-coded rule.
+    * *A summed or fixed-rank construction is a finite-size device.* Sums of $K$ terms cannot represent a parity over decoupled blocks (P2.1 SK routes), and a fixed-rank projected mixture or fixed-width backflow gives a gain that does not grow per site (P4.1 R1). Check Gate 4 before any decisive test.
+    * *A toy result on a summed observable does not transfer if the trained states already get that sum right* (P3.1 route 8.3: structure factors accurate to 1–5% while real-space correlators carry the error).
+    * *Interpreter-bound timings are not method costs.* Time cost gates with compiled kernels (P4.1 R2: 30.5× with a Python Pfaffian, 3.59× compiled).
 
 ---
 
