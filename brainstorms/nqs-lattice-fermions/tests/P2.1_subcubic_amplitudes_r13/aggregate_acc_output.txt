@@ -1,0 +1,10 @@
+hg   inst 20: n_eff=464 conv=True steps=1350 dE_tot=6.437e-03 dE_sign=1.215e-03 spread=1.1e-12 cpu=81s
+hg   inst 23: n_eff=986 conv=False steps=1488 dE_tot=6.420e-02 dE_sign=1.112e-02 spread=1.4e-13 cpu=486s
+full_F4 inst 20: dE_tot=1.123e-02 dE_sign=1.473e-03
+full_F4 inst 23: dE_tot=4.693e-02 dE_sign=7.951e-03
+VERDICT hg: INCONCLUSIVE (1 counted sizes)
+    inst 20: rho = 0.825 (half 2.439)
+    inst 23: not counted: unconverged
+VERDICT cbh: INCONCLUSIVE (0 counted sizes)
+    inst 20: missing
+    inst 23: missing

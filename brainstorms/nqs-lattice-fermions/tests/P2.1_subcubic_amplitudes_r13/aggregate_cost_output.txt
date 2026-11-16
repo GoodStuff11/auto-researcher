@@ -1,0 +1,16 @@
+cbh_S_B        L=12: t_sw=1.239e-02 tau=1.09+-0.16 sweeps=1618  L=16: t_sw=6.334e-02 tau=1.04+-0.16 sweeps=1422
+dense2_A       L=12: t_sw=2.462e-02 tau=1.83+-0.48 sweeps=725  L=16: t_sw=1.235e-01 tau=1.02+-0.22 sweeps=730
+dense2_B       L=12: t_sw=2.274e-02 tau=1.72+-0.42 sweeps=870  L=16: t_sw=1.116e-01 tau=1.01+-0.21 sweeps=808
+full_11c_A     L=12: t_sw=1.605e-02 tau=1.19+-0.21 sweeps=1247  L=16: t_sw=7.060e-02 tau=0.92+-0.14 sweeps=1280
+full_S_A       L=12: t_sw=9.117e-03 tau=1.04+-0.13 sweeps=2195  L=16: t_sw=3.493e-02 tau=1.03+-0.12 sweeps=2587
+half_S_B       L=12: t_sw=1.119e-02 tau=1.25+-0.18 sweeps=1771  L=16: t_sw=5.615e-02 tau=1.04+-0.15 sweeps=1604
+hg_S_A         L=12: t_sw=5.777e-03 tau=1.14+-0.11 sweeps=3467  L=16: t_sw=2.481e-02 tau=1.14+-0.11 sweeps=3635
+cbh_S_B        vs dense2_B: L=12: R_D=2.89+-0.82 (t_sw ratio 1.84); L=16: R_D=1.71+-0.43 (t_sw ratio 1.76)
+full_11c_A     vs dense2_A: L=12: R_D=2.36+-0.75 (t_sw ratio 1.53); L=16: R_D=1.93+-0.51 (t_sw ratio 1.75)
+full_S_A       vs dense2_A: L=12: R_D=4.73+-1.38 (t_sw ratio 2.70); L=16: R_D=3.50+-0.85 (t_sw ratio 3.54)
+half_S_B       vs dense2_B: L=12: R_D=2.81+-0.80 (t_sw ratio 2.03); L=16: R_D=1.94+-0.48 (t_sw ratio 1.99)
+hg_S_A         vs dense2_A: L=12: R_D=6.83+-1.93 (t_sw ratio 4.26); L=16: R_D=4.45+-1.04 (t_sw ratio 4.98)
+VERDICT cbh_S: KILL-cost: R_D(16) - sigma = 1.27
+VERDICT full_S: KILL-cost: R_D(16) - sigma = 2.66; c_11c/c_S = 1.81+-0.34 (t_sw ratio 2.02)
+VERDICT half_S: KILL-cost: R_D(16) - sigma = 1.46
+VERDICT hg_S: PASS-cost: R_D(16) - sigma = 3.40

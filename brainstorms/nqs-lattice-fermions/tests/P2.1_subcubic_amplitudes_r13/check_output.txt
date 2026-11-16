@@ -1,0 +1,28 @@
+== (i) ratios vs explicit gated det build, E_loc vs eloc_brute; (ii) full_S vs delayed.Route('full')
+   5x3obc full_S : 74 conns, active rows 15/15, ratio err (normalised) 4.7e-15, E_loc rel err 3.8e-16, vs 11c full engine 4.3e-15
+   5x3obc hg_S   : 57 conns, active rows 3/15, ratio err (normalised) 1.5e-15, E_loc rel err 1.8e-15
+   5x3obc cbh_S  : 59 conns, active rows 9/15, ratio err (normalised) 3.2e-15, E_loc rel err 1.7e-15
+   5x3obc half_S : 59 conns, active rows 8/15, ratio err (normalised) 2.0e-15, E_loc rel err 6.4e-16
+   6      full_S : 181 conns, active rows 36/36, ratio err (normalised) 3.8e-14, E_loc rel err 6.6e-14, vs 11c full engine 3.3e-14
+   6      hg_S   : 180 conns, active rows 4/36, ratio err (normalised) 2.7e-14, E_loc rel err 9.5e-15
+   6      cbh_S  : 184 conns, active rows 21/36, ratio err (normalised) 1.0e-14, E_loc rel err 2.1e-15
+   6      half_S : 178 conns, active rows 18/36, ratio err (normalised) 2.9e-14, E_loc rel err 1.0e-14
+   8      full_S : 346 conns, active rows 64/64, ratio err (normalised) 3.8e-14, E_loc rel err 3.8e-15, vs 11c full engine 3.3e-14
+   8      hg_S   : 345 conns, active rows 8/64, ratio err (normalised) 7.1e-14, E_loc rel err 2.8e-14
+   8      cbh_S  : 329 conns, active rows 38/64, ratio err (normalised) 7.4e-14, E_loc rel err 2.3e-14
+   8      half_S : 340 conns, active rows 32/64, ratio err (normalised) 1.5e-14, E_loc rel err 5.8e-15
+== (iii) drift over 2000 accepted moves, no refresh
+   5x3obc full_S : accepts=2000 acceptance=0.39 max drift=4.1e-13
+   5x3obc hg_S   : accepts=2000 acceptance=0.42 max drift=9.0e-14
+   5x3obc cbh_S  : accepts=2000 acceptance=0.42 max drift=1.1e-13
+   5x3obc half_S : accepts=2000 acceptance=0.40 max drift=1.7e-13
+   6      full_S : accepts=2000 acceptance=0.36 max drift=4.9e-13
+   6      hg_S   : accepts=2000 acceptance=0.35 max drift=1.3e-13
+   6      cbh_S  : accepts=2000 acceptance=0.34 max drift=1.6e-13
+   6      half_S : accepts=2000 acceptance=0.36 max drift=3.5e-13
+   8      full_S : accepts=2000 acceptance=0.32 max drift=1.6e-12
+   8      hg_S   : accepts=2000 acceptance=0.35 max drift=2.4e-13
+   8      cbh_S  : accepts=2000 acceptance=0.34 max drift=4.0e-13
+   8      half_S : accepts=2000 acceptance=0.33 max drift=2.0e-13
+CHECK PASS
+CPU 22.44+0.89 s

@@ -1,0 +1,9 @@
+[16:45:18] check (i) inst 20 hg: explicit amplitude rel err 2.9e-16
+[16:45:18] check (i) inst 20 cbh: explicit amplitude rel err 3.6e-16
+[16:45:19] check (i) inst 23 hg: explicit amplitude rel err 2.1e-16
+[16:45:19] check (i) inst 23 cbh: explicit amplitude rel err 8.0e-16
+[16:45:19] check (iii) gate == 1 reproduces HFPSAnsatz: max |diff| = 0.0e+00
+[16:45:19] check grad [hg inst20, proj=chi]: analytic -2.2587703245e+00 fd -2.2587703232e+00 rel 5.6e-10
+[16:45:19] check grad [cbh inst20, proj=chi]: analytic 2.3290857289e+00 fd 2.3290857292e+00 rel 1.3e-10
+[16:45:19] CHECK PASS
+CPU 0.57+0.11 s
