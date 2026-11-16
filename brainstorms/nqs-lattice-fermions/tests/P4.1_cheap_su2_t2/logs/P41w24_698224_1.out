@@ -1,1 +1,15 @@
 task 1 on kim-compute-04.physics.cornell.edu: vmc_t2.py --mode train --arm che --width 48 --Lx 8 --Ly 3 --pg=1,1 --iters 1000 --n-chains 1024 --n-eval 65536 --threads 4 --max-hours 1.5 --outdir /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/w24
+[10:21:27] S8x3_N20_U8_tp-0.25_pg11_che_H48_seed0: L=24 Ne=20 H=48 P=26639 (che@16 P=9711) threads=4 host=kim-compute-04.physics.cornell.edu
+[10:21:53] thermalised: acceptance 0.330
+[10:21:58] it 1 E -13.824338 std 3.779 acc 0.306 |upd| 2.32e-01 t(mcmc/eloc/grad/sr) 0.30/3.49/1.54/0.40s elapsed 0.002 h
+[10:26:34] it 50 E -16.085361 std 1.620 acc 0.247 |upd| 1.29e-01 t(mcmc/eloc/grad/sr) 0.28/3.48/1.52/0.39s elapsed 0.078 h
+[10:31:15] it 100 E -16.110105 std 1.483 acc 0.242 |upd| 1.33e-01 t(mcmc/eloc/grad/sr) 0.26/3.45/1.56/0.39s elapsed 0.156 h
+[10:35:56] it 150 E -16.126536 std 1.630 acc 0.252 |upd| 1.28e-01 t(mcmc/eloc/grad/sr) 0.26/3.44/1.57/0.39s elapsed 0.234 h
+[10:40:37] it 200 E -16.257546 std 1.512 acc 0.235 |upd| 1.24e-01 t(mcmc/eloc/grad/sr) 0.25/3.43/1.55/0.39s elapsed 0.312 h
+[10:45:16] it 250 E -16.346327 std 1.556 acc 0.236 |upd| 1.23e-01 t(mcmc/eloc/grad/sr) 0.26/3.39/1.54/0.38s elapsed 0.390 h
+[10:49:58] it 300 E -16.262634 std 1.564 acc 0.236 |upd| 1.22e-01 t(mcmc/eloc/grad/sr) 0.27/3.44/1.52/0.39s elapsed 0.468 h
+[10:54:39] it 350 E -16.339210 std 1.343 acc 0.230 |upd| 1.27e-01 t(mcmc/eloc/grad/sr) 0.26/3.40/1.54/0.39s elapsed 0.546 h
+[10:59:21] it 400 E -16.289909 std 1.434 acc 0.233 |upd| 1.22e-01 t(mcmc/eloc/grad/sr) 0.26/3.41/1.55/0.38s elapsed 0.625 h
+[11:04:03] it 450 E -16.345825 std 1.231 acc 0.242 |upd| 1.17e-01 t(mcmc/eloc/grad/sr) 0.26/3.44/1.56/0.39s elapsed 0.703 h
+[11:08:48] it 500 E -16.411450 std 1.460 acc 0.234 |upd| 1.28e-01 t(mcmc/eloc/grad/sr) 0.28/3.43/1.55/0.39s elapsed 0.782 h
+[11:13:32] it 550 E -16.399754 std 1.279 acc 0.222 |upd| 1.27e-01 t(mcmc/eloc/grad/sr) 0.26/3.44/1.56/0.39s elapsed 0.861 h

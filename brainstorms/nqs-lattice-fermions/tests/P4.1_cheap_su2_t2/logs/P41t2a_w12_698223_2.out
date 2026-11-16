@@ -1,0 +1,29 @@
+task 2 on kim-compute-03.physics.cornell.edu: vmc_t2.py --mode train --arm foil --Lx 4 --Ly 3 --pg=1,1 --seed 0 --iters 1000 --n-chains 1024 --exact-eval --exact-ckpts 250,500,750 --threads 3 --max-hours 0.85 --outdir /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/t2a --match-width 16
+[10:36:34] S4x3_N10_U8_tp-0.25_pg11_foil_H0_seed0: L=12 Ne=10 H=0 P=221 (che@16 P=2637) threads=3 host=kim-compute-03.physics.cornell.edu
+[10:36:45] thermalised: acceptance 0.290
+[10:36:47] it 1 E -6.331619 std 2.624 acc 0.272 |upd| 4.66e-01 t(mcmc/eloc/grad/sr) 0.13/1.03/0.15/0.01s elapsed 0.000 h
+[10:37:33] it 50 E -7.640865 std 1.016 acc 0.224 |upd| 2.94e-01 t(mcmc/eloc/grad/sr) 0.13/0.66/0.14/0.01s elapsed 0.013 h
+[10:38:20] it 100 E -7.653487 std 1.823 acc 0.233 |upd| 2.82e-01 t(mcmc/eloc/grad/sr) 0.13/0.66/0.14/0.01s elapsed 0.026 h
+[10:39:07] it 150 E -7.577886 std 1.139 acc 0.229 |upd| 2.31e-01 t(mcmc/eloc/grad/sr) 0.13/0.66/0.14/0.01s elapsed 0.039 h
+[10:39:52] it 200 E 0.253805 std 24.427 acc 0.313 |upd| 3.57e+00 t(mcmc/eloc/grad/sr) 0.13/0.60/0.14/0.01s elapsed 0.052 h
+[10:40:35] it 250 E -4.218817 std 4.674 acc 0.204 |upd| 2.53e+00 t(mcmc/eloc/grad/sr) 0.13/0.59/0.14/0.01s elapsed 0.064 h
+[10:40:50] CHECKPOINT it 250: exact E -4.7248815 eps 3.9640e-01 (15 s)
+[10:41:33] it 300 E -1.242833 std 6.967 acc 0.255 |upd| 8.85e-01 t(mcmc/eloc/grad/sr) 0.13/0.60/0.14/0.01s elapsed 0.080 h
+[10:42:18] it 350 E -5.465468 std 6.527 acc 0.291 |upd| 6.60e-01 t(mcmc/eloc/grad/sr) 0.13/0.62/0.14/0.01s elapsed 0.092 h
+[10:43:03] it 400 E -5.714825 std 3.471 acc 0.260 |upd| 4.36e-01 t(mcmc/eloc/grad/sr) 0.13/0.64/0.14/0.01s elapsed 0.105 h
+[10:43:50] it 450 E -7.208339 std 1.161 acc 0.247 |upd| 2.80e-01 t(mcmc/eloc/grad/sr) 0.14/0.67/0.14/0.01s elapsed 0.118 h
+[10:44:36] it 500 E -5.236377 std 4.505 acc 0.264 |upd| 5.94e-01 t(mcmc/eloc/grad/sr) 0.13/0.63/0.14/0.01s elapsed 0.131 h
+[10:44:51] CHECKPOINT it 500: exact E -5.8986134 eps 2.4646e-01 (15 s)
+[10:45:36] it 550 E -2.063624 std 13.277 acc 0.353 |upd| 8.91e-01 t(mcmc/eloc/grad/sr) 0.13/0.61/0.14/0.01s elapsed 0.147 h
+[10:46:21] it 600 E -0.055633 std 7.236 acc 0.328 |upd| 8.63e-01 t(mcmc/eloc/grad/sr) 0.13/0.64/0.14/0.01s elapsed 0.160 h
+[10:47:06] it 650 E -5.528267 std 3.426 acc 0.252 |upd| 4.67e-01 t(mcmc/eloc/grad/sr) 0.14/0.64/0.14/0.01s elapsed 0.172 h
+[10:47:54] it 700 E -7.184529 std 1.109 acc 0.251 |upd| 1.92e-01 t(mcmc/eloc/grad/sr) 0.14/0.67/0.14/0.01s elapsed 0.186 h
+[10:48:43] it 750 E -7.420792 std 1.012 acc 0.258 |upd| 1.24e-01 t(mcmc/eloc/grad/sr) 0.13/0.68/0.14/0.01s elapsed 0.199 h
+[10:49:00] CHECKPOINT it 750: exact E -7.4306924 eps 5.0742e-02 (18 s)
+[10:49:49] it 800 E -7.547644 std 1.098 acc 0.267 |upd| 1.03e-01 t(mcmc/eloc/grad/sr) 0.14/0.68/0.14/0.01s elapsed 0.218 h
+[10:50:38] it 850 E -7.551053 std 1.747 acc 0.235 |upd| 6.49e-02 t(mcmc/eloc/grad/sr) 0.13/0.68/0.14/0.01s elapsed 0.231 h
+[10:51:26] it 900 E -7.635765 std 1.051 acc 0.254 |upd| 3.96e-02 t(mcmc/eloc/grad/sr) 0.13/0.68/0.14/0.01s elapsed 0.245 h
+[10:52:15] it 950 E -7.635728 std 0.984 acc 0.241 |upd| 3.26e-02 t(mcmc/eloc/grad/sr) 0.14/0.68/0.14/0.01s elapsed 0.258 h
+[10:53:03] it 1000 E -7.658975 std 1.052 acc 0.248 |upd| 2.76e-02 t(mcmc/eloc/grad/sr) 0.14/0.67/0.14/0.01s elapsed 0.271 h
+[10:53:18] final E (average of last 250 steps) -7.1344259 +- 0.0000000 (627264 samples, 15 s), <S^2> 5.9e-20
+[10:53:18] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/t2a/S4x3_N10_U8_tp-0.25_pg11_foil_H0_seed0.json
