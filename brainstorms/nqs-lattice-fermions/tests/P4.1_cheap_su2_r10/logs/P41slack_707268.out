@@ -1,1 +1,11 @@
 slack.py --mode run --threads 8 on kim-compute-05.physics.cornell.edu
+[16:58:49] assembly vs autograd: max relative error 4.21e-17 (3 s)
+[16:58:49] E(Psi) -7.8055262738 (stored -7.8055262738); gap 2.237276e-02
+[16:59:42] tangent matrix (627264, 2639) built (56 s)
+[17:01:54] Gram and H matrices (187 s)
+[17:01:55] Delta(full) = 1.095190e-02 = 0.4895 of gap (rank 2448 of 2638)
+[17:01:55] Delta(P0+b2) = 1.566945e-03 = 0.0700 of gap (rank 121 of 241)
+[17:01:55] Delta(jv) = 1.508095e-04 = 0.0067 of gap (rank 74 of 78)
+[17:01:55] Delta(W1+b1) = 2.716597e-03 = 0.1214 of gap (rank 385 of 401)
+[17:01:56] Delta(W2) = 8.824646e-03 = 0.3944 of gap (rank 1921 of 1921)
+[17:01:56] positive control |Delta - g| = 8.0e-15; PREMISE L: HOLDS (L = 0.4895)
