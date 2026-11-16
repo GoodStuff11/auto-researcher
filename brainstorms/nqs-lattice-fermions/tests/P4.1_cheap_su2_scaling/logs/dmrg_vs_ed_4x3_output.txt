@@ -1,0 +1,15 @@
+[2026-11-16T01:14:10.632] maxdim   100  E = -7.6348196080  truncerr = 7.974e-04  maxlinkdim 100  noise 1e-06  (51 s)
+[2026-11-16T01:14:22.268] maxdim   200  E = -7.7335222957  truncerr = 3.234e-04  maxlinkdim 200  noise 1e-06  (11 s)
+[2026-11-16T01:14:41.076] maxdim   400  E = -7.8218774231  truncerr = 3.742e-05  maxlinkdim 400  noise 1e-06  (19 s)
+[2026-11-16T01:15:01.716] maxdim   600  E = -7.8275588361  truncerr = 5.159e-06  maxlinkdim 600  noise 0e+00  (21 s)
+[2026-11-16T01:15:30.757] maxdim   800  E = -7.8278745872  truncerr = 7.402e-07  maxlinkdim 800  noise 0e+00  (29 s)
+[2026-11-16T01:16:03.643] maxdim  1000  E = -7.8278959929  truncerr = 1.351e-07  maxlinkdim 999  noise 0e+00  (33 s)
+E_extrap = -7.8279147224 +- 1.87e-05  (last stage -7.8278959929; slope 6.873e+01); N_e check QN(("Nf",10,-1),("Sz",0))
+wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_scaling/dmrg/dmrg_S4x3_N10_Sz20_U8_tp-0.25.json
+
+real	4m7.838s
+user	12m1.785s
+sys	0m13.597s
+
+[exited with code 0]
+ED E0 (job 451886 cache) = -7.827899034271753

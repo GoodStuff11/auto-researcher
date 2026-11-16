@@ -1,0 +1,25 @@
+[01:25:56] S4x3_N10_U8_tp-0.25_che_seed0: L=12 Ne=10 H=16 P=2637 (nnbf P=2637) K=1 threads=3 host=kim-compute-03.physics.cornell.edu
+[01:25:58] thermalised: acceptance 0.287
+[01:25:58] it 1 E -6.223115 std 4.817 acc 0.289 |upd| 7.46e-01 t(mcmc/eloc/grad/sr) 0.02/0.16/0.12/0.10s elapsed 0.00 h
+[01:26:09] it 50 E -7.696497 std 1.056 acc 0.233 |upd| 5.34e-01 t(mcmc/eloc/grad/sr) 0.25/0.08/0.03/0.04s elapsed 0.00 h
+[01:26:19] it 100 E -7.699149 std 1.238 acc 0.224 |upd| 6.38e-01 t(mcmc/eloc/grad/sr) 0.04/0.17/0.07/0.08s elapsed 0.01 h
+[01:26:33] it 150 E -7.695660 std 1.242 acc 0.225 |upd| 7.04e-01 t(mcmc/eloc/grad/sr) 0.02/0.08/0.04/0.04s elapsed 0.01 h
+[01:26:44] it 200 E -7.747283 std 1.337 acc 0.232 |upd| 7.07e-01 t(mcmc/eloc/grad/sr) 0.06/0.13/0.03/0.04s elapsed 0.01 h
+[01:26:57] it 250 E -7.731717 std 1.221 acc 0.211 |upd| 7.37e-01 t(mcmc/eloc/grad/sr) 0.28/0.08/0.05/0.08s elapsed 0.02 h
+[01:27:09] it 300 E -7.680758 std 1.111 acc 0.223 |upd| 6.89e-01 t(mcmc/eloc/grad/sr) 0.02/0.08/0.04/0.04s elapsed 0.02 h
+[01:27:20] it 350 E -7.750958 std 1.074 acc 0.213 |upd| 6.24e-01 t(mcmc/eloc/grad/sr) 0.03/0.09/0.03/0.04s elapsed 0.02 h
+[01:27:30] it 400 E -7.734885 std 0.885 acc 0.226 |upd| 6.08e-01 t(mcmc/eloc/grad/sr) 0.02/0.08/0.03/0.04s elapsed 0.03 h
+[01:27:41] it 450 E -7.723867 std 1.892 acc 0.235 |upd| 5.14e-01 t(mcmc/eloc/grad/sr) 0.02/0.08/0.04/0.04s elapsed 0.03 h
+[01:27:52] it 500 E -7.769114 std 1.182 acc 0.219 |upd| 6.42e-01 t(mcmc/eloc/grad/sr) 0.02/0.08/0.04/0.04s elapsed 0.03 h
+[01:28:03] it 550 E -7.813594 std 1.053 acc 0.223 |upd| 6.42e-01 t(mcmc/eloc/grad/sr) 0.06/0.08/0.03/0.04s elapsed 0.03 h
+[01:28:13] it 600 E -7.702380 std 0.981 acc 0.252 |upd| 6.64e-01 t(mcmc/eloc/grad/sr) 0.02/0.08/0.03/0.04s elapsed 0.04 h
+[01:28:24] it 650 E -7.760490 std 1.130 acc 0.231 |upd| 5.14e-01 t(mcmc/eloc/grad/sr) 0.04/0.09/0.05/0.05s elapsed 0.04 h
+[01:28:35] it 700 E -7.741199 std 0.926 acc 0.215 |upd| 6.20e-01 t(mcmc/eloc/grad/sr) 0.07/0.10/0.04/0.04s elapsed 0.04 h
+[01:28:46] it 750 E -7.710801 std 1.120 acc 0.220 |upd| 7.17e-01 t(mcmc/eloc/grad/sr) 0.07/0.11/0.04/0.04s elapsed 0.05 h
+[01:28:57] it 800 E -7.691662 std 0.908 acc 0.220 |upd| 6.12e-01 t(mcmc/eloc/grad/sr) 0.09/0.10/0.03/0.04s elapsed 0.05 h
+[01:29:08] it 850 E -7.709292 std 0.917 acc 0.224 |upd| 6.00e-01 t(mcmc/eloc/grad/sr) 0.07/0.08/0.04/0.04s elapsed 0.05 h
+[01:29:19] it 900 E -7.738514 std 0.812 acc 0.235 |upd| 5.52e-01 t(mcmc/eloc/grad/sr) 0.06/0.08/0.04/0.04s elapsed 0.06 h
+[01:29:28] it 950 E -7.731216 std 0.980 acc 0.216 |upd| 6.23e-01 t(mcmc/eloc/grad/sr) 0.02/0.08/0.04/0.04s elapsed 0.06 h
+[01:29:37] it 1000 E -7.764459 std 0.997 acc 0.227 |upd| 6.44e-01 t(mcmc/eloc/grad/sr) 0.02/0.08/0.04/0.04s elapsed 0.06 h
+[01:29:39] final E -7.703918 +- 0.000000 (627264 samples, 1 s)
+[01:29:39] wrote logs/pilot/lr0.2_ds1e-2_nc1024/S4x3_N10_U8_tp-0.25_che_seed0.json

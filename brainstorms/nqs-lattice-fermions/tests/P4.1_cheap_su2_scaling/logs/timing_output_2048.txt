@@ -1,0 +1,25 @@
+[01:49:45] L=12 Ne=10 che     H=16 P=  2637 t_step=   0.29s (mcmc 0.03 eloc 0.15 grad 0.05 sr 0.05) t_sample=0.14 ms
+[01:49:47] L=12 Ne=10 che_k2  H=15 P=  2613 t_step=   0.36s (mcmc 0.03 eloc 0.20 grad 0.06 sr 0.05) t_sample=0.17 ms
+[01:49:49] L=12 Ne=10 che_k4  H=13 P=  2565 t_step=   0.45s (mcmc 0.04 eloc 0.28 grad 0.06 sr 0.05) t_sample=0.22 ms
+[01:49:51] L=12 Ne=10 che_k8  H=10 P=  2614 t_step=   0.62s (mcmc 0.04 eloc 0.45 grad 0.06 sr 0.04) t_sample=0.30 ms
+[01:49:52] L=12 Ne=10 nnbf    H=16 P=  2637 t_step=   0.16s (mcmc 0.02 eloc 0.06 grad 0.03 sr 0.04) t_sample=0.08 ms
+[01:49:52] L=12: t_step(che_k8)/t_step(nnbf) = 3.85
+[01:49:57] L=24 Ne=20 che     H=16 P=  9711 t_step=   1.25s (mcmc 0.07 eloc 0.99 grad 0.11 sr 0.12) t_sample=0.61 ms
+[01:50:06] L=24 Ne=20 che_k2  H=15 P=  9663 t_step=   1.98s (mcmc 0.12 eloc 1.53 grad 0.26 sr 0.12) t_sample=0.97 ms
+[01:50:20] L=24 Ne=20 che_k4  H=13 P=  9567 t_step=   3.41s (mcmc 0.16 eloc 2.79 grad 0.18 sr 0.13) t_sample=1.66 ms
+[01:50:49] L=24 Ne=20 che_k8  H= 9 P=  9375 t_step=   6.68s (mcmc 0.31 eloc 6.01 grad 0.29 sr 0.12) t_sample=3.26 ms
+[01:50:51] L=24 Ne=20 nnbf    H=16 P=  9711 t_step=   0.48s (mcmc 0.04 eloc 0.21 grad 0.09 sr 0.12) t_sample=0.23 ms
+[01:50:51] L=24: t_step(che_k8)/t_step(nnbf) = 13.94
+[01:51:06] L=36 Ne=30 che     H=16 P= 21249 t_step=   3.68s (mcmc 0.25 eloc 2.68 grad 0.44 sr 0.25) t_sample=1.80 ms
+[01:51:34] L=36 Ne=30 che_k2  H=15 P= 21177 t_step=   6.54s (mcmc 0.27 eloc 5.78 grad 0.50 sr 0.26) t_sample=3.19 ms
+[01:52:27] L=36 Ne=30 che_k4  H=13 P= 21033 t_step=  12.68s (mcmc 0.88 eloc 10.99 grad 0.55 sr 0.25) t_sample=6.19 ms
+[01:54:04] L=36 Ne=30 che_k8  H= 9 P= 20745 t_step=  22.90s (mcmc 1.67 eloc 20.41 grad 0.94 sr 0.27) t_sample=11.18 ms
+[01:54:12] L=36 Ne=30 nnbf    H=16 P= 21249 t_step=   1.86s (mcmc 0.09 eloc 1.04 grad 0.38 sr 0.26) t_sample=0.91 ms
+[01:54:12] L=36: t_step(che_k8)/t_step(nnbf) = 12.34
+[01:55:02] L=48 Ne=40 che     H=16 P= 37251 t_step=  11.97s (mcmc 0.69 eloc 10.50 grad 0.85 sr 0.46) t_sample=5.85 ms
+[01:56:23] L=48 Ne=40 che_k2  H=15 P= 37155 t_step=  19.26s (mcmc 1.22 eloc 16.58 grad 1.01 sr 0.45) t_sample=9.40 ms
+[01:58:50] L=48 Ne=40 che_k4  H=13 P= 36963 t_step=  34.61s (mcmc 2.34 eloc 30.43 grad 1.30 sr 0.42) t_sample=16.90 ms
+[02:03:25] L=48 Ne=40 che_k8  H= 9 P= 36579 t_step=  64.87s (mcmc 4.41 eloc 57.99 grad 1.82 sr 0.46) t_sample=31.68 ms
+[02:03:46] L=48 Ne=40 nnbf    H=16 P= 37251 t_step=   5.11s (mcmc 0.15 eloc 3.77 grad 0.71 sr 0.44) t_sample=2.50 ms
+[02:03:46] L=48: t_step(che_k8)/t_step(nnbf) = 12.68
+[02:03:46] wrote logs/timing2048/timing_kim-compute-03.physics.cornell.edu_t16.json

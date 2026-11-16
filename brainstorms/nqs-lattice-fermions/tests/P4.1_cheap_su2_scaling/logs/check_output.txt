@@ -1,0 +1,57 @@
+[ok] flat strong gain, k8 beats nnbf: SCALES (intended SCALES)
+      R(8,N): N=12: 0.400+-0.001, N=24: 0.420+-0.001, N=36: 0.450+-0.000, N=48: 0.470+-0.000
+      linear fit R(8,N) = 0.375 + 2.00e-03 N -> reaches 1 at N* = 312; monotone rise: True
+      N=48: E_k8 -38.21952+-0.00010 vs E_nnbf_wall -38.16952+-0.00010 (walls: nnbf 1.0 h, k8 1.0 h): k8<nnbf T, nnbf<k8 F
+      clauses: D1 False D2 False D3 False | S1 True S2 True S3 True
+[ok] R rises to 0.95: DOES-NOT-SCALE (intended DOES-NOT-SCALE)
+      R(8,N): N=12: 0.400+-0.001, N=24: 0.650+-0.001, N=36: 0.850+-0.000, N=48: 0.950+-0.000
+      linear fit R(8,N) = 0.250 + 1.54e-02 N -> reaches 1 at N* = 49; monotone rise: True
+      N=48: E_k8 -38.03520+-0.00010 vs E_nnbf_wall -37.98520+-0.00010 (walls: nnbf 1.0 h, k8 1.0 h): k8<nnbf T, nnbf<k8 F
+      clauses: D1 True D2 True D3 False | S1 False S2 True S3 False
+[ok] monotone rise, fit hits 1 before 100: DOES-NOT-SCALE (intended DOES-NOT-SCALE)
+      R(8,N): N=12: 0.400+-0.001, N=24: 0.550+-0.001, N=36: 0.700+-0.000, N=48: 0.850+-0.000
+      linear fit R(8,N) = 0.250 + 1.25e-02 N -> reaches 1 at N* = 60; monotone rise: True
+      N=48: E_k8 -38.07360+-0.00010 vs E_nnbf_wall -38.02360+-0.00010 (walls: nnbf 1.0 h, k8 1.0 h): k8<nnbf T, nnbf<k8 F
+      clauses: D1 False D2 True D3 False | S1 False S2 True S3 False
+[ok] flat gain but nnbf wins at 48: DOES-NOT-SCALE (intended DOES-NOT-SCALE)
+      R(8,N): N=12: 0.400+-0.001, N=24: 0.420+-0.001, N=36: 0.450+-0.000, N=48: 0.470+-0.000
+      linear fit R(8,N) = 0.375 + 2.00e-03 N -> reaches 1 at N* = 312; monotone rise: True
+      N=48: E_k8 -38.21952+-0.00010 vs E_nnbf_wall -38.26952+-0.00010 (walls: nnbf 1.0 h, k8 1.0 h): k8<nnbf F, nnbf<k8 T
+      clauses: D1 False D2 False D3 True | S1 True S2 False S3 True
+[ok] R(48)=0.8 non-monotone, k8 wins: AMBIGUOUS (intended AMBIGUOUS)
+      R(8,N): N=12: 0.700+-0.001, N=24: 0.850+-0.001, N=36: 0.750+-0.000, N=48: 0.800+-0.000
+      linear fit R(8,N) = 0.725 + 1.67e-03 N -> reaches 1 at N* = 165; monotone rise: False
+      N=48: E_k8 -38.09280+-0.00010 vs E_nnbf_wall -38.04280+-0.00010 (walls: nnbf 1.0 h, k8 1.0 h): k8<nnbf T, nnbf<k8 F
+      clauses: D1 False D2 False D3 False | S1 False S2 True S3 True
+      decider: add Lx = 24 (72 sites) for che, che_k8, nnbf, 2 seeds
+[ok] flat gain, k8 vs nnbf unresolved: AMBIGUOUS (intended AMBIGUOUS)
+      R(8,N): N=12: 0.400+-0.001, N=24: 0.420+-0.001, N=36: 0.450+-0.000, N=48: 0.470+-0.000
+      linear fit R(8,N) = 0.375 + 2.00e-03 N -> reaches 1 at N* = 312; monotone rise: True
+      N=48: E_k8 -38.21952+-0.00010 vs E_nnbf_wall -38.21942+-0.00010 (walls: nnbf 1.0 h, k8 1.0 h): k8<nnbf U, nnbf<k8 U
+      clauses: D1 False D2 False D3 False | S1 True S2 False S3 True
+      decider: re-evaluate saved parameters with 4x n_eval (resolution only)
+[ok] rise of 0.2 but R(48)=0.7: AMBIGUOUS (intended AMBIGUOUS)
+      R(8,N): N=12: 0.500+-0.001, N=24: 0.550+-0.001, N=36: 0.720+-0.000, N=48: 0.700+-0.000
+      linear fit R(8,N) = 0.425 + 6.42e-03 N -> reaches 1 at N* = 90; monotone rise: False
+      N=48: E_k8 -38.13120+-0.00010 vs E_nnbf_wall -38.08120+-0.00010 (walls: nnbf 1.0 h, k8 1.0 h): k8<nnbf T, nnbf<k8 F
+      clauses: D1 False D2 False D3 False | S1 True S2 True S3 False
+      decider: add Lx = 24 (72 sites) for che, che_k8, nnbf, 2 seeds
+[ok] no gain even at 12 sites (R(8,12)=0.95): NO-BASELINE-GAIN (intended NO-BASELINE-GAIN)
+      R(8,N): N=12: 0.950+-0.001, N=24: 0.960+-0.001, N=36: 0.970+-0.000, N=48: 0.980+-0.000
+      premise P_R fails: R(8,12) = 0.950 +- 0.001 is not <= 0.75 at 2 sigma; D1-D3 and S1-S3 not evaluated
+      decider: restore the projection / optimiser that produced the 508440 rank gain, then rerun
+[ok] weak 12-site gain (R(8,12)=0.8), rising: NO-BASELINE-GAIN (intended NO-BASELINE-GAIN)
+      R(8,N): N=12: 0.800+-0.001, N=24: 0.850+-0.001, N=36: 0.920+-0.000, N=48: 0.970+-0.000
+      premise P_R fails: R(8,12) = 0.800 +- 0.001 is not <= 0.75 at 2 sigma; D1-D3 and S1-S3 not evaluated
+      decider: restore the projection / optimiser that produced the 508440 rank gain, then rerun
+[ok] 12-site gain unresolved at 2 sigma: NO-BASELINE-GAIN (intended NO-BASELINE-GAIN)
+      R(8,N): N=12: 0.740+-3.888, N=24: 0.740+-1.944, N=36: 0.740+-1.296, N=48: 0.740+-0.972
+      premise P_R fails: R(8,12) = 0.740 +- 3.888 is not <= 0.75 at 2 sigma; D1-D3 and S1-S3 not evaluated
+      decider: restore the projection / optimiser that produced the 508440 rank gain, then rerun
+[ok] missing seed: INCOMPLETE (intended INCOMPLETE)
+      N=24 che: 1 of 2 seeds
+[ok] capped run: INCOMPLETE (intended INCOMPLETE)
+      N=12 che: capped run
+[ok] reference too coarse: AMBIGUOUS-REFERENCE (intended AMBIGUOUS-REFERENCE)
+      N=12: sigma_ref 5.00e-01 >= 0.1 x 4.80e-02
+CHECK PASS: 13/13 scenarios give the intended verdict

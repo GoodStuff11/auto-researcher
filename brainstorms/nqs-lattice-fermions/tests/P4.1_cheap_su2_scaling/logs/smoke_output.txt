@@ -1,0 +1,43 @@
+[01:08:02]   (a) |T_strip - CylLattice(obc,obc)| on 4x3: 0.00e+00 (tol 0e+00) [PASS]
+[01:08:02] 4x2 open Ne=6 dim=3136
+[01:08:02]   (b) che     P=330 |psi_torch - psi_numpy|_inf: 9.71e-17 (tol 1e-09) [PASS]
+[01:08:02]   (c) che     |sum w E_loc - <H>|/|<H>|: 2.02e-16 (tol 1e-09) [PASS]
+[01:08:02]   (d) che     |g_torch - g_numpy|/|g_numpy| (E diff 8.9e-16): 2.33e-15 (tol 1e-07) [PASS]
+[01:08:02]   (b) che_k2  P=314 |psi_torch - psi_numpy|_inf: 1.49e-15 (tol 1e-09) [PASS]
+[01:08:03]   (c) che_k2  |sum w E_loc - <H>|/|<H>|: 0.00e+00 (tol 1e-09) [PASS]
+[01:08:03]   (d) che_k2  |g_torch - g_numpy|/|g_numpy| (E diff 8.9e-16): 1.27e-13 (tol 1e-07) [PASS]
+[01:08:03]   (b) che_k4  P=347 |psi_torch - psi_numpy|_inf: 5.84e-16 (tol 1e-09) [PASS]
+[01:08:03]   (c) che_k4  |sum w E_loc - <H>|/|<H>|: 1.98e-16 (tol 1e-09) [PASS]
+[01:08:03]   (d) che_k4  |g_torch - g_numpy|/|g_numpy| (E diff 8.9e-16): 6.67e-14 (tol 1e-07) [PASS]
+[01:08:03]   (b) che_k8  P=543 |psi_torch - psi_numpy|_inf: 4.32e-15 (tol 1e-09) [PASS]
+[01:08:03]   (c) che_k8  |sum w E_loc - <H>|/|<H>|: 1.88e-16 (tol 1e-09) [PASS]
+[01:08:03]   (d) che_k8  |g_torch - g_numpy|/|g_numpy| (E diff 1.8e-15): 7.61e-11 (tol 1e-07) [PASS]
+[01:08:04]   (b) nnbf    P=330 |psi_torch - psi_numpy|_inf: 9.71e-17 (tol 1e-09) [PASS]
+[01:08:04]   (c) nnbf    |sum w E_loc - <H>|/|<H>|: 0.00e+00 (tol 1e-09) [PASS]
+[01:08:04]   (d) nnbf    |g_torch - g_numpy|/|g_numpy| (E diff 8.9e-16): 2.05e-15 (tol 1e-07) [PASS]
+[01:08:04] 4x3 open Ne=10 dim=627264
+[01:08:08]   (b) che     P=897 |psi_torch - psi_numpy|_inf: 1.98e-14 (tol 1e-09) [PASS]
+[01:08:29]   (c) che     |sum w E_loc - <H>|/|<H>|: 1.97e-16 (tol 1e-09) [PASS]
+[01:08:48]   (e) che     E_sampled -4.518243 +- 0.039795 vs exact -4.509811: z = -0.21 (20480 samples)
+[01:08:48]   (e) che     gradient: cos(g_sampled, g_exact) = 0.9893, frac |z|>3 = 0.0011, median |z| = 0.40 [PASS]
+[01:08:53]   (b) che_k2  P=873 |psi_torch - psi_numpy|_inf: 2.86e-14 (tol 1e-09) [PASS]
+[01:09:29]   (c) che_k2  |sum w E_loc - <H>|/|<H>|: 1.79e-16 (tol 1e-09) [PASS]
+[01:09:47]   (e) che_k2  E_sampled -4.987519 +- 0.035731 vs exact -4.966558: z = -0.59 (20480 samples)
+[01:09:47]   (e) che_k2  gradient: cos(g_sampled, g_exact) = 0.9773, frac |z|>3 = 0.0011, median |z| = 0.38 [PASS]
+[01:09:54]   (b) che_k4  P=825 |psi_torch - psi_numpy|_inf: 7.54e-15 (tol 1e-09) [PASS]
+[01:11:05]   (c) che_k4  |sum w E_loc - <H>|/|<H>|: 1.89e-16 (tol 1e-09) [PASS]
+[01:11:34]   (e) che_k4  E_sampled -4.673882 +- 0.040343 vs exact -4.688733: z = +0.37 (20480 samples)
+[01:11:34]   (e) che_k4  gradient: cos(g_sampled, g_exact) = 0.9982, frac |z|>3 = 0.0012, median |z| = 0.34 [PASS]
+[01:11:46]   (b) che_k8  P=1309 |psi_torch - psi_numpy|_inf: 4.66e-14 (tol 1e-09) [PASS]
+[01:13:55]   (c) che_k8  |sum w E_loc - <H>|/|<H>|: 1.61e-16 (tol 1e-09) [PASS]
+[01:14:44]   (e) che_k8  E_sampled -5.571842 +- 0.033959 vs exact -5.529106: z = -1.26 (20480 samples)
+[01:14:44]   (e) che_k8  gradient: cos(g_sampled, g_exact) = 0.9960, frac |z|>3 = 0.0008, median |z| = 0.33 [PASS]
+[01:14:46]   (b) nnbf    P=897 |psi_torch - psi_numpy|_inf: 4.86e-17 (tol 1e-09) [PASS]
+[01:15:01]   (c) nnbf    |sum w E_loc - <H>|/|<H>|: 3.38e-16 (tol 1e-09) [PASS]
+[01:15:18]   (e) nnbf    E_sampled -3.924432 +- 0.043331 vs exact -3.942653: z = +0.42 (20480 samples)
+[01:15:19]   (e) nnbf    gradient: cos(g_sampled, g_exact) = 0.9907, frac |z|>3 = 0.0000, median |z| = 0.32 [PASS]
+[01:15:22]   (f) che 4x3 SR step 20: E_sampled -7.47188 (exact start -6.27977)
+[01:15:23]   (f) che 4x3 SR step 40: E_sampled -7.53639 (exact start -6.27977)
+[01:15:24]   (f) che 4x3 SR step 60: E_sampled -7.59652 (exact start -6.27977)
+[01:15:25]   (f) che 4x3: exact E -6.279770 -> -7.609285 after 60 SR steps (E0 -7.827899) [PASS]
+[01:15:25] SMOKE PASS (442 s)

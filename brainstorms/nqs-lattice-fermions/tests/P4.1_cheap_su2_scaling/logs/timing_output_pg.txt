@@ -1,0 +1,2 @@
+[02:16:54] L=12 Ne=10 che     H=16 P=  2637 t_step=  82.94s (mcmc 7.62 eloc 66.14 grad 11.66 sr 1.81) t_sample=40.50 ms
+[02:21:09] L=12 Ne=10 che_k2  H=15 P=  2613 t_step= 117.38s (mcmc 10.34 eloc 85.85 grad 19.54 sr 1.55) t_sample=57.31 ms

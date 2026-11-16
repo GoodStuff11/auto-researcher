@@ -1,0 +1,18 @@
+[01:49:58] S4x3_N10_U8_tp-0.25_che_k2_seed0: L=12 Ne=10 H=15 P=2613 (nnbf P=2637) K=2 threads=2 host=kim-compute-03.physics.cornell.edu
+[01:49:59] thermalised: acceptance 0.291
+[01:49:59] it 1 E -6.620434 std 2.351 acc 0.297 |upd| 1.70e-01 t(mcmc/eloc/grad/sr) 0.01/0.06/0.02/0.01s elapsed 0.00 h
+[01:50:05] final E (average of last 8 steps) -7.537815 +- 0.000000 (627264 samples, 4 s)
+[01:50:09] last-step parameters: exact E -7.543911 (reported only)
+[01:50:09] wrote logs/train_check/S4x3_N10_U8_tp-0.25_che_k2_seed0.json
+[01:50:11] S8x3_N20_U8_tp-0.25_nnbf_seed0: L=24 Ne=20 H=16 P=9711 (nnbf P=9711) K=1 threads=2 host=kim-compute-03.physics.cornell.edu
+[01:50:13] thermalised: acceptance 0.328
+[01:50:13] it 1 E -13.345357 std 3.332 acc 0.306 |upd| 7.33e-02 t(mcmc/eloc/grad/sr) 0.02/0.14/0.05/0.02s elapsed 0.00 h
+[01:50:21] final E (average of last 8 steps) -14.698554 +- 0.078544 (2048 samples, 2 s)
+[01:50:23] checkpoint 20: E -14.515141 +- 0.092248 (wall at checkpoint 0.00 h)
+[01:50:23] wrote logs/train_check/S8x3_N20_U8_tp-0.25_nnbf_seed0.json
+[01:50:26] S8x3_N20_U8_tp-0.25_nnbf_seed0: L=24 Ne=20 H=16 P=9711 (nnbf P=9711) K=1 threads=2 host=kim-compute-03.physics.cornell.edu
+[01:50:26] resumed from logs/train_check/S8x3_N20_U8_tp-0.25_nnbf_seed0_ckpt.npz at step 30 (t_used 0.00 h)
+[01:50:28] thermalised: acceptance 0.283
+[01:50:32] final E (average of last 18 steps) -14.785448 +- 0.069860 (2048 samples, 2 s)
+[01:50:34] checkpoint 20: E -14.596060 +- 0.082020 (wall at checkpoint 0.00 h)
+[01:50:34] wrote logs/train_check/S8x3_N20_U8_tp-0.25_nnbf_seed0.json

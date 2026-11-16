@@ -1,0 +1,18 @@
+[01:25:56] S4x3_N10_U8_tp-0.25_che_seed0: L=12 Ne=10 H=16 P=2637 (nnbf P=2637) K=1 threads=3 host=kim-compute-03.physics.cornell.edu
+[01:26:03] thermalised: acceptance 0.290
+[01:26:05] it 1 E -6.240431 std 2.503 acc 0.269 |upd| 2.89e-01 t(mcmc/eloc/grad/sr) 0.08/0.48/0.28/0.89s elapsed 0.00 h
+[01:27:27] it 50 E -7.725455 std 0.629 acc 0.228 |upd| 2.35e-01 t(mcmc/eloc/grad/sr) 0.09/0.30/0.16/0.86s elapsed 0.02 h
+[01:28:49] it 100 E -7.741143 std 0.780 acc 0.230 |upd| 2.05e-01 t(mcmc/eloc/grad/sr) 0.13/0.47/0.15/0.89s elapsed 0.05 h
+[01:30:05] it 150 E -7.754223 std 0.631 acc 0.229 |upd| 1.82e-01 t(mcmc/eloc/grad/sr) 0.05/0.37/0.14/0.84s elapsed 0.07 h
+[01:31:21] it 200 E -7.775291 std 0.497 acc 0.227 |upd| 1.79e-01 t(mcmc/eloc/grad/sr) 0.06/0.44/0.16/0.86s elapsed 0.09 h
+[01:32:39] it 250 E -7.762248 std 0.452 acc 0.238 |upd| 1.72e-01 t(mcmc/eloc/grad/sr) 0.06/0.45/0.16/0.87s elapsed 0.11 h
+[01:33:50] it 300 E -7.770362 std 0.577 acc 0.221 |upd| 1.89e-01 t(mcmc/eloc/grad/sr) 0.05/0.36/0.14/0.79s elapsed 0.13 h
+[01:34:59] it 350 E -7.768157 std 0.540 acc 0.227 |upd| 1.82e-01 t(mcmc/eloc/grad/sr) 0.04/0.25/0.13/0.79s elapsed 0.15 h
+[01:36:09] it 400 E -7.765901 std 0.468 acc 0.231 |upd| 1.79e-01 t(mcmc/eloc/grad/sr) 0.05/0.38/0.14/0.80s elapsed 0.17 h
+[01:37:17] it 450 E -7.755492 std 0.511 acc 0.230 |upd| 1.85e-01 t(mcmc/eloc/grad/sr) 0.05/0.37/0.14/0.80s elapsed 0.19 h
+[01:38:26] it 500 E -7.763141 std 0.501 acc 0.221 |upd| 2.00e-01 t(mcmc/eloc/grad/sr) 0.05/0.38/0.14/0.79s elapsed 0.21 h
+[01:39:34] it 550 E -7.773877 std 0.475 acc 0.226 |upd| 1.86e-01 t(mcmc/eloc/grad/sr) 0.04/0.35/0.13/0.79s elapsed 0.23 h
+[01:40:42] it 600 E -7.760852 std 0.496 acc 0.228 |upd| 1.87e-01 t(mcmc/eloc/grad/sr) 0.05/0.37/0.14/0.79s elapsed 0.24 h
+[01:41:54] it 650 E -7.764397 std 0.446 acc 0.224 |upd| 1.48e-01 t(mcmc/eloc/grad/sr) 0.05/0.41/0.15/0.82s elapsed 0.26 h
+[01:43:06] it 700 E -7.769046 std 0.392 acc 0.222 |upd| 1.55e-01 t(mcmc/eloc/grad/sr) 0.05/0.39/0.15/0.83s elapsed 0.28 h
+[01:44:17] it 750 E -7.770919 std 0.479 acc 0.227 |upd| 1.80e-01 t(mcmc/eloc/grad/sr) 0.05/0.44/0.14/0.84s elapsed 0.30 h
