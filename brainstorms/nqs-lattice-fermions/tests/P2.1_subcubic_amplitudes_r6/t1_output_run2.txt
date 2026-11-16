@@ -1,0 +1,32 @@
+  return sgn * np.exp(logr)
+== PLR (Route 6.2): exactness (fast carried-table E_loc vs brute, sorted rows + JW signs)
+   L= 4 Ne=  14 n_conn=   28 E_fast=-4600.143502956744 E_brute=-4600.143502962081 rel_err=1.2e-12
+   L= 6 Ne=  32 n_conn=   60 E_fast=-15.067176870820 E_brute=-15.067176870820 rel_err=1.7e-14
+   L= 8 Ne=  56 n_conn=  107 E_fast=-909365105249852194816.000000000000 E_brute=-909365105263499542528.000000000000 rel_err=1.5e-11
+== PLR (Route 6.2): timing per connection
+   L=24 Ne= 504 n_conn=  926 setup=9.267e-03s t_c=6.271e-05s t_brute/conn=4.777e-03s speedup=76
+   L=32 Ne= 896 n_conn= 1639 setup=2.521e-02s t_c=5.051e-05s t_brute/conn=1.977e-02s speedup=391
+   L=40 Ne=1400 n_conn= 2636 setup=8.541e-02s t_c=6.421e-05s t_brute/conn=4.728e-02s speedup=736
+== PLR (Route 6.2): max rel_err=1.5e-11 slope(t_c vs N_e)=0.00 speedup(largest L)=736 -> T1 AMBIGUOUS
+total 2.8s
+== GK-BF (Route 6.1): exactness (fast carried-table E_loc vs brute, sorted rows + JW signs)
+   L= 4 Ne=  14 n_conn=   28 E_fast=+58.208432347722 E_brute=+58.208432347728 rel_err=9.8e-14
+   L= 6 Ne=  32 n_conn=   60 E_fast=-26.938197057503 E_brute=-26.938197057503 rel_err=2.9e-15
+   L= 8 Ne=  56 n_conn=  107 E_fast=-28.834718287628 E_brute=-28.834718287628 rel_err=2.6e-15
+== GK-BF (Route 6.1): timing per connection
+   L=24 Ne= 504 n_conn=  926 setup=4.817e-03s t_c=5.278e-05s t_brute/conn=1.459e-03s speedup=28
+   L=32 Ne= 896 n_conn= 1639 setup=1.379e-02s t_c=7.889e-05s t_brute/conn=4.611e-03s speedup=58
+   L=40 Ne=1400 n_conn= 2636 setup=4.862e-02s t_c=7.728e-05s t_brute/conn=1.210e-02s speedup=157
+== GK-BF (Route 6.1): max rel_err=9.8e-14 slope(t_c vs N_e)=0.39 speedup(largest L)=157 -> T1 AMBIGUOUS
+total 1.7s
+== gate4 (in-flight SK-LR, K=4 r=1, Ha=128): t_c at fixed Hs=64 and at Hs=N_e/4
+   Hs=64    L=32 Ne= 896 Hs=  64 n_conn= 1680 t_c=4.911e-05s
+   Hs=64    L=48 Ne=2016 Hs=  64 n_conn= 3732 t_c=9.423e-05s
+   Hs=64    L=64 Ne=3584 Hs=  64 n_conn= 6733 t_c=1.499e-04s
+   Hs=64: slope(t_c vs N_e) = 0.80  => C_E exponent ~ 1.80
+   Hs=Ne/4  L=32 Ne= 896 Hs= 224 n_conn= 1680 t_c=3.676e-05s
+   Hs=Ne/4  L=48 Ne=2016 Hs= 504 n_conn= 3732 t_c=1.084e-04s
+   Hs=Ne/4  L=64 Ne=3584 Hs= 896 n_conn= 6733 t_c=2.206e-04s
+   Hs=Ne/4: slope(t_c vs N_e) = 1.30  => C_E exponent ~ 2.30
+== gate4: prediction (fixed-width slope <= 1.3, growing-width slope >= 1.6) NOT CONFIRMED
+total 15.1s
