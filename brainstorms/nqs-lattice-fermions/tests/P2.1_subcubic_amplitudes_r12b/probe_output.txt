@@ -1,0 +1,7 @@
+[14:24:50] PROBE inst 23 full: D=16632 n_eff=986 15 steps, 1.072 CPU-s/step, peak RSS 0.24 GB
+[14:25:18] PROBE inst 24 full: D=84084 n_eff=1325 15 steps, 6.134 CPU-s/step, peak RSS 0.48 GB
+[14:25:35] PROBE inst 25 full: D=51480 n_eff=1514 15 steps, 3.749 CPU-s/step, peak RSS 0.55 GB
+[14:26:15] PROBE inst 24 full: D=84084 n_eff=1325 15 steps, 1.676 CPU-s/step, peak RSS 0.49 GB
+wall incl. setup 32 s
+[14:26:35] PROBE inst 25 full: D=51480 n_eff=1514 15 steps, 1.163 CPU-s/step, peak RSS 0.52 GB
+wall incl. setup 21 s

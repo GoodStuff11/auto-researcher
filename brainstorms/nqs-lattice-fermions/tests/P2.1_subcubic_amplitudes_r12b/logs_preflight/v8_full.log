@@ -1,0 +1,26 @@
+[14:27:09] instance 20 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 E0=-5.1899410651 gap=0.0657 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=44 arm=full seed=11 threads=1
+[14:27:09] arm full: F=4 Ha=0 n_eff=464 P/dim_S_chi=10.55 calib=8.88e-15
+[14:27:09] full: it     0 E-E0 = 1.065835 best = 1.065835 (0.069 CPU-s/step)
+[14:27:12] full: it    50 E-E0 = 0.127363 best = 0.127363 (0.061 CPU-s/step)
+[14:27:14] full: it   100 E-E0 = 0.098920 best = 0.082117 (0.058 CPU-s/step)
+[14:27:17] full: it   150 E-E0 = 0.045565 best = 0.045565 (0.056 CPU-s/step)
+[14:27:20] full: it   200 E-E0 = 0.032050 best = 0.032050 (0.055 CPU-s/step)
+[14:27:22] full: it   250 E-E0 = 0.040145 best = 0.030187 (0.055 CPU-s/step)
+[14:27:25] full: it   300 E-E0 = 0.091913 best = 0.024219 (0.055 CPU-s/step)
+[14:27:28] full: it   350 E-E0 = 0.060892 best = 0.023271 (0.055 CPU-s/step)
+[14:27:31] full: it   400 E-E0 = 0.029326 best = 0.019585 (0.054 CPU-s/step)
+[14:27:33] full: it   450 E-E0 = 0.018921 best = 0.017200 (0.054 CPU-s/step)
+[14:27:35] full: it   500 E-E0 = 0.056445 best = 0.015728 (0.053 CPU-s/step)
+[14:27:38] full: it   550 E-E0 = 0.046547 best = 0.015580 (0.053 CPU-s/step)
+[14:27:40] full: it   600 E-E0 = 0.021532 best = 0.014065 (0.053 CPU-s/step)
+[14:27:43] full: it   650 E-E0 = 0.025842 best = 0.012849 (0.052 CPU-s/step)
+[14:27:45] full: it   700 E-E0 = 0.041623 best = 0.012849 (0.052 CPU-s/step)
+[14:27:48] full: it   750 E-E0 = 0.013966 best = 0.012849 (0.052 CPU-s/step)
+[14:27:50] full: it   800 E-E0 = 0.024035 best = 0.012829 (0.052 CPU-s/step)
+[14:27:53] full: it   850 E-E0 = 0.014502 best = 0.011329 (0.052 CPU-s/step)
+[14:27:55] full: it   900 E-E0 = 0.011908 best = 0.011329 (0.052 CPU-s/step)
+[14:27:58] full: it   950 E-E0 = 0.037102 best = 0.011329 (0.052 CPU-s/step)
+[14:28:00] full: it  1000 E-E0 = 0.011759 best = 0.011234 (0.051 CPU-s/step)
+[14:28:03] full: stop = plateau at it 1050; best E - E0 = 0.011234; SR CPU 54 s
+[14:28:03] full [P]: dE_tot=0.011234 dE_sign=0.001473 f_E=0.131 spread=4.7e-13; max |masked entry| proposed by SR = 0.0e+00
+[14:28:03] wrote results_preflight/v8/t1_full_inst20_s11.json

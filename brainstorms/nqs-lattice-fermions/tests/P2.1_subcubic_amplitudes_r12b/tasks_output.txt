@@ -1,0 +1,9 @@
+task 0: instance 23 (4x3 5+5) arm full
+task 1: instance 23 (4x3 5+5) arm half
+task 2: instance 23 (4x3 5+5) arm quarter
+task 3: instance 24 (7x2 6+6) arm full
+task 4: instance 24 (7x2 6+6) arm half
+task 5: instance 24 (7x2 6+6) arm quarter
+task 6: instance 25 (5x3 7+7) arm full
+task 7: instance 25 (5x3 7+7) arm half
+task 8: instance 25 (5x3 7+7) arm quarter

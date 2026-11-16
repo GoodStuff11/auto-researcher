@@ -1,0 +1,24 @@
+[14:27:09] instance 20 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=560 E0=-5.1899410651 gap=0.0657 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=44 arm=half seed=11 threads=1
+[14:27:09] arm half: F=4 Ha=0 n_eff=304 P/dim_S_chi=6.91 calib=8.88e-15
+[14:27:09] half: it     0 E-E0 = 1.061921 best = 1.061921 (0.067 CPU-s/step)
+[14:27:12] half: it    50 E-E0 = 0.127470 best = 0.127470 (0.060 CPU-s/step)
+[14:27:14] half: it   100 E-E0 = 0.202881 best = 0.097162 (0.058 CPU-s/step)
+[14:27:17] half: it   150 E-E0 = 0.067221 best = 0.067221 (0.056 CPU-s/step)
+[14:27:20] half: it   200 E-E0 = 0.073356 best = 0.060509 (0.055 CPU-s/step)
+[14:27:22] half: it   250 E-E0 = 0.267536 best = 0.059297 (0.054 CPU-s/step)
+[14:27:25] half: it   300 E-E0 = 0.069195 best = 0.059297 (0.054 CPU-s/step)
+[14:27:28] half: it   350 E-E0 = 0.054231 best = 0.054231 (0.054 CPU-s/step)
+[14:27:30] half: it   400 E-E0 = 0.047836 best = 0.047836 (0.054 CPU-s/step)
+[14:27:33] half: it   450 E-E0 = 0.044000 best = 0.044000 (0.053 CPU-s/step)
+[14:27:35] half: it   500 E-E0 = 0.047535 best = 0.041716 (0.053 CPU-s/step)
+[14:27:37] half: it   550 E-E0 = 0.039461 best = 0.039461 (0.052 CPU-s/step)
+[14:27:40] half: it   600 E-E0 = 0.041385 best = 0.038264 (0.052 CPU-s/step)
+[14:27:42] half: it   650 E-E0 = 0.035774 best = 0.035774 (0.052 CPU-s/step)
+[14:27:45] half: it   700 E-E0 = 0.036430 best = 0.033934 (0.052 CPU-s/step)
+[14:27:47] half: it   750 E-E0 = 0.038269 best = 0.033252 (0.051 CPU-s/step)
+[14:27:50] half: it   800 E-E0 = 0.045530 best = 0.033252 (0.051 CPU-s/step)
+[14:27:52] half: it   850 E-E0 = 0.058748 best = 0.033252 (0.051 CPU-s/step)
+[14:27:55] half: it   900 E-E0 = 0.033128 best = 0.033128 (0.051 CPU-s/step)
+[14:27:57] half: stop = plateau at it 950; best E - E0 = 0.033128; SR CPU 48 s
+[14:27:57] half [P]: dE_tot=0.033128 dE_sign=0.003594 f_E=0.108 spread=1.1e-13; max |masked entry| proposed by SR = 0.0e+00
+[14:27:57] wrote results_preflight/v8/t1_half_inst20_s11.json
