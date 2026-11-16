@@ -1,0 +1,14 @@
+[     0.5s] target 4x3o 4x3:5 irrep={'Mx': 1, 'My': 1} dim=16632 n_irrep=4152 E0=-7.2330203724 gap/V=1.2985e-02 (sign half only) npar=426
+[     0.5s] variant=fsym npar=452 extra=26 gap=0.1558t setup 0 CPU-s; SR budget 570 CPU-s (ledger before run 0 CPU-s)
+[    30.0s]   [fsym] step 30/300 eps=5.56843e-02 lr=0.0974
+[    62.6s]   [fsym] step 60/300 eps=2.67880e-02 lr=0.106
+[    92.7s]   [fsym] step 90/300 eps=2.41417e-02 lr=0.112
+[   122.8s]   [fsym] step 120/300 eps=2.32332e-02 lr=0.122
+[   154.8s]   [fsym] step 150/300 eps=2.28509e-02 lr=0.133
+[   188.1s]   [fsym] step 180/300 eps=2.25814e-02 lr=0.143
+[   218.2s]   [fsym] step 210/300 eps=2.23625e-02 lr=0.133
+[   246.8s]   [fsym] step 240/300 eps=2.21730e-02 lr=0.11
+[   275.7s]   [fsym] step 270/300 eps=2.19993e-02 lr=0.177
+[   304.9s]   [fsym] step 300/300 eps=2.18340e-02 lr=0.2
+[   305.1s] RESULT fsym: steps=300 relerr=3.6224% irrep weight=1.000 relerr_at={50: 4.902, 100: 3.931, 150: 3.791, 200: 3.721, 300: 3.622} (percent) CPU 304 s; ledger total 596 CPU-s
+[   305.1s] done (results/fsym.json)

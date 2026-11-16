@@ -1,0 +1,12 @@
+--- scenario: routes beat every control
+sqrvb: M_E=0.100 M_sign=1.000 M_che=0.200 M_foil=0.010 g1=True g_cost=True g_mech=True g2=True -> PASS
+scf: M_E=0.100 M_sign=1.000 M_che=0.200 M_foil=0.010 g1=True g_cost=True g_mech=True g2=True -> PASS
+--- scenario: routes worse than projected control
+sqrvb: M_E=2.000 M_sign=1.000 M_che=4.000 M_foil=0.200 g1=True g_cost=True g_mech=False g2=True -> FAIL
+scf: M_E=2.000 M_sign=1.000 M_che=4.000 M_foil=0.200 g1=True g_cost=True g_mech=True g2=True -> FAIL
+--- scenario: projected control near-exact
+sqrvb: M_E=10.000 M_sign=1.000 M_che=0.200 M_foil=0.010 g1=True g_cost=True g_mech=True g2=True -> NO-TARGET
+scf: M_E=10.000 M_sign=1.000 M_che=0.200 M_foil=0.010 g1=True g_cost=True g_mech=True g2=True -> NO-TARGET
+--- scenario: cost gate violated
+sqrvb: M_E=0.100 M_sign=1.000 M_che=0.200 M_foil=0.010 g1=True g_cost=False g_mech=True g2=True -> FAIL
+scf: M_E=0.100 M_sign=1.000 M_che=0.200 M_foil=0.010 g1=True g_cost=False g_mech=True g2=True -> FAIL

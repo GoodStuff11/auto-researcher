@@ -1,0 +1,11 @@
+[15:20:30] 2x3 torus Ne=6 dim=400
+[15:20:30]   tocchio  P= 307 <S^2>=-3.86e-17 grad rel.err=1.6e-09 [PASS]
+[15:20:30]   kagp2    P= 268 <S^2>=+3.34e-17 grad rel.err=5.5e-10 [PASS]
+[15:20:30]   che      P= 294 <S^2>=-6.47e-17 grad rel.err=2.9e-10 [PASS]
+[15:20:30]   sfb      P= 298 <S^2>=-6.76e-17 grad rel.err=5.1e-10 [PASS]
+[15:20:30]   kagp_single vs batched: 2.8e-17
+[15:20:30]   2x3 pbc/pbc Ne=6 che: |single - full-vector P_S| 1.1e-14, |closed - GL| 1.1e-14, |closed - e_k| 8.3e-17 (max|amp| 4.05e-01) [PASS]
+[15:20:30]   2x3 pbc/pbc Ne=6 sfb: |single - full-vector P_S| 7.3e-15 (max|amp| 1.98e-01) [PASS]
+[15:20:30]   4x2 obc/obc Ne=6 che: |single - full-vector P_S| 1.7e-16, |closed - GL| 1.9e-16, |closed - e_k| 4.2e-17 (max|amp| 2.40e-01) [PASS]
+[15:20:30]   4x2 obc/obc Ne=6 sfb: |single - full-vector P_S| 5.2e-14 (max|amp| 6.65e-01) [PASS]
+[15:20:30] SMOKE PASS  (0.5s)

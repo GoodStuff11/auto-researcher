@@ -1,0 +1,22 @@
+[11:13:58] RLIMIT_CPU 600 s set before any ED; mode main
+[11:13:58] 5x2: D=4200 sector levels found 42 (N_LOW=40) E0=-7.423758 chi={'My': -1, 'Mx': 1} S0=1 R_PAIR=3.28 (5 pairs) R_SITE=3.38 (4 pairs) (0.7s)
+[11:13:58] census 5x2: {"size": "5x2", "V": 10, "D": 4200, "nup": 3, "n": 0.6, "omega1": 0.33125161273679904, "n_found": 42, "n_low": 40, "omega_top": 3.07029617149111, "nwin": 4, "dim_sector": null, "ov2": 0.9492211188278075, "E0": -7.423758379422828, "chi": "{'My': -1, 'Mx': 1}", "S0": 1.0, "n_pair": 5, "n_site": 4}
+[11:13:58] build cpu 1s
+[11:14:01] 5x2 tp      (s-E0)/w1 -0.20 cpu 2s | pair: L1R -0.24 ORC3 +0.15 SCRu-R2 +1.51 SCRu-R4 +1.09 SCRd-R4 +1.86 SCR2-R +0.58 SD4 +0.00 SCRu-04 +0.95 SCRu-Rdef4 +0.73 | spin: L1R -0.09 ORC3 +1.02 SCRu-R2 +1.04 SCRu-R4 +0.98 SCRd-R4 +1.09 SCR2-R +0.75 SD4 +0.02 SCRu-04 +0.97 SCRu-Rdef4 +1.05 | charge: L1R -0.20 ORC3 +0.29 SCRu-R2 +0.95 SCRu-R4 +1.14 SCRd-R4 +0.50 SCR2-R +0.35 SD4 -0.05 SCRu-04 +0.95 SCRu-Rdef4 +0.86
+[11:14:03] 5x2 J       (s-E0)/w1 -0.22 cpu 2s | pair: L1R +0.15 ORC3 +0.71 SCRu-R2 +1.89 SCRu-R4 +0.96 SCRd-R4 +1.00 SCR2-R +1.31 SD4 +0.47 SCRu-04 +0.96 SCRu-Rdef4 +1.15 | spin: L1R +0.00 ORC3 +0.84 SCRu-R2 +0.73 SCRu-R4 +1.06 SCRd-R4 +0.87 SCR2-R +0.92 SD4 +0.16 SCRu-04 +0.99 SCRu-Rdef4 +1.35 | charge(ns): L1R -3.49 ORC3 +2.67 SCRu-R2 -0.71 SCRu-R4 +0.92 SCRd-R4 -3.33 SCR2-R +3.25 SD4 -4.97 SCRu-04 +0.45 SCRu-Rdef4 -1.65
+[11:14:05] 5x2 dens_s0 (s-E0)/w1 -0.17 cpu 2s | pair: L1R +0.02 ORC3 +0.03 SCRu-R2 +1.02 SCRu-R4 +1.11 SCRd-R4 +1.38 SCR2-R +0.80 SD4 +0.64 SCRu-04 +1.00 SCRu-Rdef4 +1.11 | spin(ns): L1R -1.26 ORC3 +0.83 SCRu-R2 +2.44 SCRu-R4 +0.94 SCRd-R4 -1.42 SCR2-R +2.50 SD4 -1.35 SCRu-04 +0.95 SCRu-Rdef4 +0.78 | charge: L1R +0.42 ORC3 +0.24 SCRu-R2 +0.98 SCRu-R4 +0.94 SCRd-R4 +1.08 SCR2-R +0.91 SD4 +1.30 SCRu-04 +1.01 SCRu-Rdef4 +0.79
+[11:14:06] 5x2 spin_s0 (s-E0)/w1 -0.23 cpu 2s | pair: L1R -0.02 ORC3 +0.77 SCRu-R2 +1.12 SCRu-R4 +0.32 SCRd-R4 +1.29 SCR2-R +0.48 SD4 +0.16 SCRu-04 +0.92 SCRu-Rdef4 +0.61 | spin: L1R +0.04 ORC3 +0.51 SCRu-R2 +1.19 SCRu-R4 +1.33 SCRd-R4 +0.86 SCR2-R +0.35 SD4 +0.26 SCRu-04 +0.84 SCRu-Rdef4 +0.60 | charge(ns): L1R -2.57 ORC3 +4.05 SCRu-R2 +0.01 SCRu-R4 +0.93 SCRd-R4 -2.58 SCR2-R +3.37 SD4 -4.10 SCRu-04 +0.62 SCRu-Rdef4 +3.24
+[11:14:08] 5x2 pair_s0 (s-E0)/w1 -0.20 cpu 2s | pair: L1R +0.21 ORC3 +0.39 SCRu-R2 +0.88 SCRu-R4 +1.00 SCRd-R4 +0.94 SCR2-R +1.15 SD4 +0.55 SCRu-04 +0.99 SCRu-Rdef4 +1.17 | spin(ns): L1R -0.46 ORC3 +2.36 SCRu-R2 +1.71 SCRu-R4 -0.90 SCRd-R4 -1.69 SCR2-R -0.73 SD4 -0.90 SCRu-04 +0.84 SCRu-Rdef4 +1.66 | charge: L1R -0.92 ORC3 +0.05 SCRu-R2 +2.28 SCRu-R4 +1.44 SCRd-R4 +0.82 SCR2-R +0.99 SD4 -0.97 SCRu-04 +0.91 SCRu-Rdef4 +0.81
+[11:14:10] 5x2 dens_s1 (s-E0)/w1 -0.17 cpu 2s | pair: L1R -0.04 ORC3 +0.48 SCRu-R2 +1.22 SCRu-R4 +1.30 SCRd-R4 +1.54 SCR2-R +1.21 SD4 +0.27 SCRu-04 +0.99 SCRu-Rdef4 +1.19 | spin(ns): L1R -2.02 ORC3 -1.48 SCRu-R2 -9.25 SCRu-R4 +3.02 SCRd-R4 +2.46 SCR2-R +1.80 SD4 -1.53 SCRu-04 +0.77 SCRu-Rdef4 +1.30 | charge: L1R -0.10 ORC3 +0.24 SCRu-R2 +0.99 SCRu-R4 +1.06 SCRd-R4 +1.58 SCR2-R +0.85 SD4 +0.06 SCRu-04 +0.98 SCRu-Rdef4 +1.11
+[11:14:12] 5x2 spin_s1 (s-E0)/w1 -0.20 cpu 2s | pair: L1R +0.09 ORC3 +0.85 SCRu-R2 +0.93 SCRu-R4 +0.02 SCRd-R4 +2.81 SCR2-R -0.05 SD4 +0.22 SCRu-04 +1.06 SCRu-Rdef4 +0.88 | spin: L1R +0.15 ORC3 +0.38 SCRu-R2 +0.98 SCRu-R4 +0.94 SCRd-R4 +0.60 SCR2-R +0.55 SD4 +0.59 SCRu-04 +1.18 SCRu-Rdef4 +1.59 | charge: L1R +0.49 ORC3 +0.69 SCRu-R2 +1.51 SCRu-R4 +1.27 SCRd-R4 +0.11 SCR2-R +0.30 SD4 +0.69 SCRu-04 +1.03 SCRu-Rdef4 +0.64
+[11:14:14] 5x2 pair_s1 (s-E0)/w1 -0.19 cpu 2s | pair: L1R +0.25 ORC3 +0.37 SCRu-R2 +0.84 SCRu-R4 +0.87 SCRd-R4 +1.08 SCR2-R +0.96 SD4 +0.66 SCRu-04 +0.98 SCRu-Rdef4 +0.92 | spin: L1R -0.32 ORC3 +1.52 SCRu-R2 +1.74 SCRu-R4 +1.05 SCRd-R4 +0.88 SCR2-R -1.22 SD4 -0.44 SCRu-04 +0.91 SCRu-Rdef4 +0.31 | charge: L1R +0.15 ORC3 +0.51 SCRu-R2 +0.78 SCRu-R4 +0.79 SCRd-R4 +0.83 SCR2-R +0.95 SD4 +0.50 SCRu-04 +0.97 SCRu-Rdef4 +1.09
+  tracked L1R        5x2 0.00 (n=19)
+  tracked ORC3       5x2 0.47 (n=19)
+  tracked SCRu-R2    5x2 0.95 (n=19)
+  tracked SCRu-R4    5x2 0.89 (n=19)
+  tracked SCRd-R4    5x2 0.89 (n=19)
+  tracked SCR2-R     5x2 0.68 (n=19)
+  tracked SD4        5x2 0.32 (n=19)
+  tracked SCRu-04    5x2 1.00 (n=19)
+  tracked SCRu-Rdef4 5x2 0.95 (n=19)
+[11:14:14] total wall 16s, CPU 17s

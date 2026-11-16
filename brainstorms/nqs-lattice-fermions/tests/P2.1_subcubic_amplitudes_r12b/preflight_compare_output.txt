@@ -1,0 +1,5 @@
+V=8 pre-flight (ladder.py, 1 thread) vs Round 12 (t1_sub.py):
+  full     steps 1050 vs 1050; dE_sign 1.4733869720e-03 vs 1.4733869720e-03; dE_tot 1.1233706710e-02 vs 1.1233706710e-02; max |traj diff| 0.0e+00
+  half     steps 950 vs 950; dE_sign 3.5941485574e-03 vs 3.5941485574e-03; dE_tot 3.3127662283e-02 vs 3.3127662283e-02; max |traj diff| 0.0e+00
+  quarter  steps 800 vs 800; dE_sign 1.4622297851e-02 vs 1.4622297851e-02; dE_tot 9.2848704861e-02 vs 9.2848704861e-02; max |traj diff| 0.0e+00
+checkpoint resume (inst 23 quarter, 60 steps straight vs 30 + resume to 60): max |traj diff| = 0.0e+00; dE_sign 1.6018118855e-02 vs 1.6018118855e-02

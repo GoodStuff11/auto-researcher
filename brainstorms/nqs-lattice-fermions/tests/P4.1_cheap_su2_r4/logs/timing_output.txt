@@ -1,0 +1,6 @@
+sector dim=627264 nC=58278 built in 0s
+  tocchio  P= 2587 E(init)=-6.1667 energy+grad 4.9s
+  kagp2    P= 2556 E(init)=-6.2504 energy+grad 9.8s
+  che      P= 2637 E(init)=-5.4775 energy+grad 11.7s
+  sfb      P= 2653 E(init)=-5.4769 energy+grad 11.8s
+  nnbf_SG  P= 2637 E(init)=-5.4705 energy+grad 11.7s

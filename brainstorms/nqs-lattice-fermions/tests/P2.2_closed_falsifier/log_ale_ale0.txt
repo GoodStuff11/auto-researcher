@@ -1,0 +1,9 @@
+=== H4 distorted chain R=4.4 K=12 dim=4356 E_FCI=-1.985064 HF wt=0.493 <|C|>=530 (4.1s)
+cold start dE=577.61 mHa P=4684 <|C|>_pi=530 budget ops=1.120e+10 cal=31.12s
+  ALE0:4:16    seed= 0 steps= 175 anchors= 47 dE(C_b)[ops]=  27.776 [cal]=  37.539 dE(C_b/2)[ops]= 159.845 (12s)
+  ALE0:4:16    seed= 1 steps= 176 anchors= 47 dE(C_b)[ops]=  26.222 [cal]=  31.640 dE(C_b/2)[ops]=  78.609 (12s)
+  ALE0:4:16    seed= 2 steps= 168 anchors= 47 dE(C_b)[ops]=  40.959 [cal]=  76.286 dE(C_b/2)[ops]= 160.364 (12s)
+  ALE0:8:16    seed= 0 steps= 290 anchors= 43 dE(C_b)[ops]=  22.754 [cal]=  25.891 dE(C_b/2)[ops]=  33.620 (20s)
+  ALE0:8:16    seed= 1 steps= 288 anchors= 43 dE(C_b)[ops]=  32.400 [cal]=  35.731 dE(C_b/2)[ops]=  42.049 (20s)
+  ALE0:8:16    seed= 2 steps= 287 anchors= 43 dE(C_b)[ops]=  24.030 [cal]=  37.654 dE(C_b/2)[ops]=  87.359 (20s)
+done (100s) -> /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.2_closed_falsifier/results/ale_ALE0-4-16_ALE0-8-16.json

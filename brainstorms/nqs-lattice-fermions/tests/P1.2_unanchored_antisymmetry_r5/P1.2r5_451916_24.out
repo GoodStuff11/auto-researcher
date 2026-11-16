@@ -1,0 +1,44 @@
+[08:49:04] check inst 9 D=90 frame K: E=30 edges, max|sum_e c_e y(m_e) - H_K y| = 8.9e-16
+[08:49:04] check inst 9 D=90 frame X: E=18 edges, max|sum_e c_e y(m_e) - H_X y| = 5.6e-17
+[08:49:04] check inst 8 D=560 frame K: E=32 edges, max|sum_e c_e y(m_e) - H_K y| = 8.9e-16
+[08:49:04] check inst 8 D=560 frame X: E=20 edges, max|sum_e c_e y(m_e) - H_X y| = 2.2e-16
+[08:49:05] check FRD-K grad proj=none: analytic 1.1368320329e+00 fd 1.1368320324e+00 (rel 4.3e-10); O vs fd 1.5e-08
+[08:49:05] check FRD-K grad proj=chi: analytic 4.5892863467e+00 fd 4.5892863456e+00 (rel 2.4e-10); per-amplitude psi_P 1.3e-16; O vs fd 5.9e-10
+[08:49:05] check FRD-K per-sample E_loc == (H psi)/psi on all 90 configs: 1.8e-15 (NNBF per-sample path 4.6e-15); flip_weight 0.781; base evals per E_loc mean 102.6
+[08:49:05] check FRD-X grad proj=none: analytic -9.9104166334e-02 fd -9.9104165985e-02 (rel 3.5e-10); O vs fd 2.2e-10
+[08:49:05] check FRD-X grad proj=chi: analytic 5.5831513214e-01 fd 5.5831513190e-01 (rel 2.4e-10); per-amplitude psi_P 1.7e-16; O vs fd 1.7e-10
+[08:49:06] check FRD-X per-sample E_loc == (H psi)/psi on all 90 configs: 9.5e-16 (NNBF per-sample path 4.6e-15); flip_weight 0.004; base evals per E_loc mean 39.4
+[08:49:20] check sampled force (inst 8 D=560): exact expectation of the sampled estimator vs force 9.9e-16; 40000 Metropolis samples rel err 0.140 vs iid-predicted 8.798 (acceptance 0.159)
+[08:49:20] check parameter match inst 0: nnbf6 1734, nnbf4 1284, frdK (base 4, alpha width 3, E=84) 1719
+[08:49:20] check parameter match inst 0: nnbf6 1734, nnbf4 1284, frdX (base 4, alpha width 4, E=48) 1656
+[08:49:20] ALL R5 CHECKS PASSED
+[08:49:40] instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=nnbf6_mc seed=11 shift=0.01
+[08:50:25] ED [-11.388010886295234, -11.338627749487598, -11.329223800405993, -11.317360511481414] deg 1 |G|=8 chi={'My': 1, 'Mx': 1, 'D': -1} S=0; dim P_chi 210430, dim P_S P_chi 30220 (46 s)
+[08:52:27] arm nnbf6_mc: {'kind': 'nnbf', 'Hs': 6} n_params=1734 (control 1734) calib=1.60e-14
+[08:52:33] nnbf6_mc: it     0  E_exact = -9.58915387  E_mc = -9.712026  |f| = 2.77e+00  acc = 0.165  (5.74 s/step)
+[08:57:43] nnbf6_mc: it    50  E_exact = -10.83159716  E_mc = -10.840283  |f| = 1.38e+00  acc = 0.198  (6.20 s/step)
+[09:03:01] nnbf6_mc: it   100  E_exact = -11.11998118  E_mc = -11.131978  |f| = 1.63e+00  acc = 0.221  (6.27 s/step)
+[09:08:20] nnbf6_mc: it   150  E_exact = -11.21913949  E_mc = -11.230107  |f| = 9.47e-01  acc = 0.240  (6.31 s/step)
+[09:13:42] nnbf6_mc: it   200  E_exact = -11.25383989  E_mc = -11.266183  |f| = 6.14e-01  acc = 0.254  (6.34 s/step)
+[09:18:58] nnbf6_mc: it   250  E_exact = -11.26969778  E_mc = -11.257756  |f| = 4.39e-01  acc = 0.263  (6.34 s/step)
+[09:24:15] nnbf6_mc: it   300  E_exact = -11.27900433  E_mc = -11.273769  |f| = 5.56e-01  acc = 0.269  (6.34 s/step)
+[09:29:35] nnbf6_mc: it   350  E_exact = -11.28105271  E_mc = -11.282656  |f| = 9.30e-01  acc = 0.274  (6.35 s/step)
+[09:34:51] nnbf6_mc: it   400  E_exact = -11.28499224  E_mc = -11.270657  |f| = 9.54e-01  acc = 0.278  (6.34 s/step)
+[09:40:07] nnbf6_mc: it   450  E_exact = -11.28529000  E_mc = -11.276346  |f| = 6.99e-01  acc = 0.280  (6.34 s/step)
+[09:45:21] nnbf6_mc: it   500  E_exact = -11.28905060  E_mc = -11.303131  |f| = 5.69e-01  acc = 0.283  (6.33 s/step)
+[09:50:37] nnbf6_mc: it   550  E_exact = -11.28886113  E_mc = -11.291772  |f| = 1.61e+00  acc = 0.284  (6.33 s/step)
+[09:55:52] nnbf6_mc: it   600  E_exact = -11.29013335  E_mc = -11.288027  |f| = 3.86e+00  acc = 0.286  (6.33 s/step)
+[10:01:10] nnbf6_mc: it   650  E_exact = -11.29136295  E_mc = -11.287471  |f| = 9.55e-01  acc = 0.287  (6.33 s/step)
+[10:06:15] nnbf6_mc: it   700  E_exact = -11.29049560  E_mc = -11.297629  |f| = 1.55e+00  acc = 0.288  (6.32 s/step)
+[10:11:31] nnbf6_mc: it   750  E_exact = -11.29085432  E_mc = -11.298264  |f| = 1.17e+00  acc = 0.289  (6.32 s/step)
+[10:16:41] nnbf6_mc: it   800  E_exact = -11.29420279  E_mc = -11.306220  |f| = 5.61e-01  acc = 0.290  (6.31 s/step)
+[10:21:53] nnbf6_mc: it   850  E_exact = -11.29286364  E_mc = -11.314348  |f| = 6.87e-01  acc = 0.291  (6.31 s/step)
+[10:27:11] nnbf6_mc: it   900  E_exact = -11.29525620  E_mc = -11.304140  |f| = 8.26e-01  acc = 0.291  (6.31 s/step)
+[10:32:21] nnbf6_mc: it   950  E_exact = -11.29445165  E_mc = -11.314327  |f| = 1.92e+00  acc = 0.292  (6.30 s/step)
+[10:37:29] nnbf6_mc: it  1000  E_exact = -11.29360284  E_mc = -11.286251  |f| = 7.40e-01  acc = 0.292  (6.30 s/step)
+[10:42:36] nnbf6_mc: it  1050  E_exact = -11.29266546  E_mc = -11.289843  |f| = 1.14e+00  acc = 0.293  (6.29 s/step)
+[10:47:42] nnbf6_mc: it  1100  E_exact = -11.29250952  E_mc = -11.286340  |f| = 1.57e+00  acc = 0.293  (6.28 s/step)
+[10:52:50] nnbf6_mc: it  1150  E_exact = -11.29618444  E_mc = -11.289348  |f| = 6.82e-01  acc = 0.294  (6.28 s/step)
+[10:57:50] nnbf6_mc: it  1199  E_exact = -11.29562304  E_mc = -11.298323  |f| = 7.02e-01  acc = 0.294  (6.27 s/step)
+[11:08:32] nnbf6_mc [P]: dE_tot=0.09264 dE_sign=0.02936 f_E=0.317 w_sign=1.69e-02 spread=3.5e-13 ov0=0.856 (631 s)
+[11:08:33] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r5/results/inst0_nnbf6_mc_s11_sh0.01.json

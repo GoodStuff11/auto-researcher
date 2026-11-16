@@ -1,0 +1,3 @@
+[B_half_F8] L=12 Ne=126 V_h=72 sweeps= 2599 t_sw=7.703e-03s tau=1.12+-0.13 cost=8.663e-03s acc=0.32 <E>/Ne=-0.519 cpu=20s
+[B_half_F8] L=16 Ne=224 V_h=128 sweeps= 3742 t_sw=2.407e-02s tau=0.94+-0.08 cost=2.272e-02s acc=0.32 <E>/Ne=-0.511 cpu=90s
+CPU user=110.76 sys=0.21 wall=111.53

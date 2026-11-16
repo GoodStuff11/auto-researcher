@@ -1,0 +1,4 @@
+base: N_s 64: 0.0708 s/step (2 threads)
+spring: N_s 64: 0.0695 s/step (2 threads)
+base4: N_s 256: 0.1218 s/step (2 threads)
+14.09 s wall 24.41 user

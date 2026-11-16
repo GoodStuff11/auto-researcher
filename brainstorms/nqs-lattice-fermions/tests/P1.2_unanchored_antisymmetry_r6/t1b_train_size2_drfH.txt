@@ -1,0 +1,23 @@
+[10:27:28] threads 1
+[10:27:32] budget: projected 497 CPU-s for 2 runs + 4 used; cap 600 (per-step CPU-s: drfH@2=0.772)
+[10:27:33] s2 drfH 11: it     0  E = -5.75877492  |f| = 1.11e+00  (1.14 s/step)
+[10:28:05] s2 drfH 11: it    50  E = -6.69874202  |f| = 1.06e+00  (0.65 s/step)
+[10:28:40] s2 drfH 11: it   100  E = -6.81986401  |f| = 4.47e-01  (0.67 s/step)
+[10:29:13] s2 drfH 11: it   150  E = -6.85688775  |f| = 3.37e-01  (0.67 s/step)
+[10:29:46] s2 drfH 11: it   200  E = -6.84242651  |f| = 9.57e-01  (0.67 s/step)
+[10:30:18] s2 drfH 11: it   250  E = -6.85237703  |f| = 4.80e-01  (0.66 s/step)
+[10:30:50] s2 drfH 11: it   299  E = -6.86582980  |f| = 3.38e-01  (0.66 s/step)
+[10:30:51] size 2 drfH seed 11: n_params 1037 (T 1110) dE_tot 0.13193 dE_sign 0.01310 (199 s, 198 CPU-s)
+[10:30:52] s2 drfH 22: it     0  E = -5.75850885  |f| = 1.15e+00  (1.14 s/step)
+[10:31:25] s2 drfH 22: it    50  E = -6.74690794  |f| = 3.57e-01  (0.66 s/step)
+[10:31:57] s2 drfH 22: it   100  E = -6.85451200  |f| = 2.75e-01  (0.65 s/step)
+[10:32:29] s2 drfH 22: it   150  E = -6.90427988  |f| = 1.84e-01  (0.65 s/step)
+[10:33:00] s2 drfH 22: it   200  E = -6.89751990  |f| = 2.14e-01  (0.64 s/step)
+[10:33:31] s2 drfH 22: it   250  E = -6.79928548  |f| = 5.53e-01  (0.64 s/step)
+[10:34:03] s2 drfH 22: it   299  E = -6.85207738  |f| = 4.71e-01  (0.64 s/step)
+[10:34:04] size 2 drfH seed 22: n_params 1037 (T 1110) dE_tot 0.10033 dE_sign 0.02249 (193 s, 192 CPU-s)
+[10:34:04] invocation CPU total 395 s
+
+real	6m36.502s
+user	5m50.357s
+sys	0m44.322s

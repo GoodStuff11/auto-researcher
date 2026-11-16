@@ -1,0 +1,26 @@
+[14:07:32] instance 21 {'Lx': 3, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=1680 E0=-6.5584751880 gap=0.1445 |G|=8 chi={'My': 1, 'Mx': 1, 'D': 1} dim_S_chi=60 arm=half seed=11
+[14:07:32] arm half: F=4 Ha=0 n_eff=395 P/dim_S_chi=6.58 calib=-4.44e-15
+[14:07:32] half: it     0 E-E0 = 1.001350 best = 1.001350 (0.081 CPU-s/step)
+[14:07:35] half: it    50 E-E0 = 0.097825 best = 0.097825 (0.068 CPU-s/step)
+[14:07:38] half: it   100 E-E0 = 0.068839 best = 0.068839 (0.063 CPU-s/step)
+[14:07:41] half: it   150 E-E0 = 0.062891 best = 0.062891 (0.063 CPU-s/step)
+[14:07:44] half: it   200 E-E0 = 0.061027 best = 0.061027 (0.062 CPU-s/step)
+[14:07:47] half: it   250 E-E0 = 0.060400 best = 0.060400 (0.061 CPU-s/step)
+[14:07:50] half: it   300 E-E0 = 0.059991 best = 0.059991 (0.062 CPU-s/step)
+[14:07:53] half: it   350 E-E0 = 0.059515 best = 0.059515 (0.062 CPU-s/step)
+[14:07:56] half: it   400 E-E0 = 0.058562 best = 0.058562 (0.061 CPU-s/step)
+[14:07:59] half: it   450 E-E0 = 0.057743 best = 0.057743 (0.061 CPU-s/step)
+[14:08:02] half: it   500 E-E0 = 0.056939 best = 0.056939 (0.061 CPU-s/step)
+[14:08:05] half: it   550 E-E0 = 0.056064 best = 0.056064 (0.061 CPU-s/step)
+[14:08:08] half: it   600 E-E0 = 0.055148 best = 0.055148 (0.061 CPU-s/step)
+[14:08:11] half: it   650 E-E0 = 0.054036 best = 0.054036 (0.060 CPU-s/step)
+[14:08:14] half: it   700 E-E0 = 0.052775 best = 0.052775 (0.060 CPU-s/step)
+[14:08:17] half: it   750 E-E0 = 0.051737 best = 0.051737 (0.060 CPU-s/step)
+[14:08:20] half: it   800 E-E0 = 0.050968 best = 0.050968 (0.060 CPU-s/step)
+[14:08:22] half: it   850 E-E0 = 0.050449 best = 0.050449 (0.059 CPU-s/step)
+[14:08:25] half: it   900 E-E0 = 1.698830 best = 0.050415 (0.059 CPU-s/step)
+[14:08:28] half: it   950 E-E0 = 0.415366 best = 0.050415 (0.059 CPU-s/step)
+[14:08:30] half: it  1000 E-E0 = 0.281760 best = 0.050415 (0.058 CPU-s/step)
+[14:08:33] half: stop = plateau at it 1050; best E - E0 = 0.050415; SR CPU 61 s
+[14:08:34] half [P]: dE_tot=0.050415 dE_sign=0.002932 f_E=0.058 spread=1.6e-13; max |masked entry| proposed by SR = 0.0e+00
+[14:08:34] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r12/results/t1_half_inst21_s11.json

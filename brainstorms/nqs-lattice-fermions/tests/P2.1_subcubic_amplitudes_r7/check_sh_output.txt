@@ -1,0 +1,14 @@
+[10:35:13] check geometry (OBC patch indexing): True
+[10:35:13] check amplitude [sh_plus inst 9 {'mode': 'sh', 'patch': 'plus', 'F': 3, 'Ha': 3}] ansatz vs augmented det: 1.5e-16
+[10:35:13] check grad [sh_plus inst 9 Ha=3, proj=none]: analytic -3.8780855269e-02 fd -3.8780855416e-02 rel 3.8e-09
+[10:35:13] check grad [sh_plus inst 9 Ha=3, proj=chi]: analytic -2.7469681883e-01 fd -2.7469681818e-01 rel 2.4e-09
+[10:35:13] check amplitude [sh_plus inst 8 {'mode': 'sh', 'patch': 'plus', 'F': 3, 'Ha': 6}] ansatz vs augmented det: 1.8e-16
+[10:35:13] check grad [sh_plus inst 8 Ha=6, proj=none]: analytic -1.2905397018e-01 fd -1.2905396884e-01 rel 1.0e-08
+[10:35:13] check grad [sh_plus inst 8 Ha=6, proj=chi]: analytic 3.2199706661e+00 fd 3.2199706657e+00 rel 1.2e-10
+[10:35:13] check O_P [sh_plus] vs fd: 4.3e-09
+[10:35:18] check fast E_loc == (H psi)/psi on all 1680 configs (1 near-node skipped) [sh_plus, OBC 3x3, full psi incl. Jastrow]: 1.6e-13
+[10:35:18] ALL CHECKS PASSED
+
+real	0m6.048s
+user	0m7.110s
+sys	0m0.183s

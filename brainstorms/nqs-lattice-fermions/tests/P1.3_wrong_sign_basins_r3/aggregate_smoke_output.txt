@@ -1,0 +1,14 @@
+===== instance smoke: E0=-8.936160 gap_in=2.16138 (0.18011 per site) chi={'Ty': 1, 'Tx': -1, 'My': 1, 'Mx': -1} S=0.0 same_sector=[True, True, True]
+  seed 1234 (e_sign/e_var, T=trapped): U:0.0440/0.2666 PSaf:0.0024/0.0272 PSfs:0.0035/0.0389 PScdw:0.0029/0.0595 PW0:0.0023/0.0614 PW1:0.0048/0.0723 N:0.0000/0.1283 A:0.0163/0.1414 O:0.0022/0.0986 O0:0.0022/0.0986 U->P:0.0000/0.0256
+  seed 1235 (e_sign/e_var, T=trapped): U:0.0428/0.2845 PSaf:0.0033/0.2183 PSfs:0.0043/0.1359 PScdw:0.0000/0.2495 PW0:0.0000/0.0535 PW1:0.0000/0.1405 N:0.0054/0.3412 A:0.0009/0.3877 O:0.0071/0.4127 O0:0.0071/0.4127 U->P:0.0000/0.0195
+  trap test valid (median fidelity of PW1 to psi_1 after pre-training 0.860 >= 0.5): True
+  premise: PW1 trapped 0/2 (TRAP=False); cold runs trapped 0/6; median depth e_var(PSaf)-e_var(PW0) = 0.06530 (0.05 gap = 0.10807) -> NO-BASIN
+  spread: PSaf e_sign range over seeds [2.38e-03, 3.28e-03]; median e_sign PSaf 2.83e-03, PW0 1.16e-03, U 4.34e-02, U->P 2.54e-05
+  A sampled-vs-exact acceptance agreement 1.00 over 2 cycles
+  route A: median rho=-310.616 rho>0 on 1/2 dEvar=+0.1418 trapped 0 vs control 0  gates: G-ctrl trapped 0 not < control 0
+  -> route A: N/A (premise falsified: no basin after projection)
+  O ablation: median rho_O - rho_O0 = 0.000, better on 0/2
+  O sampled fidelity estimator OK at 4/4 checkpoints (max se 0.028)
+  route O: median rho=-42.109 rho>0 on 0/2 dEvar=+0.1329 trapped 0 vs control 0  gates: G-ctrl trapped 0 not < control 0; G-ablation penalty adds nothing (median 0.000, 0/2)
+  -> route O: N/A (premise falsified: no basin after projection)
+only smoke results; no global verdict

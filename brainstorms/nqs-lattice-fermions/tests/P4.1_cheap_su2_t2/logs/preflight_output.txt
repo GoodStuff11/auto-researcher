@@ -1,0 +1,8 @@
+toy 4x2: E0 -5.535325; che H=16 eps 2.543e-03 S2 -4.9e-17 ckpt ['20'], che H=2 eps 4.529e-03 S2 2.3e-17 ckpt ['20'], foil H=0 eps 8.910e-03 S2 -1.5e-17 ckpt ['20'], pcg H=11 eps 3.863e-03 S2 -2.3e-17 ckpt ['20'], r1 H=19 eps 4.240e-03 S2 3.8e-17 ckpt ['20']
+[OK ] real toy files                                   -> KILL | eps_che 2.543e-03, eps_pcg 3.863e-03 (best of 1), eps_r1 4.240e-03 (best of 1), rho 1.519, eps_pcg/eps_r1 0.911
+[OK ] positive control (pcg slot = exact state)        -> PASS (intended PASS) | eps_che 2.543e-03, eps_pcg 0.000e+00 (best of 1), eps_r1 4.240e-03 (best of 1), rho 0.000, eps_pcg/eps_r1 0.000
+[OK ] negative control (pcg slot = che itself)         -> KILL (intended KILL) | eps_che 2.543e-03, eps_pcg 2.543e-03 (best of 1), eps_r1 4.240e-03 (best of 1), rho 1.000, eps_pcg/eps_r1 0.600
+[OK ] futility control (real early-killed pcg file)    -> KILL (intended KILL) | pcg seed 0 stopped by futility at step 20 (eps 4.698e-03)
+[OK ] W positive control (H48 slot = exact state)      -> W HOLDS (intended W HOLDS) | W-12 eps(H): H=4: 3.000e-03, H=8: 2.000e-03, H=16: 1.000e-03, H=32: 9.000e-04; H*(12) = > 32; r12 = 0.100; W-24: E16 -5.51025 +- 0.00010, E48 -5.53532 +- 0.00000, (E16 - E48)/sigma = 250.70; r24 = 1.000 vs r12 = 0.100
+[OK ] W negative control (both slots = same run)       -> W FAILS (intended W FAILS) | W-12 eps(H): H=4: 3.000e-03, H=8: 2.000e-03, H=16: 1.000e-03, H=32: 9.000e-04; H*(12) = > 32; r12 = 0.100; W-24: E16 -5.51025 +- 0.00010, E48 -5.51025 +- 0.00010, (E16 - E48)/sigma = 0.00; H = 48 does not lower the 24-site energy beyond 2 sigma
+PREFLIGHT PASS

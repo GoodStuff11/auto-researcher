@@ -1,0 +1,10 @@
+[10:54:25] instance 4 {'Lx': 5, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=420420 arm=agpj seed=11
+[10:54:36] E0=-9.7918583301 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=15080
+[10:55:06] arm agpj: {'mode': 'agp', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 44} n_params=1633 target=1626 calib=7.82e-14
+[10:55:08] agpj: it     0  E = -8.42908846  |f| = 1.44e+00  (2.15 s/step)
+[10:56:00] agpj: it    25  E = -9.43409508  |f| = 3.82e-01  (2.09 s/step)
+[10:56:52] agpj: it    50  E = -9.54280931  |f| = 5.17e-01  (2.08 s/step)
+[10:57:42] agpj: it    74  E = -9.58163704  |f| = 6.29e-01  (2.08 s/step)
+[11:00:33] agpj [P]: dE_tot=0.20910 dE_sign=0.05374 f_E=0.257 spread=1.0e-13 ov0=0.666 (170 s)
+[11:03:00] agpj [P_S]: dE_tot=0.16871 dE_sign=0.03983 f_E=0.236 spread=1.1e-13 ov0=0.684 (147 s)
+[11:03:00] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results_hfps/t2_agpj_inst4_s11.json

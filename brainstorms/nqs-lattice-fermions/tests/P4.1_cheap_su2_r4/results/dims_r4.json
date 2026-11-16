@@ -1,0 +1,47 @@
+[
+ {
+  "Ns": 4,
+  "singlet": 2,
+  "tocchio1": 2,
+  "toc_singlet_err": 5.738687914085159e-17,
+  "tocchio2": 2,
+  "tocchio3": 2,
+  "puhf": 2
+ },
+ {
+  "Ns": 6,
+  "singlet": 5,
+  "tocchio1": 5,
+  "toc_singlet_err": 1.9851230209436267e-16,
+  "tocchio2": 5,
+  "tocchio3": 5,
+  "puhf": 5
+ },
+ {
+  "Ns": 8,
+  "singlet": 14,
+  "tocchio1": 13,
+  "toc_singlet_err": 2.271306632304104e-16,
+  "tocchio2": 14,
+  "tocchio3": 14,
+  "puhf": 14
+ },
+ {
+  "Ns": 10,
+  "singlet": 42,
+  "tocchio1": 26,
+  "toc_singlet_err": 3.2173870641121947e-16,
+  "tocchio2": 42,
+  "tocchio3": 42,
+  "puhf": 42
+ },
+ {
+  "Ns": 12,
+  "singlet": 132,
+  "tocchio1": 43,
+  "toc_singlet_err": 3.8851289041584295e-16,
+  "tocchio2": 86,
+  "tocchio3": 129,
+  "puhf": 62
+ }
+]

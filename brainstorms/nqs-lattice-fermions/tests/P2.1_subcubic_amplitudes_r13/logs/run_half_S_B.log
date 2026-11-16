@@ -1,0 +1,3 @@
+[half_S/B] L=12 sweeps= 1771 t_sw=1.119e-02s tau=1.25+-0.18 cost=1.395e-02s acc=0.32 <E>/Ne=-0.521 cpu=20s
+[half_S/B] L=16 sweeps= 1604 t_sw=5.615e-02s tau=1.04+-0.15 cost=5.822e-02s acc=0.32 <E>/Ne=-0.519 cpu=90s
+CPU 110.96+0.22 s

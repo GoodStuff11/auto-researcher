@@ -1,0 +1,7 @@
+VERDICT T2a (R2 pcg-scal): PASS
+  cost ratio at 48 sites not measured
+  eps_che 2.858e-03, eps_pcg 1.284e-03 (best of 1), eps_r1 2.313e-03 (best of 1), rho 0.449, eps_pcg/eps_r1 0.555
+  foil (descriptive): eps 8.859e-02
+  pcg seed 0 exact checkpoints: 250: 2.804e-03, 500: 2.085e-03, 750: 1.589e-03
+VERDICT W (R3 width premise): INCOMPLETE
+  missing W run(s)

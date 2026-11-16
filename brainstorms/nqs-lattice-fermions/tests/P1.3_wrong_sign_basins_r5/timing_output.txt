@@ -1,0 +1,7 @@
+[11:08:23] instance 0 D=1681680 ED+group 34s |G|=8 chi={'My': 1, 'Mx': 1, 'D': -1}
+[11:08:36] width 6: n_params=1734 one energy SR step 13.17s (threads 8)
+[11:08:49] width 6: n_params=1734 one fidelity SR step 12.23s (threads 8)
+[11:09:01] width 4: n_params=1284 one energy SR step 12.13s (threads 8)
+[11:09:13] width 4: n_params=1284 one fidelity SR step 12.15s (threads 8)
+[11:09:28] width 10: n_params=2634 one energy SR step 14.62s (threads 8)
+[11:09:42] width 10: n_params=2634 one fidelity SR step 14.89s (threads 8)

@@ -1,0 +1,8 @@
+task 1 on kim-compute-03.physics.cornell.edu: vmc_t2.py --mode train --arm che --width 48 --Lx 8 --Ly 3 --pg=1,1 --iters 1000 --n-chains 1024 --n-eval 65536 --threads 4 --max-hours 2.0 --outdir /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/w24
+[15:09:09] /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/w24/S8x3_N20_U8_tp-0.25_pg11_che_H48_seed0.json was capped at step 956; resuming from the checkpoint (resubmission)
+[15:09:09] S8x3_N20_U8_tp-0.25_pg11_che_H48_seed0: L=24 Ne=20 H=48 P=26639 (che@16 P=9711) threads=4 host=kim-compute-03.physics.cornell.edu
+[15:09:09] resumed from /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/w24/S8x3_N20_U8_tp-0.25_pg11_che_H48_seed0_ckpt.npz at step 950 (t_used 1.49 h)
+[15:09:36] thermalised: acceptance 0.252
+[15:14:13] it 1000 E -16.435531 std 1.074 acc 0.234 |upd| 1.21e-02 t(mcmc/eloc/grad/sr) 0.34/3.70/1.77/0.30s elapsed 1.565 h
+[15:19:26] final E (average of last 250 steps) -16.4330930 +- 0.0048930 (65536 samples, 313 s)
+[15:19:26] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/w24/S8x3_N20_U8_tp-0.25_pg11_che_H48_seed0.json

@@ -1,0 +1,20 @@
+ (written before any 'screen' or 'seq' output existed; mode 'rule' prints it)
+  g = E(theta0) - E0 is the parent's exact gap (2.2373e-2).  A "step" is one update theta <- theta + s * dtheta built
+  from S and H in the tangent space at the current theta (rebuilt after every accepted step), with one of the
+  variants below, and a line search s in {1, 1/2, 1/4} on the exact energy (the first s that lowers E is taken; if
+  none lowers E the step is rejected and the sequence stops).  Realised fraction R = (E(theta0) - E_final) / g.
+    REALISED      if some variant's sequence of at most 20 steps reaches R >= 0.25 with no accepted step raising
+                  E by more than 1e-4 g (rejected trial points are reported, they are not steps);
+    NOT-REALISED  if no variant reaches R >= 0.10;
+    PARTIAL       otherwise.
+  Budget clause: the leaf caps this T1 at 30 CPU-minutes.  If the cap ends a sequence before 20 steps while R is
+  still rising and below 0.25, the verdict is PARTIAL (budget-limited), never NOT-REALISED, and the remaining steps
+  are a prepared job.
+  Variant selection: step 1 is screened over the variant grid at theta0 (first-order predicted energies for all,
+  exact energies for the best predicted variant per (block, mode, threshold)); the sequence then uses the variant
+  with the lowest exact step-1 energy.  That is a line search over the damping, stated as such.
+  INVALID if: E(theta0) differs from the stored exact energy by > 1e-8; the orbit-reduced Gram reproduces the
+  R18'' full Ritz fraction 0.4895 by more than 0.002 (threshold 1e-11); the positive control (exact ground state
+  added as one direction) misses g by more than 1e-6 g; or the orbit reduction fails its checks (below).
+
+

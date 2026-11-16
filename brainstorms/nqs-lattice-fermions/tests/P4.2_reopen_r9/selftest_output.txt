@@ -1,0 +1,4 @@
+[     0.1s] selftest fsym: npar=122 extra=12 rel grad err 6.57e-09 zero-init equals base: True -> OK
+[     0.1s] selftest gf: npar=120 extra=10 rel grad err 1.46e-09 zero-init equals base: True -> OK
+[     0.1s] selftest 4x3: gf matrices G-invariant max dev 6.1e-16; fsym orbits 26 (free-F oracle has 78) -> OK
+[     0.1s] SELFTEST PASSED

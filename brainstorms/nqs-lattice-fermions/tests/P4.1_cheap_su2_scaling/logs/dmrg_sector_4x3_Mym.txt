@@ -1,0 +1,10 @@
+[2026-11-16T03:13:42.133] maxdim   100  E = -7.6182857683  truncerr = 7.237e-04  maxlinkdim 100  noise 1e-06  (44 s)
+[2026-11-16T03:14:00.508] maxdim   200  E = -7.6860132456  truncerr = 2.232e-04  maxlinkdim 200  noise 1e-06  (18 s)
+[2026-11-16T03:14:31.362] maxdim   400  E = -7.7093485363  truncerr = 3.176e-05  maxlinkdim 400  noise 1e-06  (31 s)
+[2026-11-16T03:15:09.486] maxdim   600  E = -7.7144897606  truncerr = 7.039e-06  maxlinkdim 600  noise 0e+00  (38 s)
+[2026-11-16T03:16:01.652] maxdim   800  E = -7.7179935032  truncerr = 1.546e-06  maxlinkdim 800  noise 0e+00  (52 s)
+[2026-11-16T03:17:10.495] maxdim  1000  E = -7.7206991681  truncerr = 2.634e-07  maxlinkdim 1000  noise 0e+00  (69 s)
+E_extrap = -7.7201861421 +- 5.13e-04  (last stage -7.7206991681; slope 8.336e+02); N_e check QN(("Nf",10,-1),("Sz",0))
+sector My = -1: <H> of final MPS = -7.7207206148 (penalised energy -7.7206991681)
+reflection characters: <Inv> = +0.546581  <My> = -0.999996  <Mx> = <Inv><My> = -0.546578
+wrote dmrg_sector/dmrg_S4x3_N10_Sz20_Mym_U8_tp-0.25.json

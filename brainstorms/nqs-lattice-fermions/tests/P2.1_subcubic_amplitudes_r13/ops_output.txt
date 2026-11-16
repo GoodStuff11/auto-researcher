@@ -1,0 +1,11 @@
+L=12 N=63 V=144: dense2 ops/sweep=9.215e+07; 11c full engine ops/sweep=1.105e+08 (R_ops dense2/11c-full = 0.83)
+   full_S : ratios/sweep=494 (down frac 0.80) <k>=9.60 <b>=8.00 <active rows>=144.0 accepts/sweep=73 <k_acc>=9.65 ops/sweep=3.230e+07 R_ops(dense2/arm)=2.85 ops_11c(full)/ops_arm=3.42
+   hg_S   : ratios/sweep=467 (down frac 0.82) <k>=3.22 <b>=1.62 <active rows>=18.0 accepts/sweep=73 <k_acc>=3.05 ops/sweep=9.483e+06 R_ops(dense2/arm)=9.72 ops_11c(full)/ops_arm=11.65
+   cbh_S  : ratios/sweep=468 (down frac 0.80) <k>=6.21 <b>=4.62 <active rows>=79.1 accepts/sweep=66 <k_acc>=6.23 ops/sweep=1.844e+07 R_ops(dense2/arm)=5.00 ops_11c(full)/ops_arm=5.99
+   half_S : ratios/sweep=455 (down frac 0.81) <k>=5.54 <b>=3.93 <active rows>=72.0 accepts/sweep=64 <k_acc>=5.61 ops/sweep=1.626e+07 R_ops(dense2/arm)=5.67 ops_11c(full)/ops_arm=6.79
+L=16 N=112 V=256: dense2 ops/sweep=8.301e+08; 11c full engine ops/sweep=4.923e+08 (R_ops dense2/11c-full = 1.69)
+   full_S : ratios/sweep=831 (down frac 0.79) <k>=9.59 <b>=8.00 <active rows>=256.0 accepts/sweep=115 <k_acc>=9.60 ops/sweep=1.538e+08 R_ops(dense2/arm)=5.40 ops_11c(full)/ops_arm=3.20 predicted R_D(16)=5.70
+   hg_S   : ratios/sweep=838 (down frac 0.80) <k>=3.17 <b>=1.57 <active rows>=32.0 accepts/sweep=121 <k_acc>=3.16 ops/sweep=4.998e+07 R_ops(dense2/arm)=16.61 ops_11c(full)/ops_arm=9.85 predicted R_D(16)=17.53
+   cbh_S  : ratios/sweep=825 (down frac 0.81) <k>=6.33 <b>=4.72 <active rows>=143.2 accepts/sweep=129 <k_acc>=6.40 ops/sweep=1.081e+08 R_ops(dense2/arm)=7.68 ops_11c(full)/ops_arm=4.55 predicted R_D(16)=8.11
+   half_S : ratios/sweep=825 (down frac 0.79) <k>=5.59 <b>=4.00 <active rows>=128.0 accepts/sweep=126 <k_acc>=5.56 ops/sweep=9.344e+07 R_ops(dense2/arm)=8.88 ops_11c(full)/ops_arm=5.27 predicted R_D(16)=9.38
+CPU 2.93+0.23 s

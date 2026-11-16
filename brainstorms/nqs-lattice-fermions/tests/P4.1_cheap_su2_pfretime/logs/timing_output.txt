@@ -1,0 +1,12 @@
+[10:26:34] L=12 Ne=10 n_q= 3: che H=16 P=2637 t=0.066s [mcmc 0.03 eloc 0.02 grad 0.01] | pcg H=15 P=2696 t=0.083s [mcmc 0.04 eloc 0.03 grad 0.02] | ratio 1.25 (median of pairs 1.25) | old torch Pf: pcg 0.133s, ratio 2.01 | wall 2s
+[10:26:34]     profile (2048 configs, no P_G): che_logpsi0 5.7 ms, pcg_fc 1.9 ms, pcg_X 2.5 ms, pcg_pf 2.7 ms, pcg_logpsi0 9.5 ms
+[10:26:40] L=24 Ne=20 n_q= 6: che H=16 P=9711 t=0.168s [mcmc 0.07 eloc 0.09 grad 0.02] | pcg H=25 P=9788 t=0.412s [mcmc 0.09 eloc 0.30 grad 0.03] | ratio 2.46 (median of pairs 2.47) | old torch Pf: pcg 0.782s, ratio 4.66 | wall 6s
+[10:26:40]     profile (2048 configs, no P_G): che_logpsi0 17.0 ms, pcg_fc 5.2 ms, pcg_X 18.3 ms, pcg_pf 20.0 ms, pcg_logpsi0 50.6 ms
+[10:26:52] L=36 Ne=30 n_q= 8: che H=16 P=21249 t=0.437s [mcmc 0.10 eloc 0.31 grad 0.02] | pcg H=35 P=21152 t=1.366s [mcmc 0.18 eloc 1.14 grad 0.04] | ratio 3.12 (median of pairs 3.13) | wall 12s
+[10:26:52]     profile (2048 configs, no P_G): che_logpsi0 55.6 ms, pcg_fc 15.1 ms, pcg_X 57.9 ms, pcg_pf 48.6 ms, pcg_logpsi0 164.4 ms
+[10:27:30] L=48 Ne=40 n_q=11: che H=16 P=37251 t=1.254s [mcmc 0.16 eloc 1.05 grad 0.04] | pcg H=46 P=37529 t=4.499s [mcmc 0.37 eloc 4.04 grad 0.08] | ratio 3.59 (median of pairs 3.61) | wall 37s
+[10:27:30]     profile (2048 configs, no P_G): che_logpsi0 130.2 ms, pcg_fc 76.7 ms, pcg_X 249.0 ms, pcg_pf 116.7 ms, pcg_logpsi0 474.0 ms
+[10:27:30] fitted slope d log(t_che) / d log(N) over N = [12, 24, 36, 48]: 2.05
+[10:27:30] fitted slope d log(t_pcg) / d log(N) over N = [12, 24, 36, 48]: 2.82
+[10:27:30] fitted slope d log(ratio) / d log(N) over N = [12, 24, 36, 48]: 0.77
+[10:27:30] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_pfretime/results/retime_kim-compute-03.physics.cornell.edu_t4.json

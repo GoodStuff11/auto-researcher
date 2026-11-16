@@ -1,0 +1,39 @@
+[10:58:37] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[10:58:37] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[10:58:37] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[10:58:37] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[10:58:37] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[10:58:37] check gradient: analytic 3.2455640501e-01  finite-diff 3.2455640531e-01
+[10:58:37] ALL CHECKS PASSED
+[10:58:37] check FN(exact sign, guide |psi0|) - E0 = -2.56e-10
+[10:58:37] check tr rho_u=2.0000000000 (N_up=2) tr rho_d=2.0000000000
+[10:58:37] check U=0 NO Slater E=-8.0000000000 ED=-8.0000000000
+[10:58:37] check max ||[H,g]v|| over 36 group elements = 2.7e-13
+[10:58:37] check irrep projection of psi0 overlap = 1.000000000000
+[10:58:38] check fidelity grad: analytic 5.30765866e-03 fd 5.30765873e-03
+[10:58:38] P1.3 r2 CHECKS PASSED
+[10:58:38] instance smoke D=7056 ED [-9.461243604601348, -9.08969560634211, -9.016794915118547, -9.016794915118517] deg=1 setup 0.5s
+[10:58:44] ARM S: E=-8.800136 E_sign-E0=0.31550 E_FN-E0=0.38709 w_sign=0.198 ov=[0.26, 0.183, 0.013, 0.411] sym={'Ty': 0.192, 'Tx': 0.193, 'My': -0.076, 'Mx': -0.08} proj: E_sign-E0=0.00045 scan: fn_correct=True var_correct=True sel E_sign-E0=0.00045 [++++ wt=0.184 Ev=-9.0419 FN=-9.0687] [+++- wt=0.002 Ev=-4.4173 FN=-5.7019] [++-+ wt=0.002 Ev=-4.8731 FN=-6.1752] [++-- wt=0.263 Ev=-9.3945 FN=-9.4387] (6s)
+[10:58:48] ARM N: E=-8.688251 E_sign-E0=0.33858 E_FN-E0=0.41728 w_sign=0.226 ov=[0.243, 0.163, 0.012, 0.411] sym={'Ty': 0.148, 'Tx': 0.146, 'My': -0.082, 'Mx': -0.077} (3s)
+[10:58:51] A cycle 0: stay=-8.85954 sno=-6.81588 swap_u=-7.27513 swap_d=-7.23770 swap_ud=-7.50538 -> stay
+[10:58:52] ARM A: E=-8.739146 E_sign-E0=0.33046 E_FN-E0=0.40330 w_sign=0.209 ov=[0.253, 0.18, 0.023, 0.39] sym={'Ty': 0.183, 'Tx': 0.19, 'My': -0.07, 'Mx': -0.08} (5s)
+[10:58:53] AE cycle 0: stay=-8.19933 sno=-4.91263 swap_u=-5.40764 swap_d=-5.66617 swap_ud=-5.28748 -> stay
+[10:58:54] ARM AE: E=-8.616100 E_sign-E0=0.32480 E_FN-E0=0.40791 w_sign=0.205 ov=[0.261, 0.174, 0.017, 0.378] sym={'Ty': 0.198, 'Tx': 0.197, 'My': -0.121, 'Mx': -0.076} (2s)
+[10:58:56] B cycle 0: stay=-8.86057 cap0.8=-8.92137 cap0.5=-8.90570 -> cap0.8
+[10:58:57] ARM B: E=-8.698651 E_sign-E0=0.32763 E_FN-E0=0.40041 w_sign=0.211 ov=[0.251, 0.172, 0.015, 0.395] sym={'Ty': 0.175, 'Tx': 0.184, 'My': -0.082, 'Mx': -0.058} (3s)
+[10:59:00] ARM W: E=-8.701092 E_sign-E0=0.33768 E_FN-E0=0.41788 w_sign=0.211 ov=[0.252, 0.155, 0.02, 0.387] sym={'Ty': 0.157, 'Tx': 0.158, 'My': -0.121, 'Mx': -0.114} (3s)
+[10:59:00] wrote results_smoke/seed1234_smoke.json total 23s
+
+real	0m23.417s
+user	1m49.769s
+sys	0m8.378s
+===== instance smoke =====
+1 complete seed file(s)
+seed 1234: S: Esgn-E0=0.3155 Ev=-8.8001  N: Esgn-E0=0.3386 Ev=-8.6883  A: Esgn-E0=0.3305 Ev=-8.7391  AE: Esgn-E0=0.3248 Ev=-8.6161  B: Esgn-E0=0.3276 Ev=-8.6987  W: Esgn-E0=0.3377 Ev=-8.7011
+route A: median rho=-0.047  rho>0 on 0/1 (need 1)  median dEvar=+0.0610 -> FAIL
+route B: median rho=-0.038  rho>0 on 0/1 (need 1)  median dEvar=+0.1015 -> FAIL
+route AE: median rho=-0.029  rho>0 on 0/1 (need 1)  median dEvar=+0.1840 -> FAIL
+route P (irrep scan, FN-ranked): FN picks psi0 irrep 1/1, E_var picks it 1/1, median rho_P=0.999 -> FAIL (FN gate adds nothing over energy ranking: standard projection)
+premise (witness): median gW=-0.070  gW>0 on 0/1 -> NO-BASIN
+ablation: median rho_A - median rho_AE = -0.018
+NOTE: fewer than 8 seeds; the verdict above is not decisive.

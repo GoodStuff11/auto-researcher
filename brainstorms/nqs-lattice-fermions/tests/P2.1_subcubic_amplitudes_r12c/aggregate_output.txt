@@ -1,0 +1,11 @@
+A_dense2     L=12: t_sw=2.584e-02 tau=1.59+-0.42 sweeps=666  L=16: t_sw=1.367e-01 tau=1.38+-0.35 sweeps=659
+A_half_F16   L=12: t_sw=9.480e-03 tau=1.18+-0.16 sweeps=2111  L=16: t_sw=2.886e-02 tau=1.23+-0.14 sweeps=3118
+A_half_F4    L=12: t_sw=7.232e-03 tau=1.08+-0.12 sweeps=2736  L=16: t_sw=2.243e-02 tau=1.21+-0.12 sweeps=4017
+B_dense2     L=12: t_sw=2.351e-02 tau=1.66+-0.39 sweeps=852  L=16: t_sw=1.240e-01 tau=1.30+-0.30 sweeps=727
+B_half_F12   L=12: t_sw=8.633e-03 tau=1.02+-0.12 sweeps=2291  L=16: t_sw=2.985e-02 tau=1.31+-0.15 sweeps=3019
+B_half_F8    L=12: t_sw=7.703e-03 tau=1.12+-0.13 sweeps=2599  L=16: t_sw=2.407e-02 tau=0.94+-0.08 sweeps=3742
+half_F4 vs A_dense2: L=12: 5.26+-1.51 (t_sw ratio 3.57); L=16: 6.94+-1.88 (t_sw ratio 6.10) -> R_D(16)-sigma=5.06 (>= 3)
+half_F8 vs B_dense2: L=12: 4.51+-1.17 (t_sw ratio 3.05); L=16: 7.08+-1.73 (t_sw ratio 5.15) -> R_D(16)-sigma=5.35 (>= 3)
+half_F12 vs B_dense2: L=12: 4.42+-1.16 (t_sw ratio 2.72); L=16: 4.13+-1.05 (t_sw ratio 4.16) -> R_D(16)-sigma=3.08 (>= 3)
+half_F16 vs A_dense2: L=12: 3.67+-1.09 (t_sw ratio 2.73); L=16: 5.34+-1.47 (t_sw ratio 4.74) -> R_D(16)-sigma=3.87 (>= 3)
+VERDICT: GATE-PASS: largest F with R_D(16)-sigma >= 3 is F=16

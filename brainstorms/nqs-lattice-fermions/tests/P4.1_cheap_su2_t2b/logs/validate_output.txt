@@ -1,0 +1,20 @@
+[11:24:51]   [PASS] 8x3: N_e = vmc.default_ne(L) (filling 5/6) N_e = 20
+[11:24:51]   [PASS] 8x3: closed-shell Fermi sea gap 0.108
+[11:24:52]   [PASS] 8x3 che: N_up = N_dn = N_e/2 <= L and P_G = (+,+) H=16 P=9711
+[11:24:52]   [PASS] 8x3 pcg: N_up = N_dn = N_e/2 <= L and P_G = (+,+) H=25 P=9788
+[11:24:52]   [PASS] 8x3 r1: N_up = N_dn = N_e/2 <= L and P_G = (+,+) H=44 P=9795
+[11:24:52]   [PASS] 8x3: pcg and r1 parameter counts within 5% of che (H = 16) {'che': 9711, 'pcg': 9788, 'r1': 9795}
+[11:24:52]   [PASS] 4x3: N_e = vmc.default_ne(L) (filling 5/6) N_e = 10
+[11:24:52]   [PASS] 4x3: closed-shell Fermi sea gap 0.158
+[11:24:52]   [PASS] 4x3 che: N_up = N_dn = N_e/2 <= L and P_G = (+,+) H=16 P=2637
+[11:24:52]   [PASS] 4x3 pcg: N_up = N_dn = N_e/2 <= L and P_G = (+,+) H=15 P=2696
+[11:24:52]   [PASS] 4x3 r1: N_up = N_dn = N_e/2 <= L and P_G = (+,+) H=25 P=2596
+[11:24:52]   [PASS] 4x3: pcg and r1 parameter counts within 5% of che (H = 16) {'che': 2637, 'pcg': 2696, 'r1': 2596}
+[11:24:52]   [PASS] 24 sites: DMRG characters <Inv>, <My> >= 0.95 -> irrep (+,+) = the arms' --pg=1,1 <Inv> 0.9999, <My> 0.9989
+[11:24:52]   24-site (+,+) reference (687302, scaling_report.select_ref): PENDING (scoring will be INCOMPLETE-REFERENCE until it lands)
+[11:24:52]   futility comparator (W-24 che H=16): PENDING (the clause stays disarmed until it exists)
+[11:24:52] VALIDATE PASS
+
+real	0m3.708s
+user	0m3.019s
+sys	0m0.629s

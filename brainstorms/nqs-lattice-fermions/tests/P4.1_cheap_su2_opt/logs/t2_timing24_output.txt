@@ -1,0 +1,4 @@
+A: 1024 chains: 4.00 s/step (4 threads)
+B: 4096 chains: 16.09 s/step (4 threads)
+t_A / t_B = 0.2485
+72.23 s wall 208.25 user

@@ -1,0 +1,28 @@
+[10:16:42] main: D=1681680 ED [-11.388010886295248, -11.338627749487609, -11.329223800405972, -11.31736051148136] |G|=8 chi={'My': 1, 'Mx': 1, 'D': -1} S0=0 (83 s)
+[10:25:25] 30 in-irrep levels: omega = [0.2089, 0.2342, 0.3138, 0.3661, 0.4089, 0.4115, 0.4267, 0.4578, 0.4826, 0.501, 0.5099, 0.5365, 0.5783, 0.5858, 0.6129, 0.6455, 0.6508, 0.6606, 0.6714, 0.6902, 0.7097, 0.7293, 0.7401, 0.7519, 0.7569, 0.7947, 0.8063, 0.8191, 0.829, 0.8405] (606 s)
+[10:25:26] a0 = pair +9.2236e-05 spin +5.3381e-02 charge -1.4159e-03 pairSF +3.9823e-01 spinSF +1.5150e-01 chargeSF +6.1292e-02
+[10:26:48] targets: seeds [11, 22, 33]; trained phi_1..3 loaded
+[10:27:00] seed 11 pair     a0 +9.2236e-05 delta +2.895e-05 (rel +0.314) scored | L1R +0.095 ORC3 +1.060 ORC6 +0.686 ORC30 +1.339 K_1/2 2 | ESR0 K=1:+0.332 K=2:+1.092 K=3:+1.173
+[10:27:02] seed 11 spin     a0 +5.3381e-02 delta +7.876e-03 (rel +0.148) scored | L1R +0.139 ORC3 +0.189 ORC6 +0.523 ORC30 +0.955 K_1/2 6 | ESR0 K=1:+0.980 K=2:+0.030 K=3:+0.187
+[10:27:03] seed 11 charge   a0 -1.4159e-03 delta -3.122e-04 (rel +0.220) scored | L1R -0.019 ORC3 +0.060 ORC6 +0.012 ORC30 +0.841 K_1/2 11 | ESR0 K=1:+0.163 K=2:+0.212 K=3:+0.102
+[10:27:15] seed 11 pairSF   a0 +3.9823e-01 delta +1.028e-02 (rel +0.026) not scored | L1R +0.180 ORC3 +1.753 ORC6 +1.327 ORC30 +0.848 K_1/2 3 | ESR0 K=1:+1.272 K=2:+2.064 K=3:+1.838
+[10:27:18] seed 11 spinSF   a0 +1.5150e-01 delta -6.590e-03 (rel -0.043) not scored | L1R +0.107 ORC3 -1.171 ORC6 +0.133 ORC30 +1.038 K_1/2 24 | ESR0 K=1:-0.303 K=2:-1.221 K=3:-1.180
+[10:27:19] seed 11 chargeSF a0 +6.1292e-02 delta +4.811e-04 (rel +0.008) not scored | L1R +0.073 ORC3 +0.059 ORC6 +0.094 ORC30 +0.390 K_1/2 inf | ESR0 K=1:+0.081 K=2:-0.058 K=3:-0.094
+[10:27:19] seed 11 done (31 s); dE 0.05181 overlap^2 0.9362
+[10:27:22] seed 22 pair     a0 +9.2236e-05 delta +5.760e-05 (rel +0.624) scored | L1R +0.409 ORC3 +0.921 ORC6 +0.780 ORC30 +0.908 K_1/2 2 | ESR0 
+[10:27:22] seed 22 spin     a0 +5.3381e-02 delta +7.366e-03 (rel +0.138) scored | L1R +0.147 ORC3 -0.075 ORC6 +0.468 ORC30 +0.989 K_1/2 7 | ESR0 
+[10:27:22] seed 22 charge   a0 -1.4159e-03 delta -4.422e-04 (rel +0.312) scored | L1R -0.010 ORC3 +0.104 ORC6 +0.066 ORC30 +0.655 K_1/2 16 | ESR0 
+[10:27:24] seed 22 pairSF   a0 +3.9823e-01 delta +1.476e-02 (rel +0.037) not scored | L1R +0.044 ORC3 +1.592 ORC6 +1.302 ORC30 +0.973 K_1/2 2 | ESR0 
+[10:27:25] seed 22 spinSF   a0 +1.5150e-01 delta -1.971e-02 (rel -0.130) scored | L1R +0.150 ORC3 -0.383 ORC6 +0.175 ORC30 +0.769 K_1/2 24 | ESR0 
+[10:27:25] seed 22 chargeSF a0 +6.1292e-02 delta +4.674e-04 (rel +0.008) not scored | L1R +0.097 ORC3 +0.075 ORC6 +0.121 ORC30 +0.413 K_1/2 inf | ESR0 
+[10:27:25] seed 22 done (5 s); dE 0.05710 overlap^2 0.9157
+[10:27:27] seed 33 pair     a0 +9.2236e-05 delta +8.198e-05 (rel +0.889) scored | L1R +0.447 ORC3 +0.784 ORC6 +0.694 ORC30 +0.838 K_1/2 2 | ESR0 
+[10:27:28] seed 33 spin     a0 +5.3381e-02 delta +4.036e-03 (rel +0.076) not scored | L1R +0.214 ORC3 -0.352 ORC6 +0.219 ORC30 +1.043 K_1/2 7 | ESR0 
+[10:27:28] seed 33 charge   a0 -1.4159e-03 delta -4.189e-04 (rel +0.296) scored | L1R +0.036 ORC3 +0.161 ORC6 +0.138 ORC30 +0.760 K_1/2 11 | ESR0 
+[10:27:30] seed 33 pairSF   a0 +3.9823e-01 delta +2.008e-02 (rel +0.050) not scored | L1R +0.107 ORC3 +1.150 ORC6 +0.984 ORC30 +0.825 K_1/2 2 | ESR0 
+[10:27:30] seed 33 spinSF   a0 +1.5150e-01 delta -1.376e-03 (rel -0.009) not scored | L1R +0.933 ORC3 -6.291 ORC6 -1.060 ORC30 +2.603 K_1/2 inf | ESR0 
+[10:27:30] seed 33 chargeSF a0 +6.1292e-02 delta -6.465e-06 (rel -0.000) not scored | L1R +106.655 ORC3 +107.656 ORC6 +105.194 ORC30 +85.840 K_1/2 inf | ESR0 
+[10:27:30] seed 33 done (5 s); dE 0.05837 overlap^2 0.9135
+[10:27:30] reference reproduction (job 456094 ESR0(K=3) pair/spin/charge): deviations {'pair': 0.0001, 'spin': 0.0002, 'charge': 0.0005} -> OK
+[10:27:30] ROUTE 8.3 T2 VERDICT (K=3): NO-TARGET | {'scored_seeds': {'pairSF': [], 'spinSF': [22], 'chargeSF': []}}
+[10:27:30] done (732 s)

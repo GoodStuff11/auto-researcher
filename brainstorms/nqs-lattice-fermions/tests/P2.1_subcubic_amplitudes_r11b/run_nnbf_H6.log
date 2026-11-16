@@ -1,0 +1,3 @@
+[nnbf_H6] L= 8 Ne= 56 V_h=None sweeps= 600 t_sw=1.634e-02s tau=1.28+-0.32 cost=2.097e-02s acc=0.32
+[nnbf_H6] L=12 Ne=126 V_h=None sweeps= 222 t_sw=9.065e-02s tau=2.11+-1.10 cost=1.912e-01s acc=0.33
+[nnbf_H6] L=16 Ne=224 V_h=None sweeps=  99 t_sw=5.116e-01s tau=1.00+-0.54 cost=5.097e-01s acc=0.32

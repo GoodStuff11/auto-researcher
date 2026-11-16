@@ -1,0 +1,17 @@
+(a) 2-site 1 electron: E0=-1.0000000000 (expect -1)
+(b) 4-site ring Heisenberg: E0=-3.0000000000 (expect -3)  E_FN[Marshall]=-3.0000000000
+(c) polarised 2x3 N_h=1: E0-E_free=1.33e-15  W[holon det]=-2.22e-16  W[Slater]=0.00e+00
+(c) polarised 2x3 N_h=2: E0-E_free=2.22e-15  W[holon det]=-8.88e-16  W[Slater]=0.00e+00
+(c) polarised 3x4 N_h=1: E0-E_free=1.33e-15  W[holon det]=-2.22e-16  W[Slater]=0.00e+00
+(c) polarised 3x4 N_h=2: E0-E_free=3.55e-15  W[holon det]=5.40e-32  W[Slater]=-2.22e-16
+(d) doped 3x4 exact sign: E_FN-E0 at K=0,5,10: [0.29473, 0.00189, 0.00045]
+[3x4o:2:-0.3] D=16632 E0=-7.28967405 deg=1 (0.1s)
+  foil slater_af E_FN=-7.18526867 dE=1.0441e-01 params=[-0.3297, 0.295, 0.02] (17s)
+  layer local P=460 val_err=0.0653 (const-layer weighted err 0.0733) nontrivial=True E_FN=-7.18227840 (3s)
+  layer null  P=460 val_err=0.0667 (const-layer weighted err 0.0733) nontrivial=True E_FN=-7.16968315 (3s)
+  exact_sign dE=4.4542e-04 W=0.0000 errCs=0.000e+00 errG=0.000e+00
+  foil       dE=1.0441e-01 W=0.0733 errCs=8.161e-03 errG=3.079e-03
+  local      dE=1.0740e-01 W=0.0717 errCs=8.175e-03 errG=3.183e-03
+  null       dE=1.1999e-01 W=0.0636 errCs=8.123e-03 errG=3.273e-03
+  foil=slater_af params=[-0.3297, 0.295, 0.02]  M_local=1.0286  M_null=1.1493  corr_ok=False
+SMOKE: OK

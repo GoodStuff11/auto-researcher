@@ -1,0 +1,40 @@
+task 2 on kim-compute-03.physics.cornell.edu: t2b.py --mode train --arm r1 --Lx 8 --Ly 3 --pg=1,1 --seed 0 --iters 3000 --n-chains 1024 --threads 4 --max-hours 4.0 --ckpts 750,1500,2250 --ckpt-eval 32768 --outdir /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results/t2b --n-eval 262144
+[12:47:12] S8x3_N20_U8_tp-0.25_pg11_r1_H44_seed0: L=24 Ne=20 H=44 P=9795 (che@16 P=9711) threads=4 pf=fast host=kim-compute-03.physics.cornell.edu
+[12:47:29] thermalised: acceptance 0.323
+[12:47:31] it 1 E -13.078957 std 4.119 acc 0.308 |upd| 2.79e-01 t(mcmc/eloc/grad/sr) 0.19/1.87/0.25/0.10s elapsed 0.001 h
+[12:49:16] it 50 E -15.933176 std 1.750 acc 0.245 |upd| 2.58e-01 t(mcmc/eloc/grad/sr) 0.16/1.85/0.21/0.10s elapsed 0.030 h
+[12:51:08] it 100 E -15.981927 std 1.534 acc 0.244 |upd| 2.22e-01 t(mcmc/eloc/grad/sr) 0.16/1.22/0.22/0.10s elapsed 0.061 h
+[12:53:00] it 150 E -15.998289 std 1.588 acc 0.241 |upd| 2.20e-01 t(mcmc/eloc/grad/sr) 0.16/1.62/0.23/0.10s elapsed 0.092 h
+[12:54:55] it 200 E -16.050482 std 1.587 acc 0.236 |upd| 2.18e-01 t(mcmc/eloc/grad/sr) 0.16/1.62/0.23/0.10s elapsed 0.124 h
+[12:56:46] it 250 E -16.094241 std 1.695 acc 0.238 |upd| 2.25e-01 t(mcmc/eloc/grad/sr) 0.16/1.21/0.22/0.10s elapsed 0.155 h
+[12:58:40] it 300 E -16.058209 std 1.847 acc 0.241 |upd| 2.22e-01 t(mcmc/eloc/grad/sr) 0.16/1.92/0.22/0.10s elapsed 0.187 h
+[13:00:30] it 350 E -16.201422 std 1.375 acc 0.234 |upd| 2.10e-01 t(mcmc/eloc/grad/sr) 0.16/1.79/0.23/0.10s elapsed 0.217 h
+[13:02:19] it 400 E -16.183978 std 1.488 acc 0.232 |upd| 2.07e-01 t(mcmc/eloc/grad/sr) 0.17/2.11/0.23/0.10s elapsed 0.247 h
+[13:04:15] it 450 E -16.240926 std 1.320 acc 0.226 |upd| 2.10e-01 t(mcmc/eloc/grad/sr) 0.17/1.99/0.22/0.10s elapsed 0.279 h
+[13:05:50] it 500 E -16.217341 std 2.146 acc 0.229 |upd| 2.13e-01 t(mcmc/eloc/grad/sr) 0.16/1.23/0.21/0.10s elapsed 0.306 h
+[13:07:39] it 550 E -16.313189 std 1.232 acc 0.226 |upd| 1.96e-01 t(mcmc/eloc/grad/sr) 0.16/1.21/0.21/0.10s elapsed 0.336 h
+[13:09:28] it 600 E -16.341501 std 1.541 acc 0.238 |upd| 2.07e-01 t(mcmc/eloc/grad/sr) 0.16/1.22/0.22/0.10s elapsed 0.366 h
+[13:11:16] it 650 E -16.352174 std 1.955 acc 0.230 |upd| 2.09e-01 t(mcmc/eloc/grad/sr) 0.16/1.22/0.22/0.10s elapsed 0.396 h
+[13:13:01] it 700 E -16.334059 std 1.342 acc 0.227 |upd| 2.02e-01 t(mcmc/eloc/grad/sr) 0.16/1.92/0.22/0.10s elapsed 0.426 h
+[13:14:48] it 750 E -16.362587 std 1.367 acc 0.226 |upd| 1.98e-01 t(mcmc/eloc/grad/sr) 0.16/1.24/0.22/0.10s elapsed 0.455 h
+[13:16:24] CHECKPOINT it 750: E -16.328658 +- 0.009125 (32768 samples) (96 s)
+[13:18:13] it 800 E -16.355563 std 1.147 acc 0.231 |upd| 2.04e-01 t(mcmc/eloc/grad/sr) 0.16/1.79/0.23/0.10s elapsed 0.512 h
+[13:20:08] it 850 E -16.337023 std 1.263 acc 0.243 |upd| 2.07e-01 t(mcmc/eloc/grad/sr) 0.16/1.90/0.22/0.10s elapsed 0.544 h
+[13:21:55] it 900 E -16.353911 std 1.114 acc 0.229 |upd| 1.94e-01 t(mcmc/eloc/grad/sr) 0.16/2.01/0.22/0.10s elapsed 0.574 h
+[13:23:35] it 950 E -16.365874 std 1.101 acc 0.228 |upd| 1.99e-01 t(mcmc/eloc/grad/sr) 0.16/1.88/0.23/0.10s elapsed 0.602 h
+[13:25:23] it 1000 E -16.380583 std 1.069 acc 0.232 |upd| 2.04e-01 t(mcmc/eloc/grad/sr) 0.17/1.25/0.22/0.10s elapsed 0.632 h
+[13:26:50] it 1050 E -16.371841 std 1.538 acc 0.216 |upd| 1.98e-01 t(mcmc/eloc/grad/sr) 0.16/1.23/0.22/0.10s elapsed 0.656 h
+[13:28:16] it 1100 E -16.328859 std 1.373 acc 0.242 |upd| 2.05e-01 t(mcmc/eloc/grad/sr) 0.16/1.20/0.22/0.10s elapsed 0.680 h
+[13:29:41] it 1150 E -16.406857 std 1.097 acc 0.231 |upd| 2.07e-01 t(mcmc/eloc/grad/sr) 0.17/1.26/0.22/0.10s elapsed 0.703 h
+[13:31:07] it 1200 E -16.325436 std 1.196 acc 0.222 |upd| 2.00e-01 t(mcmc/eloc/grad/sr) 0.16/1.23/0.21/0.10s elapsed 0.727 h
+[13:32:33] it 1250 E -16.446475 std 1.350 acc 0.227 |upd| 2.05e-01 t(mcmc/eloc/grad/sr) 0.16/1.20/0.21/0.10s elapsed 0.751 h
+[13:33:59] it 1300 E -16.392556 std 0.945 acc 0.228 |upd| 1.92e-01 t(mcmc/eloc/grad/sr) 0.17/1.24/0.22/0.10s elapsed 0.775 h
+[13:35:26] it 1350 E -16.389166 std 0.964 acc 0.216 |upd| 1.99e-01 t(mcmc/eloc/grad/sr) 0.16/1.25/0.21/0.10s elapsed 0.799 h
+[13:36:53] it 1400 E -16.345979 std 1.428 acc 0.227 |upd| 2.03e-01 t(mcmc/eloc/grad/sr) 0.16/1.22/0.22/0.10s elapsed 0.823 h
+[13:38:20] it 1450 E -16.414920 std 1.146 acc 0.230 |upd| 2.06e-01 t(mcmc/eloc/grad/sr) 0.16/1.24/0.23/0.10s elapsed 0.847 h
+[13:39:46] it 1500 E -16.427073 std 1.030 acc 0.224 |upd| 1.99e-01 t(mcmc/eloc/grad/sr) 0.16/1.25/0.24/0.10s elapsed 0.871 h
+[13:41:00] CHECKPOINT it 1500: E -16.392329 +- 0.007411 (32768 samples) (74 s)
+[13:42:26] it 1550 E -16.426566 std 1.371 acc 0.229 |upd| 2.19e-01 t(mcmc/eloc/grad/sr) 0.16/1.22/0.22/0.10s elapsed 0.916 h
+[13:43:54] it 1600 E -16.397056 std 1.058 acc 0.233 |upd| 2.03e-01 t(mcmc/eloc/grad/sr) 0.16/1.22/0.21/0.10s elapsed 0.940 h
+[13:45:20] it 1650 E -16.434198 std 1.000 acc 0.230 |upd| 2.13e-01 t(mcmc/eloc/grad/sr) 0.17/1.24/0.22/0.10s elapsed 0.964 h
+[13:46:46] it 1700 E -16.398033 std 0.976 acc 0.226 |upd| 1.86e-01 t(mcmc/eloc/grad/sr) 0.16/1.22/0.21/0.10s elapsed 0.988 h

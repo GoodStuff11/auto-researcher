@@ -1,0 +1,9 @@
+[10:54:04] threads 1
+[10:54:06] budget foil: projected 208 CPU-s for 6 runs + 2 used now; invocation cap 540; task ledger 0 of 1800
+[10:54:09] size 0 foil seed 11: n_params 486 dE_tot 0.05309 dE_sign 0.00502 (4 CPU-s)
+[10:54:13] size 0 foil seed 22: n_params 486 dE_tot 0.02241 dE_sign 0.00299 (4 CPU-s)
+[10:54:50] size 1 foil seed 11: n_params 1110 dE_tot 0.07319 dE_sign 0.01280 (37 CPU-s)
+[10:55:23] size 1 foil seed 22: n_params 1110 dE_tot 0.07087 dE_sign 0.00934 (33 CPU-s)
+[10:56:03] size 2 foil seed 11: n_params 1110 dE_tot 0.16254 dE_sign 0.04962 (40 CPU-s)
+[10:56:43] size 2 foil seed 22: n_params 1110 dE_tot 0.16149 dE_sign 0.04962 (40 CPU-s)
+[10:56:43] invocation CPU total 159 s (ledger now 159 s)

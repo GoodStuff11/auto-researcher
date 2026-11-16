@@ -1,0 +1,3 @@
+[dense2/B] L=12 sweeps=  870 t_sw=2.274e-02s tau=1.72+-0.42 cost=3.919e-02s acc=0.31 <E>/Ne=-0.464 cpu=20s
+[dense2/B] L=16 sweeps=  808 t_sw=1.116e-01s tau=1.01+-0.21 cost=1.130e-01s acc=0.31 <E>/Ne=-0.442 cpu=90s
+CPU 111.08+0.25 s

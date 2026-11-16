@@ -1,0 +1,9 @@
+A: SM vs direct frozen ratio rel 2.17e-16; FRD-F vs FRD-K at zero backflow rel 9.59e-16; true_factors vs r5 FRD.amplitudes rel 7.53e-17
+B: L=4 Ne=14: NNBF 32 passes 8.066e-03 s | FRD-K 522 passes x1.89 | FRD-F 32 passes x2.30
+B: L=5 Ne=22: NNBF 44 passes 1.269e-02 s | FRD-K 1008 passes x2.80 | FRD-F 44 passes x2.22
+B: L=6 Ne=32: NNBF 62 passes 1.853e-02 s | FRD-K 1867 passes x3.52 | FRD-F 62 passes x2.21
+B: log-log slopes in N_e: ratio_frdK=0.76 ratio_frdF=-0.05 T_nnbf=1.01 T_frdK=1.76 T_frdF=0.96
+C: base vector over D=1681680 (6 s)
+C: nsamp=20000 flipped samples 0; w_flip=0.000e+00 w_dis=0.000e+00 weighted median |log ratio|=8.825e-02; edges |R|>0.5: 159774 sign-changed frac 1.809e-02; median rel |R^F - R|=2.272e-01 (8 s)
+VERDICT FRD-F: KILLED (F3 fidelity)
+9.20 s wall 7.32 user

@@ -1,0 +1,37 @@
+[04:14:48] check smoke instance: D=1680 E0=-6.55847519 deg=1 |G|=8 chi={'My': 1, 'Mx': 1, 'D': 1} P_chi psi0-psi0 7.6e-15
+[04:14:48] check [Cuhf] ref orthonormal 1.4e-15; grad E analytic 7.2854307294e-02 fd 7.2854307254e-02; grad -logF analytic -8.1805090267e-01 fd -8.1805090391e-01; init F=0.0031
+[04:14:48] check [Cfs] ref orthonormal 1.1e-15; grad E analytic -1.2454992615e-01 fd -1.2454992604e-01; grad -logF analytic 2.4558257154e+01 fd 2.4558257146e+01; init F=0.0001
+[04:14:48] check [Ccdw] ref orthonormal 8.9e-16; grad E analytic -3.5683408521e-01 fd -3.5683408506e-01; grad -logF analytic -3.2014191895e+00 fd -3.2014191897e+00; init F=0.0075
+[04:14:48] check [W] ref orthonormal 1.4e-15; grad E analytic -2.4727108127e-01 fd -2.4727108128e-01; grad -logF analytic 8.4450091066e-01 fd 8.4450091009e-01; init F=0.0018
+[04:14:48] ALL CHECKS PASSED
+[04:15:01] instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=W width=4 seed=22 pre(fid cap)=600 rel(energy steps)=900 init_from=-
+[04:15:37] ED levels [-11.388010886295248, -11.338627749487609, -11.329223800405972, -11.31736051148136] deg 1; |G|=8 chi(psi_0)={'My': 1, 'Mx': 1, 'D': -1}; S(psi_0)=0; level labels [{'chars': {'My': 1.0, 'Mx': 1.0, 'D': -1.0}, 'S2': 0.0, 'in_sector': True}, {'chars': {'My': 1.0, 'Mx': 1.0, 'D': 1.0}, 'S2': 0.0, 'in_sector': False}, {'chars': {'My': -1.0, 'Mx': -1.0, 'D': -1.0}, 'S2': 2.0, 'in_sector': False}, {'chars': {'My': -0.299, 'Mx': 0.299, 'D': -0.9543}, 'S2': 2.0, 'in_sector': False}] (35 s)
+[04:16:47] W-w4-s22: n_params=1284 calib=3.55e-14 init |P psi|/|psi|=3.538e-01 init F=0.0375
+[04:16:47] W-w4-s22: fidelity phase until F >= 0.9340 (ov0_ref 0.9140 from max Cuhf s22 over widths) or 600 steps
+[04:17:00] W-w4-s22: it     0 [fid] E = -9.59296461 F = 0.037542 |f| = 2.07e+00 (13.49 s/step)
+[04:26:56] W-w4-s22: fidelity target 0.9340 reached at it 44 (F = 0.934147)
+[04:34:51] W-w4-s22 [W0 @ 0]: dE_tot=0.22165 dE_sign=0.02331 f_E=0.105 spread=7.2e-13 S2=0.145 ov0=0.9351 ovk=[0.9351, 0.0, 0.0, 0.0] (467 s)
+[04:34:51] W-w4-s22: fidelity phase 45 steps, F(W0) = 0.9351, reached=True
+[04:36:07] W-w4-s22: it    50 [E] E = -11.17061131 F = 0.905193 |f| = 3.95e-01 (22.76 s/step)
+[04:46:41] W-w4-s22: it   100 [E] E = -11.27840543 F = 0.882877 |f| = 1.14e-01 (17.76 s/step)
+[04:57:16] W-w4-s22: it   150 [E] E = -11.28842132 F = 0.867974 |f| = 7.67e-02 (16.09 s/step)
+[05:07:50] W-w4-s22: it   200 [E] E = -11.28566080 F = 0.856277 |f| = 1.14e-01 (15.24 s/step)
+[05:18:24] W-w4-s22: it   250 [E] E = -11.28567112 F = 0.841074 |f| = 1.24e-01 (14.73 s/step)
+[05:28:57] W-w4-s22: it   300 [E] E = -11.29935422 F = 0.842267 |f| = 2.79e-02 (14.39 s/step)
+[05:39:30] W-w4-s22: it   350 [E] E = -11.29792320 F = 0.835509 |f| = 3.91e-02 (14.14 s/step)
+[05:50:03] W-w4-s22: it   400 [E] E = -11.28936561 F = 0.830312 |f| = 9.41e-02 (13.96 s/step)
+[06:00:36] W-w4-s22: it   450 [E] E = -11.29825865 F = 0.831694 |f| = 3.94e-02 (13.81 s/step)
+[06:16:56] W-w4-s22 [mid @ 450]: dE_tot=0.08779 dE_sign=0.02551 f_E=0.291 spread=2.8e-13 S2=0.667 ov0=0.8298 ovk=[0.8298, 0.0, 0.0, 0.0] (416 s)
+[06:18:13] W-w4-s22: it   500 [E] E = -11.29910622 F = 0.833482 |f| = 3.61e-02 (14.54 s/step)
+[06:28:49] W-w4-s22: it   550 [E] E = -11.29930867 F = 0.834202 |f| = 4.36e-02 (14.38 s/step)
+[06:39:25] W-w4-s22: it   600 [E] E = -11.29601710 F = 0.834492 |f| = 4.66e-02 (14.24 s/step)
+[06:50:01] W-w4-s22: it   650 [E] E = -11.29954669 F = 0.834484 |f| = 3.07e-02 (14.12 s/step)
+[07:00:41] W-w4-s22: it   700 [E] E = -11.29878003 F = 0.834854 |f| = 3.49e-02 (14.03 s/step)
+[07:11:22] W-w4-s22: it   750 [E] E = -11.29997664 F = 0.833484 |f| = 3.38e-02 (13.95 s/step)
+[07:22:03] W-w4-s22: it   800 [E] E = -11.28863832 F = 0.830679 |f| = 8.27e-02 (13.88 s/step)
+[07:32:44] W-w4-s22: it   850 [E] E = -11.29989971 F = 0.835642 |f| = 3.47e-02 (13.82 s/step)
+[07:43:33] W-w4-s22: it   900 [E] E = -11.30023789 F = 0.833713 |f| = 3.19e-02 (13.77 s/step)
+[07:59:58] W-w4-s22 [end @ 900]: dE_tot=0.08571 dE_sign=0.02534 f_E=0.296 spread=1.2e-12 S2=0.626 ov0=0.8359 ovk=[0.8359, 0.0, 0.0, 0.0] (407 s)
+[08:06:50] W-w4-s22 [end_PS @ 900]: dE_tot=0.04468 dE_sign=0.00986 f_E=0.221 spread=1.0e-12 S2=0.000 ov0=0.9347 ovk=[0.9347, 0.0, 0.0, 0.0] (413 s)
+[08:06:50] W-w4-s22: energy drop per 100 steps (slope over last 200) 8.54e-04 (tol 0.0003) converged=False n_fid=45 fid_reached=True total 13909 s
+[08:06:50] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/inst0_W_w4_s22.json

@@ -1,0 +1,14 @@
+task 0 on kim-compute-02.physics.cornell.edu: t2_samples.py --mode warm --arm A --iters 300 --threads 4 --max-hours 0.45 --n-eval 65536 --lr 0.02 --outdir /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_opt/results_t2
+wrote warm-start checkpoint in /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_opt/results_t2/A (theta = W-24 averaged parameters)
+[14:44:52] S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0: L=24 Ne=20 H=16 P=9711 (che@16 P=9711) threads=4 host=kim-compute-02.physics.cornell.edu
+[14:44:52] resumed from /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_opt/results_t2/A/S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0_ckpt.npz at step 0 (t_used 0.00 h)
+[14:45:38] thermalised: acceptance 0.253
+[14:45:44] it 1 E -16.446741 std 1.018 acc 0.223 |upd| 1.01e-01 t(mcmc/eloc/grad/sr) 0.56/4.56/0.48/0.24s elapsed 0.002 h
+[14:50:17] it 50 E -16.459506 std 1.011 acc 0.231 |upd| 9.14e-02 t(mcmc/eloc/grad/sr) 0.40/4.39/0.47/0.24s elapsed 0.077 h
+[14:55:00] it 100 E -16.346643 std 1.045 acc 0.237 |upd| 9.04e-02 t(mcmc/eloc/grad/sr) 0.40/4.27/0.47/0.25s elapsed 0.156 h
+[14:59:38] it 150 E -16.400768 std 0.955 acc 0.230 |upd| 9.45e-02 t(mcmc/eloc/grad/sr) 0.40/4.73/0.46/0.24s elapsed 0.233 h
+[15:04:32] it 200 E -16.425156 std 0.957 acc 0.235 |upd| 7.06e-02 t(mcmc/eloc/grad/sr) 0.41/4.43/0.47/0.24s elapsed 0.315 h
+[15:09:10] it 250 E -16.416443 std 1.112 acc 0.237 |upd| 3.24e-02 t(mcmc/eloc/grad/sr) 0.41/4.52/0.47/0.24s elapsed 0.392 h
+[15:12:41] wall cap 0.45 h reached at step 288
+[15:19:06] final E (average of last 63 steps) -16.4217149 +- 0.0044535 (65536 samples, 385 s)
+[15:19:06] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_opt/results_t2/A/S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0.json

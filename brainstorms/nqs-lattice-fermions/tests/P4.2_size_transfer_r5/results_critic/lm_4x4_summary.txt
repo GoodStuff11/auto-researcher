@@ -1,0 +1,10 @@
+[   262.4s] LM: B built ((210430, 818)) in 139s
+[   267.9s] LM results_capacity_c8h32/scr_s0.json scr@600: npar=818 E=-10.72795289 relerr=5.7961% |g|=5.312e+00
+[   267.9s]   cut 1e-06: kept 24/818 E_LM=-10.72796030 relerr_LM=5.7960% LM gain fraction (E-E_LM)/(E-E0)=0.0000
+[   267.9s]   cut 1e-08: kept 48/818 E_LM=-10.72882923 relerr_LM=5.7884% LM gain fraction (E-E_LM)/(E-E0)=0.0013
+[   267.9s]   cut 1e-10: kept 96/818 E_LM=-10.74760228 relerr_LM=5.6235% LM gain fraction (E-E_LM)/(E-E0)=0.0298
+[   184.0s] LM: B built ((210430, 426)) in 70s
+[   186.5s] LM results_capacity/scr_s0.json scr@600: npar=426 E=-10.69154081 relerr=6.1158% |g|=1.213e+00
+[   186.5s]   cut 1e-06: kept 20/426 E_LM=-10.69154252 relerr_LM=6.1158% LM gain fraction (E-E_LM)/(E-E0)=0.0000
+[   186.5s]   cut 1e-08: kept 34/426 E_LM=-10.69272462 relerr_LM=6.1054% LM gain fraction (E-E_LM)/(E-E0)=0.0017
+[   186.5s]   cut 1e-10: kept 67/426 E_LM=-10.72689646 relerr_LM=5.8054% LM gain fraction (E-E_LM)/(E-E0)=0.0508

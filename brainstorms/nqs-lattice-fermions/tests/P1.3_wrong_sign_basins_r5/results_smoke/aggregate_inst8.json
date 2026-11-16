@@ -1,0 +1,282 @@
+{
+ "instance": 8,
+ "pilot": "none",
+ "widths": {
+  "6": {
+   "verdict": "NO-TARGET",
+   "width": 6,
+   "n": 3,
+   "c": {
+    "Cuhf": 0.0025625564129425626,
+    "Cfs": 0.0008151098275392954,
+    "Ccdw": 0.00040293538323243894
+   },
+   "cE": {
+    "Cuhf": 0.03689282886248968,
+    "Cfs": 0.023259863800802805,
+    "Ccdw": 0.03454780929925416
+   },
+   "Cbest": 0.00040293538323243894,
+   "sigma_c": 0.0078116454093049015,
+   "sigma_E": 0.038080255361837345,
+   "margin": 0.015623290818609803,
+   "tolE": 0.07616051072367469,
+   "Wr": 5.8138698364906816e-05,
+   "Wm": 7.555949057636013e-05,
+   "W0": 0.0013327016150679327,
+   "W_dE_tot": 0.005758012450886696,
+   "paired": 3,
+   "drift": -3.00289718886404e-05,
+   "noise_max": 5.4178883601707645e-14,
+   "calib_max": 3.108624468950438e-14,
+   "converged": {
+    "Cuhf": [
+     false,
+     false,
+     false
+    ],
+    "Cfs": [
+     false,
+     false,
+     false
+    ],
+    "Ccdw": [
+     false,
+     false,
+     false
+    ],
+    "W": [
+     false,
+     false,
+     false
+    ]
+   },
+   "stable": {
+    "Cuhf": [
+     false,
+     false,
+     false
+    ],
+    "Cfs": [
+     true,
+     true,
+     true
+    ],
+    "Ccdw": [
+     true,
+     false,
+     false
+    ]
+   },
+   "fid_reached": [
+    false,
+    true,
+    true
+   ],
+   "n_fid": [
+    30,
+    29,
+    17
+   ],
+   "ov0_W0": 0.9841830938870417,
+   "ov0_Cuhf": 0.9653291439111066,
+   "Bm": true,
+   "Bc": false,
+   "B1": false,
+   "B2": true,
+   "B3": true,
+   "B4": false,
+   "SD": false,
+   "K1": true,
+   "K2": false,
+   "K3": false
+  },
+  "4": {
+   "verdict": "NO-TARGET",
+   "width": 4,
+   "n": 3,
+   "c": {
+    "Cuhf": 0.0006580087476866225,
+    "Cfs": 0.0012673872897321914,
+    "Ccdw": 0.001090891561052132
+   },
+   "cE": {
+    "Cuhf": 0.03202610694946628,
+    "Cfs": 0.029439863616407713,
+    "Ccdw": 0.032461889487367834
+   },
+   "Cbest": 0.0006580087476866225,
+   "sigma_c": 0.001593070674521968,
+   "sigma_E": 0.011776954667094941,
+   "margin": 0.003186141349043936,
+   "tolE": 0.023553909334189882,
+   "Wr": 0.00024231660917362063,
+   "Wm": 0.0012185340543195977,
+   "W0": 0.0032249289946300053,
+   "W_dE_tot": 0.008596127342888948,
+   "paired": 2,
+   "drift": -0.0010393747698662636,
+   "noise_max": 3.6415315207705135e-14,
+   "calib_max": 3.108624468950438e-14,
+   "converged": {
+    "Cuhf": [
+     false,
+     false,
+     false
+    ],
+    "Cfs": [
+     false,
+     false,
+     false
+    ],
+    "Ccdw": [
+     false,
+     false,
+     false
+    ],
+    "W": [
+     false,
+     false,
+     false
+    ]
+   },
+   "stable": {
+    "Cuhf": [
+     false,
+     false,
+     false
+    ],
+    "Cfs": [
+     false,
+     false,
+     false
+    ],
+    "Ccdw": [
+     false,
+     false,
+     false
+    ]
+   },
+   "fid_reached": [
+    false,
+    false,
+    false
+   ],
+   "n_fid": [
+    30,
+    30,
+    30
+   ],
+   "ov0_W0": 0.9782683368574423,
+   "ov0_Cuhf": 0.9848907493756927,
+   "Bm": true,
+   "Bc": false,
+   "B1": false,
+   "B2": true,
+   "B3": true,
+   "B4": false,
+   "SD": false,
+   "K1": true,
+   "K2": false,
+   "K3": false
+  },
+  "10": {
+   "verdict": "NO-TARGET",
+   "width": 10,
+   "n": 3,
+   "c": {
+    "Cuhf": 0.0003886727283761715,
+    "Cfs": 0.00011530270895132588,
+    "Ccdw": 0.00043797109765630893
+   },
+   "cE": {
+    "Cuhf": 0.01538738702887077,
+    "Cfs": 0.007555116053993061,
+    "Ccdw": 0.014186678772065697
+   },
+   "Cbest": 0.00011530270895132588,
+   "sigma_c": 0.0004897397164569384,
+   "sigma_E": 0.007684523933749965,
+   "margin": 0.0009794794329138767,
+   "tolE": 0.01536904786749993,
+   "Wr": 1.9712890933831773e-05,
+   "Wm": 6.393984407804254e-05,
+   "W0": 0.0014993795640707575,
+   "W_dE_tot": 0.001333213065786154,
+   "paired": 3,
+   "drift": -3.763576487614273e-05,
+   "noise_max": 5.3290705182007514e-14,
+   "calib_max": 3.108624468950438e-14,
+   "converged": {
+    "Cuhf": [
+     false,
+     false,
+     false
+    ],
+    "Cfs": [
+     false,
+     false,
+     false
+    ],
+    "Ccdw": [
+     false,
+     false,
+     false
+    ],
+    "W": [
+     false,
+     false,
+     false
+    ]
+   },
+   "stable": {
+    "Cuhf": [
+     false,
+     false,
+     false
+    ],
+    "Cfs": [
+     false,
+     false,
+     false
+    ],
+    "Ccdw": [
+     false,
+     false,
+     false
+    ]
+   },
+   "fid_reached": [
+    false,
+    false,
+    false
+   ],
+   "n_fid": [
+    30,
+    30,
+    30
+   ],
+   "ov0_W0": 0.9830580731594679,
+   "ov0_Cuhf": 0.986106619295296,
+   "Bm": true,
+   "Bc": false,
+   "B1": false,
+   "B2": true,
+   "B3": true,
+   "B4": false,
+   "SD": false,
+   "K1": true,
+   "K2": false,
+   "K3": false
+  }
+ },
+ "premise": false,
+ "control": [
+  0.000848867292297939,
+  0.0025625564129425626,
+  0.008684693002020794
+ ],
+ "p21_control": [],
+ "verdict": "NO-TARGET",
+ "note": "premise gate failed"
+}

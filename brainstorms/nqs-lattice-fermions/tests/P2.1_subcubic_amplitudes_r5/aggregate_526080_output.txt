@@ -1,0 +1,40 @@
+instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4}: med dE_sign(nnbf)=0.01254 Ref_sign=0.01254 (nnbf) Ref_tot=0.05710 (nnbf) Ref_sign(P_S)=0.00712 dim(P_S P_chi)=30220 P_target=1734
+      nnbf n=3 dE_sign=0.01254 dE_tot=0.05710 rho_s=1.000 rho_t=1.000 spread=0.09 f_E=0.239 r/N=1.00 rho_s(P_S)=1.000 var_ex=0.1767 z=0.92 kurt=1.76e+06 tail=0.517 amp_chk=3.2e-16
+     nnbfj n=3 dE_sign=0.01431 dE_tot=0.06128 rho_s=1.141 rho_t=1.116 spread=0.22 f_E=0.234 r/N=1.00 rho_s(P_S)=1.048 var_ex=0.2006 z=1.12 kurt=6.9e+05 tail=0.512 amp_chk=2.2e-16
+       hf1 n=3 dE_sign=0.02155 dE_tot=0.08378 rho_s=1.614 rho_t=1.617 spread=0.14 f_E=0.234 r/N=0.17 rho_s(P_S)=1.297 var_ex=0.3019 z=0.24 kurt=1.34e+06 tail=0.513 amp_chk=3.8e-16
+       hf4 n=3 dE_sign=0.01256 dE_tot=0.05803 rho_s=0.983 rho_t=1.120 spread=0.06 f_E=0.214 r/N=0.67 rho_s(P_S)=0.903 var_ex=0.2124 z=1.15 kurt=7.66e+05 tail=0.483 amp_chk=3.0e-16
+       sk1 n=3 dE_sign=0.01211 dE_tot=0.06113 rho_s=0.971 rho_t=1.062 spread=0.02 f_E=0.198 r/N=0.17 rho_s(P_S)=0.846 var_ex=0.2365 z=0.05 kurt=1.61e+06 tail=0.504 amp_chk=2.6e-16
+       sk2 n=3 dE_sign=0.01021 dE_tot=0.05323 rho_s=0.774 rho_t=0.918 spread=0.07 f_E=0.184 r/N=0.33 rho_s(P_S)=0.764
+     sjnet n=3 dE_sign=0.03592 dE_tot=0.11049 rho_s=2.881 rho_t=1.978 spread=0.07 f_E=0.314 r/N=0.00 rho_s(P_S)=2.005
+      agpj n=3 dE_sign=0.02256 dE_tot=0.11975 rho_s=1.799 rho_t=2.051 spread=0.66 f_E=0.191 r/N=0.00 rho_s(P_S)=1.312 var_ex=0.4654 z=0.77 kurt=2.98e+06 tail=0.466 amp_chk=3.3e-16
+      agh4 n=3 dE_sign=0.01053 dE_tot=0.05319 rho_s=0.772 rho_t=0.931 spread=0.11 f_E=0.198 r/N=0.67 rho_s(P_S)=1.009
+     skagp n=3 dE_sign=0.00941 dE_tot=0.05280 rho_s=0.750 rho_t=0.924 spread=0.08 f_E=0.174 r/N=0.17 rho_s(P_S)=0.915 var_ex=0.2219 z=0.27 kurt=1.16e+06 tail=0.526 amp_chk=2.4e-16
+   nnbf_PS n=3 dE_sign=0.00084 dE_tot=0.00947 rho_s=0.067 rho_t=0.166 spread=0.26 f_E=0.085 r/N=1.00
+    sk1_PS n=3 dE_sign=0.00109 dE_tot=0.01254 rho_s=0.087 rho_t=0.220 spread=0.11 f_E=0.084 r/N=0.17
+    nnbf_U n=3 dE_sign=0.09063 dE_tot=0.16476 rho_s=7.227 rho_t=2.885 spread=0.03 f_E=0.559 r/N=1.00 UP: dE_sign=0.05310
+     sk1_U n=3 dE_sign=0.09736 dE_tot=0.22487 rho_s=7.763 rho_t=3.938 spread=0.32 f_E=0.403 r/N=0.17 UP: dE_sign=0.04424
+instance 3 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 5, 'ndn': 5, 'tp': -0.25, 'J': 0.4}: med dE_sign(nnbf)=0.01404 Ref_sign=0.01404 (nnbf) Ref_tot=0.08264 (nnbf) Ref_sign(P_S)=0.00871 dim(P_S P_chi)=42302 P_target=1478
+      nnbf n=3 dE_sign=0.01404 dE_tot=0.08264 rho_s=1.000 rho_t=1.000 spread=0.07 f_E=0.170 r/N=1.00 rho_s(P_S)=1.000 var_ex=0.2911 z=0.64 kurt=6.36e+05 tail=0.315 amp_chk=2.2e-16
+     nnbfj n=3 dE_sign=0.01567 dE_tot=0.08786 rho_s=1.116 rho_t=1.063 spread=0.40 f_E=0.178 r/N=1.00 rho_s(P_S)=0.994 var_ex=0.3284 z=0.77 kurt=5.21e+05 tail=0.326 amp_chk=2.9e-16
+       hf1 n=3 dE_sign=0.01877 dE_tot=0.10413 rho_s=1.374 rho_t=1.260 spread=0.45 f_E=0.182 r/N=0.20 rho_s(P_S)=1.213 var_ex=0.3871 z=0.90 kurt=1.39e+06 tail=0.351 amp_chk=1.2e-15
+       hf4 n=3 dE_sign=0.01112 dE_tot=0.07476 rho_s=0.814 rho_t=0.902 spread=0.17 f_E=0.150 r/N=0.80 rho_s(P_S)=0.681 var_ex=0.2899 z=0.99 kurt=2.08e+06 tail=0.339 amp_chk=2.2e-16
+       sk1 n=3 dE_sign=0.01225 dE_tot=0.08290 rho_s=0.872 rho_t=1.003 spread=0.40 f_E=0.148 r/N=0.20 rho_s(P_S)=0.746 var_ex=0.3271 z=1.13 kurt=9.95e+05 tail=0.324 amp_chk=2.2e-16
+       sk2 n=3 dE_sign=0.01082 dE_tot=0.07916 rho_s=0.771 rho_t=0.958 spread=0.15 f_E=0.141 r/N=0.40 rho_s(P_S)=0.744
+     sjnet n=3 dE_sign=0.02931 dE_tot=0.12990 rho_s=2.145 rho_t=1.572 spread=0.41 f_E=0.229 r/N=0.00 rho_s(P_S)=2.093
+      agpj n=3 dE_sign=0.01866 dE_tot=0.12225 rho_s=1.329 rho_t=1.463 spread=0.80 f_E=0.152 r/N=0.00 rho_s(P_S)=1.072 var_ex=0.4869 z=0.68 kurt=8.37e+05 tail=0.339 amp_chk=1.8e-16
+      agh4 n=3 dE_sign=0.00988 dE_tot=0.07650 rho_s=0.673 rho_t=0.915 spread=0.32 f_E=0.129 r/N=0.80 rho_s(P_S)=0.624
+     skagp n=3 dE_sign=0.01155 dE_tot=0.08056 rho_s=0.823 rho_t=0.964 spread=0.22 f_E=0.134 r/N=0.20 rho_s(P_S)=0.842 var_ex=0.3504 z=0.85 kurt=7.03e+05 tail=0.303 amp_chk=1.5e-16
+   nnbf_PS n=3 dE_sign=0.00043 dE_tot=0.01032 rho_s=0.031 rho_t=0.125 spread=0.17 f_E=0.041 r/N=1.00
+    sk1_PS n=3 dE_sign=0.00050 dE_tot=0.01116 rho_s=0.035 rho_t=0.135 spread=0.34 f_E=0.044 r/N=0.20
+    nnbf_U n=3 dE_sign=0.05371 dE_tot=0.21338 rho_s=3.825 rho_t=2.582 spread=0.07 f_E=0.252 r/N=1.00 UP: dE_sign=0.05238
+     sk1_U n=3 dE_sign=0.04769 dE_tot=0.19781 rho_s=3.396 rho_t=2.394 spread=0.03 f_E=0.240 r/N=0.20 UP: dE_sign=0.05114
+instance 4 {'Lx': 5, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4}: med dE_sign(nnbf)=0.01585 Ref_sign=0.01585 (nnbf) Ref_tot=0.10096 (nnbf) Ref_sign(P_S)=0.00922 dim(P_S P_chi)=15080 P_target=1626
+      nnbf n=1 dE_sign=0.01585 dE_tot=0.10096 rho_s=1.000 rho_t=1.000 spread=0.00 f_E=0.157 r/N=1.00 rho_s(P_S)=1.000 var_ex=0.3107 z=1.37 kurt=6.69e+07 tail=0.358 amp_chk=0.0e+00
+cost check: {'lr': 'PASS', 'agp': 'PASS'} slopes {'lr': {'setup': 2.619860305670795, 't_c': 0.9522497752426979, 't_sw': 1.876246051710209, 't_cb': 2.1946120134726588}, 'agp': {'setup': 2.768188527635176, 't_c': 1.1803626319699465, 't_sw': nan, 't_cb': 2.343780330429665}} speedup {'lr': 594.1040866579056, 'agp': 236.34839586289186}
+premise gate (med dE_sign(nnbf) >= 0.01 t and Ref_sign >= 0.005 t): instance 0: 0.01254/0.01254 -> counts, instance 3: 0.01404/0.01404 -> counts, instance 4: 0.01585/0.01585 -> counts
+ROUTE 3.1 (sk1) instance 0: beta=1.718 rho_s=0.971 rho_t=1.062 gamma=0.337 rho_s_PS=0.846 sigma_reported=0.964 dominance_reported=3 oracle=1.295 v=1.338 z=0.048 guards=[] -> AMBIGUOUS
+ROUTE 3.1 (sk1) instance 3: beta=1.337 rho_s=0.872 rho_t=1.003 gamma=0.418 rho_s_PS=0.746 sigma_reported=1.035 dominance_reported=1 oracle=1.158 v=1.124 z=1.130 guards=[] -> AMBIGUOUS
+ROUTE 3.1 (sk1) cost=PASS VERDICT: AMBIGUOUS
+ROUTE 3.2 (skagp) instance 0: beta=1.799 rho_s=0.750 rho_t=0.924 gamma=0.417 rho_s_PS=0.915 sigma_reported=0.877 dominance_reported=2 oracle=None v=1.256 z=0.274 guards=[] -> PASS
+ROUTE 3.2 (skagp) instance 3: beta=1.329 rho_s=0.823 rho_t=0.964 gamma=0.619 rho_s_PS=0.842 sigma_reported=0.975 dominance_reported=2 oracle=None v=1.204 z=0.852 guards=[] -> AMBIGUOUS
+ROUTE 3.2 (skagp) cost=PASS VERDICT: AMBIGUOUS

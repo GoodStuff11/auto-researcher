@@ -1,0 +1,10 @@
+[10:59:06] instance 4 {'Lx': 5, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=420420 arm=sh_plus seed=11
+[10:59:14] E0=-9.7918583301 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=15080
+[10:59:34] arm sh_plus: {'mode': 'sh', 'patch': 'plus', 'F': 5, 'Ha': 0} n_params=1625 target=1626 calib=7.82e-14
+[11:00:04] sh_plus: it     0  E = -8.05691517  |f| = 1.69e+00  (29.95 s/step)
+[11:12:45] sh_plus: it    25  E = -9.28905499  |f| = 3.65e-01  (30.43 s/step)
+[11:25:21] sh_plus: it    50  E = -9.53770413  |f| = 2.03e-01  (30.34 s/step)
+[11:37:28] sh_plus: it    74  E = -9.62422096  |f| = 1.88e-01  (30.32 s/step)
+[11:39:46] sh_plus [P]: dE_tot=0.16588 dE_sign=0.05229 f_E=0.315 spread=2.7e-13 ov0=0.537 (124 s)
+[11:41:28] sh_plus [P_S]: dE_tot=0.08297 dE_sign=0.02482 f_E=0.299 spread=3.6e-13 ov0=0.783 (102 s)
+[11:41:28] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results_sh/t2_sh_plus_inst4_s11.json

@@ -1,0 +1,24 @@
+[11:09:37] (a) 4x2 open Ne=6 dim=3136 E0=-5.895359; Fermi-sea shell gap 0.536
+[11:09:38]   tocchio  P= 427 E_init=-5.529954 <S^2>=+2.2e-17 grad rel.err=1.7e-09 [PASS]
+[11:09:38]   kagp2    P= 457 E_init=-5.529389 <S^2>=+1.0e-17 grad rel.err=4.2e-10 [PASS]
+[11:09:39]   che      P= 395 E_init=-5.526938 <S^2>=+2.4e-17 grad rel.err=1.2e-10 [PASS]
+[11:09:40]   sfb      P= 399 E_init=-5.526994 <S^2>=+4.5e-18 grad rel.err=3.9e-10 [PASS]
+[11:09:41]   nnbf_SG  P= 395 E_init=-5.527064 <S^2>=+6.6e-18 grad rel.err=8.6e-10 [PASS]
+[11:09:41]   kagp2 init: |term2|/|term1| = 0.050, cos(term1, term2) = +0.179
+[11:09:41] (b) Schur reduction det F[U,D] / det S[U_s,D_s] constant over the orbit: 59 configs, max rel. spread 3.0e-14 [PASS]
+[11:09:41] (c) N_s=8 synthetic: K=1 target F1=1.000000000000; K=2 target F1=0.99625245 F2=1.000000000000 [PASS]
+[11:09:42] ED: E0=-5.5353247797 <S^2>=3.7e-18 irrep={'My': 1, 'Mx': 1} (1s)
+[11:09:42] complete: L4x2xobcobc_N6_U8_tp-0.25 dim=3136 nC=784 E0=-5.5353247797 groups N_s=[0, 2, 4, 6] (setup 1s)
+[11:09:42]   308 configurations to fit, total weight 0.9943; budget 2.0 min on 2 processes
+[11:09:42]   fitted 256/308 (weight down to p_c=3.16e-05), 0.0 min
+[11:09:43]   fitted 308/308 (weight down to p_c=1.46e-06), 0.0 min
+ N_s     #c    weight singlet  fitted   w_unfit  wInfid K1   minF K1  wInfid K2   minF K2
+   0     56  3.88e-05       1      56  0.00e+00   0.00e+00  1.000000   0.00e+00  1.000000
+   2    420  5.68e-03       1     420  0.00e+00   0.00e+00  1.000000   0.00e+00  1.000000
+   4    280  1.44e-01       2     280  0.00e+00  -1.80e-17  1.000000  -3.35e-17  1.000000
+   6     28  8.50e-01       5      28  0.00e+00  -1.57e-16  1.000000  -2.01e-16  1.000000
+[11:09:43] K=1: eps_tab (weighted infidelity) in [-1.751e-16, -1.751e-16]  assembled infidelity 0.000e+00  eps_E_tab=-1.605e-16  <S^2>=2.1e-17
+[11:09:43] K=2: eps_tab (weighted infidelity) in [-2.348e-16, -2.348e-16]  assembled infidelity 0.000e+00  eps_E_tab=0.000e+00  <S^2>=7.4e-18
+[11:09:43] weight of configurations with N_s >= 10: 0.0000e+00; unfitted weight 0.00e+00; total 1s
+[11:09:43] (d) 4x2 open Ne=6 complete: eps_tab K1 -1.8e-16, K2 -2.3e-16, assembled <S^2> 2.1e-17 [PASS]
+[11:09:43] SMOKE PASS  (7.1s)

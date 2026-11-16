@@ -1,0 +1,121 @@
+{
+ "tag": "L4x2xobcobc_N6_U8_tp-0.25",
+ "E0": -5.535324779689011,
+ "dim": 3136,
+ "groups": [
+  {
+   "Ns": 0,
+   "nc": 56,
+   "nc_weighted": 56,
+   "weight": 3.882023132168461e-05,
+   "singlet_dim": 1,
+   "orbit": 1,
+   "skipped": false,
+   "tocchio1": {
+    "median_F": 1.0,
+    "min_F": 1.0,
+    "weighted_infid": 0.0
+   },
+   "tocchio2": {
+    "median_F": 1.0,
+    "min_F": 1.0,
+    "weighted_infid": 0.0
+   },
+   "puhf": {
+    "median_F": 1.0,
+    "min_F": 1.0,
+    "weighted_infid": 0.0
+   }
+  },
+  {
+   "Ns": 2,
+   "nc": 420,
+   "nc_weighted": 420,
+   "weight": 0.005680108605373679,
+   "singlet_dim": 1,
+   "orbit": 2,
+   "skipped": true,
+   "tocchio1": {
+    "median_F": 1.0,
+    "min_F": 1.0,
+    "weighted_infid": 0.0
+   },
+   "tocchio2": {
+    "median_F": 1.0,
+    "min_F": 1.0,
+    "weighted_infid": 0.0
+   },
+   "puhf": {
+    "median_F": 1.0,
+    "min_F": 1.0,
+    "weighted_infid": 0.0
+   }
+  },
+  {
+   "Ns": 4,
+   "nc": 280,
+   "nc_weighted": 280,
+   "weight": 0.143847732655198,
+   "singlet_dim": 2,
+   "orbit": 6,
+   "skipped": true,
+   "tocchio1": {
+    "median_F": 1.0,
+    "min_F": 1.0,
+    "weighted_infid": 0.0
+   },
+   "tocchio2": {
+    "median_F": 1.0,
+    "min_F": 1.0,
+    "weighted_infid": 0.0
+   },
+   "puhf": {
+    "median_F": 1.0,
+    "min_F": 1.0,
+    "weighted_infid": 0.0
+   }
+  },
+  {
+   "Ns": 6,
+   "nc": 28,
+   "nc_weighted": 28,
+   "weight": 0.8504333385081065,
+   "singlet_dim": 5,
+   "orbit": 20,
+   "tocchio1": {
+    "median_F": 1.0000000000000002,
+    "min_F": 1.0,
+    "weighted_infid": -3.0477692531079804e-16
+   },
+   "tocchio2": {
+    "median_F": 1.0000000000000002,
+    "min_F": 0.9999999999999999,
+    "weighted_infid": -2.248061134153824e-16
+   },
+   "puhf": {
+    "median_F": 1.0000000000000002,
+    "min_F": 0.9999999999999997,
+    "weighted_infid": -2.610647559621036e-16
+   }
+  }
+ ],
+ "tocchio1": {
+  "infid": 2.220446049250313e-16,
+  "E": -5.535324779689012,
+  "eps": -1.6045642397699118e-16,
+  "S2": -1.2544790250081219e-17
+ },
+ "tocchio2": {
+  "infid": 2.220446049250313e-16,
+  "E": -5.535324779689012,
+  "eps": -1.6045642397699118e-16,
+  "S2": 4.0008381675238415e-17
+ },
+ "puhf": {
+  "infid": 2.220446049250313e-16,
+  "E": -5.535324779689012,
+  "eps": -1.6045642397699118e-16,
+  "S2": -2.988703783255521e-18
+ },
+ "seconds": 2.4349119663238525
+}

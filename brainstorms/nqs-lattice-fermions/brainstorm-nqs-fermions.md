@@ -1,0 +1,806 @@
+# Hard-Problem Brainstorm: Neural Quantum States for Discrete Fermion Systems
+## Summary
+Goal: find low-compute research directions that make neural quantum states (NQS) reliable for discrete fermion Hamiltonians (doped Hubbard and $t$–$J$ lattices, second-quantized chemistry). Mode B fan-out over nine leaves plus the P1.1-P re-run; routes that need massive compute are out of scope. **State on 2026-11-16: seven leaves are closed; P2.1, P3.1 and P4.1 are open.** Falsifiers of five closed leaves (P1.2, P1.3, P2.2, P3.2, P4.2) ran this round; none reopened its leaf.
+**What the leaves established.**
+* **Sign versus amplitude (P1.1, P1.1-P).** The original "sign is binding" result was symmetry contamination. With space-group projection, NNBF on the three $4\times3$ tori has sign fraction $f_E\le0.023$. The one instance where projected NNBF keeps a sign error is the $4\times4$ OBC $t$–$t'$–$J$ cluster ($6+6$, width 6): $\Delta E_{\mathrm{sign}}=0.0125t$, $f_E=0.22$–$0.24$, and three seeds at the same energy disagree by $3\times$ on the long-range pair correlation.
+* **Basins (P1.3).** On that instance the residual sign error is a capacity limit, not a basin: $\Delta E_{\mathrm{sign}}$ falls 0.019, 0.012, 0.007 for 1284, 1734, 2634 parameters. A direct sign-oracle probe on one projected $4\times3$ toy (width 3) could not reach a markedly better-signed state (ORACLE-MISS: best 13–16% below the cold start).
+* **Sign layers (P1.2).** A trained backflow's own frozen ratios locate its wrong signs (held-out AUC 0.93). No tested layer turned that into a lower sign error than the same parameters spent on width, including the diagnostic's own falsifier (LRK, $r=1.05$ and 1.00). Scope: unprojected toys up to 12 sites at 300 steps; projection removes about 90% of the sign error on those toys, so no projected toy of this family can test it.
+* **Chemistry local energy (P2.2).** Exact local energies need $\Omega(\lvert\mathcal{C}\rvert)$ amplitude queries in the black-box model. Both named follow-ups failed to falsify this: F$_{A2}$ is killed on accuracy (0.3885 mHa against 0.2), and R5.2 is AMBIGUOUS, with plain screening ahead of it in every seed.
+* **Competing orders (P3.2).** At a same-irrep conical intersection (one $4\times3$ Hubbard torus), every Ritz rule built from trained states reduces to the energy rule between them (the $2\times2$ lemma). One symmetric Lanczos step fixes the bias in exact arithmetic, but sampled at $2\times10^4$ samples per branch it abstains almost everywhere (LOSES), so the recommended practice is scoped to exact arithmetic.
+* **Size transfer (P4.2).** Size-independent transfer families stop at tangent-space stationary points (5–6% on $4\times4$). The only large lever, a site-resolved pair matrix, cannot be transferred. A linear-method retrain was INCONCLUSIVE within its cap; its convergence run is 704844.
+* **Observable error (P3.1 structure).** Hamiltonian moments and polynomial filters in $\hat H$ cannot see the low-energy error that carries the observable error.
+
+**Open leaves and what decides them.**
+* **P2.1 (sub-cubic amplitudes), reopened.** An exact $\mathcal{O}(N_e^2)$ local energy is verified. The compiled-update falsifier (Round 11c) puts sublattice hidden rows 5.05 (`half`) and 10.3 (`quarter`) times cheaper than dense HFPS at $L=16$. The open question is sign capacity: the Round 12 T1 counted one size ($V=8$), where `half` is 2.44 and `quarter` 9.92 times worse, so it is INCONCLUSIVE. The exact-sum ladder at $V=12$–15 (704752) decides it; one more counted size above 1.25 kills a variant. A larger-$F$ `half` variant is being cost-gated.
+* **P3.1, route 10.1d (self-consistent response Ritz).** With exact responses it recovers 8 of 8 real $4\times4$ tail errors (699756), read as an inverse-iteration premise. The T3 on $4\times3$ $4+4$ (probe 702393, then about 35 CPU-h) decides it: trained responses must beat the matched Davidson foil F3 by $\lceil0.25n\rceil$ items, and a tie closes the leaf with its diagnostic. Any PASS is scoped to in-sector gaps of at least the shift offset ($0.1t$): with a competitor moved to $0.02t$, both 10.1d (0.17–0.25) and the observable-free route 10.4 (killed) lose tracking.
+* **P4.1, route R2 `pcg-scal` (exact-$S$ pairing Gaussian).** At 12 sites and 1000 steps it beats `che` ($\rho=0.449$) and the singlet foil `r1` (0.555). T2b at 24 sites (699824, with the equal-wall-time `che` arms 703587) decides it: PASS needs $\rho_{24}+2\sigma\le0.60$, a rise from 12 sites of at most 0.15, and a win over `r1`. Every 24-site and ladder result is confounded by sampling: at 1024 samples per step, samples per parameter fall 14 times from 12 to 48 sites (686990). The samples pilot 704030 (R15b) decides whether 24 sites are noise-limited; until then neither the R1 ladder nor W-24 can be read as a capacity statement.
+
+**Cross-leaf picture.**
+* At ED size, the error left in a symmetry-projected NNBF is mostly amplitude. It shrinks as parameters are added, and no wrong-sign basin was found.
+* No added sign mechanism (P1.2) beat spending the same budget on width. Width comparisons carry information only while the parameter count stays well below the projected sector dimension.
+* Scaling gates (Gate 4) killed the fixed-rank and summed constructions: SK sums (P2.1), fixed-base response (P3.1 route 10.1), excited-state Ritz whose level count grows with size (P3.1 ESR0), size-independent kernels (P4.2), and very likely the fixed-rank spin mixture (P4.1 R1).
+* What works at ED size applies $\hat H$ exactly: a symmetric Lanczos step (P3.2) or a shift-inverted residual (P3.1). Sampled at realistic budgets, the Lanczos step abstains (P3.2), and shift-inverted chains need in-window errors far below $\Delta/\sigma$ (P3.1).
+* The live positives are P2.1's cost gain (does sign capacity survive?), P4.1 R2 (does its gain survive at 24 sites?) and P3.1 10.1d (do trained, observable-sourced responses beat a trained Davidson step?).
+
+Working files: this index, worker artifacts in `.subproblems/P{i}_<slug>.md`, and the decisive-test scripts in `tests/`.
+
+---
+
+## Invariants
+<!-- SPEC_INVARIANTS: Immutable problem contract. Once filled, DO NOT modify during critic rounds or worker runs. -->
+### 1. Mathematical Statement of the Problem
+* **Input space**: A number-conserving fermionic Hamiltonian on $M$ spin-orbitals in second quantization,
+$$\hat{H}=\sum_{pq}h_{pq}\,\hat{c}^\dagger_p\hat{c}_q+\tfrac{1}{2}\sum_{pqrs}V_{pqrs}\,\hat{c}^\dagger_p\hat{c}^\dagger_q\hat{c}_s\hat{c}_r ,$$
+where $\hat{c}^\dagger_p$ ($\hat{c}_p$) creates (annihilates) a fermion in spin-orbital $p\in\{1,\dots,M\}$, $h_{pq}$ are one-body integrals and $V_{pqrs}$ two-body integrals. Two instance families: (i) lattice models, e.g. the Hubbard model $\hat{H}=-\sum_{ij\sigma}t_{ij}\hat{c}^\dagger_{i\sigma}\hat{c}_{j\sigma}+U\sum_i\hat{n}_{i\uparrow}\hat{n}_{i\downarrow}$ on an $L_x\times L_y$ lattice with hopping $t_{ij}$ (nearest $t$, next-nearest $t'$), on-site repulsion $U$, density $\hat{n}_{i\sigma}=\hat{c}^\dagger_{i\sigma}\hat{c}_{i\sigma}$, and hole doping $\delta=1-N_e/(L_xL_y)$; (ii) molecular Hamiltonians in a finite orbital basis. $N_e$ is the conserved electron number.
+* **Ansatz**: an NQS is a parametrized map $\psi_\theta:\{0,1\}^M\to\mathbb{C}$ on occupation-number configurations $\mathbf{n}=(n_1,\dots,n_M)$ with $\sum_p n_p=N_e$, with parameters $\theta\in\mathbb{R}^{P}$, optimized by variational Monte Carlo (VMC), i.e. by minimizing $E(\theta)=\langle\psi_\theta\rvert\hat{H}\lvert\psi_\theta\rangle/\langle\psi_\theta\vert\psi_\theta\rangle$ estimated from samples $\mathbf{n}\sim\lvert\psi_\theta(\mathbf{n})\rvert^2$.
+* **Target output**: the ground-state energy $E_0$ *and* ground-state observables that decide the physics, namely long-range correlation functions $C(r)=\langle\hat{O}_0^\dagger\hat{O}_r\rangle$ for spin, charge and pairing order parameters $\hat{O}_r$ (e.g. $d$-wave pair operator $\hat{\Delta}_r$) and their finite-size scaling.
+* **Success criterion**: for system volume $V=L_xL_y$ (or $M$ orbitals),
+$$\frac{\lvert E_\theta-E_0\rvert}{\lvert E_0\rvert}<\epsilon_E,\qquad \max_r\lvert C_\theta(r)-C(r)\rvert<\epsilon_C,\qquad \text{cost}=\mathcal{O}(\mathrm{poly}(V))\ \text{with a low-degree polynomial},$$
+where the reference $E_0,C(r)$ is exact diagonalization (ED) where available and the best controlled method (DMRG on cylinders, constrained-path AFQMC with error bars) otherwise. **Compute budget**: a credible result must be reachable on at most a few GPU-days per data point; routes that need more are classified as massive compute.
+### 2. The Hard Core
+**Fermionic sign structure under strong correlation.** In the occupation-number basis, a fermionic Hamiltonian away from special points (half filling with particle–hole symmetry, $t'=0$) is non-stoquastic: its off-diagonal matrix elements carry both signs because of anticommutation. As a result, the ground-state sign function $s(\mathbf{n})=\mathrm{sgn}\,\psi_0(\mathbf{n})$ is not given by any efficiently computable proxy (the nodes of a mean-field Slater determinant are wrong in the doped, strongly correlated regime). At the same time, competing orders (stripes, $d$-wave superconductivity, phase separation) are separated by energies of order $10^{-3}t$ per site, which is below typical variational errors. No toy model may remove either half: non-stoquastic sign structure, or near-degenerate competing orders.
+### 3. The Unacceptable Outcome (Failure Threshold)
+A result meeting any of the following is worthless:
+* It reaches a competitive variational energy but gets the deciding observable wrong: wrong long-range pairing or stripe correlation $C(r)$, or an order parameter set by the ansatz's built-in mean-field reference rather than by the data.
+* Its runtime, sample count, or parameter count scales exponentially in $V$ or $N_e$, or its claimed accuracy requires massive compute (many GPU-weeks, scaling laws, pretraining on large datasets).
+* It works only where the sign problem is absent or trivially cured: half filling with $t'=0$ on bipartite lattices, the 1D open chain (where the Jordan–Wigner sign is trivial), or the non-interacting limit.
+* Its claimed improvement is matched within error bars by the Minimal Contrast Foil (below).
+* It re-labels a published technique without fixing the reason that technique is not standard practice.
+### 4. Minimal Contrast Foil & Known Baselines
+* **Minimal Contrast Foil**: a Jastrow–Slater / Gutzwiller-projected BCS (Pfaffian) VMC wave function, i.e. a symmetry-projected mean-field reference times a two-body Jastrow factor $J(\mathbf{n})=\exp\big(\sum_{ij}v_{ij}n_in_j\big)$, optimized by stochastic reconfiguration (SR). This is the pre-NQS state of the art for doped Hubbard VMC and costs $\mathcal{O}(N_e^3)$ per configuration.
+* **Known partial solutions (NQS side)**: neural-network backflow (NNBF; Luo & Clark, PRL 122, 226401, 2019; Loehr & Clark arXiv:2510.26906); hidden-fermion determinant states (HFDS; Robledo Moreno et al., PNAS 119, e2122059119, 2022); neural-network-augmented Pfaffians (Chen et al., arXiv:2507.10705); transformer backflow (Gu et al., arXiv:2507.02644; Viteritti et al., arXiv:2604.21978; Rende, Viteritti & Georges, arXiv:2608.12465); $t$–$J$ NQS (Lange et al., PRL 135, 136504, 2025); autoregressive fermionic NQS (PRR 7, 013122, 2025); second-quantized chemistry NQS (Zhao, Stokes & Veerapaneni, arXiv:2208.05637; arXiv:2408.07625); MinSR / SPRING optimizers (Chen & Heyl, Nat. Phys. 20, 1476, 2024; Goldshlager, Abrahamsen & Lin).
+* **Non-NQS partial solutions**: DMRG on width-4 to width-8 cylinders, constrained-path AFQMC (Qin et al., PRX 10, 031016, 2020; Xu et al., Science 384, eadh7691, 2024), fixed-node DMC, iPEPS.
+* **Why the known solutions are not universally adopted**:
+    * Antisymmetric NQS layers (determinant, Pfaffian, backflow) introduce a **mean-field bias** and an $\mathcal{O}(N_e^3)$ per-amplitude cost; low-rank updates (Chen & Roth, Lrux, arXiv:2602.05255) mitigate this but do not remove it (Rigo et al. review, arXiv:2608.21291, §5.1).
+    * Different architectures with comparable energies give **different intertwined orders** (filled versus half-filled stripes, with or without superconductivity: Gu et al. 2507.02644 vs. Roth et al. 2511.07566), i.e. the variational bias decides the physics (Viteritti et al. 2604.21978).
+    * State-of-the-art accuracy has come from $\sim10^6$-parameter transformers and large GPU budgets; the "Scaling laws for NQS" paper (Rende et al., arXiv:2606.02794) finds V-score improving as a power law in training compute, with an exponent that gets worse with frustration. This is exactly the massive-compute route this brainstorm excludes.
+    * Increasing NNBF network size saturates in practice; multi-determinant expansions, Lanczos steps or DMC give similar gains (Loehr & Clark 2510.26906). The bottleneck is the antisymmetric structure, not the network width.
+    * In quantum chemistry, the local energy $E_{\mathrm{loc}}(\mathbf{n})=\sum_{\mathbf{n}'}H_{\mathbf{n}\mathbf{n}'}\psi(\mathbf{n}')/\psi(\mathbf{n})$ has $\mathcal{O}(M^4)$ connected configurations, which makes the cost per sample prohibitive (Zhao et al. 2208.05637).
+### 5. Verified No-Go Theorems & Boundaries
+* **Stoquasticity hardness**: deciding whether a local Hamiltonian can be cured of non-stoquasticity even by restricted local basis rotations is NP-complete (Marvian, Lidar & Hen, Nat. Commun. 10, 1571, 2019). Stoquastic local Hamiltonians form their own complexity class (Bravyi et al., quant-ph/0606140). Consequence: there is no general efficient sign "cure", and any route must exploit structure of the instance family.
+* **Ground-state energy hardness**: the local Hamiltonian problem is QMA-complete, including for fermionic Hubbard-type models with site-dependent parameters. No route may claim poly-time convergence for arbitrary instances.
+* **NQS entanglement bound**: the bipartite entanglement an NQS can carry is bounded as $S_A=\mathcal{O}(k\log N)$ in the number of scalar nonlinearities $k$ and system size $N$ (Paul, PRL 136, 120403, 2026). 2D fermions with a Fermi surface obey $S_A\sim L\log L$, so $k$ must grow at least as $\Omega(L)$.
+* **Sign-learning complexity**: frustrated sign structures are not featureless worst cases: they contain exploitable Boolean-Fourier structure (Schurov et al., arXiv:2508.09870), and many-body sign structures behave like non-glassy Ising models (Westerhout, Katsnelson & Bagrov, Commun. Phys. 6, 275, 2023). This is evidence that structured routes are possible, not a guarantee.
+* **tVMC is ill-defined in its conventional form** (Sinibaldi et al., Quantum 7, 1131, 2023). This is relevant only to dynamics, which was pruned below.
+
+---
+
+## Stage 1 — Survey & Two-Pass Decomposition
+Primary field-consensus source: Rigo, Wurst, Nutakki, Schmitt & Kennes, *Neural quantum states in condensed matter: advances, best practices, and prospects*, arXiv:2608.21291 (Aug 2026), §5 "Future Directions" (roadblocks A: sign/phase learning, B: symmetry and representation constraints, C: dynamics). The extracted text is saved at `.subproblems/.rigo2026_review.txt`.
+### Pass 1: Unpruned Candidate Pool
+| ID | Dimension | Candidate subproblem | Evidence |
+| :--- | :--- | :--- | :--- |
+| C1 | Formal | Antisymmetric layers inherit mean-field nodal bias; no unbiased fermionic sign representation | Review §5.1 goal (i); Viteritti et al. 2604.21978 |
+| C2 | Formal | Representability: entanglement and expressivity lower bounds for fermionic NQS with a Fermi surface | Paul PRL 136, 120403 (2026); review §5.2 |
+| C3 | Formal | "Solved" is ill-defined when competing orders are closer in energy than the variational error | Review §5.1 last paragraph; Gu et al. vs. Roth et al. |
+| C4 | Algorithmic | $\mathcal{O}(N_e^3)$ determinant/Pfaffian cost per amplitude | Review §5.1 goal (ii); Chen & Roth 2602.05255 |
+| C5 | Algorithmic | Optimization trapped in wrong-sign local minima ("residual sign problem") | Szabó & Castelnovo PRR 2, 033075 (2020); review §5.2 |
+| C6 | Algorithmic | MCMC autocorrelation and ergodicity in fixed-$N_e$ sectors; constrained autoregressive sampling | PRR 7, 013122 (2025); Zhao et al. 2208.05637 |
+| C7 | Algorithmic | Local-energy cost $\mathcal{O}(M^4)$ connected elements in second-quantized chemistry | Zhao et al. 2208.05637; arXiv:2408.07625 |
+| C8 | Validation | Energy-optimized NQS can get long-range order parameters wrong; no error bar on $C(r)$ | Viteritti et al. 2604.21978; Roth et al. 2511.07566 |
+| C9 | Validation | No controlled extrapolation / error estimate for NQS (V-score is energy-only) | Wu et al., Science 386, 296 (2024); Loehr & Clark 2510.26906 |
+| C10 | Validation | Symmetry enforcement versus expressivity and optimization stability (SU(2), point group, momentum) | Review §5.2 |
+| C11 | Asymptotic | Finite-size scaling and size transfer: each $L$ is retrained from scratch; boundary artifacts mimic physics | Review §3.2 (stripe crossover was a boundary effect) |
+| C12 | Asymptotic | Dynamics and spectral functions: tVMC ill-defined; parameter gap between time evolution ($10^3$ to $10^5$) and ground state ($10^6$) | Review §5.3; Sinibaldi et al. Quantum 7, 1131 |
+
+### Pass 2: Bottleneck Audit
+| ID | Blocking test | Root or symptom | Field consensus | Outcome |
+| :--- | :--- | :--- | :--- | :--- |
+| C1 | Blocks C3, C8, C11 (wrong nodes give wrong order) | Root | Explicit (review §5.1) | **Keep → P1** |
+| C5 | Blocks C1 in practice | Root of C1's optimization side | Explicit in spins; `[unverified]` for fermions | **Merge into P1** |
+| C2 | Bounds C1 but does not block practice | Partly root | Explicit bound (Paul 2026) | Merge into P1 as context |
+| C4 | Blocks C11 (large $L$) and the no-massive-compute constraint | Root | Explicit (review §5.1 goal ii) | **Keep → P2** |
+| C7 | Blocks every chemistry application | Root | Explicit (Zhao et al.) | **Merge into P2** |
+| C6 | Blocks large-$L$ runs | Symptom of C4 and C7 cost plus sector constraints | Partial | Merge into P2 |
+| C3 | Blocks interpretation of every result | Root of validation | Explicit (review §5.1; conflicting stripe results) | **Keep → P3** |
+| C8 | Blocks the Unacceptable-Outcome check | Root | Explicit (Viteritti et al. 2604.21978) | **Merge into P3** |
+| C9 | Blocks C3 | Root | Explicit (Wu et al.; Loehr & Clark) | **Merge into P3** |
+| C10 | Blocks C3 (sector mixing) and C11 | Root | Explicit (review §5.2) | **Keep → P4** |
+| C11 | Blocks thermodynamic-limit claims | Symptom of C4 plus C10 | Explicit (review §3.2) | Merge into P4 |
+| C12 | Blocks nothing in the ground-state tree | Separate problem; downstream of sign/phase learning (C1) | Explicit (review §5.3) | **Pruned**: ground-state reliability comes first, and NQS dynamics at useful sizes is not low-compute today |
+
+### Final Tree
+**P1 — Sign structure beyond mean-field nodal bias.**
+* *Statement*: Fermionic NQS get their antisymmetry from determinant, Pfaffian or backflow layers whose nodal structure is anchored to a mean-field orbital set, and optimization does not reliably escape that anchor.
+* *Why the field cares*: An unbiased sign representation would turn architecture-dependent intertwined orders into answers. It blocks P3 (certification) and the thermodynamic-limit part of P4.
+* *Evidence*: Review §5.1 goal (i); Viteritti et al. 2604.21978; Loehr & Clark 2510.26906 (NNBF width saturates); Szabó & Castelnovo PRR 2, 033075 (residual sign problem).
+* *Current direction and why*: Larger backflow/transformer networks feeding a single determinant or Pfaffian, plus multi-determinant or Lanczos corrections. This direction is chosen because it is drop-in compatible with existing VMC codes.
+* *Feasibility*: Open and contested. The general case is hard (Marvian et al. 2019), but structured instance families are not ruled out (Schurov et al. 2508.09870).
+* **P1.1 [leaf] — Error budget: sign versus amplitude.** For a state-of-the-art fermionic NQS (HFDS or NNBF) on a small doped Hubbard cluster, what fraction of the energy error and of the pairing-correlation error comes from wrong signs $\mathrm{sgn}\,\psi_\theta\ne\mathrm{sgn}\,\psi_0$ versus wrong amplitudes? This decides whether P1 is the binding constraint at all.
+* **P1.2 [leaf] — Antisymmetric layers without a fixed nodal anchor.** Is there an antisymmetric construction at $\mathcal{O}(N_e^3)$ cost (or slightly above) whose nodal surface is provably more expressive than a backflow single determinant or Pfaffian, without a sum over many determinants?
+* **P1.3 [leaf] — Escaping wrong-sign basins during optimization.** Can VMC optimization be made to change the sign structure of a fermionic NQS cheaply, rather than staying in the basin set by the initial mean-field state?
+
+**P2 — Cost of fermionic NQS evaluation.**
+* *Statement*: Per-sample cost is dominated by the $\mathcal{O}(N_e^3)$ antisymmetric layer (lattice) or the $\mathcal{O}(M^4)$ local-energy sum (chemistry), which together with sampling sets the compute bill.
+* *Why the field cares*: Large-$L$ studies (three-band cuprates, nickelates, moiré Hubbard; review §5.1) and chemistry beyond ~100 orbitals become reachable without massive compute. It blocks P4's finite-size scaling.
+* *Evidence*: Review §5.1 goal (ii); Chen & Roth 2602.05255; PRX Intelligence 1, 023001 (2026) convolutional backflow $\mathcal{O}(N^4)\to\mathcal{O}(N^3)$; Zhao et al. 2208.05637.
+* *Current direction and why*: Low-rank updates, GPU batching, and local-energy screening heuristics. These are engineering-compatible, but they keep the asymptotic cost.
+* *Feasibility*: Tractable to open, depending on whether exactness is required.
+* **P2.1 [leaf] — Sub-cubic antisymmetric amplitudes and fast local updates.** Can the amplitude ratios $\psi(\mathbf{n}')/\psi(\mathbf{n})$ needed for local energies of a backflow-type state be computed in $o(N_e^3)$ per configuration (amortized), for example by exploiting locality of backflow, without changing the variational family?
+* **P2.2 [leaf] — Unbiased cheap local energy for second-quantized chemistry.** Can $E_{\mathrm{loc}}$ be replaced by an unbiased stochastic estimator over the $\mathcal{O}(M^4)$ connected configurations, with variance bounded so that the total cost to reach chemical accuracy scales better than exact enumeration?
+
+**P3 — Certifying what an NQS says about competing orders.**
+* *Statement*: There is no controlled way to tell whether a variational NQS result for an order parameter is physics or ansatz bias when competing orders lie within the variational energy error.
+* *Why the field cares*: Without this, NQS cannot settle the doped-Hubbard question it is being applied to (Gu et al. vs. Roth et al. vs. Rende, Viteritti & Georges). It blocks the use of any P1/P2 improvement as evidence.
+* *Evidence*: Viteritti et al. 2604.21978 ("variational bias"); Wu et al., Science 386, 296 (2024) (V-score is energy-only); Loehr & Clark 2510.26906 (Lanczos and DMC corrections).
+* *Current direction and why*: Comparing several architectures, plus V-score and variance extrapolation of the energy. These are cheap to report but do not bound order-parameter error.
+* *Feasibility*: Open.
+* **P3.1 [leaf] — Order-parameter error from cheap information.** Can the error of a long-range correlation $C_\theta(r)$ be bounded or extrapolated from quantities a VMC run already has (energy variance, a single Lanczos or power step, response to a small pinning or pairing field), with a validated relation on ED-sized doped clusters?
+* **P3.2 [leaf] — Bias-diagnosing biased-ensemble tests.** Can a deliberately biased pair of runs (initialized or constrained toward each competing order, e.g. filled versus half-filled stripe) be turned into a controlled decision rule using energy-variance extrapolation of each branch to zero variance, in the spirit of level-crossing detection?
+
+**P4 — Symmetry and system-size transfer.**
+* *Statement*: Enforcing the fermionic symmetries (SU(2) spin, lattice point group, momentum) and moving from one lattice size to the next both cost either expressivity, optimization stability, or a full retraining.
+* *Why the field cares*: Symmetry-resolved energies separate competing sectors (review §5.2), and size transfer is the cheapest route to finite-size scaling without massive compute.
+* *Evidence*: Review §5.2; Rende, Viteritti & Georges 2608.12465 (symmetry-preserving NQS for $t$–$t'$ Hubbard); review §3.2 (boundary artifacts).
+* *Current direction and why*: Group-averaged projection (cost $\propto\lvert G\rvert$ for symmetry group $G$) and translation-equivariant transformers, chosen because they reuse standard tooling.
+* *Feasibility*: Tractable for Abelian symmetries; open for SU(2) with determinant layers and for size transfer.
+* **P4.1 [leaf] — Exact spin-SU(2) for fermionic NQS at sub-projection cost.** Can the total-spin sector $S$ be imposed on a determinant- or Pfaffian-based NQS exactly, at cost below the $\mathcal{O}(N_{\mathrm{grid}})$ spin-projection quadrature, without sacrificing backflow expressivity?
+* **P4.2 [leaf] — Size-transferable fermionic NQS.** Can a translation-equivariant fermionic NQS trained at $L$ initialize (or directly evaluate) $2L$ with an energy error per site that is already close to converged, so that finite-size scaling needs a fraction of the per-size retraining cost?
+
+---
+
+## Stage 1.5 — Execution Routing
+| Leaf | Title | Parent |
+| :--- | :--- | :--- |
+| P1.1 | Sign versus amplitude error budget | P1 |
+| P1.2 | Antisymmetric layers without a fixed nodal anchor | P1 |
+| P1.3 | Escaping wrong-sign basins during optimization | P1 |
+| P2.1 | Sub-cubic antisymmetric amplitudes and fast local updates | P2 |
+| P2.2 | Unbiased cheap local energy for second-quantized chemistry | P2 |
+| P3.1 | Order-parameter error from cheap information | P3 |
+| P3.2 | Bias-diagnosing biased-ensemble tests | P3 |
+| P4.1 | Exact spin-SU(2) for fermionic NQS at sub-projection cost | P4 |
+| P4.2 | Size-transferable fermionic NQS | P4 |
+
+**Routing decision**: Mode B (parallel fan-out) over all nine leaves, as the user asked when invoking the skill.
+Compute environment: Slurm cluster (`sbatch` at `/usr/local/slurm/current/bin/sbatch`). Workers write `tests/P{i}_*/micro_test.py` and `submit_test.sbatch` and do not submit. The orchestrator submits only the critical-path test (see Cross-Pollination).
+
+---
+
+## Master Leaf Synthesis Matrix
+### Current leaf state (2026-11-16)
+This table condenses the Pipeline State table below and the Summary. Each verdict is stated with its instance and scope.
+
+| Leaf | State | Result or diagnostic (instance, scope) | Deciding job(s) |
+| :--- | :--- | :--- | :--- |
+| P1.1 | CLOSED (PASS, qualified) | Unprojected NNBF on three $4\times3$ PBC tori: sign fraction 0.61–0.77. Superseded by P1.1-P as symmetry contamination | none |
+| P1.1-P | CLOSED: SYMMETRY-DOMINATED | Projected NNBF on the same tori: $f_E\le0.023$ | none |
+| P1.2 | CLOSED: Saturation Diagnostic | Frozen ratios locate wrong signs (AUC 0.93); no tested layer beat width ($r$ 0.96–0.99). Closed-leaf falsifier LRK killed ($r$ 1.05, 1.00), so the diagnostic stands. Scope: 300-step T1s on unprojected toys up to 12 sites; projection removes about 90% of their sign error (NO-TARGET-P) | 553724 (T2, known FAIL, data only) |
+| P1.3 | CLOSED: CAPACITY | $4\times4$ OBC $t$–$t'$–$J$ $6+6$: sign error falls with width (0.019, 0.012, 0.007); no better-signed state was reached. Direct sign-oracle basin probe: ORACLE-MISS on one projected $4\times3$ toy at width 3 (not the $4\times4$ instance) | none |
+| P2.1 | REOPENED (Round 11c compiled-update falsifier; previously CLOSED: Saturation Diagnostic) | Cost: sublattice hidden rows are 5.05±1.27 (`half`) and 10.3±2.5 (`quarter`) times cheaper than dense HFPS at $L=16$. Sign capacity: Round 12 T1 INCONCLUSIVE, one counted size ($V=8$: $\rho$ 2.44 `half`, 9.92 `quarter`; every uncounted ratio above 1.25) | 704752 (exact-sum ladder $V=12$–15, rule unchanged); larger-$F$ `half` cost gate (being run) |
+| P2.2 | CLOSED: Saturation Diagnostic | Black-box query bound; WIBJ cost FAIL; screened rescue rejected. Closed-leaf falsifiers: F$_{A2}$ killed (0.3885 mHa against 0.2), R5.2 AMBIGUOUS (screening ahead in every seed) | none |
+| P3.1 | OPEN | Route 10.1d: exact-response premise PASS (699756, 8 of 8 real $4\times4$ items), read as an inverse-iteration premise only. Sampled force GAP-CLOSED at toy size (ceiling). Route 10.4 killed by gap-surgery stress. T3 scope amendment: a PASS holds only for in-sector gaps of at least the shift offset $0.1t$ | probe 702393, then T3 on $4\times3$ $4+4$ against foil F3; 618646 (ESR0-K6 diagnostic) |
+| P3.2 | CLOSED at ED size | One $4\times3$ torus crossing (spin textures forced by $L_y=3$): $2\times2$ lemma 9 of 9; naive rule with $\sigma_{\mathrm{MC}}$ abstention never wrong; block Lanczos 9 of 9 in-sample. Width 8 is in the sector-fitting regime. Closed-leaf falsifier: sampled Lanczos at $2\times10^4$ samples per branch LOSES by abstention (right 1.3%, wrong 0.6%), so the practice is scoped to exact arithmetic | none |
+| P4.1 | OPEN | R2 `pcg-scal` T2a PASS at 12 sites ($\rho=0.449$; vs `r1` 0.555), one $4\times3$ OBC filling, matched parameters at 1000 steps. R3 variant (iii), refill R7–R14 and R15 (SPRING) killed. Sampling confound: samples per parameter per step fall 14 times from 12 to 48 sites in 686990, so ladder and W-24 size trends are confounded | T2b 699824 plus equal-wall-time `che` arms 703587 (reference 687302); R15b samples pilot 704030; R1 ladder 686990; R3 W-24 resume 700568; generality 637776, 637777 |
+| P4.2 | CLOSED: Saturation Diagnostic | Size-independent families stop at tangent-space stationary points; only the site-resolved pair matrix helps (2.41x on $4\times3$), and it is not transferable. Linear-method falsifier INCONCLUSIVE (best 1.665% against 0.77% to falsify) | 704844 (falsifier convergence run, rule unchanged) |
+
+### Round-1 matrix (historical snapshot, 2026-11-10)
+*Round-1 snapshot.* The table below records round 1 only. Its Status column (including P1.1 "sign is the binding error") is superseded; the current state is the table above and the Pipeline State table.
+
+All nine workers finished, each with one route that passed its own gates. The adversarial critic pass then killed six and made two conditional (see Revision & Critic Log). The Status column shows the post-critic verdict; the other columns record what the worker proposed. "Pre-check" is the login-node smoke or preview result: it checks the code, not the verdict, but where it already leans FAIL that is recorded. No decisive test has run yet.
+
+| Node | Subproblem | Status | Top surviving route | Sharpest gap | 24-hour decisive test (metric; PASS) | Pre-check | Cross-node dependencies |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **P1.1** | Sign versus amplitude budget | **PASS (job 329057): sign is the binding error** | Fixed-sign split: $E_{\mathrm{sign}}=\min_{a\ge0}a^{\mathsf T}SHSa/a^{\mathsf T}a$ with $S=\mathrm{diag}(\mathrm{sgn}\,\psi_\theta)$, so $\Delta E_{\mathrm{tot}}=\Delta E_{\mathrm{sign}}+\Delta E_{\mathrm{amp}}$, both non-negative | Transfer of the budget from ED sizes to $8\times8$; no bound on $E_{\mathrm{sign}}-E_{\mathrm{stoq}}$ | Three $4\times3$ clusters, $t'=-0.25$, NNBF widths 8 to 128; $M=f_E=\Delta E_{\mathrm{sign}}/\Delta E_{\mathrm{tot}}$; PASS (sign binding) if $M\ge0.6$ on all | 6-site: amplitudes dominate (uninformative size) | Gates P1.2, P1.3; feeds P3.1 |
+| **P1.2** | Antisymmetry without nodal anchor | KILLED (Gate 0 after critic) | Residual Walsh sign layer $\psi=s_{\mathrm{foil}}\,c(\mathbf{n})\,A(\mathbf{n})$ with plaquette-local degree-3 sign terms | Is the foil's residual sign error local and low-degree in fixed-node energy? | $4\times4$ $t$–$t'$–$J$, 2 holes; $M_{\mathrm{local}}=\Delta E_{\mathrm{FN}}[s_{\mathrm{foil}}c]/\Delta E_{\mathrm{FN}}[s_{\mathrm{foil}}]$; PASS if $M\le0.5$ and beats non-local null by 0.1 | $3\times4$: $M_{\mathrm{local}}=1.03$ | Needs P1.3 to learn $c$ variationally |
+| **P1.3** | Escaping wrong-sign basins | CONDITIONAL (test needs a matched-restart null arm) | Orbital-swap basin hopping (OSBH): occupied/virtual reference-orbital swaps with short SR relaxation, under an equal-budget comparison | Do mean-field starts actually land in a wrong-sign basin ($G>0$)? | $4\times3$ PBC, $t'=-0.3$, $U=8$, exact-sum SR; $M=(\epsilon_{\mathrm{SR}}-\epsilon_{\mathrm{OS}})/G$; PASS if $G>0.25\epsilon_{\mathrm{SR}}$, $M\ge0.5$ | $3\times2$: no swaps accepted (uninformative) | Premise set by P1.1; shares ranking risk with P3.2 |
+| **P2.1** | Sub-cubic antisymmetric amplitudes | KILLED (Gates 0 and 2 after critic) | Local + Global-Bottleneck backflow (LGB-BF): finite-range rows plus rank-$2K$ global channels; Woodbury Green's function gives $E_{\mathrm{loc}}$ in $\mathcal{O}(N_e^2)$ | Does fixed small $K$ close the local-versus-global backflow accuracy gap (Liu–Clark: low-rank corrections underperform)? | $L=8$ to 32 timing; $M$ = slope of $E_{\mathrm{loc}}$ time in $N_e$; PASS if $M\le2.3$ with ratio error below $10^{-9}$ | Ratios exact to $10^{-14}$; timing AMBIGUOUS | Cheap carrier for P1.2, P4.1 layers |
+| **P2.2** | Cheap local energy for chemistry | KILLED (measured residual fraction); successor P2.2′ opened | Frozen-backflow control variate: exact sum with configuration-frozen orbitals plus importance-sampled residual | Residual fraction must be well below 1; measured 0.56 to 0.82 | H6/H8 STO-3G at $R=3.0$; $M$ = cost to fixed error relative to best of heat-bath/semistochastic/screening; PASS if $M\le0.3$ | H4 $M=1.07$; H6 $M=1.03$ near convergence | Only exists for determinant NQS (P1.2, P2.1) |
+| **P3.1** | Order-parameter error from cheap info | CONDITIONAL (off-diagonal $A$ only; test redesign required) | A-Ritz: Rayleigh–Ritz in $\mathrm{span}\{\psi,H\psi,A\psi\}$ with the order operator $A$, zero-variance extrapolation of $\langle A\rangle$, abstain unless variance halves | Does $(A-a)\psi$ keep $\mathcal{O}(1)$ low-energy weight as $V$ grows? | Doped $4\times3$/$6\times2$, $U=8$; $M$ = trusted-and-within-factor-2 fraction; PASS if $M\ge0.7$, $M-M_L\ge0.2$, false-certificate rate $G\le0.05$ | Code checks only (no near-degenerate states in smoke) | Needs exact symmetry (P4.1); complements P3.2 |
+| **P3.2** | Biased-ensemble decision rule | KILLED (Gates 0 and 3 after critic) | Joint two-state optimization (determinant of two states), roots labelled by measured order, per-root variance extrapolation | Clean root character and near-linear $E$–$\sigma^2$ paths near a crossing with gap far below the variational error | $6\times2$ ladder, $t'$ sweep across a real level crossing; $M$ = wrong-commit rate; PASS if $M\le0.02$ and decision rate $\ge0.5$ | Code checks only | Needs P3.1 for labels; same mechanism as P1.3 |
+| **P4.1** | Exact SU(2) below projection cost | KILLED (Gate 0 after critic) | Charge-only backflow into a singlet pairing $F_c=B_cF_0B_c^{\mathsf T}$, plus spin-invariant bond-exchange dressing $\alpha_b(c)\hat{X}_b$; $S$ exact for all parameters | Large $U$ near half filling: charge configuration carries almost no information | $3\times4$ torus, $t'=-0.3$, $U=8$, $N_e=10$ singlet; $M=\epsilon_{\mathrm{r1x}}/\epsilon_{\mathrm{foil}}$; PASS if $M\le0.5$ and correlations no worse | $\langle S^2\rangle$ exact to $10^{-16}$; small-cluster accuracy favourable but under-determined | Lemma constrains P1.2 and P4.2 designs |
+| **P4.2** | Size-transferable fermionic NQS | KILLED (Gate 3 after critic; pre-check $M=1.30$) | Residual-geminal transfer: mean-field $d$-wave geminal rebuilt per size, plus learned short-range residual $\Delta f$ carried over | Is the optimal $\Delta f$ short-ranged and size-stable (nodal $d$-wave predicts power-law tails)? | $t$–$J$ ladder $2\times4\to2\times8$; $M=e_{\mathrm{tr}}/e_{\mathrm{foil}}$; PASS if $M<0.5$ | $2\times4\to2\times6$: $M=1.30$ | Uses $S^z$ features, which conflicts with P4.1 |
+
+### Pipeline State (pipelined orchestration, Mode B step 0)
+
+| Leaf | State | Blocked on | Running job / agent |
+| :--- | :--- | :--- | :--- |
+| P1.1 | RESULT (PASS, qualified) | nothing | none |
+| P1.1-P | RESULT: SYMMETRY-DOMINATED (all instances) | nothing | none |
+| P1.2 | CLOSED: Saturation Diagnostic (8.4 killed by the pre-registered tie-break: r 0.985 and 0.956 against a shift-matched foil; 8.2 and 8.3 killed). The trained backflow’s frozen ratios locate its remaining sign errors (AUC 0.93) but no tested mechanism converts that into lower sign error faster than spending the parameters on width. Closed-leaf falsifier (2026-11-16): LRK, the diagnostic's own falsifier, KILLED (r 1.05 and 1.00 at the counted sizes), so the diagnostic stands; projected re-check NO-TARGET-P (projection removes about 90% of the toys' sign error), so the closure is scoped to unprojected toys | none | Slurm 553724 (known FAIL, recorded when it lands) |
+| P1.3 | CLOSED: CAPACITY (625182 resume left every width UNCLEAR-CONV; pre-committed width-trend tie-break: Cbest 0.0192 → 0.0117 → 0.0070 for 1284 → 1734 → 2634 params; W ends at the cold level at every width, no basin). Closed-leaf falsifier (2026-11-16): direct sign-oracle basin probe ORACLE-MISS on one projected 4x3 toy at width 3 (best checkpoint 13–16% below the cold start; the bar was 50%); not the 4x4 instance | none | none |
+| P2.1 | REOPENED by the Round 11c falsifier (half 5.05±1.27, quarter 10.3±2.5 at L=16 vs dense HFPS; cost cause was the Green’s tables, not the inverse). Next: accuracy (sign capacity) of the sublattice variants at equal wall time. Earlier: CLOSED: Saturation Diagnostic (Round 11 critic). The O(N_e^2) local energy is verified, but 97% of the route sweep is the accepted-move update on the augmented inverse (one hidden row per site); crossover against dense HFPS at L about 28–32 (about 1e4 CPU-h per arm, no exact reference). Minimal extra structure: fewer hidden rows than sites (half the sites moves the crossover to L=16). 75-step PROMOTEs of 7.3 and 6.1″ stand as T2 verdicts but measure learning speed only; 7.1 DOWNGRADED, T3 held | sign-capacity question: Round 12 T1 INCONCLUSIVE (one counted size, V=8: rho 2.44 for half and 9.92 for quarter; every uncounted ratio above 1.25). One more counted size with rho above 1.25 kills a variant. Larger-F `half` variant: 11c cost gate being run (KILL if R_D(16) − σ < 3) | Slurm 704752 (Round 12b exact-sum ladder V=12, 14, 15; rule unchanged) |
+| P2.2 | CLOSED (R5.1 WIBJ KILLED: cost FAIL M_wall(136) 4.0 with robust margins; screened-WIBJ rescue rejected by critic — constant F_A1 prefactor, SCREEN bias grows with K (WIBJ+SCREEN 0.29 mHa at K=20, above tau), expressivity floor in K, prior art arXiv:2604.06841. Result = Saturation Diagnostic: black-box query bound + four regimes) | nothing: closed-leaf falsifiers done (2026-11-16). F_A2 KILLED on accuracy (0.3885 mHa against τ=0.2); R5.2 cold start AMBIGUOUS on both cost axes (SS and SCREEN ahead of ALE in every seed), closed as untestable at T1 | none |
+| P3.1 | PORTFOLIO (round 9, after per-leaf critic): stays OPEN for one last batch. Critic toy (M decoupled copies): fixed-base self-consistent response loses size consistency (0.91 → 0.53 as 1 − F goes 0.20 → 0.59), while updating the base each pass keeps 0.99–1.01. So 10.1 (fixed base) is KILLED (Gate 4) and mutated to 10.1u, GATED with a critic-written T1 rule; 10.2 is KILLED (Gate 0 rule 3, QSE wall; Gate 4). The 3×3 anchor of the Round 9 size rules is confounded (sector of 60 levels), and the response shift sits about 0.03 ω1 below E0 on the real state. Prepared T2 NOT submitted; replaced by an under-cap premise run after the 10.1u T1. Candidate saturation statement rejected as worded; conditional refined diagnostic written | 10.1u T1 (toys at fixed per-site infidelity, noise window ω at most 1t, shift E_L1R − 0.1t); then T2-v2 premise run; refill at most one route aimed at the response training error. Update 2026-11-16: the 10.1u T1 and the T2-v2 premise run are done (699756 PASS, 8 of 8, exact responses); route 10.1d now waits on probe 702393, then the T3 with foil F3. Round 11: route 10.4 KILLED by gap-surgery stress (DAV-R 0.00–0.18 at Δ=0.02t); sampled force GAP-CLOSED at toy size (ceiling); orchestrator T3 scope amendment: a PASS holds only for in-sector gaps of at least the shift offset 0.1t, else OUT-OF-SCOPE | Slurm 618646 (K=6 extension), 702393 (T3 target probe) |
+| P3.2 | CLOSED at ED size (K1/ESR0/LCC killed; kill check 619080: K1 = lower-diagonal prediction 9/9, naive σ_MC rule abstains 7/9 and never commits wrong, one symmetric block-Lanczos step 9/9 in-sample; result = refined Saturation Diagnostic + recommended practice). Closed-leaf falsifier (2026-11-16): exact L1 fixes 4 of 6 wrong naive calls, but sampled L1 at 2e4 samples per branch LOSES by abstention (right 1.3%, wrong 0.6%); the recommended practice is scoped to exact arithmetic | nothing | none |
+| P4.1 | PORTFOLIO (round 7; R2 cost gate PASSED on compiled Pfaffian: pcg/che 3.59 at 48 sites, under 5, ratio growth flattening, both O(N^3); after critic: R1 kept at T3, 686990 rule unchanged, paper claims fixed per outcome; R2 ADVANCE to 12-site T2a with mandatory singlet charge-backflow foil r1; R3 ADVANCE to width-bottleneck test W-12 and W-24 (exception about 5 CPU-h per task); R6 kill overturned and merged into R3; no dependency on P_R): che_kK Gate 4 expected FAIL at T0 (rank-K spin mixture is a finite-size gain; fixed-width backflow also finite-size; pilot-projected R(8,48) 0.64–0.82 implies DOES-NOT-SCALE); T1 NO-TARGET (exact-sum toys too small below 16–20 sites); live R2 pcg-scal, R3 che_ext; R4–R6 killed at T0. Earlier: PASS on the open cluster (508440: che_k family rank 2, 4, 8 with g_m +0.86, +1.24, +1.53; rank 8 beats nnbf_SG by 35% at matched params with exact S; rbm AMBIGUOUS; foil che_kh4 FAIL; attribution RANK) | pre-committed: 4x3 cylinder + second filling before promotion; rbm + che extended to 4000 it. R2 T2a PASS (698223: eps 1.28e-3 vs che 2.86e-3, rho 0.449; vs r1 foil 0.555) → T2b at 24 sites submitted (699824: 8x3, pcg, che, r1 plus 4x3 rerun at 3000 steps; about 76 CPU-h, task 0 about 40 CPU-h under a written exception; KILL if pcg does not beat r1, PASS needs rho(24) at most 0.6 and a rise of at most 0.15, both with 2 sigma); W-24 INCOMPLETE (H=48 task capped at step 958; E48 − E16 = −0.004, inside 2 sigma, leaning FAIL). Rounds 8–9 (2026-11-16): R3 variant (iii) `che_hf` KILLED at T1 (rho 1.57 at matched parameters); refill R7–R14 all KILLED; R15 split: R15 (SPRING) KILLED at T1, and R15b (more samples per step, protocol premise O) goes to the T2 samples pilot. Sampling confound: at 1024 samples per step, samples per parameter per step fall 14x from 12 to 48 sites in 686990, so ladder and W-24 size trends are confounded and are not capacity statements until 704030 reports | Slurm 699824 + 703587 (T2b with equal-wall-time `che` arms), 704030 (R15b samples pilot; `t2_samples.py --mode report`), 700568 (W-24 task 1 resume), 687302 (sector-resolved DMRG refs, E(+,+)) + 686990 (VMC size ladder 12–48 sites, P_G in every arm; `scaling_report.py`; premise gate P_R), 637776 (generality: 4x3 cylinder pbc-x 5+5, open 4+4; report `gen_test.py --mode report`), 637777 (rbm + che + nnbf_SG to 4000 it; `--mode report-ext`) |
+| P4.2 | CLOSED: Saturation Diagnostic (604157 + critic: linear-method check job 659969 shows the plateaus are stationary points, best gain 0.0013–0.0017 of the remaining error; tangent rank 34–48 effective directions, local hole-count inputs; no size-independent addition helps by more than 1.10x on 4x3; the site-resolved pair matrix does, 2.41x, but is not size-independent; boundary-class kernel 4.41% failed its pre-registered 0.85% gate). Needed: site-resolved pairing, a global configuration view, sources with 3–4-hole environments. Closed-leaf falsifier (2026-11-16): linear-method retrain INCONCLUSIVE (wall-time premise fails; best 1.665% against 0.77% to falsify); convergence run submitted | none | Slurm 704844 (falsifier convergence run, rule unchanged) |
+
+* **Scope notes on the rows above (cross-node critic, 2026-11-16).** No verdict changes.
+    * P1.2: the diagnostic holds for 300-step T1s on unprojected toys up to 12 sites. The projected evidence on the target instance is P1.3's CAPACITY result.
+    * P1.3: read CAPACITY as "no better-signed state was reached at these widths, and the error falls with width". The oracle start W$_0$ was worse than the best cold start at every width, so no basin was actually probed.
+    * P3.2: the width-8 "easy" branch used 1160 parameters against a sector dimension of 1618, the sector-fitting regime; it says nothing beyond ED size. All results come from one $4\times3$ torus crossing between spin textures, not stripe against $d$-wave.
+    * P4.1: the matched-parameter findings (rank-8 `che_k8` beats `nnbf_SG` by 35%; exact-$S$-by-construction forms 4–7 times worse; spin-resolved conditioning 1.7 times better) come from one $4\times3$ OBC filling ($5+5$, $U=8$) until 637776 lands. A T2b PASS shows parameter efficiency, not "exact $S$ below projection cost", unless an equal-wall-time `che` arm is added (`pcg` costs 2.6 times `che` per step at 24 sites). The capped W-24 run (step 958) may kill R3 but is not a width result for other leaves.
+
+Each leaf advances on its own as soon as it returns: lint, then its own critic, then fix or mutation, then submission. No leaf waits for its siblings.
+* **P3.2 round 3: first Hard-Core-scale same-irrep competitor (2026-11-11)**:
+    * **Where the crossing is.** With $t'$ and $U$ alone, the 4×3 torus has no exact same-irrep crossing (the gap valley runs to the excluded free limit $U\to0$); the 6×2 ladder reaches only $0.090t$. Adding anisotropic hopping $t_y$ as a second knob produces exact conical intersections, as expected from the codimension-2 rule.
+    * **The test path.** On $4\times3$ PBC, $4+4$, $U=8$, $t_y=1.11394$, inside the irrep ($K=0$, $M_x=M_y=+1$, $S=0$; the global ground-state sector, dimension 1618):
+        * the crossing is at $t'_c=-0.470482$;
+        * the gap is $1.4\times10^{-3}t$ at $t'_c\pm0.0002$ and $0.010t$ at $\pm0.002$, which is the Hard-Core scale;
+        * the two states are a period-4 spin stripe and a near-Néel state ($c_0$ flips sign across $t'_c$), with similar $d$-wave correlation.
+    * **Other intersections:** $4+4$ at $U=8$ ($t'=-0.515243$, $t_y=1.143944$); $4+4$ at $U=5$; $5+5$ at $U=8$ ($t'=-0.5925$, $t_y=0.8442$, sector dimension 3752). They are in `tests/P3.2_biased_ensemble_r3/scan_logs/`, and were broadcast to the running P2.1, P4.1 and P4.2 workers.
+    * **Survivors (critic pending).**
+        * SO-EC: same-order eigenvector continuation from projected snapshots trained far from the crossing.
+        * AT: affine-transport upper bounds.
+    * **Kills.**
+        * Kink/jump crossing detector, Gate 2: a $2\times2$ lemma puts every variational-energy rule on R0+'s decision boundary.
+        * Curvature/susceptibility, Gate 1.
+        * Berry phase, Gates 2 and 3.
+        * In-irrep zero-variance extrapolation, Gate 0 (mVMC practice).
+* **P4.1 round-4 per-leaf critic (10 objections, 7 Major)**:
+    * **The #P-hardness result is correct but folklore-level.** An exponential sum over a circuit-computable $g$ is #P-hard by definition (cf. RBM normalisation, Long & Servedio). It is restated as "worst-case hardness plus a polynomial subclass, linear-$S^z$ features at $r=\mathcal{O}(1)$"; "dichotomy" and "theorem in both directions" are withdrawn.
+    * **`sfb` is narrow.** Its single feature is the staggered magnetisation of the singly occupied sites, close kin to multi-component projected Hartree–Fock (PHF/ResHF), and it adds 16 parameters.
+    * **KAGP is incremental.** It is Tocchio with $K>1$, and Gate 0 must cover multi-determinant NNBF (arXiv:2510.26906) and arXiv:2608.12465.
+    * **The completeness count is local.** Full Jacobian rank does not imply that $\psi_0$ is reachable.
+    * **The premise gate tests a tabular ceiling, not the trained capacity**, and `report()` does not enforce its premises.
+    * **The thresholds are below seed noise**, and the initialisation is asymmetric between arms.
+    * **Action.** Fix-then-submit, blocked on two jobs:
+        * 411996 (tabular AGP fit). If $\epsilon_{\mathrm{tab}}(K{=}1)<10^{-4}$, or $<0.5\,m(\epsilon_{\mathrm{tocchio}})$, KAGP goes back to mutation.
+        * 411494 (che vs nnbf_SG). If charge-only matches spin-resolved after projection, `sfb` has no headroom.
+* **P2.2 round-4 per-leaf critic (10 objections, 6 Major)**:
+    * **The pre-check was tautological.** At $K=8$ there is one external orbital per shell, so CGK equals NNBFJ, and $v$ is training noise. The honest $M_{\mathrm{op}}\approx0.54$ would be AMBIGUOUS.
+    * **Accuracy is tested at no more than 3 orbitals per shell; cost is certified at 16–64.** The information lost is exactly the dynamic pair correlation that grows with the basis. This is the known failure mode of externally contracted MRCI.
+    * **Training noise is about $\tau$**, and NNBFJ is under-trained.
+    * **The controls are capped or on a knife edge.** The SS $\epsilon$ grid stops at $3\times10^{-3}$, and SCREEN's bias of $0.18$–$0.19$ mHa sits right at $\tau=0.2$.
+    * **The op-count model favours KEYX about $2\times$ over wall-clock**, and the veto is toothless.
+    * **Gate 0 is narrower than claimed.** The key structure is GAS/RAS occupation-class blocking from CI (Olsen; LUCITA), and the barrier is the contraction error of externally contracted MRCI. The R4.0 kill is sound; its anti-pattern is narrowed to per-class dressing with $N_\gamma\propto K$.
+    * **Action.** The 34-task array is not submitted. A large-$K$ accuracy pilot runs as job 411919: H4 at $R=4.4$ bohr, HF weight about 0.49, $K=12/16/20$ (8–12 orbitals per shell), arms NNBFJ/CGK/WIBJ, 3 seeds. Pre-committed rule:
+        * kill R4.1 if the median $\delta_{\mathrm{CGK}}>\tau$ at $K=20$;
+        * otherwise, before any array runs: recompute $M_{\mathrm{op}}$ honestly, extend the SS and SCREEN grids, add the noise-floor arm and best-of-seeds scoring, require a wall-clock advantage, and add the H4 large-$K$ instance to Part A.
+* **P4.1 round-3 per-leaf critic (12 objections, 9 Major)**:
+    * **SQ-RVB fails Gate 0.** For a symmetric charge-backflow pairing, $\det F_c[U_s\cup D_b,D_s\cup D_b]=\det F_c[D_b,D_b]\,\det S_c[U_s,D_s]$, where $D_b$ is the doublon set and the Schur complement $S_c$ is symmetric. SQ-RVB is therefore the round-1 Tocchio family, reparameterised, and costs two determinants against Tocchio's one.
+    * **Che's projection was benchmarked sub-optimally.** It is closed-form via elementary symmetric polynomials of the eigenvalues of $D_m^{-1}X$, at $\mathcal{O}(N_e^3)$, so the cost "advantage" is a constant factor.
+    * **SCF's cost was measured at a toy bond dimension**, and the cost and accuracy parameterisations differ.
+    * **Completeness is untested.** Whether one AGP per charge configuration can reach $\psi_0$ was never checked.
+    * **Width-4 accuracy measures only capacity per parameter.**
+    * **Action.** The 42-task array is not submitted.
+        * A 9-task width-16 diagnostic pilot runs as job 411494 (sqrvb, nnbf_SG and che, 3 seeds). It measures charge-only against spin-resolved conditioning, both exactly projected.
+        * P4.1 goes to round 4 with a **Saturation Diagnostic**: "exact $S$ below projection cost" is already met by standard constructions (singlet pairing with charge-only correlators at one determinant; Che's closed form at $\mathcal{O}(N^3)$).
+        * The leaf is refined to what remains open: exact $S$ for spin-resolved backflow, the cost of charge-only conditioning, and exact-$S$ forms beyond one AGP per charge configuration.
+* **P2.2 round-3 per-leaf critic (10 objections, 6 Major)**:
+    * **The test could not PASS globally.** The H8 key/term ratio is 0.55.
+    * **ED-sized symmetric rings cannot show the $M$-scaling.**
+    * **WIBJ only changes the prefactor.** It is active-space backflow times a Jastrow, and its 2×2 minors are the standard table trick.
+    * **PFCV is a relabel of R2.0.**
+    * **The ΔE tolerance looks tuned after the fact.**
+    * **The controls lack the truncated local energy** (arXiv:2502.18843) and HCI-style heat-bath sampling.
+    * **The proposed Cholesky "infinite-variance" anti-pattern is rejected.** The correct statement is the support condition $\mathrm{supp}(L_\gamma\psi)\subseteq\mathrm{supp}(\psi)$.
+    * **Action.** Not submitted; sent to round-4 mutation with the critic's direction: a key-wise AFQMC-type contraction (Cholesky/THC) of the external-excitation sum, at about $\mathcal{O}(N_{\mathrm{key}}N_\gamma NM)$, under a Jastrow factorizable across the window boundary. The test has two parts: ED-free scaling at $K=50$–$200$, and accuracy on genuinely multireference instances (HF weight below 0.6).
+* **Cross-leaf finding (2026-11-11): the error left after projection is amplitude-borne.** P1.1-P width-8 budgets on both $5+5$ tori, trained with projection (3 seeds): $\Delta E_{\mathrm{tot}}=0.9$–$20\times10^{-4}$, $\Delta E_{\mathrm{sign}}\le5\times10^{-5}$, $f_E=0.004$–$0.023$, wrong-sign weight $10^{-8}$–$10^{-6}$. The $4+4$ instance is complete and SYMMETRY-DOMINATED; the widest width on $5+5$ is still running. P2.1's critic, reading the P1.2 pilot's interim logs, finds the same on the 4×3 OBC and cylinder clusters. Consequences:
+    * On ED-sized Hubbard clusters, symmetry-projected NNBF has essentially no sign error. What remains is amplitude error. P1.1's original "sign is binding" result was symmetry contamination.
+    * Every leaf whose premise is "projected NQS keeps a sign error" (P1.2, P1.3, P2.1's premise gate, part of P3.1) is very likely NO-TARGET at ED size. The premise pilots will confirm or refute this per leaf.
+    * The live question moves to sizes beyond ED: does a nodal error appear when the projected sector dimension greatly exceeds what the network can represent (P1.1's size-transfer gap)? Testing that needs sampled VMC with an independent reference (AFQMC or DMRG) on lattices of $6\times6$ or more, a different and more expensive test.
+    * **Superseded 2026-11-16.** The three bullets above hold for the $4\times3$ tori only. P2.1's control pilot (410988) and the seed confirmation (451706) found a sign error that survives projection at ED size: on the $4\times4$ OBC $t$–$t'$–$J$ $6+6$ instance, $\Delta E_{\mathrm{sign}}=0.0125t$ and $f_E=0.22$–$0.24$. That instance is not NO-TARGET; P1.2, P1.3 and P3.1 moved onto it, and P1.3 closed there with CAPACITY. The shared statement is "mostly amplitude, and capacity-limited", not "essentially no sign error".
+* **P2.1 round-3 per-leaf critic (12 objections, 8 Major)**:
+    * **Gate 0, SK-LR.** It is HFDS with $K$ blocks and a frozen hidden block, linearised at $r=1$. Equivalently it is a neural-CI singles expansion with the Clark et al. table method, and its per-ratio cost is the lrux kernel.
+    * **SK-AGP.** It does not fix the HFPS $\mathcal{O}(N^3)$ barrier, because no sweep is implemented.
+    * **"The restriction bites" is false.** $\det(A_0+\phi c^{\mathsf T})=\det A_0+c^{\mathsf T}\mathrm{adj}(A_0)\phi$ with an unrestricted $c(\mathbf{n})$, so a rank-1 term already represents an arbitrary scalar times the reference.
+    * **The control is handicapped.** NNBF has no Jastrow while the route arms do.
+    * **The rank dominance test is weak.** Unpaired, $P\approx0.20$ under the null.
+    * **Cost timings are interpreter-dominated.**
+    * **The verdict can rest on a single instance.**
+    * **Action.** The 118-task array is held. A control-only pilot runs as job 410988 (the nnbf arm, seed 11, three instances). Pre-committed rule:
+        * if projected $\Delta E_{\mathrm{sign}}<0.003t$ on instances 0 and 1, the verdict is NO-TARGET and P2.1 goes back to mutation (no width halving);
+        * if it is at least $0.01t$ on both, apply fixes 3, 5 and 6 and the Gate 0 restatements, then submit;
+        * otherwise run 2 more seeds first.
+* **P4.2 round-3 per-leaf critic (11 objections, 5 Major)**:
+    * **Prior art.** The critic confirmed the worker: arXiv:2505.00233 keeps the lattice size fixed, and no lattice-fermion NQS size transfer is published. Gate 0 must still cite and distinguish arXiv:2606.17045 (single-hole, exactly solvable, local-rule size transfer) and arXiv:2512.11962 (a $t$–$V$ foundation NQS conditioned on Hamiltonian parameters).
+    * **Route 3.2 is a relabel.** Freezing the determinant and refitting a Jastrow is standard fixed-node practice, and its sign verdict is decided by route 3.1's zero-shot object. It is merged into 3.1 as a diagnostic, which leaves P4.2 with one survivor.
+    * **The minimum-norm selection is contradicted by its own pre-check.** With the penalty, the seeds are further apart (1.30–2.00 against 1.05–1.75). The norm of a nonlinear network is not reparameterisation-invariant, and about 110 source-null directions act on 3- and 4-hole features the source never sees.
+    * **Capacity dominates the criteria.** They should score the excess over $\epsilon_{\mathrm{opt}}$ and tighten VOID.
+    * **The P1 premise passes almost automatically**, because scrB is scrL after 20 steps. The gate should be on steps-to-$\epsilon$ at several $B$, with a plateau check.
+    * **Action.** The 9-task array is held. A zero-shot pilot runs as job 410960 (3 transfer tasks, `--budget 0 --steps-long 0`). Pre-committed rule:
+        * kill 3.1 if the spread of $\epsilon_{\mathrm{tr0}}$ exceeds half the median, or if the sector-pick gate (S) fails;
+        * otherwise apply fixes 3, 4, 5, 8 and 10 before any array runs.
+* **P3.2 round-3 per-leaf critic (12 objections, 9 Major)**. The critic computed the oracle cases from exact ED snapshots.
+    * **AT is killed.**
+        * Even with exact snapshots it commits the wrong decision at $d=-0.0002$. The two diabats have unequal curvature ($d^2E/dt'^2\approx-14$ vs $-10$), which gives a differential transport bias of about $2.1\times10^{-3}$, above the $1.4\times10^{-3}$ gap.
+        * It is also the variational principle plus a zero-step warm-start (hysteresis) protocol, and it falls under the leaf's own $2\times2$ lemma.
+    * **SO-EC is conditional.**
+        * It is exact on all 10 targets with ED snapshots, but its signal lives in an overlap eigendirection of about $4\times10^{-6}$, roughly $30\times$ below the sampling standard error at $2\times10^4$ draws.
+        * Shared ansatz bias passes through the Ritz solve, so it can only beat the control where the control's branches cross over at the target.
+        * Multi-vector EC near avoided crossings already exists (Frame et al. 1711.07090; review 2310.19419); the new element is only the split by measured order.
+    * **Test defects.**
+        * The R0P control is cold-started; a warm-started R0P-warm control is needed.
+        * The snapshot-certification gate is inverted: it certifies branch collapse.
+        * The sampled arm still trains on exact forces.
+        * The aggregator does not check target lists.
+    * **Instance verified, as a methods instance only.** It is a genuine same-irrep near-degeneracy with the correct 48-element group, but the two "orders" are spin textures forced by the odd $L_y=3$ (stripe at $(\pi/2,0)$ vs a Néel state at $(\pi,\pm2\pi/3)$, equal $P_d$). It is not stripe vs $d$-wave, and no physics transfer may be claimed from it.
+    * **Action.** The 9-task array is held. A control-only pilot runs as job 410917: width 8, seed 1234, the 4 inner targets, about 5.4 h, output in `results_pilot/`. Pre-committed regimes:
+        * **NO-TARGET**: drop width 8.
+        * **NO-ROOM**: the R0P control is correct everywhere, so the array is a guaranteed FAIL and is not submitted.
+        * **INTRINSIC-BIAS**: add R0P-warm and fix the certification gate first.
+        * **GO**, only if the control's branches cross over: apply the fixes, then run the array.
+* **P3.1 round-3 per-leaf critic (12 objections, 8 Major)**:
+    * **Gate 0, both routes.**
+        * ZR is the Assaraf–Caffarel zero-bias correction with a learned $\psi'$ (physics/0310035; Toulouse, Assaraf & Umrigar 0705.0721), and also a dual-weighted-residual estimate (Cancès, Dusson, Kemlin & Levitt 2111.01470). It needs one extra NQS per observable, which contradicts the leaf's "cheap information" premise. The round-2 kill "zero-variance, zero-bias estimators reduce variance, not bias" was factually wrong; that log entry is corrected here.
+        * ECC's regressor $c=\langle(H-E)(A-a)\rangle$ is the first Lanczos moment, so it inherits the killed route's blindness ($\propto\Delta$) to low-energy competitors.
+    * **The tangent-space lemma** is correct but standard (the Brillouin/stationarity condition).
+    * **No real target exists.**
+        * Projected converged states have near-zero pair error, so the scored population would be step-30/100 snapshots (high-$\omega$ error), where one Lanczos step wins trivially.
+        * The score filter selects exactly the states where first-order expansions fail.
+        * At scale, $\mathrm{Var}(A)\sim1/V$ while the infidelity tends to 1, so the expansion has no small parameter.
+        * The test covers neither half of the Hard Core.
+    * **ZR's sampling is unrealistic.** Its scale factor and training use exact sums. Sampling with $N_s/D\approx0.2$–$0.4$ i.i.d. nearly enumerates the support.
+    * **Action.**
+        * The 36-task job is held. A 6-task exact-quantities target pilot runs as job 410398: converged projected NNBF of widths 1, 2 and 4 plus the projected foil, 1500 steps, one seed per instance.
+        * Go criterion: at least 2 instances with at least 3 converged finals at $\lvert\delta\rvert\ge0.02\lvert a_0\rvert$, on which ZRO tracks at least 70% and L1 tracks fewer than 90%.
+        * Otherwise NO-GO, and P3.1 is re-scoped to larger sampled systems or a same-irrep near-degenerate instance.
+        * Round-4 mutation of both routes waits on this, because it decides whether any target exists at ED size.
+* **P1.2 round-3 per-leaf critic (12 objections, 6 Major)**:
+    * **Premise gate likely fails.** What sets how close a projected NNBF gets to exact is the ratio $\dim\mathrm{range}(P_SP_\chi)/(\text{parameters})$, not $\lvert G\rvert$. The exact sector dimensions are:
+
+| Cluster | Sector dimension | Ratio to control parameters |
+| :--- | :--- | :--- |
+| P1.1 torus $4+4$ | 1618 | 0.4 |
+| P1.1 torus $5+5$ | 3752 | 2.9 |
+| $4\times3$ OBC | 17905 | 4.4 |
+| $4\times3$ cylinder | 4663 | 1.15 |
+| $6\times2$ ladder | 11920 | 2.4 |
+
+* At ratio 2.9 the projected control already sat about $1000\times$ below $0.01t$, so at most one instance is likely to be informative.
+    * **FRD vs control is confounded.** FRD sits on a backflow-free Slater–Jastrow base while the control is NNBF. The decisive contrast should be NNBF×FRD vs NNBF.
+    * **The adoption barrier is never tested.** That barrier is SR instability through zero crossings under *sampled* force; every arm trains with the exact force.
+    * **The heavy-tail gate cannot fire.** The FRD $E_{\mathrm{loc}}$ kurtosis is $143\times$ the control's, yet the arm passes.
+    * **Novelty is only partial.** In the zero-crossing regime the factor is locally a configuration-dependent Lanczos/Baeriswyl step. The real adoption barrier is the $\mathcal{O}((zV)^2N_e)$ per-sample local-energy cost, hidden by full-basis amplitudes in the test.
+    * **Action.** The 108-task job is held; the critic's 3-task premise pilot (projected control, seed 1234, shift $10^{-2}$, one task per instance) runs as job 410216. Pre-committed rule:
+        * if the projected control's $\Delta E_{\mathrm{sign}}<0.003t$ on at least 2 of 3 instances, the verdict is NO-TARGET, the array is cancelled, and the instances are redesigned for a larger sector-dimension/parameter ratio;
+        * if $\Delta E_{\mathrm{sign}}\ge0.01t$ on at least 2 instances, the test is fixed (NNBF×FRD contrast, sampled-force arm, kurtosis gate) and then run;
+        * otherwise 2 more seeds of the projected control run first.
+    * **Broadcast.** The sector-dimension/parameter insight was sent to the P2.1, P3.2, P4.1 and P4.2 workers.
+* **P1.3 round-3 per-leaf critic (12 objections, 9 Major)**:
+    * **Premise.** It is close to certainly false at ED size. The projected trivial-irrep sector of $4+4$ on 12 sites has about $1.5\times10^3$ dimensions, against about $4\times10^3$ NNBF parameters.
+    * **OCP fails Gate 0.** It is SCF metadynamics / deflation, the family already killed as FCD (Thom & Head-Gordon 2008; variational quantum deflation; arXiv:2605.30944 combines projection with an orthogonality penalty). It also cannot escape a diabatic (mixed) basin.
+    * **The PW1 trap test is uninformative** (an exact competitor eigenstate is a saddle, not a minimum), and it wrongly vetoes cold-run evidence.
+    * **The sampled-fidelity gate is cosmetic**: training uses the exact fidelity gradient.
+    * **The coarse gap scan missed real crossings.** Same-symmetry degeneracies have codimension 2, so exact in-sector crossings are generic in the $(t',U)$ plane. A refined 2D search could reach the Hard-Core scale; this was forwarded to the running P3.2 worker.
+    * **Action.** The full 120-task job is held. Only the critic's 9-task premise pilot runs (job 410199), with a pre-committed rule:
+        * if all 9 runs end with $e_{\mathrm{var}}\le0.05\Delta$ and overlap with $\psi_0\ge0.9$, the premise is falsified at ED size and the P1.3 route search closes at these sizes;
+        * if any run ends trapped at $e_{\mathrm{var}}\ge0.25\Delta$ with a flat energy, the full test is first fixed (items 2, 3, 4, 6, 7) and then run on a refined smaller-gap instance;
+        * otherwise the pilot extends to 6 seeds.
+### Pilot read-out (2026-11-12): pre-committed rules applied
+Every number below was read from the result files by an agent; the orchestrator re-checked the P1.1-P aggregate and the P2.1 instance-0 numbers.
+
+| Leaf | Key numbers | Rule outcome | Next step |
+| :--- | :--- | :--- | :--- |
+| **P1.1-P** (407525) | Width 128, medians over 3 seeds. $f_E$: U 0.61/0.77/0.66, P 0.008/0.006/0.005. $\Delta E_{\mathrm{sign}}(P)/\Delta E_{\mathrm{sign}}(U)\le3.5\times10^{-6}$ | **SYMMETRY-DOMINATED** on all three tori | Final. P1.1's "sign is binding" result is symmetry contamination on these clusters |
+| **P1.2** (410216) | Projected-control $\Delta E_{\mathrm{sign}}$: $6.8\times10^{-6}$, $1.1\times10^{-6}$, $1.0\times10^{-5}$ | **NO-TARGET** (3 of 3 below $0.003t$) | Redesign onto the 4×4 OBC $t$–$t'$–$J$ instance below |
+| **P1.3** (410199) | All 9 runs: $e_{\mathrm{var}}\le2.7\times10^{-5}$ ($\le1.2\times10^{-4}\Delta$), overlap with $\psi_0\ge0.999998$, none trapped | **Premise falsified at ED size** on the 4×3 crossing instance | Closed on 4×3; reopened only as a basin check on the 4×4 OBC instance |
+| **P2.1** (410988) | Projected $\Delta E_{\mathrm{sign}}$: inst0 0.0125, inst1 0.0038, inst2 0.0028 | **Otherwise → 2 more seeds** | Job 451706 (inst0 and inst1, seeds 22 and 33) |
+| **P2.2** (411919) | H4, $K=20$: median $\delta_{\mathrm{CGK}}=0.691$ mHa, above $\tau=0.2$ | **Kill R4.1 (CGK)** | Round-5 mutation |
+| **P3.1** (410398) | Instances meeting the go criterion: 0 of 6 (2 needed). L1 never tracks; ZRO tracks 0–2 per instance | **NO-GO** | Re-scope onto the 4×4 OBC instance |
+| **P3.2** (410917) | 2 hard targets; R0P wrong at $d=+0.0002$; no branch crossover; both snapshots `certified` with collapsed branches. Final-window energy swing about $5\times10^{-3}$, above the gap | **INTRINSIC-BIAS**, by elimination; the wrong call may be optimizer noise | Fix: R0P-warm, certification gate, multi-seed |
+| **P4.1** (411494, 411996) | Exactly projected: $m(\epsilon_{\mathrm{che}})=8.4\times10^{-5}$ vs $m(\epsilon_{\mathrm{nnbf\_SG}})=4.0\times10^{-5}$, ratio 2.10, seed ranges disjoint. Tabular AGP job **timed out** with no fit | `sfb` has headroom (charge-only is $2.1\times$ worse); the KAGP premise is **unavailable** | Fix list plus a faster completeness test |
+| **P4.2** (410960) | $\epsilon_{\mathrm{tr0}}$ = 0.66/0.76/0.62 (spread 0.143, below ½·median); correct irrep picked 2 of 3 times | **Route 3.1 not killed** | Correction (P4.2 round 5): the pilot ran with `--budget 0`, so the "scratch" comparator was the untrained mean-field start. Zero-shot transfer (median 0.66) is worse than that untrained start (0.29); Route 3.1 is expected CLOSED-FAIL (closing job 451914) |
+
+* **P3.1 saturation result (round 6, verified in code).** Two no-go statements explain every P3.1 kill through one mechanism.
+    * **S1:** every Hamiltonian moment $\langle H^k\rangle$ of $\psi=\sum_nc_n\phi_n$ depends only on $\lvert c_n\rvert^2$, while the first-order observable error depends on the signed cross terms $c_0c_n\langle\phi_0\rvert A\lvert\phi_n\rangle$. So no function of $H$-moments fixes the observable error, or even its sign; the code shows the moments agreeing to $7\times10^{-16}$ while $\delta$ changes sign.
+    * **S2 (Markov inequality):** a degree-$K$ polynomial filter in $H$ changes a component at excitation energy $\omega$ by at most $2K^2M\omega/W$, where $W$ is the spectral width and $M$ bounds the polynomial on the spectrum.
+    * **Consequences.** Lanczos-step extrapolation, zero-variance extrapolation, A-Ritz, ECC, ZR and OSG are all blind to low-energy error. The underlying fact is known (Eckart; Weinhold; Kaniel–Paige–Saad), so the novelty is only in the unification.
+    * **The leaf is refined** to information that is not generated by $H$. Survivor CLX extrapolates along a per-seed width ladder; its injected low-energy check on the real instance is job 452272.
+        * **Superseded 2026-11-16 (wording).** "Not generated by $H$" is too strong. S1 covers $\hat H$ moments and S2 polynomial filters; a shift-inverted (rational) filter escapes both. The P3.1 T3 critic found that an observable-free shift-invert of the $\hat H$ residual (generalised Davidson) tracks 14 of 14 items on $4\times3$ toys in exact arithmetic. The accurate refinement is: information that $\hat H$ moments and polynomial filters in $\hat H$ cannot carry.
+    * **Job 452272 result.** The low-$\omega$ dominance is confirmed on real states. For the converged width-6 projected NNBF (seed 11), the fraction of the observable error carried by in-irrep components with $\omega\le1t$ is $F_\delta(1t)$ = 1.41 (pair), 0.87 (spin), 0.83 (charge), against $F_E(1t)=0.31$ for the energy error.
+    * **CLX: INJECT-FAIL.** It tracked 0 of 4 set-A items, abstaining almost everywhere because its jackknife SE is about $\lvert\delta\rvert$.
+    * **The Lanczos variance-extrapolation controls give false certificates on every set-A item** ($G=1.00$), as S1/S2 predict. They track only the high-$\omega$ junk set.
+    * **P3.1 goes to round-7 mutation**, aimed at estimating or bounding the low-$\omega$ in-irrep subspace directly.
+    * **Round 7, ESR0 (excited-state subspace Ritz): INJECT-PASS (job 454376, grade R).**
+        * Set A: 16 of 21 items tracked (0.76), per-seed median 0.83, **no false certificates**. The Lanczos control L1R tracks 1 of 21 with false-certificate rate 0.90.
+        * Real items: 3 of 3 tracked, none false.
+        * The observable error is concentrated in few in-irrep levels: $K_{1/2}$ = 2 (pair), 6 (spin), 11 (charge).
+        * Even an oracle energy-window certificate is $9$–$81\times$ looser than $\lvert\delta\rvert$.
+        * **Proposition S3:** junk at energy $\varepsilon$ in an excited state recovers only $\omega/(\omega+\varepsilon)$ of that level's error, so trained excited states must reach $\varepsilon\lesssim\omega$.
+        * Step 2 (training width-6 excited states) waits on the per-leaf critic.
+        * **Superseded 2026-11-16.** ESR0 was later killed at Gate 4: the number of excited levels it needs grows with size (see the Summary). The live P3.1 route is 10.1d.
+* **P3.2 round-5 critic and refined Saturation Diagnostic (2026-11-14).**
+    * **LCC killed.** Linear crossing location is the killed round-3 crossing detector (the Corboz–Mila hysteresis protocol, arXiv:1802.00874) plus a margin. Its margin $b=\hat\varepsilon/\beta$ rests on a single-width zero-variance $\hat E_0$ that is off by up to $+2.2\times10^{-3}t$ in the risky direction. Its test ladder was centred on the exact ED crossing, so "the centre of the ladder" also scores perfectly.
+    * **Key finding (recomputed by the critic from job 451852).** At width 8, plain "the lower final branch energy wins" decides all 6 targets correctly on all 3 seeds, including $d=\pm0.0002$ (gap $1.4\times10^{-3}t$). The energy controls abstained only because their SR-window noise estimate was too pessimistic. At width 4 the same rule is wrong on 2 of 3 seeds, and by the leaf's $2\times2$ lemma no energy-based rule can fix that.
+        * **Scope note 2026-11-16 (cross-node critic).** Width 8 has 1160 parameters against a sector dimension of 1618, the sector-fitting regime, so the width-8 success is not evidence beyond ED size. The instance is one $4\times3$ torus crossing between spin textures forced by $L_y=3$.
+    * **Saturation at ED size.** Deciding competing orders is either **easy** (enough capacity: plain energy comparison with final-state sampling noise works) or **impossible from energies** (capacity-limited: differential bias exceeds the gap). The only remaining lever is non-energy information about the low-energy in-irrep subspace.
+    * **Mechanism transfer.** P3.1's ESR0 (excited-state subspace Ritz) supplies exactly that information: Ritz in the low-lying in-irrep states gives the two-state mixing at a crossing. P3.2 is therefore **blocked on P3.1's excited-state pilot (job 456094)** rather than mutated independently.
+        * **Superseded 2026-11-16.** The "only remaining lever is non-energy information" sentence and the block on 456094 are superseded by P3.2's round-6 kill check (619080): one symmetric block-Lanczos step with exact matrices, an energy lever, decides 9 of 9 in-sample, and the naive rule with final-state $\sigma_{\mathrm{MC}}$ abstention never commits wrong. P3.2 closed at ED size on that result. The P3.1 T3 critic's Davidson finding points the same way: exact $\hat H$-derived corrections work at ED size, and the open question is whether trained or sampled versions keep the gain.
+    * **Requirements for any further P3.2 test:** a ladder placed off the crossing and pre-registered blind to $t'_c$; the naive final-energy comparison with $\sigma_{\mathrm{MC}}$ abstention as a baseline it must beat; saved target parameters for real MCMC.
+* **P4.1 decisive pilot (job 451886, 4×3 OBC $5+5$, $U=8$, $t'=-0.25$; about 2.6k parameters per arm; 3 seeds; medians of relative energy error $\epsilon$; all states exact $S$).**
+
+| Arm | $m(\epsilon)$ | Seed range |
+| :--- | :--- | :--- |
+| tocchio (one singlet AGP per charge configuration, no projector) | $1.47\times10^{-3}$ | 1.47–1.58e-3 |
+| kagp2 (two AGPs per charge configuration) | $1.30\times10^{-3}$ | 1.19–1.64e-3 |
+| che (charge-only broken-symmetry network, exactly projected) | $3.4\times10^{-4}$ | 3.3–4.3e-4 |
+| sfb (che plus one exact-$S$ spin feature) | $3.7\times10^{-4}$ | 3.5–4.5e-4 |
+| nnbf_SG (spin-resolved network, exactly projected, exponential cost) | $2.1\times10^{-4}$ | 1.9–2.3e-4 |
+
+  * **Verdicts:**
+    * Route 4.2 (KAGP): **FAIL** on accuracy. It is only 11% better than tocchio, with overlapping seed ranges, although its completeness premise was MET.
+    * Route 4.1 (sfb): **FAIL**. It recovers $-22\%$ of the che→nnbf_SG gap.
+  * **Findings:**
+    * Exact-$S$-by-construction ansätze (tocchio, kagp2) are $4$–$7\times$ less accurate than an exactly projected broken-symmetry network at matched parameters.
+    * The tabular completeness gain of a second AGP does not survive training at this capacity.
+    * Spin-resolved conditioning is worth about $1.7\times$ over charge-only, and the one-feature polynomial subclass recovers none of it.
+  * P4.1 goes to round-5 mutation on the narrowed open core.
+  * **Scope note 2026-11-16 (cross-node critic).** These findings come from one $4\times3$ OBC Hubbard filling ($5+5$, $U=8$, $t'=-0.25$) at matched parameters. The generality jobs 637776 and 637777 had not landed when this was written.
+* **P4.1 completeness result (job 451839, 4×3 OBC, $U=8$, $t'=-0.25$).** This is the best tabular fit of one or two charge-conditioned singlet AGPs per charge configuration to $\psi_0$. All fits are exact singlets ($\lvert\langle S^2\rangle\rvert\le10^{-16}$).
+
+| $N_e$ | Weight on configurations with $N_s\ge10$ | Infidelity, $K=1$ | Infidelity, $K=2$ |
+| :--- | :--- | :--- | :--- |
+| 8 | 0 | $5.8\times10^{-4}$ | $\sim10^{-15}$ |
+| 10 | 0.72 | $6.8\times10^{-3}$ | $2.0\times10^{-8}$ |
+| 12 | 0.92 | $2.4\times10^{-2}$ | $6.6\times10^{-4}$ |
+
+  * The Tocchio class (one AGP per charge configuration) becomes less complete as the number of singly occupied sites grows, and two AGPs recover almost all of the gap. This is KAGP's structural premise.
+  * Whether it matters against a trained network's capacity is the decisive question for job 451886, whose `report()` enforces $\epsilon_{\mathrm{tab}}(K{=}1)\ge0.5\,m(\epsilon_{\mathrm{tocchio}})$.
+* **New key instance (from P2.1's pilot).** On the 4×4 OBC $t$–$t'$–$J$ cluster, $6+6$ electrons, $t'=-0.25$, $J=0.4$ (projected sector dimension 30220; NNBF width 6 with about 1.7k parameters, ratio about 17), the symmetry-projected NNBF keeps a measurable sign error:
+    * $\Delta E_{\mathrm{sign}}=0.0125t$, $f_E=0.24$, overlap with $\psi_0$ 0.936;
+    * with exact $P_S$ added, $\Delta E_{\mathrm{sign}}=0.0063t$.
+
+  * **Observable consequence (P3.1 round 5, seed 11).** The converged projected NNBF has relative errors of **31% in the long-range pair correlation, 15% in spin and 22% in charge**, with overlap 0.936. One and two Lanczos steps cut $\Delta E$ from 0.052 to 0.023 and 0.015 but barely move these observables, so the observable error lies in low-energy directions. This is the frozen Unacceptable Outcome happening in practice: a much better energy with the order parameter still wrong. Three-seed confirmation is job 451837.
+
+  This is the first instance in this study where a nodal error survives projection, consistent with the sector-dimension/parameter criterion.
+  * **Three-seed observable errors (job 451837, P3.1 target probe; converged projected NNBF, width 6).** Relative errors of the long-range correlations against ED:
+
+| Seed | $\Delta E$ | Overlap with $\psi_0$ | Pair | Spin | Charge |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 11 | 0.052 | 0.936 | 0.31 | 0.15 | 0.22 |
+| 22 | 0.057 | 0.916 | 0.62 | 0.14 | 0.31 |
+| 33 | 0.058 | 0.914 | 0.89 | 0.08 | 0.30 |
+
+  * **The three seeds have nearly the same energy but disagree by $3\times$ on the pair correlation.** Seed 33 shows almost no long-range pairing ($a=1.0\times10^{-5}$ against the exact $9.2\times10^{-5}$). This is the "variational bias decides the physics" problem of the doped-Hubbard NQS literature, reproduced on an exactly solvable cluster.
+  * **Exact spin projection** lowers $\Delta E$ by about 40% (to 0.030–0.035) **but leaves every observable error unchanged**.
+  * **Two Lanczos steps** cut $\Delta E$ by $3$–$4\times$ but move the pair error by less than half.
+  * Step-1 verdict: TARGET for pair, spin and charge.
+  * **Seed confirmation (job 451706).** On the 4×4 OBC $6+6$ instance, the projected NNBF (width 6) has median $\Delta E_{\mathrm{sign}}=0.0125t$ over seeds 11/22/33 (range 0.0125–0.0136), $f_E=0.22$–$0.24$. With exact $P_S$ added the median is $0.0071t$. The target is confirmed for P1.2, P1.3 and P3.1.
+  * **Comparison instance.** The 4×4 cylinder $6+6$ (sector 15268) gives median $0.0038t$, which is below the $0.01t$ bar. It becomes the shared target for P1.2, P1.3 (basin check) and P3.1 (error bars). Seed confirmation is running as job 451706.
+  * **Superseded 2026-11-16.** The shared target became the $4\times4$ OBC $t$–$t'$–$J$ instance, not the cylinder: 451706 confirmed it (median $0.0125t$), P1.3 closed on it with CAPACITY, and P3.1's real items come from it. The cylinder stays below the $0.01t$ bar.
+### Round 2 — Mutation & Replenishment Synthesis (2026-11-11)
+Under the Persistence Mandate, every leaf except P1.1 was re-run through the Stage 3.3 mutation and replenishment loop, with the round-1 critic objections as binding constraints. Every leaf now has at least two routes that pass all four gates in the worker's own audit; P2.2 has three. None has yet been through the round-2 critic, and no round-2 decisive test has been submitted.
+*Round-2 snapshot.* The statuses in this table were all downgraded by the round-2 critic below, and every route in it was later killed or replaced. The current state is the table under Master Leaf Synthesis Matrix.
+
+| Node | Status | Surviving routes | Sharpest gap | Decisive test (instance; control arm) |
+| :--- | :--- | :--- | :--- | :--- |
+| **P1.2** | SURVIVED (via Mutation) | FRD-K: Jastrow–Slater times a product of local factors $1+\alpha_e g(R_e)$, driven by the reference's own hop-amplitude ratios $R_e$; FRD-X: the same on spin-exchange edges | Whether NNBF's wrong-sign weight is locally repairable or sits in extended regions; learnability through a zero crossing | Three P1.1 instances, $H=8,32$, exact-sum SR; NNBF×Jastrow at matched parameters |
+| **P1.3** | SURVIVED (via Mutation) | SNO-FN: natural-orbital or frontier re-anchoring, accepted by guided fixed-node energy; FCD: fidelity-capped deflation, then release | Recovery of re-anchored candidates within 40 steps; whether the FN slack preserves the $E_{\mathrm{sign}}$ ordering | $4\times3$, $4+4$, $t'=-0.25$ (sign half) and $t'=-0.32$ (avoided crossing), 8 paired seeds; matched-restart null, energy-gated ablation, "dominated by projection" check |
+| **P2.1** | SURVIVED (via Mutation) | Split-capacity HFDS, which contains Liu–Clark plus a wide Jastrow, $\mathcal{O}(N_e^2)$ per $E_{\mathrm{loc}}$; shared-reference low-rank multi-determinant | Rank 2 is 40–50% of full rank at these sizes, so a PASS does not certify a fixed rank at $8\times8$ | Three P1.1 instances, scored on $\Delta E_{\mathrm{sign}}$ and $\Delta E_{\mathrm{tot}}$; NNBF-128, 4-determinant NNBF and Slater×neural-Jastrow at matched parameters |
+| **P2.2** | SURVIVED (via Mutation), leans AMBIGUOUS | R2.0: frozen-backflow control variate with measured per-term cost; R2.4: multilevel MC over surrogate fidelity; R2.5: cost-aware residual allocation | R2.0's advantage over the best control is flat at about $0.6$, not falling, from $M=24$ to $32$ | H4 ring and chain at $R=2.8$ bohr, $M=16$ to $48$; best of 10 controls (exact, screening, deterministic completions, heat-bath, semistochastic) |
+| **P3.1** | SURVIVED (via Mutation) | A-Ritz with a first-order error estimate and a non-vacuous trust rule (off-diagonal pairing $A$ only); sign-defect Ritz using configurations with $\kappa=(H_{\mathrm{off}}\psi)/\psi>0$ | First-order regime on realistic states; a false certificate if the step removes amplitude error faster than sign error | 36 real SR-trained states (foil and NNBF, 3 widths, 3 snapshots) on the P1.1 instances; one- and two-step Lanczos and cross-width extrapolation |
+| **P3.2** | SURVIVED (via Mutation) | 2R-SS: Néel and stripe determinants under one shared backflow, coefficients by exact $2\times2$ Ritz; 2R-SA: state-averaged version | Under the state-specific objective the second root may degrade into a corrector of the first | Same-sector avoided crossing on $4\times3$, $4+4$, $t'\in[-0.42,-0.25]$, 28 instances; R0+ at matched wall time |
+| **P4.1** | SURVIVED (via Mutation) | PCG: $P_SP_K e^{J(c)}\det f_c$ with $f_c=B_1(c)f_0B_2(c)^{\mathsf T}$, exact $S$; SCF: spin–charge factorised SU(2)-MPS at $\mathcal{O}(LD^3)$ | Whether a projected charge-conditioned Gaussian replaces the spin Jastrow's correlations, and whether exact $S$ lowers $E_{\mathrm{sign}}$; PCG is not below projection cost | $4\times3$ at $t'=-0.25$ and $-0.33$; spin-resolved NNBF at matched parameters and an mVMC-like foil with doublon–holon correlator |
+| **P4.2** | SURVIVED (via Mutation) | MFNG: pair kernels as size-independent momentum-space neural fields with a charge-only local backflow; active probing on the seed-disagreement set | The source cannot identify the backflow: 218 parameters fit the 560-state source exactly | $t$–$t'$–$J$ $4\times2\to4\times4$ (1.68M states); size-transferred foil and from-scratch training at the same budget |
+
+* **Round-2 critic verdict (2026-11-11, two independent referees, 40 objections, 31 Major)**:
+    * **Systemic flaw**: no round-2 test has a symmetry-projected control. On the $4+4$ instance projection removes 77% of the NNBF sign error, so the claimed gains may be cheap symmetry restoration. Several controls are also crippled:
+        * the P1.3 null restarts from the same broken-symmetry UHF;
+        * P3.2 trains unprojected branches, so its "same-sector" design collapses back onto the cross-sector triplet;
+        * the P4.1 NNBF control lacks $P_S$.
+    * **Stale Hard-Core claims**: P1.2, P2.1 and P3.1 still cite the retracted same-sector competitor, and their code keys the competitor clause to it.
+    * **Gate 0 relabels**:
+        * P2.1 split-capacity HFDS is HFDS times a Jastrow (Liu–Clark; HFPS; lrux).
+        * P3.2 2R-SS/2R-SA is multi-determinant Slater–Jastrow–backflow (Brown, Trail, López Ríos & Needs, arXiv:1011.4343) plus state-averaged VMC.
+        * P4.1 PCG is mVMC with Tocchio backflow and generalized parameters; it is also not below projection cost.
+        * P1.3 FCD is SCF metadynamics with a cap.
+        * P3.1 A-Ritz's $\hat\delta$ is algebraically the killed two-point Lanczos extrapolation (in $\sigma$ rather than $\sigma^2$).
+    * **Mechanism failures**:
+        * P3.1's $\kappa>0$ set is a set of local-energy outliers, triggered by amplitude error near nodes, so it is not a sign witness.
+        * P3.2's cross-overlap terms are hidden by exact sums and carry the killed NOCI variance at the crossing. Its in-sector gap $0.273t$ is about $20\times$ the Hard-Core scale, so it is not near-degenerate.
+        * P4.1 SCF stalls at $\epsilon=2.4\times10^{-2}$ on a 400-state cluster where every other arm is exact.
+        * P4.2's source is fitted exactly, so the transferred state is an arbitrary point on a solution manifold, and the code lets one seed decide. P4.2's real Minimal Contrast Foil, a Jastrow–BCS optimized at the target, is absent. Prior art arXiv:2505.00233 may already do lattice pairing-NQS size transfer.
+        * P2.2 has no legitimate survivor. R2.0 is a revived round-1 kill whose PASS rests on a hybrid cost model ($\kappa$ from $N=20$, variances from $N=4$); R2.4 and R2.5 meet FAIL on their own pre-checks.
+    * **Routes the critics did not break**: P1.2 FRD's novelty (no prior art found), and P2.1 SK-LR (shared-reference low-rank multi-determinant). Both still need a projected control and a test on the competitor instance.
+    * **Decision (orchestrator)**: every round-2 status above is downgraded to **Under Mutation (round 3 pending)**, except P1.2 FRD and P2.1 SK-LR, which are **CONDITIONAL (projected control required)**. Round 3 is gated on the critical-path test **P1.1-P**, a re-run of P1.1 with symmetry-projected NNBF. If projection removes most of the sign error on all three instances, the sign branch and most claimed gains are symmetry problems, and round 3 must start from projected baselines. If a large sign fraction survives projection, P1.1's conclusion stands on firmer ground.
+    * **P1.1-P submitted (2026-11-11)** as Slurm array job 407525 (18 tasks, partition `kim`); leaf note `.subproblems/P1.1P_projected.md`. The orchestrator re-ran the correctness checks before submission, and all passed:
+        * the projector is idempotent to $5\times10^{-16}$, commutes with $H$ to $7\times10^{-17}$, and gives overlap $1$ with $\psi_0$;
+        * the projected gradient matches finite differences.
+
+      Read the verdict with `python3 micro_test.py --aggregate results` in `tests/P1.1P_projected/`.
+    * **New global anti-patterns**:
+        * Any NQS comparison on a cluster whose mean-field start breaks symmetry, made without a projected control arm.
+        * Any variational decision or witness validated only by exact sums, when it needs cross-terms or ratios that are heavy-tailed under sampling.
+* **New finding (P1.3)**: on the $4+4$ instance, most of the NNBF sign error is symmetry contamination; see the qualification under the P1.1 result.
+* **Correction (P3.2)**: P1.1's competitor is not same-sector; see the correction under the P1.1 result.
+* **New anti-patterns (round 2)**:
+    * A sign layer that only sees local occupations cannot locate the nodes (P1.2).
+    * A linear dressing $(1+\sum_b\alpha_bK_b)\Phi$ is not size-consistent (P1.2, P4.1).
+    * Sign-stratified or positivised local energies leave the magnitude dispersion $\mathrm{Var}(x/\lvert y\rvert)$, so they gain nothing (P2.2′ measured within 3% of single-proposal sampling).
+    * Cross-width variance extrapolation under-states the error when the error is sign-borne (P3.1).
+    * Real-space rescaling of NQS parameters shifts $k_F$ and the density (P4.2).
+### P1.1 decisive-test result (Slurm job 329057, 2026-11-11)
+Global verdict **PASS** on all three pre-committed $4\times3$ PBC clusters ($t'=-0.25$). The calibration error is at most $6\times10^{-13}\,\Delta E_{\mathrm{tot}}$ and the multi-start spread is at most $5\times10^{-13}$. Here $f_E^{\mathrm{up}}=\Delta E_{\mathrm{sign}}/\Delta E_{\mathrm{tot}}$ is the sign fraction of the energy error, $f_C$ the sign fraction of the $d$-wave pair-correlation error, and $r=\Delta E(H{=}8)/\Delta E(H{=}128)$ the reduction factor from the narrowest to the widest network.
+
+| Instance | $\Delta E_{\mathrm{tot}}$ (NNBF $H{=}128$) | $f_E^{\mathrm{up}}$ | $f_C$ | $r_{\mathrm{sign}}$ | $r_{\mathrm{amp}}$ | $\Delta_1/V$ | Foil (SJ) $f_E^{\mathrm{up}}$ |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| $N_\uparrow=N_\downarrow=5$, $U=8$ | 0.166 | 0.607 | 0.71 | 1.64 | 3.40 | $0.032t$ | 0.33 |
+| $N_\uparrow=N_\downarrow=4$, $U=8$ | 0.099 | 0.772 | 0.93 | 1.18 | 4.92 | $0.007t$ (but $E_1$ is a triplet at another momentum; see correction) | 0.31 |
+| $N_\uparrow=N_\downarrow=5$, $U=4$ | 0.048 | 0.652 | 0.76 | 1.22 | 3.78 | $0.033t$ | 0.24 |
+
+* **Reading**: making the backflow network wider cuts the amplitude error by a factor of 3.4 to 4.9, but the sign error only by 1.2 to 1.6. As a result the sign fraction rises with width, from 0.38–0.45 at $H=8$ to 0.61–0.77 at $H=128$. The sign also carries 71–93% of the pairing-correlation error. The foil is the opposite: 67–76% of its error is amplitude.
+* **Superseded 2026-11-16.** This reading holds for unprojected NNBF only. With space-group projection, P1.1-P (407525) gives $f_E\le0.023$ on the same three tori (SYMMETRY-DOMINATED), so the rising sign fraction was symmetry contamination.
+* **Caveats**:
+    * The rigorous lower bound $f_E^{\mathrm{lo}}$ is 0 on every instance, so the PASS rests on the multi-start upper estimate. All four starts, including the fixed-node one, agree to $10^{-13}$.
+    * The first instance passes only narrowly (0.607).
+    * **P1.1-P interim result (2026-11-11, job 407525; instance 1 complete, instances 0 and 2 running)**: on $N_\uparrow=N_\downarrow=4$, width 32, medians over 3 seeds:
+
+| Arm | $\Delta E_{\mathrm{tot}}$ | $\Delta E_{\mathrm{sign}}$ | $f_E$ | $f_C$ | overlap with $\psi_0$ |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| U (unprojected, P1.1 protocol) | 0.119 | 0.082 | 0.69 | 0.91 | 0.28 |
+| U→P (post-hoc space-group projection) | 0.072 | 0.016 | 0.23 | 0.30 | 0.92 |
+| P (trained with projection) | $3\times10^{-5}$ | $<10^{-5}$ | 0.002 | 0.07 | 1.000 |
+| P with exact $P_S$ | $1\times10^{-5}$ | $<10^{-5}$ | 0.001 | 0.04 | 1.000 |
+
+  On this instance the pre-committed rule returns **SYMMETRY-DOMINATED**, and the width-32 U arm reproduces P1.1 to within 1%. Interim logs on the two $5+5$ instances show projected width-8 training ending within $3\times10^{-3}$ ($U=8$) and $3\times10^{-4}$ ($U=4$) of $E_0$; the final verdict awaits their budgets.
+  * **Consequence (domino)**: on 4×3 PBC clusters the "sign is the binding error" conclusion is a symmetry-contamination effect. A symmetry-projected NNBF leaves essentially no sign error. Any route tested there against a projected control has nothing to improve.
+  * **Broadcast**: sent to the running round-3 workers (P2.1, P3.1, P3.2, P4.1, P4.2). They are to add premise gates and move to instances where the projected control keeps measurable error, such as lower-symmetry clusters or larger sampled systems.
+  * **New anti-pattern**: testing a sign layer, basin escape or error estimator on clusters where the symmetry-projected control is already near-exact.
+  * **Remaining live question**: does any nodal error survive projection where projection is weaker (open or cylinder boundaries, ladders) or the system is larger (P1.1's size-transfer gap)?
+  * **Answered 2026-11-16 (at ED size).** Yes, on one instance: the $4\times4$ OBC $t$–$t'$–$J$ $6+6$ cluster keeps $\Delta E_{\mathrm{sign}}=0.0125t$ ($f_E=0.22$–$0.24$) after projection (410988, 451706). P1.3 found that error to be capacity-limited. The $4\times4$ cylinder falls below the bar, and sizes beyond ED remain untested.
+    * **Qualification (2026-11-11, from the P1.3 round-2 pre-diagnostic)**: on the $N_\uparrow=N_\downarrow=4$ instance most of the NNBF sign error is symmetry contamination inherited from the broken-symmetry UHF start, not an intrinsic nodal error. P1.1's NNBF is unprojected.
+        * Evidence: a width-32 NNBF after 400 plain-SR steps has $E_{\mathrm{sign}}-E_0=0.084$ and overlap $0.27$ with $\psi_0$. Projecting it onto $\psi_0$'s irrep (translations and mirrors) lowers $E_{\mathrm{sign}}-E_0$ to $0.019$, a 77% reduction (`tests/P1.3_wrong_sign_basins_r2/results_prediag_S400.log`).
+        * Error character differs by instance. On this instance the wrong-sign weight is high ($w\approx0.20$ at every width, inherited from UHF's 0.32). The two $5+5$ instances have low-weight, near-node errors ($w=0.006$–$0.03$).
+        * Consequence: the largest P1.1 sign fraction (0.772) is inflated by missing symmetry projection. The PASS should be re-read as resting mainly on the two $5+5$ instances (0.607 and 0.652), whose sign errors are near-node. Re-running P1.1 with irrep-projected NNBF is the clean check.
+    * **Correction (2026-11-11, from the P3.2 round-2 ED sector analysis)**: none of the three instances has a same-sector competitor. P1.1's flag used the lowest excitation within the fixed-$(N_\uparrow,N_\downarrow)$ space. On the $N_\uparrow=N_\downarrow=4$ instance that excitation is a spin triplet ($\langle\hat{S}^2\rangle=2$) at momentum $(\pi,\pm2\pi/3)$, $0.086t$ above $E_0$. Inside the ground-state sector ($K=0$, both mirrors even, $S=0$) the next level is $0.515t$ up. P1.1 therefore tests the sign half of the Hard Core only. A genuine same-sector avoided crossing exists on the same cluster when $t'$ is swept: the in-sector gap reaches a minimum of $0.273t$ between $t'=-0.33$ and $-0.31$, where a $d$-wave/short-range-AF state and a period-4 stripe exchange character. P3.2 round 2 uses that crossing.
+    * Transfer to $8\times8$ is untested; this remains P1.1's sharpest gap.
+* **Consequence**: the sign-structure branch (P1.2, P1.3) targets the binding error of NQS on these clusters. Network width is not the lever for that error.
+    * **Superseded 2026-11-16.** P1.1-P showed that the "binding" sign error on these tori was symmetry contamination ($f_E\le0.023$ with projection). Where a sign error survives projection ($4\times4$ OBC $t$–$t'$–$J$), P1.3 closed with CAPACITY: the sign error falls with width (0.019, 0.012, 0.007 for 1284, 1734, 2634 parameters). Width is the lever there, within the sector-fitting caveat.
+### Node-level structural results (independent of the routes)
+* **P2.1 lower bound**: for unrestricted backflow, where every orbital row depends on every occupation, one hop rewrites $\Omega(N_e^2)$ matrix entries, and there are $\mathcal{O}(zN_e)$ hops, so $E_{\mathrm{loc}}$ costs $\Omega(N_e^3)$. Here $z$ is the coordination number. Any exact speedup must restrict the family to low-rank hop response.
+* **P2.2 variance floor (corrected after critic)**: for *single-proposal* importance sampling of a local-energy row $\sum_ix_i$, the per-draw variance is at least $(\sum_i\lvert x_i\rvert)^2-(\sum_ix_i)^2$, which is nonzero whenever the row is non-stoquastic. This is a textbook importance-sampling result, not a new one. It is **not** a floor for all stochastic estimators: positivisation (Owen & Zhou, JASA 2000), with separate samplers for the positive and negative parts, removes it. Sign-stratification with a cheap surrogate sign reduces it to the sign-mismatch weight. Measured on H6 at $R=3.0$ near convergence, single-proposal oracle sampling costs $146\times$ and heat-bath $657\times$ exact enumeration.
+* **P4.1 charge-only lemma (standard, not new; it is why Tahara & Imada's projection uses spin-commuting correlators)**: a diagonal correlator $f(\mathbf{n})$ commutes with $\hat{S}^+=\sum_i\hat{S}_i^+$ if and only if $f$ is invariant under every single-spin flip, i.e. it depends on the charge configuration only. This is why mVMC's projection is cheap and why spin-resolved backflow cannot be projected cheaply.
+* **P1.2 preview, input to P1.1**: on $3\times4$ open $t$–$t'$–$J$ ($t'=-0.3$, 2 holes), the foil's Slater-AF sign costs $\Delta E_{\mathrm{FN}}=0.104t$ even with optimal amplitudes, against $4.5\times10^{-4}t$ for the exact sign. The foil's sign is wrong on 7.3% of the weight. For the foil, the sign is the binding error on this instance.
+
+---
+
+## Cross-Pollination Analysis
+### Mechanism transfer
+* **P1.1's fixed-sign energy is the common currency for P1.2 and P1.3.** P1.2 uses the ten Haaf fixed-node energy and P1.3 uses $\langle H\rangle$ with exact amplitudes and trial signs. Both are sign-only metrics, but only $E_{\mathrm{sign}}$ (best non-negative amplitudes under fixed signs, an exact variational quantity) cleanly separates sign from amplitude. Recommendation: report all three, and adopt $E_{\mathrm{sign}}$ as the primary metric in the P1.2 and P1.3 tests.
+* **P4.1's charge-only lemma constrains P4.2 and P1.2.** P4.2's residual correlator uses $S^z$ features, so it breaks SU(2). Rebuilding it on charge-only features plus bond exchange would make the transferred state exactly spin-adapted, and translation-equivariant charge networks transfer across sizes without change. P1.2's Walsh sign layer acts on spin-resolved occupations and would break exact $S$ as well.
+* **P2.1's LGB-BF structure fits P4.1's R1.** Charge-only backflow with finite range plus $K$ global channels keeps both the $\mathcal{O}(N_e^2)$ local energy and the exact spin. The two cost results compose for hopping moves, and spin-exchange moves are already $\mathcal{O}(N_e^2)$ in R1.
+* **P3.1 and P3.2 are one procedure.** P3.2 decides which branch is the ground state; P3.1's A-Ritz gives the error bar on the order parameter within a branch, and its measured order character is the label P3.2 needs.
+* **Superseded 2026-11-16 (round-1 transfers).** The routes these transfers connect were all killed: LGB-BF (P2.1), the charge-only singlet backflow and R1 of round 1 (P4.1), and A-Ritz (P3.1). The P3.1–P3.2 link that survived is different: at ED size both leaves find that exact $\hat H$-derived corrections work (P3.1's shift-inverted residual, 14 of 14 on toys; P3.2's block-Lanczos step, 9 of 9 in-sample), and neither has shown a trained or sampled version.
+### Domino invalidation
+* **If P1.1 FAILS (amplitudes binding for NNBF at width 128)**, P1.2 and P1.3 aim at the wrong target for NQS, though not for the foil (the P1.2 preview shows the sign binds for the foil). The P1 branch would then reduce to "NQS backflow already fixes the sign on ED sizes; the remaining issue is size transfer", which hands the problem to P4.2 and to P1.1's sharpest gap.
+    * **Outcome 2026-11-16.** P1.1 passed, but P1.1-P then showed that the sign error on its tori was symmetry contamination, so the branch did reduce to the size-transfer question. P4.2 closed with a Saturation Diagnostic (size-independent families stall; the useful site-resolved pair matrix does not transfer).
+* **The variance floor generalizes, but only to single-proposal schemes.** P2.1-R4, P2.2-R1/R2/R3 and P4.1-R2 were killed partly on this basis. On re-audit, each still dies on other grounds: P2.2-R1 at Gate 0 (prior art), P2.2-R2 on noise amplification by $S^{-1}$, P2.1-R4 on the $\Omega(N_e^3)$ matrix-writing bound, and P4.1-R2 on the biased energy from noisy amplitude ratios. No kill rests on the floor alone. The floor does open one untested candidate, recorded as **P2.2′** below.
+* **P4.2 and P1.2 both lean FAIL for the same reason**: they both try to carry a learned sign or pair-function correction that is local, but the correction they need appears to be non-local (power-law $d$-wave tails; residual sign error not low-degree). If both FAIL, that is cumulative evidence that the residual nodal correction to mean-field fermionic states is not local at these sizes. That statement is falsifiable and worth recording in its own right.
+    * **Outcome 2026-11-16.** Both leaves closed, but not for one shared reason, so the cumulative statement was not established. P4.2 is consistent with it (only the non-transferable site-resolved pair matrix helps). P1.2 closed because no tested sign layer beat spending the same parameters on width (300-step T1s on unprojected toys), which does not test locality.
+### Critical Path Recommendation (post-critic)
+*Round-1 snapshot (2026-11-10).* P1.1 ran (329057, PASS) and was then superseded by P1.1-P; P1.3 and P3.1 were redesigned many times since. The current critical path is the next subsection.
+
+**Run P1.1 first, and only P1.1 for now.** Its test is the only one that survived the critic with a fixable defect; the optimizer-bias and calibration fixes are now applied. It still decides whether the sign-structure branch (P1.3, and any successor to the killed P1.2) targets the binding error. It also now reports whether each test cluster contains a near-degenerate competitor (critic item 23).
+The two conditional leaves wait for redesign before they spend compute:
+* **P1.3**:
+    * Add a null arm: plain SR restarted with the same total step budget and the same number of trials, so that "basin escape" is distinguished from "extra restarts".
+    * Replace the medians over three seeds with paired comparisons over at least 8 seeds.
+    * Treat ranking basins by energy at $10^{-3}t$ per site as a primary risk, not a secondary one.
+* **P3.1**:
+    * Restrict the claim to off-diagonal order operators (pairing $\hat\Delta_r^\dagger\hat\Delta_0$). For diagonal $A$, the direction $A\psi$ is a Jastrow derivative that the linear method already spans.
+    * Replace the contaminant family with states produced by an actual optimized ansatz, instead of $\psi_0$ contaminated along directions chosen for $\langle k\rvert A\lvert0\rangle\ne0$.
+    * Lower the trust threshold so that the foil is not trivially abstained on.
+### Current Critical Path (2026-11-16)
+Three leaves are open, and each waits on named jobs (Pipeline State table).
+* **P2.1, sublattice hidden rows.** The cost side is settled by the compiled-update falsifier (Round 11c): 5.05 (`half`) and 10.3 (`quarter`) times cheaper than dense HFPS at $L=16$. Sign capacity decides the leaf. The exact-sum ladder 704752 ($V=12$, 14, 15; Round 12 rule unchanged) adds sizes to the one counted so far ($V=8$: $\rho$ 2.44 and 9.92); one more counted size with $\rho>1.25$ kills a variant. A larger-$F$ `half` variant is being cost-gated at $L=16$ (KILL if $R_D(16)-\sigma<3$) and joins the ladder as a fourth arm on a cost PASS. INCONCLUSIVE again moves the question to VMC at $L\ge16$.
+* **P3.1, route 10.1d.** Probe 702393 checks the target at width 6 on $4\times3$ $4+4$. On TARGET-OK the T3 runs (`submit_t3.sbatch`, about 35 CPU-h). PASS needs the trained, observable-sourced responses to beat the matched Davidson foil F3 by $\lceil0.25n\rceil$ items; a tie with F3 closes the leaf with its diagnostic. A PASS is one size only.
+    * **Scope amendment (before the T3 is submitted).** A PASS holds only for in-sector gaps of at least the shift offset ($\omega_1\ge0.1t$); the aggregate prints the instance gap, and a smaller gap returns OUT-OF-SCOPE. No threshold changes.
+    * Reason: route 10.4 (observable-free Davidson error bars) is KILLED at T1 by a gap-surgery stress (0.00–0.18 with the competitor at $\Delta=0.02t$, against 1.00 without noise), and the same stress drops 10.1d's chain to 0.17–0.25.
+    * The sampled training force is GAP-CLOSED at toy size (3×3 and 4×2, $N_s=2000$; exact and sampled force both track 1.00, a ceiling result).
+* **P4.1, route R2 `pcg-scal`.** T2b (699824) at 24 sites, with the equal-wall-time `che` arms (703587), decides it, scored against the 24-site reference 687302: PASS needs $\rho_{24}+2\sigma\le0.60$, a rise from 12 sites of at most 0.15, and a win over `r1`.
+    * **Sampling confound.** At 1024 samples per step, samples per parameter per step fall 14 times from 12 to 48 sites (686990), and `che` at 24 sites sits on a sample-noise floor. The R15b samples pilot 704030 decides whether 24 sites are noise-limited. Until it reports, a DOES-NOT-SCALE verdict from the R1 ladder 686990 or a W-FAIL from the R3 W-24 resume 700568 is not a capacity statement. No rule changes.
+    * Killed this round: R3 variant (iii), refill R7–R14, and R15 (SPRING). Also pending: generality jobs 637776 and 637777.
+* **Closed-leaf falsifiers.** P1.2, P1.3, P2.2 and P3.2 are done and none reopened (scopes in the leaf-state table). P4.2's linear-method falsifier was INCONCLUSIVE; its convergence run 704844 is in flight under the same rule.
+
+### New candidate from the critic pass
+* **P2.2′ — Sign-stratified local energy.** Split the connected configurations of $E_{\mathrm{loc}}$ by a cheap surrogate sign, e.g. the frozen-backflow sign $\mathrm{sgn}\,\tilde r$ that P2.2 already computes. Enumerate the large terms exactly and sample each sign stratum with its own importance distribution (positivisation). The variance then scales with the sign-mismatch weight between surrogate and true terms rather than with the full non-stoquastic floor.
+    * Status: not yet gated.
+    * **Superseded 2026-11-16.** P2.2′ was tested in round 2: sign-stratified sampling measured within 3% of single-proposal sampling, because the magnitude dispersion remains (round-2 anti-pattern above). It is not a live candidate.
+    * Gate 0 check: has positivisation already been applied to VMC local energies?
+    * Hard-Core risk: the mismatch weight may be large exactly in the multireference regime (P2.2 measured a residual fraction of 0.56 to 0.82).
+
+---
+
+## Problem Anti-Patterns & Killed Routes
+### Global anti-patterns (killed in more than one leaf)
+* **Single-proposal stochastic replacement of an exact non-stoquastic sum** (P2.1-R4, P2.2-R1/R2/R3, P4.1-R2): with one importance distribution, the variance floor $(\sum\lvert x\rvert)^2-(\sum x)^2$ does not vanish at convergence, and nonlinear use of the estimate (ratios, $S^{-1}$ in SR) biases the result. Multi-proposal (sign-stratified) schemes are not covered by this anti-pattern; see P2.2′.
+* **Continuation from the sign-free or mean-field limit** (P1.3-R3, P4.2 momentum-orbital generator): a mean-field start already is the $U=0$ continuation, and the path follows the metastable branch through the near-degenerate level crossings that make up the Hard Core.
+* **Re-labelled sign networks** (P1.2-R1, P1.2-R5, P1.3-R1): Jordan–Wigner sign times a learned sign network, neural Pfaffians, and power-method sign refitting already exist (arXiv:2108.08631; PRB 96, 205152; arXiv:2507.10705; arXiv:2405.14762; SWO / self-learning power method) and do not fix their generalization barrier.
+* **Bounds that need the gap** (P3.1-R2, P3.2-R3): Temple, Eckart and susceptibility bounds all need a gap $\Delta$ that closes exactly where competing orders sit.
+### Per-leaf kills
+* **P1.1**: hybrid swap / Shapley split (Gate 0; order-dependent, the amplitude part can be negative); sign-mismatch weight (Gate 1; saturates exponentially in $V$); lattice fixed-node GFMC with the NQS as guide (Gate 0; Loehr & Clark 2510.26906, and its energy depends on the guide amplitudes).
+* **P1.2**: pairwise antisymmetric product (fixed pair function gives a quadratic GF(2) sign that already fails free-fermion nodes on $3\times4$); holon determinant times Marshall sign (wrong on 34% of the weight at $J/t=0.4$).
+* **P1.3**: sign-flip-aware Metropolis (Gate 1; SR fixed points do not depend on the sampler).
+* **P2.1**: finite-range convolutional backflow plus Woodbury (Gate 0; SCALE arXiv:2604.25775 plus Lrux); readout-rank ratios for transformer backflow (Gate 1; attention costs $\Theta(N_e^3d)$, where $d$ is the embedding dimension).
+* **P3.1**: Lanczos-step variance extrapolation of $C(r)$ (Gate 0; Sorella–Becca scheme, and $H$-Krylov reaches competing states only with weight $\propto\Delta$); pinning-field extrapolation (Gate 2; an ordered ansatz answers with its own order).
+* **P3.2**: calibrated independent-branch extrapolation (Gates 0 and 2; reports the seeding reference); sector-resolved branches (Gate 3; stripe competitors share a sector); non-orthogonal CI of separately optimized branches (Gate 1; exponential sample cost).
+* **P4.1**: analytic projection from polynomial roots (Gate 2; same family as the foil); spin-adapted CSF/GUGA sampling (Gates 0 and 3).
+* **Post-critic kills of the leaf survivors** (critic item numbers in parentheses):
+    * **P1.2, residual Walsh sign layer** (items 5 and 6): Gate 0.
+        * A local, sign-capable diagonal correlator times a Slater/BCS reference is the correlator-product-state × Slater ansatz (Changlani et al., PRB 80, 245116; Neuscamman et al., PRB 84, 205132, tested on the 2D Hubbard model).
+        * The test fits the layer to oracle labels from $\psi_0$, which is P1.3's anti-solution.
+        * A single global threshold cannot express a product of independent local sign corrections, so the test was biased toward FAIL anyway.
+    * **P2.1, LGB backflow** (items 10 and 11): Gates 0 and 2.
+        * Finite-range convolutional backflow with low-rank updates is SCALE.
+        * The $K$-channel global term is a strict subfamily of Liu–Clark's low-rank correction, which already underperforms.
+        * The decisive test checks only the Woodbury cost that the foil also has, so it cannot fail.
+    * **P2.2, frozen-backflow control variate** (item 12): killed on measurement.
+        * The measured residual fraction is 0.56 to 0.82, and the pre-check gave $M=1.03$ to 1.07.
+        * The construction is the standard semistochastic control variate.
+        * The H8/STO-3G instance is too small to show $\mathcal{O}(M^4)$ scaling.
+    * **P3.2, joint two-state rule** (items 16 to 18): Gates 0 and 3.
+        * Gate 0: it is the NES determinant of states (Pfau et al. 2308.16848; Ma et al. 2506.08594), and relabelling by measured character is already R0+.
+        * Gate 3: the test's competitors are mirror-even and mirror-odd, i.e. in different sectors, which is the killed sector-resolved route.
+        * The test also replaces the route with exact block-Krylov.
+    * **P4.1, charge-only singlet backflow** (items 19 and 20): Gate 0.
+        * It is Tocchio, Becca, Parola & Sorella's doublon–holon backflow on a projected singlet BCS state (PRB 78, 041101, 2008), with an MLP in place of the hand-crafted form.
+        * SA-NNBF (2604.06841) also uses spatial-only backflow input.
+        * The test also lacked a spin-resolved NNBF arm at matched parameter count.
+    * **P4.2, residual-geminal transfer** (items 21 and 22): Gate 3.
+        * The test geometry is a spin-gapped ladder with a single dominant order.
+        * With $R_{\mathrm{corr}}=1$, the transferred residual is a few Jastrow-like scalars, i.e. foil transfer.
+        * The smoke pre-check gave $M=1.30$.
+* **P4.2**: unit-cell gluing (Gate 1; zero pair correlation across the cut); twist-folded transfer (Gate 0; Gerard et al. arXiv:2405.07599).
+* **Cross-leaf anti-patterns added 2026-11-16 (evidence tiers, rounds 6–8):**
+    * *A counted toy size must have a gap.* A near-degenerate toy (P1.2: 5×2, 4+4, $E_1-E_0=0.0041t$) lets wrong-sign labels follow the partner state. Every T1 asserts $E_1-E_0\ge0.02t$ on counted sizes.
+    * *A fixed thresholded vote on frozen ratios is harmful on a trained backflow, but the same ratios used as learned features are informative* (P1.2 round-7 critic: held-out AUC 0.93 against 0.65 at $V=12$). Do not conclude that ratio information is absent from a failed hard-coded rule.
+    * *A summed or fixed-rank construction is a finite-size device.* Sums of $K$ terms cannot represent a parity over decoupled blocks (P2.1 SK routes), and a fixed-rank projected mixture or fixed-width backflow gives a gain that does not grow per site (P4.1 R1). Check Gate 4 before any decisive test.
+        * **Scope note 2026-11-16.** The P4.1 R1 part rests on the T0 analysis and the pilot-projected $R(8,48)=0.64$–$0.82$; its Gate 4 verdict waits on the size ladder 686990.
+    * *A toy result on a summed observable does not transfer if the trained states already get that sum right* (P3.1 route 8.3: structure factors accurate to 1–5% while real-space correlators carry the error).
+    * *Interpreter-bound timings are not method costs.* Time cost gates with compiled kernels (P4.1 R2: 30.5× with a Python Pfaffian, 3.59× compiled).
+    * *Parameter-matched comparisons at fixed short step counts may kill, never promote, in a cost-reduction leaf* (P2.1: at 75 SR steps the T2 measured learning speed; NNBF went from 0.088 to 0.0159 between 75 and 1200 steps). Promotion needs equal-wall-time or converged comparisons.
+* **Cross-node anti-patterns (cross-node critic, 2026-11-16):**
+    * *Width comparisons in the sector-fitting regime.* When the parameter count reaches about half the projected sector dimension $d_{S\chi}$ or more, any wide enough network wins by fitting the sector. P2.1's `nnbf_w` ($P/d_{S\chi}=0.70$), P3.2's width 8 (1160 parameters against $d=1618$) and the P1.1-P tori sit there. Such results carry no capacity or decision-rule information beyond ED size. Report $P/d_{S\chi}$ beside every width comparison.
+    * *An exact-inverse or exact-matrix reference certifies the machinery, not the information source.* With exact linear algebra, an observable-free shift-invert of the $\hat H$ residual tracks as well as observable-sourced responses (P3.1 T3 critic: 14 of 14), and a symmetric Lanczos step fixes the P3.2 decisions in-sample. A method's premise run needs a matched $\hat H$-only foil (Davidson or Lanczos) before its information source is credited.
+    * *Matched parameters at unequal cost per step.* Any accuracy gate between arms whose per-step or per-sample cost differs (P2.1 routes up to 8 times NNBF; P4.1 `pcg` 2.6 times `che` at 24 sites) must add an equal-wall-time arm or state that it scores parameter efficiency only.
+
+---
+
+## Revision & Critic Log
+* 2026-11-10: Step 0 and Stage 1 written; Mode B dispatched over leaves P1.1–P4.2.
+* 2026-11-10: Fan-in.
+    * Nine leaf artifacts compiled into the Master Leaf Synthesis Matrix; cross-pollination and anti-patterns written.
+    * Login-node pre-checks verified against the raw outputs: P1.2 $M_{\mathrm{local}}=1.0286$, P4.1 $\langle S^2\rangle$ exact to $10^{-16}$, and the P2.2 smoke JSON.
+* 2026-11-10: Adversarial critic pass returned 25 objections (17 Major). Actions:
+    * Accepted, routes killed: P1.2 (items 5 and 6), P2.1 (10 and 11), P2.2 (12), P3.2 (16 to 18), P4.1 (19 and 20), P4.2 (21 and 22). Details are under Post-critic kills.
+    * Accepted, routes made conditional with a mandatory test redesign: P1.3 (items 7 to 9), P3.1 (items 13 to 15).
+    * Accepted, P1.1 test patched (items 2 and 3):
+        * multi-start including $\lvert\psi_\theta\rvert$ and the ten Haaf fixed-node state;
+        * upper and lower bounds on $f_E$, with a spread guard;
+        * the calibration→AMBIGUOUS and width-trend rules, now implemented in code.
+    * Accepted, P1.1 is a diagnostic rather than a route (item 4). Its value is routing, which is why it is the critical path.
+    * Accepted, master corrected (items 1 and 19):
+        * the variance floor holds only for single-proposal sampling;
+        * the kills that cited it were re-audited, and none rests on the floor alone;
+        * new candidate P2.2′ recorded;
+        * the charge-only lemma is relabelled as standard.
+    * Accepted, not yet fixed: the competing-order half of the Hard Core is missing from most tests (item 23). P1.1 now reports the lowest gap in the fixed-$(N_\uparrow,N_\downarrow)$ space, which is not a same-sector gap (see the correction under the P1.1 result). Every future test must show a same-sector near-degenerate competitor, or say that it tests only the sign half.
+    * Accepted, partly addressed: sign metrics are not commensurate across leaves (item 25). P1.1 reports both $E_{\mathrm{sign}}$ and $E_{\mathrm{FN}}$, so P1.3 can adopt either.
+    * Critical-path test submitted: P1.1 as Slurm array job 329057 (partition `kim`, tasks 0–2, 24 h limit), after the orchestrator reproduced the patched smoke test ($f_E^{\mathrm{up}}=0.1407$, calibration error $4\times10^{-12}\,\Delta E_{\mathrm{tot}}$). Read the verdict with `python3 micro_test.py --aggregate results` in `tests/P1.1_sign_vs_amplitude/`.
+    * 2026-11-11: P1.1 job 329057 finished. All three tasks completed with exit code 0; global verdict PASS (see P1.1 decisive-test result above).
+    * 2026-11-11: The skill was updated with a Persistence Mandate (no early surrender) and a mutation and replenishment engine (Stage 3.3). The six critic-killed leaves (P1.2, P2.1, P2.2, P3.2, P4.1, P4.2) are reopened as **Under Mutation**, with their kill mechanisms as boundary conditions. P1.3 and P3.1 get their redesigned tests.
+    * Saturation note: five of the nine routes died at Gate 0 after a critic search, so the field around NQS for fermions is saturated with relabelable constructions. The surviving value is in diagnostics (P1.1) and certification (P3.1), not in new architectures.
+    * 2026-11-16: The skill was updated with evidence tiers (T0 analysis, T1 toy computation, T2 one-seed pilot, T3 decisive), Gate 4 (scaling and relevance), a per-leaf route portfolio with submit-and-switch scheduling, a mandatory pre-flight dry run, power sizing and checkpointed early stops (SKILL.md Stage 3.5). Applied to the four open leaves (P1.2, P2.1, P3.1, P4.1): each builds a Route Portfolio of at least 3 live routes, runs Gate 4 retroactively on its in-flight route, and advances new routes through T0 and T1 while the in-flight jobs (553724, 526080, 618646, 637776, 637777, 686990, 687302) run. Closed leaves (P1.3, P2.2, P3.2, P4.2) stay closed; their named follow-ups are not reopened.
+    * 2026-11-16: **Cross-node critic** (closing the round; checks only claims that span leaves). Read the master and the latest sections of all ten leaf files. No leaf verdict was changed; the Summary was rewritten and three cross-node anti-patterns were added.
+        * **Major 1 (master).** Stale cross-leaf text contradicts closed results. The P1.1 result section says "network width is not the lever", while P1.3 closed with CAPACITY (width is the lever). The 2026-11-11 cross-leaf finding says every leaf is "very likely NO-TARGET at ED size", which the $4\times4$ OBC instance refuted. The Synthesis Matrix header and Status column and the Critical Path Recommendation still describe round 1. The new Summary supersedes them; the orchestrator should mark those sections as historical.
+        * **Major 2 (P3.2, P2.1, P1.1-P): sector fitting.** P3.2's "easy" branch (the naive energy rule decides 6 of 6 at width 8) was measured at 1160 parameters against $d_{S\chi}=1618$, the regime where P2.1's critic called `nnbf_w` ($P/d=0.70$) a sector-fitting artefact. P3.2's saturation statement "enough capacity, then plain energy comparison works" must not be read beyond ED size. New anti-pattern added.
+        * **Major 3 (P4.1, P1.2): P2.1's short-horizon and matched-$P$ correction propagates.** P4.1's T2a PASS was a 1000-step ratio with `pcg` still falling. T2b fixes the step budget (3000 steps, 12-site rerun) but still scores at matched parameters and equal steps, while `pcg` costs 2.6 times `che` per step at 24 sites. A T2b PASS therefore shows parameter efficiency, not "exact $S$ below projection cost", unless an equal-wall-time `che` arm is added or the claim is scoped. P1.2's T1 kills (300 warm steps on foils still improving) stand as kills, but its diagnostic sentence "no mechanism converts location faster than width" is a 300-step learning-speed statement at $V\le12$. P4.1's R3 "width saturates at 24 sites" rests on a run capped at step 958. It may kill R3, but no other leaf may cite it as a width result.
+        * **Major 4 (P1.2): unprojected closure.** The closing T1 (`t1c_warm.py`) runs on unprojected toys ("projected toys are NO-TARGET"), the round-2 global anti-pattern. Its $4\times3$ $5+5$ foil carries $\Delta E_{\mathrm{sign}}=0.050$, the size P1.1-P attributes mostly to symmetry contamination. The route-versus-wide ratio is fair, because both arms are unprojected, but the closing statement should be scoped to unprojected toys. The projected evidence on the target instance is P1.3's CAPACITY result and the 553724 T2 (FAIL, data only).
+        * **Major 5 (P3.1, P3.2): the inverse-iteration finding propagates.** The P3.1 T3 critic found that an observable-free shift-invert of the $\hat H$ residual tracks 14 of 14 items in exact arithmetic. Three consequences follow. P3.1's round-6 refinement ("information not generated by $\hat H$") is too strong: S1 covers $\hat H$ moments and S2 polynomial filters, while a shift-inverted, rational filter escapes both. The T2-v2 PASS (699756) used exact responses, so it shows that inverse iteration works, not that observable sources add information; only the T3 foil F3 can show that. P3.2's round-5 sentence "the only remaining lever is non-energy information" is superseded by its own round-6 result (block Lanczos, 9 of 9) and by this finding. Both P3 leaves now agree: exact $\hat H$-derived corrections work at ED size, and the open question is whether trained or sampled versions keep the gain at an acceptable cost.
+        * **Major 6 (P4.1, P3.2, P1.x): instance scope.** P4.1's matched-parameter findings (exact-$S$-by-construction forms 4–7 times worse; spin-resolved conditioning 1.7 times better than charge-only; rank-8 `che_k8` beating `nnbf_SG` by 35%) come from one $4\times3$ OBC Hubbard filling ($5+5$, $U=8$), and the generality job 637776 is still running. P3.2's lemma results come from one $4\times3$ torus crossing between spin textures forced by $L_y=3$, not stripe against $d$-wave. The surviving sign-error and seed-dependent pairing evidence comes from one $4\times4$ OBC $t$–$J$ instance, with the $4\times4$ cylinder below the bar. The new Summary states each result with its instance.
+        * **Minor 7 (shared baseline).** The $4\times4$ OBC width-6 projected NNBF baseline is consistent across leaves at converged horizons: $\Delta E_{\mathrm{sign}}$ 0.0117 (P1.3 cold best), 0.0125–0.0136 (451706, P2.1 r3, used by P3.1). P2.1's 75-step values (0.079–0.088) measure a different quantity and must never be quoted beside them. P3.2 (widths 4 and 8, Hubbard torus) and P4.1 (`che` $H=16$, 24 sites) use other instances, and no current cross-leaf comparison mixes them.
+        * **Minor 8 (P1.3).** CAPACITY came from the pre-committed width tie-break with every width UNCLEAR-CONV. The oracle start W$_0$ was worse than the best cold start at every width (0.0213, 0.0195, 0.0138 against 0.0194, 0.0117, 0.0075), so no better-signed state was ever placed to test for a basin. The verdict stands, read as "no better-signed state was reached at these widths, and the error falls with width". The sentence "a run started near the exact signs ends at the cold level" overstates the probe.
+        * **Minor 9 (P1.3 and the cross-leaf picture).** P1.3's closing sentence says its result agrees with "the post-projection error is amplitude-borne". On the $4\times4$ OBC instance the sign part is still 22–24% of the error. The accurate shared statement is "mostly amplitude, and capacity-limited", as in the new Summary.
+        * **Leaf verdicts to re-examine (wording or scope only; no verdict is overturned here):** P1.2 (scope the diagnostic to unprojected toys and 300-step horizons); P1.3 (basin wording); P3.2 (the "easy" branch is in the sector-fitting regime; the "non-energy lever" sentence is superseded); P3.1 (the S1/S2 refinement wording; read 699756 as an inverse-iteration premise); P4.1 (add an equal-wall-time arm to T2b or scope a PASS to parameter efficiency; do not cite the capped W-24 run as a width result).
+    * 2026-11-16: **Master consistency pass** (after the cross-node critic). No historical text deleted and no verdict changed. Added a current leaf-state table and a current critical path; marked the round-1 matrix, the round-2 table and the round-1 critical path as snapshots; added dated "Superseded" or scope notes after the stale claims named in Majors 1, 5 and 6 (P1.1 reading and "width is not the lever", the 2026-11-11 NO-TARGET finding, the cylinder "shared target", P3.1's "not generated by $H$", P3.2's "only remaining lever", the P4.1 single-instance findings, ESR0, P2.2′, the round-1 cross-pollination items); repaired two corrupted `\approx` macros.
+    * 2026-11-16: **Master cleanup after the closed-leaf falsifiers, P2.1 Round 12, P3.1 Round 11 and P4.1 Rounds 8–9.** No verdict changed. The Summary now counts three open leaves (P2.1 reopened by its compiled-update falsifier; its Round 12 sign-capacity T1 is INCONCLUSIVE at one counted size). It states each closed-leaf falsifier with its scope: P1.2 stands but is scoped to unprojected toys; P1.3 is ORACLE-MISS on one width-3 toy; P2.2 has F$_{A2}$ killed and R5.2 AMBIGUOUS; P3.2's sampled Lanczos LOSES, so the practice is scoped to exact arithmetic; P4.2 is INCONCLUSIVE with convergence run 704844. Updated the leaf-state table, the Current Critical Path (P2.1 added; the P3.1 T3 scope amendment; the P4.1 sampling confound and samples pilot 704030) and the stale Pipeline State rows. The P4.1 Pipeline row had five cells in a four-column table; its two middle cells were merged into "Blocked on".
+
+## Compute Ledger (2026-11-16)
+
+Built under Stage 3.5.6 from `sacct` on 2026-11-16. Each id was taken from the master, the leaves or the log names under `tests/`.
+
+* **CPU-hours used** is the sum over array tasks of AllocCPUS times ElapsedRaw, divided by 3600. For running tasks it is the time spent so far.
+* **CPU-h cap** is tasks times CPUs times the wall limit. It is the most the job could have spent.
+* **CPU-h still queued** is CPUs times the remaining wall limit for running tasks, plus CPUs times the wall limit for pending tasks.
+* **Tier** is the evidence tier of Stage 3.5: T1 toy or check, T2 pilot, T3 decisive.
+* **Changed a decision** is read from the leaf text. It is "yes" when the verdict moved a route or a leaf (a kill, a promotion, a re-scope, a closure, a chosen instance). It is "no" when the next step would have been the same without the job, or when the job was cancelled or hit its wall cap first.
+
+**Job ids reused by unrelated jobs (excluded).** The cluster reuses ids, and `sacct -j` returns those rows as well. Only rows whose job name matches this brainstorm's scripts are counted. Rows were excluded from six ids:
+
+* 410199: `expert_then_lambda_sweep`;
+* 410398 and 621074: `pysr_chunk_0`;
+* 625182: `contact-ik-replay`;
+* 685310: `bayes_replay`;
+* 699305: `olmes-pretrain-ext`, as the P2.1 leaf already notes.
+
+Some six-digit numbers in the leaves are not jobs and are excluded: Hilbert-space dimensions (411840, 627264), energy digits (470482, 701092) and others that `sacct` maps to other projects. The eight numbers in `tests/P4.1_cheap_su2_scaling/logs/2026-11-16/dmrg_ref_*.log` are process ids, not job ids. Earlier rounds (r2, r3 and similar) left no job ids, either in the documents or in `sacct`, and are not in the ledger.
+
+### Per-job ledger
+
+| Leaf | Job | Purpose | Tier | CPU-h used | CPU-h cap | CPU-h still queued | Tasks (state) | Verdict | Changed a decision |
+| :--- | :--- | :--- | :--- | ---: | ---: | ---: | :--- | :--- | :--- |
+| P1.1 | 329057 | sign versus amplitude budget | T3 | 162 | 576 | 0 | 3 (done 3) | PASS (sign binding), later superseded | yes |
+| P1.1-P | 407525 | projected sign budget | T3 | 1,736 | 6,912 | 0 | 18 (done 18) | SYMMETRY-DOMINATED | yes |
+| P1.2 | 410216 | FRD premise pilot | T2 | 48 | 192 | 0 | 3 (done 3) | NO-TARGET; round-3 test cancelled | yes |
+| P1.2 | 451916 | FRD round-5 test, 3 seeds | T3 | 3,260 | 10,368 | 0 | 27 (done 27) | FRD-K AMBIGUOUS, FRD-X FAIL | yes |
+| P1.2 | 553724 | FRD-K seeds 44 and 55 | T3 | 1,090 | 3,072 | 0 | 8 (done 5, cancelled 3) | FAIL decided from stored seeds; 3 tasks cancelled | no |
+| P1.2 | 697584 | T2 read-out of trained FRD-K | T2 | 1.9 | 4.0 | 0 | 2 (done 2) | vote mechanism killed | yes |
+| P1.2 | 698178 | T2c read-out | T2 | 1.2 | 4.0 | 0 | 2 (done 2) | REFRAME-CARRIES; leaf closed | yes |
+| P1.3 | 410199 | 4x3 basin premise pilot | T2 | 115 | 864 | 0 | 9 (done 9) | premise falsified at 4x3 | yes |
+| P1.3 | 451976 | width-6 basin pilot | T3 | 444 | 1,344 | 0 | 12 (done 12) | UNCLEAR, ladder continued | no |
+| P1.3 | 507178 | width-6 resume | T3 | 275 | 1,344 | 0 | 12 (done 12) | UNCLEAR-CONV | no |
+| P1.3 | 507179 | widths 4 and 10 | T3 | 808 | 2,688 | 0 | 24 (done 24) | UNCLEAR (all widths UNCLEAR-CONV) | no |
+| P1.3 | 625182 | widths 4 and 10 resume | T3 | 592 | 2,688 | 0 | 24 (done 24) | CAPACITY by width-trend tie-break; leaf closed | yes |
+| P2.1 | 410988 | control pilot, 3 instances | T2 | 179 | 1,152 | 0 | 3 (done 3) | 4x4 OBC keeps sign error; 2 more seeds | yes |
+| P2.1 | 451706 | seed confirmation | T2 | 292 | 1,536 | 0 | 4 (done 4) | target confirmed (median 0.0125t) | yes |
+| P2.1 | 457482 | round-5 NNBF reference pilot | T2 | 128 | 512 | 0 | 2 (done 2) | reference for T2 rules | yes |
+| P2.1 | 526080 | round-5 decisive, 85 tasks | T3 | 8,906 | 32,640 | 0 | 85 (done 85) | AMBIGUOUS; routes then killed at T0 by Gate 4 | no |
+| P2.1 | 698229 | route 6.1 prime T2 | T2 | 5.0 | 64 | 0 | 4 (done 4) | KILL (foil clause) | yes |
+| P2.1 | 699118 | route 7.1 T2 | T2 | 2.2 | 48 | 0 | 3 (done 3) | PROMOTE (attribution caution) | yes |
+| P2.1 | 699305 | route 7.3 T2 | T2 | 2.8 | 16 | 0 | 1 (done 1) | PROMOTE as learning speed only; route closed | no |
+| P2.1 | 699528 | route 6.1 double prime T2 | T2 | 5.6 | 96 | 0 | 6 (done 6) | PROMOTE as learning speed only; route closed | no |
+| P2.1 | 704752 | round-12b sign-capacity ladder | T1 | 3.0 | 108 | 0 | 9 (done 9) | half and quarter KILL at F=4; half sent to larger F | yes |
+| P2.1 | 706240 | round-12d, half at F=16 and F=8 | T1 | 0.0 | 144 | 144 | 12 (pending 12) | pending | pending |
+| P2.2 | 411919 | CGK pilot | T2 | 6.4 | 24 | 0 | 1 (done 1) | kill R4.1 (CGK) | yes |
+| P2.2 | 452238 | round-5 decisive | T3 | 147 | 2,112 | 0 | 44 (done 38, failed 6) | R5.1 FAIL on cost; leaf closed | yes |
+| P2.2 | 621074 | critic screen-bias check | T1 | 8.0 | 144 | 0 | 18 (done 18) | reproduces 452238; KILL, no mutation | yes |
+| P3.1 | 410398 | exact-quantities target pilot | T2 | 446 | 1,152 | 0 | 6 (done 5, failed 1) | NO-GO; re-scope to 4x4 OBC | yes |
+| P3.1 | 451837 | three-seed target probe | T1 | 0.2 | 16 | 0 | 1 (done 1) | TARGET on all three observables | yes |
+| P3.1 | 452146 | EHX gate (formal record) | T1 | 0.4 | 16 | 0 | 1 (done 1) | GATE-FAIL as predicted | no |
+| P3.1 | 452272 | injected-check, real states | T1 | 2.2 | 32 | 0 | 1 (done 1) | low-frequency dominance confirmed | yes |
+| P3.1 | 454376 | ESR0 injected check | T1 | 1.8 | 32 | 0 | 1 (done 1) | INJECT-PASS, downgraded to diagnostic | yes |
+| P3.1 | 456094 | excited-state pilot | T2 | 323 | 384 | 0 | 1 (done 1) | GO at K=3 | yes |
+| P3.1 | 618646 | ESR0 extension to K=6 | T2 | 169 | 512 | 0 | 1 (cancelled 1) | cancelled by queue review | no |
+| P3.1 | 698163 | route 8.3 T2 premise | T2 | 1.6 | 32 | 0 | 1 (done 1) | NO-TARGET | yes |
+| P3.1 | 699756 | route 10.1d T2-v2 premise | T2 | 1.2 | 2.0 | 0 | 1 (done 1) | PASS (8 of 8 items) | yes |
+| P3.1 | 702393 | T3 target probe, width 6 | T3 | 1.5 | 12 | 0 | 6 (done 6) | NO-TARGET; ladder to width 3 | yes |
+| P3.1 | 705747 | T3 target probe, width 3 | T3 | 1.5 | 12 | 0 | 6 (done 6) | TARGET-OK | yes |
+| P3.1 | 705951 | route 10.1d T3 | T3 | 9.9 | 84 | 74 | 6 (running 6) | running | pending |
+| P3.2 | 410917 | control-only pilot | T2 | 67 | 160 | 0 | 1 (done 1) | INTRINSIC-BIAS | yes |
+| P3.2 | 451852 | round-4 array | T3 | 1,412 | 2,304 | 0 | 6 (done 6) | SO-EC killed | yes |
+| P3.2 | 619080 | round-6 ESR kill check | T2 | 84 | 144 | 0 | 3 (done 3) | INCONCLUSIVE by rule; ESR killed by lemma | yes |
+| P4.1 | 411494 | round-3 pilot | T2 | 220 | 1,728 | 0 | 9 (done 9) | che to nnbf gap resolved (ratio 2.10) | yes |
+| P4.1 | 411774 | tabular AGP fit, first try | T1 | 3.1 | 32 | 0 | 1 (cancelled 1) | cancelled (too slow) | no |
+| P4.1 | 411996 | tabular AGP fit | T1 | 32 | 32 | 0 | 1 (timeout 1) | TIMEOUT; redone as 451839 | no |
+| P4.1 | 451839 | AGP completeness fit | T1 | 3.0 | 31 | 0 | 1 (done 1) | KAGP structural premise holds | yes |
+| P4.1 | 451886 | decisive pilot, 3 seeds | T2 | 2,013 | 3,840 | 0 | 15 (done 15) | kagp2 FAIL; che best | yes |
+| P4.1 | 508440 | rank ladder | T3 | 3,214 | 28,160 | 0 | 22 (done 22) | 12-site PASS for R1 | yes |
+| P4.1 | 637776 | R1 generality runs | T3 | 1,424 | 40,960 | 0 | 32 (done 6, cancelled 26) | cancelled by queue review | no |
+| P4.1 | 637777 | rbm extension | T3 | 0.0 | 19,200 | 0 | 15 (cancelled 15) | cancelled, never started | no |
+| P4.1 | 683137 | DMRG size ladder, first | T3 | 0.0 | 10,752 | 0 | 7 (cancelled 7) | cancelled before start; superseded | no |
+| P4.1 | 685310 | VMC size ladder, first | T3 | 0.0 | 103,680 | 0 | 45 (cancelled 45) | cancelled before start; superseded | no |
+| P4.1 | 686990 | VMC size ladder | T3 | 0.0 | 107,520 | 0 | 40 (cancelled 40) | cancelled before start by the Value Gate | no |
+| P4.1 | 687302 | DMRG 24-site reference | T3 | 0.0 | 3,840 | 3,840 | 2 (pending 2) | pending (trimmed to 2 tasks) | pending |
+| P4.1 | 698223 | R2 T2a, 12 sites | T2 | 4.9 | 27 | 0 | 6 (done 6) | PASS (rho 0.449) | yes |
+| P4.1 | 698224 | W-24 width check | T2 | 11 | 24 | 0 | 2 (done 2) | INCOMPLETE (wall cap) | no |
+| P4.1 | 700568 | W-24 resume | T2 | 0.5 | 12 | 0 | 1 (done 1) | hit wall cap again | no |
+| P4.1 | 705203 | W-24 resume 2 | T2 | 0.7 | 12 | 0 | 1 (done 1) | W FAILS | yes |
+| P4.1 | 699824 | R2 T2b, 24 sites | T2 | 48 | 360 | 101 | 6 (running 1, done 4, pending 1) | running | pending |
+| P4.1 | 703587 | T2b equal-wall-time che arms | T2 | 0.0 | 144 | 144 | 2 (pending 2) | pending | pending |
+| P4.1 | 704030 | R15b samples pilot | T2 | 3.9 | 7.0 | 0 | 2 (done 2) | INCOMPLETE (wall cap) | no |
+| P4.1 | 705667 | R15b arm A resume | T2 | 0.5 | 3.0 | 0 | 1 (done 1) | KILL (more samples do not help) | yes |
+| P4.2 | 410960 | zero-shot transfer pilot | T2 | 3.8 | 96 | 0 | 3 (done 3) | not killed, but ran with zero budget (flawed) | no |
+| P4.2 | 451914 | close route 3.1 | T2 | 37 | 96 | 0 | 3 (done 3) | route 3.1 closed | yes |
+| P4.2 | 452196 | capacity pilot | T2 | 184 | 240 | 0 | 1 (done 1) | MUTATE | yes |
+| P4.2 | 604157 | capacity pilot, larger | T2 | 209 | 240 | 0 | 1 (done 1) | MUTATE (same as 452196) | no |
+| P4.2 | 659969 | critic linear-method check | T1 | 1.3 | 80 | 0 | 2 (done 2) | plateau is a stationary point; leaf closed | yes |
+| P4.2 | 704844 | closed-leaf falsifier convergence | T2 | 7.3 | 24 | 11 | 6 (running 4, done 2) | running | pending |
+
+### Totals per leaf
+
+| Leaf | Jobs | CPU-h used | CPU-h still queued | Changed a decision (yes, no, pending) |
+| :--- | ---: | ---: | ---: | :--- |
+| P1.1 | 1 | 162 | 0 | 1, 0, 0 |
+| P1.1-P | 1 | 1,736 | 0 | 1, 0, 0 |
+| P1.2 | 5 | 4,401 | 0 | 4, 1, 0 |
+| P1.3 | 5 | 2,233 | 0 | 2, 3, 0 |
+| P2.1 | 10 | 9,524 | 144 | 6, 3, 1 |
+| P2.2 | 3 | 161 | 0 | 3, 0, 0 |
+| P3.1 | 12 | 959 | 74 | 9, 2, 1 |
+| P3.2 | 3 | 1,564 | 0 | 3, 0, 0 |
+| P4.1 | 20 | 6,979 | 4,085 | 7, 10, 3 |
+| P4.2 | 6 | 443 | 11 | 3, 2, 1 |
+| **All** | **66** | **28,162** | **4,314** | **39, 21, 6** |
+
+The total includes CPU-hours spent so far by running tasks. Jobs that were cancelled spent 2,686 CPU-h in all. Their combined caps were about 285,700 CPU-h, almost all of it in four size-ladder and generality jobs of P4.1 that never started or were stopped early.
+
+### Observations
+
+1. **Biggest spenders.** P2.1 (9,524 CPU-h) and P4.1 (6,979 CPU-h, plus 4,085 still queued) account for 59% of the spend. One job, P2.1's round-5 decisive array 526080 (85 tasks, 8,906 CPU-h), is 32% of the total. Next are 451916 (P1.2, 3,260), 508440 (P4.1, 3,214), 451886 (P4.1, 2,013) and 407525 (P1.1-P, 1,736). Eight jobs used more than 1,000 CPU-h each without the user's approval; all were submitted before the Value Gate existed.
+2. **Verdicts that changed nothing.** 21 of 66 jobs, worth 13,388 CPU-h (48% of the spend). The largest are 526080 (AMBIGUOUS; the routes were then killed by a Gate 4 argument that needed no compute), 637776 (cancelled after 1,424 CPU-h), 553724 (verdict already decided from stored seeds), and P1.3's ladder 451976, 507178 and 507179 (UNCLEAR three times before the CAPACITY tie-break). P4.1 has the most no-change jobs (10 of 20), mostly cancellations and wall-cap hits in the W-24 and R15b chains.
+3. **Cancelled jobs.** Eight: 411774 (too slow, replaced), 553724 (verdict decided), 618646 (ESR0 failed Gate 4), 637776 and 637777 (R1 generality, predicted by argument), and the size ladders 683137, 685310 and 686990 (superseded, then cancelled by the queue review). The last three never started. Still queued: 687302, trimmed to the two 24-site DMRG reference tasks, holds 3,840 CPU-h of wall limit. That is above the 1,000 CPU-h tier, so it should be checked against its value-of-information note or its wall limit cut, since T2b needs only the 24-site reference.
+
+* **2026-11-16: brainstorm paused at the user’s request (for skill improvements).** After the leaf-summary pass (P1.1-P ANSWERED; P1.1, P1.2, P1.3, P2.2, P3.2, P4.2 DORMANT, each with critic sign-off), all agents were stopped and the remaining jobs cancelled: 687302 (24-site DMRG reference), 705951 (P3.1 T3 at width 3), 706240 (P2.1 half at larger F), 707185 (P2.1 `hg` ladder), 707298 (P3.1 12.3d T2). The P4.1 rung-1 polish worker was stopped before running. Open leaves P2.1, P3.1 and P4.1 have no Leaf Status Summary yet; their next steps are recorded in their latest sections. Partial outputs of the cancelled jobs remain on disk.

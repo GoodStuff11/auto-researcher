@@ -1,0 +1,40 @@
+che          seed=0 P=2637 eps=3.427e-04 eps@1000=4.072e-04 S2=-1.1e-17 it=2000 capped=False
+che          seed=1 P=2637 eps=4.260e-04 eps@1000=5.054e-04 S2=+1.3e-17 it=2000 capped=False
+che          seed=2 P=2637 eps=3.257e-04 eps@1000=4.201e-04 S2=+2.5e-17 it=2000 capped=False
+nnbf_SG      seed=0 P=2637 eps=2.306e-04 eps@1000=2.812e-04 S2=+4.3e-18 it=2000 capped=False
+nnbf_SG      seed=1 P=2637 eps=2.070e-04 eps@1000=2.569e-04 S2=-3.2e-19 it=2000 capped=False
+nnbf_SG      seed=2 P=2637 eps=1.885e-04 eps@1000=2.313e-04 S2=-2.6e-17 it=2000 capped=False
+che_rbm1     seed=0 P=2589 eps=3.366e-04 eps@1000=3.893e-04 S2=-5.8e-18 it=2000 capped=False
+che_rbm1     seed=1 P=2589 eps=2.730e-04 eps@1000=3.304e-04 S2=-4.6e-17 it=2000 capped=False
+che_rbm1     seed=2 P=2589 eps=3.421e-04 eps@1000=3.948e-04 S2=-5.1e-18 it=2000 capped=False
+che_rbm2     seed=0 P=2589 eps=3.015e-04 eps@1000=3.624e-04 S2=-3.8e-18 it=2000 capped=False
+che_rbm2     seed=1 P=2589 eps=3.742e-04 eps@1000=4.352e-04 S2=+1.0e-17 it=2000 capped=False
+che_rbm2     seed=2 P=2589 eps=3.801e-04 eps@1000=4.380e-04 S2=-3.0e-17 it=2000 capped=False
+che_rbm3     seed=0 P=2601 eps=3.835e-04 eps@1000=4.393e-04 S2=+6.7e-19 it=2000 capped=False
+che_rbm3     seed=1 P=2601 eps=3.568e-04 eps@1000=4.093e-04 S2=+9.9e-18 it=2000 capped=False
+che_rbm3     seed=2 P=2601 eps=3.040e-04 eps@1000=3.769e-04 S2=-1.6e-17 it=2000 capped=False
+che_k2       seed=0 P=2613 eps=2.324e-04 eps@1000=2.755e-04 S2=-1.7e-17 it=2000 capped=False
+che_k2       seed=1 P=2613 eps=2.111e-04 eps@1000=2.651e-04 S2=+1.3e-17 it=2000 capped=False
+che_k2       seed=2 P=2613 eps=2.262e-04 eps@1000=2.679e-04 S2=-1.3e-17 it=2000 capped=False
+che_k4       seed=0 P=2565 eps=1.847e-04 eps@1000=2.273e-04 S2=+3.2e-18 it=2000 capped=False
+che_k4       seed=1 P=2565 eps=1.743e-04 eps@1000=2.159e-04 S2=-1.4e-17 it=2000 capped=False
+che_k4       seed=2 P=2565 eps=1.505e-04 eps@1000=1.929e-04 S2=-1.0e-17 it=2000 capped=False
+che_k8       seed=0 P=2614 eps=1.122e-04 eps@1000=1.466e-04 S2=-2.7e-18 it=2000 capped=False
+che_k8       seed=1 P=2614 eps=1.460e-04 eps@1000=1.972e-04 S2=-1.4e-17 it=2000 capped=False
+che_k8       seed=2 P=2614 eps=1.351e-04 eps@1000=1.763e-04 S2=+2.9e-17 it=2000 capped=False
+che_kh4      seed=0 P=2580 eps=4.366e-04 eps@1000=5.099e-04 S2=+2.0e-17 it=2000 capped=False
+che_kh4      seed=1 P=2580 eps=4.644e-04 eps@1000=5.373e-04 S2=-1.1e-17 it=2000 capped=False
+che_kh4      seed=2 P=2580 eps=4.736e-04 eps@1000=5.496e-04 S2=+2.6e-18 it=2000 capped=False
+che_drift4000 seed=0 P=2637 eps=3.058e-04 eps@1000=4.072e-04 S2=+1.5e-18 it=4000 capped=False
+VERDICT drift: che 1000->2000 median gain 7.94e-05; che_drift seed 0 eps(2000)=0.00034269484826104414 eps(4000)=3.058e-04 (capped=False)
+VERDICT che_rbm1: rank 2: m=3.366e-04 [2.730e-04, 3.421e-04] g_m=+0.04 g_b=+0.38 | it 1000: g_m=+0.19 g_b=+0.44 | cost ok=True
+VERDICT che_rbm2: rank 4: m=3.742e-04 [3.015e-04, 3.801e-04] g_m=-0.23 g_b=+0.18 | it 1000: g_m=-0.09 g_b=+0.25 | cost ok=True
+VERDICT che_rbm3: rank 8: m=3.568e-04 [3.040e-04, 3.835e-04] g_m=-0.10 g_b=+0.16 | it 1000: g_m=+0.07 g_b=+0.17 | cost ok=True
+VERDICT che_k2: rank 2: m=2.262e-04 [2.111e-04, 2.324e-04] g_m=+0.86 g_b=+0.84 | it 1000: g_m=+0.93 g_b=+0.81 | cost ok=True
+VERDICT che_k4: rank 4: m=1.743e-04 [1.505e-04, 1.847e-04] g_m=+1.24 g_b=+1.28 | it 1000: g_m=+1.25 g_b=+1.22 | cost ok=True
+VERDICT che_k8: rank 8: m=1.351e-04 [1.122e-04, 1.460e-04] g_m=+1.53 g_b=+1.56 | it 1000: g_m=+1.49 g_b=+1.48 | cost ok=True
+VERDICT che_kh4: rank 4: m=4.644e-04 [4.366e-04, 4.736e-04] g_m=-0.90 g_b=-0.81 | it 1000: g_m=-0.72 g_b=-0.58 | cost ok=True
+VERDICT FAMILY rbm (c-varying row scalings): AMBIGUOUS (che_rbm1 at it 2000: gap fraction < 0.5, seed ranges overlap che, gain <= che 1000->2000 drift; che_rbm1 at it 1000: gap fraction < 0.5, gain <= che 1000->2000 drift; gain drops with rank; che_drift at 4000 (3.058e-04) reaches che_rbm1); best rank che_rbm1; g_m by rank +0.04, -0.23, -0.10
+VERDICT FAMILY k (fixed offsets, shared backflow): PASS; best rank che_k8; g_m by rank +0.86, +1.24, +1.53
+VERDICT FAMILY kh4 (containing foil): FAIL; best rank che_kh4; g_m by rank -0.90
+VERDICT attribution: RANK (projected-mixture rank; narrow multi-component PHF result)

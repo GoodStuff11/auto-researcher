@@ -1,0 +1,7 @@
+[14:27:49] instance 23 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 5, 'ndn': 5, 'tp': -0.25, 'J': 0.4} D=16632 E0=-7.2330203724 gap=0.0847 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=724 arm=quarter seed=11 threads=1
+[14:27:50] arm quarter: F=4 Ha=0 n_eff=506 P/dim_S_chi=0.70 calib=2.40e-14
+[14:27:50] resumed from results_preflight/resume/ckpt/quarter_inst23_s11.json at step 30 (SR CPU so far 8 s)
+[14:27:56] quarter: it    50 E-E0 = 0.176015 best = 0.160658 (0.283 CPU-s/step)
+[14:27:58] quarter: stop = max-steps; best E - E0 = 0.150357; SR CPU 17 s
+[14:28:03] quarter [P]: dE_tot=0.150357 dE_sign=0.016018 f_E=0.107 spread=5.9e-14; max |masked entry| proposed by SR = 0.0e+00
+[14:28:03] wrote results_preflight/resume/t1_quarter_inst23_s11.json

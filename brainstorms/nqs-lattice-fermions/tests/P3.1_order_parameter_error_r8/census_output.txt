@@ -1,0 +1,9 @@
+[09:31:14] 3x2: D=90 sector levels found 12 (N_LOW=11) E0=-4.062964 chi={'My': -1, 'Mx': -1} S0=1 R_PAIR=1.64 (1 pairs) R_SITE=1.83 (4 pairs) (0.1s)
+[09:31:14] census 3x2: sector dim 12 lowest omegas [1.399, 1.691, 2.339, 2.509, 3.303, 3.675, 3.891, 5.29, 5.941, 6.331] #levels(omega<=1t) 0
+[09:31:17] 3x3: D=1680 sector levels found 60 (N_LOW=59) E0=-6.558475 chi={'My': 1, 'Mx': 1, 'D': 1} S0=0 R_PAIR=1.83 (12 pairs) R_SITE=2.32 (2 pairs) (2.6s)
+[09:31:17] census 3x3: sector dim 60 lowest omegas [0.387, 1.461, 1.701, 1.908, 2.056, 2.35, 2.588, 2.985, 3.058, 3.284] #levels(omega<=1t) 1
+[09:31:22] 6x2: D=34650 sector levels found 62 (N_LOW=60) E0=-8.765585 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=4.10 (7 pairs) R_SITE=4.18 (4 pairs) (5.1s)
+[09:31:22] census 6x2: sector dim None lowest omegas [0.231, 0.334, 0.417, 0.464, 0.527, 0.706, 0.757, 0.792, 0.827, 0.887] #levels(omega<=1t) 11
+[09:31:27] 4x3: D=34650 sector levels found 62 (N_LOW=60) E0=-8.948665 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.59 (10 pairs) R_SITE=2.96 (9 pairs) (4.9s)
+[09:31:27] census 4x3: sector dim None lowest omegas [0.161, 0.254, 0.323, 0.391, 0.483, 0.548, 0.699, 0.795, 0.862, 0.921] #levels(omega<=1t) 11
+[09:31:27] total 13s

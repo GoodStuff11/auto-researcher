@@ -1,0 +1,8 @@
+[rbm PASS spin, k4 FAIL] che_rbm: PASS | che_k4: FAIL | attribution: SPIN-RESOLVED
+[both PASS, gain = rank] che_rbm: PASS | che_k4: PASS | attribution: GAUSSIAN-RANK
+[both FAIL] che_rbm: FAIL | che_k4: FAIL | attribution: n/a
+[overlap AMBIGUOUS] che_rbm: AMBIGUOUS | che_k4: AMBIGUOUS | attribution: n/a
+[cost gate] che_rbm: FAIL (cost gate) | che_k4: FAIL (cost gate) | attribution: n/a
+[missing seed] ALL: INCOMPLETE (che_rbm
+[S^2 not exact] ALL: INCOMPLETE (che_rbm
+[no gap] ALL: NO-TARGET (che -> nnbf_SG gap not resolved)

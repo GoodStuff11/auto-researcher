@@ -1,0 +1,6 @@
+OK  both pass: hg T1-PASS (licenses the sizes 24 and 25 ladder) (want T1-PASS); cbh T1-PASS (licenses the sizes 24 and 25 ladder) (want T1-PASS)
+OK  hg kill both: hg KILL (rho > 1.25 at both sizes) (want KILL); cbh T1-PASS (licenses the sizes 24 and 25 ladder) (want T1-PASS)
+OK  cbh worse than half: hg T1-PASS (licenses the sizes 24 and 25 ladder) (want T1-PASS); cbh KILL (rho > 1.25 at both sizes) (want KILL)
+OK  cbh one over: hg T1-PASS (licenses the sizes 24 and 25 ladder) (want T1-PASS); cbh T1-PASS (licenses the sizes 24 and 25 ladder) (want T1-PASS)
+OK  unconverged: hg INCONCLUSIVE (1 counted sizes) (want INCONCLUSIVE); cbh INCONCLUSIVE (1 counted sizes) (want INCONCLUSIVE)
+SYNTHETIC PASS (5 cases)

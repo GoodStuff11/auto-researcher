@@ -1,0 +1,9 @@
+[16:48:12] 4x3: D=34650 sector levels found 17 (N_LOW=15) E0=-8.948665 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.59 (10 pairs) R_SITE=2.96 (9 pairs) (3.5s)
+[16:48:12] census 4x3: {"size": "4x3", "V": 12, "D": 34650, "nup": 4, "n": 0.6666666666666666, "omega1": 0.16083591005649467, "n_found": 17, "n_low": 15, "omega_top": 1.2385365673037985, "nwin": 11, "dim_sector": null, "ov2": 0.9393790503782488, "E0": -8.948664919561418, "chi": "{'My': 1, 'Mx': 1}", "S0": 0.0, "n_pair": 10, "n_site": 9}
+[16:48:12] gap surgery: level 1 moved from omega 0.1608 to 0.0200
+[16:48:12] build cpu 13s; MSR sources: pair 4 (dists [2.83, 2.92, 3.0, 3.16]), spin 4 (dists [2.83, 3.0, 3.16, 3.61]), charge 4 (dists [2.83, 3.0, 3.16, 3.61])
+[16:48:57] 4x3 tp      w1 0.060 g(OBS) 0.469 g(DAV) 0.217 g(L1R) 11.279 a2 OBS 0.66 MSR 2.41 cpu 175s | pair OBS +0.25 DAV +0.22 MSR +0.37 RND +0.19 | spin OBS +0.04 DAV +0.02 MSR +0.04 RND +0.09 | charge(ns) OBS +2.39 DAV +1.84 MSR -2.22 RND -0.94
+[16:49:43] 4x3 J       w1 0.060 g(OBS) 0.487 g(DAV) 0.185 g(L1R) 11.288 a2 OBS 0.68 MSR 2.24 cpu 176s | pair OBS +0.24 DAV +0.17 MSR +0.34 RND +0.18 | spin OBS +0.06 DAV +0.04 MSR +0.04 RND +0.11 | charge(ns) OBS -0.69 DAV -0.07 MSR +1.23 RND -0.45
+[16:50:22] 4x3 dens_s0 w1 0.046 g(OBS) 0.232 g(DAV) 0.255 g(L1R) 10.572 a2 OBS 0.88 MSR 2.75 cpu 156s | pair OBS +0.67 DAV +0.59 MSR +0.71 RND +0.30 | spin OBS +0.14 DAV -0.01 MSR +0.32 RND +0.15 | charge OBS +1.01 DAV +0.87 MSR +1.01 RND +0.31
+[16:50:22] soft CPU guard: stop before state 3
+[16:50:22] total CPU 521s

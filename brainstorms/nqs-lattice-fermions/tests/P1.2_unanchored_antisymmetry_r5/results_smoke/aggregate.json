@@ -1,0 +1,30 @@
+{
+ "8:frdK": {
+  "rho_sign": 2.783301606063801,
+  "rho_tot": 0.5345564090158612,
+  "rho_abl": 0.555766708666485,
+  "disjoint": false,
+  "wins": 1,
+  "kappa": 3.792220350882021,
+  "guards": true,
+  "mc_ok": true,
+  "mc_fail": false,
+  "verdict": "FAIL",
+  "route": "NO-TARGET",
+  "premise": 0.001160912295864236
+ },
+ "8:frdX": {
+  "rho_sign": 4.933604401289341,
+  "rho_tot": 1.1221073936305355,
+  "rho_abl": 0.9851368870672828,
+  "disjoint": false,
+  "wins": 0,
+  "kappa": 25.357653524466613,
+  "guards": true,
+  "mc_ok": true,
+  "mc_fail": false,
+  "verdict": "FAIL",
+  "route": "NO-TARGET",
+  "premise": 0.001160912295864236
+ }
+}

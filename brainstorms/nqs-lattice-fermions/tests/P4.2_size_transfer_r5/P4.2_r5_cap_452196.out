@@ -1,0 +1,29 @@
+[     0.0s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
+[     0.3s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
+[     1.0s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
+[     1.9s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
+[     1.9s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
+[     1.9s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
+[     1.9s] SELFTEST PASSED
+[   146.4s] target 4x4o 4x4:6 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=1681680 n_irrep=210430 E0=-11.3880108863 gap/V=4.6974e-03 (sign half only) npar=426
+[   146.4s] arm scr: charged source wall time 0.0s
+[   325.6s] arm scr@0    : E=-6.95563195 eps=2.7702e-01 (raw 2.7350e-01, irrep weight 0.485) A/V=4.3998e-02 sign-agree=0.3867 Pd=1.6769e-03 fid=0.0157
+[  1812.0s] arm scr@10   : E=-9.60160663 eps=1.1165e-01 (raw 1.1395e-01, irrep weight 0.517) A/V=2.0361e-02 sign-agree=0.5345 Pd=9.6006e-04 fid=0.0695
+[  3317.0s] arm scr@20   : E=-10.08534527 eps=8.1417e-02 (raw 8.2639e-02, irrep weight 0.444) A/V=2.0367e-02 sign-agree=0.4634 Pd=9.3323e-04 fid=0.0622
+[  7523.9s] arm scr@50   : E=-10.56449664 eps=5.1470e-02 (raw 7.5062e-02, irrep weight 0.357) A/V=8.0380e-03 sign-agree=0.8670 Pd=2.6227e-03 fid=0.4734
+[  8888.7s]   [scr] step 60/600 eps=4.96861e-02 lr=0.2
+[ 14471.8s] arm scr@100  : E=-10.63169245 eps=4.7270e-02 (raw 6.9699e-02, irrep weight 0.448) A/V=7.6605e-03 sign-agree=0.8715 Pd=2.5674e-03 fid=0.5053
+[ 17214.2s]   [scr] step 120/600 eps=4.67813e-02 lr=0.2
+[ 21363.5s] arm scr@150  : E=-10.64819258 eps=4.6239e-02 (raw 7.0672e-02, irrep weight 0.416) A/V=7.3996e-03 sign-agree=0.8732 Pd=2.4730e-03 fid=0.5206
+[ 25475.8s]   [scr] step 180/600 eps=4.58483e-02 lr=0.2
+[ 33742.7s]   [scr] step 240/600 eps=4.52837e-02 lr=0.2
+[ 42006.5s]   [scr] step 300/600 eps=4.48502e-02 lr=0.2
+[ 42067.6s] arm scr@300  : E=-10.67040812 eps=4.4850e-02 (raw 7.7186e-02, irrep weight 0.279) A/V=7.1757e-03 sign-agree=0.8722 Pd=2.3542e-03 fid=0.5453
+[ 50279.9s]   [scr] step 360/600 eps=4.44824e-02 lr=0.2
+[ 58487.6s]   [scr] step 420/600 eps=4.41803e-02 lr=0.2
+[ 62603.2s] arm scr@450  : E=-10.68333124 eps=4.4042e-02 (raw 8.1528e-02, irrep weight 0.205) A/V=7.2119e-03 sign-agree=0.8695 Pd=2.3237e-03 fid=0.5572
+[ 66648.6s]   [scr] step 480/600 eps=4.39221e-02 lr=0.2
+[ 74799.9s]   [scr] step 540/600 eps=4.37090e-02 lr=0.121
+[ 82919.5s]   [scr] step 600/600 eps=4.35294e-02 lr=0.2
+[ 82978.3s] arm scr@600  : E=-10.69154081 eps=4.3529e-02 (raw 8.3665e-02, irrep weight 0.174) A/V=7.1975e-03 sign-agree=0.8690 Pd=2.3088e-03 fid=0.5640
+[ 82978.3s] done (/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/results_capacity/scr_s0.json)

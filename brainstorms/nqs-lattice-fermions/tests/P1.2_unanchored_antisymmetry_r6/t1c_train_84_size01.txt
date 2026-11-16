@@ -1,0 +1,12 @@
+[11:09:55] threads 1
+[11:09:58] per-step CPU-s: dt@0=0.032, widet@0=0.019, dt@1=0.504, widet@1=0.104
+[11:09:58] budget train: projected 455 CPU-s for 8 runs + 4 used now; invocation cap 590; task ledger 871 of 1800
+[11:10:06] size 0 dt seed 11: n_params 732 (foil 486) width 6 H2 6 dE_tot 0.01718 dE_sign 0.00133 (7 CPU-s)
+[11:10:13] size 0 dt seed 22: n_params 732 (foil 486) width 6 H2 6 dE_tot 0.00885 dE_sign 0.00109 (7 CPU-s)
+[11:10:17] size 0 widet seed 11: n_params 746 (foil 486) width 10 H2 0 dE_tot 0.01946 dE_sign 0.00107 (4 CPU-s)
+[11:10:21] size 0 widet seed 22: n_params 746 (foil 486) width 10 H2 0 dE_tot 0.00619 dE_sign 0.00079 (4 CPU-s)
+[11:12:27] size 1 dt seed 11: n_params 1476 (foil 1110) width 6 H2 6 dE_tot 0.07319 dE_sign 0.01280 (126 CPU-s)
+[11:14:32] size 1 dt seed 22: n_params 1476 (foil 1110) width 6 H2 6 dE_tot 0.07087 dE_sign 0.00934 (125 CPU-s)
+[11:15:07] size 1 widet seed 11: n_params 1545 (foil 1110) width 9 H2 0 dE_tot 0.04821 dE_sign 0.00744 (34 CPU-s)
+[11:15:39] size 1 widet seed 22: n_params 1545 (foil 1110) width 9 H2 0 dE_tot 0.05805 dE_sign 0.00899 (32 CPU-s)
+[11:15:39] invocation CPU total 343 s (ledger now 1214 s)

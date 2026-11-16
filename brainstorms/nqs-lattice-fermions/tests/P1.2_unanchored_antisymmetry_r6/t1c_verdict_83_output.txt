@@ -1,0 +1,11 @@
+[11:09:48] threads 1
+synthetic [1.0, 0.95]: KILL (want KILL) OK
+synthetic [0.5, 0.55]: PASS-W (want PASS-W) OK
+synthetic [0.8, 0.95]: UNDECIDED (want UNDECIDED) OK
+synthetic [0.6, 0.7]: PASS-W (want PASS-W) OK
+synthetic [0.5, 0.65]: UNDECIDED (want UNDECIDED) OK
+  8.3 size 0: dEs foil 0.00401 wide 0.00075 ws 0.00066 r 0.873 counted False
+  8.3 size 1: dEs foil 0.01107 wide 0.00866 ws 0.00858 r 0.991 counted True
+  8.3 size 2: dEs foil 0.04962 wide 0.03801 ws 0.03766 r 0.991 counted True
+VERDICT route 8.3: KILL
+task CPU ledger: 871 s

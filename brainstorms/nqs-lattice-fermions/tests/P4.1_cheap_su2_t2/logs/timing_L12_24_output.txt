@@ -1,0 +1,17 @@
+[10:14:09] L=24 Ne=20 che   H= 16 P=  9711 t_step=   0.266s (mcmc 0.07 eloc 0.17 grad 0.02 sr 0.00) [32 chains]
+[10:14:11] L=24 Ne=20 pcg   H= 25 P=  9788 t_step=   1.113s (mcmc 0.23 eloc 0.83 grad 0.07 sr 0.00) [32 chains]
+[10:14:11] L=24 Ne=20 r1    H= 44 P=  9795 t_step=   0.151s (mcmc 0.06 eloc 0.08 grad 0.01 sr 0.00) [32 chains]
+[10:14:11] L=12 Ne=10 che   H= 16 P=  2637 t_step=   0.074s (mcmc 0.03 eloc 0.03 grad 0.01 sr 0.00) [32 chains]
+[10:14:12] L=12 Ne=10 pcg   H= 15 P=  2696 t_step=   0.153s (mcmc 0.07 eloc 0.06 grad 0.03 sr 0.00) [32 chains]
+[10:14:12] L=12 Ne=10 r1    H= 25 P=  2596 t_step=   0.060s (mcmc 0.03 eloc 0.02 grad 0.01 sr 0.00) [32 chains]
+[10:14:13] L=24 Ne=20 che   H= 48 P= 26639 t_step=   0.210s (mcmc 0.07 eloc 0.11 grad 0.03 sr 0.00) [32 chains]
+[10:14:13] L=12: t_step(pcg, H=15) / t_step(che, H=16) = 2.06
+[10:14:13] L=12: t_step(r1, H=25) / t_step(che, H=16) = 0.80
+[10:14:13] L=24: t_step(che, H=48) / t_step(che, H=16) = 0.79
+[10:14:13] L=24: t_step(pcg, H=25) / t_step(che, H=16) = 4.19
+[10:14:13] L=24: t_step(r1, H=44) / t_step(che, H=16) = 0.57
+[10:14:13] wrote logs/timing/L12_24/timing_t2_kim-compute-03.physics.cornell.edu_t4.json
+
+real	0m8.643s
+user	0m19.106s
+sys	0m2.772s

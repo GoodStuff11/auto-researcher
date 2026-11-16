@@ -1,0 +1,118 @@
+{
+ "args": {
+  "mode": "run",
+  "size": "4x3",
+  "seed": 22,
+  "gs_width": 3,
+  "gs_iters": 1200,
+  "resp_cold": 600,
+  "resp_warm": 200,
+  "T": 4,
+  "resp_init": "gs",
+  "sr_lr": 0.05,
+  "sr_shift": 0.001,
+  "sr_samples": 2000,
+  "o_chunk": 8,
+  "chunk": 32768,
+  "n_low": 15,
+  "timing_steps": 5,
+  "params_dir": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r10/results/t3/params",
+  "out": "results/t3/t3_4x3_w3_s22_probe.json",
+  "aggregate": null,
+  "checkpoint": "final",
+  "selftest_verdict": false,
+  "cpu_budget": 1000000000.0,
+  "stop_after": "A",
+  "target": "trained",
+  "dry_target": false
+ },
+ "size": "4x3",
+ "seed": 22,
+ "E0": -8.94866491956139,
+ "a0": {
+  "pair": 0.0018562878988306354,
+  "spin": -0.013462155588038208,
+  "charge": -0.0028409830890823223
+ },
+ "items": {
+  "pair": {
+   "a_psi": 0.0019632922439124876,
+   "delta": -0.00010700434508185215,
+   "scored": false
+  },
+  "spin": {
+   "a_psi": -0.01104296937138264,
+   "delta": -0.0024191862166555687,
+   "scored": true
+  },
+  "charge": {
+   "a_psi": -0.0024585622093509256,
+   "delta": -0.00038242087973139674,
+   "scored": true
+  }
+ },
+ "ratios": {},
+ "resp": [],
+ "cpu": {
+  "A": 902.0960389999999,
+  "total": 909.69904
+ },
+ "phase": "A",
+ "gs_train": {
+  "steps": 1200,
+  "best": -8.856673754152432,
+  "cpu": 902.082269,
+  "trace": [
+   [
+    0,
+    -7.477280050919856
+   ],
+   [
+    100,
+    -8.767378366498972
+   ],
+   [
+    200,
+    -8.822929935841627
+   ],
+   [
+    300,
+    -8.842151489854427
+   ],
+   [
+    400,
+    -8.84581469327444
+   ],
+   [
+    500,
+    -8.849487403548721
+   ],
+   [
+    600,
+    -8.851553250985837
+   ],
+   [
+    700,
+    -8.85270659442538
+   ],
+   [
+    800,
+    -8.85162827967237
+   ],
+   [
+    900,
+    -8.85468533768384
+   ],
+   [
+    1000,
+    -8.856572296065865
+   ],
+   [
+    1100,
+    -8.856649999723908
+   ]
+  ]
+ },
+ "overlap2": 0.9522754888316874,
+ "dE": 0.09199116540895957
+}

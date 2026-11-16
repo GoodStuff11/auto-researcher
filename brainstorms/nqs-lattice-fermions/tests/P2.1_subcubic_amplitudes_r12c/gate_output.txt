@@ -1,0 +1,6 @@
+[gate] 5x3obc  half_F8 : ratio nerr=6.37e-15  E_loc rel=4.70e-16  drift after 2013 accepts: Mi 2.16e-14 C,H 7.27e-15 E 6.14e-15 -> PASS
+[gate] 5x3obc  half_F16: ratio nerr=8.98e-15  E_loc rel=6.21e-16  drift after 2007 accepts: Mi 2.97e-14 C,H 1.13e-14 E 8.34e-15 -> PASS
+[gate] 6       half_F8 : ratio nerr=1.66e-14  E_loc rel=3.54e-15  drift after 2018 accepts: Mi 2.02e-13 C,H 4.65e-15 E 3.13e-13 -> PASS
+[gate] 6       half_F16: ratio nerr=4.93e-14  E_loc rel=7.02e-14  drift after 2004 accepts: Mi 4.75e-14 C,H 6.51e-15 E 1.18e-14 -> PASS
+GATES: PASS
+CPU user=21.14 sys=0.85 wall=22.15

@@ -1,0 +1,28 @@
+[10:02:48] size 0 checks: aoK force vs fd rel 1.5e-08; alpha=0 vs base 0.0e+00; finite True
+[10:02:52] size 0 nnbfW seed 11: n_params 356 (T 356) dE_tot 0.03386 dE_sign 0.00489 (4 s)
+[10:02:56] size 0 nnbfW seed 22: n_params 356 (T 356) dE_tot 0.04001 dE_sign 0.00770 (4 s)
+[10:03:00] size 0 nnbfJ seed 11: n_params 352 (T 356) dE_tot 0.04757 dE_sign 0.01132 (4 s)
+[10:03:04] size 0 nnbfJ seed 22: n_params 352 (T 356) dE_tot 0.09184 dE_sign 0.03438 (4 s)
+[10:03:18] size 0 aoK seed 11: n_params 356 (T 356) dE_tot 0.04474 dE_sign 0.01652 (14 s)
+[10:03:32] size 0 aoK seed 22: n_params 356 (T 356) dE_tot 0.03885 dE_sign 0.00916 (14 s)
+[10:03:40] size 1 nnbfW seed 11: n_params 564 (T 564) dE_tot 0.07975 dE_sign 0.02756 (7 s)
+[10:03:46] size 1 nnbfW seed 22: n_params 564 (T 564) dE_tot 0.08619 dE_sign 0.01947 (7 s)
+[10:03:53] size 1 nnbfJ seed 11: n_params 560 (T 564) dE_tot 0.09013 dE_sign 0.01553 (7 s)
+[10:04:01] size 1 nnbfJ seed 22: n_params 560 (T 564) dE_tot 0.13329 dE_sign 0.05143 (7 s)
+[10:04:33] size 1 aoK seed 11: n_params 530 (T 564) dE_tot 0.08566 dE_sign 0.03307 (33 s)
+[10:05:06] size 1 aoK seed 22: n_params 530 (T 564) dE_tot 0.05335 dE_sign 0.01183 (33 s)
+[10:05:55] size 2 nnbfW seed 11: n_params 820 (T 820) dE_tot 0.10861 dE_sign 0.02630 (49 s)
+[10:06:44] size 2 nnbfW seed 22: n_params 820 (T 820) dE_tot 0.08492 dE_sign 0.01061 (49 s)
+[10:07:29] size 2 nnbfJ seed 11: n_params 816 (T 820) dE_tot 0.12229 dE_sign 0.05138 (45 s)
+[10:08:18] size 2 nnbfJ seed 22: n_params 816 (T 820) dE_tot 0.13117 dE_sign 0.03986 (49 s)
+[10:10:34] size 2 aoK seed 11: n_params 813 (T 820) dE_tot 0.08286 dE_sign 0.02383 (137 s)
+[10:12:44] size 2 aoK seed 22: n_params 813 (T 820) dE_tot 0.06953 dE_sign 0.01990 (130 s)
+  size=0 V=8 dEs_W=0.006293 dEs_J=0.02285 dEs_aoK=0.01284 r_J=0.5619 r_W=2.04 r_star=2.04 r_JW=3.631 counted=True
+  size=1 V=10 dEs_W=0.02351 dEs_J=0.03348 dEs_aoK=0.02245 r_J=0.6706 r_W=0.9548 r_star=0.9548 r_JW=1.424 counted=True
+  size=2 V=12 dEs_W=0.01845 dEs_J=0.04562 dEs_aoK=0.02187 r_J=0.4793 r_W=1.185 r_star=1.185 r_JW=2.472 counted=True
+VERDICT AO-family premise (AO-F, AO-L): KILL (valid True)
+596.7 s wall
+
+real	9m57.242s
+user	34m46.297s
+sys	3m17.661s

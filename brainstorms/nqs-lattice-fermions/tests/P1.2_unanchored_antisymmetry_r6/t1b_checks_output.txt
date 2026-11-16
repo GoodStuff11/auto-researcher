@@ -1,0 +1,9 @@
+[10:23:47] threads 1
+[10:23:47] CHECK 1 size 0: max |R_G - R_exact| / max|R| = 4.68e-16 (edges 52, active frac 0.194)
+[10:23:47] CHECK 1 size 1: max |R_G - R_exact| / max|R| = 8.90e-16 (edges 68, active frac 0.178)
+[10:23:47] CHECK 2 feat G: analytic force vs finite differences, worst rel 3.30e-08 (12 params)
+[10:23:47] CHECK 4 feat G: per_sample_O vs force rows rel 3.75e-16
+[10:23:47] CHECK 2 feat O: analytic force vs finite differences, worst rel 1.96e-08 (12 params)
+[10:23:47] CHECK 4 feat O: per_sample_O vs force rows rel 1.16e-16
+[10:23:47] CHECK 3: W4 = 0 vs pass-1 NNBF max abs diff 0.00e+00
+[10:23:47] CHECKS valid: True

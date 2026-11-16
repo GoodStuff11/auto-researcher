@@ -1,0 +1,15 @@
+[11:02:15] check grad [lh_3x3 {'mode': 'lh', 'patch': '3x3', 'F': 3, 'Ha': 3} inst 9 P=267, proj=none]: analytic 1.6655590297e+00 fd 1.6655590298e+00 rel 6.3e-11
+[11:02:15] check grad [lh_3x3 {'mode': 'lh', 'patch': '3x3', 'F': 3, 'Ha': 3} inst 9 P=267, proj=chi]: analytic -9.1376043276e-01 fd -9.1376043310e-01 rel 3.7e-10
+[11:02:15] check grad [nnbf_c {'mode': 'full', 'Hs': 24} inst 9 P=936, proj=none]: analytic 3.4674909176e+00 fd 3.4674909071e+00 rel 3.0e-09
+[11:02:15] check grad [nnbf_c {'mode': 'full', 'Hs': 24} inst 9 P=936, proj=chi]: analytic -5.4529231865e+00 fd -5.4529231828e+00 rel 6.8e-10
+[11:02:15] check grad [lh_3x3 {'mode': 'lh', 'patch': '3x3', 'F': 3, 'Ha': 6} inst 8 P=555, proj=none]: analytic -5.6709196489e-01 fd -5.6709196583e-01 rel 1.7e-09
+[11:02:15] check grad [lh_3x3 {'mode': 'lh', 'patch': '3x3', 'F': 3, 'Ha': 6} inst 8 P=555, proj=chi]: analytic 1.2331597370e+00 fd 1.2331597379e+00 rel 6.9e-10
+[11:02:15] check O_P [lh_3x3 inst 8] vs fd: 2.8e-08
+[11:02:20] check fast E_loc == (H psi)/psi on 1680 of 1680 configs [lh_3x3, 3x3 OBC]: 2.9e-13
+[11:02:20] check grad [nnbf_c {'mode': 'full', 'Hs': 24} inst 8 P=1860, proj=none]: analytic 1.3463379899e+01 fd 1.3463379896e+01 rel 2.6e-10
+[11:02:20] check grad [nnbf_c {'mode': 'full', 'Hs': 24} inst 8 P=1860, proj=chi]: analytic -1.8433175769e+00 fd -1.8433175795e+00 rel 1.4e-09
+[11:02:20] ALL CHECKS PASSED
+
+real	0m5.684s
+user	0m6.577s
+sys	0m0.185s

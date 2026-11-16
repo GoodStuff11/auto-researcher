@@ -1,0 +1,3 @@
+[A_half_F4] L=12 Ne=126 V_h=72 sweeps= 2736 t_sw=7.232e-03s tau=1.08+-0.12 cost=7.825e-03s acc=0.32 <E>/Ne=-0.523 cpu=20s
+[A_half_F4] L=16 Ne=224 V_h=128 sweeps= 4017 t_sw=2.243e-02s tau=1.21+-0.12 cost=2.724e-02s acc=0.32 <E>/Ne=-0.520 cpu=90s
+CPU user=116.30 sys=0.49 wall=117.02

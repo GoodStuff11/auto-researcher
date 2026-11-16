@@ -1,0 +1,12 @@
+some run capped: comparing at common iteration 100
+  N        che     che_k2     che_k8        pcg    che_loc   (eps; P in brackets)
+  6  1.752e-11 -6.718e-12 -6.718e-12  1.447e-09  1.802e-03   [222, 247, 397, 338, 146]
+  8  1.247e-04  7.293e-05  9.378e-05  1.253e-04  5.764e-03   [395, 444, 738, 491, 183]
+ 10  1.121e-03  9.025e-04  8.876e-04  1.518e-03  6.980e-03   [620, 701, 1187, 656, 232]
+premise P_T1 (eps_che >= 1e-4): valid sizes N = [8, 10]
+ratios eps_X/eps_che:
+  che_k2   N=8: 0.585  N=10: 0.805
+  che_k8   N=8: 0.752  N=10: 0.792
+  pcg      N=8: 1.004  N=10: 1.355
+  che_loc  N=8: 46.208  N=10: 6.228
+VERDICTS: INCOMPLETE / NO-TARGET (N = 6 and N = 10 must both be valid)

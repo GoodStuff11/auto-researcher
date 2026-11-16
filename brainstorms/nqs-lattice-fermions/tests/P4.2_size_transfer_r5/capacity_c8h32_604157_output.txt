@@ -1,0 +1,7 @@
+target 4x4:6 OBC t'=-0.25 J=0.4 E0=-11.3880108863 n_irrep=210430 npar=818
+  scr seed 0: n*=600 done=True eps(n*)=4.12536e-02 eps_inf=4.06064e-02 (geometric extrapolation, r=0.693, drop over last 100 steps = 0.007 of eps(n*))
+  eps_inf=4.06064e-02  relerr_inf=0.0571  (capacity rule threshold 0.03)
+  scr sign share at step 150: 0.1614 (sign claim allowed only if >= 0.1)
+  P2.1 projected NNBF eps at n*=600: {11: 0.0035037347684542253, 22: 0.004232299143454243, 33: 0.004000731018454218} median 4.00073e-03 -> moot (VOID would gate PASS)
+  FLAG abs 1%: relerr_inf > 0.01 (flag only)
+CAPACITY DECISION: MUTATE (relerr_inf 0.0571 > 0.03); do NOT run the array; enlarge the size-independent family (--channels, --bf-hidden) and re-pilot

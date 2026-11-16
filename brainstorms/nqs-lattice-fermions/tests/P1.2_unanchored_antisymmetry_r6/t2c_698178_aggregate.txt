@@ -1,0 +1,2 @@
+task0: {"valid": true, "gap": 0.002294020110413797, "b": 3.5939137825902785, "base": "REFRAME-CARRIES"}
+task2: {"valid": true, "gap": 0.002294020110413797, "z": -1.328286280547216, "gvote": "VOTE-USABLE"}

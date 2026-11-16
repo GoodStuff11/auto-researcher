@@ -1,0 +1,30 @@
+[11:00:11] 3x3: D=1680 sector levels found 60 (N_LOW=59) E0=-6.558475 chi={'My': 1, 'Mx': 1, 'D': 1} S0=0 R_PAIR=1.83 (12 pairs) R_SITE=2.32 (2 pairs) (2.7s)
+3x3 tp      (s-E0)/w1 -0.404 |<psi0|y>|^2 0.019 | default: RWRK0 +1.03 +0.80 SCR0 +1.00 +0.92 | far: RWRK0 +0.89 +0.72 SCR0 +0.77 +0.79 | nopsi0: RWRK0 +0.95 +0.75 SCR0 +1.00 +0.91 |
+3x3 J       (s-E0)/w1 -0.080 |<psi0|y>|^2 0.050 | default: RWRK0 +1.06 +1.16 +1.93 SCR0 +0.99 +0.99 +1.56 | far: RWRK0 +0.75 +1.18 +4.54 SCR0 +0.59 +0.94 +4.74 | nopsi0: RWRK0 +1.02 +1.16 +2.23 SCR0 +0.99 +1.01 +1.65 |
+3x3 dens_s0 (s-E0)/w1 -0.672 |<psi0|y>|^2 0.014 | default: RWRK0 +1.07 +0.98 SCR0 +0.95 +0.99 | far: RWRK0 +0.90 +0.96 SCR0 +0.59 +0.96 | nopsi0: RWRK0 +0.95 +0.95 SCR0 +0.96 +0.99 |
+3x3 spin_s0 (s-E0)/w1 -0.065 |<psi0|y>|^2 0.050 | default: RWRK0 +1.02 +1.04 SCR0 +1.00 +0.98 | far: RWRK0 +0.64 +0.88 SCR0 +0.52 +0.80 | nopsi0: RWRK0 +0.98 +1.03 SCR0 +0.99 +0.98 |
+3x3 pair_s0 (s-E0)/w1 -0.092 |<psi0|y>|^2 0.048 | default: RWRK0 +0.92 +0.63 SCR0 +0.99 +0.54 | far: RWRK0 +0.65 -0.77 SCR0 +0.66 -1.44 | nopsi0: RWRK0 +0.87 +0.37 SCR0 +0.98 +0.49 |
+3x3 dens_s1 (s-E0)/w1 -0.581 |<psi0|y>|^2 0.018 | default: RWRK0 +1.05 +0.99 SCR0 +0.98 +0.99 | far: RWRK0 +0.94 +0.97 SCR0 +0.78 +0.96 | nopsi0: RWRK0 +0.99 +0.97 SCR0 +0.98 +0.99 |
+3x3 spin_s1 (s-E0)/w1 -0.485 |<psi0|y>|^2 0.002 | default: RWRK0 +1.01 +0.91 SCR0 +1.09 +1.07 | far: RWRK0 +0.93 +0.90 SCR0 +0.96 +1.08 | nopsi0: RWRK0 +0.93 +0.88 SCR0 +1.06 +1.07 |
+3x3 pair_s1 (s-E0)/w1 -0.193 |<psi0|y>|^2 0.044 | default: RWRK0 +1.00 +0.90 SCR0 +1.00 +0.98 | far: RWRK0 +0.88 +0.74 SCR0 +0.85 +0.80 | nopsi0: RWRK0 +0.98 +0.87 SCR0 +1.00 +0.98 |
+[11:00:20] 6x2: D=34650 sector levels found 62 (N_LOW=60) E0=-8.765585 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=4.10 (7 pairs) R_SITE=4.18 (4 pairs) (5.2s)
+6x2 tp      (s-E0)/w1 -0.338 |<psi0|y>|^2 0.009 | default: RWRK0 +0.97 +1.10 +0.97 SCR0 +0.93 +1.21 +0.95 | far: RWRK0 +0.65 +0.41 +0.69 SCR0 +0.59 +0.59 +0.66 | nopsi0: RWRK0 +0.89 +0.83 +0.90 SCR0 +0.90 +1.08 +0.94 |
+6x2 J       (s-E0)/w1 -0.163 |<psi0|y>|^2 0.012 | default: RWRK0 +0.99 +1.07 +1.43 SCR0 +0.91 +1.13 +1.20 | far: RWRK0 +0.57 +0.39 +0.21 SCR0 +0.51 +0.49 +0.10 | nopsi0: RWRK0 +0.93 +0.87 +1.24 SCR0 +0.89 +1.06 +1.19 |
+6x2 dens_s0 (s-E0)/w1 -1.544 |<psi0|y>|^2 0.000 | default: RWRK0 +1.06 +0.34 SCR0 +1.04 +0.72 | far: RWRK0 +1.01 +0.21 SCR0 +0.78 -0.15 | nopsi0: RWRK0 +0.96 +0.15 SCR0 +1.00 +0.55 |
+6x2 spin_s0 (s-E0)/w1 -0.137 |<psi0|y>|^2 0.016 | default: RWRK0 +0.98 +0.98 +1.27 SCR0 +0.90 +1.06 +1.11 | far: RWRK0 +0.56 +0.45 +0.68 SCR0 +0.50 +0.54 +0.60 | nopsi0: RWRK0 +0.92 +0.84 +1.19 SCR0 +0.88 +1.01 +1.11 |
+6x2 pair_s0 (s-E0)/w1 -0.143 |<psi0|y>|^2 0.008 | default: RWRK0 +1.00 +0.98 +1.32 SCR0 +0.90 +1.06 +1.17 | far: RWRK0 +0.55 +0.42 +0.55 SCR0 +0.47 +0.50 +0.45 | nopsi0: RWRK0 +0.93 +0.81 +1.21 SCR0 +0.89 +0.99 +1.16 |
+6x2 dens_s1 (s-E0)/w1 -0.673 |<psi0|y>|^2 0.005 | default: RWRK0 +1.00 +1.24 +0.03 SCR0 +0.95 +1.12 +0.73 | far: RWRK0 +0.75 +1.00 -2.09 SCR0 +0.59 +0.99 -2.58 | nopsi0: RWRK0 +0.90 +0.98 -0.61 SCR0 +0.92 +1.09 +0.42 |
+6x2 spin_s1 (s-E0)/w1 -0.217 |<psi0|y>|^2 0.002 | default: RWRK0 +0.50 +0.74 +0.47 SCR0 +0.88 +1.02 +0.69 | far: RWRK0 +0.26 -0.31 +0.53 SCR0 +0.32 -0.34 +0.61 | nopsi0: RWRK0 +0.45 +0.40 +0.48 SCR0 +0.78 +0.79 +0.67 |
+6x2 pair_s1 (s-E0)/w1 -0.559 |<psi0|y>|^2 0.001 | default: RWRK0 +1.17 +0.94 -0.01 SCR0 +1.16 +1.16 +0.32 | far: RWRK0 +1.02 +0.16 -0.41 SCR0 +0.97 +0.32 -0.26 | nopsi0: RWRK0 +1.10 +0.49 -0.15 SCR0 +1.12 +0.88 +0.20 |
+[11:01:17] 4x3: D=34650 sector levels found 62 (N_LOW=60) E0=-8.948665 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.59 (10 pairs) R_SITE=2.96 (9 pairs) (5.1s)
+4x3 tp      (s-E0)/w1 -0.313 |<psi0|y>|^2 0.006 | default: RWRK0 +0.87 -0.02 SCR0 +0.94 +0.36 | far: RWRK0 +0.50 -0.34 SCR0 +0.49 -0.27 | nopsi0: RWRK0 +0.79 -0.12 SCR0 +0.88 +0.19 |
+4x3 J       (s-E0)/w1 -0.155 |<psi0|y>|^2 0.017 | default: RWRK0 +0.91 +0.42 SCR0 +0.93 +0.58 | far: RWRK0 +0.51 +0.07 SCR0 +0.50 +0.09 | nopsi0: RWRK0 +0.85 +0.35 SCR0 +0.89 +0.51 |
+4x3 dens_s0 (s-E0)/w1 -1.825 |<psi0|y>|^2 0.004 | default: RWRK0 +0.89 +1.03 SCR0 +1.00 +0.98 | far: RWRK0 +0.85 +1.01 SCR0 +0.84 +0.92 | nopsi0: RWRK0 +0.83 +0.99 SCR0 +0.94 +0.98 |
+4x3 spin_s0 (s-E0)/w1 -0.193 |<psi0|y>|^2 0.007 | default: RWRK0 +1.25 +1.33 SCR0 +1.24 +1.29 | far: RWRK0 +1.05 +1.19 SCR0 +0.99 +1.03 | nopsi0: RWRK0 +1.16 +1.26 SCR0 +1.27 +1.31 |
+4x3 pair_s0 (s-E0)/w1 -0.160 |<psi0|y>|^2 0.020 | default: RWRK0 +0.98 +0.53 SCR0 +0.97 +0.67 | far: RWRK0 +0.55 +0.15 SCR0 +0.52 +0.16 | nopsi0: RWRK0 +0.92 +0.46 SCR0 +0.94 +0.61 |
+4x3 dens_s1 (s-E0)/w1 -0.727 |<psi0|y>|^2 0.022 | default: RWRK0 +0.98 +1.02 +1.16 SCR0 +0.99 +1.06 +1.10 | far: RWRK0 +0.77 +0.33 +1.09 SCR0 +0.74 +0.42 +1.02 | nopsi0: RWRK0 +0.91 +0.76 +1.13 SCR0 +0.97 +1.00 +1.11 |
+4x3 spin_s1 (s-E0)/w1 -0.166 |<psi0|y>|^2 0.001 | default: RWRK0 +0.60 SCR0 +0.83 | far: RWRK0 +0.36 SCR0 +0.41 | nopsi0: RWRK0 +0.54 SCR0 +0.69 |
+4x3 pair_s1 (s-E0)/w1 -0.882 |<psi0|y>|^2 0.001 | default: RWRK0 +2.54 SCR0 +1.58 | far: RWRK0 +2.37 SCR0 +1.70 | nopsi0: RWRK0 +2.39 SCR0 +2.07 |
+TOTAL default : RWRK0 tracked 47/55  SCR0 tracked 53/55
+TOTAL far     : RWRK0 tracked 35/55  SCR0 tracked 35/55
+TOTAL nopsi0  : RWRK0 tracked 42/55  SCR0 tracked 50/55

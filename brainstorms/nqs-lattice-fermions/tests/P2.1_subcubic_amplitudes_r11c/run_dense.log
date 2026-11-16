@@ -1,0 +1,5 @@
+[dense] L= 8 Ne= 56 V_h=None sweeps= 3709 t_sw=2.680e-03s tau=1.01+-0.10 cost=2.702e-03s acc=0.31 <E>/Ne=-0.480 cpu=10s
+[dense] L=12 Ne=126 V_h=None sweeps=  778 t_sw=2.576e-02s tau=1.70+-0.45 cost=4.380e-02s acc=0.31 <E>/Ne=-0.463 cpu=20s
+[dense] L=16 Ne=224 V_h=None sweeps=  614 t_sw=1.470e-01s tau=1.66+-0.46 cost=2.447e-01s acc=0.31 <E>/Ne=-0.444 cpu=90s
+[dense] L=24 Ne=504 V_h=None sweeps=   15 t_sw=2.728e+00s tau=nan+-nan cost=nans acc=0.33 <E>/Ne=-0.437 cpu=41s
+CPU user=162.18 sys=0.22 wall=162.63

@@ -1,0 +1,26 @@
+selftest PASS/PASS                expected ('PASS', 'PASS') got ('PASS', 'PASS') {'L1R': 0.0, 'RWRstarK': 1.0, 'RWRK0': 1.0, 'SCR0': 1.0, 'TMWK': 1.0, 'TMWSCR0': 1.0}
+selftest KILL/KILL (ceiling)      expected ('KILL', 'KILL') got ('KILL', 'KILL') {'L1R': 0.0, 'RWRstarK': 0.0, 'RWRK0': 1.0, 'SCR0': 1.0, 'TMWK': 1.0, 'TMWSCR0': 1.0}
+selftest KILL/KILL (both arms)    expected ('KILL', 'KILL') got ('KILL', 'KILL') {'L1R': 0.0, 'RWRstarK': 1.0, 'RWRK0': 0.0, 'SCR0': 0.0, 'TMWK': 0.0, 'TMWSCR0': 0.0}
+selftest AMBIGUOUS/KILL           expected ('AMBIGUOUS', 'KILL') got ('AMBIGUOUS', 'KILL') {'L1R': 0.0, 'RWRstarK': 1.0, 'RWRK0': 0.5, 'SCR0': 0.5, 'TMWK': 0.5, 'TMWSCR0': 0.0}
+SELFTEST PASS
+[10:51:24] small: D=10920 ED [-8.476395575934244, -8.37584026628098, -8.30965898809856, -8.268710215368367] |G|=8 chi={'My': -1, 'Mx': -1, 'D': -1} S0=1 (0 s)
+[10:51:24] seed 0: overlap^2 0.9975 dE 0.00599 | pair delta +9.143e-05 (rel -0.080) spin delta +9.306e-04 (rel +0.131) charge delta +3.283e-03 (rel -0.590)
+[10:51:24]   L1R       pair +0.373 spin +0.628 charge +0.718  (0 s)
+[10:51:24]   RWRstarK  pair +1.000 spin +1.000 charge +1.000  (0 s)
+[10:51:25]   RWRK0     pair +1.002 spin +0.998 charge +0.999  (1 s)
+[10:51:25]   SCR0      pair +1.000 spin +1.000 charge +1.000  (1 s)
+[10:51:25]   TMWK      pair +1.059 spin +0.849 charge +0.957  (1 s)
+[10:51:25]   TMWSCR0   pair +1.000 spin +1.000 charge +1.000  (1 s)
+[10:51:25] seed 0 done (1 s), 45 two-mode vectors
+[10:51:26] small: D=10920 ED [-8.476395575934244, -8.37584026628098, -8.30965898809856, -8.268710215368367] |G|=8 chi={'My': -1, 'Mx': -1, 'D': -1} S0=1 (0 s)
+[10:51:26] seed 1: overlap^2 0.8759 dE 1.00210 | pair delta -5.812e-05 (rel +0.051) spin delta +1.326e-03 (rel +0.187) charge delta +9.203e-04 (rel -0.165)
+[10:51:26]   L1R       pair +1.666 spin +0.443 charge +0.667  (0 s)
+[10:51:26]   RWRstarK  pair +0.468 spin +0.901 charge +0.889  (0 s)
+[10:51:26]   RWRK0     pair +1.834 spin +1.198 charge +1.512  (1 s)
+[10:51:26]   SCR0      pair +1.470 spin +1.079 charge +1.065  (1 s)
+[10:51:27]   TMWK      pair -1.662 spin +0.699 charge +1.157  (1 s)
+[10:51:27]   TMWSCR0   pair +1.355 spin +1.054 charge +1.030  (1 s)
+[10:51:27] seed 1 done (1 s), 45 two-mode vectors
+[10:51:27] seed 0: pair(ns) L1R +0.37 RWRstarK +1.00 RWRK0 +1.00 SCR0 +1.00 TMWK +1.06 TMWSCR0 +1.00 | spin L1R +0.63 RWRstarK +1.00 RWRK0 +1.00 SCR0 +1.00 TMWK +0.85 TMWSCR0 +1.00 | charge L1R +0.72 RWRstarK +1.00 RWRK0 +1.00 SCR0 +1.00 TMWK +0.96 TMWSCR0 +1.00
+[10:51:27] seed 1: pair(ns) L1R +1.67 RWRstarK +0.47 RWRK0 +1.83 SCR0 +1.47 TMWK -1.66 TMWSCR0 +1.36 | spin L1R +0.44 RWRstarK +0.90 RWRK0 +1.20 SCR0 +1.08 TMWK +0.70 TMWSCR0 +1.05 | charge L1R +0.67 RWRstarK +0.89 RWRK0 +1.51 SCR0 +1.07 TMWK +1.16 TMWSCR0 +1.03
+[10:51:27] T2 PREMISE VERDICT: {'10.1': 'PASS', '10.2': 'PASS'} | {'n_items': 4, 'tracked': {'L1R': 0.75, 'RWRstarK': 1.0, 'RWRK0': 1.0, 'SCR0': 1.0, 'TMWK': 1.0, 'TMWSCR0': 1.0}, 'spin_tracked': {'L1R': 1, 'RWRstarK': 2, 'RWRK0': 2, 'SCR0': 2, 'TMWK': 2, 'TMWSCR0': 2}}

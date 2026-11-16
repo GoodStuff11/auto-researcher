@@ -1,0 +1,110 @@
+{
+ "params": {
+  "mode": "train",
+  "task": 24,
+  "instance": 8,
+  "arm": "nnbf6_mc",
+  "seed": 11,
+  "sr_shift": 0.01,
+  "sr_iters": 30,
+  "sr_lr": 0.05,
+  "sr_samples": 100,
+  "base_width": 2,
+  "ctrl_width": 4,
+  "chunk": 4096,
+  "o_chunk": 4,
+  "lbfgs_iters": 300,
+  "fn_iters": 2,
+  "fn_floor": 0.001,
+  "r_min": 1.0,
+  "mc_samples": 400,
+  "mc_burn": 50,
+  "chains": 20,
+  "sizes": "4,5,6,7",
+  "nconf": 3,
+  "results": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r5/results_smoke",
+  "final": 0,
+  "overwrite": 0,
+  "size_list": [
+   4,
+   5,
+   6,
+   7
+  ]
+ },
+ "instance": 8,
+ "arm": "nnbf6_mc",
+ "seed": 11,
+ "shift": 0.01,
+ "arm_kwargs": {
+  "kind": "nnbf",
+  "Hs": 4
+ },
+ "n_params": 356,
+ "P_ctrl": 356,
+ "ed_levels": [
+  -5.189941065066815,
+  -5.124222850338513,
+  -5.034492217679495,
+  -5.025878568846499
+ ],
+ "degeneracy": 1,
+ "irrep": {
+  "My": 1,
+  "Mx": 1
+ },
+ "G": 4,
+ "S_psi0": 0.0,
+ "calib_err": 8.881784197001252e-15,
+ "dim_chi": 140.0,
+ "dim_S_chi": 44.0,
+ "hard_core": "sign half only",
+ "mc": {
+  "E_hist": [
+   -4.62278003717594,
+   -4.895463124375974,
+   -4.965789801566879,
+   -4.983437576086888
+  ],
+  "E0_step": -4.62278003717594,
+  "E_final": -4.983437576086888,
+  "nonfinite": false,
+  "diverged": false,
+  "jumps": 0,
+  "jump_rate": 0.0,
+  "steps": 30,
+  "accept": 0.24176470588235294,
+  "s_per_step": 0.008808581034342448
+ },
+ "t_sr": 0.2642698287963867,
+ "budgets": {
+  "P": {
+   "E": -4.983437576086887,
+   "E0": -5.189941065066815,
+   "dE_tot": 0.2065034889799282,
+   "E_sign_up": -5.128822825284601,
+   "E_sign_src": "lbfgsb",
+   "E_sign": -5.128822825284601,
+   "E_lbfgsb": -5.128822825284601,
+   "E_FN": -5.119561033058707,
+   "E_FN_var": -5.122159459767789,
+   "f_E_FN": 0.3408176411728767,
+   "E_stoq": -5.556692774331432,
+   "dE_sign": 0.06111823978221409,
+   "dE_amp": 0.14538524919771412,
+   "f_E_up": 0.2959671048858389,
+   "f_E": 0.2959671048858389,
+   "f_E_lo": 0.0,
+   "spread": 8.602066958650318e-15,
+   "n_converged": 4,
+   "E_hyb_signtheta_ampexact": -4.024812185675496,
+   "E_hyb_signexact_amptheta": -4.944180015858807,
+   "w_sign": 0.07807179055035693,
+   "eC_tot": 0.027116473771212415,
+   "eC_sign": 0.005611399088815354,
+   "f_C": 0.2069369024955069,
+   "S2": 2.5304306696172136,
+   "ov0": 0.40526331114855374
+  }
+ }
+}

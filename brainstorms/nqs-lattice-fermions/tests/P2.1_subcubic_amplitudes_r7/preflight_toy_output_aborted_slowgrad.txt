@@ -1,0 +1,75 @@
+[10:07:05] check geometry (OBC patch indexing, no wrap-around): True
+[10:07:06] check amplitude [lh_plus inst 9] LHAnsatz vs augmented det: 3.5e-16
+[10:07:06] check grad [lh_plus inst 9 Ha=5, proj=none]: analytic 5.6305919966e-01 fd 5.6305920015e-01 rel 8.8e-10
+[10:07:06] check grad [lh_plus inst 9 Ha=5, proj=chi]: analytic 9.1430809998e-01 fd 9.1430810034e-01 rel 4.0e-10
+[10:07:06] check amplitude [lh_site inst 9] LHAnsatz vs augmented det: 2.2e-16
+[10:07:06] check grad [lh_site inst 9 Ha=7, proj=none]: analytic -2.2137090058e+00 fd -2.2137090059e+00 rel 4.9e-11
+[10:07:06] check grad [lh_site inst 9 Ha=7, proj=chi]: analytic 4.5933454479e-01 fd 4.5933454462e-01 rel 3.6e-10
+[10:07:06] check amplitude [lh_3x3 inst 9] LHAnsatz vs augmented det: 2.8e-16
+[10:07:06] check grad [lh_3x3 inst 9 Ha=3, proj=none]: analytic 1.7397629659e+00 fd 1.7397629666e+00 rel 3.8e-10
+[10:07:06] check grad [lh_3x3 inst 9 Ha=3, proj=chi]: analytic -2.3780830626e+00 fd -2.3780830625e+00 rel 4.3e-11
+[10:07:06] check amplitude [lh_plus inst 8] LHAnsatz vs augmented det: 7.4e-16
+[10:07:06] check grad [lh_plus inst 8 Ha=7, proj=none]: analytic 2.2547281916e+00 fd 2.2547281913e+00 rel 1.7e-10
+[10:07:06] check grad [lh_plus inst 8 Ha=7, proj=chi]: analytic -1.9858293945e+00 fd -1.9858293943e+00 rel 1.1e-10
+[10:07:06] check O_P [lh_plus] vs fd: 1.2e-08
+[10:07:11] check fast E_loc == (H psi)/psi on all 1680 configs [lh_plus, OBC 3x3]: 1.7e-13
+[10:07:11] check amplitude [lh_site inst 8] LHAnsatz vs augmented det: 4.2e-16
+[10:07:11] check grad [lh_site inst 8 Ha=8, proj=none]: analytic 2.5807637115e+00 fd 2.5807637107e+00 rel 3.1e-10
+[10:07:11] check grad [lh_site inst 8 Ha=8, proj=chi]: analytic 1.0152580625e+00 fd 1.0152580616e+00 rel 8.7e-10
+[10:07:11] check O_P [lh_site] vs fd: 1.6e-09
+[10:07:15] check fast E_loc == (H psi)/psi on all 1680 configs [lh_site, OBC 3x3]: 6.4e-13
+[10:07:15] check amplitude [lh_3x3 inst 8] LHAnsatz vs augmented det: 8.1e-16
+[10:07:15] check grad [lh_3x3 inst 8 Ha=6, proj=none]: analytic 1.7982863796e-01 fd 1.7982863820e-01 rel 1.4e-09
+[10:07:16] check grad [lh_3x3 inst 8 Ha=6, proj=chi]: analytic -1.1794178286e+00 fd -1.1794178287e+00 rel 1.5e-10
+[10:07:16] check O_P [lh_3x3] vs fd: 1.2e-08
+[10:07:20] check fast E_loc == (H psi)/psi on all 1680 configs [lh_3x3, OBC 3x3]: 4.4e-12
+[10:07:20] ALL CHECKS PASSED
+[10:07:20] synthetic: expected PROMOTE       got PROMOTE       (rho_N = 1.053 <= 1.15 and rho_F = 0.667 <= 0.85)
+[10:07:20] synthetic: expected KILL          got KILL          (rho_N = 1.579 >= 1.5)
+[10:07:20] synthetic: expected KILL          got KILL          (rho_F = 0.909 > 0.85 (does not beat the one-site foil))
+[10:07:20] synthetic: expected AMBIGUOUS     got AMBIGUOUS     (1.15 < rho_N = 1.316 < 1.5; action: seed 22)
+[10:07:20] synthetic: expected KILL          got KILL          (EARLY KILL at it 50: ...)
+[10:07:20] synthetic: expected UNINFORMATIVE got UNINFORMATIVE (reference dE_sign 0.0040 < 0.005)
+[10:07:20] synthetic: expected INVALID       got INVALID       (reference does not reproduce pilot E(it 0): -8.00000000)
+[10:07:20] synthetic: expected INVALID       got INVALID       (route: multi-start spread 0.200 >= 0.05)
+[10:07:20] synthetic: expected INVALID       got INVALID       (reference stopped early)
+[10:07:20] synthetic: expected INCOMPLETE    got INCOMPLETE    (reference result missing)
+[10:07:20] SYNTHETIC: every branch returns its intended verdict
+[10:07:21] instance 7 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 4, 'ndn': 4, 'tp': -0.25, 'J': 0.4} D=34650 arm=lh_plus seed=11
+[10:07:21] E0=-8.9486649196 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1782
+[10:07:23] arm lh_plus: {'mode': 'lh', 'patch': 'plus', 'F': 5, 'Ha': 0} n_params=919 target=918 calib=5.86e-14
+[10:07:24] lh_plus: it     0  E = -7.47485151  |f| = 1.44e+00  (0.90 s/step)
+[10:07:50] lh_plus: it    25  E = -8.67892694  |f| = 2.88e-01  (1.05 s/step)
+[10:08:06] lh_plus: it    39  E = -8.78951831  |f| = 1.74e-01  (1.09 s/step)
+[10:08:18] lh_plus [P]: dE_tot=0.15915 dE_sign=0.03722 f_E=0.234 spread=4.5e-14 ov0=0.651 (11 s)
+[10:08:24] lh_plus [P_S]: dE_tot=0.06505 dE_sign=0.00794 f_E=0.122 spread=2.2e-13 ov0=0.923 (6 s)
+[10:08:25] instance 7 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 4, 'ndn': 4, 'tp': -0.25, 'J': 0.4} D=34650 arm=lh_site seed=11
+[10:08:25] E0=-8.9486649196 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1782
+[10:08:27] arm lh_site: {'mode': 'lh', 'patch': 'site', 'F': 5, 'Ha': 2} n_params=931 target=918 calib=5.86e-14
+[10:08:28] lh_site: it     0  E = -7.47224827  |f| = 1.55e+00  (0.82 s/step)
+[10:08:48] lh_site: it    25  E = -8.69107562  |f| = 2.62e-01  (0.83 s/step)
+[10:09:00] lh_site: it    39  E = -8.75835520  |f| = 2.28e-01  (0.83 s/step)
+[10:09:07] lh_site [P]: dE_tot=0.17166 dE_sign=0.04369 f_E=0.255 spread=9.3e-14 ov0=0.606 (7 s)
+[10:09:13] lh_site [P_S]: dE_tot=0.08374 dE_sign=0.01179 f_E=0.141 spread=1.1e-13 ov0=0.914 (6 s)
+[10:09:13] instance 7 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 4, 'ndn': 4, 'tp': -0.25, 'J': 0.4} D=34650 arm=nnbf seed=11
+[10:09:14] E0=-8.9486649196 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1782
+[10:09:16] arm nnbf: {'mode': 'full', 'Hs': 6} n_params=918 target=918 calib=5.86e-14
+[10:09:17] nnbf: it     0  E = -7.48169833  |f| = 1.76e+00  (0.34 s/step)
+[10:09:23] nnbf: it    25  E = -8.66965637  |f| = 2.83e-01  (0.27 s/step)
+[10:09:27] nnbf: it    39  E = -8.69811090  |f| = 3.04e-01  (0.26 s/step)
+[10:09:34] nnbf [P]: dE_tot=0.22866 dE_sign=0.06691 f_E=0.293 spread=2.3e-14 ov0=0.522 (7 s)
+[10:09:40] nnbf [P_S]: dE_tot=0.11205 dE_sign=0.02201 f_E=0.196 spread=1.3e-13 ov0=0.850 (6 s)
+[10:09:40] instance 7 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 4, 'ndn': 4, 'tp': -0.25, 'J': 0.4} D=34650 arm=lh_3x3 seed=11
+[10:09:41] E0=-8.9486649196 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1782
+[10:09:43] arm lh_3x3: {'mode': 'lh', 'patch': '3x3', 'F': 5, 'Ha': 0} n_params=959 target=918 calib=5.86e-14
+[10:09:45] lh_3x3: it     0  E = -7.47760089  |f| = 1.39e+00  (1.29 s/step)
+[10:10:16] lh_3x3: it    25  E = -8.66625715  |f| = 2.89e-01  (1.26 s/step)
+[10:10:34] lh_3x3: it    39  E = -8.76667844  |f| = 1.79e-01  (1.26 s/step)
+[10:10:45] lh_3x3 [P]: dE_tot=0.18068 dE_sign=0.04145 f_E=0.229 spread=1.5e-13 ov0=0.623 (11 s)
+[10:10:53] lh_3x3 [P_S]: dE_tot=0.07969 dE_sign=0.01119 f_E=0.140 spread=1.1e-13 ov0=0.906 (8 s)
+[10:10:53] instance 7 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 4, 'ndn': 4, 'tp': -0.25, 'J': 0.4} D=34650 arm=sj seed=11
+[10:10:55] E0=-8.9486649196 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1782
+[10:10:56] arm sj: {'mode': 'sj', 'Ha': 32} n_params=928 target=918 calib=5.86e-14
+[10:10:56] sj: it     0  E = -7.47721868  |f| = 1.05e+00  (0.14 s/step)
+[10:11:00] sj: it    25  E = -8.47251241  |f| = 7.77e-01  (0.14 s/step)
+[10:11:02] sj: it    39  E = -8.36312418  |f| = 1.14e+00  (0.14 s/step)

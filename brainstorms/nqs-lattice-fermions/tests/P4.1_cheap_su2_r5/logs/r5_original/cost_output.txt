@@ -1,0 +1,7 @@
+Lx= 8 L= 64 Ne= 56 che_closed      2.65 ms  che_rbm      2.19 ms  che_k4      2.09 ms
+Lx=12 L=144 Ne=126 che_closed      1.62 ms  che_rbm      5.26 ms  che_k4      6.27 ms
+Lx=16 L=256 Ne=224 che_closed      5.78 ms  che_rbm     15.80 ms  che_k4     22.10 ms
+Lx=20 L=400 Ne=350 che_closed     17.09 ms  che_rbm     47.27 ms  che_k4     67.42 ms
+Lx=24 L=576 Ne=504 che_closed     31.13 ms  che_rbm     93.60 ms  che_k4    125.41 ms
+slopes in N_e (three largest): che_closed 2.09  che_rbm 2.20  che_k4 2.15
+ratio to che_closed at largest size: che_rbm 3.01  che_k4 4.03

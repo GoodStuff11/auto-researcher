@@ -1,0 +1,6 @@
+
+=== [S] H8 distorted chain R=2.0 basis(ns,np)=(3,2) K=72 E_RHF=-4.278193 (build 136s)
+  <|C|>=101864  gen fit: 0us + 0.227us/term; kept fraction: 1e-05:0.983 0.0001:0.866 0.0003:0.669 0.001:0.327 0.0015:0.218 0.002:0.154 0.0025:0.111 0.003:0.082 0.01:0.006 0.03:0.000
+  NNBFJh4  ops/term(EXACT)=853
+  NNBFJh8  ops/term(EXACT)=1149
+  CASJ     ops(all terms)/term=4436 dets=4900

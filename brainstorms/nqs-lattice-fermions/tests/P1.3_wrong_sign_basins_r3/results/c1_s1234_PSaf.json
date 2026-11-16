@@ -1,0 +1,96 @@
+{
+ "params": {
+  "instance": "c1",
+  "arm": "PSaf",
+  "task_id": 1,
+  "seed": 1234,
+  "width": 32,
+  "budget": 1500,
+  "warmup": 300,
+  "cycles": 2,
+  "relax": 40,
+  "null_k": 3,
+  "probe_at": 600,
+  "probe": 300,
+  "lam": 2.0,
+  "pretrain": 300,
+  "acc_samples": 2000,
+  "final_window": 100,
+  "sr_lr": 0.05,
+  "sr_shift": 0.001,
+  "sr_samples": 2000,
+  "chunk": 65536,
+  "o_chunk": 256,
+  "fn_iters": 4,
+  "fn_floor": 0.001,
+  "lbfgs_iters": 3000,
+  "min_seeds": 5,
+  "out": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r3/results/c1_s1234_PSaf.json",
+  "overwrite": 0,
+  "checks_only": 0,
+  "aggregate": ""
+ },
+ "instance": "c1",
+ "seed": 1234,
+ "E0": -12.522380813875968,
+ "Esec": [
+  -12.522380813875937,
+  -12.288216667552941,
+  -11.93075646006079
+ ],
+ "gap": 0.2341641463229962,
+ "chi": {
+  "Ty": 1,
+  "Tx": 1,
+  "My": 1,
+  "Mx": 1
+ },
+ "S": 0.0,
+ "same_sector": [
+  true,
+  true,
+  true
+ ],
+ "arms": {
+  "PSaf": {
+   "steps": 1500,
+   "info": {},
+   "time_s": 2643.852684736252,
+   "final": {
+    "E": -12.522372321901601,
+    "e_var": 8.49197436636473e-06,
+    "E_sign": -12.522380743718955,
+    "E_FN": -12.496624205204139,
+    "sign_starts": [
+     [
+      "abs_theta",
+      -12.522380743718914
+     ],
+     [
+      "abs_fixed_node",
+      -12.52238074371889
+     ],
+     [
+      "abs_exact",
+      -12.522380743718955
+     ]
+    ],
+    "e_sign": 7.015701264379004e-08,
+    "w_sign": 2.1036351893764446e-09,
+    "ov": [
+     0.9999997306883465,
+     3.108697432729126e-15,
+     1.0908753200240464e-11
+    ],
+    "S2": 4.560602108308974e-31,
+    "gen": {
+     "Ty": 1.0000000000000002,
+     "Tx": 1.0000000000000002,
+     "My": 1.0000000000000002,
+     "Mx": 1.0000000000000002
+    },
+    "trapped": false
+   }
+  }
+ }
+}

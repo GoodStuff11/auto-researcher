@@ -1,0 +1,12 @@
+[15:45:07] cost[lr] L= 16 Ne= 224 n_conn=428 setup=2.344e-03 t_c=2.589e-05 t_sw=1.033e-04 t_cb=1.508e-03 eps=5.0e-15 drift=1.9e-13
+[15:45:14] cost[lr] L= 24 Ne= 504 n_conn=971 setup=9.136e-03 t_c=3.303e-05 t_sw=2.770e-04 t_cb=7.535e-03 eps=1.4e-15 drift=2.5e-13
+[15:46:02] cost[lr] L= 32 Ne= 896 n_conn=1740 setup=3.266e-02 t_c=4.565e-05 t_sw=7.489e-04 t_cb=2.705e-02 eps=9.5e-14 drift=1.6e-12
+[15:46:06] cost[lr] L= 40 Ne=1400 n_conn=2767 setup=1.016e-01 t_c=6.664e-05 t_sw=1.865e-03 t_cb=nan eps=nan drift=4.7e-11
+[15:46:18] cost[lr] L= 48 Ne=2016 n_conn=3935 setup=2.565e-01 t_c=1.170e-04 t_sw=4.438e-03 t_cb=nan eps=nan drift=1.2e-10
+[15:46:18] cost[lr] slopes setup=2.54 t_c=1.15 t_sw=2.19 t_cb=2.08 speedup(L=32)=592.6 eps=9.5e-14 drift=1.2e-10 -> PASS
+[15:46:19] cost[agp] L= 16 Ne= 224 n_conn=413 setup=9.188e-04 t_c=1.834e-05 t_sw=nan t_cb=5.784e-04 eps=8.0e-15 drift=0.0e+00
+[15:46:25] cost[agp] L= 24 Ne= 504 n_conn=927 setup=5.039e-03 t_c=2.941e-05 t_sw=nan t_cb=3.643e-03 eps=3.4e-14 drift=0.0e+00
+[15:47:08] cost[agp] L= 32 Ne= 896 n_conn=1680 setup=2.340e-02 t_c=5.607e-05 t_sw=nan t_cb=1.371e-02 eps=1.0e-13 drift=0.0e+00
+[15:48:09] cost[agp] L= 40 Ne=1400 n_conn=2657 setup=6.615e-02 t_c=8.878e-05 t_sw=nan t_cb=nan eps=nan drift=0.0e+00
+[15:51:58] cost[agp] L= 48 Ne=2016 n_conn=3790 setup=1.943e-01 t_c=1.597e-04 t_sw=nan t_cb=nan eps=nan drift=0.0e+00
+[15:51:58] cost[agp] slopes setup=2.60 t_c=1.28 t_sw=nan t_cb=2.28 speedup(L=32)=244.4 eps=1.0e-13 drift=0.0e+00 -> PASS

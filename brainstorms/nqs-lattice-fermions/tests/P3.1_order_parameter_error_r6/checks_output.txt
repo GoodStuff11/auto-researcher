@@ -1,0 +1,12 @@
+[11:49:52] small: D=10920 ED [-8.476395575934244, -8.37584026628098, -8.30965898809856, -8.268710215368367] |G|=8 chi={'My': -1, 'Mx': -1, 'D': -1} S0=1 (0 s)
+[11:49:53] check S1 pair: moments rel diff 7.4e-16; delta(+c) +2.166e-03 delta(-c) -1.402e-03
+[11:49:53] check S1 spin: moments rel diff 7.4e-16; delta(+c) -1.697e-03 delta(-c) +2.141e-03
+[11:49:53] check S1 charge: moments rel diff 7.4e-16; delta(+c) +6.762e-03 delta(-c) -5.946e-03
+[11:49:53] check quad: dE 5.316326e-01 quad 5.316326e-01
+[11:49:53] check quad pair: delta1 +1.7194e-03 quad +1.7194e-03 | F_delta(1.2) -0.0776 vs eigvec -0.0776 (omega_low [0.943, 1.111, 1.184, 1.361, 1.493, 1.73, 1.743])
+[11:49:53] check quad spin: delta1 -1.9351e-03 quad -1.9351e-03 | F_delta(1.2) -0.3476 vs eigvec -0.3476 (omega_low [0.943, 1.111, 1.184, 1.361, 1.493, 1.73, 1.743])
+[11:49:53] check quad charge: delta1 +5.8591e-03 quad +5.8591e-03 | F_delta(1.2) 0.1777 vs eigvec 0.1777 (omega_low [0.943, 1.111, 1.184, 1.361, 1.493, 1.73, 1.743])
+[11:49:54] check CLX junk-free ladder pair: delta +1.7234e-04 CLX-exact +1.7274e-04 (ratio 1.002) CLX-sampled +2.130e-04+-9.1e-05 L1VEX +2.185e-04
+[11:49:54] check CLX junk-free ladder spin: delta -2.9016e-04 CLX-exact -2.8855e-04 (ratio 0.994) CLX-sampled -3.739e-04+-7.0e-05 L1VEX -2.971e-04
+[11:49:54] check CLX junk-free ladder charge: delta +9.7347e-05 CLX-exact +9.8992e-05 (ratio 1.017) CLX-sampled +1.998e-04+-1.3e-04 L1VEX +2.328e-04
+[11:49:54] P3.1-r6 CHECKS DONE

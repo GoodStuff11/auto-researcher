@@ -1,0 +1,16 @@
+--- expect 4.2 PASS, 4.1 PASS
+Route 4.2 premise (tabular): eps(tocchio1)=1.00e-03, eps(tocchio2)=1.00e-04, eps(puhf)=1.00e-05 -> MET
+Route 4.2 kagp2: PASS
+Route 4.1 sfb  : PASS
+--- expect 4.2 FAIL(accuracy), 4.1 FAIL
+Route 4.2 premise (tabular): eps(tocchio1)=1.00e-03, eps(tocchio2)=1.00e-04, eps(puhf)=1.00e-05 -> MET
+Route 4.2 kagp2: FAIL (accuracy)
+Route 4.1 sfb  : FAIL (the spin feature buys nothing)
+--- expect 4.2 NO-TARGET
+Route 4.2 premise (tabular): eps(tocchio1)=5.00e-05, eps(tocchio2)=1.00e-05, eps(puhf)=1.00e-05 -> NOT MET: Route 4.2 is NO-TARGET on this cluster
+Route 4.2 kagp2: NO-TARGET (tabular premise not met)
+Route 4.1 sfb  : PASS
+--- expect 4.2 FAIL(cost)
+Route 4.2 premise (tabular): eps(tocchio1)=1.00e-03, eps(tocchio2)=1.00e-04, eps(puhf)=1.00e-05 -> MET
+Route 4.2 kagp2: FAIL (cost)
+Route 4.1 sfb  : PASS

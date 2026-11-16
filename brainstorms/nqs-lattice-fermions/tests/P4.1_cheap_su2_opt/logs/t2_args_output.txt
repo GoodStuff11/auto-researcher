@@ -1,0 +1,4 @@
+A 300 1024 0.02 20 8 3 1,1 16 results_t2/A
+True
+B 75 4096 0.02 20 8 3 1,1 16 results_t2/B
+True

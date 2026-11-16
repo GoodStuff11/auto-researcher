@@ -1,0 +1,10 @@
+[10:53:49] instance 4 {'Lx': 5, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=420420 arm=hfps_site seed=11
+[10:53:57] E0=-9.7918583301 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=15080
+[10:54:17] arm hfps_site: {'mode': 'hfps', 'patch': 'site', 'F': 4, 'Ha': 4} n_params=1610 target=1626 calib=7.82e-14
+[10:54:22] hfps_site: it     0  E = -8.43117910  |f| = 1.85e+00  (5.42 s/step)
+[10:56:36] hfps_site: it    25  E = -9.57444529  |f| = 2.92e-01  (5.35 s/step)
+[10:58:50] hfps_site: it    50  E = -9.66421540  |f| = 1.86e-01  (5.35 s/step)
+[11:00:58] hfps_site: it    74  E = -9.69404225  |f| = 9.43e-02  (5.34 s/step)
+[11:02:42] hfps_site [P]: dE_tot=0.09712 dE_sign=0.01703 f_E=0.175 spread=2.2e-13 ov0=0.857 (101 s)
+[11:04:18] hfps_site [P_S]: dE_tot=0.08835 dE_sign=0.01567 f_E=0.177 spread=5.2e-13 ov0=0.860 (96 s)
+[11:04:18] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results_hfps/t2_hfps_site_inst4_s11.json

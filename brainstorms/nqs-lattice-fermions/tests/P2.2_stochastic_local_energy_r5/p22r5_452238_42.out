@@ -1,0 +1,5 @@
+
+=== [S] H8 distorted chain R=2.0 basis(ns,np)=(5,4) K=136 E_RHF=-4.279426 (build 802s)
+  <|C|>=383592  gen fit: 0us + 0.144us/term; kept fraction: 1e-05:0.891 0.0001:0.583 0.0003:0.376 0.001:0.144 0.0015:0.086 0.002:0.054 0.0025:0.035 0.003:0.024 0.01:0.001 0.03:0.000
+  NNBFJ    ops/term(EXACT)=5101 ratio_exact fit: a=5us b=6.84us/amp
+  WIBJ     ops/term(EXACT)=5101 ops KEYX/EXACT=0.0282 wall KEYX/EXACT=0.1613 KEYX-EXACT rel dev=7.3e-15

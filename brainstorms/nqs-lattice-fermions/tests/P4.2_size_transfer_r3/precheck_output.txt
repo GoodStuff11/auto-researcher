@@ -1,0 +1,9 @@
+[     0.3s] source clusters: 4x2 dim=560 E0=-8.28182066, t8 dim=560 E0=-7.08027574
+[    27.9s] source TCMN seed 0: E=['-8.28147539', '-7.08027528'] relerr=['4.17e-05', '6.62e-08'] npar=122 null-dim(S)=106 |theta|=3.019
+[    56.2s] source TCMN seed 1: E=['-8.27386098', '-7.08027529'] relerr=['9.61e-04', '6.41e-08'] npar=122 null-dim(S)=109 |theta|=5.226
+[    85.7s] source TCMN seed 2: E=['-8.21961874', '-7.08026162'] relerr=['7.51e-03', '1.99e-06'] npar=122 null-dim(S)=112 |theta|=4.824
+[    85.7s] TCMN: relative parameter distance between seeds ['2.002', '1.840', '1.300']
+[   100.9s] source r2-style seed 0: E=['-8.28182066'] relerr=['5.43e-14'] npar=122 null-dim(S)=107 |theta|=8.303
+[   115.7s] source r2-style seed 1: E=['-8.28182062'] relerr=['4.37e-09'] npar=122 null-dim(S)=107 |theta|=6.915
+[   129.9s] source r2-style seed 2: E=['-8.28182066'] relerr=['2.25e-14'] npar=122 null-dim(S)=107 |theta|=7.802
+[   129.9s] r2-style: relative parameter distance between seeds ['1.517', '1.051', '1.745']

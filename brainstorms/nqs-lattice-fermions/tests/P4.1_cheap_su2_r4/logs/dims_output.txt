@@ -1,0 +1,6 @@
+ N_s  singlet_dim  rank(tocchio1)  rank(tocchio2)  rank(tocchio3)  rank(puhf)
+   4            2               2               2               2           2   (tocchio singlet check 5.7e-17)
+   6            5               5               5               5           5   (tocchio singlet check 2.0e-16)
+   8           14              13              14              14          14   (tocchio singlet check 2.3e-16)
+  10           42              26              42              42          42   (tocchio singlet check 3.2e-16)
+  12          132              43              86             129          62   (tocchio singlet check 3.9e-16)

@@ -1,0 +1,13 @@
+[16:00:58] check inst 20 half F=16 Ha=0: n_eff=820 V_h=4 explicit amplitude rel err 5.0e-16; max |masked| after set_flat 0.0e+00 -> OK
+[16:00:58] check inst 20 half F=16 Ha=2: n_eff=856 V_h=4 explicit amplitude rel err 4.3e-16; max |masked| after set_flat 0.0e+00 -> OK
+[16:00:58] check inst 20 half F=8 Ha=0: n_eff=476 V_h=4 explicit amplitude rel err 1.2e-15; max |masked| after set_flat 0.0e+00 -> OK
+[16:00:58] check inst 20 half F=8 Ha=2: n_eff=512 V_h=4 explicit amplitude rel err 4.7e-16; max |masked| after set_flat 0.0e+00 -> OK
+[16:00:59] check inst 23 half F=16 Ha=0: n_eff=1622 V_h=6 explicit amplitude rel err 6.4e-16; max |masked| after set_flat 0.0e+00 -> OK
+[16:00:59] check inst 23 half F=16 Ha=2: n_eff=1674 V_h=6 explicit amplitude rel err 5.2e-16; max |masked| after set_flat 0.0e+00 -> OK
+[16:00:59] check inst 23 half F=8 Ha=0: n_eff=958 V_h=6 explicit amplitude rel err 1.7e-15; max |masked| after set_flat 0.0e+00 -> OK
+[16:00:59] check inst 23 half F=8 Ha=2: n_eff=1010 V_h=6 explicit amplitude rel err 1.0e-15; max |masked| after set_flat 0.0e+00 -> OK
+[16:00:59] CHECK PASS
+
+real	0m0.627s
+user	0m0.492s
+sys	0m0.111s

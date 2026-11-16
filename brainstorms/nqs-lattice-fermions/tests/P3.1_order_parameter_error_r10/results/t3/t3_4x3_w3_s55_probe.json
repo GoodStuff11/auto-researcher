@@ -1,0 +1,118 @@
+{
+ "args": {
+  "mode": "run",
+  "size": "4x3",
+  "seed": 55,
+  "gs_width": 3,
+  "gs_iters": 1200,
+  "resp_cold": 600,
+  "resp_warm": 200,
+  "T": 4,
+  "resp_init": "gs",
+  "sr_lr": 0.05,
+  "sr_shift": 0.001,
+  "sr_samples": 2000,
+  "o_chunk": 8,
+  "chunk": 32768,
+  "n_low": 15,
+  "timing_steps": 5,
+  "params_dir": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r10/results/t3/params",
+  "out": "results/t3/t3_4x3_w3_s55_probe.json",
+  "aggregate": null,
+  "checkpoint": "final",
+  "selftest_verdict": false,
+  "cpu_budget": 1000000000.0,
+  "stop_after": "A",
+  "target": "trained",
+  "dry_target": false
+ },
+ "size": "4x3",
+ "seed": 55,
+ "E0": -8.94866491956139,
+ "a0": {
+  "pair": 0.0018562878988306354,
+  "spin": -0.013462155588038208,
+  "charge": -0.0028409830890823223
+ },
+ "items": {
+  "pair": {
+   "a_psi": 0.0017846155682782019,
+   "delta": 7.167233055243357e-05,
+   "scored": false
+  },
+  "spin": {
+   "a_psi": -0.00955720057753746,
+   "delta": -0.0039049550105007477,
+   "scored": true
+  },
+  "charge": {
+   "a_psi": -0.0028788835791286613,
+   "delta": 3.790049004633901e-05,
+   "scored": false
+  }
+ },
+ "ratios": {},
+ "resp": [],
+ "cpu": {
+  "A": 843.3802969999999,
+  "total": 850.8002449999999
+ },
+ "phase": "A",
+ "gs_train": {
+  "steps": 1200,
+  "best": -8.8568240973937,
+  "cpu": 843.36592,
+  "trace": [
+   [
+    0,
+    -7.472891800767095
+   ],
+   [
+    100,
+    -8.80260556250817
+   ],
+   [
+    200,
+    -8.839758889721328
+   ],
+   [
+    300,
+    -8.83625188508083
+   ],
+   [
+    400,
+    -8.850813003335068
+   ],
+   [
+    500,
+    -8.84503070680671
+   ],
+   [
+    600,
+    -8.848183584758697
+   ],
+   [
+    700,
+    -8.852389776887847
+   ],
+   [
+    800,
+    -8.85081857631953
+   ],
+   [
+    900,
+    -8.849971662799428
+   ],
+   [
+    1000,
+    -8.844810716629906
+   ],
+   [
+    1100,
+    -8.83946558158572
+   ]
+  ]
+ },
+ "overlap2": 0.926192837257432,
+ "dE": 0.09184082216768807
+}

@@ -1,0 +1,8 @@
+
+=== [S] H8 distorted chain R=2.0 d=0.25 basis(ns,np)=(2,1) K=40 M=80 E_RHF=-4.272759 N_chol(1e-6)=268 (6.70 K) N_chol(1e-4)=183 (build 11s)
+  <|C|>=28584  kept fraction by eps: 1e-06:0.993 1e-05:0.982 0.0001:0.883 0.0003:0.720 0.001:0.422 0.003:0.175
+  NNBFJ ops KEYX/EXACT=1.8037 floor share=0.01 wall KEYX/EXACT=1.1308 KEYX-EXACT rel dev=1.3e-14
+  WIBJ  ops KEYX/EXACT=0.0741 floor share=0.23 wall KEYX/EXACT=0.1521 KEYX-EXACT rel dev=7.4e-16
+  CGK   ops KEYX/EXACT=0.0917 floor share=0.19 wall KEYX/EXACT=0.1747 KEYX-EXACT rel dev=2.0e-15
+  XSK   ops KEYX/EXACT=0.0396 floor share=0.61 wall KEYX/EXACT=0.2144 KEYX-EXACT rel dev=6.1e-16
+  FJ    ops KEYX/EXACT=0.0741 floor share=0.23 wall KEYX/EXACT=0.1472 KEYX-EXACT rel dev=1.2e-15 | R4.0 contraction/enumeration ops=0.87 (identity dev 2.0e-04)

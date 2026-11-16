@@ -1,0 +1,33 @@
+{
+ "verdict": "NO-TARGET",
+ "inject": {
+  "scored": 7,
+  "tracked": {
+   "EHX": 0,
+   "ZV": 0,
+   "EHX_R": 0,
+   "EHX_E": 0
+  },
+  "passed": false,
+  "classes": {
+   "EHX": [
+    "untrusted",
+    "untrusted",
+    "untrusted",
+    "untrusted",
+    "untrusted",
+    "untrusted",
+    "untrusted"
+   ],
+   "ZV": [
+    "untrusted",
+    "untrusted",
+    "untrusted",
+    "untrusted",
+    "untrusted",
+    "untrusted",
+    "untrusted"
+   ]
+  }
+ }
+}

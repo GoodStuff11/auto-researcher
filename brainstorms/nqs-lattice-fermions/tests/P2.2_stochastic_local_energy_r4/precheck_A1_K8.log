@@ -1,0 +1,14 @@
+
+=== [A] H6 distorted chain R=3.6 d=0.25 K=8 dim=3136 E_RHF=-2.810148 E_FCI=-3.027768 HF wt=0.532 frustr=0.237 nnz/row=316 (4.5s)
+  seed=0 NNBFJ dE=   0.014 mHa Var(EL)=5.48e-05 KEYX-EL max=8.4e-15 ops(KEYX/EXACT, ED size)=1.461 (train 16s)
+      SCREEN exact bias (mHa): 1e-06:0.0000 1e-05:0.0000 0.0001:0.0001 0.0003:-0.0085 0.001:-0.0155 0.003:0.1914
+      TRUNC batch bias (mHa): 1000:25.4630+-1.9145 4000:7.7047+-0.4467 16000:3.0293+-0.1146
+      SS selected (half A) eps=0.0001 K=16 inc ratio (half B)=0.000
+  seed=0 WIBJ  dE=   0.023 mHa Var(EL)=8.89e-05 KEYX-EL max=2.9e-14 ops(KEYX/EXACT, ED size)=0.996 (train 15s)
+  seed=0 CGK   dE=   0.013 mHa Var(EL)=5.14e-05 KEYX-EL max=2.3e-13 ops(KEYX/EXACT, ED size)=1.461 (train 17s)
+  seed=0 XSK   dE=   4.019 mHa Var(EL)=3.49e-03 KEYX-EL max=8.4e-15 ops(KEYX/EXACT, ED size)=0.323 (train 14s)
+  seed=0 FJ    dE=   0.023 mHa Var(EL)=9.07e-05 KEYX-EL max=2.3e-14 ops(KEYX/EXACT, ED size)=0.996 (train 16s)
+
+real	1m23.541s
+user	1m22.997s
+sys	0m0.405s

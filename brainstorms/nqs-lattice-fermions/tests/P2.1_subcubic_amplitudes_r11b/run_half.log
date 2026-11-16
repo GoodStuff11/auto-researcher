@@ -1,0 +1,3 @@
+[half] L= 8 Ne= 56 V_h=32 sweeps= 439 t_sw=3.384e-02s tau=1.27+-0.37 cost=4.292e-02s acc=0.32
+[half] L=12 Ne=126 V_h=72 sweeps= 268 t_sw=9.377e-02s tau=1.00+-0.33 cost=9.376e-02s acc=0.33
+[half] L=16 Ne=224 V_h=128 sweeps= 471 t_sw=2.540e-01s tau=2.15+-0.77 cost=5.461e-01s acc=0.32

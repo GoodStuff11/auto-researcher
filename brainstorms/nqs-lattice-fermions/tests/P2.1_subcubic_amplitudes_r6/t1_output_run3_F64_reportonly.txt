@@ -1,0 +1,18 @@
+== PLR (Route 6.2): exactness (fast carried-table E_loc vs brute, sorted rows + JW signs)
+   L= 4 Ne=  14 n_conn=   29 E_fast=+702731283.249047756195 E_brute=+702731283.244601011276 rel_err=6.3e-12
+== PLR (Route 6.2): timing per connection
+   L=24 Ne= 504 n_conn=  916 setup=1.006e-02s t_c=5.827e-05s t_brute/conn=5.277e-03s speedup=91
+   L=32 Ne= 896 n_conn= 1691 setup=2.453e-02s t_c=6.216e-05s t_brute/conn=2.106e-02s speedup=339
+   L=40 Ne=1400 n_conn= 2639 setup=8.407e-02s t_c=7.815e-05s t_brute/conn=4.959e-02s speedup=635
+   L=48 Ne=2016 n_conn= 3798 setup=1.928e-01s t_c=8.977e-05s t_brute/conn=1.671e-01s speedup=1862
+== PLR (Route 6.2): max rel_err=6.3e-12 slope(t_c vs N_e)=0.32 speedup(largest L)=1862 -> T1 AMBIGUOUS
+total 7.9s
+== GK-BF (Route 6.1): exactness (fast carried-table E_loc vs brute, sorted rows + JW signs)
+   L= 4 Ne=  14 n_conn=   29 E_fast=-10.589906081787 E_brute=-10.589906081787 rel_err=9.2e-16
+== GK-BF (Route 6.1): timing per connection
+   L=24 Ne= 504 n_conn=  916 setup=6.696e-03s t_c=5.733e-05s t_brute/conn=1.738e-03s speedup=30
+   L=32 Ne= 896 n_conn= 1691 setup=1.653e-02s t_c=8.633e-05s t_brute/conn=5.305e-03s speedup=61
+   L=40 Ne=1400 n_conn= 2639 setup=4.715e-02s t_c=7.907e-05s t_brute/conn=1.239e-02s speedup=157
+   L=48 Ne=2016 n_conn= 3798 setup=1.194e-01s t_c=1.472e-04s t_brute/conn=2.920e-02s speedup=198
+== GK-BF (Route 6.1): max rel_err=9.2e-16 slope(t_c vs N_e)=0.58 speedup(largest L)=198 -> T1 PASS
+total 3.9s

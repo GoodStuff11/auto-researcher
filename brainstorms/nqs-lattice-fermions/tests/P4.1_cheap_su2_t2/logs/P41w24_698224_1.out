@@ -1,0 +1,26 @@
+task 1 on kim-compute-04.physics.cornell.edu: vmc_t2.py --mode train --arm che --width 48 --Lx 8 --Ly 3 --pg=1,1 --iters 1000 --n-chains 1024 --n-eval 65536 --threads 4 --max-hours 1.5 --outdir /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/w24
+[10:21:27] S8x3_N20_U8_tp-0.25_pg11_che_H48_seed0: L=24 Ne=20 H=48 P=26639 (che@16 P=9711) threads=4 host=kim-compute-04.physics.cornell.edu
+[10:21:53] thermalised: acceptance 0.330
+[10:21:58] it 1 E -13.824338 std 3.779 acc 0.306 |upd| 2.32e-01 t(mcmc/eloc/grad/sr) 0.30/3.49/1.54/0.40s elapsed 0.002 h
+[10:26:34] it 50 E -16.085361 std 1.620 acc 0.247 |upd| 1.29e-01 t(mcmc/eloc/grad/sr) 0.28/3.48/1.52/0.39s elapsed 0.078 h
+[10:31:15] it 100 E -16.110105 std 1.483 acc 0.242 |upd| 1.33e-01 t(mcmc/eloc/grad/sr) 0.26/3.45/1.56/0.39s elapsed 0.156 h
+[10:35:56] it 150 E -16.126536 std 1.630 acc 0.252 |upd| 1.28e-01 t(mcmc/eloc/grad/sr) 0.26/3.44/1.57/0.39s elapsed 0.234 h
+[10:40:37] it 200 E -16.257546 std 1.512 acc 0.235 |upd| 1.24e-01 t(mcmc/eloc/grad/sr) 0.25/3.43/1.55/0.39s elapsed 0.312 h
+[10:45:16] it 250 E -16.346327 std 1.556 acc 0.236 |upd| 1.23e-01 t(mcmc/eloc/grad/sr) 0.26/3.39/1.54/0.38s elapsed 0.390 h
+[10:49:58] it 300 E -16.262634 std 1.564 acc 0.236 |upd| 1.22e-01 t(mcmc/eloc/grad/sr) 0.27/3.44/1.52/0.39s elapsed 0.468 h
+[10:54:39] it 350 E -16.339210 std 1.343 acc 0.230 |upd| 1.27e-01 t(mcmc/eloc/grad/sr) 0.26/3.40/1.54/0.39s elapsed 0.546 h
+[10:59:21] it 400 E -16.289909 std 1.434 acc 0.233 |upd| 1.22e-01 t(mcmc/eloc/grad/sr) 0.26/3.41/1.55/0.38s elapsed 0.625 h
+[11:04:03] it 450 E -16.345825 std 1.231 acc 0.242 |upd| 1.17e-01 t(mcmc/eloc/grad/sr) 0.26/3.44/1.56/0.39s elapsed 0.703 h
+[11:08:48] it 500 E -16.411450 std 1.460 acc 0.234 |upd| 1.28e-01 t(mcmc/eloc/grad/sr) 0.28/3.43/1.55/0.39s elapsed 0.782 h
+[11:13:32] it 550 E -16.399754 std 1.279 acc 0.222 |upd| 1.27e-01 t(mcmc/eloc/grad/sr) 0.26/3.44/1.56/0.39s elapsed 0.861 h
+[11:18:16] it 600 E -16.365307 std 1.197 acc 0.229 |upd| 1.03e-01 t(mcmc/eloc/grad/sr) 0.27/3.53/1.56/0.39s elapsed 0.940 h
+[11:23:02] it 650 E -16.402971 std 1.236 acc 0.237 |upd| 9.71e-02 t(mcmc/eloc/grad/sr) 0.27/3.48/1.57/0.39s elapsed 1.019 h
+[11:27:47] it 700 E -16.464552 std 1.669 acc 0.237 |upd| 8.60e-02 t(mcmc/eloc/grad/sr) 0.26/3.49/1.56/0.39s elapsed 1.099 h
+[11:32:33] it 750 E -16.339294 std 1.068 acc 0.240 |upd| 7.00e-02 t(mcmc/eloc/grad/sr) 0.26/3.39/1.52/0.39s elapsed 1.178 h
+[11:37:14] it 800 E -16.433503 std 0.987 acc 0.237 |upd| 4.88e-02 t(mcmc/eloc/grad/sr) 0.25/3.41/1.54/0.39s elapsed 1.256 h
+[11:41:52] it 850 E -16.471051 std 1.004 acc 0.224 |upd| 3.31e-02 t(mcmc/eloc/grad/sr) 0.24/3.42/1.55/0.39s elapsed 1.333 h
+[11:46:31] it 900 E -16.373315 std 1.517 acc 0.239 |upd| 2.40e-02 t(mcmc/eloc/grad/sr) 0.27/3.48/1.53/0.38s elapsed 1.411 h
+[11:51:09] it 950 E -16.377578 std 1.103 acc 0.218 |upd| 1.40e-02 t(mcmc/eloc/grad/sr) 0.26/3.41/1.51/0.39s elapsed 1.488 h
+[11:51:54] wall cap 1.5 h reached at step 958
+[11:56:30] final E (average of last 208 steps) -16.4347607 +- 0.0048085 (65536 samples, 277 s)
+[11:56:30] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/w24/S8x3_N20_U8_tp-0.25_pg11_che_H48_seed0.json

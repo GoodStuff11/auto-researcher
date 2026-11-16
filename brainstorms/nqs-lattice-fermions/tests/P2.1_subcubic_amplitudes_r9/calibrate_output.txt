@@ -1,0 +1,21 @@
+[11:02:39] instance 4 asserts: E0=-9.7918583301 (pilot -9.7918583301) |G|=4 S=0 dim_S_chi=15080 deg=1 gap E1-E0=0.02492 (>= 0.02: True) -> PASS
+[11:02:43] arm lh_3x3   {'mode': 'lh', 'patch': '3x3', 'F': 5, 'Ha': 0} P=1625 (target 1626, matched True) E(it0)=-8.06603236
+[11:02:45] arm lh_plus  {'mode': 'lh', 'patch': 'plus', 'F': 5, 'Ha': 1} P=1617 (target 1626, matched True) E(it0)=-8.06046830
+[11:02:46] arm lh_site  {'mode': 'lh', 'patch': 'site', 'F': 5, 'Ha': 3} P=1641 (target 1626, matched True) E(it0)=-8.06142867
+[11:02:47] arm nnbf     {'mode': 'full', 'Hs': 6} P=1626 (target 1626, matched True) E(it0)=-8.06124350
+[11:03:08] t_st(lh_3x3) = 10.34 s (steps 10.17, 10.50) at 4 threads
+[11:03:14] t_st(nnbf, H=6) = 3.09 s; ratio lh_3x3 / nnbf = 3.34
+[11:03:20] t_st(nnbf, H=8) = 3.13 s  P=2048  (>= t_st(lh_3x3): False)
+[11:03:26] t_st(nnbf, H=12) = 3.16 s  P=2892  (>= t_st(lh_3x3): False)
+[11:03:33] t_st(nnbf, H=16) = 3.23 s  P=3736  (>= t_st(lh_3x3): False)
+[11:03:39] t_st(nnbf, H=20) = 3.26 s  P=4580  (>= t_st(lh_3x3): False)
+[11:03:46] t_st(nnbf, H=24) = 3.34 s  P=5424  (>= t_st(lh_3x3): False)
+[11:03:53] t_st(nnbf, H=32) = 3.47 s  P=7112  (>= t_st(lh_3x3): False)
+[11:04:01] t_st(nnbf, H=48) = 3.91 s  P=10488  (>= t_st(lh_3x3): False)
+[11:04:01] no width matched; H_c = 48 by the rule
+[11:04:02] H_c = 48: nnbf_c P=10488 E(it0)=-8.05587323; t_st ratio nnbf_c/lh_3x3 = 0.38
+[11:04:02] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r9/preflight_config.json; asserts PASS
+
+real	1m34.964s
+user	5m39.957s
+sys	0m16.641s

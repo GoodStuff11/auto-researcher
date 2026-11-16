@@ -1,0 +1,9 @@
+VERDICT T2a (R2 pcg-scal): PASS
+  cost ratio at 48 sites not measured
+  eps_che 2.858e-03, eps_pcg 1.284e-03 (best of 1), eps_r1 2.313e-03 (best of 1), rho 0.449, eps_pcg/eps_r1 0.555
+  foil (descriptive): eps 8.859e-02
+  pcg seed 0 exact checkpoints: 250: 2.804e-03, 500: 2.085e-03, 750: 1.589e-03
+VERDICT W (R3 width premise): W FAILS
+  W-12 eps(H): H=4: 4.863e-03, H=8: 2.511e-03, H=16: 2.858e-03, H=32: 1.352e-03; H*(12) = 8; r12 = 0.527
+  W-24: E16 -16.43073 +- 0.00477, E48 -16.43309 +- 0.00489, (E16 - E48)/sigma = 0.35
+  H = 48 does not lower the 24-site energy beyond 2 sigma

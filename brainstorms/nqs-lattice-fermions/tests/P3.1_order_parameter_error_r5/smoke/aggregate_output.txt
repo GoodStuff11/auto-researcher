@@ -1,0 +1,5 @@
+scored items 6 of 6 over seeds [11]; width-6 control median dE_sign = 0.0125
+  pair: a0=+9.224e-05 median |delta|/|a0| = 0.308, scored 2
+  spin: a0=+5.338e-02 median |delta|/|a0| = 0.154, scored 2
+  charge: a0=-1.416e-03 median |delta|/|a0| = 0.230, scored 2
+VERDICT: NO-TARGET (premise gate)

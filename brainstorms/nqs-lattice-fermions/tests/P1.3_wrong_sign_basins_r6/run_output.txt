@@ -1,0 +1,15 @@
+[14:30:04] threads 1
+[14:30:06] per-step 0.177 CPU-s; budget: projected 243 CPU-s + 2 used; invocation cap 580; leaf ledger 0 of 1800
+[14:30:55] seed 11: start S dEt 0.05568 dEs 0.01098
+[14:33:29] seed 11: S 0.01098 | C100 0.01034 C300 0.01039 (dEt 0.05113) | O0 0.00950 after 250 fid steps (dEt 0.06042) O100 0.00988 O300 0.00924 (dEt 0.05075) (203 CPU-s)
+[14:33:29] leaf ledger now 398 s
+[14:30:11] threads 1
+[14:30:12] per-step 0.165 CPU-s; budget: projected 228 CPU-s + 1 used; invocation cap 580; leaf ledger 0 of 1800
+[14:30:57] seed 22: start S dEt 0.04916 dEs 0.00930
+[14:33:25] seed 22: S 0.00930 | C100 0.00885 C300 0.00805 (dEt 0.04245) | O0 0.00793 after 25 fid steps (dEt 0.05096) O100 0.00830 O300 0.00809 (dEt 0.04232) (192 CPU-s)
+[14:33:25] leaf ledger now 194 s
+[14:30:31] threads 1
+[14:30:32] per-step 0.166 CPU-s; budget: projected 229 CPU-s + 1 used; invocation cap 580; leaf ledger 0 of 1800
+[14:31:17] seed 33: start S dEt 0.05116 dEs 0.01090
+[14:33:45] seed 33: S 0.01090 | C100 0.01077 C300 0.01125 (dEt 0.04823) | O0 0.00916 after 250 fid steps (dEt 0.05551) O100 0.01072 O300 0.01081 (dEt 0.04732) (193 CPU-s)
+[14:33:45] leaf ledger now 593 s

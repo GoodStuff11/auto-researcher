@@ -1,0 +1,14 @@
+2x3 torus Ne=6 U=6 t'=-0.3 dim=400: E0(S=0,K=0)=-6.43831205 <S^2>=1.3e-16; P_K idempotent 2.2e-16, [P_K,H] 3.6e-15 [PASS]
+  foil  P=  62 E=-5.169889 <S^2>=-3.81e-17 [PASS]  grad rel.err=6.7e-10 [PASS]
+  pcg   P= 317 E=-5.195038 <S^2>=-2.42e-17 [PASS]  grad rel.err=1.7e-09 [PASS]
+  scf   P= 331 E=+2.989023 <S^2>=+6.59e-17 [PASS]  grad rel.err=8.4e-10 [PASS]
+  nnbf  P= 294 E=-4.664799 <S^2>=+3.80e-01 [PASS (not required)]  grad rel.err=2.1e-09 [PASS]
+  r1    P= 307 E=-5.825611 <S^2>=-1.64e-16 [PASS]  grad rel.err=4.2e-09 [PASS]
+  sign budget on psi_0: E_sign_up - E0 = -8.9e-16 [PASS]
+  opt foil : E=-6.43831190 eps=2.32e-08 dE_sign=-8.88e-16 (150 it, 0.5s)
+  opt pcg  : E=-6.43831205 eps=9.63e-14 dE_sign=-8.88e-16 (150 it, 0.6s)
+  opt scf  : E=-6.28392450 eps=2.40e-02 dE_sign=2.79e-02 (150 it, 2.2s)
+  opt nnbf : E=-6.43831199 eps=8.70e-09 dE_sign=-8.88e-16 (150 it, 0.5s)
+  opt r1   : E=-6.43831205 eps=3.03e-15 dE_sign=-8.88e-16 (134 it, 0.4s)
+(the 2x3 cluster has fewer states than most arms have parameters: optimisation lines only show that the code runs)
+SMOKE PASS  (5.7s)

@@ -1,0 +1,3 @@
+[NNBF (H=6)] L= 8 Ne= 56 sweeps=2205 (burn 220) t_sw=1.832e-02s tau_int=1.14+-0.14 (W=7) cost=t_sw*tau=2.086e-02s prop/sweep=91 acc=0.33 <E_loc>/Ne=-0.629 cpu=35s
+[NNBF (H=6)] L=12 Ne=126 sweeps= 828 (burn 82) t_sw=9.304e-02s tau_int=1.12+-0.23 (W=7) cost=t_sw*tau=1.046e-01s prop/sweep=205 acc=0.33 <E_loc>/Ne=-0.627 cpu=75s
+[NNBF (H=6)] L=16 Ne=224 sweeps= 344 (burn 34) t_sw=4.614e-01s tau_int=1.00+-0.33 (W=8) cost=t_sw*tau=4.602e-01s prop/sweep=360 acc=0.32 <E_loc>/Ne=-0.624 cpu=160s

@@ -1,0 +1,24 @@
+inst   V      D    gap      arm  n_eff  conv  steps    dE_tot   dE_sign    f_E   spread   cpu_s
+  20   8    560  0.066     full    464  True   1050  1.12e-02  1.47e-03  0.131  4.7e-13      54
+  20   8    560  0.066     half    304  True    950  3.31e-02  3.59e-03  0.108  1.1e-13      49
+  20   8    560  0.066  quarter    224  True    800  9.28e-02  1.46e-02  0.157  7.7e-14      42
+  23                       full  missing
+  23                       half  missing
+  23  12  16632  0.085  quarter    506 False     60  1.50e-01  1.60e-02  0.107  5.9e-14      24
+  24                       full  missing
+  24                       half  missing
+  24                    quarter  missing
+  25                       full  missing
+  25                       half  missing
+  25                    quarter  missing
+total CPU-s (ladder runs only): 24
+half: INCONCLUSIVE  (1 counted sizes < 3)
+    inst 20 V=8: rho = 2.439
+    inst 23 V=None: missing
+    inst 24 V=None: missing
+    inst 25 V=None: missing
+quarter: INCONCLUSIVE  (1 counted sizes < 3)
+    inst 20 V=8: rho = 9.924
+    inst 23 V=None: missing
+    inst 24 V=None: missing
+    inst 25 V=None: missing

@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.2_stochastic_local_energy_r5/micro_test.py", line 1421, in <module>
+    main()
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.2_stochastic_local_energy_r5/micro_test.py", line 1417, in main
+    {"L": run_part_L, "W": run_part_W, "S": run_part_S}[args.part](args)
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.2_stochastic_local_energy_r5/micro_test.py", line 782, in run_part_W
+    h, g, enuc, Erhf, eps = kc.build_molecule(N, args.bond_length, args.distort, args.geom_seed, kc.H631GSS, K,
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.2_stochastic_local_energy_r5/keyx_core.py", line 573, in build_molecule
+    raise ValueError(f"K_act={K_act} > number of MOs {nmo}")
+ValueError: K_act=24 > number of MOs 20

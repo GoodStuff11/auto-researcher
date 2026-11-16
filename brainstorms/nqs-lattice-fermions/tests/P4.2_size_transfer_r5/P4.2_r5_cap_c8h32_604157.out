@@ -1,0 +1,29 @@
+[     0.1s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
+[     0.2s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
+[     0.5s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
+[     1.2s] selftest(c) MFNGO log-derivative max rel err over 818 params = 5.13e-07 OK
+[     1.2s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
+[     1.2s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
+[     1.2s] SELFTEST PASSED
+[   103.2s] target 4x4o 4x4:6 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=1681680 n_irrep=210430 E0=-11.3880108863 gap/V=4.6974e-03 (sign half only) npar=818
+[   103.2s] arm scr: charged source wall time 0.0s
+[   278.5s] arm scr@0    : E=-5.60878471 eps=3.6120e-01 (raw 3.5733e-01, irrep weight 0.461) A/V=6.2528e-02 sign-agree=0.1067 Pd=1.8166e-03 fid=0.0011
+[  1857.6s] arm scr@10   : E=-9.91460189 eps=9.2088e-02 (raw 9.3022e-02, irrep weight 0.488) A/V=2.8698e-02 sign-agree=0.3400 Pd=1.2641e-03 fid=0.0261
+[  3481.2s] arm scr@20   : E=-10.16688672 eps=7.6320e-02 (raw 7.9120e-02, irrep weight 0.386) A/V=1.8679e-02 sign-agree=0.6197 Pd=1.4940e-03 fid=0.0933
+[  8246.9s] arm scr@50   : E=-10.56368068 eps=5.1521e-02 (raw 7.5286e-02, irrep weight 0.347) A/V=8.0165e-03 sign-agree=0.8669 Pd=2.6534e-03 fid=0.4854
+[  9821.9s]   [scr] step 60/600 eps=4.97713e-02 lr=0.195
+[ 16100.8s] arm scr@100  : E=-10.63464365 eps=4.7085e-02 (raw 7.7261e-02, irrep weight 0.284) A/V=7.3066e-03 sign-agree=0.8779 Pd=2.5456e-03 fid=0.5366
+[ 19223.9s]   [scr] step 120/600 eps=4.63157e-02 lr=0.195
+[ 23965.6s] arm scr@150  : E=-10.66349315 eps=4.5282e-02 (raw 8.2831e-02, irrep weight 0.179) A/V=7.3093e-03 sign-agree=0.8765 Pd=2.4496e-03 fid=0.5589
+[ 28635.7s]   [scr] step 180/600 eps=4.44529e-02 lr=0.2
+[ 38000.5s]   [scr] step 240/600 eps=4.33212e-02 lr=0.2
+[ 47356.9s]   [scr] step 300/600 eps=4.26358e-02 lr=0.161
+[ 47401.1s] arm scr@300  : E=-10.70583765 eps=4.2636e-02 (raw 8.7983e-02, irrep weight 0.098) A/V=7.2756e-03 sign-agree=0.8729 Pd=2.3989e-03 fid=0.5842
+[ 56559.1s]   [scr] step 360/600 eps=4.21773e-02 lr=0.2
+[ 65752.5s]   [scr] step 420/600 eps=4.18532e-02 lr=0.2
+[ 70415.1s] arm scr@450  : E=-10.72044886 eps=4.1723e-02 (raw 8.8902e-02, irrep weight 0.085) A/V=7.1866e-03 sign-agree=0.8727 Pd=2.3955e-03 fid=0.5922
+[ 75140.9s]   [scr] step 480/600 eps=4.16113e-02 lr=0.146
+[ 84550.1s]   [scr] step 540/600 eps=4.14160e-02 lr=0.2
+[ 93939.4s]   [scr] step 600/600 eps=4.12536e-02 lr=0.2
+[ 93984.7s] arm scr@600  : E=-10.72795289 eps=4.1254e-02 (raw 8.9238e-02, irrep weight 0.080) A/V=7.1526e-03 sign-agree=0.8723 Pd=2.3897e-03 fid=0.5967
+[ 93984.8s] done (results_capacity_c8h32/scr_s0.json)

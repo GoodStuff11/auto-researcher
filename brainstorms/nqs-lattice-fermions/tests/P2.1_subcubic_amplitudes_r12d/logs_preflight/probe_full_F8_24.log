@@ -1,0 +1,5 @@
+[16:01:14] instance 24 {'Lx': 7, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=84084 E0=-7.8159469909 gap=0.0369 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=3078 arm=full seed=11 threads=1
+[16:01:18] arm full: F=8 Ha=0 n_eff=2153 P/dim_S_chi=0.70 calib=5.33e-15
+[16:01:20] full: it     0 E-E0 = 1.897962 best = 1.897962 (1.971 CPU-s/step)
+[16:01:45] PROBE inst 24 full: D=84084 n_eff=2153 15 steps, 1.817 CPU-s/step, peak RSS 0.54 GB
+[16:01:45] peak RSS 0.54 GB

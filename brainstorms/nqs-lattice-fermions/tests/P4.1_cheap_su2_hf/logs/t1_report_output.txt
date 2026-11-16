@@ -1,0 +1,5 @@
+[13:50:12]   che     H=4 M=None P=620 eps=7.0973e-04 iters=219 cpu=7.4 min S2=2.0e-17
+[13:50:12]   che8    H=8 M=None P=1024 eps=2.4772e-04 iters=215 cpu=7.4 min S2=3.4e-17
+[13:50:12]   che_hf  H=4 M=4 P=620 eps=1.5139e-03 iters=131 cpu=7.3 min S2=-1.4e-17
+[13:50:12]   r1      H=6 M=None P=594 eps=2.3378e-03 iters=161 cpu=5.3 min S2=1.8e-17
+[13:50:12] VERDICT T1 (R3 variant iii che_hf): KILL  [at iteration 100: eps_che 1.121e-03, eps_che_hf 1.763e-03, eps_r1 3.272e-03, eps_che8 5.419e-04, rho_hf 1.572]

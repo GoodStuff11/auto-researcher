@@ -1,0 +1,26 @@
+[10:11:49] check geometry (OBC patch indexing, no wrap-around): True
+[10:11:50] check amplitude [lh_plus inst 9] LHAnsatz vs augmented det: 3.5e-16
+[10:11:50] check grad [lh_plus inst 9 Ha=5, proj=none]: analytic 5.6305919966e-01 fd 5.6305920015e-01 rel 8.8e-10
+[10:11:50] check grad [lh_plus inst 9 Ha=5, proj=chi]: analytic 9.1430809998e-01 fd 9.1430810034e-01 rel 4.0e-10
+[10:11:50] check amplitude [lh_site inst 9] LHAnsatz vs augmented det: 2.2e-16
+[10:11:50] check grad [lh_site inst 9 Ha=7, proj=none]: analytic -2.2137090058e+00 fd -2.2137090059e+00 rel 4.9e-11
+[10:11:50] check grad [lh_site inst 9 Ha=7, proj=chi]: analytic 4.5933454479e-01 fd 4.5933454551e-01 rel 1.6e-09
+[10:11:50] check amplitude [lh_3x3 inst 9] LHAnsatz vs augmented det: 2.8e-16
+[10:11:50] check grad [lh_3x3 inst 9 Ha=3, proj=none]: analytic 1.7397629659e+00 fd 1.7397629661e+00 rel 1.2e-10
+[10:11:50] check grad [lh_3x3 inst 9 Ha=3, proj=chi]: analytic -2.3780830626e+00 fd -2.3780830625e+00 rel 4.3e-11
+[10:11:50] check amplitude [lh_plus inst 8] LHAnsatz vs augmented det: 3.7e-16
+[10:11:50] check grad [lh_plus inst 8 Ha=7, proj=none]: analytic 2.2547281916e+00 fd 2.2547281917e+00 rel 2.7e-11
+[10:11:50] check grad [lh_plus inst 8 Ha=7, proj=chi]: analytic -1.9858293945e+00 fd -1.9858293951e+00 rel 3.4e-10
+[10:11:50] check O_P [lh_plus] vs fd: 1.2e-08
+[10:11:54] check fast E_loc == (H psi)/psi on all 1680 configs [lh_plus, OBC 3x3]: 1.8e-13
+[10:11:54] check amplitude [lh_site inst 8] LHAnsatz vs augmented det: 4.2e-16
+[10:11:54] check grad [lh_site inst 8 Ha=8, proj=none]: analytic 2.5807637115e+00 fd 2.5807637112e+00 rel 1.3e-10
+[10:11:54] check grad [lh_site inst 8 Ha=8, proj=chi]: analytic 1.0152580625e+00 fd 1.0152580616e+00 rel 8.7e-10
+[10:11:54] check O_P [lh_site] vs fd: 1.6e-09
+[10:11:59] check fast E_loc == (H psi)/psi on all 1680 configs [lh_site, OBC 3x3]: 6.2e-13
+[10:11:59] check amplitude [lh_3x3 inst 8] LHAnsatz vs augmented det: 6.5e-16
+[10:11:59] check grad [lh_3x3 inst 8 Ha=6, proj=none]: analytic 1.7982863796e-01 fd 1.7982863865e-01 rel 3.8e-09
+[10:11:59] check grad [lh_3x3 inst 8 Ha=6, proj=chi]: analytic -1.1794178286e+00 fd -1.1794178287e+00 rel 1.5e-10
+[10:11:59] check O_P [lh_3x3] vs fd: 1.1e-08
+[10:12:04] check fast E_loc == (H psi)/psi on all 1680 configs [lh_3x3, OBC 3x3]: 4.4e-12
+[10:12:04] ALL CHECKS PASSED

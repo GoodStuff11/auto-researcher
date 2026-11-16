@@ -1,0 +1,25 @@
+[11:21:38] check dense amplitude vs explicit det(F0 + K C(g(n))) inst 9: 3.4e-16
+[11:21:38] check grad [hfps_dense inst 9, proj=none]: analytic 4.7144206329e+00 fd 4.7144206321e+00 rel 1.7e-10
+[11:21:38] check grad [hfps_dense inst 9, proj=chi]: analytic -1.1586266252e+01 fd -1.1586266252e+01 rel 3.0e-11
+[11:21:38] check dense amplitude vs explicit det(F0 + K C(g(n))) inst 8: 5.7e-16
+[11:21:38] check grad [hfps_dense inst 8, proj=none]: analytic -1.7070093844e+01 fd -1.7070093841e+01 rel 1.6e-10
+[11:21:38] check grad [hfps_dense inst 8, proj=chi]: analytic -5.7718256787e-01 fd -5.7718257640e-01 rel 1.5e-08
+[11:21:52] instance 0 hfps_plus   {'mode': 'hfps', 'patch': 'plus', 'F': 4, 'Ha': 1} P=1750 target=1734 matched=True
+[11:21:52] instance 0 hfps_site   {'mode': 'hfps', 'patch': 'site', 'F': 4, 'Ha': 1} P=1718 target=1734 matched=True
+[11:21:52] instance 0 hfps_dense  {'mode': 'hfps_dense', 'F': 4, 'Ha': 0} P=1804 target=1734 matched=True
+[11:21:52] instance 0 nnbf        {'mode': 'full', 'Hs': 6} P=1734 target=1734 matched=True
+[11:21:52] instance 0 agpj        {'mode': 'agp', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 43} P=1718 target=1734 matched=True
+[11:21:52] instance 0 skagp       {'mode': 'agp', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 6, 'Ha': 22} P=1718 target=1734 matched=True
+[11:22:07] instance 3 hfps_plus   {'mode': 'hfps', 'patch': 'plus', 'F': 3, 'Ha': 1} P=1483 target=1478 matched=True
+[11:22:07] instance 3 hfps_site   {'mode': 'hfps', 'patch': 'site', 'F': 3, 'Ha': 2} P=1493 target=1478 matched=True
+[11:22:07] instance 3 hfps_dense  {'mode': 'hfps_dense', 'F': 3, 'Ha': 0} P=1515 target=1478 matched=True
+[11:22:07] instance 3 nnbf        {'mode': 'full', 'Hs': 6} P=1478 target=1478 matched=True
+[11:22:07] instance 3 agpj        {'mode': 'agp', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 36} P=1480 target=1478 matched=True
+[11:22:07] instance 3 skagp       {'mode': 'agp', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 6, 'Ha': 15} P=1480 target=1478 matched=True
+[11:22:10] instance 4 hfps_plus   {'mode': 'hfps', 'patch': 'plus', 'F': 4, 'Ha': 4} P=1642 target=1626 matched=True
+[11:22:10] instance 4 hfps_site   {'mode': 'hfps', 'patch': 'site', 'F': 4, 'Ha': 4} P=1610 target=1626 matched=True
+[11:22:10] instance 4 hfps_dense  {'mode': 'hfps_dense', 'F': 4, 'Ha': 1} P=1626 target=1626 matched=True
+[11:22:10] instance 4 nnbf        {'mode': 'full', 'Hs': 6} P=1626 target=1626 matched=True
+[11:22:10] instance 4 agpj        {'mode': 'agp', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 44} P=1633 target=1626 matched=True
+[11:22:10] instance 4 skagp       {'mode': 'agp', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 6, 'Ha': 23} P=1631 target=1626 matched=True
+[11:22:10] ALL CHECKS PASSED

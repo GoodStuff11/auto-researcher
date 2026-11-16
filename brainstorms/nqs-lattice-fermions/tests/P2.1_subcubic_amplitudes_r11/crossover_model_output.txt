@@ -1,0 +1,28 @@
+== op counts per VMC sweep: Route 7.1 (plus patch, F=4, V_h=V) against dense HFPS (F=4) and NNBF(H)
+L= 8 Ne=  56 props/sweep=    74 conns/Eloc=   108 route=1.18e+07 [accept 0.87, proposals 0.06, Eloc 0.08] dense=3.23e+06 R_ops(dense)=0.27 R_ops(nnbf6)=0.60 R_ops(nnbf32)=1.23 R_ops(nnbf64)=2.00 R_ops(nnbf128)=3.55
+L=12 Ne= 126 props/sweep=   157 conns/Eloc=   239 route=1.16e+08 [accept 0.94, proposals 0.03, Eloc 0.04] dense=7.22e+07 R_ops(dense)=0.62 R_ops(nnbf6)=1.30 R_ops(nnbf32)=2.00 R_ops(nnbf64)=2.87 R_ops(nnbf128)=4.60
+L=16 Ne= 224 props/sweep=   295 conns/Eloc=   419 route=6.75e+08 [accept 0.97, proposals 0.01, Eloc 0.02] dense=7.05e+08 R_ops(dense)=1.04 R_ops(nnbf6)=2.14 R_ops(nnbf32)=2.83 R_ops(nnbf64)=3.68 R_ops(nnbf128)=5.38
+L=20 Ne= 350 props/sweep=   472 conns/Eloc=   657 route=2.60e+09 [accept 0.98, proposals 0.01, Eloc 0.01] dense=4.17e+09 R_ops(dense)=1.60 R_ops(nnbf6)=3.26 R_ops(nnbf32)=3.95 R_ops(nnbf64)=4.80 R_ops(nnbf128)=6.51
+L=24 Ne= 504 props/sweep=   700 conns/Eloc=   940 route=7.95e+09 [accept 0.99, proposals 0.01, Eloc 0.01] dense=1.79e+10 R_ops(dense)=2.25 R_ops(nnbf6)=4.56 R_ops(nnbf32)=5.24 R_ops(nnbf64)=6.08 R_ops(nnbf128)=7.76
+L=28 Ne= 686 props/sweep=   952 conns/Eloc=  1287 route=1.98e+10 [accept 0.99, proposals 0.00, Eloc 0.01] dense=6.13e+10 R_ops(dense)=3.09 R_ops(nnbf6)=6.24 R_ops(nnbf32)=6.93 R_ops(nnbf64)=7.78 R_ops(nnbf128)=9.48
+L=32 Ne= 896 props/sweep=  1226 conns/Eloc=  1681 route=4.36e+10 [accept 0.99, proposals 0.00, Eloc 0.00] dense=1.77e+11 R_ops(dense)=4.05 R_ops(nnbf6)=8.15 R_ops(nnbf32)=8.85 R_ops(nnbf64)=9.71 R_ops(nnbf128)=11.42
+L=40 Ne=1400 props/sweep=  1936 conns/Eloc=  2613 route=1.67e+11 [accept 0.99, proposals 0.00, Eloc 0.00] dense=1.05e+12 R_ops(dense)=6.27 R_ops(nnbf6)=12.60 R_ops(nnbf32)=13.29 R_ops(nnbf64)=14.15 R_ops(nnbf128)=15.85
+L=48 Ne=2016 props/sweep=  2818 conns/Eloc=  3773 route=5.06e+11 [accept 1.00, proposals 0.00, Eloc 0.00] dense=4.53e+12 R_ops(dense)=8.95 R_ops(nnbf6)=17.95 R_ops(nnbf32)=18.64 R_ops(nnbf64)=19.49 R_ops(nnbf128)=21.19
+== implementation efficiency eta = measured t_sw ratio (Round 8c) / R_ops
+ dense: L=8: t_sw ratio=0.33 R_ops=0.27 eta=1.22  L=12: t_sw ratio=0.68 R_ops=0.62 eta=1.10  L=16: t_sw ratio=0.90 R_ops=1.04 eta=0.86
+     6: L=8: t_sw ratio=0.44 R_ops=0.60 eta=0.74  L=12: t_sw ratio=0.83 R_ops=1.30 eta=0.64  L=16: t_sw ratio=1.28 R_ops=2.14 eta=0.60
+    32: L=8: t_sw ratio=0.80 R_ops=1.23 eta=0.65  L=12: t_sw ratio=3.21 R_ops=2.00 eta=1.60  L=16: t_sw ratio=5.13 R_ops=2.83 eta=1.81
+    64: L=8: t_sw ratio=1.37 R_ops=2.00 eta=0.69  L=12: t_sw ratio=6.28 R_ops=2.87 eta=2.19  L=16: t_sw ratio=10.80 R_ops=3.68 eta=2.94
+   128: L=8: t_sw ratio=3.71 R_ops=3.55 eta=1.05  L=12: t_sw ratio=12.59 R_ops=4.60 eta=2.74  L=16: t_sw ratio=22.98 R_ops=5.38 eta=4.27
+== smallest L in the grid with R >= 3 (pure ops; and with eta(L=16) held fixed)
+ dense: ops -> L=28; measured constants (eta16=0.86) -> L=32
+     6: ops -> L=20; measured constants (eta16=0.60) -> L=28
+    32: ops -> L=20; measured constants (eta16=1.81) -> L=12
+    64: ops -> L=16; measured constants (eta16=2.94) -> L=8
+   128: ops -> L=8; measured constants (eta16=4.27) -> L=8
+== hypothetical hidden-row density v_h = V_h / V (b scaled by v_h): R_ops(dense) by L
+v_h=1.00: L8:0.26 L12:0.60 L16:1.00 L20:1.62 L24:2.25 L28:3.12 L32:4.04 L40:6.25 L48:9.04  -> ops crossover L=28
+v_h=0.50: L8:0.77 L12:1.73 L16:3.18 L20:4.87 L24:7.03 L28:9.08 L32:12.03 L40:19.00 L48:27.80  -> ops crossover L=16
+v_h=0.25: L8:1.93 L12:4.46 L16:7.59 L20:11.32 L24:15.52 L28:21.47 L32:27.70 L40:44.73 L48:63.33  -> ops crossover L=12
+== 3x3 patch (b up to 14), same pairing-frame op model, v_h=1: R_ops(dense) by L
+L8:0.17 L12:0.38 L16:0.68 L20:1.07 L24:1.57 L28:2.17 L32:2.85 L40:4.41 L48:6.35

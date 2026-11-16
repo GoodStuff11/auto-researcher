@@ -1,0 +1,22 @@
+[OK ] T2a PASS                         -> PASS             (intended PASS) | eps_che 2.858e-03, eps_pcg 1.500e-03 (best of 1), eps_r1 2.500e-03 (best of 1), rho 0.525, eps_pcg/eps_r1 0.600
+[OK ] T2a KILL rho>=1                  -> KILL             (intended KILL) | eps_che 2.858e-03, eps_pcg 3.000e-03 (best of 1), eps_r1 5.000e-03 (best of 1), rho 1.050, eps_pcg/eps_r1 0.600
+[OK ] T2a KILL pcg>=r1                 -> KILL             (intended KILL) | eps_che 2.858e-03, eps_pcg 2.000e-03 (best of 1), eps_r1 1.900e-03 (best of 1), rho 0.700, eps_pcg/eps_r1 1.053
+[OK ] T2a KILL futility                -> KILL             (intended KILL) | pcg seed 0 stopped by futility at step 250 (eps 3.000e-02)
+[OK ] T2a KILL-COST                    -> KILL-COST        (intended KILL-COST) | t_step(pcg)/t_step(che) at 48 sites = 6.00 > 5.0
+[OK ] T2a AMBIGUOUS (rho 0.9)          -> AMBIGUOUS        (intended AMBIGUOUS) | eps_che 2.858e-03, eps_pcg 2.570e-03 (best of 1), eps_r1 4.000e-03 (best of 1), rho 0.899, eps_pcg/eps_r1 0.642
+[OK ] T2a AMBIGUOUS (pcg 0.9 r1)       -> AMBIGUOUS        (intended AMBIGUOUS) | eps_che 2.858e-03, eps_pcg 1.800e-03 (best of 1), eps_r1 2.000e-03 (best of 1), rho 0.630, eps_pcg/eps_r1 0.900
+[OK ] T2a best-of-seeds PASS           -> PASS             (intended PASS) | eps_che 2.858e-03, eps_pcg 1.500e-03 (best of 2), eps_r1 2.500e-03 (best of 2), rho 0.525, eps_pcg/eps_r1 0.600
+[OK ] T2a AMBIGUOUS after seed 1       -> AMBIGUOUS-FINAL  (intended AMBIGUOUS-FINAL) | eps_che 2.858e-03, eps_pcg 2.570e-03 (best of 2), eps_r1 4.000e-03 (best of 2), rho 0.899, eps_pcg/eps_r1 0.642
+[OK ] T2a NO-TARGET                    -> NO-TARGET        (intended NO-TARGET) | eps_che = 5.00e-04 < 1e-3
+[OK ] T2a INCOMPLETE missing r1        -> INCOMPLETE       (intended INCOMPLETE) | missing gating arm (che pilot, pcg or r1)
+[OK ] T2a INCOMPLETE capped            -> INCOMPLETE       (intended INCOMPLETE) | a gating run hit --max-hours (resubmit; it resumes from its checkpoint)
+[OK ] T2a INVALID S^2                  -> INVALID          (intended INVALID) | pcg seed 0: <S^2> = 1.0e-03 (exact singlet expected)
+[OK ] W HOLDS                          -> W HOLDS          (intended W HOLDS) | W-12 eps(H): H=4: 5.000e-03, H=8: 3.500e-03, H=16: 2.860e-03, H=32: 2.600e-03; H*(12) = 16; r12 = 0.091; W-24: E16 -16.50000 +- 0.00300, E48 -16.53000 +- 0.00300, (E16 - E48)/sigma = 7.07; r24 = 0.300 vs r12 = 0.091
+[OK ] W FAILS no 2sigma gain           -> W FAILS          (intended W FAILS) | W-12 eps(H): H=4: 5.000e-03, H=8: 3.500e-03, H=16: 2.860e-03, H=32: 2.600e-03; H*(12) = 16; r12 = 0.091; W-24: E16 -16.50000 +- 0.00300, E48 -16.50500 +- 0.00300, (E16 - E48)/sigma = 1.18; H = 48 does not lower the 24-site energy beyond 2 sigma
+[OK ] W FAILS r24<=r12                 -> W FAILS          (intended W FAILS) | W-12 eps(H): H=4: 5.000e-03, H=8: 3.500e-03, H=16: 2.860e-03, H=32: 2.600e-03; H*(12) = 16; r12 = 0.091; W-24: E16 -16.50000 +- 0.00100, E48 -16.50500 +- 0.00100, (E16 - E48)/sigma = 3.54; r24 = 0.050 vs r12 = 0.091
+[OK ] W FAILS without reference        -> W FAILS          (intended W FAILS) | W-12 eps(H): H=4: 5.000e-03, H=8: 3.500e-03, H=16: 2.860e-03, H=32: 2.600e-03; H*(12) = 16; r12 = 0.091; W-24: E16 -16.50000 +- 0.00300, E48 -16.50000 +- 0.00300, (E16 - E48)/sigma = 0.00; H = 48 does not lower the 24-site energy beyond 2 sigma
+[OK ] W PENDING-REFERENCE              -> PENDING-REFERENCE (intended PENDING-REFERENCE) | W-12 eps(H): H=4: 5.000e-03, H=8: 3.500e-03, H=16: 2.860e-03, H=32: 2.600e-03; H*(12) = 16; r12 = 0.091; W-24: E16 -16.50000 +- 0.00300, E48 -16.53000 +- 0.00300, (E16 - E48)/sigma = 7.07; no valid 24-site (+,+) reference yet (job 687302)
+[OK ] W NO-TARGET                      -> NO-TARGET        (intended NO-TARGET) | W-12 eps(H): H=4: 5.000e-03, H=8: 3.500e-03, H=16: 2.860e-03, H=32: 2.600e-03; H*(12) = 16; r12 = 0.091; W-24: E16 -16.59800 +- 0.00050, E48 -16.59950 +- 0.00010, (E16 - E48)/sigma = 2.94; E16 - E_ref = 0.00200 within 2 (dE16 + sigma_ref)
+[OK ] W INCOMPLETE missing             -> INCOMPLETE       (intended INCOMPLETE) | missing W run(s)
+[OK ] W INCOMPLETE capped              -> INCOMPLETE       (intended INCOMPLETE) | a W run hit --max-hours
+CHECK PASS 21/21

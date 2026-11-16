@@ -1,0 +1,5 @@
+[13:46:37] 3x3: D=1680 sector levels found 60 (N_LOW=15) E0=-6.558475 chi={'My': 1, 'Mx': 1, 'D': 1} S0=0 R_PAIR=1.83 (12 pairs) R_SITE=2.32 (2 pairs) (2.7s)
+[13:46:46]   seed net: 60 steps, best -6.50324188, 36 CPU-s (0.594 CPU-s/step)
+[13:46:46] timing exact: 0.350 CPU-s/step, R/R* after 10 steps 1.773
+[13:46:47] timing sampled: 0.335 CPU-s/step, R/R* after 10 steps 1.584
+45.60 user 1.68 sys

@@ -1,0 +1,47 @@
+== LH-HFDS (Route 6.1'): drift over >= 10000 accepted moves, no refresh, patch=3x3 F=5
+   [LH-HFDS (6.1', lam 0)] 5x3obc: Ne=12 n=21 one accept: table err 1.2e-15, E_loc err 2.3e-16 -> algebra OK
+      accepts=  1000 proposals=  2344 table err=4.0e-14 E_loc err=2.3e-15 E_loc/Ne=-0.869 (1s)
+      accepts=  2000 proposals=  4766 table err=4.6e-14 E_loc err=2.4e-15 E_loc/Ne=-0.917 (2s)
+      accepts=  3000 proposals=  7200 table err=6.4e-14 E_loc err=4.2e-16 E_loc/Ne=-0.628 (3s)
+      accepts=  4000 proposals=  9565 table err=6.1e-14 E_loc err=1.3e-14 E_loc/Ne=-0.517 (4s)
+      accepts=  5000 proposals= 12002 table err=8.1e-14 E_loc err=1.5e-14 E_loc/Ne=-0.911 (5s)
+      accepts=  6000 proposals= 14404 table err=5.7e-14 E_loc err=1.4e-15 E_loc/Ne=-0.518 (6s)
+      accepts=  7000 proposals= 16861 table err=6.4e-14 E_loc err=6.5e-15 E_loc/Ne=-0.553 (7s)
+      accepts=  8000 proposals= 19313 table err=8.7e-14 E_loc err=5.3e-15 E_loc/Ne=-0.751 (8s)
+      accepts=  9000 proposals= 21751 table err=7.4e-14 E_loc err=9.3e-15 E_loc/Ne=-0.810 (9s)
+      accepts= 10000 proposals= 24101 table err=5.4e-14 E_loc err=7.1e-15 E_loc/Ne=-0.586 (10s)
+   [LH-HFDS (6.1', lam 0)] 5x3obc: n_aug=21 accepts=10000 acceptance=0.41 max drift=8.7e-14 K*=inf
+   [LH-HFDS (6.1', lam 0)] 8: Ne=56 n=92 one accept: table err 2.4e-15, E_loc err 1.9e-16 -> algebra OK
+      accepts=  1000 proposals=  2675 table err=1.6e-13 E_loc err=3.7e-15 E_loc/Ne=-0.668 (2s)
+      accepts=  2000 proposals=  5633 table err=4.8e-13 E_loc err=1.5e-14 E_loc/Ne=-0.606 (4s)
+      accepts=  3000 proposals=  8443 table err=2.8e-13 E_loc err=3.4e-14 E_loc/Ne=-0.636 (6s)
+      accepts=  4000 proposals= 11313 table err=2.9e-13 E_loc err=7.4e-15 E_loc/Ne=-0.562 (8s)
+      accepts=  5000 proposals= 14290 table err=1.6e-13 E_loc err=1.3e-14 E_loc/Ne=-0.592 (10s)
+      accepts=  6000 proposals= 17283 table err=2.1e-13 E_loc err=1.2e-14 E_loc/Ne=-0.629 (12s)
+      accepts=  7000 proposals= 20123 table err=2.6e-13 E_loc err=1.5e-14 E_loc/Ne=-0.636 (13s)
+      accepts=  8000 proposals= 22957 table err=4.9e-13 E_loc err=5.2e-15 E_loc/Ne=-0.708 (15s)
+      accepts=  9000 proposals= 25861 table err=3.3e-13 E_loc err=3.4e-14 E_loc/Ne=-0.750 (17s)
+      accepts= 10000 proposals= 28697 table err=3.0e-13 E_loc err=2.7e-14 E_loc/Ne=-0.684 (19s)
+   [LH-HFDS (6.1', lam 0)] 8: n_aug=92 accepts=10000 acceptance=0.35 max drift=4.9e-13 K*=inf
+   [LH-HFDS (6.1', lam 0)] 16: Ne=224 n=368 one accept: table err 3.9e-14, E_loc err 2.9e-15 -> algebra OK
+      accepts=  1000 proposals=  3045 table err=1.8e-12 E_loc err=3.4e-13 E_loc/Ne=-0.738 (7s)
+      accepts=  2000 proposals=  5978 table err=4.8e-13 E_loc err=1.4e-14 E_loc/Ne=-0.627 (13s)
+      accepts=  3000 proposals=  9045 table err=5.2e-13 E_loc err=1.6e-14 E_loc/Ne=-0.610 (20s)
+      accepts=  4000 proposals= 11949 table err=3.9e-13 E_loc err=1.0e-14 E_loc/Ne=-0.619 (27s)
+      accepts=  5000 proposals= 14996 table err=8.5e-13 E_loc err=1.8e-14 E_loc/Ne=-0.636 (34s)
+      accepts=  6000 proposals= 18102 table err=8.0e-13 E_loc err=4.2e-14 E_loc/Ne=-0.591 (40s)
+      accepts=  7000 proposals= 21251 table err=8.9e-13 E_loc err=2.5e-14 E_loc/Ne=-0.545 (47s)
+      accepts=  8000 proposals= 24299 table err=1.2e-12 E_loc err=5.7e-14 E_loc/Ne=-0.603 (54s)
+      accepts=  9000 proposals= 27302 table err=1.5e-12 E_loc err=6.9e-14 E_loc/Ne=-0.617 (61s)
+      accepts= 10000 proposals= 30173 table err=1.8e-12 E_loc err=9.3e-14 E_loc/Ne=-0.622 (67s)
+   [LH-HFDS (6.1', lam 0)] 16: n_aug=368 accepts=10000 acceptance=0.33 max drift=1.8e-12 K*=inf
+== LH-HFDS (Route 6.1'): cost per accepted move
+   L= 8 Ne=  56 n=  92 t_accept=3.614e-04s ops/accept=6.132e+05 t_rebuild=7.137e-04s (rebuild/accept = 2)
+   L=12 Ne= 126 n= 207 t_accept=6.023e-04s ops/accept=3.080e+06 t_rebuild=2.109e-03s (rebuild/accept = 4)
+   L=16 Ne= 224 n= 368 t_accept=1.206e-03s ops/accept=9.670e+06 t_rebuild=7.991e-03s (rebuild/accept = 7)
+== LH-HFDS (Route 6.1'): max drift=1.8e-12 K*=inf slope(t_accept)=0.85 slope(ops/accept)=1.99 [timing overhead-bound] -> PASS (no refresh needed)
+total 98.3s
+
+real	1m38.792s
+user	5m52.041s
+sys	0m12.665s

@@ -1,0 +1,12 @@
+================================================================================
+Timestamp: 2026-11-16T02:08:09.902
+Command run: julia dmrg_ref.jl --Lx=4 --maxdims=100,200,400,600,800 --threads=4 --outdir=dmrg_irrep
+================================================================================
+[2026-11-16T02:10:09.282] maxdim   100  E = -7.7332196060  truncerr = 1.373e-03  maxlinkdim 100  noise 1e-06  (51 s)
+[2026-11-16T02:10:20.123] maxdim   200  E = -7.8157083900  truncerr = 2.128e-04  maxlinkdim 200  noise 1e-06  (10 s)
+[2026-11-16T02:10:34.735] maxdim   400  E = -7.8270305993  truncerr = 2.673e-05  maxlinkdim 400  noise 0e+00  (15 s)
+[2026-11-16T02:10:54.811] maxdim   600  E = -7.8278018592  truncerr = 4.856e-06  maxlinkdim 600  noise 0e+00  (20 s)
+[2026-11-16T02:11:22.489] maxdim   800  E = -7.8278853260  truncerr = 7.272e-07  maxlinkdim 800  noise 0e+00  (28 s)
+E_extrap = -7.8279351735 +- 4.98e-05  (last stage -7.8278853260; slope 3.366e+01); N_e check QN(("Nf",10,-1),("Sz",0))
+reflection characters: <Inv> = +0.999997  <My> = +0.999997  <Mx> = <Inv><My> = +0.999994
+wrote dmrg_irrep/dmrg_S4x3_N10_Sz20_U8_tp-0.25.json

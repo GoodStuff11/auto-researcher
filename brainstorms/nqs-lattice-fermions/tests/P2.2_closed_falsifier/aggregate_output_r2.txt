@@ -1,0 +1,10 @@
+noise floor definition: iqr
+=== mode ale (R5.2, cold start, step-limited)
+premise STEP-LIMITED: True (EXACT median dE at C_b/2 220.476, at C_b 28.018 mHa)
+[ops] ctrl*=SS:1e-2:16 D=7.007 nu=17.555 route*=ALE0:8:16 Rh=24.030 Rf=16.988 best route(C_b/2)=22.754 best ctrl(C_b)=4.782 -> AMBIGUOUS
+      medians at C_b:   ALE0:8:16=16.988  EXACT=28.018  EXACTNF=16.697  SCREEN:3e-3=8.964  ALE0:4:16=16.493  SS:1e-2:16=7.007
+      medians at C_b/2: ALE0:8:16=24.030  EXACT=220.476  EXACTNF=67.920  SCREEN:3e-3=11.896  ALE0:4:16=40.959  SS:1e-2:16=9.402
+[cal] ctrl*=SS:1e-2:16 D=9.060 nu=17.097 route*=ALE0:8:16 Rh=38.219 Rf=21.520 best route(C_b/2)=25.634 best ctrl(C_b)=7.650 -> AMBIGUOUS
+      medians at C_b:   ALE0:8:16=21.520  EXACT=28.205  EXACTNF=16.521  SCREEN:3e-3=9.874  ALE0:4:16=23.007  SS:1e-2:16=9.060
+      medians at C_b/2: ALE0:8:16=38.219  EXACT=211.116  EXACTNF=58.926  SCREEN:3e-3=16.787  ALE0:4:16=78.901  SS:1e-2:16=16.059
+VERDICT R5.2 cold-start: AMBIGUOUS

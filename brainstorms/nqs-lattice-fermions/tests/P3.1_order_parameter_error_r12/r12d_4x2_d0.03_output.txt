@@ -1,0 +1,12 @@
+[16:53:05] 4x2: D=560 sector levels found 44 (N_LOW=15) E0=-5.189941 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.46 (5 pairs) R_SITE=2.59 (4 pairs) (0.3s)
+[16:53:05] census 4x2: {"size": "4x2", "V": 8, "D": 560, "nup": 3, "n": 0.75, "omega1": 0.15544884738732545, "n_found": 44, "n_low": 15, "omega_top": 3.317100306433911, "nwin": 4, "dim_sector": 44, "ov2": 0.9591663046625439, "E0": -5.189941065066815, "chi": "{'My': 1, 'Mx': 1}", "S0": 0.0, "n_pair": 5, "n_site": 4}
+[16:53:05] gap surgery: level 1 moved from omega 0.1554 to 0.0300
+[16:53:05] 4x2 tp      cpu 1s | pair cov DAV True L1R True w/wex DAV 1.05 L1R 0.67 | spin cov DAV True L1R True w/wex DAV 0.95 L1R 0.45 | charge cov DAV True L1R True w/wex DAV 1.23 L1R 1.30
+[16:53:05] 4x2 J       cpu 1s | pair cov DAV True L1R True w/wex DAV 0.99 L1R 0.64 | spin cov DAV True L1R True w/wex DAV 0.97 L1R 0.21 | charge cov DAV True L1R True w/wex DAV 1.33 L1R 2.05
+[16:53:06] 4x2 dens_s0 cpu 1s | pair cov DAV True L1R True w/wex DAV 1.07 L1R 0.66 | spin cov DAV True L1R False w/wex DAV 0.95 L1R 0.09 | charge cov DAV True L1R True w/wex DAV 1.25 L1R 3.35
+[16:53:06] 4x2 spin_s0 cpu 1s | pair cov DAV True L1R True w/wex DAV 0.90 L1R 0.66 | spin cov DAV True L1R False w/wex DAV 1.01 L1R 0.19 | charge cov DAV True L1R False w/wex DAV 0.74 L1R 1.71
+[16:53:06] 4x2 pair_s0 cpu 1s | pair cov DAV True L1R True w/wex DAV 0.95 L1R 0.74 | spin cov DAV True L1R True w/wex DAV 1.02 L1R 0.24 | charge cov DAV True L1R True w/wex DAV 1.05 L1R 1.37
+[16:53:07] 4x2 dens_s1 cpu 1s | pair cov DAV True L1R True w/wex DAV 1.01 L1R 0.75 | spin cov DAV True L1R False w/wex DAV 0.95 L1R 0.14 | charge cov DAV True L1R True w/wex DAV 1.09 L1R 1.47
+[16:53:07] 4x2 spin_s1 cpu 1s | pair cov DAV True L1R True w/wex DAV 0.97 L1R 0.75 | spin cov DAV True L1R False w/wex DAV 0.92 L1R 0.08 | charge cov DAV True L1R True w/wex DAV 1.02 L1R 2.22
+[16:53:07] 4x2 pair_s1 cpu 1s | pair cov DAV True L1R True w/wex DAV 0.89 L1R 0.71 | spin cov DAV True L1R False w/wex DAV 0.99 L1R 0.07 | charge cov DAV True L1R True w/wex DAV 1.07 L1R 1.85
+[16:53:07] total CPU 10s

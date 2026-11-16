@@ -1,0 +1,19 @@
+=== results_smoke width 6: seeds [1234, 2345]  truths BBBAAA
+  E0_hat - E0 per target: -1.1e+00 -5.1e-01 +1.1e-01 +5.3e-01 +5.3e-01 +4.1e-01
+  LCC-warm-est-loo         UUUUUU  CW=0.000 DEC=0.00  inner DEC=0.00 wrong=0
+  LCC-warm-est-in          UUUUUU  CW=0.000 DEC=0.00  inner DEC=0.00 wrong=0
+  LCC-warm-oracle-loo      UUUUUU  CW=0.000 DEC=0.00  inner DEC=0.00 wrong=0
+  LCC-warm-oracle-in       UUUUUU  CW=0.000 DEC=0.00  inner DEC=0.00 wrong=0
+  LCC-cold-est-loo         UUUUUU  CW=0.000 DEC=0.00  inner DEC=0.00 wrong=0
+  LCC-cold-est-in          UUUUUU  CW=0.000 DEC=0.00  inner DEC=0.00 wrong=0
+  LCC-cold-oracle-loo      UUUUUU  CW=0.000 DEC=0.00  inner DEC=0.00 wrong=0
+  LCC-cold-oracle-in       UUUUUU  CW=0.000 DEC=0.00  inner DEC=0.00 wrong=0
+    d=+0.0020 dc=+3.31e-03 tSE=1.4e-02 eps_hat=1.0e+00 b=2.5e-02 half=3.9e-02
+  rule-4 emulation (1000000 draws, 5 reps): CW=0.000 DEC=0.00 flip=0.000
+  R0P           BU UU UU UU UU UU  CW=0.000 DEC=0.08 (per seed)
+  R0P-warm      BU BB BU UU UU UU  CW=0.000 DEC=0.33 (per seed)
+  R0P-warm-abs  BU BB BU UU UU UU  CW=0.000 DEC=0.33 (per seed)
+  EC            UU UU UU UU UU UU  CW=0.000 DEC=0.00 (per seed)
+  ECor          BB AA AA AA AA AA  CW=0.333 DEC=1.00 (per seed)
+VERDICT LCC (LCC-warm-est-loo, fresh widths [6]): CW=0.000 (0/0) inner DEC at W=6 0.00 sampled-ok True -> FAIL
+-> results_smoke/lcc_smoke.json

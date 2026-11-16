@@ -1,0 +1,18 @@
+[11:17:20] RLIMIT_CPU 600 s set before any ED; mode main
+[11:19:21] 7x2: D=252252 sector levels found 58 (N_LOW=56) E0=-9.882136 chi={'My': -1, 'Mx': 1} S0=1 R_PAIR=4.92 (11 pairs) R_SITE=4.99 (12 pairs) (120.5s)
+[11:19:21] census 7x2: {"size": "7x2", "V": 14, "D": 252252, "nup": 5, "n": 0.7142857142857143, "omega1": 0.1510338289433264, "n_found": 58, "n_low": 56, "omega_top": 1.0621746108340098, "nwin": 49, "dim_sector": null, "ov2": 0.9296390301337336, "E0": -9.882136038179578, "chi": "{'My': -1, 'Mx': 1}", "S0": 1.0, "n_pair": 11, "n_site": 12}
+[11:19:21] build cpu 121s
+[11:21:45] 7x2 tp      (s-E0)/w1 -0.50 cpu 140s | pair: L1R +0.07 ORC3 +0.85 SCRu-R2 +0.89 SCRu-R4 +0.72 SCRd-R4 +0.81 SCR2-R +0.64 SD4 +0.19 | spin: L1R +0.03 ORC3 +0.57 SCRu-R2 +0.72 SCRu-R4 +1.04 SCRd-R4 +0.56 SCR2-R +0.54 SD4 +0.08 | charge: L1R +0.04 ORC3 +0.79 SCRu-R2 +0.59 SCRu-R4 +0.95 SCRd-R4 +0.82 SCR2-R +0.69 SD4 +0.15
+[11:24:06] 7x2 J       (s-E0)/w1 -0.52 cpu 141s | pair: L1R +0.03 ORC3 +0.77 SCRu-R2 +0.89 SCRu-R4 +0.88 SCRd-R4 +0.86 SCR2-R +0.63 SD4 +0.15 | spin: L1R +0.03 ORC3 +0.43 SCRu-R2 +0.85 SCRu-R4 +1.10 SCRd-R4 +0.56 SCR2-R +0.61 SD4 +0.11 | charge: L1R -0.01 ORC3 +0.96 SCRu-R2 +0.77 SCRu-R4 +0.88 SCRd-R4 +0.77 SCR2-R +0.77 SD4 +0.02
+[11:26:05] 7x2 dens_s0 (s-E0)/w1 -0.30 cpu 119s | pair: L1R +0.09 ORC3 +0.38 SCRu-R2 +1.12 SCRu-R4 +0.95 SCRd-R4 +0.96 SCR2-R +0.94 SD4 +0.32 | spin: L1R +0.15 ORC3 +0.57 SCRu-R2 +0.90 SCRu-R4 +1.15 SCRd-R4 +0.76 SCR2-R +0.80 SD4 +0.25 | charge: L1R -0.13 ORC3 +0.39 SCRu-R2 +0.97 SCRu-R4 +0.88 SCRd-R4 +0.86 SCR2-R +0.90 SD4 -0.13
+[11:26:10] soft CPU guard: stop before state 3 (spin_s0); cpu 529s, worst state 141s
+  tracked L1R        7x2 0.00 (n=9)
+  tracked ORC3       7x2 0.67 (n=9)
+  tracked SCRu-R2    7x2 1.00 (n=9)
+  tracked SCRu-R4    7x2 1.00 (n=9)
+  tracked SCRd-R4    7x2 1.00 (n=9)
+  tracked SCR2-R     7x2 1.00 (n=9)
+  tracked SD4        7x2 0.00 (n=9)
+  tracked SCRu-04    7x2 nan (n=0)
+  tracked SCRu-Rdef4 7x2 nan (n=0)
+[11:26:10] total wall 530s, CPU 529s

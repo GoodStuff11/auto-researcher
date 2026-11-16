@@ -1,0 +1,118 @@
+{
+ "args": {
+  "mode": "run",
+  "size": "4x3",
+  "seed": 66,
+  "gs_width": 6,
+  "gs_iters": 1200,
+  "resp_cold": 600,
+  "resp_warm": 200,
+  "T": 4,
+  "resp_init": "gs",
+  "sr_lr": 0.05,
+  "sr_shift": 0.001,
+  "sr_samples": 2000,
+  "o_chunk": 8,
+  "chunk": 32768,
+  "n_low": 15,
+  "timing_steps": 5,
+  "params_dir": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r10/results/t3/params",
+  "out": "results/t3/t3_4x3_w6_s66_probe.json",
+  "aggregate": null,
+  "checkpoint": "final",
+  "selftest_verdict": false,
+  "cpu_budget": 1000000000.0,
+  "stop_after": "A",
+  "target": "trained",
+  "dry_target": false
+ },
+ "size": "4x3",
+ "seed": 66,
+ "E0": -8.94866491956139,
+ "a0": {
+  "pair": 0.0018562878988306354,
+  "spin": -0.013462155588038208,
+  "charge": -0.0028409830890823223
+ },
+ "items": {
+  "pair": {
+   "a_psi": 0.0017733760050750204,
+   "delta": 8.291189375561506e-05,
+   "scored": false
+  },
+  "spin": {
+   "a_psi": -0.01245161156643304,
+   "delta": -0.0010105440216051677,
+   "scored": false
+  },
+  "charge": {
+   "a_psi": -0.002688577158454417,
+   "delta": -0.00015240593062790546,
+   "scored": false
+  }
+ },
+ "ratios": {},
+ "resp": [],
+ "cpu": {
+  "A": 952.228353,
+  "total": 959.4079459999999
+ },
+ "phase": "A",
+ "gs_train": {
+  "steps": 1200,
+  "best": -8.91599490938999,
+  "cpu": 952.213659,
+  "trace": [
+   [
+    0,
+    -7.4795992782011025
+   ],
+   [
+    100,
+    -8.843366920967398
+   ],
+   [
+    200,
+    -8.890161029402753
+   ],
+   [
+    300,
+    -8.899141894077328
+   ],
+   [
+    400,
+    -8.909879364772118
+   ],
+   [
+    500,
+    -8.911786528442525
+   ],
+   [
+    600,
+    -8.906624744507214
+   ],
+   [
+    700,
+    -8.912695847639798
+   ],
+   [
+    800,
+    -8.913058759992733
+   ],
+   [
+    900,
+    -8.914994566624168
+   ],
+   [
+    1000,
+    -8.913143376516814
+   ],
+   [
+    1100,
+    -8.913912273696589
+   ]
+  ]
+ },
+ "overlap2": 0.9808284844747812,
+ "dE": 0.0326700101713957
+}

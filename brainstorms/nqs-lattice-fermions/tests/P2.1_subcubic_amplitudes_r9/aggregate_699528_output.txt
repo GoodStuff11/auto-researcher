@@ -1,0 +1,8 @@
+[11:54:41] lh_3x3   steps= 75 stop=None P=1625 {'mode': 'lh', 'patch': '3x3', 'F': 5, 'Ha': 0} dE_tot=0.10715 dE_sign=0.02218 spread=5.1e-13 E(50)=-9.637896 s/step=15.90 host=kim-compute-02.physics.cornell.edu
+[11:54:41] lh_plus  steps= 75 stop=None P=1617 {'mode': 'lh', 'patch': 'plus', 'F': 5, 'Ha': 1} dE_tot=0.14909 dE_sign=0.04078 spread=2.6e-13 E(50)=-9.562046 s/step=8.16 host=kim-compute-03.physics.cornell.edu
+[11:54:41] lh_site  steps= 75 stop=None P=1641 {'mode': 'lh', 'patch': 'site', 'F': 5, 'Ha': 3} dE_tot=0.18813 dE_sign=0.05519 spread=4.4e-13 E(50)=-9.526040 s/step=6.10 host=kim-compute-03.physics.cornell.edu
+[11:54:41] nnbf     steps= 75 stop=None P=1626 {'mode': 'full', 'Hs': 6} dE_tot=0.24045 dE_sign=0.07861 spread=9.6e-14 E(50)=-9.468350 s/step=5.10 host=kim-compute-02.physics.cornell.edu
+[11:54:41] nnbf_c   steps= 75 stop=None P=3736 {'mode': 'full', 'Hs': 16} dE_tot=0.15713 dE_sign=0.03764 spread=1.1e-13 E(50)=-9.531912 s/step=3.87 host=kim-compute-03.physics.cornell.edu
+[11:54:41] nnbf_w   steps= 75 stop=None P=10488 {'mode': 'full', 'Hs': 48} dE_tot=0.07197 dE_sign=0.00990 spread=2.5e-13 E(50)=-9.692755 s/step=4.65 host=kim-compute-03.physics.cornell.edu
+[11:54:41] reported: in-job s/step ratio nnbf_c/lh_3x3 = 0.24
+[11:54:41] ROUTE 6.1'' (LH-HFDS 3x3) T2 VERDICT: PROMOTE  rho_N = 0.282, rho_C = 0.589 <= 0.75; rho_F = 0.544 <= 0.85  dE_sign_route=0.02218 dE_sign_nnbf=0.07861 dE_sign_nnbf_c=0.03764 dE_sign_plus=0.04078 rho_N=0.2822 rho_C=0.5894 rho_F=0.5439 rho_lh_site=0.4019 rho_nnbf_w=2.241

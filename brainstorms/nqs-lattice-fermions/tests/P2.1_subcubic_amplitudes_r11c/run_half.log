@@ -1,0 +1,5 @@
+[half] L= 8 Ne= 56 V_h=32 sweeps= 5389 t_sw=1.844e-03s tau=0.94+-0.07 cost=1.737e-03s acc=0.32 <E>/Ne=-0.527 cpu=10s
+[half] L=12 Ne=126 V_h=72 sweeps= 2765 t_sw=7.236e-03s tau=1.07+-0.12 cost=7.749e-03s acc=0.32 <E>/Ne=-0.524 cpu=20s
+[half] L=16 Ne=224 V_h=128 sweeps= 3378 t_sw=2.672e-02s tau=1.19+-0.13 cost=3.187e-02s acc=0.32 <E>/Ne=-0.520 cpu=90s
+[half] L=24 Ne=504 V_h=288 sweeps=  126 t_sw=3.188e-01s tau=nan+-nan cost=nans acc=0.32 <E>/Ne=-0.530 cpu=40s
+CPU user=161.36 sys=0.25 wall=161.87

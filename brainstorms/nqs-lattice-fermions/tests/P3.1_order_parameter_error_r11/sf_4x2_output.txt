@@ -1,0 +1,13 @@
+[13:47:00] 4x2: D=560 sector levels found 44 (N_LOW=15) E0=-5.189941 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.46 (5 pairs) R_SITE=2.59 (4 pairs) (0.3s)
+[13:47:07]   seed net: 40 steps, best -4.87814231, 26 CPU-s (0.638 CPU-s/step)
+[13:47:30] 4x2 tp      cpu 94s | pair L1R -0.06 SCRd0 +0.98 NN-exact +0.67 NN-sampled +0.91 | spin L1R +0.01 SCRd0 +0.99 NN-exact +0.65 NN-sampled +0.92 | charge L1R -0.11 SCRd0 +0.98 NN-exact +0.74 NN-sampled +0.87 | median R/R*, eta: exact 1.870 0.247 sampled 1.120 0.129
+[13:47:54] 4x2 J       cpu 94s | pair L1R -0.04 SCRd0 +1.00 NN-exact +0.73 NN-sampled +0.93 | spin L1R +0.03 SCRd0 +1.00 NN-exact +0.67 NN-sampled +0.94 | charge L1R +0.25 SCRd0 +1.00 NN-exact +0.75 NN-sampled +0.97 | median R/R*, eta: exact 1.924 0.401 sampled 1.125 0.095
+[13:48:17] 4x2 dens_s0 cpu 94s | pair L1R +0.11 SCRd0 +0.99 NN-exact +0.81 NN-sampled +0.89 | spin L1R +0.02 SCRd0 +1.00 NN-exact +0.80 NN-sampled +0.89 | charge L1R -0.23 SCRd0 +0.99 NN-exact +0.78 NN-sampled +0.96 | median R/R*, eta: exact 1.659 0.259 sampled 1.181 0.176
+[13:48:17] soft CPU guard: stop before state 3
+  tracked L1R        4x2 0.00 (n=9, states=3)
+  tracked SCRd0      4x2 1.00 (n=9, states=3)
+  tracked NN-exact   4x2 1.00 (n=9, states=3)
+  tracked NN-sampled 4x2 1.00 (n=9, states=3)
+  exact    median R/R* 1.786 median eta 0.350 (pass 4 only: eta 0.344)
+  sampled  median R/R* 1.137 median eta 0.142 (pass 4 only: eta 0.064)
+[13:48:17] total CPU 309s

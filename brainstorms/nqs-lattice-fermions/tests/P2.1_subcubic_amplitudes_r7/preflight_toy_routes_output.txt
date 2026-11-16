@@ -1,0 +1,52 @@
+[10:35:37] instance 7 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 4, 'ndn': 4, 'tp': -0.25, 'J': 0.4} D=34650 arm=hfps_plus seed=11
+[10:35:37] E0=-8.9486649196 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1782
+[10:35:39] arm hfps_plus: {'mode': 'hfps', 'patch': 'plus', 'F': 4, 'Ha': 0} n_params=986 target=918 calib=5.86e-14
+[10:35:39] hfps_plus: it     0  E = -7.58293522  |f| = 1.58e+00  (0.51 s/step)
+[10:35:49] hfps_plus: it    25  E = -8.72052236  |f| = 3.51e-01  (0.40 s/step)
+[10:35:51] hfps_plus: it    29  E = -8.73384449  |f| = 3.51e-01  (0.40 s/step)
+[10:35:55] hfps_plus [P]: dE_tot=0.19989 dE_sign=0.03229 f_E=0.162 spread=1.4e-13 ov0=0.789 (4 s)
+[10:35:59] hfps_plus [P_S]: dE_tot=0.13928 dE_sign=0.02437 f_E=0.175 spread=5.1e-14 ov0=0.819 (4 s)
+[10:35:59] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results_hfps_preflight/t2_hfps_plus_inst7_s11.json
+
+real	0m23.337s
+user	1m26.337s
+sys	0m4.046s
+[10:36:00] instance 7 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 4, 'ndn': 4, 'tp': -0.25, 'J': 0.4} D=34650 arm=hfps_site seed=11
+[10:36:01] E0=-8.9486649196 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1782
+[10:36:02] arm hfps_site: {'mode': 'hfps', 'patch': 'site', 'F': 4, 'Ha': 0} n_params=954 target=918 calib=5.86e-14
+[10:36:03] hfps_site: it     0  E = -7.58434283  |f| = 1.76e+00  (0.38 s/step)
+[10:36:10] hfps_site: it    25  E = -8.67810230  |f| = 4.21e-01  (0.30 s/step)
+[10:36:11] hfps_site: it    29  E = -8.70260789  |f| = 4.06e-01  (0.30 s/step)
+[10:36:16] hfps_site [P]: dE_tot=0.22019 dE_sign=0.04114 f_E=0.187 spread=1.2e-13 ov0=0.734 (4 s)
+[10:36:20] hfps_site [P_S]: dE_tot=0.16382 dE_sign=0.03408 f_E=0.208 spread=6.5e-14 ov0=0.754 (4 s)
+[10:36:20] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results_hfps_preflight/t2_hfps_site_inst7_s11.json
+
+real	0m20.372s
+user	1m15.034s
+sys	0m4.073s
+[10:36:20] instance 7 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 4, 'ndn': 4, 'tp': -0.25, 'J': 0.4} D=34650 arm=agpj seed=11
+[10:36:21] E0=-8.9486649196 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1782
+[10:36:22] arm agpj: {'mode': 'agp', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 30} n_params=924 target=918 calib=5.86e-14
+[10:36:22] agpj: it     0  E = -7.58184028  |f| = 1.25e+00  (0.08 s/step)
+[10:36:24] agpj: it    25  E = -8.58595616  |f| = 1.61e+00  (0.07 s/step)
+[10:36:24] agpj: it    29  E = -8.54273713  |f| = 3.54e+00  (0.07 s/step)
+[10:36:28] agpj [P]: dE_tot=0.35273 dE_sign=0.05166 f_E=0.146 spread=3.0e-14 ov0=0.724 (4 s)
+[10:36:32] agpj [P_S]: dE_tot=0.21413 dE_sign=0.03534 f_E=0.165 spread=6.6e-14 ov0=0.775 (4 s)
+[10:36:32] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results_hfps_preflight/t2_agpj_inst7_s11.json
+
+real	0m12.744s
+user	0m47.386s
+sys	0m1.876s
+[10:36:33] instance 7 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 4, 'ndn': 4, 'tp': -0.25, 'J': 0.4} D=34650 arm=sh_plus seed=11
+[10:36:33] E0=-8.9486649196 deg=1 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1782
+[10:36:35] arm sh_plus: {'mode': 'sh', 'patch': 'plus', 'F': 5, 'Ha': 0} n_params=959 target=918 calib=5.86e-14
+[10:36:36] sh_plus: it     0  E = -7.47443008  |f| = 1.44e+00  (1.57 s/step)
+[10:37:16] sh_plus: it    25  E = -8.66865063  |f| = 3.75e-01  (1.60 s/step)
+[10:37:23] sh_plus: it    29  E = -8.74429925  |f| = 2.37e-01  (1.60 s/step)
+[10:37:28] sh_plus [P]: dE_tot=0.20437 dE_sign=0.04027 f_E=0.197 spread=6.1e-14 ov0=0.661 (4 s)
+[10:37:32] sh_plus [P_S]: dE_tot=0.09551 dE_sign=0.00999 f_E=0.105 spread=3.9e-13 ov0=0.918 (4 s)
+[10:37:32] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results_sh_preflight/t2_sh_plus_inst7_s11.json
+
+real	0m59.500s
+user	2m34.446s
+sys	0m11.048s

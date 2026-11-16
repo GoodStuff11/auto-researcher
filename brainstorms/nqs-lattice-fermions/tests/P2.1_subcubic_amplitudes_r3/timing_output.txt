@@ -1,0 +1,14 @@
+[14:11:14] instance 0 D=1681680 ED+group 44s |G|=8 chi={'My': 1, 'Mx': 1, 'D': -1} deg=1
+[14:11:28] nnbf: n_params=1734 (target 1734) kw={'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 6, 'Ha': 0}: one SR step 14.34s
+[14:11:38] hf1: n_params=1730 (target 1734) kw={'mode': 'lr', 'K': 1, 'r': 1, 'shared_ref': True, 'Hs': 6, 'Ha': 36}: one SR step 10.28s
+[14:11:52] hf4: n_params=1738 (target 1734) kw={'mode': 'lr', 'K': 1, 'r': 4, 'shared_ref': True, 'Hs': 6, 'Ha': 26}: one SR step 13.63s
+[14:12:26] sk1: n_params=1742 (target 1734) kw={'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 6, 'Ha': 26}: one SR step 33.89s
+[14:13:08] sk2: n_params=1730 (target 1734) kw={'mode': 'lr', 'K': 4, 'r': 2, 'shared_ref': True, 'Hs': 6, 'Ha': 12}: one SR step 42.30s
+[14:13:17] sjnet: n_params=1722 (target 1734) kw={'mode': 'lr', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 45}: one SR step 8.55s
+[14:13:22] agpj: n_params=1718 (target 1734) kw={'mode': 'agp', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 43}: one SR step 5.44s
+[14:13:33] agh4: n_params=1748 (target 1734) kw={'mode': 'agp', 'K': 1, 'r': 4, 'shared_ref': True, 'Hs': 6, 'Ha': 23}: one SR step 10.33s
+[14:13:53] skagp: n_params=1718 (target 1734) kw={'mode': 'agp', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 6, 'Ha': 22}: one SR step 20.20s
+[14:14:09] nnbf_PS: n_params=1734 (target 1734) kw={'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 6, 'Ha': 0}: one SR step 15.94s
+[14:14:38] sk1_PS: n_params=1742 (target 1734) kw={'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 6, 'Ha': 26}: one SR step 28.79s
+[14:14:51] nnbf_U: n_params=1734 (target 1734) kw={'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 6, 'Ha': 0}: one SR step 13.04s
+[14:15:20] sk1_U: n_params=1742 (target 1734) kw={'mode': 'lr', 'K': 4, 'r': 1, 'shared_ref': True, 'Hs': 6, 'Ha': 26}: one SR step 29.34s

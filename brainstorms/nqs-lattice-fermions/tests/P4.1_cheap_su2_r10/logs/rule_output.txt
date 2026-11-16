@@ -1,0 +1,16 @@
+ (written before any 'run' output existed; mode 'rule' prints it)
+  Gains, in units of the parent's exact gap g = E(Psi) - E0:
+    G_SQ = [Delta(C1+C3+SQ) - Delta(C1+C3)] / g        G_W  = [Delta(C1+C3+W) - Delta(C1+C3)] / g
+    G_NJ = [Delta(C1+NJ)    - Delta(C1)]    / g        G_RF = [Delta(C1+RF)   - Delta(C1)]    / g
+  Route R16 (SQ against W), route R17 (NJ against RF); per route, over the parents che and pcg (r1 reported only):
+    KILL      if G_route <= G_foil for both che and pcg;
+    PASS      if G_route >= 2 G_foil and G_route >= 0.05 for both che and pcg;
+    AMBIGUOUS otherwise (no promotion; T2 only after a written reason).
+  INVALID if a validation check fails (P_G map against vmc.logpsi overlap < 1 - 1e-10; |<S^2>| of any T_k
+  relative to <T_k|T_k> > 1e-10; E(Psi) differs from the stored exact energy by > 1e-8).
+  Controls (must behave or the run is INVALID): positive, adding the exact ground state as one direction gives
+  Delta = g to 1e-8; negative, 81 random S = 0 vectors (P_S P_G of Gaussian noise times |Psi|) give G < 0.05.
+  A first-order (tangent) gain is a necessary condition, not a trained gain: T1 can KILL, and a PASS only licenses
+  a T2 fine-tune at 24 sites.
+
+

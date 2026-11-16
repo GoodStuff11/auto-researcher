@@ -1,0 +1,14 @@
+[     0.5s] target 4x3o 4x3:5 irrep={'Mx': 1, 'My': 1} dim=16632 n_irrep=4152 E0=-7.2330203724 gap/V=1.2985e-02 (sign half only) npar=426
+[     0.5s] variant=gf npar=440 extra=14 gap=0.1558t setup 0 CPU-s; SR budget 570 CPU-s (ledger before run 0 CPU-s)
+[    29.5s]   [gf] step 30/300 eps=1.84151e-02 lr=0.2
+[    60.5s]   [gf] step 60/300 eps=1.38087e-02 lr=0.2
+[    89.1s]   [gf] step 90/300 eps=1.28912e-02 lr=0.2
+[   117.4s]   [gf] step 120/300 eps=1.21686e-02 lr=0.2
+[   148.0s]   [gf] step 150/300 eps=1.18499e-02 lr=0.2
+[   179.8s]   [gf] step 180/300 eps=1.16349e-02 lr=0.161
+[   209.7s]   [gf] step 210/300 eps=1.14720e-02 lr=0.2
+[   237.0s]   [gf] step 240/300 eps=1.13730e-02 lr=0.2
+[   265.1s]   [gf] step 270/300 eps=1.13148e-02 lr=0.2
+[   293.4s]   [gf] step 300/300 eps=1.12745e-02 lr=0.2
+[   293.5s] RESULT gf: steps=300 relerr=1.8705% irrep weight=1.000 relerr_at={50: 2.406, 100: 2.093, 150: 1.966, 200: 1.911, 300: 1.871} (percent) CPU 292 s; ledger total 292 CPU-s
+[   293.5s] done (results/gf.json)

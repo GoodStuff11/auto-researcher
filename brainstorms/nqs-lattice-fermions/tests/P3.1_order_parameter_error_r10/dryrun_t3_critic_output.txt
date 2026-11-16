@@ -1,0 +1,367 @@
+[13:03:40] 3x3: D=1680 sector levels found 60 (N_LOW=3) E0=-6.558475 chi={'My': 1, 'Mx': 1, 'D': 1} S0=0 R_PAIR=1.83 (12 pairs) R_SITE=2.32 (2 pairs) (2.6s)
+[13:03:41]   posctrl net: 60 steps, best -6.47634740, 4 CPU-s (0.071 CPU-s/step)
+[13:03:41] seed 1: |<psi0|psi>|^2 0.9975 dE 0.00477 | pair delta +4.577e-04 (+0.15 a0) scored spin delta +1.864e-02 (-0.09 a0) ns charge delta +1.243e-03 (-0.53 a0) scored
+[13:03:41]   seed 1 L1R          pair +0.616 spin +0.682 charge +2.243  (cpu 9 s)
+[13:03:41]   seed 1 ORC3         pair +0.893 spin +0.826 charge +2.018  (cpu 9 s)
+[13:03:41]   seed 1 SCRd0_T4     pair +0.992 spin +1.000 charge +0.995  (cpu 9 s)
+[13:03:41]   seed 1 SCRdE0_T4    pair +1.000 spin +1.000 charge +1.000  (cpu 10 s)
+[13:03:42]   SCRdNN pass 1 response pair: 40 steps, best 3.22305454, 3 CPU-s (0.071 CPU-s/step)
+[13:03:42]     SCRdNN pass 1 pair: R/R* 1.1554 eta 0.112 eta_low 0.000
+[13:03:43]   SCRdNN pass 1 response spin: 40 steps, best 2.63719740, 3 CPU-s (0.071 CPU-s/step)
+[13:03:43]     SCRdNN pass 1 spin: R/R* 1.0962 eta 0.100 eta_low 0.000
+[13:03:44]   SCRdNN pass 1 response charge: 40 steps, best 5.04554131, 3 CPU-s (0.070 CPU-s/step)
+[13:03:44]     SCRdNN pass 1 charge: R/R* 1.3088 eta 0.267 eta_low -0.000
+[13:03:44]   seed 1 NN0          pair +0.720 spin +0.771 charge +1.757  (cpu 18 s)
+[13:03:44]   seed 1 SCRdNN_T1    pair +0.914 spin +0.976 charge +0.723  (cpu 18 s)
+[13:03:44]   SCRdNN pass 2 response pair: 15 steps, best 3.08229858, 1 CPU-s (0.070 CPU-s/step)
+[13:03:44]     SCRdNN pass 2 pair: R/R* 1.1046 eta 0.057 eta_low 0.000
+[13:03:44]   SCRdNN pass 2 response spin: 15 steps, best 2.56239749, 1 CPU-s (0.070 CPU-s/step)
+[13:03:44]     SCRdNN pass 2 spin: R/R* 1.0745 eta 0.056 eta_low -0.000
+[13:03:44]   SCRdNN pass 2 response charge: 15 steps, best 5.09385151, 1 CPU-s (0.070 CPU-s/step)
+[13:03:44]     SCRdNN pass 2 charge: R/R* 1.3320 eta 0.273 eta_low -0.000
+[13:03:44]   seed 1 SCRdNN_T2    pair +0.916 spin +0.982 charge +0.720  (cpu 22 s)
+[13:03:45]   SCRdNN pass 3 response pair: 15 steps, best 3.06928277, 1 CPU-s (0.070 CPU-s/step)
+[13:03:45]     SCRdNN pass 3 pair: R/R* 1.0999 eta 0.053 eta_low 0.000
+[13:03:45]   SCRdNN pass 3 response spin: 15 steps, best 2.56208644, 1 CPU-s (0.070 CPU-s/step)
+[13:03:45]     SCRdNN pass 3 spin: R/R* 1.0745 eta 0.056 eta_low 0.000
+[13:03:45]   SCRdNN pass 3 response charge: 15 steps, best 4.89638114, 1 CPU-s (0.070 CPU-s/step)
+[13:03:45]     SCRdNN pass 3 charge: R/R* 1.2804 eta 0.270 eta_low -0.000
+[13:03:45]   seed 1 SCRdNN_T3    pair +0.921 spin +0.982 charge +0.768  (cpu 25 s)
+[13:03:45]   SCRdNN pass 4 response pair: 15 steps, best 3.03094291, 1 CPU-s (0.070 CPU-s/step)
+[13:03:45]     SCRdNN pass 4 pair: R/R* 1.0861 eta 0.048 eta_low 0.000
+[13:03:46]   SCRdNN pass 4 response spin: 15 steps, best 2.55347246, 1 CPU-s (0.070 CPU-s/step)
+[13:03:46]     SCRdNN pass 4 spin: R/R* 1.0709 eta 0.057 eta_low 0.000
+[13:03:46]   SCRdNN pass 4 response charge: 15 steps, best 4.68395556, 1 CPU-s (0.071 CPU-s/step)
+[13:03:46]     SCRdNN pass 4 charge: R/R* 1.2249 eta 0.208 eta_low -0.000
+[13:03:46]   seed 1 SCRdNN_T4    pair +0.920 spin +0.989 charge +0.803  (cpu 28 s)
+[13:03:46]   seed 1 MC10000   median pair +1.055 spin +1.011 charge +0.768 | draws pair [+1.05,+1.05,+0.40,+1.36,+1.16] spin [+0.99,+1.01,+1.06,+1.06,+0.98] charge [+0.81,-0.47,+2.13,+0.77,+0.68]
+[13:03:46]   seed 1 MC100000  median pair +0.910 spin +1.013 charge +0.570 | draws pair [+0.91,+0.89,+0.94,+1.00,+0.85] spin [+1.02,+1.05,+1.01,+0.99,+0.89] charge [+0.57,+0.64,+0.47,+0.17,+1.19]
+[13:03:47]   F3 pass 1 response kry1: 40 steps, best 2.90279710, 3 CPU-s (0.070 CPU-s/step)
+[13:03:47]     F3 pass 1 kry1: R/R* 1.1066 eta 0.096 eta_low 0.000
+[13:03:48]   F3 pass 1 response kry2: 40 steps, best 4.39084253, 3 CPU-s (0.070 CPU-s/step)
+[13:03:48]     F3 pass 1 kry2: R/R* 1.0605 eta 0.051 eta_low 0.000
+[13:03:49]   F3 pass 1 response kry3: 40 steps, best 6.17525072, 3 CPU-s (0.070 CPU-s/step)
+[13:03:49]     F3 pass 1 kry3: R/R* 1.1242 eta 0.160 eta_low 0.000
+[13:03:49]   seed 1 F3_T1        pair +0.891 spin +0.984 charge +0.863  (cpu 39 s)
+[13:03:49]   F3 pass 2 response kry1: 15 steps, best 5.28445216, 1 CPU-s (0.070 CPU-s/step)
+[13:03:49]     F3 pass 2 kry1: R/R* 1.8384 eta 0.439 eta_low 0.000
+[13:03:49]   F3 pass 2 response kry2: 15 steps, best 12.96745972, 1 CPU-s (0.070 CPU-s/step)
+[13:03:49]     F3 pass 2 kry2: R/R* 1.5503 eta 0.485 eta_low 0.000
+[13:03:49]   F3 pass 2 response kry3: 15 steps, best 14.30373535, 1 CPU-s (0.070 CPU-s/step)
+[13:03:49]     F3 pass 2 kry3: R/R* 1.4602 eta 0.486 eta_low 0.000
+[13:03:49]   seed 1 F3_T2        pair +0.929 spin +1.014 charge +0.958  (cpu 42 s)
+[13:03:50]   F3 pass 3 response kry1: 15 steps, best 5.74372495, 1 CPU-s (0.070 CPU-s/step)
+[13:03:50]     F3 pass 3 kry1: R/R* 2.0431 eta 0.376 eta_low 0.000
+[13:03:50]   F3 pass 3 response kry2: 15 steps, best 13.24158873, 1 CPU-s (0.070 CPU-s/step)
+[13:03:50]     F3 pass 3 kry2: R/R* 1.7967 eta 0.570 eta_low 0.000
+[13:03:50]   F3 pass 3 response kry3: 15 steps, best 15.44182766, 1 CPU-s (0.070 CPU-s/step)
+[13:03:50]     F3 pass 3 kry3: R/R* 1.7314 eta 0.545 eta_low -0.000
+[13:03:50]   seed 1 F3_T3        pair +0.947 spin +1.009 charge +0.997  (cpu 45 s)
+[13:03:51]   F3 pass 4 response kry1: 15 steps, best 5.37936463, 1 CPU-s (0.069 CPU-s/step)
+[13:03:51]     F3 pass 4 kry1: R/R* 1.9783 eta 0.250 eta_low -0.000
+[13:03:51]   F3 pass 4 response kry2: 15 steps, best 17.19934459, 1 CPU-s (0.070 CPU-s/step)
+[13:03:51]     F3 pass 4 kry2: R/R* 2.4209 eta 0.724 eta_low 0.000
+[13:03:51]   F3 pass 4 response kry3: 15 steps, best 17.10633621, 1 CPU-s (0.070 CPU-s/step)
+[13:03:51]     F3 pass 4 kry3: R/R* 2.0340 eta 0.607 eta_low 0.000
+[13:03:51]   seed 1 F3           pair +0.948 spin +1.005 charge +1.028  (cpu 49 s)
+[13:03:56]   F1 continue ground state (255 steps): 255 steps, best -6.55334913, 18 CPU-s (0.070 CPU-s/step)
+[13:03:56]   seed 1 F1           pair +1.130 spin +0.980 charge +0.724  (cpu 67 s)
+[13:04:00]   F2 width 4 (CPU cap 19 s): 247 steps, best -6.55833901, 19 CPU-s (0.076 CPU-s/step)
+[13:04:00]   seed 1 F2           pair +1.025 spin +1.003 charge +0.973  (cpu 86 s)
+[13:04:00] seed 1: done (wall 20 s, cpu 86 s); CPU by phase {"total": 86, "B": 1, "SCRdNN_pass1": 9, "SCRdNN_pass2": 12, "SCRdNN_pass3": 15, "SCRdNN_pass4": 19, "C": 19, "MC": 2, "F3_pass1": 9, "F3_pass2": 12, "F3_pass3": 15, "F3_pass4": 19, "F3": 19, "F1": 18, "F2": 19}
+[13:04:01]   phase A ground state w2: 60 steps, best -6.51955326, 4 CPU-s (0.071 CPU-s/step)
+[13:04:01] seed 2: |<psi0|psi>|^2 0.9712 dE 0.03892 | pair delta -3.948e-04 (-0.13 a0) scored spin delta -3.781e-03 (+0.02 a0) ns charge delta +2.611e-03 (-1.11 a0) scored
+[13:04:01]   seed 2 L1R          pair +0.017 spin +0.036 charge +0.496  (cpu 90 s)
+[13:04:01]   seed 2 ORC3         pair +1.116 spin -0.378 charge +0.204  (cpu 90 s)
+[13:04:02]   seed 2 SCRd0_T4     pair +0.928 spin +1.652 charge +1.059  (cpu 91 s)
+[13:04:02]   seed 2 SCRdE0_T4    pair +1.000 spin +1.000 charge +1.000  (cpu 91 s)
+[13:04:02]   SCRdNN pass 1 response pair: 40 steps, best 3.75600881, 3 CPU-s (0.070 CPU-s/step)
+[13:04:02]     SCRdNN pass 1 pair: R/R* 1.3618 eta 0.214 eta_low -0.000
+[13:04:03]   SCRdNN pass 1 response spin: 40 steps, best 2.51520877, 3 CPU-s (0.069 CPU-s/step)
+[13:04:03]     SCRdNN pass 1 spin: R/R* 1.1766 eta 0.209 eta_low 0.000
+[13:04:04]   SCRdNN pass 1 response charge: 40 steps, best 4.41154140, 3 CPU-s (0.069 CPU-s/step)
+[13:04:04]     SCRdNN pass 1 charge: R/R* 1.1712 eta 0.193 eta_low 0.000
+[13:04:04]   seed 2 NN0          pair -0.824 spin -0.375 charge +0.136  (cpu 100 s)
+[13:04:04]   seed 2 SCRdNN_T1    pair -0.035 spin +0.760 charge +1.391  (cpu 100 s)
+[13:04:04]   SCRdNN pass 2 response pair: 15 steps, best 3.74774359, 1 CPU-s (0.070 CPU-s/step)
+[13:04:04]     SCRdNN pass 2 pair: R/R* 1.3394 eta 0.186 eta_low 0.000
+[13:04:04]   SCRdNN pass 2 response spin: 15 steps, best 2.39760548, 1 CPU-s (0.070 CPU-s/step)
+[13:04:04]     SCRdNN pass 2 spin: R/R* 1.1037 eta 0.096 eta_low 0.000
+[13:04:05]   SCRdNN pass 2 response charge: 15 steps, best 4.29237562, 1 CPU-s (0.070 CPU-s/step)
+[13:04:05]     SCRdNN pass 2 charge: R/R* 1.1344 eta 0.166 eta_low -0.000
+[13:04:05]   seed 2 SCRdNN_T2    pair +0.272 spin +1.439 charge +1.243  (cpu 103 s)
+[13:04:05]   SCRdNN pass 3 response pair: 15 steps, best 3.50764954, 1 CPU-s (0.070 CPU-s/step)
+[13:04:05]     SCRdNN pass 3 pair: R/R* 1.2548 eta 0.142 eta_low 0.000
+[13:04:05]   SCRdNN pass 3 response spin: 15 steps, best 2.40383659, 1 CPU-s (0.069 CPU-s/step)
+[13:04:05]     SCRdNN pass 3 spin: R/R* 1.1000 eta 0.089 eta_low 0.000
+[13:04:06]   SCRdNN pass 3 response charge: 15 steps, best 4.26971948, 1 CPU-s (0.069 CPU-s/step)
+[13:04:06]     SCRdNN pass 3 charge: R/R* 1.1269 eta 0.161 eta_low -0.000
+[13:04:06]   seed 2 SCRdNN_T3    pair +0.085 spin +1.436 charge +1.228  (cpu 106 s)
+[13:04:06]   SCRdNN pass 4 response pair: 15 steps, best 3.50847302, 1 CPU-s (0.070 CPU-s/step)
+[13:04:06]     SCRdNN pass 4 pair: R/R* 1.2546 eta 0.143 eta_low -0.000
+[13:04:06]   SCRdNN pass 4 response spin: 15 steps, best 2.40434834, 1 CPU-s (0.070 CPU-s/step)
+[13:04:06]     SCRdNN pass 4 spin: R/R* 1.0999 eta 0.089 eta_low -0.000
+[13:04:06]   SCRdNN pass 4 response charge: 15 steps, best 4.20211752, 1 CPU-s (0.070 CPU-s/step)
+[13:04:06]     SCRdNN pass 4 charge: R/R* 1.1094 eta 0.134 eta_low 0.000
+[13:04:06]   seed 2 SCRdNN_T4    pair +0.087 spin +1.435 charge +1.162  (cpu 110 s)
+[13:04:06]   seed 2 MC10000   median pair -0.005 spin +1.713 charge +1.378 | draws pair [+0.59,-0.00,-0.72,+0.42,-0.69] spin [+1.27,+2.55,+1.71,+2.12,+0.94] charge [+1.40,+0.66,+2.55,+1.38,+1.19]
+[13:04:07]   seed 2 MC100000  median pair +0.097 spin +1.505 charge +1.229 | draws pair [+0.08,+0.10,+0.07,+0.24,+0.26] spin [+1.31,+1.51,+1.65,+1.50,+1.51] charge [+1.02,+1.16,+1.37,+1.23,+1.35]
+[13:04:08]   F3 pass 1 response kry1: 40 steps, best 4.68112229, 3 CPU-s (0.070 CPU-s/step)
+[13:04:08]     F3 pass 1 kry1: R/R* 1.3700 eta 0.282 eta_low 0.000
+[13:04:08]   F3 pass 1 response kry2: 40 steps, best 8.33072695, 3 CPU-s (0.069 CPU-s/step)
+[13:04:08]     F3 pass 1 kry2: R/R* 1.2421 eta 0.275 eta_low 0.000
+[13:04:09]   F3 pass 1 response kry3: 40 steps, best 10.88372113, 3 CPU-s (0.069 CPU-s/step)
+[13:04:09]     F3 pass 1 kry3: R/R* 1.3310 eta 0.344 eta_low 0.000
+[13:04:09]   seed 2 F3_T1        pair +0.064 spin +0.961 charge +0.984  (cpu 120 s)
+[13:04:09]   F3 pass 2 response kry1: 15 steps, best 6.06587018, 1 CPU-s (0.069 CPU-s/step)
+[13:04:09]     F3 pass 2 kry1: R/R* 2.8113 eta 0.458 eta_low 0.000
+[13:04:10]   F3 pass 2 response kry2: 15 steps, best 13.84085270, 1 CPU-s (0.069 CPU-s/step)
+[13:04:10]     F3 pass 2 kry2: R/R* 1.6491 eta 0.606 eta_low 0.000
+[13:04:10]   F3 pass 2 response kry3: 15 steps, best 14.10477968, 1 CPU-s (0.069 CPU-s/step)
+[13:04:10]     F3 pass 2 kry3: R/R* 1.4339 eta 0.439 eta_low -0.000
+[13:04:10]   seed 2 F3_T2        pair +0.279 spin +1.029 charge +1.136  (cpu 124 s)
+[13:04:10]   F3 pass 3 response kry1: 15 steps, best 6.37341868, 1 CPU-s (0.070 CPU-s/step)
+[13:04:10]     F3 pass 3 kry1: R/R* 2.9233 eta 0.339 eta_low 0.000
+[13:04:10]   F3 pass 3 response kry2: 15 steps, best 13.80285769, 1 CPU-s (0.070 CPU-s/step)
+[13:04:10]     F3 pass 3 kry2: R/R* 1.8332 eta 0.678 eta_low 0.000
+[13:04:11]   F3 pass 3 response kry3: 15 steps, best 13.71113134, 1 CPU-s (0.070 CPU-s/step)
+[13:04:11]     F3 pass 3 kry3: R/R* 1.5020 eta 0.464 eta_low 0.000
+[13:04:11]   seed 2 F3_T3        pair +0.484 spin +1.121 charge +1.048  (cpu 127 s)
+[13:04:11]   F3 pass 4 response kry1: 15 steps, best 9.78759164, 1 CPU-s (0.070 CPU-s/step)
+[13:04:11]     F3 pass 4 kry1: R/R* 3.8443 eta 0.884 eta_low 0.000
+[13:04:11]   F3 pass 4 response kry2: 15 steps, best 15.09126024, 1 CPU-s (0.070 CPU-s/step)
+[13:04:11]     F3 pass 4 kry2: R/R* 2.2332 eta 0.669 eta_low 0.000
+[13:04:12]   F3 pass 4 response kry3: 15 steps, best 13.87760544, 1 CPU-s (0.070 CPU-s/step)
+[13:04:12]     F3 pass 4 kry3: R/R* 1.6738 eta 0.539 eta_low 0.000
+[13:04:12]   seed 2 F3           pair +0.460 spin +1.114 charge +1.025  (cpu 130 s)
+[13:04:16]   F1 continue ground state (255 steps): 255 steps, best -6.55599130, 18 CPU-s (0.069 CPU-s/step)
+[13:04:16]   seed 2 F1           pair +0.549 spin +1.147 charge +1.002  (cpu 148 s)
+[13:04:22]   F2 width 4 (CPU cap 23 s): 315 steps, best -6.55833108, 23 CPU-s (0.073 CPU-s/step)
+[13:04:22]   seed 2 F2           pair +0.837 spin +1.017 charge +1.036  (cpu 171 s)
+[13:04:22] seed 2: done (wall 21 s, cpu 171 s); CPU by phase {"A": 4, "total": 171, "B": 1, "SCRdNN_pass1": 9, "SCRdNN_pass2": 12, "SCRdNN_pass3": 15, "SCRdNN_pass4": 19, "C": 19, "MC": 2, "F3_pass1": 9, "F3_pass2": 12, "F3_pass3": 15, "F3_pass4": 19, "F3": 19, "F1": 18, "F2": 23}
+[13:04:23]   phase A ground state w2: 60 steps, best -6.49939912, 4 CPU-s (0.070 CPU-s/step)
+[13:04:23] seed 3: |<psi0|psi>|^2 0.9495 dE 0.05908 | pair delta -1.004e-04 (-0.03 a0) ns spin delta -1.755e-02 (+0.08 a0) ns charge delta -1.339e-03 (+0.57 a0) scored
+[13:04:23]   seed 3 L1R          pair +0.407 spin +0.252 charge +0.657  (cpu 175 s)
+[13:04:23]   seed 3 ORC3         pair +4.560 spin +0.599 charge +1.001  (cpu 175 s)
+[13:04:23]   seed 3 SCRd0_T4     pair +0.895 spin +1.069 charge +0.855  (cpu 176 s)
+[13:04:23]   seed 3 SCRdE0_T4    pair +1.000 spin +1.000 charge +1.000  (cpu 176 s)
+[13:04:24]   SCRdNN pass 1 response pair: 40 steps, best 3.18505926, 3 CPU-s (0.070 CPU-s/step)
+[13:04:24]     SCRdNN pass 1 pair: R/R* 1.1641 eta 0.104 eta_low 0.000
+[13:04:25]   SCRdNN pass 1 response spin: 40 steps, best 2.45139859, 3 CPU-s (0.069 CPU-s/step)
+[13:04:25]     SCRdNN pass 1 spin: R/R* 1.1368 eta 0.111 eta_low 0.000
+[13:04:25]   SCRdNN pass 1 response charge: 40 steps, best 4.23540715, 3 CPU-s (0.069 CPU-s/step)
+[13:04:25]     SCRdNN pass 1 charge: R/R* 1.1233 eta 0.133 eta_low 0.000
+[13:04:25]   seed 3 NN0          pair -0.972 spin +0.533 charge +0.588  (cpu 185 s)
+[13:04:25]   seed 3 SCRdNN_T1    pair +3.357 spin +1.194 charge +0.293  (cpu 185 s)
+[13:04:26]   SCRdNN pass 2 response pair: 15 steps, best 3.19439513, 1 CPU-s (0.069 CPU-s/step)
+[13:04:26]     SCRdNN pass 2 pair: R/R* 1.1552 eta 0.095 eta_low 0.000
+[13:04:26]   SCRdNN pass 2 response spin: 15 steps, best 2.49215913, 1 CPU-s (0.069 CPU-s/step)
+[13:04:26]     SCRdNN pass 2 spin: R/R* 1.1099 eta 0.096 eta_low -0.000
+[13:04:26]   SCRdNN pass 2 response charge: 15 steps, best 4.12360620, 1 CPU-s (0.070 CPU-s/step)
+[13:04:26]     SCRdNN pass 2 charge: R/R* 1.0844 eta 0.072 eta_low 0.000
+[13:04:26]   seed 3 SCRdNN_T2    pair +3.348 spin +1.171 charge +0.231  (cpu 188 s)
+[13:04:26]   SCRdNN pass 3 response pair: 15 steps, best 3.16019933, 1 CPU-s (0.070 CPU-s/step)
+[13:04:26]     SCRdNN pass 3 pair: R/R* 1.1427 eta 0.093 eta_low 0.000
+[13:04:27]   SCRdNN pass 3 response spin: 15 steps, best 2.49002108, 1 CPU-s (0.069 CPU-s/step)
+[13:04:27]     SCRdNN pass 3 spin: R/R* 1.1097 eta 0.096 eta_low -0.000
+[13:04:27]   SCRdNN pass 3 response charge: 15 steps, best 4.00641425, 1 CPU-s (0.069 CPU-s/step)
+[13:04:27]     SCRdNN pass 3 charge: R/R* 1.0538 eta 0.050 eta_low 0.000
+[13:04:27]   seed 3 SCRdNN_T3    pair +2.806 spin +1.170 charge +0.703  (cpu 192 s)
+[13:04:27]   SCRdNN pass 4 response pair: 15 steps, best 3.08651402, 1 CPU-s (0.069 CPU-s/step)
+[13:04:27]     SCRdNN pass 4 pair: R/R* 1.1164 eta 0.077 eta_low 0.000
+[13:04:27]   SCRdNN pass 4 response spin: 15 steps, best 2.49212538, 1 CPU-s (0.070 CPU-s/step)
+[13:04:27]     SCRdNN pass 4 spin: R/R* 1.1099 eta 0.096 eta_low -0.000
+[13:04:28]   SCRdNN pass 4 response charge: 15 steps, best 3.98310146, 1 CPU-s (0.069 CPU-s/step)
+[13:04:28]     SCRdNN pass 4 charge: R/R* 1.0479 eta 0.035 eta_low -0.000
+[13:04:28]   seed 3 SCRdNN_T4    pair +2.941 spin +1.170 charge +0.669  (cpu 195 s)
+[13:04:28]   seed 3 MC10000   median pair +2.667 spin +1.255 charge +0.158 | draws pair [+2.51,+3.20,-0.73,+2.67,+3.45] spin [+1.25,+1.35,+1.23,+1.42,+0.87] charge [+0.16,-1.34,+1.14,-1.59,+0.16]
+[13:04:28]   seed 3 MC100000  median pair +2.730 spin +1.181 charge +0.534 | draws pair [+2.73,+2.34,+3.93,+3.60,+2.13] spin [+1.18,+1.12,+1.21,+1.19,+1.15] charge [-0.20,+1.09,+0.52,+1.18,+0.53]
+[13:04:29]   F3 pass 1 response kry1: 40 steps, best 5.04825475, 3 CPU-s (0.069 CPU-s/step)
+[13:04:29]     F3 pass 1 kry1: R/R* 1.3467 eta 0.241 eta_low 0.000
+[13:04:30]   F3 pass 1 response kry2: 40 steps, best 9.28958895, 3 CPU-s (0.069 CPU-s/step)
+[13:04:30]     F3 pass 1 kry2: R/R* 1.4015 eta 0.334 eta_low 0.000
+[13:04:30]   F3 pass 1 response kry3: 40 steps, best 12.02565192, 3 CPU-s (0.069 CPU-s/step)
+[13:04:30]     F3 pass 1 kry3: R/R* 1.4792 eta 0.426 eta_low 0.000
+[13:04:30]   seed 3 F3_T1        pair -3.264 spin +0.943 charge +0.976  (cpu 205 s)
+[13:04:31]   F3 pass 2 response kry1: 15 steps, best 7.03619312, 1 CPU-s (0.069 CPU-s/step)
+[13:04:31]     F3 pass 2 kry1: R/R* 2.9963 eta 0.772 eta_low 0.000
+[13:04:31]   F3 pass 2 response kry2: 15 steps, best 18.93012703, 1 CPU-s (0.069 CPU-s/step)
+[13:04:31]     F3 pass 2 kry2: R/R* 2.1492 eta 0.688 eta_low 0.000
+[13:04:31]   F3 pass 2 response kry3: 15 steps, best 21.61833132, 1 CPU-s (0.069 CPU-s/step)
+[13:04:31]     F3 pass 2 kry3: R/R* 2.0843 eta 0.657 eta_low 0.000
+[13:04:31]   seed 3 F3_T2        pair -2.353 spin +0.870 charge +1.073  (cpu 209 s)
+[13:04:31]   F3 pass 3 response kry1: 15 steps, best 4.50837210, 1 CPU-s (0.070 CPU-s/step)
+[13:04:31]     F3 pass 3 kry1: R/R* 3.1036 eta 0.500 eta_low 0.000
+[13:04:32]   F3 pass 3 response kry2: 15 steps, best 15.59602935, 1 CPU-s (0.069 CPU-s/step)
+[13:04:32]     F3 pass 3 kry2: R/R* 2.1308 eta 0.724 eta_low 0.000
+[13:04:32]   F3 pass 3 response kry3: 15 steps, best 20.63745279, 1 CPU-s (0.070 CPU-s/step)
+[13:04:32]     F3 pass 3 kry3: R/R* 2.2952 eta 0.653 eta_low 0.000
+[13:04:32]   seed 3 F3_T3        pair -1.563 spin +0.825 charge +0.835  (cpu 212 s)
+[13:04:32]   F3 pass 4 response kry1: 15 steps, best 4.57097868, 1 CPU-s (0.070 CPU-s/step)
+[13:04:32]     F3 pass 4 kry1: R/R* 2.8644 eta 0.377 eta_low 0.000
+[13:04:33]   F3 pass 4 response kry2: 15 steps, best 17.34090690, 1 CPU-s (0.070 CPU-s/step)
+[13:04:33]     F3 pass 4 kry2: R/R* 2.3522 eta 0.698 eta_low -0.000
+[13:04:33]   F3 pass 4 response kry3: 15 steps, best 16.21088531, 1 CPU-s (0.070 CPU-s/step)
+[13:04:33]     F3 pass 4 kry3: R/R* 1.8802 eta 0.572 eta_low 0.000
+[13:04:33]   seed 3 F3           pair -0.561 spin +0.959 charge +0.674  (cpu 215 s)
+[13:04:37]   F1 continue ground state (255 steps): 255 steps, best -6.55330261, 18 CPU-s (0.069 CPU-s/step)
+[13:04:37]   seed 3 F1           pair -0.042 spin +0.914 charge +1.360  (cpu 233 s)
+[13:04:43]   F2 width 4 (CPU cap 23 s): 297 steps, best -6.55827647, 23 CPU-s (0.077 CPU-s/step)
+[13:04:43]   seed 3 F2           pair +0.744 spin +0.990 charge +0.984  (cpu 256 s)
+[13:04:43] seed 3: done (wall 21 s, cpu 256 s); CPU by phase {"A": 4, "total": 256, "B": 1, "SCRdNN_pass1": 9, "SCRdNN_pass2": 12, "SCRdNN_pass3": 15, "SCRdNN_pass4": 19, "C": 19, "MC": 2, "F3_pass1": 9, "F3_pass2": 12, "F3_pass3": 15, "F3_pass4": 19, "F3": 19, "F1": 18, "F2": 23}
+[13:04:43] aggregate of the dry-run JSONs (machinery only; no physics claim):
+[13:04:43] seed 1 phase done ov2 0.9975: pair L1R +0.62 ORC3 +0.89 SCRd0_T4 +0.99 SCRdE0_T4 +1.00 NN0 +0.72 SCRdNN_T1 +0.91 SCRdNN_T2 +0.92 SCRdNN_T3 +0.92 SCRdNN_T4 +0.92 MC10000 +1.05 MC100000 +0.91 F3_T1 +0.89 F3_T2 +0.93 F3_T3 +0.95 F3 +0.95 F1 +1.13 F2 +1.02 | spin(ns) L1R +0.68 ORC3 +0.83 SCRd0_T4 +1.00 SCRdE0_T4 +1.00 NN0 +0.77 SCRdNN_T1 +0.98 SCRdNN_T2 +0.98 SCRdNN_T3 +0.98 SCRdNN_T4 +0.99 MC10000 +1.01 MC100000 +1.01 F3_T1 +0.98 F3_T2 +1.01 F3_T3 +1.01 F3 +1.00 F1 +0.98 F2 +1.00 | charge L1R +2.24 ORC3 +2.02 SCRd0_T4 +0.99 SCRdE0_T4 +1.00 NN0 +1.76 SCRdNN_T1 +0.72 SCRdNN_T2 +0.72 SCRdNN_T3 +0.77 SCRdNN_T4 +0.80 MC10000 +0.77 MC100000 +0.57 F3_T1 +0.86 F3_T2 +0.96 F3_T3 +1.00 F3 +1.03 F1 +0.72 F2 +0.97
+[13:04:43]    SCRdNN pass 1 pair: R/R* 1.1554 eta 0.112 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 1 spin: R/R* 1.0962 eta 0.100 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 1 charge: R/R* 1.3088 eta 0.267 eta_low -0.000 steps 40
+[13:04:43]    SCRdNN pass 2 pair: R/R* 1.1046 eta 0.057 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 2 spin: R/R* 1.0745 eta 0.056 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 2 charge: R/R* 1.3320 eta 0.273 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 3 pair: R/R* 1.0999 eta 0.053 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 spin: R/R* 1.0745 eta 0.056 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 charge: R/R* 1.2804 eta 0.270 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 4 pair: R/R* 1.0861 eta 0.048 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 4 spin: R/R* 1.0709 eta 0.057 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 4 charge: R/R* 1.2249 eta 0.208 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 1 kry1: R/R* 1.1066 eta 0.096 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry2: R/R* 1.0605 eta 0.051 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry3: R/R* 1.1242 eta 0.160 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 2 kry1: R/R* 1.8384 eta 0.439 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry2: R/R* 1.5503 eta 0.485 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry3: R/R* 1.4602 eta 0.486 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry1: R/R* 2.0431 eta 0.376 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry2: R/R* 1.7967 eta 0.570 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry3: R/R* 1.7314 eta 0.545 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 4 kry1: R/R* 1.9783 eta 0.250 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 4 kry2: R/R* 2.4209 eta 0.724 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry3: R/R* 2.0340 eta 0.607 eta_low 0.000 steps 15
+[13:04:43] seed 2 phase done ov2 0.9712: pair L1R +0.02 ORC3 +1.12 SCRd0_T4 +0.93 SCRdE0_T4 +1.00 NN0 -0.82 SCRdNN_T1 -0.03 SCRdNN_T2 +0.27 SCRdNN_T3 +0.09 SCRdNN_T4 +0.09 MC10000 -0.00 MC100000 +0.10 F3_T1 +0.06 F3_T2 +0.28 F3_T3 +0.48 F3 +0.46 F1 +0.55 F2 +0.84 | spin(ns) L1R +0.04 ORC3 -0.38 SCRd0_T4 +1.65 SCRdE0_T4 +1.00 NN0 -0.38 SCRdNN_T1 +0.76 SCRdNN_T2 +1.44 SCRdNN_T3 +1.44 SCRdNN_T4 +1.43 MC10000 +1.71 MC100000 +1.51 F3_T1 +0.96 F3_T2 +1.03 F3_T3 +1.12 F3 +1.11 F1 +1.15 F2 +1.02 | charge L1R +0.50 ORC3 +0.20 SCRd0_T4 +1.06 SCRdE0_T4 +1.00 NN0 +0.14 SCRdNN_T1 +1.39 SCRdNN_T2 +1.24 SCRdNN_T3 +1.23 SCRdNN_T4 +1.16 MC10000 +1.38 MC100000 +1.23 F3_T1 +0.98 F3_T2 +1.14 F3_T3 +1.05 F3 +1.02 F1 +1.00 F2 +1.04
+[13:04:43]    SCRdNN pass 1 pair: R/R* 1.3618 eta 0.214 eta_low -0.000 steps 40
+[13:04:43]    SCRdNN pass 1 spin: R/R* 1.1766 eta 0.209 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 1 charge: R/R* 1.1712 eta 0.193 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 2 pair: R/R* 1.3394 eta 0.186 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 2 spin: R/R* 1.1037 eta 0.096 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 2 charge: R/R* 1.1344 eta 0.166 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 3 pair: R/R* 1.2548 eta 0.142 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 spin: R/R* 1.1000 eta 0.089 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 charge: R/R* 1.1269 eta 0.161 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 4 pair: R/R* 1.2546 eta 0.143 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 4 spin: R/R* 1.0999 eta 0.089 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 4 charge: R/R* 1.1094 eta 0.134 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 1 kry1: R/R* 1.3700 eta 0.282 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry2: R/R* 1.2421 eta 0.275 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry3: R/R* 1.3310 eta 0.344 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 2 kry1: R/R* 2.8113 eta 0.458 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry2: R/R* 1.6491 eta 0.606 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry3: R/R* 1.4339 eta 0.439 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 3 kry1: R/R* 2.9233 eta 0.339 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry2: R/R* 1.8332 eta 0.678 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry3: R/R* 1.5020 eta 0.464 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry1: R/R* 3.8443 eta 0.884 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry2: R/R* 2.2332 eta 0.669 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry3: R/R* 1.6738 eta 0.539 eta_low 0.000 steps 15
+[13:04:43] seed 3 phase done ov2 0.9495: pair(ns) L1R +0.41 ORC3 +4.56 SCRd0_T4 +0.90 SCRdE0_T4 +1.00 NN0 -0.97 SCRdNN_T1 +3.36 SCRdNN_T2 +3.35 SCRdNN_T3 +2.81 SCRdNN_T4 +2.94 MC10000 +2.67 MC100000 +2.73 F3_T1 -3.26 F3_T2 -2.35 F3_T3 -1.56 F3 -0.56 F1 -0.04 F2 +0.74 | spin(ns) L1R +0.25 ORC3 +0.60 SCRd0_T4 +1.07 SCRdE0_T4 +1.00 NN0 +0.53 SCRdNN_T1 +1.19 SCRdNN_T2 +1.17 SCRdNN_T3 +1.17 SCRdNN_T4 +1.17 MC10000 +1.25 MC100000 +1.18 F3_T1 +0.94 F3_T2 +0.87 F3_T3 +0.82 F3 +0.96 F1 +0.91 F2 +0.99 | charge L1R +0.66 ORC3 +1.00 SCRd0_T4 +0.85 SCRdE0_T4 +1.00 NN0 +0.59 SCRdNN_T1 +0.29 SCRdNN_T2 +0.23 SCRdNN_T3 +0.70 SCRdNN_T4 +0.67 MC10000 +0.16 MC100000 +0.53 F3_T1 +0.98 F3_T2 +1.07 F3_T3 +0.83 F3 +0.67 F1 +1.36 F2 +0.98
+[13:04:43]    SCRdNN pass 1 pair: R/R* 1.1641 eta 0.104 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 1 spin: R/R* 1.1368 eta 0.111 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 1 charge: R/R* 1.1233 eta 0.133 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 2 pair: R/R* 1.1552 eta 0.095 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 2 spin: R/R* 1.1099 eta 0.096 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 2 charge: R/R* 1.0844 eta 0.072 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 pair: R/R* 1.1427 eta 0.093 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 spin: R/R* 1.1097 eta 0.096 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 3 charge: R/R* 1.0538 eta 0.050 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 4 pair: R/R* 1.1164 eta 0.077 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 4 spin: R/R* 1.1099 eta 0.096 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 4 charge: R/R* 1.0479 eta 0.035 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 1 kry1: R/R* 1.3467 eta 0.241 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry2: R/R* 1.4015 eta 0.334 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry3: R/R* 1.4792 eta 0.426 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 2 kry1: R/R* 2.9963 eta 0.772 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry2: R/R* 2.1492 eta 0.688 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry3: R/R* 2.0843 eta 0.657 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry1: R/R* 3.1036 eta 0.500 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry2: R/R* 2.1308 eta 0.724 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry3: R/R* 2.2952 eta 0.653 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry1: R/R* 2.8644 eta 0.377 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry2: R/R* 2.3522 eta 0.698 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 4 kry3: R/R* 1.8802 eta 0.572 eta_low 0.000 steps 15
+[13:04:43] T3 VERDICT: NO-TARGET | {'n_items': 5}
+[13:04:43] seed 1 phase done ov2 0.9975: pair L1R +0.62 ORC3 +0.89 SCRd0_T4 +0.99 SCRdE0_T4 +1.00 NN0 +0.72 SCRdNN_T1 +0.91 SCRdNN_T2 +0.92 SCRdNN_T3 +0.92 SCRdNN_T4 +0.92 MC10000 +1.05 MC100000 +0.91 F3_T1 +0.89 F3_T2 +0.93 F3_T3 +0.95 F3 +0.95 F1 +1.13 F2 +1.02 | spin(ns) L1R +0.68 ORC3 +0.83 SCRd0_T4 +1.00 SCRdE0_T4 +1.00 NN0 +0.77 SCRdNN_T1 +0.98 SCRdNN_T2 +0.98 SCRdNN_T3 +0.98 SCRdNN_T4 +0.99 MC10000 +1.01 MC100000 +1.01 F3_T1 +0.98 F3_T2 +1.01 F3_T3 +1.01 F3 +1.00 F1 +0.98 F2 +1.00 | charge L1R +2.24 ORC3 +2.02 SCRd0_T4 +0.99 SCRdE0_T4 +1.00 NN0 +1.76 SCRdNN_T1 +0.72 SCRdNN_T2 +0.72 SCRdNN_T3 +0.77 SCRdNN_T4 +0.80 MC10000 +0.77 MC100000 +0.57 F3_T1 +0.86 F3_T2 +0.96 F3_T3 +1.00 F3 +1.03 F1 +0.72 F2 +0.97
+[13:04:43]    SCRdNN pass 1 pair: R/R* 1.1554 eta 0.112 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 1 spin: R/R* 1.0962 eta 0.100 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 1 charge: R/R* 1.3088 eta 0.267 eta_low -0.000 steps 40
+[13:04:43]    SCRdNN pass 2 pair: R/R* 1.1046 eta 0.057 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 2 spin: R/R* 1.0745 eta 0.056 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 2 charge: R/R* 1.3320 eta 0.273 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 3 pair: R/R* 1.0999 eta 0.053 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 spin: R/R* 1.0745 eta 0.056 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 charge: R/R* 1.2804 eta 0.270 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 4 pair: R/R* 1.0861 eta 0.048 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 4 spin: R/R* 1.0709 eta 0.057 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 4 charge: R/R* 1.2249 eta 0.208 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 1 kry1: R/R* 1.1066 eta 0.096 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry2: R/R* 1.0605 eta 0.051 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry3: R/R* 1.1242 eta 0.160 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 2 kry1: R/R* 1.8384 eta 0.439 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry2: R/R* 1.5503 eta 0.485 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry3: R/R* 1.4602 eta 0.486 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry1: R/R* 2.0431 eta 0.376 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry2: R/R* 1.7967 eta 0.570 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry3: R/R* 1.7314 eta 0.545 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 4 kry1: R/R* 1.9783 eta 0.250 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 4 kry2: R/R* 2.4209 eta 0.724 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry3: R/R* 2.0340 eta 0.607 eta_low 0.000 steps 15
+[13:04:43] seed 2 phase done ov2 0.9712: pair L1R +0.02 ORC3 +1.12 SCRd0_T4 +0.93 SCRdE0_T4 +1.00 NN0 -0.82 SCRdNN_T1 -0.03 SCRdNN_T2 +0.27 SCRdNN_T3 +0.09 SCRdNN_T4 +0.09 MC10000 -0.00 MC100000 +0.10 F3_T1 +0.06 F3_T2 +0.28 F3_T3 +0.48 F3 +0.46 F1 +0.55 F2 +0.84 | spin(ns) L1R +0.04 ORC3 -0.38 SCRd0_T4 +1.65 SCRdE0_T4 +1.00 NN0 -0.38 SCRdNN_T1 +0.76 SCRdNN_T2 +1.44 SCRdNN_T3 +1.44 SCRdNN_T4 +1.43 MC10000 +1.71 MC100000 +1.51 F3_T1 +0.96 F3_T2 +1.03 F3_T3 +1.12 F3 +1.11 F1 +1.15 F2 +1.02 | charge L1R +0.50 ORC3 +0.20 SCRd0_T4 +1.06 SCRdE0_T4 +1.00 NN0 +0.14 SCRdNN_T1 +1.39 SCRdNN_T2 +1.24 SCRdNN_T3 +1.23 SCRdNN_T4 +1.16 MC10000 +1.38 MC100000 +1.23 F3_T1 +0.98 F3_T2 +1.14 F3_T3 +1.05 F3 +1.02 F1 +1.00 F2 +1.04
+[13:04:43]    SCRdNN pass 1 pair: R/R* 1.3618 eta 0.214 eta_low -0.000 steps 40
+[13:04:43]    SCRdNN pass 1 spin: R/R* 1.1766 eta 0.209 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 1 charge: R/R* 1.1712 eta 0.193 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 2 pair: R/R* 1.3394 eta 0.186 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 2 spin: R/R* 1.1037 eta 0.096 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 2 charge: R/R* 1.1344 eta 0.166 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 3 pair: R/R* 1.2548 eta 0.142 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 spin: R/R* 1.1000 eta 0.089 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 charge: R/R* 1.1269 eta 0.161 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 4 pair: R/R* 1.2546 eta 0.143 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 4 spin: R/R* 1.0999 eta 0.089 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 4 charge: R/R* 1.1094 eta 0.134 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 1 kry1: R/R* 1.3700 eta 0.282 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry2: R/R* 1.2421 eta 0.275 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry3: R/R* 1.3310 eta 0.344 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 2 kry1: R/R* 2.8113 eta 0.458 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry2: R/R* 1.6491 eta 0.606 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry3: R/R* 1.4339 eta 0.439 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 3 kry1: R/R* 2.9233 eta 0.339 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry2: R/R* 1.8332 eta 0.678 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry3: R/R* 1.5020 eta 0.464 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry1: R/R* 3.8443 eta 0.884 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry2: R/R* 2.2332 eta 0.669 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry3: R/R* 1.6738 eta 0.539 eta_low 0.000 steps 15
+[13:04:43] seed 3 phase done ov2 0.9495: pair(ns) L1R +0.41 ORC3 +4.56 SCRd0_T4 +0.90 SCRdE0_T4 +1.00 NN0 -0.97 SCRdNN_T1 +3.36 SCRdNN_T2 +3.35 SCRdNN_T3 +2.81 SCRdNN_T4 +2.94 MC10000 +2.67 MC100000 +2.73 F3_T1 -3.26 F3_T2 -2.35 F3_T3 -1.56 F3 -0.56 F1 -0.04 F2 +0.74 | spin(ns) L1R +0.25 ORC3 +0.60 SCRd0_T4 +1.07 SCRdE0_T4 +1.00 NN0 +0.53 SCRdNN_T1 +1.19 SCRdNN_T2 +1.17 SCRdNN_T3 +1.17 SCRdNN_T4 +1.17 MC10000 +1.25 MC100000 +1.18 F3_T1 +0.94 F3_T2 +0.87 F3_T3 +0.82 F3 +0.96 F1 +0.91 F2 +0.99 | charge L1R +0.66 ORC3 +1.00 SCRd0_T4 +0.85 SCRdE0_T4 +1.00 NN0 +0.59 SCRdNN_T1 +0.29 SCRdNN_T2 +0.23 SCRdNN_T3 +0.70 SCRdNN_T4 +0.67 MC10000 +0.16 MC100000 +0.53 F3_T1 +0.98 F3_T2 +1.07 F3_T3 +0.83 F3 +0.67 F1 +1.36 F2 +0.98
+[13:04:43]    SCRdNN pass 1 pair: R/R* 1.1641 eta 0.104 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 1 spin: R/R* 1.1368 eta 0.111 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 1 charge: R/R* 1.1233 eta 0.133 eta_low 0.000 steps 40
+[13:04:43]    SCRdNN pass 2 pair: R/R* 1.1552 eta 0.095 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 2 spin: R/R* 1.1099 eta 0.096 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 2 charge: R/R* 1.0844 eta 0.072 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 pair: R/R* 1.1427 eta 0.093 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 3 spin: R/R* 1.1097 eta 0.096 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 3 charge: R/R* 1.0538 eta 0.050 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 4 pair: R/R* 1.1164 eta 0.077 eta_low 0.000 steps 15
+[13:04:43]    SCRdNN pass 4 spin: R/R* 1.1099 eta 0.096 eta_low -0.000 steps 15
+[13:04:43]    SCRdNN pass 4 charge: R/R* 1.0479 eta 0.035 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 1 kry1: R/R* 1.3467 eta 0.241 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry2: R/R* 1.4015 eta 0.334 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 1 kry3: R/R* 1.4792 eta 0.426 eta_low 0.000 steps 40
+[13:04:43]    F3 pass 2 kry1: R/R* 2.9963 eta 0.772 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry2: R/R* 2.1492 eta 0.688 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 2 kry3: R/R* 2.0843 eta 0.657 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry1: R/R* 3.1036 eta 0.500 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry2: R/R* 2.1308 eta 0.724 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 3 kry3: R/R* 2.2952 eta 0.653 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry1: R/R* 2.8644 eta 0.377 eta_low 0.000 steps 15
+[13:04:43]    F3 pass 4 kry2: R/R* 2.3522 eta 0.698 eta_low -0.000 steps 15
+[13:04:43]    F3 pass 4 kry3: R/R* 1.8802 eta 0.572 eta_low 0.000 steps 15
+[13:04:43] T3 CHECKPOINT (pass 2): CONTINUE | {'n_done_items': 5, 'reachable': 5, 'tasks_at_pass2': 3, 'tasks': 3}
+[13:04:43] positive control (exact responses track the first-order error on every scored item): True
+DRY PASS
+247.17 user 8.91 sys 66.01 wall

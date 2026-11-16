@@ -1,0 +1,4 @@
+[16:45:12] size 0: foil 0.00401 wid 0.00168 free 0.00189 r_free 1.121 rpc 0.00401 r_rpc 2.382 counted False
+[16:45:12] size 1: foil 0.01107 wid 0.00850 free 0.00999 r_free 1.174 rpc 0.01107 r_rpc 1.302 counted True
+[16:45:12] size 2: foil 0.04962 wid 0.04267 free 0.03272 r_free 0.767 rpc 0.04962 r_rpc 1.163 counted True
+[16:45:12] VERDICT {'PREMISE': 'PREMISE-OK', 'RPC': 'KILL'}

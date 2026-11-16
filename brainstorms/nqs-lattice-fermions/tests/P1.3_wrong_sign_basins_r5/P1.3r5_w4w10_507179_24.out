@@ -1,0 +1,32 @@
+[06:39:37] check smoke instance: D=1680 E0=-6.55847519 deg=1 |G|=8 chi={'My': 1, 'Mx': 1, 'D': 1} P_chi psi0-psi0 7.6e-15
+[06:39:37] check [Cuhf] ref orthonormal 1.4e-15; grad E analytic 7.2854307294e-02 fd 7.2854307254e-02; grad -logF analytic -8.1805090267e-01 fd -8.1805090391e-01; init F=0.0031
+[06:39:37] check [Cfs] ref orthonormal 1.1e-15; grad E analytic -1.2454992615e-01 fd -1.2454992604e-01; grad -logF analytic 2.4558257154e+01 fd 2.4558257146e+01; init F=0.0001
+[06:39:37] check [Ccdw] ref orthonormal 8.9e-16; grad E analytic -3.5683408521e-01 fd -3.5683408506e-01; grad -logF analytic -3.2014191895e+00 fd -3.2014191897e+00; init F=0.0075
+[06:39:37] check [W] ref orthonormal 1.4e-15; grad E analytic -2.4727108127e-01 fd -2.4727108128e-01; grad -logF analytic 8.4450091066e-01 fd 8.4450091009e-01; init F=0.0018
+[06:39:37] ALL CHECKS PASSED
+[06:39:56] instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=Cuhf width=10 seed=11 pre(fid cap)=600 rel(energy steps)=900 init_from=-
+[06:40:41] ED levels [-11.388010886295248, -11.338627749487609, -11.329223800405972, -11.31736051148136] deg 1; |G|=8 chi(psi_0)={'My': 1, 'Mx': 1, 'D': -1}; S(psi_0)=0; level labels [{'chars': {'My': 1.0, 'Mx': 1.0, 'D': -1.0}, 'S2': 0.0, 'in_sector': True}, {'chars': {'My': 1.0, 'Mx': 1.0, 'D': 1.0}, 'S2': 0.0, 'in_sector': False}, {'chars': {'My': -1.0, 'Mx': -1.0, 'D': -1.0}, 'S2': 2.0, 'in_sector': False}, {'chars': {'My': -0.299, 'Mx': 0.299, 'D': -0.9543}, 'S2': 2.0, 'in_sector': False}] (45 s)
+[06:42:41] Cuhf-w10-s11: n_params=2634 calib=4.09e-14 init |P psi|/|psi|=3.538e-01 init F=0.0375
+[06:42:57] Cuhf-w10-s11: it     0 [E] E = -9.58748346 F = 0.037471 |f| = 2.07e+00 (15.95 s/step)
+[06:57:18] Cuhf-w10-s11: it    50 [E] E = -11.13315343 F = 0.540896 |f| = 5.68e-01 (17.18 s/step)
+[07:11:27] Cuhf-w10-s11: it   100 [E] E = -11.28809591 F = 0.861633 |f| = 2.81e-01 (17.09 s/step)
+[07:25:39] Cuhf-w10-s11: it   150 [E] E = -11.28962029 F = 0.917120 |f| = 2.52e-01 (17.07 s/step)
+[07:39:51] Cuhf-w10-s11: it   200 [E] E = -11.31517131 F = 0.937294 |f| = 1.97e-01 (17.06 s/step)
+[07:54:07] Cuhf-w10-s11: it   250 [E] E = -11.33816141 F = 0.951825 |f| = 1.09e-01 (17.07 s/step)
+[08:08:18] Cuhf-w10-s11: it   300 [E] E = -11.33922417 F = 0.957437 |f| = 1.10e-01 (17.07 s/step)
+[08:22:32] Cuhf-w10-s11: it   350 [E] E = -11.33082401 F = 0.952689 |f| = 1.53e-01 (17.07 s/step)
+[08:36:50] Cuhf-w10-s11: it   400 [E] E = -11.34924376 F = 0.960816 |f| = 5.31e-02 (17.08 s/step)
+[09:00:29] Cuhf-w10-s11 [mid @ 450]: dE_tot=0.03704 dE_sign=0.00783 f_E=0.211 spread=8.2e-13 S2=0.042 ov0=0.9607 ovk=[0.9607, 0.0, 0.0, 0.0] (573 s)
+[09:00:46] Cuhf-w10-s11: it   450 [E] E = -11.34702420 F = 0.959304 |f| = 6.70e-02 (18.37 s/step)
+[09:14:42] Cuhf-w10-s11: it   500 [E] E = -11.34675353 F = 0.961180 |f| = 7.37e-02 (18.21 s/step)
+[09:28:47] Cuhf-w10-s11: it   550 [E] E = -11.34787966 F = 0.958994 |f| = 6.64e-02 (18.09 s/step)
+[09:42:34] Cuhf-w10-s11: it   600 [E] E = -11.34735425 F = 0.960387 |f| = 8.50e-02 (17.96 s/step)
+[09:56:23] Cuhf-w10-s11: it   650 [E] E = -11.34177917 F = 0.959851 |f| = 1.08e-01 (17.85 s/step)
+[10:10:04] Cuhf-w10-s11: it   700 [E] E = -11.35086038 F = 0.960909 |f| = 4.85e-02 (17.75 s/step)
+[10:23:44] Cuhf-w10-s11: it   750 [E] E = -11.33614890 F = 0.958805 |f| = 1.53e-01 (17.66 s/step)
+[10:37:22] Cuhf-w10-s11: it   800 [E] E = -11.34046597 F = 0.961013 |f| = 1.15e-01 (17.58 s/step)
+[10:50:58] Cuhf-w10-s11: it   850 [E] E = -11.34897430 F = 0.961383 |f| = 7.47e-02 (17.51 s/step)
+[11:13:56] Cuhf-w10-s11 [end @ 900]: dE_tot=0.03633 dE_sign=0.00766 f_E=0.211 spread=1.5e-12 S2=0.040 ov0=0.9628 ovk=[0.9628, 0.0, 0.0, 0.0] (563 s)
+[11:23:11] Cuhf-w10-s11 [end_PS @ 900]: dE_tot=0.02145 dE_sign=0.00451 f_E=0.210 spread=1.4e-12 S2=0.000 ov0=0.9696 ovk=[0.9696, 0.0, 0.0, 0.0] (555 s)
+[11:23:11] Cuhf-w10-s11: energy drop per 100 steps (slope over last 200) 3.08e-03 (tol 0.0003) converged=False n_fid=0 fid_reached=None total 16995 s
+[11:23:11] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5/results/inst0_Cuhf_w10_s11.json

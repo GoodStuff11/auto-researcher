@@ -1,0 +1,17 @@
+[10:07:12] loaded D=560 E0 -5.1899410651 (stored -5.1899410651); E_ident -5.0120178973 (stored -5.0120178973)
+[10:07:12] controls: vote(psi0) flags 40 (reported); base==ident at alpha=0: 0.0e+00
+[10:07:12] base: E=-4.75369716 dE_sign=0.035999 dE_tot=0.436244 w_sign=5.15e-02 (0 s)
+[10:07:12] absfroz: E=-4.96215826 dE_sign=0.036175 dE_tot=0.227783 w_sign=5.16e-02 (0 s)
+[10:07:12] gvote: E=-5.01388011 dE_sign=0.031364 dE_tot=0.176061 w_sign=4.86e-02 (0 s)
+DRYRUN verdicts: {"valid": true, "gap": 0.020000000000000004, "b": -0.008790157755944604, "base": "BASE-CARRIES", "u_abs": -4.4408920985006255e-14, "absfroz": "DROP-IN-OK", "z": -0.24055097782973428, "gvote": "UNRESOLVED"}
+DRYRUN pipeline and controls OK: True
+synthetic base carries     : {'valid': True, 'gap': 0.002, 'b': 0.10000000000000026, 'base': 'BASE-CARRIES'}
+synthetic base mixed       : {'valid': True, 'gap': 0.002, 'b': 0.49999999999999956, 'base': 'MIXED'}
+synthetic reframe          : {'valid': True, 'gap': 0.002, 'b': 1.4999999999999996, 'base': 'REFRAME-CARRIES'}
+synthetic absfroz ok       : {'valid': True, 'gap': 0.002, 'u_abs': 0.19999999999999965, 'absfroz': 'DROP-IN-OK'}
+synthetic absfroz partial  : {'valid': True, 'gap': 0.002, 'u_abs': 0.49999999999999956, 'absfroz': 'PARTIAL'}
+synthetic absfroz lost     : {'valid': True, 'gap': 0.002, 'u_abs': 1.2500000000000002, 'absfroz': 'DROP-IN-LOST'}
+synthetic gvote usable     : {'valid': True, 'gap': 0.002, 'z': -0.7499999999999998, 'gvote': 'VOTE-USABLE'}
+synthetic gvote unresolved : {'valid': True, 'gap': 0.002, 'z': -0.2500000000000002, 'gvote': 'UNRESOLVED'}
+synthetic gvote harmful    : {'valid': True, 'gap': 0.002, 'z': 0.2500000000000002, 'gvote': 'VOTE-HARMFUL'}
+synthetic invalid          : {'valid': False, 'gap': 0.002, 'b': 0.10000000000000026, 'base': 'BASE-CARRIES', 'note': 'INVALID'}

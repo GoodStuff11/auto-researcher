@@ -1,0 +1,20 @@
+[11:06:51] check S_tot^2 = sum_i S_i^2 + 2 sum_(i<j) S_i.S_j (exchange signs): rel err 9.1e-17
+[11:06:51] check A_pair: n_pairs 22 hermitian 1.8e-18 [A,U_g] 1.1e-16 [A,S^2] 3.1e-16
+[11:06:51] check A_spin: n_pairs 10 hermitian 6.0e-18 [A,U_g] 4.7e-17 [A,S^2] 3.8e-16
+[11:06:51] check A_charge: n_pairs 10 hermitian 0.0e+00 [A,U_g] 0.0e+00 [A,S^2] 3.1e-16
+[11:06:51] check <A_pair> operator vs direct bond-pair sum: -1.144648824382e-03 vs -1.144648824382e-03
+[11:06:51] TARGET-PROBE CHECKS PASSED
+[11:07:39] ED [-11.388010886295248, -11.338627749487609, -11.329223800405972, -11.31736051148136] deg 1 |G|=8 chi={'My': 1, 'Mx': 1, 'D': -1} S0=0.0 (48 s)
+[11:07:43] observables: pair pairs (R>=3.0) 22, site pairs (R>=3.5) 10
+[11:07:44] a0: pair=+9.223562e-05 spin=+5.338128e-02 charge=-1.415904e-03 charge_conn=-1.601545e-03
+[11:11:24] in-irrep (chi, S=0) levels [-11.3880108862953, -11.179103818878872, -11.153852544878855, -11.074216308177926, -11.021945815556078, -10.979113735772314] gaps [0.0, 0.20890706741642795, 0.23415834141644432, 0.3137945781173741, 0.36606507073922145, 0.4088971505229857] (220 s)
+[11:11:24] |<n|A|0>| per level: pair 9.22e-05 7.18e-05 1.23e-04 3.95e-05 7.31e-05 6.23e-05; spin 5.34e-02 5.11e-02 2.82e-02 1.85e-02 1.45e-03 2.52e-02; charge 1.42e-03 5.46e-05 5.32e-04 5.07e-04 7.54e-05 1.14e-04
+[11:11:30] seed 11 [P] dE=0.05181 ov0=0.9362 dE_sign(P)=0.012464574121485938 | pair: a=+6.32861e-05 d=+2.895e-05 rel=0.314 spin: a=+4.55057e-02 d=+7.876e-03 rel=0.148 charge: a=-1.10375e-03 d=-3.122e-04 rel=0.220 | conn-charge rel=0.111
+[11:11:30]     L1: dE=0.02277 pair: d=+2.620e-05 spin: d=+6.785e-03 charge: d=-3.181e-04
+[11:11:30]     L2: dE=0.01495 pair: d=+2.800e-05 spin: d=+5.747e-03 charge: d=-2.739e-04
+[11:11:33] seed 11 [P_S] dE=0.03018 ov0=0.9566 dE_sign(P)=0.012464574121485938 | pair: a=+6.43538e-05 d=+2.788e-05 rel=0.302 spin: a=+4.48566e-02 d=+8.525e-03 rel=0.160 charge: a=-1.07690e-03 d=-3.390e-04 rel=0.239 | conn-charge rel=0.115
+[11:11:33]     L1: dE=0.01587 pair: d=+2.535e-05 spin: d=+7.391e-03 charge: d=-3.285e-04
+[11:11:33]     L2: dE=0.01057 pair: d=+2.763e-05 spin: d=+6.118e-03 charge: d=-2.657e-04
+[11:11:33] median rel error over 1 P states: pair=0.3139 spin=0.1475 charge=0.2205; median dE_sign(P)=0.0125 (premise >= 0.005: True)
+[11:11:33] STEP-1 VERDICT: TARGET pair,spin,charge
+[11:11:33] wrote results/target_probe_s11.json

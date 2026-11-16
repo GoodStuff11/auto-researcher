@@ -1,0 +1,41 @@
+[12:50:30] 4x3: D=34650 sector levels found 17 (N_LOW=15) E0=-8.948665 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.59 (10 pairs) R_SITE=2.96 (9 pairs) (2.8s)
+[12:50:31]   posctrl net: 3 steps, best -7.48169833, 4 CPU-s (1.370 CPU-s/step)
+[12:50:31] seed 11: |<psi0|psi>|^2 0.9975 dE 0.00064 | pair delta +1.581e-04 (+0.09 a0) ns spin delta +3.331e-03 (-0.25 a0) scored charge delta +2.565e-04 (-0.09 a0) ns
+[12:50:31]   seed 11 L1R          pair +0.739 spin +0.181 charge +1.135  (cpu 15 s)
+[12:50:31]   seed 11 ORC3         pair +1.151 spin +0.884 charge +1.038  (cpu 15 s)
+[12:50:33]   seed 11 SCRd0_T4     pair +0.993 spin +0.997 charge +1.000  (cpu 22 s)
+[12:50:34]   pass 1 response pair: 4 steps, best 66.28167508, 6 CPU-s (1.393 CPU-s/step)
+[12:50:34]     pass 1 pair: R/R* 18.3667 eta 0.982 eta_low 0.697
+[12:50:36]   pass 1 response spin: 4 steps, best 20.35108928, 5 CPU-s (1.226 CPU-s/step)
+[12:50:36]     pass 1 spin: R/R* 31.3907 eta 0.878 eta_low 0.328
+[12:50:37]   pass 1 response charge: 4 steps, best 82.81237506, 5 CPU-s (1.231 CPU-s/step)
+[12:50:37]     pass 1 charge: R/R* 24.8450 eta 0.942 eta_low 0.872
+[12:50:37]   seed 11 NN0          pair +0.743 spin +0.187 charge +1.126  (cpu 41 s)
+[12:50:37]   seed 11 SCRdNN_T1    pair +0.763 spin +0.227 charge +1.054  (cpu 41 s)
+[12:50:38]   pass 2 response pair: 2 steps, best 34.23597911, 3 CPU-s (1.279 CPU-s/step)
+[12:50:38]     pass 2 pair: R/R* 9.5060 eta 0.951 eta_low 0.862
+[12:50:39]   pass 2 response spin: 2 steps, best 10.45911626, 3 CPU-s (1.273 CPU-s/step)
+[12:50:39]     pass 2 spin: R/R* 16.0718 eta 0.815 eta_low 0.247
+[12:50:40]   pass 2 response charge: 2 steps, best 35.93775473, 3 CPU-s (1.279 CPU-s/step)
+[12:50:40]     pass 2 charge: R/R* 10.7535 eta 0.877 eta_low 0.811
+[12:50:40]   seed 11 SCRdNN_T2    pair +0.762 spin +0.233 charge +1.045  (cpu 51 s)
+[12:50:41]   pass 3 response pair: 2 steps, best 19.03299155, 3 CPU-s (1.306 CPU-s/step)
+[12:50:41]     pass 3 pair: R/R* 5.2846 eta 0.891 eta_low 0.944
+[12:50:42]   pass 3 response spin: 2 steps, best 6.40166197, 3 CPU-s (1.303 CPU-s/step)
+[12:50:42]     pass 3 spin: R/R* 9.8348 eta 0.736 eta_low 0.193
+[12:50:42]   pass 3 response charge: 2 steps, best 20.66178007, 3 CPU-s (1.303 CPU-s/step)
+[12:50:43]     pass 3 charge: R/R* 6.1830 eta 0.817 eta_low 0.798
+[12:50:43]   seed 11 SCRdNN_T3    pair +0.763 spin +0.244 charge +1.037  (cpu 62 s)
+[12:50:43]   pass 4 response pair: 2 steps, best 14.13286966, 3 CPU-s (1.305 CPU-s/step)
+[12:50:43]     pass 4 pair: R/R* 3.9238 eta 0.837 eta_low 1.000
+[12:50:44]   pass 4 response spin: 2 steps, best 4.04171215, 3 CPU-s (1.277 CPU-s/step)
+[12:50:44]     pass 4 spin: R/R* 6.2068 eta 0.629 eta_low 0.132
+[12:50:45]   pass 4 response charge: 2 steps, best 12.38085571, 3 CPU-s (1.281 CPU-s/step)
+[12:50:45]     pass 4 charge: R/R* 3.7053 eta 0.715 eta_low 0.736
+[12:50:45]   seed 11 SCRdNN_T4    pair +0.778 spin +0.265 charge +1.026  (cpu 72 s)
+[12:50:54]   F1 continue ground state (30 steps): 30 steps, best -8.58742573, 36 CPU-s (1.189 CPU-s/step)
+[12:50:54]   seed 11 F1           pair -4.082 spin +5.306 charge -16.898  (cpu 108 s)
+[12:51:05]   F2 width 12 (CPU cap 49 s): 33 steps, best -8.68579111, 44 CPU-s (1.346 CPU-s/step)
+[12:51:05]   seed 11 F2           pair -3.192 spin +1.776 charge -16.445  (cpu 152 s)
+[12:51:05] seed 11: done (wall 36 s, cpu 152 s); CPU by phase {"total": 152, "B": 7, "C_pass1": 19, "C_pass2": 29, "C_pass3": 39, "C_pass4": 49, "C": 49, "F1": 36, "F2": 45}
+144.35 user 8.19 sys 38.78 wall

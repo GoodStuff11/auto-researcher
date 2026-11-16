@@ -1,0 +1,11 @@
+[11:24:55]   [PASS] P_G=None pcg: |g_fastpf - g_numpy|/|g_numpy| = 2.5e-15 (<= 1e-7), |E diff| 8.9e-16
+[11:24:56]   [PASS] P_G=None pcg: max |O_fast - O_torch| / max |O_torch| = 2.4e-13 (<= 1e-9)
+[11:24:56]   [PASS] P_G=None r1: |g_fastpf - g_numpy|/|g_numpy| = 2.5e-15 (<= 1e-7), |E diff| 1.3e-15
+[11:24:57]   [PASS] P_G=(1, 1) pcg: |g_fastpf - g_numpy|/|g_numpy| = 3.2e-15 (<= 1e-7), |E diff| 4.4e-16
+[11:24:57]   [PASS] P_G=(1, 1) pcg: max |O_fast - O_torch| / max |O_torch| = 5.9e-13 (<= 1e-9)
+[11:24:57]   [PASS] P_G=(1, 1) r1: |g_fastpf - g_numpy|/|g_numpy| = 2.5e-15 (<= 1e-7), |E diff| 8.9e-16
+[11:24:57] GRADCHECK PASS
+
+real	0m5.775s
+user	0m12.635s
+sys	0m0.986s

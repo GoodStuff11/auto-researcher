@@ -1,0 +1,118 @@
+{
+ "args": {
+  "mode": "run",
+  "size": "4x3",
+  "seed": 44,
+  "gs_width": 3,
+  "gs_iters": 1200,
+  "resp_cold": 600,
+  "resp_warm": 200,
+  "T": 4,
+  "resp_init": "gs",
+  "sr_lr": 0.05,
+  "sr_shift": 0.001,
+  "sr_samples": 2000,
+  "o_chunk": 8,
+  "chunk": 32768,
+  "n_low": 15,
+  "timing_steps": 5,
+  "params_dir": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r10/results/t3/params",
+  "out": "results/t3/t3_4x3_w3_s44_probe.json",
+  "aggregate": null,
+  "checkpoint": "final",
+  "selftest_verdict": false,
+  "cpu_budget": 1000000000.0,
+  "stop_after": "A",
+  "target": "trained",
+  "dry_target": false
+ },
+ "size": "4x3",
+ "seed": 44,
+ "E0": -8.94866491956139,
+ "a0": {
+  "pair": 0.0018562878988306354,
+  "spin": -0.013462155588038208,
+  "charge": -0.0028409830890823223
+ },
+ "items": {
+  "pair": {
+   "a_psi": 0.0015842663121144814,
+   "delta": 0.00027202158671615407,
+   "scored": true
+  },
+  "spin": {
+   "a_psi": -0.009893540632766653,
+   "delta": -0.0035686149552715558,
+   "scored": true
+  },
+  "charge": {
+   "a_psi": -0.0019865145541430743,
+   "delta": -0.000854468534939248,
+   "scored": true
+  }
+ },
+ "ratios": {},
+ "resp": [],
+ "cpu": {
+  "A": 721.079278,
+  "total": 727.327023
+ },
+ "phase": "A",
+ "gs_train": {
+  "steps": 1200,
+  "best": -8.858616589777458,
+  "cpu": 721.065972,
+  "trace": [
+   [
+    0,
+    -7.474859680250868
+   ],
+   [
+    100,
+    -8.785547712417628
+   ],
+   [
+    200,
+    -8.822776289222238
+   ],
+   [
+    300,
+    -8.835400253612766
+   ],
+   [
+    400,
+    -8.842799680185616
+   ],
+   [
+    500,
+    -8.84629677055867
+   ],
+   [
+    600,
+    -8.855406574961247
+   ],
+   [
+    700,
+    -8.856478489423045
+   ],
+   [
+    800,
+    -8.8566279029741
+   ],
+   [
+    900,
+    -8.85566912969376
+   ],
+   [
+    1000,
+    -8.856212685388279
+   ],
+   [
+    1100,
+    -8.85837526428038
+   ]
+  ]
+ },
+ "overlap2": 0.9449194677868624,
+ "dE": 0.09004832978393118
+}

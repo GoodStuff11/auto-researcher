@@ -1,0 +1,47 @@
+== LH-HFPS (Route 7.1): exactness (fast E_loc vs brute, sorted rows/cols + JW signs), patch=plus F=8
+   4x4 pbc Ne=  14 n_conn=  29 E_fast=-10.258522078184 E_brute=-10.258522078184 rel_err=0.0e+00
+   4x4 pbc Ne=  14 n_conn=  26 E_fast=-2.864480098359 E_brute=-2.864480098359 rel_err=2.8e-15
+   6x6 pbc Ne=  32 n_conn=  60 E_fast=-30.412267222840 E_brute=-30.412267222840 rel_err=4.0e-15
+   6x6 pbc Ne=  32 n_conn=  59 E_fast=-1.269408129316 E_brute=-1.269408129316 rel_err=1.6e-14
+   8x8 pbc Ne=  56 n_conn= 109 E_fast=-20.088845270737 E_brute=-20.088845270738 rel_err=1.4e-14
+   8x8 pbc Ne=  56 n_conn= 109 E_fast=-20.097095807734 E_brute=-20.097095807734 rel_err=1.3e-15
+   5x3 obc Ne=  12 n_conn=  20 E_fast=-8.417287475991 E_brute=-8.417287475991 rel_err=9.4e-16
+   5x3 obc Ne=  12 n_conn=  20 E_fast=-4.965710390597 E_brute=-4.965710390597 rel_err=7.4e-16
+== LH-HFPS (Route 7.1): timing and operation count per connection
+   L=16 Ne= 224 n_conn=  420 |E_loc|/Ne=0.43 setup=8.76e-03s t_c=1.877e-04s ops/conn=3.587e+04 t_brute/conn=2.242e-03s speedup=12
+   L=24 Ne= 504 n_conn=  920 |E_loc|/Ne=0.38 setup=5.15e-02s t_c=2.908e-04s ops/conn=7.957e+04 t_brute/conn=1.321e-02s speedup=45
+   L=32 Ne= 896 n_conn= 1688 |E_loc|/Ne=0.13 setup=2.34e-01s t_c=4.533e-04s ops/conn=1.411e+05 t_brute/conn=4.783e-02s speedup=106
+== LH-HFPS (Route 7.1): max rel_err=1.6e-14 slope(t_c)=0.63 slope(ops/conn)=0.99 -> T1 PASS (timing overhead-bound, cost rests on the op count)
+== SH-HFDS (Route 7.3): exactness (fast E_loc vs brute, sorted rows/cols + JW signs), patch=plus F=8
+   4x4 pbc Ne=  14 n_conn=  25 E_fast=-17.801336815446 E_brute=-17.801336815446 rel_err=1.0e-14
+   4x4 pbc Ne=  14 n_conn=  30 E_fast=+3.041875933072 E_brute=+3.041875933072 rel_err=1.2e-15
+   6x6 pbc Ne=  32 n_conn=  56 E_fast=-18.713123521552 E_brute=-18.713123521552 rel_err=7.7e-15
+   6x6 pbc Ne=  32 n_conn=  54 E_fast=+37.190349337472 E_brute=+37.190349337472 rel_err=5.4e-15
+   8x8 pbc Ne=  56 n_conn= 109 E_fast=-29.362472058344 E_brute=-29.362472058344 rel_err=2.2e-15
+   8x8 pbc Ne=  56 n_conn= 108 E_fast=-57.874930203068 E_brute=-57.874930203068 rel_err=6.6e-15
+   5x3 obc Ne=  12 n_conn=  20 E_fast=-8.571129459254 E_brute=-8.571129459254 rel_err=1.7e-15
+   5x3 obc Ne=  12 n_conn=  19 E_fast=-22.465176603035 E_brute=-22.465176603036 rel_err=2.0e-15
+== SH-HFDS (Route 7.3): timing and operation count per connection
+   L=16 Ne= 224 n_conn=  420 |E_loc|/Ne=0.88 setup=8.67e-03s t_c=2.801e-04s ops/conn=6.716e+04 t_brute/conn=3.310e-03s speedup=12
+   L=24 Ne= 504 n_conn=  962 |E_loc|/Ne=0.63 setup=6.41e-02s t_c=3.591e-04s ops/conn=1.493e+05 t_brute/conn=1.897e-02s speedup=53
+   L=32 Ne= 896 n_conn= 1671 |E_loc|/Ne=0.40 setup=2.40e-01s t_c=5.034e-04s ops/conn=2.643e+05 t_brute/conn=7.373e-02s speedup=146
+== SH-HFDS (Route 7.3): max rel_err=1.0e-14 slope(t_c)=0.42 slope(ops/conn)=0.99 -> T1 PASS (timing overhead-bound, cost rests on the op count)
+== LH-HFDS (Route 6.1', lam=0): exactness (fast E_loc vs brute, sorted rows/cols + JW signs), patch=plus F=8
+   4x4 pbc Ne=  14 n_conn=  25 E_fast=-21.508445910024 E_brute=-21.508445910024 rel_err=3.6e-15
+   4x4 pbc Ne=  14 n_conn=  30 E_fast=+70.174509237985 E_brute=+70.174509237985 rel_err=5.6e-15
+   6x6 pbc Ne=  32 n_conn=  56 E_fast=-17.731599932924 E_brute=-17.731599932924 rel_err=2.5e-15
+   6x6 pbc Ne=  32 n_conn=  54 E_fast=+17.009712601274 E_brute=+17.009712601274 rel_err=1.6e-15
+   8x8 pbc Ne=  56 n_conn= 109 E_fast=-23.997263682903 E_brute=-23.997263682902 rel_err=1.4e-14
+   8x8 pbc Ne=  56 n_conn= 108 E_fast=+258.305918303057 E_brute=+258.305918303051 rel_err=2.1e-14
+   5x3 obc Ne=  12 n_conn=  20 E_fast=-10.009411109316 E_brute=-10.009411109316 rel_err=4.8e-16
+   5x3 obc Ne=  12 n_conn=  19 E_fast=-21.027412200540 E_brute=-21.027412200540 rel_err=3.1e-15
+== LH-HFDS (Route 6.1', lam=0): timing and operation count per connection
+   L=16 Ne= 224 n_conn=  420 |E_loc|/Ne=0.50 setup=8.09e-03s t_c=2.574e-04s ops/conn=6.716e+04 t_brute/conn=3.313e-03s speedup=13
+   L=24 Ne= 504 n_conn=  962 |E_loc|/Ne=0.55 setup=6.06e-02s t_c=3.401e-04s ops/conn=1.493e+05 t_brute/conn=1.894e-02s speedup=56
+   L=32 Ne= 896 n_conn= 1671 |E_loc|/Ne=0.49 setup=2.41e-01s t_c=4.939e-04s ops/conn=2.643e+05 t_brute/conn=7.161e-02s speedup=145
+== LH-HFDS (Route 6.1', lam=0): max rel_err=2.1e-14 slope(t_c)=0.46 slope(ops/conn)=0.99 -> T1 PASS (timing overhead-bound, cost rests on the op count)
+total 9.3s
+
+real	0m9.782s
+user	0m34.145s
+sys	0m1.579s

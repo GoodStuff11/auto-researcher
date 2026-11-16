@@ -1,0 +1,6 @@
+[12:45:08] 4x3: D=34650 sector levels found 5 (N_LOW=3) E0=-8.948665 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.59 (10 pairs) R_SITE=2.96 (9 pairs) (2.3s)
+[12:45:10]   timing gs_w=6: 4 steps, best -7.47628785, 6 CPU-s (1.462 CPU-s/step)
+[12:45:11]   timing gs_2w=12: 4 steps, best -7.47604405, 6 CPU-s (1.458 CPU-s/step)
+[12:45:13]   timing response: 4 steps, best 17.21578554, 5 CPU-s (1.251 CPU-s/step)
+[12:45:13] TIMING 4x3: CPU-s per SR step {"gs_w": 1.462, "gs_2w": 1.458, "resp_w": 1.251, "minres": 0.533}
+24.76 user 1.45 sys 7.20 wall

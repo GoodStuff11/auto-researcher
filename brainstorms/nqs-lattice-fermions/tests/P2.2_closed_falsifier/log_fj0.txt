@@ -1,0 +1,2 @@
+  CASJ fj=0 K=12 seed=0: dE=0.3899 mHa P=432 free=432 removed ext-ext pairs=0 nit=6000 (88s)
+done (92s) -> /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.2_closed_falsifier/results/fj0_K12_s0.json

@@ -1,0 +1,20 @@
+[14:09:03] instance 22 {'Lx': 5, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=1260 E0=-6.8488762799 gap=0.3865 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=118 arm=half seed=11
+[14:09:03] arm half: F=4 Ha=0 n_eff=449 P/dim_S_chi=3.81 calib=3.55e-15
+[14:09:03] half: it     0 E-E0 = 1.572144 best = 1.572144 (0.074 CPU-s/step)
+[14:09:06] half: it    50 E-E0 = 0.058655 best = 0.037855 (0.062 CPU-s/step)
+[14:09:09] half: it   100 E-E0 = 0.009254 best = 0.009142 (0.058 CPU-s/step)
+[14:09:12] half: it   150 E-E0 = 0.018257 best = 0.009142 (0.057 CPU-s/step)
+[14:09:15] half: it   200 E-E0 = 0.009177 best = 0.006180 (0.057 CPU-s/step)
+[14:09:17] half: it   250 E-E0 = 0.007749 best = 0.006180 (0.057 CPU-s/step)
+[14:09:20] half: it   300 E-E0 = 0.005772 best = 0.005772 (0.057 CPU-s/step)
+[14:09:23] half: it   350 E-E0 = 0.008724 best = 0.005718 (0.056 CPU-s/step)
+[14:09:26] half: it   400 E-E0 = 0.006534 best = 0.005658 (0.056 CPU-s/step)
+[14:09:28] half: it   450 E-E0 = 0.018316 best = 0.005427 (0.056 CPU-s/step)
+[14:09:31] half: it   500 E-E0 = 0.016210 best = 0.005019 (0.056 CPU-s/step)
+[14:09:34] half: it   550 E-E0 = 0.005586 best = 0.004871 (0.056 CPU-s/step)
+[14:09:37] half: it   600 E-E0 = 0.005165 best = 0.004871 (0.056 CPU-s/step)
+[14:09:40] half: it   650 E-E0 = 0.019710 best = 0.004714 (0.056 CPU-s/step)
+[14:09:42] half: it   700 E-E0 = 0.006360 best = 0.004714 (0.056 CPU-s/step)
+[14:09:45] half: stop = plateau at it 750; best E - E0 = 0.004673; SR CPU 42 s
+[14:09:45] half [P]: dE_tot=0.004673 dE_sign=0.000004 f_E=0.001 spread=2.9e-12; max |masked entry| proposed by SR = 0.0e+00
+[14:09:45] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r12/results/t1_half_inst22_s11.json

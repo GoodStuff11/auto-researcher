@@ -1,0 +1,56 @@
+[   105.8s] instance t'=-0.25 J=0.4: E0=-13.93410177 E1=-13.74106215 <S2>=-7.26e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
+[   113.8s] target 4x4 t'=-0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=13070 E0=-13.93410177 (full -13.93410177) gap/V=1.3904e-02 no same-irrep competitor below 0.005 t/site: sign half only
+[   113.8s] projected-sector dimension 13070 / route parameters 122 = 107.1
+[   113.8s] calibration: E_sign(exact signs) - E0 = 5.329e-15; Pd(E0)=4.8483e-03
+[   155.5s] arm tr@0     : E=-1.79276164 eps=7.5883e-01 (raw 7.6480e-01, irrep weight 0.582) A/V=9.7057e-02 sign-agree=0.5657 Pd=2.5410e-06 fid=0.0029
+[   352.7s]   [tr] step 5/50 eps=5.38371e-01 lr=0.0403
+[   541.6s]   [tr] step 10/50 eps=8.75841e-02 lr=0.0648
+[   551.5s] arm tr@10    : E=-12.53275673 eps=8.7584e-02 (raw 1.1303e-01, irrep weight 0.883) sign-agree=0.9260 Pd=2.5880e-03 fid=0.6814
+[   736.0s]   [tr] step 15/50 eps=3.58901e-02 lr=0.104
+[   919.6s]   [tr] step 20/50 eps=3.51714e-02 lr=0.168
+[   930.8s] arm tr@20    : E=-13.37135910 eps=3.5171e-02 (raw 7.7459e-02, irrep weight 0.810) A/V=5.5844e-03 sign-agree=0.9620 Pd=4.6136e-03 fid=0.7986
+[  1120.0s]   [tr] step 25/50 eps=3.49166e-02 lr=0.135
+[  1309.2s]   [tr] step 30/50 eps=3.47308e-02 lr=0.109
+[  1490.7s]   [tr] step 35/50 eps=3.45578e-02 lr=0.176
+[  1689.1s]   [tr] step 40/50 eps=3.44290e-02 lr=0.0707
+[  1871.1s]   [tr] step 45/50 eps=3.43437e-02 lr=0.114
+[  2053.3s]   [tr] step 50/50 eps=3.42252e-02 lr=0.183
+[  2064.2s] arm tr@50    : E=-13.38649833 eps=3.4225e-02 (raw 8.4862e-02, irrep weight 0.781) A/V=5.8214e-03 sign-agree=0.9591 Pd=4.5075e-03 fid=0.7774
+[  2104.4s] arm scr@0    : E=-11.85455692 eps=1.2997e-01 (raw 1.6427e-01, irrep weight 0.589) A/V=1.4549e-02 sign-agree=0.9028 Pd=4.5920e-03 fid=0.3987
+[  2289.1s]   [scr] step 5/50 eps=6.69275e-02 lr=0.0805
+[  2470.6s]   [scr] step 10/50 eps=2.96989e-02 lr=0.13
+[  2480.3s] arm scr@10   : E=-13.45891976 eps=2.9699e-02 (raw 4.5849e-02, irrep weight 0.886) sign-agree=0.9727 Pd=4.9275e-03 fid=0.8056
+[  2667.2s]   [scr] step 15/50 eps=2.50472e-02 lr=0.104
+[  2868.5s]   [scr] step 20/50 eps=1.97003e-02 lr=0.042
+[  2880.1s] arm scr@20   : E=-13.61889740 eps=1.9700e-02 (raw 4.1609e-02, irrep weight 0.853) A/V=2.8732e-03 sign-agree=0.9835 Pd=4.7809e-03 fid=0.8914
+[  3063.0s]   [scr] step 25/50 eps=1.82562e-02 lr=0.0677
+[  3251.5s]   [scr] step 30/50 eps=1.75267e-02 lr=0.109
+[  3430.3s]   [scr] step 35/50 eps=1.72043e-02 lr=0.176
+[  3621.8s]   [scr] step 40/50 eps=1.71261e-02 lr=0.0666
+[  3797.4s]   [scr] step 45/50 eps=1.70977e-02 lr=0.107
+[  3988.8s]   [scr] step 50/50 eps=1.70715e-02 lr=0.0863
+[  3999.2s] arm scr@50   : E=-13.66095807 eps=1.7071e-02 (raw 4.5284e-02, irrep weight 0.889) A/V=2.5983e-03 sign-agree=0.9822 Pd=4.7246e-03 fid=0.8921
+[  4037.3s]   [foil] step 1/10 eps=2.59424e-01 lr=0.055
+[  4059.2s]   [foil] step 2/10 eps=2.03463e-01 lr=0.0605
+[  4081.2s]   [foil] step 3/10 eps=1.08556e-01 lr=0.0666
+[  4102.9s]   [foil] step 4/10 eps=7.72317e-02 lr=0.0732
+[  4123.8s]   [foil] step 5/10 eps=6.32922e-02 lr=0.0805
+[  4144.9s]   [foil] step 6/10 eps=5.76443e-02 lr=0.0886
+[  4165.8s]   [foil] step 7/10 eps=5.43836e-02 lr=0.0974
+[  4186.5s]   [foil] step 8/10 eps=5.12288e-02 lr=0.107
+[  4207.1s]   [foil] step 9/10 eps=4.84514e-02 lr=0.118
+[  4233.3s]   [foil] step 10/10 eps=4.73257e-02 lr=0.0648
+[  4240.3s] arm foil@end : E=-13.17689000 eps=4.7326e-02 (raw 1.6971e-01, irrep weight 0.296) sign-agree=0.9254 Pd=4.5634e-03 fid=0.7037
+[  4240.4s] nfp: n_null=110 removed shift fraction 0.973; source E tr0 [-8.274081068196603, -7.080275411750609] -> nfp [-4.921874795051398, -5.232253616752737] (exact [-8.281820661071484, -7.080275743918655])
+[  4280.7s] arm nfp@0    : E=-7.44760508 eps=4.0541e-01 (raw 4.8276e-01, irrep weight 0.552) A/V=8.1060e-02 sign-agree=0.4652 Pd=9.0143e-03 fid=0.0364
+[  4354.2s]   [nfp] step 2/20 eps=3.46369e-01 lr=0.0605
+[  4427.6s]   [nfp] step 4/20 eps=2.77997e-01 lr=0.0732
+[  4500.3s]   [nfp] step 6/20 eps=1.79216e-01 lr=0.0886
+[  4573.1s]   [nfp] step 8/20 eps=8.78219e-02 lr=0.107
+[  4645.5s]   [nfp] step 10/20 eps=2.90436e-02 lr=0.13
+[  4725.8s]   [nfp] step 12/20 eps=2.60685e-02 lr=0.0785
+[  4798.1s]   [nfp] step 14/20 eps=2.53901e-02 lr=0.0949
+[  4870.3s]   [nfp] step 16/20 eps=2.48276e-02 lr=0.115
+[  4942.3s]   [nfp] step 18/20 eps=2.42719e-02 lr=0.139
+[  5014.6s]   [nfp] step 20/20 eps=2.39960e-02 lr=0.168
+[  5014.6s] done (/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/results_close31/close31_s1.json); valid=True

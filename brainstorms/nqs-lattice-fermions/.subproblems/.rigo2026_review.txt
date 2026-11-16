@@ -1,0 +1,2000 @@
+Neural quantum states in condensed matter: advances, best
+practices, and prospects
+Jonas B. Rigo1, Björn J. Wurst3, Rajah Nutakki4, Markus Schmitt1,5, Dante Kennes
+2,3
+1Institute of Theoretical Physics, University of Regensburg, 93053 Regensburg, Germany
+2Institut für Theorie der Statistischen Physik, R WTH Aachen, 52056 Aachen, Germany and
+JARA - Fundamentals of Future Information Technology
+3Max Planck Institute for the Structure and Dynamics of Matter, Center for Free-Electron
+Laser Science (CFEL), Luruper Chaussee 149, 22761 Hamburg, Germany
+4École Polytechnique
+5Forschungszentrum Jülich GmbH, Institute of Quantum Control, Peter Grünberg Institut
+(PGI-8), 52425 Jülich, Germany
+AR TICLE HISTOR Y
+Compiled August 24, 2026
+1. Introduction
+The investigation of emergent phenomena in condensed matter occupies a distinctive
+position in modern physics: the microscopic laws governing electrons and nuclei are
+known, yet describing their collective consequences remains notoriously difficult [1,
+2]. In practice, one therefore works with low-energy effective Hamiltonians or reduced
+descriptions that retain only the degrees of freedom relevant to the phenomena of
+interest [3–7]. Even after this reduction, most lattice models remain non-integrable, and
+exact solutions are rapidly ruled out by the exponential growth of the Hilbert-space
+dimension with system size [8–10]. Analytical progress is possible in special limits,
+through low-dimensional effective theories, field-theoretic mappings, and integrable
+constructions [11, 12], but the generic strongly correlated problem must ultimately be
+addressed numerically.
+From a broad perspective, classical simulations of quantum many-body systems can
+be arranged as in Fig. 1, according to two dominant obstacles: severity of the sign
+problem and spatial dimension. The dimension-related difficulty is most prominent in
+wave-function-based approaches. These approaches represent the quantum state explic-
+itly or in compressed form, and include exact diagonalization and Krylov methods [9,
+10], configuration interaction [13], coupled-cluster methods [13, 14], and tensor-network
+states [15, 16]. Although important exceptions exist [17], a common limitation among
+wave-function-based methods is entanglement: as entanglement grows with system size,
+dimension, or time evolution, the cost of representing the state accurately rises rapidly,
+making generic two- and three-dimensional problems difficult.
+Stochastic approaches, most notably quantum Monte Carlo [18, 19], avoid represent-
+ing the full wave function explicitly and instead estimate observables by statistically
+accumulating contributions from sampled configurations. Their main limitation is the
+arXiv:2608.21291v1  [cond-mat.str-el]  21 Aug 2026
+Figure 1.The figure portrays the schematic landscape of the main computational approaches to strongly
+correlated quantum many-body systems. The vertical axis indicates the severity of the sign problem, while the
+horizontal axis shows spatial dimension, used here as a practical proxy for the growing entanglement complex-
+ity that limits wave-function-based methods. Tensor-network methods are most effective in low dimensions,
+quantum Monte Carlo performs best when the sign problem is weak or absent, and DMFT is accurate in the
+high-dimensional limit. Neural quantum states (NQS) are shown as targeting the broad intermediate regime
+between these established approaches. The illustrated NQS is aconvolutional neural networkon a4×4spin
+lattice.
+sign problem, which can make the variance grow exponentially and thereby render the
+simulation impractical in precisely the physically interesting regimes [20]. This same
+stochastic machinery also underlies many of the impurity solvers used in dynamical
+mean-field theory (DMFT), whose central approximation maps the lattice problem
+onto a self-consistent quantum impurity model [21–24]. DMFT becomes exact in the
+infinite-dimensional limit, but in the physically important regime of intermediate di-
+mensions (2D and 3D), quantum Monte Carlo is hindered by the sign problem while
+DMFT and its extensions cede the advantage of the underlying infinite-dimensional
+approximation.
+Thus, the intermediate regime remains unsettled in the sense that neither tensor-
+network methods nor conventional quantum Monte Carlo are uniformly satisfactory
+there. Many central condensed-matter problems are believed to fall into this regime,
+including frustrated magnets, doped fermionic lattice models, and non-equilibrium dy-
+namics beyond one dimension [25–27]. Neural quantum states—which we discuss in
+the following—constitute an emerging numerical technique aimed at filling this gap in
+the computational toolbox by introducing artificial neural network representations of
+the quantum wave function [28].
+The central idea of NQS is to combine a flexible parametrization of the many-body
+wave function with stochastic evaluation of observables. Artificial neural networks are
+used for dimensional reduction to achieve a compressed representation of the wave
+function. Monte Carlo sampling of computational states makes it possible to estimate
+observables without summing over the exponentially large Hilbert space. This approach
+does not exhibit the conventional Monte Carlo sign problem [29]; however, when the
+ground state has a non-trivial sign or phase structure, the NQS must learn it explicitly.
+This can be difficult, but it is not a fundamental obstruction [30, 31]. At the same time,
+it has been shown that NQS wave functions can support entanglement structures that
+go beyond the standard restrictions of low-bond-dimension tensor networks [32–35].
+In fact, the universal approximation capabilities of artificial neural networks [36, 37]
+guarantee that arbitrary wave functions can be represented as an NQS in the limit of
+large network sizes. This constitutes the foundation for self-consistent accuracy checks,
+rendering the approach systematically controlled. While tensor networks share this
+2
+Figure 2.Schematic illustration of a feed-forward neural network, the prototypical artificial neural-network
+architecture used in NQS. The network maps an input configuration through a sequence of hidden layers to an
+output wave-function amplitude. Each layer consists of an affine linear transformation followed by an activation
+functionf, which is nonlinear and typically strictly monotonic.
+property, a key advantage of NQS is that different neural network architectures can be
+used to confirm convergence under varying approximation bias.
+In this perspective, we review recent progress in applying NQS to lattice quan-
+tum many-body problems in condensed matter. We discuss where NQS are already
+competitive with alternative state-of-the-art methods, why NQS are suitable for those
+settings, which obstacles still limit their broader use, and what future directions appear
+promising at this point. Recent reviews have introduced the general NQS framework,
+architectures, and applications, and we refer the reader to them for more technical
+discussions [38, 39]. For current state-of-the-art NQS work in continuum electronic
+structure, we refer to Refs. [40, 41]. The scope of the present work is to highlight the
+most successful NQS architectures and best practices for optimization and sampling
+strategies. To support these choices, we discuss recent results for frustrated spin sys-
+tems, interacting fermions, and real-time dynamics that are state-of-the-art not only
+within NQS. Throughout, comparisons to tensor-network, quantum Monte Carlo, and
+dynamical mean-field approaches serve as a reference for identifying the class of prob-
+lems for which NQS are most likely to extend the reach of classical simulations of
+strongly correlated quantum matter.
+2. Neural Quantum States in a nutshell
+In NQS, the wave-function compression is achieved by representing the wave function
+in afixed local product basis, often referred to as thecomputational basis. For instance,
+for a spin-1/2 system ofNsites one commonly uses the joint eigenbasis of the local
+spin-zoperator ( ˆSz
+i), that is the product basis|s⟩withs∈{−1,1} N. In this basis
+the exact wave-function amplitudesψs1s2...sN =⟨s|ψ⟩are replaced by a parameterized
+ansatzψ θ(s)defining the variational state
+|ψθ⟩=
+X
+s
+ψθ(s)|s⟩.(1)
+3
+The ansatz can be understood both as afunctionψθ :s7→ψ θ(s)that maps configura-
+tions to amplitudes, and as acontinuous functionθ7→|ψ θ⟩that mapsvariational pa-
+rametersθ∈R NP to a quantum state, as shown in Fig. 2. Introducing the parametrized
+ansatz replaces the exponential storage ofdimHamplitudes byNP parameters, which
+is the key step toward a compressed approximation of quantum many-body states.
+For NQS, this map from configurations to amplitudes is represented by an ANN.
+The simplest example is the feed-forward network sketched in Fig. 2, where the input
+configuration is transformed through successive compositions of linear and non-linear
+transformations into an output amplitude. This elementary construction provides the
+starting point for more problem-specific choices and design principles for NQS archi-
+tectures, which we discuss in Sec. 4.2.
+After choosing an ansatz and defining the NQS|ψθ⟩, one has access to any expec-
+tation value of the form
+⟨ ˆO⟩≡ ⟨ψθ| ˆO|ψθ⟩
+⟨ψθ|ψθ⟩ =
+X
+s
+pθ(s)Oloc(s),(2)
+wherep θ(s)≡ |ψθ(s)|2
+P
+s|ψθ(s)|2 is the Born distribution defined by the current variational
+state, and
+Oloc(s)≡
+X
+s′:Oss′̸=0
+Oss′
+ψθ(s′)
+ψθ(s), O ss′ =⟨s| ˆO
+s′
+(3)
+is the estimator orlocal observablefor any physical observableˆO. The only requirement
+on ˆOis that it be sufficiently sparse [29], so that the sum over alls′ withO ss′̸= 0is
+tractable. The remaining sum over statessin Eq. (2) cannot in general be evaluated
+exactly, since the Hilbert-space dimension grows exponentially withN. Instead, NQS
+usesMonte Carlo(MC), replacing the sum by MC estimates obtained from samples
+drawn frompθ
+⟨ ˆO⟩≈ 1
+NS
+NSX
+i=1
+Oloc
+ 
+s(i)
+,s (i)∼p θ(s).(4)
+The Monte Carlo estimator in Eq. (4) is unbiased and converges to the expectation
+value of thevariationalstate|ψ θ⟩as the number of samplesN S increases, with the
+statistical error decreasing asO(N−1/2
+S ).
+AlthoughNQSuseartificialneuralnetworks,theirtrainingisusuallynotdatadriven.
+In conventional supervised learning, a neural network is trained from reference input-
+output pairs and learns to reproduce an underlying mapping from these examples [42].
+For quantum many-body states, this is typically not feasible, as the target wave
+function is itself unknown and cannot be provided as training data. Instead, one de-
+termines the network parameters through mathematical and physical constraints that
+the state must satisfy. The paradigmatic example is the ground state|ψ0⟩, which is
+singled out by thevariational principle
+E0 = min
+ψ
+⟨ψ| ˆH|ψ⟩
+⟨ψ|ψ⟩ .(5)
+4
+If the ground state is not degenerate, the minimum is unique up to an overall phase.
+Restricting the search to the variational family|ψθ⟩gives the variational energy
+E0≤E(θ) = ⟨ψθ| ˆH|ψθ⟩
+⟨ψθ|ψθ⟩ .(6)
+Thus, optimizingθamounts to minimizing an upper bound to the exact ground-state
+energy. The variational energy therefore plays the role of theloss function[42], and its
+minimization is discussed in Sec. 4.3.1.
+The other widely used principle concerns the time evolution of a variational state
+|ψθt⟩, whereθ t are the NQS parameters at timet, which have to satisfy the time-
+dependent Schrödinger equation up to the residual|ϕ⟩
+|ϕ⟩=i
+X
+j
+[ ˙θt]j|∂jψθt⟩− ˆH|ψθt⟩,with⟨∂ jψθt|ϕ⟩− ⟨∂jψθt|ψθt⟩⟨ψθt|ϕ⟩
+⟨ψθt|ψθt⟩ = 0.(7)
+Thus, the Schrödinger equation cannot usually be satisfied exactly, becauseˆH|ψ⟩does
+not necessarily lie completely in the tangent spacespan
+
+|∂jψθt⟩
+	
+. With the condition
+that the residual is completely outside of the tangent space one arrives at thetime-
+dependent variational principle(TDVP)
+X
+j
+[ ˙θt]j⟨∂iψθt| ˆQ|∂jψθt⟩=−i⟨∂ iψθt| ˆQ ˆH|ψθt⟩,with ˆQ= 1− |ψθt⟩⟨ψθt|
+⟨ψθt|ψθt⟩ ,(8)
+which allows the propagation of NQS in time. The matrixSij≡⟨∂ iψθt| ˆQ|∂jψθt⟩on
+the left-hand side of Eq. (8) is thequantum geometric tensor(QGT) and the vector
+Fi≡−i⟨∂ iψθt| ˆQ ˆH|ψθt⟩on the right-hand side is theforce vector.
+The key property of Eqs. (5) and (8) is that, for local Hamiltonians, the energy, its
+gradients, the force vector and QGT can be written as MC expectation values over
+the Born distribution|ψ(s)| 2. This makes it possible to optimizeE(θ)with gradient-
+based methods and to evaluate the parameter time derivatives required by TDVP (as
+discussed in more detail in Sec. 4.3.1 and Sec. 4.3.3). In this respect, NQS optimization
+resembles the minimization of loss functions in machine learning, although it operates
+without reference data. In practice, this Variational Monte Carlo (VMC)—ortVMC
+in the context of time evolution—formulation is what makes both ground-state search
+and time evolution feasible in Hilbert spaces too large for explicit summation.
+3. The state of the art
+In this section we discuss examples of NQS applied to condensed matter problems,
+obtaining state-of-the-art numerical results when compared to other methods. This
+illustrates the types of problems where NQS can overcome the limitations inherent in
+other numerical approaches.
+5
+Figure 3.Numerical results for the ground state of theJ 1−J 2 model. (Left) Timeline of ground state
+phase diagrams using various numerical methods since2010. The type of method / ansatz is indicated along
+with the lead author of each study. NQS results are indicated by stars. The works shown are compiled from
+Refs. [43–59]. A consensus has been reached that the ground state phase diagram consists of Néel, gapless spin
+liquid, valence bond solid and collinear phases. (Right) Comparison of variational energies forJ2/J1 = 0.5
+using different NQS ansätze (adapted from Ref. [57] under CC BY 4.0).
+3.1. Ground states of frustrated magnets
+Our first example is the study of ground states of frustrated quantum magnets [60],
+where NQS have recently developed into a powerful tool. Frustrated quantum magnets
+have been well studied over the past few decades as systems which may host exotic
+states of matter such as quantum spin liquids [61–64]. The success of NQS is best
+illustrated by work on theJ1−J 2 model on the square lattice,
+ˆH=J 1
+X
+⟨ij⟩
+ˆSi· ˆSj +J 2
+X
+⟨⟨ij⟩⟩
+ˆSi· ˆSj,(9)
+whereJ 1 couples nearest andJ 2 next-nearest neighbors. In this and many other
+condensed-matter Hamiltonians, the matrix elements of the Hamiltonian are real, and
+the off-diagonal elements have inhomogeneous signs in the sampling basis{|s⟩}, so
+the ground state has real components with a non-trivial sign structure. Therefore, the
+componentsψ(s) =|ψ(s)|e iϕ(s) of the exact ground state will have quantum phases
+ϕ(s)∈{0,π}, and the ansatz should not only approximate the magnitude|ψ(s)|, but
+also the non-trivial sign structure,eiϕ(s)∈{−1,+1}.
+For antiferromagnetic, non-zeroJ 1,J 2, quantum Monte Carlo has a sign problem
+and the Marshall sign rule [65] does not solve the ground-state sign structure. Further-
+more, aroundJ2/J1 = 0.5, competing ground-state orders make variational approaches
+challenging.
+Despite efforts using various methods, including density matrix renormalization
+group (DMRG) [44], conventionalVMC[47] and projected entangled pair states
+(PEPS) [51, 52], the ground-state phase diagram in the quantum paramagnetic regime
+(aroundJ 2/J1 = 0.5), remained controversial (see Fig. 3). One possible scenario [48,
+49, 53, 54] was that the region consisted of two phases: a gapless quantum spin liquid
+and a valence bond solid. However, resolving whether the spin liquid was indeed a phase
+or a quantum critical point required precise finite-size scaling, with indirect evidence
+coming from the locations of level crossings [53, 54]. Nomura and Imada [55] used a
+6
+a) b) c)
+Figure 4.a) Energies reached on8×8for various architectures at half filling. b-c) Stripe pattern at 1
+8
+hole doping for only nearest neighbor hopping (b) and including next to nearest neighbor hopping. The top
+panel shows the spin correlation function, while the bottom panel shows cuts of the staggered spin correlation
+function (red) and density (blue). All panels are adapted from Ref. [68] and published under CC BY 4.0.
+RBM+PPwave function to simulate up to18×18lattices with periodic boundaries,
+obtaining the most accurate ground-state solutions yet. The RBM+PP wave function
+constructs an ansatz
+ψRBM+PP
+θ (s) =J RBM
+θ (s)ψPP
+θ (s)(10)
+from the combination of a shallow neural network (a restricted Boltzmann ma-
+chine [28]),J RBM
+θ (s), and a more conventional pair-product wave function,ψPP
+θ (s)[66].
+The authors also enforced symmetries on the ansatz in order to obtain accurate re-
+sults. They showed that the level crossings did indeed correspond to the claimed phase
+transitions and with careful finite-size scaling of the order parameters and correlation
+ratios confirmed this ground-state phase diagram. Nevertheless, theRBM+PPwave
+function relies on a parton mean-field decoupling of the Hamiltonian to derive the
+pair-product part, therefore introducing a source of physical bias. Similar ground-state
+energies were later obtained using a group-convolution neural network (GCNN) [56],
+retaining the role of symmetries while removing the mean-field-derived component of
+the wave function. Subsequently, the introduction ofminSR[57] (see Sec. 4.3.1) allowed
+the use of much larger neural networks of up toO(106)parameters, resulting in even
+more accurate ground states with translationally-equivariant neural networks [57–59].
+This constituted a breakthrough in terms of tackling ground states with non-trivial
+sign structure in two dimensions, using wave functions free from mean-field bias and
+applicable to systems with periodic boundary conditions.
+As a result, these neural network architectures have been successfully applied to
+study the ground states of other models, such as the Shastry-Sutherland model [67].
+3.2. Ground States of the Hubbard Model
+In the study of itinerant, interacting lattice fermions, the square-lattice Hubbard model
+ˆH=−t
+X
+⟨ij⟩,σ
+ 
+ˆc†
+iσˆcjσ + ˆc†
+jσˆciσ
+
++U
+X
+i
+ˆni↑ˆni↓,(11)
+7
+gives rise to a rich variety of physical phenomena from simple microscopic rules, in-
+cluding qualitative features of cuprate superconductors [69]. It consists of a kinetic
+term, with hoppingt>0, and an onsite interaction term of strengthU. A particularly
+numerically challenging problem is finding the ground state of the hole doped square
+lattice model with filling fraction aroundn= 0.875and repulsive, moderately large
+interactionUasQMCsolutions are hindered by the sign problem [70, 71] and various
+near degenerate low-energy solutions make the problem also hard to deal with varia-
+tionally [26, 72–74]. By now a consensus on lengthλ= 8filled stripes as the ground
+state has been reached in this regime by various numerical techniques [74–77].
+More recently, NQS were applied to this part of the ground-state phase diagram [68,
+78–80], achieving the lowest variational energies yet, with clear signatures of theλ= 8
+striped phase, on large lattices of up to16×16with periodic boundary conditions.
+Previous work on thet−t ′ Hubbard model with next nearest neighbor hoppingt′
+suggests that the ground state att′/t=−0.2,U/t= 8andn= 0.875is a partially
+filled superconducting state [81] in coexistence with spin density stripes with length
+λfluctuating aroundλ= 4depending on the system size. Gu et al. [78] focused
+on the details of the stripes using NQS, showing that this fluctuation, along with
+the crossover in stripe direction, were boundary effects which could be eliminated
+using periodic boundary conditions. The ability of NQS to simulate genuinely two-
+dimensional systems with periodic boundaries offers a major advantage over other
+methods, allowing one to identify boundary effects at smaller system sizes.
+Using a different NQS architecture based on Pfaffians, a superconductingλ= 4
+partially-filled stripe phase was found [79], qualitatively consistent with the results
+in Ref. [81]. Despite various works showing comparable variational energies for the
+groundstate in this regime [68, 78–80], they do not agree on the nature of the ground
+state. Viterittiet al.reported convergence between different NQS architectures after
+both symmetry restoration and energy-variance reduction [82]. Rendeet al.introduced
+a symmetry-preserving ansatz intended to avoid broken-symmetry local minima [80].
+They achieved the lowest variational energies up to date for systems up to24×24,
+finding superconducting order.
+3.3. Dynamics
+While the ground state encodes the static zero-temperature properties of a Hamil-
+tonian, out-of-equilibrium dynamics probes a much larger portion of its spectrum.
+Access to dynamics therefore reveals quasiparticles and collective modes through re-
+sponse functions [84, 85], tests the stability of ergodicity-breaking phases [86, 87], and
+can even expose intrinsically dynamical phases of matter such as time crystals [88, 89].
+This importance is matched by the numerical difficulty, as real-time evolution is
+among the hardest problems in many-body physics. The introduction of NQS opened a
+promising new route to this long-standing problem. Early time-evolution studies based
+ontheTDVPformulationofEq.(8)alreadydemonstratedtheviabilityofthisapproach
+for the transverse-field Ising model (TFIM) in one dimension. The substantially more
+demanding two-dimensional TFIM,
+ˆH=−J
+X
+⟨ij⟩
+ˆSz
+i ˆSz
+j−h
+X
+i
+ˆSx
+i ,(12)
+is of greater physical interest and has therefore become a particularly useful bench-
+8
+Figure 5.The schematic a) shows a space-time picture of a quench across a critical point att= 0. During a
+ramp parameterized by the dimensionless distance to the critical Hamiltonian parameterε(t) =t/τQ, critical
+slowing down prevents the correlation length from following the equilibrium divergence of the correlation
+length, soξsaturates at a finite freeze-out scale ˆξ. A freeze-out length scale together with the freeze-out
+time ˆtform asonic horizon, so that the system breaks symmetry in quasi-independent domains of size ˆξ,
+producingdefectsand thusexcitations. Figure b) summarizes the results of the finite size examination of the
+quantum Kibble-Zurek mechanism in Ref. [83]. It shows the finite-size scaling of the excitation energy density
+Q= 1
+L2
+ 
+⟨ ˆH(t)⟩−E 0(t)
+
+at the critical pointt= 0, shown asQL3 vs ˆξ/Lfor differentL(=
+√
+N)and boundary
+conditions. For ˆξ≪L, the data collapse follows thequantum Kibble-ZurekpredictionQ∝ ˆξ−(d+z) = ˆξ−3(d=
+2,z= 1). As ˆξapproachesL, the finite-size gap induces a crossover to an adiabatic regime withQ∝τ −2Q.
+The collapse across periodic (NQS) and open-boundary tensor-network simulation demonstrates universality
+beyond ramp protocol and boundary details, and the system sizes reached in the NQS simulations are essential
+to identify the scaling behavior in the non-adiabatic regime. Both figures are reproduced from Ref. [83] and
+published under CC BY 4.0.
+mark. In an early benchmark, Schmitt and Heyl showed that NQS can simulate quench
+dynamics in this model on lattices as large as10×10, reaching timescales compara-
+ble to or beyondthen-state-of-the-art tensor-network methods [27]. The techniques
+introduced in Ref. [27] were subsequently used, with problem-specific modifications,
+to compute the spectral function of the TFIM close to criticality [90]. This unprece-
+dented access to late-time dynamics also enabled a clear numerical test of the quan-
+tum Kibble–Zurek mechanism through a combination of TN and NQS simulations,
+again in the TFIM [83]. In this picture, a finite-rate sweep across a quantum critical
+point becomes nonadiabatic because of critical slowing down, generating defects in
+the symmetry-broken phase, here ferromagnetic domains separated by domain walls.
+Ref. [83] thereby confirmed the predicted finite-size scaling of the excitation-energy
+density with the correlation length, as illustrated in Fig. 5. Recent work extended this
+approach to the case of the three-dimensional quantum Ising model with up to 1000
+qubits [91].
+In a similar vein, Medvidović et al. computed the Loschmidt echo in the two-
+dimensional quantum rotor model on systems of up to8×8sites, showing that NQS
+combined with Hamiltonian Monte Carlo yields stable unitary real-time dynamics and
+quantitatively accurate echoes [92].
+Beyond standard TDVP integration, an important alternative is to propagate the
+state over a short time step and then variationally project the result back onto the
+ansatz manifoldM={|ψ θ⟩|θ∈R NP}. Inprojected time-dependent variational Monte
+Carlo(p-tVMC), this projection is formulated as an optimization problem at each time
+step, for example by minimizing the infidelity between
+ψθt+1
+
+and the propagated state
+e−iδtH|ψθt⟩[93]. This is particularly useful when the wave function develops exact or
+approximate zeros, where standard TDVP-based propagation can struggle [93]. Closely
+9
+related projection-based ideas have also been successfully applied toab-initioelectron
+dynamics by Nys et al. [41].
+A second alternative abandons stepwise propagation altogether and instead opti-
+mizes the full trajectory at once. In the explicitly time-dependent t-NQS approach,
+the network representsψθ(s,t)directly and its parameters are trained over a whole
+time interval by minimizing a global residual (Eq. (7)) of the Schrödinger equation
+[94]. Closely related in spirit, thetime-dependent neural Galerkinmethod of Ref. [95]
+represents the trajectory as a time-dependent linear combination of time-independent
+NQS basis states and optimizes it through a global-in-time variational principle. Both
+approaches have been benchmarked successfully on the TFIM, including long-time dy-
+namics.
+Open quantum systems constitute another established application for dynamic NQS
+methods. The unitary evolution is replaced by a Lindblad master equation for the den-
+sity operator. Early work introduced neural density operators based on latent-space
+purification, restricted Boltzmann machine density matrices and purified steady-state
+ansätze,andusedthemtocomputenon-equilibriumsteadystatesordissipativedynam-
+ics of spin models [96–100]. The derivation of a TDVP directly for Lindblad evolution
+with autoregressive neural density operators enabled real-time dissipative simulations
+of one- and two-dimensional Heisenberg systems as well as confinement dynamics with
+losses [101]. More recent formulations either represent the open-system state through
+measurement probabilities in a POVM basis or employ deeper density-operator archi-
+tectures, including Liouville-space, convolutional, and transformer ansätze, broadening
+the class of accessible Lindbladian steady states [102–105]. Related applications now
+extend to lattice-gauge and quantum-optical settings, including the Schwinger model,
+waveguide-QED emitter arrays, and many-body super- and subradiant light–matter
+dynamics [106–108].
+4. Best Practices
+Over recent years, several best practices for applying NQS have been identified, mostly
+empirically:
+(1)Symmetries.Enforce as many symmetries as possible (Sec. 4.1).
+(2)Spin architectures.For spin models, use a translationally-equivariant or group-
+equivariant architecture such as a CNN or GCNN (Sec. 4.2).
+(3)F ermionic signs.For fermionic models, use a determinant- or Pfaffian-based
+ansatz (Sec. 4.2).
+(4)Ground states.For ground-state calculations, optimize the wave function using
+minSR, enabling the use of deep neural networks (Sec. 4.3.1).
+(5)Dynamics.For dynamics with TDVP, use as many samples as possible to esti-
+mate the QGT and regularize its spectrum carefully for the inversion (Sec. 4.3.3).
+(6)Parallelization.Use GPUs to parallelize sampling and observable estimation
+(Sec. 4.4).
+In the following, we discuss these points in more detail.
+4.1. Physical Bias
+The central idea of NQS is to use asymptotically unbiased and expressive wave func-
+tions such that an accurate approximation of the true solution can be found via opti-
+10
+mization, in a wide range of different phases of matter. However, using very unstruc-
+tured wave functions makes finding a nearly-optimal solution difficult [109], so some
+physical bias should be included to guide the optimization towards physically-relevant
+solutions. Some of these are exact constraints, such as symmetry, or sign structure in
+the cases when they are exactly known. Others are more general notions of the func-
+tional dependence of the wave function on its input variables, such as locality. In this
+subsection, we discuss aspects of these physical biases which are important factors in
+NQS design.
+First, since condensed matter Hamiltonians in most cases exhibit local interactions,
+this leads to the notion of locality in their wave functions, for example in spin sys-
+tems [110–112] and, from an entanglement perspective, the area law for non-critical
+systems [112, 113]. The need to work with local structures arises not only inNQS, but
+also naturally in a wide range of machine-learning tasks, including image classification,
+time-series analysis, and natural language processing. Accordingly, a variety of archi-
+tectures originally developed for such applications, includingCNNs[114],RNNs[42],
+andGCNNs[115], have also found use as NQS. We discuss these architectures in more
+detail in Sec. 4.2.
+Next, condensed matter Hamiltonians possess symmetries, which means that eigen-
+states must belong to irreducible representations (irreps) of the symmetry group [116].
+Enforcing this structure explicitly can improve the accuracy of variational energies and
+other observables [49, 82, 117, 118]. A recent example is provided by Viterittiet al.[82],
+who compared Pfaffian- and determinant-based states with nearly identical variational
+energies but different correlation functions, especially in the pairing channel. Includ-
+ing translational and rotational symmetries substantially reduced these discrepancies,
+illustrating that reliable physical observables may require symmetry enforcement even
+when the variational energies already agree.
+In particular, for discrete symmetries, this can be done via a quantum number
+projection of the form
+ψsymm(s) = dα
+|G|
+X
+g∈G
+χ∗
+gψ(g−1s),(13)
+whereGis the symmetry group to be symmetrized over,dα the irrep dimension and
+charactersχ g corresponding to the group elementg, projecting the wave function
+to a desired irreducible representation. Typically, Eq. (13) is used to enforce lattice
+symmetries (the space group), as well as discrete spin symmetries, such as spin-parity
+symmetry in the computational basis. However, as the number of translation group
+elements scales with the number of lattice sites, naively applying this quantum number
+projection is prohibitively expensive for large lattices. This limitation can be overcome
+by a judicious choice of neural network architecture, which we discuss in Sec. 4.2.
+Beyond projection, symmetries such as particle number or magnetization can be
+easily enforced via sampling [55–57, 67]. Other approaches such as enforcing SU(2)
+symmetry by working in a total momentum basis [119, 120], or translational symme-
+tries via use of representative samples [121, 122] or through restricting sampling to a
+particular set [123], have been proposed, although they have not been widely adopted.
+Learning the sign structure (see Sec. 3.1) can be particularly challenging for
+NQS [124, 125]. For this reason, it has been common to bias trial states towards known
+proxy sign structures for spin systems [55, 66, 126]. For lattice fermions, successful wave
+functions are based on determinants and Pfaffians [68, 78, 127–131], biasing towards
+11
+Figure 6.A local, translationally-equivariant architecture. Since the output of each layer depends on local
+information, locally identical environments are mapped to the same features (labelled cells). Since each layer
+is translationally-equivariant, translating the output is equivalent to translating the input (compare top and
+bottom rows). Therefore the wave function can be projected to a desired translational irreducible representation
+in a single evaluation by appropriate choice of output function.
+mean field sign structures. From this point of view, approaches that minimize built-in
+bias while retaining high accuracy are preferable.
+4.2. Architectures
+A good choice of NQS architecture for a specific problem incorporates the physical
+biases discussed in the previous section in an efficient way. Fortunately, some of these
+requirements are encountered in well-established machine learning applications, so neu-
+ral network components developed in these contexts can be directly applied in NQS.
+Both locality and translational symmetry arise in computer vision tasks, resulting in
+the development of deep convolutional neural networks (CNNs) [114, 132, 133]. These
+are built out of convolutional layers which, for a two-dimensional system, perform the
+operation
+z(n)
+ijm =b (n)
+m +
+X
+δx∈Kx
+X
+δy∈Ky
+Cn−1X
+c=1
+K(n)
+δxδycmh(n−1)
+i+δx,j+δy,c,
+h(n)
+ijm =f
+
+z(n)
+ijm
+
+.
+(14)
+Hereh (0)≡sis the input configuration,m= 1,...,C n labels output channels, and
+Kx,Ky are the spatial kernel offsets of extentskx andk y. The convolutional kernel
+K(n)∈R kx×ky×Cn−1×Cn is the local, weight-shared analogue of the dense matrixW(n)
+of the linear transformation in Fig. 2, with biasb(n)
+m ; spatial indices are interpreted
+using the boundary convention of the lattice, for example moduloNx,Ny for periodic
+boundaries. Finally, the nonlinearityfacts element-wise on its input.
+These layers incorporate locality as the output at a given position(i,j)depends
+only on the input variables in a given region around it (see Fig. 6). In order to exploit
+this, the input to convolutional layers in an NQS [27, 109, 134, 135] should be shaped
+with the locality of the problem in mind, for example ensuring that the positions of
+variables inxare related to their positions on the lattice, and usingpatchingto ensure
+12
+up and down spin electrons [68, 136] or variables within a unit cell [67] are associated
+with the same spatial position.
+Convolutional layers are also translationally equivariant [115, 137],
+y(Tgx) =T g′y(x),(15)
+where on the left-hand side a translation,Tg, is applied to the input and on the right-
+hand side,T g′, to the output of the convolutional layer (see Fig. 6). Using Eq. (13),
+an NQS constructed from translationally-equivariant layers can be projected to a mo-
+mentum sector (translation group irrep) during a single network evaluation. The wave
+function can be further symmetrized over the point group by quantum number projec-
+tion, projecting the wavefunction efficiently to a specific irrep of the lattice space group.
+CNNs can be generalized to be symmetric under the full space-group in GCNNs [115,
+138], projecting to a space group irrep in a single evaluation.
+Combined with the development of minSR (see Sec. 4.3), allowing optimiza-
+tion of neural networks with large numbers of parameters, state-of-the-art deep
+translationally-equivariant NQS for ground states of spin problems have been devel-
+oped [57, 59, 67, 139, 140], inspired by highly optimized architectures used for computer
+vision tasks [141–143]. These are either explicitly convolutional networks [57] or vision
+transformers with factored or spatial attention [59, 139], which have broadly similar
+structures [140]. The structure of these networks consists of an embedding layer, used
+to set the translational unit cell of the NQS, a deep encoder which extracts a high-
+dimensional hidden representation [67], and a shallow, complex output block.
+For fermions, the advantage of using lattice symmetry-equivariant networks is not
+as clear-cut as for spins. As discussed in Section 4.1, high-accuracy fermionic NQS
+use the output of neural networks as the elements of a determinant or Pfaffian state.
+While it is possible to use the translationally-equivariant architectures described above
+with determinants [144] and Pfaffians [68, 80], the equivariant encoder appears to be
+performing worse than symmetrization via quantum number projection (Eq. 13) [136].
+Nonetheless, this approach becomes unfeasible for large systems, due to the scaling of
+the number of the number of elements in the space group symmetry group, tipping
+the scale again towards equivariant architectures [80]. Instead of enforcing the full lat-
+tice symmetries via quantum number projection, Chenet al.only restored sublattice
+symmetries instead in order to overcome the computational cost of quantum number
+projection achieving state of the art energies [68]. On the other hand, in Ref. [78] the
+authors were able to obtain state-of-the-art energies using a neural backflow trans-
+former without enforcing any lattice symmetries, highlighting the fact that there is
+more work to be done in understanding the most effective way to implement lattice
+symmetries for these systems.
+For dynamics, state-of-the-art results have been achieved using CNNs [27, 92]; how-
+ever,asdiscussedinSection4.3,thetime-evolutionalgorithmrestrictsthesizeofneural
+networks which can be used. Therefore, lightweight versions of the translationally-
+equivariant NQS used for ground states can be applied to dynamics [145, 146].
+The notion of locality can alternatively be included using autoregressive architec-
+tures [42], which model the output as
+ψθ(s) =
+q
+|ψθ(s1)|2|ψθ(s2|s1)|2...|ψ θ(sN|s1,...,s N−1)|2eiϕ(s),(16)
+where the conditional distributions|ψθ(si|s1,...,s i−1)|2 are computed in a spatially
+13
+sequential fashion starting fromψθ(s1). Examples of autoregressive NQS include recur-
+rent neural networks (RNNs) [147] and transformers with masked self-attention [148,
+149]. They have the advantage that uncorrelated samples can be drawn efficiently and
+directly from the wave function, rather than being generated through an MCMC pro-
+cess, as discussed in Sec. 4.3. For spin models, the use of autoregressive architectures
+has largely been restricted to models where the ground state is real and positive (e.g.,
+ground states of stoquastic Hamiltonians) [147–151]. This difficulty in learning non-
+trivial sign structures could stem from the lack of expressivity of autoregressive wave
+functions [152].
+Other types of networks have been developed to incorporate problem-specific biases,
+such as gauge symmetries for lattice gauge theories [120, 153–155] and quantum spin
+liquids [156].
+4.3. Optimization and Sampling
+We now turn to the algorithmic question of how tooptimizethese states for ground-
+state searches and how topropagatethem in time. While the underlying variational
+principles are conceptually the same as in traditional VMC, the practical setting is
+remarkably different. Modern NQS ansätze contain far more parameters and exhibit
+greater expressive power than the strong physically biased wave functions historically
+used in VMC, which often involve onlyO(N)variational parameters. Their greater ex-
+pressive power broadens the class of states that can be represented, but it also makes
+optimization more demanding, increases memory requirements, and often requires spe-
+cialized hardware for efficient training and evaluation. These challenges have motivated
+the development of algorithms tailored to large neural-network ansätze, often draw-
+ing directly on the software ecosystem and optimization strategies of modern machine
+learning. In this section, we discuss the resulting best practices for ground-state opti-
+mization and time evolution, as well as the sampling procedures used to estimate the
+quantities required for both.
+4.3.1. Ground state search
+Starting from the variational principle in Eq. (5), ground-state search reduces to the
+numerical minimization of the variational energy with respect to the NQS parameters
+θ. In practice, this is carried out with first-order gradient-based optimization. A sim-
+ple and computationally cheap choice is theAdamoptimizer, an adaptive stochastic
+optimization method widely used in machine learning [157]. Adam and related opti-
+mizers are robust, easy to implement, and perform well for moderately sized networks.
+In the NQS context they have been used successfully especially for autoregressive ar-
+chitectures such as RNNs [158–160]. However, autoregressive architectures are by no
+means limited to Adam-style first-order optimization, and can likewise be optimized
+with stochastic reconfiguration [161, 162].
+In fact, most state-of-the-art NQS ground-state results are obtained withstochastic
+reconfiguration(SR) methods [19, 163], which can be viewed as a stochastic realization
+ofnatural gradient descent[164]. Physically, SR corresponds to imaginary-time evolu-
+tion projected onto the variational manifold, in close analogy to the TDVP equation in
+Eq. (8). This connection is reflected by the close similarity between the TDVP equation
+14
+x1
+x2
+a)
+x1
+x2
+b)
+Gradient descent path
+Minimum
+Gradient ﬂow ﬁeld
+R(x1, x2)
+high
+low
+Gradient magnitude
+high
+low
+Figure 7.Here we compare gradient descent vs natural-gradient descent on theRosenbrock landscape. (a)
+Standard gradient descent−∇R(x 1,x 2)produces a flow field with opposing directions that meet in a long
+valley. The opposing gradient directions produce a zig–zag trajectory as it repeatedly overshoots across the
+narrow curved valley of the Rosenbrock function (white contours), slowing convergence toward the minimum
+(magenta star). (b) Natural-gradient descent−S−1∇R(x1,x 2), with QGTSas preconditioner, reshapes the
+flow to better align with the valley geometry, yielding a smoother path that follows the valley more directly.
+Backgroundcolorsindicatethegradientmagnitude(leftcolorbar),whilethegrayscalebarencodestheobjective
+valueR(x 1,x 2).
+for the parameter time derivative˙θand the SR equation for the parameter update∆θ,
+X
+j
+Sij ∆θj =−∂ iE(θ).(17)
+The parameters are then updated according to
+θ←θ+η∆θ,(18)
+with learning rateη. The key idea is that the update is not chosen with respect to the
+Euclidean geometry of parameter space, corresponding to the identity metricSij =
+δij used in ordinary gradient descent, but with respect to the geometry induced by
+the quantum state itself. This geometry is encoded in thequantum geometric tensor
+(QGT),
+Sij = Re⟨∂ iψθ| ˆQ|∂jψθ⟩, ˆQ= 1− |ψθ⟩⟨ψθ|
+⟨ψθ|ψθ⟩ ,(19)
+or, equivalently,
+Sij = ReE s∼pθ
+h 
+Γi(s)−E[Γ i(s)]
+† 
+Γj(s)−E[Γ j(s)]
+i
+,(20)
+whereΓ i(s) =∂ θi logψθ(s)andp θ(s)∝|ψ θ(s)|2. In this way, SR computes the pro-
+jected imaginary-time update for which the residual of Eq. (19) is orthogonal to the
+tangent space of the variational manifold span
+ 
+{|∂iψθ⟩}
+
+, in direct analogy to the
+TDVP construction in Eq. (8). As illustrated in Fig. 7, this does not change the opti-
+mization landscape itself, but rescales updates so that broad weak-gradient directions
+do not slow down the optimization, thereby guiding the trajectory more directly toward
+the minimum.
+15
+The drawback of SR is its higher computational cost. In its standard form, one has
+to estimate and solve a linear system involving theNP×NP QGT, so the optimization
+bottleneck scales with the number of variational parameters. Since the Monte Carlo
+estimate of the QGT has rank at mostNS, this parameter-space formulation becomes
+prohibitive for modern deep architectures withNP≫N S. Recent low-rank reformula-
+tions of SR, in particularminSR[57, 58], exploit the structure of the stochastic QGT
+expression in Eq. (20) and replace theNP×NP linear system by anNS×NS prob-
+lem (or2NS×2NS for complex wave functions), thereby shifting the bottleneck from
+parameter count to sample count. Empirically, this reformulation is often already fa-
+vorable for moderate sample numbers, and in many recent applications stable training
+was achieved withNS∼10 3, enabling deep architectures with up to106 parameters
+[57, 58, 79, 165].
+In any formulation, the SR equation is typically ill-conditioned because the QGT
+contains very small eigenvalues arising from statistical noise or redundant parameter
+directions. In practice, this is mitigated by regularization, most simply through a diag-
+onal shiftS→S+λIwithλ>0. Stability and convergence can be further improved
+by more refined regularization schemes. For example, SPRING (sub-sampled projected-
+increment natural gradient descent) [166] smooths the effective eigenvalue cutoff of the
+QGT and combines this with momentum, reducing sensitivity to Monte Carlo noise
+while accelerating convergence. Gu et al. [78] later extended this idea with a dynami-
+cally adapted variant that performed particularly well for the Hubbard model, further
+improving the robustness and scalability of SR-based optimization.
+4.3.2. Convergence Metrics
+For the ground-state search with NQS, the most common figures of merit are the varia-
+tional energy and theenergy varianceV
+
+Hloc
+
+=
+
+(Hloc−⟨H loc⟩)2
+. By the variational
+principle, the variational energy provides an upper bound on the exact ground-state
+energy, while the energy variance vanishes for any exact eigenstate and therefore sup-
+plies an additional stringent consistency check. A small variance alone does not certify
+that the ground state has been found, but Ref. [167] empirically observed that thedi-
+mensionless variance(V-score) is approximately proportional to the true energy error,
+namely the relative deviation between the exact and variational ground-state energies.
+When MCMC is the sampler of choice, final accuracy checks should also be repeated
+with fresh, independently initialized chains to verify that they thermalize and repro-
+duce the reported observables, otherwise apparently accurate energies can be artifacts
+of frozen or non-ergodic sampling rather than of an improved variational state [168].
+4.3.3. Dynamics
+In time-dependent VMC (tVMC), all derivatives are estimated using VMC as described
+above. Unlike ground-state search, real-time dynamics does not steadily approach a
+fixed point. Instead, integration errors are propagated forward and can accumulate
+over time, so only very little noise can be tolerated in the MC estimate of the QGT
+and in the solution of the TDVP linear system Eq. (8). In practice, increasing the num-
+ber of samples is generally not sufficient to obtain a well-conditioned full-rank QGT,
+making careful regularization essential [27, 169]. Since the hard cutoff of a plain Moore-
+Penrose pseudo-inverse is incompatible with smooth solutions of the TDVP, established
+regularization schemes rely on generalized pseudo-inverses with smooth truncations of
+the eigenvalue spectrum [27, 92, 170]. As optimal values for the cutoff may vary with
+16
+time, recent work introduced a scheme to adapt the regularization parameter dynam-
+ically while fixing the residual [171]. In addition, Ref. [27] introduced an additional
+regularization to eliminate particularly noisy contributions from the TDVP equation.
+Due to the non-linearity of the TDVP equation (8), it is generally imperative to employ
+integrators with adaptive time step. In many cases, unnecessarily small time steps can
+be avoided by employing the quantum geometric tensor to quantify the integration
+error in state space instead of parameter space [27].
+By contrast, best practices for more recent alternatives such as p-tVMC [93], t-NQS
+[94], and neural Galerkin [95] approaches are still much less established, so we restrict
+our discussion to TDVP-based dynamics. Among these newer methods, some practical
+guidance is beginning to emerge for p-tVMC, for instance in the recent work of Gravina
+[145].
+4.3.4. Sampling
+The NQS formalism avoids explicit summation over the full many-body Hilbert space
+by replacing it with averages over a set of configurations{|si⟩}NS
+i=1 ∼p θ(s), drawn
+from the Born distribution of the variational wave function. Observables and derived
+quantities are then obtained as MC averages of their respective estimators Eq. (4) over
+these samples. Importantly, any quantity whose estimator can be written in the form of
+the local observable estimator in Eq. (3) can be estimated efficiently, with the required
+number of samples increasing only polynomially with the desired precision [29].
+By contrast, quantities entering the ground-state search or TDVP, such as the energy
+gradientandtheQGT,donotadmitaformulationaslocalobservableestimators.These
+quantities can nevertheless be estimated by rewriting them as importance-sampled
+averages with respect to the Born distribution. For a quantityX=P
+sx(s), one may
+write
+X=
+X
+s:pθ(s)̸=0
+pθ(s) x(s)
+pθ(s) ,(21)
+but the resulting estimator is only unbiased ifx(s) = 0wheneverp θ(s) = 0. Ifψ θ(s)
+has roots on configurations wherex(s)̸= 0, the Born distribution does not sample
+all relevant contributions and the estimator is therefore biased [38, 93]. This issue
+is often negligible in ground-state calculations when one works in sectors where the
+variational state is non-zero everywhere, but it can become important in real-time
+evolution where nodes may proliferate during the dynamics [93]. Recent work proposes
+to sidestep biased estimators by employing importance sampling techniques [172].
+Even when no formal bias is present, Monte Carlo estimators can have a very large
+variance. This applies both to local observables and to general importance sampled
+quantities. While the resulting estimates remain efficient in the complexity-theoretic
+sense, a large variance increases the practical sampling cost, because the statistical
+error decreases only asN−1/2
+S . A particularly unfavorable situation arises when the
+Born distribution is strongly peaked in the chosen basis. Then the MC samples explore
+only a small part of configuration space, while the estimator may receive appreciable
+contributions from a much broader region. In that case, many samples are required
+before averages converge reliably. For derivative-based quantities such as the QGT
+and the energy gradient this problem is often more severe, because their significant
+contributions in configuration space are typically broader than those sampled efficiently
+by the Born distribution itself [162].
+17
+Equally important as the estimation itself is the generation of the underlying sam-
+ples. For that purpose, Markov-chain Monte Carlo (MCMC) is most commonly em-
+ployed.InthestandardMetropolis–Hastingsscheme,illustratedschematicallyinFig.8,
+one constructs a Markov chain by proposing updates of the current configurations→s′
+and accepting or rejecting them probabilistically. In lattice models with discrete de-
+grees of freedom, the most common proposals are local moves such as single-spin flips,
+local particle hops, or pair updates chosen to preserve conserved quantum numbers
+[28, 38]. These updates are simple and architecture agnostic, but their efficiency de-
+pends strongly on how rapidly they explore the relevant part of configuration space.
+MCMC produces correlated samples; in practice, one must also monitor thermalization
+and autocorrelation times and discard an initial warm-up period before accumulating
+measurements.
+An important alternative is available for autoregressive NQS [147]. There, the joint
+probability of a configuration is factorized into conditionals, as indicated by Eq. (16)
+pθ(s) =|ψ θ(s1)|2|ψθ(s2|s1)|2...|ψ θ(sN|s1,...,s N−1)|2 =
+NY
+i=1
+pθ(si|s<i),(22)
+which allows one to generate configurations sequentially by ancestral sampling
+si∼p θ(si|s<i)withp θ(s1) =p θ(s1|const.).(23)
+The resulting samples are independent by construction and therefore avoid both ther-
+malization and autocorrelation issues. In addition, autoregressive models permit sam-
+pling strategies such asGumbel top-Ksampling[173], which generate samples without
+repetition and can improve sample efficiency when the Born distribution is strongly
+concentrated, thereby alleviating the variance problem [162].
+4.4. Complexity and GPU parallelization
+The algorithm underlying ground-state optimization with NQS, and likewise TDVP for
+real-time evolution, consists of three core stages:sampling,estimation of observables
+and gradients, and theoptimizer step. The total wall time of an algorithm iteration is
+therefore composed of sampling-and-estimation part and an optimization part,
+TALG∼T sample+obs +T opt,(24)
+whereT sample+obs =n eval(N,NS)T NQS(N)andT NQS(N)denotes the cost of one
+batchedevaluation of the ansatz, that is the simultaneous evaluation ofψθ(s)for a
+whole set of configurations, andn eval the number of such evaluations required per
+iteration.
+The abstract decomposition above becomes more transparent by considering a typi-
+cal example like a dense feed-forward ansatz (Fig. 2) with width proportional to system
+size and depthD, for which one network evaluation scales as
+TNQS(N)∼O(DN 2).(25)
+If sampling is performed with local Metropolis updates, then obtaining one effectively
+new sample requires roughly one sweep ofO(N)proposed moves, so the sampling
+18
+Figure 8.The figures show a schematic of the multi-GPU-accelerated workflow for NQS-based VMC or
+TDVP. The computationally dominant NQS evaluation is parallelized on GPUs during (left) Markov-chain
+Monte Carlo sampling and (right) local observable estimation. Multiple independent Markov chains are ad-
+vanced concurrently by batching NQS evaluations on each device to better saturate the GPU. The Metropolis-
+Hastings accept/reject step is depicted as a probability-weighted binary decision tree, emphasizing the stochas-
+tic decision that turns a proposed configuration into the next configuration of the chain. The resulting sample
+pool{s i}NS/Nrank
+i=1 is distributed acrossNrank independent processes, which then independently evaluate local
+observables of the formOss′
+ψθ (s′)
+ψθ (s) . Finally, per-process contributions are reduced to obtain the global Monte
+Carlo averages.
+cost per sample isO(NT NQS). For a local Hamiltonian on ad-dimensional lattice,
+the local-energy estimator couples a configuration toO(dN)connected configurations,
+so observable estimation likewise requiresO(dNT NQS)work per sample. The energy
+gradient can be obtained at essentially the same cost as the energy itself, since the
+required logarithmic derivatives are evaluated through automatic differentiation [42].
+Under local Metropolis sampling and without architecture-specific fast updates, this
+gives the illustrative estimate
+Tsample+obs∼O
+ 
+NSDN 3
+,(26)
+up to model-dependent prefactors and possible implementation-dependent speedups
+from caching, symmetry reduction, or architecture-specific fast updates [174]. At the
+same time, these stages are embarrassingly parallel, since each chain and each config-
+uration can be processed independently, as sketched in Fig. 8. Distributing the work
+overN rank parallel processes therefore reduces the wall time approximately to
+T wall
+sample+obs∼O
+NSDN 3
+Nrank
+
+,(27)
+up to minor overhead. For MCMC, each chain incurs a warmup cost before measure-
+ments are accumulated. In optimization runs, however, chains are usually initialized
+from samples of the previous iteration, so once the parameters evolve smoothly only
+a short rethermalization is often needed, which is why parallelization becomes more
+effective as the sample countNS increases. Autoregressive samplers have the further
+advantage that they generate i.i.d. samples directly and therefore benefit from paral-
+lelization immediately.
+The optimizer step can become a separate bottleneck when performing TDVP or
+19
+ground-state search using (min)SR, since one must solve a linear system involving
+the quantum geometric tensor (QGT). In a parameter-space formulation withN P
+variational parameters, a dense QGT solve scales asO(N3
+P ), which can become pro-
+hibitive for modern neural-network ansätze. Matrix-free iterative solvers avoid storing
+and factorizing the full QGT and instead reduce the problem to repeated QGT-vector
+products, substantially lowering the per-iteration cost. Their total runtime, however,
+still depends on the number of Krylov iterations and therefore on the conditioning of
+the problem and the regularization scheme [28]. The minSR formulation exchanges the
+parameter dimensionN P for the sample dimensionNS, which can be advantageous
+whenN S ≪N P, but the same basic tradeoff between dense and matrix-free linear
+solvers remains. In practice, SR is therefore most effective when the linear solve is kept
+subdominant compared to sampling and observable estimation.
+NQS are particularly well suited to hardware accelerators such as graphics process-
+ing units (GPUs), because the dominant workload consists of large batches of dense
+linear algebra and tensor contractions in the network evaluation and derivative compu-
+tation. A single Markov chain or a single local-observable evaluation rarely saturates a
+modern accelerator, so many such tasks can be batched on one or multiple devices with
+little additional overhead, as illustrated in Fig. 8. This is precisely the execution model
+exploited by modern NQS packages such asNetKet[175],jVMC[170], andQuan-
+tax[176], which build on machine-learning frameworks likeJAX[177] to provide dis-
+tributed execution and accelerator support with comparatively little problem-specific
+engineering.
+5. F uture Directions
+As we have discussed in the previous sections, NQS is a versatile technique, able to
+address open questions at the forefront of condensed matter research. The major ad-
+vantages of NQS are:
+(1)Versatile applicability across lattice geometries, entanglement structures, and ir-
+respective of the QMC sign problem.
+(2)Universal approximation capabilities enabling controlled accuracy and non-
+perturbative treatment of strong correlations.
+These two attributes define the realm where the most impactful future applications of
+NQS may be expected: Strongly correlated systems exhibiting intricate entanglement
+structures and a QMC sign problem. Thereby, NQS could break new ground on a
+variety of current frontiers of condensed matter physics summarized in Fig. 9. However,
+the most demanding applications pose recurring challenges that will require further
+methodological advances, namely (A) learning sign and phase structures of the wave
+function, (B) enforcing symmetries and representation constraints, and (C) accessing
+dynamical response and non-equilibrium evolution. In the following, we discuss these
+challenges and we outline possible future applications of NQS that would be enabled
+by overcoming them.
+5.1. (A) Learning sign and phase structures
+Sign and phase learning is a central bottleneck whenever the ground state has a non-
+trivial sign or phase structure, which is the case when the Hamiltonian, expressed in the
+sampling basis, has both negative and positive off-diagonal entries, a property known as
+20
+Figure 9.Signpost of future directions for NQS in condensed matter and related lattice problems. The central
+panel summarizes three current roadblocks that limit the application of NQS to key physical systems: (A)
+learning sign and phase structures, (B) enforcing symmetries and entanglement constraints, and (C) accessing
+real-time propagation and dynamical response. The surrounding panels illustrate problem classes that fall
+naturally within the scope suggested by versatile applicability and universal approximation capabilities, but
+whose treatment is still held back by one or more of these bottlenecks.
+non-stoquasticity[178]. This offers a useful distinction when discussing sign problems
+of QMC versus NQS, since the non-stoquastic attractive Hubbard model can present a
+significant challenge for general NQS, but has a sign-problem-free auxiliary-field QMC
+formulation [19, 179].
+Non-stoquasticity is a natural feature of fermionic Hamiltonians because of fermionic
+anticommutation relations, and it is also a common property of frustrated magnets. In
+some important cases, however, the non-stoquasticity can be cured. For example, in the
+square-lattice Heisenberg antiferromagnet, the Marshall sign rule fixes the ground-state
+sign structure [65]. For free fermions, the antisymmetric signs are not a fundamental
+obstacle because the problem reduces to single-particle diagonalization. The difficulty
+is that there is no generally efficient way to find such a cure: stoquastic local Hamil-
+tonians form a special complexity class [178], and finding even restricted local basis
+rotations that cure a non-stoquastic Hamiltonian is NP-complete [179]. This leaves the
+vast majority of Hamiltonians in the seemingly untouchable class of non-stoquastic
+problems.
+The situation is in practice more nuanced than that, as shown by a recent study
+of the isolated sign-learning problem, which demonstrates that frustrated sign struc-
+tures can contain exploitable Boolean-Fourier structure and therefore need not behave
+like featureless worst-case learning problems [31]. This nuance is further underlined
+by high-quality NQS ground states that have been obtained for non-stoquastic spin
+Hamiltonians close to simple proxy signs such as the Marshall sign rule [56, 57, 67].
+21
+The epitome of non-stoquastic systems currently treated with NQS is the class of
+fermionic Hamiltonians. Here the standard strategy is to build antisymmetry into de-
+terminant, Pfaffian, or backflow-inspired layers [68, 127, 129, 131]. These approaches
+represent the current state of the art for Hubbard-model benchmarks [68, 78, 79, 82],
+but they introduce a mean-field bias and a raw determinant or Pfaffian scaling cost of
+O(N 3
+e ), which low-rank-update techniques mitigate but do not remove [174].
+This leaves two connected goals: (i) an unbiased treatment of sign and phase struc-
+tures, and (ii) better scaling for controlled antisymmetric layers. Progress on (ii) would
+already solve pressing problems that require large simulation sizes, like three-band
+cuprate models [77, 180], multilayer nickelates [181–183], and Moiré Hubbard mod-
+els [184, 185]. Progress on (i) would broaden access to elusive phases like quantum
+spin liquids [25, 60, 63], topological order [186], and anyonic lattice models [119, 120].
+Solving both goals is especially important near quantum criticality, where small en-
+ergy differences between competing phases make careful finite-size scaling decisive [187,
+188].
+5.2. (B) Enforcing symmetries and representation constraints
+Historically, variational Monte Carlo wave functions were often built from physically
+motivated ansätze designed for a specific phase, such as Jastrow-correlated, Gutzwiller-
+projected, or mean-field states. This makes their symmetry content and representation
+limits relatively transparent, but it also builds in strong assumptions about the phase
+being described [19]. That bias becomes limiting when the goal is to identify an un-
+knownphaseorresolveadelicatecriticalpoint.Aconcreteexampleisthesquare-lattice
+Néel–VBS deconfined quantum critical point, where spin-rotation symmetry, lattice
+symmetries, and emergent critical symmetries all matter, while numerical scaling has
+required nonstandard interpretations such as two divergent length scales [189, 190].
+NQS offer a possible route through this problem, since their large parameter spaces
+make systematic improvement with architecture and parameter count possible, but
+increasing the number of parameters does not fully address the issue. For that, one
+must also know whether the architecture can represent the required symmetry sector
+and how its parameter count controls representational power. This leaves two closely
+related challenges, namely symmetrizing NQS so that the Hilbert-space sector of in-
+terest is represented directly and finding laws that connect architecture and parameter
+count to representational power.
+Recently, progress has been made on the latter in two significant ways. First, the
+entanglement that NQS can represent is now better understood through bounds such
+asS A =O(klogN)in the number of scalar nonlinearitieskand system sizeN[35].
+Second, transformer-NQS calculations on the square and triangularJ1-J2 Heisenberg
+models found, within the accessible precision window, that theV-score decays approx-
+imately as a power law in training compute, with an exponent that decreases with
+frustration [191]. Taken together, these results suggest that increasing model size and
+training compute can systematically improve NQS accuracy, while also indicating that
+frustration can make a given target accuracy more expensive. The latter observation
+may be a symptom of an increasing number of near-degenerate low-energy states or
+symmetry-sector mixing [30, 192].
+Solving the problem of imposing symmetry constraints on NQS would make calcula-
+tions more reliable when low-energy orders in different symmetry sectors compete [118,
+121]. Currently, twocomplementary approaches exist for enforcing symmetries:project-
+22
+ing the ansatz into the right subspace with Eq. (13), or building the symmetry into an
+equivariant architecture such as a GCNN [115, 138]. The architecture-based route can
+avoid explicit sums over all group elements and has been successful for lattice symme-
+tries and, with more specialized equivariant constructions, also for non-Abelian gauge
+symmetries [138, 144, 193]. Its accuracy and applicability, however, still depend on the
+expressive power of the chosen ansatz and on which representations or symmetry con-
+straints are built in. Projection-based approaches remain broadly applicable, including
+to non-Abelian or anyonic symmetry sectors, but they add a symmetry-averaging cost
+and can complicate optimization [118, 119, 121, 194]. Thus, whether symmetries are
+enforced projectively or by the underlying ansatz, the interaction between symmetry
+enforcement, expressivity, and optimization does not automatically improve results,
+but requires special care, as illustrated by the escalating symmetry projections used
+in [165].
+Better handling of symmetry and representation constraints would make finite-size
+scaling more reliable near quantum criticality, where competing states can be very
+close in energy [187, 188]. It would also sharpen calculations of quantum spin-liquid
+candidates and topologically ordered or anyonic phases, where the relevant sector is
+selected by symmetry, gauge, or fusion constraints as much as by energy [25, 63, 186,
+195]. For lattice gauge theories, the same progress would let NQS work directly in
+the physical gauge-invariant sector for condensed-matter gauge descriptions and for
+Hamiltonian gauge dynamics in high-energy physics, including finite-density regimes
+where conventional Monte Carlo faces a sign problem [25, 196, 197].
+5.3. (C) Accessing dynamical response and non-equilibrium evolution
+Investigating quantum many-body systems in non-equilibrium situations is a multi-
+faceted research area addressing questions that range from the foundations of statis-
+tical physics to technological applications. Theoretical studies are motivated by the
+development of increasingly more sophisticated experimental platforms for quantum
+simulation and quantum computing [198–200] as well as ultrafast techniques to probe
+solid state systems [201, 202]. Such experiments have, for example, revealed the pos-
+sibility of light-induced superconductivity [203] or discrete time crystals [204], and in
+many cases, the experimental observations challenge our theoretical understanding.
+Time evolution of quantum states combines different challenges discussed in the pre-
+vious sections. In generic cases, the wave function rapidly develops non-trivial phase
+structures and the target state is typically surrounded by a continuum of mid-spectrum
+states. Moreover, while the search for stationary low-energy states is often contractive
+and thereby forgiving deviations in individual optimization steps, forward-propagation
+in time requires high accuracy in every time step to avoid the accumulation of errors.
+Simulations of linear response to weak perturbations as probed in various forms of
+spectroscopy, however, allow the exploitation of additional structure present within
+the low energy sector. Promising NQS directions include real-time variational prop-
+agation, variational access to excited states, and direct reconstruction of dynamical
+correlators [90, 161, 205]. Beyond ground-state response functions, scalable multi-state
+optimization, for example through orthogonalization, penalty terms, or enlarged-space
+formulations [40, 206], can turn NQS into a tool for computing experimentally relevant
+response functions in correlated electron materials, even for finite temperatures.
+While various works have exploited the capabilities of NQS for novel insights into
+the non-equilibrium dynamics of quantum many-body systems beyond linear response
+23
+[83, 91, 207–209], severe bottlenecks have been reported in other cases [210, 211]—the
+precise origin of which, however, remains unclear. For further progress, it is therefore
+pivotal to develop a better methodological understanding and to address the identified
+limitations. Sinibaldi et al. recently pointed out that conventional tVMC is formally
+ill-defined [93], triggering various efforts to circumvent the problem by devising alter-
+native ways of solving the time-dependent variational principle [41, 145, 172]. Devel-
+oping a reliable toolbox with well-understood scope will be crucial for broader future
+applications. Besides effective optimization, there is a substantial gap between the
+NQS network sizes used for time evolution (between103 and10 5 parameters) and the
+state of the art for ground-state problems (around106 parameters). As optimization
+cost is the limiting factor for parameter numbers in time evolution, scaling up net-
+work sizes is among the outstanding challenges—recall that enabling larger parameter
+counts by more efficient optimization was a key breakthrough for ground-state search
+[57]. The common approach to assess accuracy of time-dependent simulations is test-
+ing agreement of observable quantities under varying network sizes and architectures
+and analyzing estimated deviations from the exact solutions (if available) in each time
+step. These are, however, often difficult to interpret. It would be desirable to develop
+an expressive figure of merit comparable across NQS architectures and model systems
+similar to the V-score for ground-state search [167].
+Recent works have started exploring alternatives to the plain forward propagation
+of NQS in time. The t-NQS [94] and neural Galerkin [95] methods incorporate time
+as an explicit parameter of the wave function ansatz to solve Schrödinger’s equation
+(or a Lindblad equation [107]) in the spirit of physics-informed neural networks [212].
+Besides possible routes to circumvent bottlenecks of conventional forward propagation,
+these methods may serve as a starting point for even more ambitious NQS modeling,
+such as foundation models that simultaneously solve the dynamics across a range of
+varying physical parameters [213].
+Despite substantial room for methodological advances, NQS approaches are begin-
+ning to reveal new insights into the dynamical properties of quantum many-body sys-
+tems. Particularly promising directions connect to the strengths of NQS in targeting
+arbitrary lattice geometries and strong correlations—recall that dynamical situations
+are generally plagued by the MC sign problem. The ability to obtain spectral functions
+in two- or three-dimensional systems could open new perspectives on the character-
+istics of unconventional equilibrium states of matter such as quantum spin liquids
+[214], unconventional superconductors [215] and quantum critical points [188]. Once
+pushed out of equilibrium, quantum many-body systems exhibit a rich phenomenol-
+ogy on transient timescales. Light-induced order has been observed in various forms,
+but investigating the underlying microscopic mechanisms and developing a notion of
+transient non-equilibrium phases of matter remains an active area of research [202].
+The ability to realize artificial quantum many-body systems in two or three dimensions
+poses numerous physical questions that advanced NQS techniques may help to shed
+light on, e.g., concerning phase ordering dynamics [216], complex relaxation dynamics
+of topological defects [217], or time evolution subject to strong dynamical constraints
+[218, 219]—including lattice gauge theories [220, 221]. The ongoing developments in
+quantum computing and quantum simulation demand numerical reference simulations.
+While recent attempts have remained limited [222–224], NQS provide a possible route
+to further raise the bar of classical simulation capabilities. Besides benchmarking, NQS
+may serve as a tool to develop strategies for many-body quantum control and the sta-
+bilization of non-equilibrium states of matter in quantum simulators.
+24
+6. Conclusion
+The state-of-the-art applications discussed in this perspective show that NQS have de-
+veloped from a proof-of-principle variational ansatz into a competitive tool for selected
+strongly correlated lattice problems. Their successes in frustrated magnets, doped Hub-
+bard models, and non-equilibrium dynamics point to two useful organizing principles.
+First,NQShaveversatile applicabilityacrosslatticegeometries,entanglementstruc-
+tures, and Hamiltonians for which conventional QMC suffers from a sign problem. Sec-
+ond, they offeruniversal approximation capabilities, so that the approximation
+error can in principle be reduced arbitrarily by enlarging and refining the variational
+family. In combination with the varying bias of different architectures, this property
+allows for the certification of obtained results via self-consistent convergence checks.
+The same examples also make clear why NQS are not yet a black-box solver. The
+main roadblocks are learning non-trivial sign and phase structures, enforcing sym-
+metries and physical constraints without sacrificing expressivity, and obtaining stable
+real-time evolution and dynamical response. These are serious algorithmic challenges,
+but—to the best of today’s knowledge—they differ in character from the conventional
+QMC sign problem or the entanglement bottleneck of tensor networks. In QMC, the
+sign problem can make statistical errors grow exponentially for a fixed formulation, and
+in tensor networks, high-dimensional or highly entangled states can exceed the practi-
+cal capacity of the representation. For NQS, the corresponding obstacles are more often
+questions of architecture, optimization, sampling, and diagnostics. They can still be
+prohibitive in practice, but current results suggest that they are not universal no-goes
+in the same sense.
+This distinction is the main reason to continue working on the roadblocks summa-
+rized in Fig. 9. Progress would let NQS shed light on long-standing problems such as
+spin-liquid diagnostics in frustrated magnets, competing orders in multi-orbital and
+Moiré correlated materials, heavy-fermion quantum criticality, lattice gauge dynamics,
+and light-induced or transient phases of matter. It would also make NQS valuable as
+classical verification tools for programmable quantum simulators and quantum com-
+putingplatforms[198–200],andasaroutetotheoreticalpredictionsforultrafastprobes
+of quantum materials [201, 202].
+Acknowledgments—The authors acknowledge valuable input and contributions by
+Filippo Vicentini during early stages of writing. This work was supported by the
+Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Ger-
+many’s Excellence Strategy – Cluster of Excellence Matter and Light for Quantum
+Computing (ML4Q) EXC2004/2 – 390534769. JBR and MS were supported via the
+Helmholtz Initiative and Networking Fund, grant no. VH-NG-1711.
+25
+References
+[1] A.Sommerfeld.“ZurQuantentheoriederSpektrallinien”.In:Annalen der Physik
+356.17 (Jan. 1916), pp. 1–94.issn: 0003-3804, 1521-3889.doi:10.1002/andp.
+19163561702. (Visited on 12/11/2025).
+[2] P. W. Anderson. “More Is Different”. In:Science177.4047 (1972), pp. 393–396.
+doi:10.1126/science.177.4047.393. eprint:https://www.science.org/
+doi/pdf/10.1126/science.177.4047.393.url:https://www.science.org/
+doi/abs/10.1126/science.177.4047.393.
+[3] Walter Metzner et al. “Functional Renormalization Group Approach to Cor-
+related Fermion Systems”. In:Reviews of Modern Physics84.1 (Mar. 2012),
+pp. 299–352.issn: 0034-6861, 1539-0756.doi:10.1103/RevModPhys.84.299.
+(Visited on 11/03/2025).
+[4] M. Born and R. Oppenheimer. “Zur Quantentheorie der Molekeln”. In:Annalen
+der Physik389.20 (Jan. 1927), pp. 457–484.issn: 0003-3804, 1521-3889.doi:
+10.1002/andp.19273892002. (Visited on 12/11/2025).
+[5] Nicola Marzari et al. “Maximally Localized Wannier Functions: Theory and
+Applications”. In:Reviews of Modern Physics84.4 (Oct. 2012), pp. 1419–1475.
+issn: 0034-6861, 1539-0756.doi:10.1103/RevModPhys.84.1419. (Visited on
+12/11/2025).
+[6] Yueqing Chang et al. “Downfolding from Ab Initio to Interacting Model Hamil-
+tonians: Comprehensive Analysis and Benchmarking of the DFT+cRPA Ap-
+proach”. In:npj Computational Materials10.1 (June 2024), p. 129.issn: 2057-
+3960.doi:10.1038/s41524-024-01314-6. (Visited on 12/11/2025).
+[7] F. Aryasetiawan et al. “Frequency-Dependent Local Interactions and Low-
+Energy Effective Models from Electronic Structure Calculations”. In:Physi-
+cal Review B70.19 (Nov. 2004), p. 195104.issn: 1098-0121, 1550-235X.doi:
+10.1103/PhysRevB.70.195104. (Visited on 12/11/2025).
+[8] Andreas M. Läuchli, Julien Sudan, and Erik S. Sørensen. “Ground-State En-
+ergy and Spin Gap of Spin- 1 2 Kagomé-Heisenberg Antiferromagnetic Clusters:
+Large-scale Exact Diagonalization Results”. In:Physical Review B83.21 (June
+2011), p. 212401.issn: 1098-0121, 1550-235X.doi:10 . 1103 / PhysRevB . 83 .
+212401. (Visited on 12/11/2025).
+[9] Alexander Weiße and Holger Fehske. “Exact Diagonalization Techniques”. In:
+739 (2008). Ed. by H. Fehske, R. Schneider, and A. Weiße, pp. 529–544.doi:
+10.1007/978-3-540-74686-7_18. (Visited on 12/11/2025).
+[10] Pratik Nandy et al. “Quantum Dynamics in Krylov Space: Methods and Appli-
+cations”. In:Physics Reports1125–1128 (June 2025), pp. 1–82.issn: 03701573.
+doi:10.1016/j.physrep.2025.05.001. (Visited on 12/11/2025).
+[11] Andrew J. A. James et al. “Non-Perturbative Methodologies for Low-
+Dimensional Strongly-Correlated Systems: From Non-Abelian Bosonization to
+Truncated Spectrum Methods”. In:Reports on Progress in Physics81.4 (2018),
+p. 046002.doi:10.1088/1361- 6633/aa91ea.url:https://doi.org/10.
+1088/1361-6633/aa91ea.
+[12] H. B. Thacker. “Exact Integrability in Quantum Field Theory and Statistical
+Systems”. In:Reviews of Modern Physics53.2 (1981), pp. 253–285.doi:10.
+1103 / RevModPhys . 53 . 253.url:https : / / link . aps . org / doi / 10 . 1103 /
+RevModPhys.53.253.
+[13] Attila Szabo and Neil S Ostlund.Modern quantum chemistry: introduction to
+advanced electronic structure theory. Courier Corporation, 2012.
+26
+[14] Hendrik J. Monkhorst. “Calculation of properties with the coupled-cluster
+method”. In:International Journal of Quantum Chemistry12.S11 (1977),
+pp. 421–432.doi:https://doi.org/10.1002/qua.560120850. eprint:https:
+/ / onlinelibrary . wiley . com / doi / pdf / 10 . 1002 / qua . 560120850.url:
+https://onlinelibrary.wiley.com/doi/abs/10.1002/qua.560120850.
+[15] Ulrich Schollwöck. “The density-matrix renormalization group in the age of
+matrix product states”. In:Annals of Physics326.1 (Jan. 2011), pp. 96–192.
+issn: 0003-4916.doi:10.1016/j.aop.2010.09.012.url:http://dx.doi.
+org/10.1016/j.aop.2010.09.012.
+[16] Román Orús. “Tensor networks for complex quantum systems”. In:Nature Re-
+views Physics1.9 (Sept. 2019), pp. 538–550.issn: 2522-5820.doi:10.1038/
+s42254-019-0086-7.url:https://doi.org/10.1038/s42254-019-0086-7.
+[17] Paul M. Schindler et al. “Variational Ansatz for the Ground State of the Quan-
+tum Sherrington-Kirkpatrick Model”. In:Physical Review Letters129.22 (2022),
+p. 220401.doi:10.1103/PhysRevLett.129.220401.url:https://link.aps.
+org/doi/10.1103/PhysRevLett.129.220401.
+[18] F. F. Assaad and H. G. Evertz. “World-Line and Determinantal Quantum
+Monte Carlo Methods for Spins, Phonons and Electrons”. In:Computational
+Many-Particle Physics. Vol. 739. Lecture Notes in Physics. Berlin, Heidelberg:
+Springer, 2008, pp. 277–356.doi:10 . 1007 / 978 - 3 - 540 - 74686 - 7 _ 10.url:
+https://doi.org/10.1007/978-3-540-74686-7_10.
+[19] Federico Becca and Sandro Sorella.Quantum Monte Carlo Approaches for Cor-
+related Systems. 1st ed. Cambridge: Cambridge University Press, Nov. 2017.
+isbn: 978-1-107-12993-1 978-1-316-41704-1.doi:10 . 1017 / 9781316417041.
+(Visited on 04/18/2024).
+[20] Matthias Troyer and Uwe-Jens Wiese. “Computational Complexity and Funda-
+mental Limitations to Fermionic Quantum Monte Carlo Simulations”. In:Phys-
+ical Review Letters94.17 (May 2005), p. 170201.issn: 0031-9007, 1079-7114.
+doi:10.1103/PhysRevLett.94.170201. (Visited on 11/03/2025).
+[21] Antoine Georges et al. “Dynamical mean-field theory of strongly correlated
+fermion systems and the limit of infinite dimensions”. In:Rev. Mod. Phys.68
+(1 Jan. 1996), pp. 13–125.doi:10 . 1103 / RevModPhys . 68 . 13.url:https :
+//link.aps.org/doi/10.1103/RevModPhys.68.13.
+[22] Thomas Maier et al. “Quantum cluster theories”. In:Rev. Mod. Phys.77 (3
+Oct. 2005), pp. 1027–1080.doi:10.1103/RevModPhys.77.1027.url:https:
+//link.aps.org/doi/10.1103/RevModPhys.77.1027.
+[23] A. Toschi, A. A. Katanin, and K. Held. “Dynamical vertex approximation: A
+step beyond dynamical mean-field theory”. In:Phys. Rev. B75 (4 Jan. 2007),
+p. 045118.doi:10.1103/PhysRevB.75.045118.url:https://link.aps.org/
+doi/10.1103/PhysRevB.75.045118.
+[24] G. Rohringer et al. “Diagrammatic routes to nonlocal correlations beyond dy-
+namical mean field theory”. In:Rev. Mod. Phys.90 (2 May 2018), p. 025003.
+doi:10.1103/RevModPhys.90.025003.url:https://link.aps.org/doi/10.
+1103/RevModPhys.90.025003.
+[25] Leon Balents. “Spin Liquids in Frustrated Magnets”. In:Nature464.7286 (Mar.
+2010), pp. 199–208.issn: 0028-0836, 1476-4687.doi:10.1038/nature08917.
+(Visited on 10/12/2020).
+[26] J. P. F. LeBlanc et al. “Solutions of the Two-Dimensional Hubbard Model:
+Benchmarks and Results from a Wide Range of Numerical Algorithms”. In:
+27
+Phys. Rev. X5 (4 Dec. 2015), p. 041041.doi:10.1103/PhysRevX.5.041041.
+url:https://link.aps.org/doi/10.1103/PhysRevX.5.041041.
+[27] Markus Schmitt and Markus Heyl. “Quantum Many-Body Dynamics in Two
+Dimensions with Artificial Neural Networks”. In:Physical Review Letters
+125.10 (Sept. 2020), p. 100503.issn: 0031-9007, 1079-7114.doi:10 . 1103 /
+PhysRevLett.125.100503. (Visited on 11/14/2025).
+[28] Giuseppe Carleo and Matthias Troyer. “Solving the Quantum Many-Body Prob-
+lem with Artificial Neural Networks”. In:Science355.6325 (Feb. 2017), pp. 602–
+606.issn: 0036-8075, 1095-9203.doi:10.1126/science.aag2302. (Visited on
+11/03/2025).
+[29] Maarten Van den Nest. “Simulating quantum computers with probabilistic
+methods”. In:Quantum Inf. Comput.11 (2009), pp. 784–812.url:https :
+//api.semanticscholar.org/CorpusID:16943113.
+[30] Tom Westerhout, Mikhail I. Katsnelson, and Andrey A. Bagrov. “Many-Body
+Quantum Sign Structures as Non-Glassy Ising Models”. In:Communications
+Physics6.1 (Sept. 2023), p. 275.issn: 2399-3650.doi:10.1038/s42005-023-
+01388-6. (Visited on 02/10/2026).
+[31] Ilya Schurov et al.Learning Complexity of Many-Body Quantum Sign Structures
+through the Lens of Boolean Fourier Analysis.Aug.2025.doi:10.48550/arXiv.
+2508.09870. arXiv:2508.09870 [cond-mat]. (Visited on 10/28/2025).
+[32] Dong-Ling Deng, Xiaopeng Li, and S. Das Sarma. “Quantum Entanglement in
+Neural Network States”. In:Physical Review X7.2 (May 2017), p. 021021.issn:
+2160-3308.doi:10.1103/PhysRevX.7.021021. (Visited on 12/10/2025).
+[33] Yoav Levine et al. “Quantum Entanglement in Deep Learning Architectures”.
+In:Physical Review Letters122.6 (Feb. 2019), p. 065301.issn: 0031-9007, 1079-
+7114.doi:10.1103/PhysRevLett.122.065301. (Visited on 11/13/2025).
+[34] Or Sharir, Amnon Shashua, and Giuseppe Carleo. “Neural tensor contractions
+and the expressive power of deep neural quantum states”. In:Physical Review
+B106.20 (2022), p. 205136.
+[35] Nisarga Paul. “Bound on Entanglement in Neural Quantum States”. In:Physical
+Review Letters136.12 (Mar. 2026), p. 120403.doi:10.1103/rpj5-cns6.url:
+https://doi.org/10.1103/rpj5-cns6.
+[36] G. Cybenko. “Approximation by superpositions of a sigmoidal function”. In:
+Math. Control. Signals, Syst.2 (4 1989), pp. 303–314.doi:10 . 1007 /
+BF02551274.url:https://doi.org/10.1007/BF02551274.
+[37] Kurt Hornik. “Approximation capabilities of multilayer feedforward networks”.
+In:Neural Netw4.2 (1991), pp. 251–257.issn: 0893-6080.doi:https://doi.
+org/10.1016/0893- 6080(91)90009- T.url:https://www.sciencedirect.
+com/science/article/pii/089360809190009T.
+[38] Matija Medvidović and Javier Robledo Moreno. “Neural-Network Quantum
+States for Many-Body Physics”. In:The European Physical Journal Plus139.7
+(July 2024), p. 631.issn: 2190-5444.doi:10.1140/epjp/s13360-024-05311-y.
+arXiv:2402.11014 [cond-mat]. (Visited on 11/03/2025).
+[39] Hannah Lange et al. “From Architectures to Applications: A Review of
+Neural Quantum States”. In:Quantum Science and Technology9.4 (Sept.
+2024), p. 040501.doi:10 . 1088 / 2058 - 9565 / ad7168. arXiv:2402 . 09402
+[cond-mat.dis-nn].url:https://doi.org/10.1088/2058-9565/ad7168.
+[40] David Pfau et al. “Accurate computation of quantum excited states with neural
+networks”. In:Science385.6711 (Aug. 2024).issn: 1095-9203.doi:10.1126/
+science.adn0137.url:http://dx.doi.org/10.1126/science.adn0137.
+28
+[41] Jannes Nys et al. “Ab-initio variational wave functions for the time-dependent
+many-electron Schrödinger equation”. In:Nature communications15.1 (2024),
+p. 9404.
+[42] Ian Goodfellow, Yoshua Bengio, and Aaron Courville.Deep Learning. Cam-
+bridge, MA: MIT Press, 2016.url:https : / / www . deeplearningbook . org/
+(visited on 05/14/2024).
+[43] J.RichterandJ.Schulenburg.“TheSpin-1/2J1–J2HeisenbergAntiferromagnet
+on the Square Lattice: Exact Diagonalization for N=40 Spins”. In:The European
+Physical Journal B73.1 (Jan. 2010), pp. 117–124.issn: 1434-6028, 1434-6036.
+doi:10.1140/epjb/e2009-00400-4. (Visited on 09/29/2025).
+[44] Hong-Chen Jiang, Hong Yao, and Leon Balents. “Spin Liquid Ground State of
+the Spin- 1 2 Square J 1 - J 2 Heisenberg Model”. In:Physical Review B86.2
+(July 2012), p. 024424.issn: 1098-0121, 1550-235X.doi:10.1103/PhysRevB.
+86.024424. (Visited on 09/29/2025).
+[45] Tao Li et al. “Gapped Spin Liquid Phase in theJ1-J2 Heisenberg Model by a
+Bosonic Resonating Valence-Bond Ansatz”. In:Physical Review B86.7 (Aug.
+2012), p. 075111.doi:10 . 1103 / PhysRevB . 86 . 075111. arXiv:1205 . 3838
+[cond-mat.str-el].url:https://arxiv.org/abs/1205.3838.
+[46] Ling Wang et al. “Constructing Gapless Spin Liquid State for the Spin-1/2J1-J2
+Heisenberg Model on a Square Lattice”. In:Physical Review Letters111.3 (July
+2013), p. 037202.doi:10.1103/PhysRevLett.111.037202. arXiv:1301.4492
+[cond-mat.str-el].url:https://arxiv.org/abs/1301.4492.
+[47] Wen-Jun Hu et al. “Direct Evidence for a Gapless Z 2 Spin Liquid by Frustrating
+Néel Antiferromagnetism”. In:Physical Review B88.6 (Aug. 2013), p. 060402.
+issn: 1098-0121, 1550-235X.doi:10.1103/PhysRevB.88.060402. (Visited on
+09/29/2025).
+[48] Shou-Shu Gong et al. “Plaquette Ordered Phase and Quantum Phase Diagram
+in the Spin- 1 2 J 1 - J 2 Square Heisenberg Model”. In:Physical Review Let-
+ters113.2 (July 2014), p. 027201.issn: 0031-9007, 1079-7114.doi:10.1103/
+PhysRevLett.113.027201. (Visited on 09/29/2025).
+[49] Satoshi Morita, Ryui Kaneko, and Masatoshi Imada. “Quantum Spin Liquid in
+Spin 1/2J 1 –J 2 Heisenberg Model on Square Lattice: Many-Variable Varia-
+tional Monte Carlo Study Combined with Quantum-Number Projections”. In:
+Journal of the Physical Society of Japan84.2 (Feb. 2015), p. 024720.issn: 0031-
+9015, 1347-4073.doi:10.7566/JPSJ.84.024720. (Visited on 09/29/2025).
+[50] Ling Wang et al. “Tensor-Product State Approach to Spin-1/2 SquareJ 1-J2
+Antiferromagnetic Heisenberg Model: Evidence for Deconfined Quantum Crit-
+icality”. In:Physical Review B94.7 (Aug. 2016), p. 075143.doi:10 . 1103 /
+PhysRevB . 94 . 075143. arXiv:1112 . 3331 [cond-mat.str-el].url:https :
+//arxiv.org/abs/1112.3331.
+[51] R. Haghshenas and D. N. Sheng. “U ( 1 ) -Symmetric Infinite Projected
+Entangled-Pair States Study of the Spin-1/2 Square J 1 - J 2 Heisenberg Model”.
+In:Physical Review B97.17 (May 2018), p. 174408.issn: 2469-9950, 2469-9969.
+doi:10.1103/PhysRevB.97.174408. (Visited on 09/29/2025).
+[52] Wen-Yuan Liu et al. “Gapless Spin Liquid Ground State of the Spin- 1 2 J 1 - J 2
+Heisenberg Model on Square Lattices”. In:Physical Review B98.24 (Dec. 2018),
+p. 241109.issn: 2469-9950, 2469-9969.doi:10.1103/PhysRevB.98.241109.
+(Visited on 09/29/2025).
+[53] Ling Wang and Anders W. Sandvik. “Critical Level Crossings and Gapless Spin
+Liquid in the Square-Lattice Spin- 1 / 2 J 1 - J 2 Heisenberg Antiferromagnet”.
+29
+In:Physical Review Letters121.10 (Sept. 2018), p. 107202.issn: 0031-9007,
+1079-7114.doi:10.1103/PhysRevLett.121.107202. (Visited on 09/29/2025).
+[54] Francesco Ferrari and Federico Becca. “Gapless Spin Liquid and Valence-Bond
+Solid in the J 1 - J 2 Heisenberg Model on the Square Lattice: Insights from Sin-
+gletandTripletExcitations”.In:Physical Review B102.1(July2020),p.014417.
+issn: 2469-9950, 2469-9969.doi:10.1103/PhysRevB.102.014417. (Visited on
+09/29/2025).
+[55] YusukeNomuraandMasatoshiImada.“Dirac-TypeNodalSpinLiquidRevealed
+by Refined Quantum Many-Body Solver Using Neural-Network Wave Function,
+Correlation Ratio, and Level Spectroscopy”. In:Physical Review X11.3 (Aug.
+2021), p. 031034.issn: 2160-3308.doi:10.1103/PhysRevX.11.031034. (Visited
+on 04/04/2024).
+[56] ChristopherRoth,AttilaSzabó,andAllanH.MacDonald.“High-AccuracyVari-
+ational Monte Carlo for Frustrated Magnets with Deep Neural Networks”. In:
+Physical Review B108.5 (Aug. 2023), p. 054410.issn: 2469-9950, 2469-9969.
+doi:10.1103/PhysRevB.108.054410. (Visited on 06/13/2024).
+[57] Ao Chen and Markus Heyl. “Empowering deep neural quantum states through
+efficient optimization”. In:Nature Physics20.9 (Sept. 1, 2024), pp. 1476–1481.
+issn: 1745-2481.doi:10.1038/s41567-024-02566-1.url:https://doi.org/
+10.1038/s41567-024-02566-1.
+[58] Riccardo Rende et al. “A simple linear algebra identity to optimize large-scale
+neural network quantum states”. In:Communications Physics7.1 (Aug. 2024).
+issn: 2399-3650.doi:10.1038/s42005-024-01732-4.url:http://dx.doi.
+org/10.1038/s42005-024-01732-4.
+[59] Luciano Loris Viteritti et al.Approaching the Thermodynamic Limit with
+Neural-Network Quantum States.Feb.2026.doi:10.48550/arXiv.2602.02665.
+arXiv:2602.02665 [cond-mat.str-el].url:https://arxiv.org/abs/2602.
+02665.
+[60] C. Lhuillier and G. Misguich. “Introduction to Quantum Spin Liquids”. In:In-
+troduction to Frustrated Magnetism. Ed. by Claudine Lacroix, Philippe Mendels,
+and Frédéric Mila. Vol. 164. Springer Series in Solid-State Sciences. Heidelberg:
+Springer Berlin Heidelberg, 2011, pp. 23–44.isbn: 978-3-642-10588-3 978-3-642-
+10589-0.doi:10.1007/978-3-642-10589-0. (Visited on 06/18/2020).
+[61] Yi Zhou, Kazushi Kanoda, and Tai-Kai Ng. “Quantum Spin Liquid States”.
+In:Reviews of Modern Physics89.2 (Apr. 2017), p. 025003.issn: 0034-6861,
+1539-0756.doi:10.1103/RevModPhys.89.025003. (Visited on 03/01/2022).
+[62] Lucile Savary and Leon Balents. “Quantum Spin Liquids”. In:Reports on
+Progress in Physics80.1 (Jan. 2017), p. 016502.issn: 0034-4885, 1361-6633.
+doi:10 . 1088 / 0034 - 4885 / 80 / 1 / 016502. arXiv:1601 . 03742. (Visited on
+06/08/2020).
+[63] J. Knolle and R. Moessner. “A Field Guide to Spin Liquids”. In:Annual Review
+of Condensed Matter Physics10.1 (Mar. 2019), pp. 451–472.issn: 1947-5454,
+1947-5462.doi:10.1146/annurev- conmatphys- 031218- 013401. (Visited on
+06/08/2020).
+[64] C. Broholm et al. “Quantum Spin Liquids”. In:Science367.6475 (Jan. 2020),
+eaay0668.issn: 0036-8075, 1095-9203.doi:10.1126/science.aay0668. (Vis-
+ited on 08/29/2024).
+[65] W. Marshall. “Antiferromagnetism”. In:Proceedings of the Royal Society of Lon-
+don. A. Mathematical and Physical Sciences232 (1955), pp. 48–68.
+30
+[66] Yusuke Nomura et al. “Restricted Boltzmann machine learning for solving
+strongly correlated quantum systems”. In:Phys. Rev. B96 (20 Nov. 2017),
+p. 205152.doi:10.1103/PhysRevB.96.205152.url:https://link.aps.org/
+doi/10.1103/PhysRevB.96.205152.
+[67] Luciano Loris Viteritti et al. “Transformer Wave Function for Two Dimen-
+sional Frustrated Magnets: Emergence of a Spin-Liquid Phase in the Shastry-
+Sutherland Model”. In:Physical Review B111.13 (Apr. 2025), p. 134411.issn:
+2469-9950, 2469-9969.doi:10 . 1103 / PhysRevB . 111 . 134411. (Visited on
+06/12/2025).
+[68] Ao Chen et al.Neural Network-Augmented Pfaffian Wave-functions for
+Scalable Simulations of Interacting Fermions. 2025. arXiv:2507 . 10705
+[cond-mat.str-el].url:https://arxiv.org/abs/2507.10705.
+[69] B. Keimer et al. “From Quantum Matter to High-Temperature Superconduc-
+tivity in Copper Oxides”. In:Nature518.7538 (Feb. 2015), pp. 179–186.issn:
+0028-0836, 1476-4687.doi:10.1038/nature14165. (Visited on 01/29/2026).
+[70] T. A. Maier et al. “Systematic Study ofd-Wave Superconductivity in the 2D
+Repulsive Hubbard Model”. In:Phys. Rev. Lett.95 (23 Nov. 2005), p. 237001.
+doi:10.1103/PhysRevLett.95.237001.url:https://link.aps.org/doi/
+10.1103/PhysRevLett.95.237001.
+[71] D. J. Scalapino. “Numerical Studies of the 2D Hubbard Model”. In:Hand-
+book of High-Temperature Superconductivity: Theory and Experiment. Ed. by
+J. Robert Schrieffer and James S. Brooks. New York, NY: Springer New York,
+2007, pp. 495–526.isbn: 978-0-387-68734-6.doi:10.1007/978-0-387-68734-
+6_13.url:https://doi.org/10.1007/978-0-387-68734-6_13.
+[72] Mingpu Qin et al. “Absence of Superconductivity in the Pure Two-Dimensional
+Hubbard Model”. In:Phys. Rev. X10 (3 July 2020), p. 031016.doi:10.1103/
+PhysRevX.10.031016.url:https://link.aps.org/doi/10.1103/PhysRevX.
+10.031016.
+[73] Andrew S. Darmawan et al. “Stripe and superconducting order competing in
+the Hubbard model on a square lattice studied by a combined variational
+Monte Carlo and tensor network method”. In:Phys. Rev. B98 (20 Nov. 2018),
+p. 205132.doi:10.1103/PhysRevB.98.205132.url:https://link.aps.org/
+doi/10.1103/PhysRevB.98.205132.
+[74] Bo-Xiao Zheng et al. “Stripe order in the underdoped region of the two-
+dimensional Hubbard model”. In:Science358.6367 (2017), pp. 1155–1160.doi:
+10.1126/science.aam7127. eprint:https://www.science.org/doi/pdf/10.
+1126/science.aam7127.url:https://www.science.org/doi/abs/10.1126/
+science.aam7127.
+[75] Kota Ido, Takahiro Ohgoe, and Masatoshi Imada. “Competition among Various
+Charge-Inhomogeneous States and d -Wave Superconducting State in Hubbard
+Models on Square Lattices”. In:Physical Review B97.4 (Jan. 2018), p. 045138.
+issn: 2469-9950, 2469-9969.doi:10.1103/PhysRevB.97.045138. (Visited on
+10/13/2025).
+[76] Luca Fausto Tocchio, Arianna Montorsi, and Federico Becca. “Metallic and
+Insulating Stripes and Their Relation with Superconductivity in the Doped
+Hubbard Model”. In:SciPost Physics7.2 (Aug. 2019), p. 021.issn: 2542-4653.
+doi:10.21468/SciPostPhys.7.2.021. (Visited on 10/13/2025).
+[77] Mingpu Qin et al. “The Hubbard Model: A Computational Perspective”. In:An-
+nual Review of Condensed Matter Physics13.Volume 13, 2022 (2022), pp. 275–
+302.issn: 1947-5462.doi:https://doi.org/10.1146/annurev-conmatphys-
+31
+090921-033948.url:https://www.annualreviews.org/content/journals/
+10.1146/annurev-conmatphys-090921-033948.
+[78] Yuntian Gu et al.Solving the Hubbard model with Neural Quantum States. 2025.
+arXiv:2507.02644 [cond-mat.str-el].url:https://arxiv.org/abs/2507.
+02644.
+[79] Christopher Roth et al.Superconductivity in the Two-Dimensional Hubbard
+Model Revealed by Neural Quantum States. 2025.doi:10.48550/ARXIV.2511.
+07566. (Visited on 12/08/2025).
+[80] Riccardo Rende, Luciano Loris Viteritti, and Antoine Georges.Superconductiv-
+ity in the $t$-$t’$ Hubbard Model from Symmetry-Preserving Neural-Network
+Quantum States. Aug. 12, 2026.doi:10 . 48550 / arXiv . 2608 . 12465. arXiv:
+2608.12465[cond- mat.str- el].url:http://arxiv.org/abs/2608.12465
+(visited on 08/20/2026).
+[81] Hao Xu et al. “Coexistence of Superconductivity with Partially Filled Stripes in
+the Hubbard Model”. In:Science384.6696 (May 2024), eadh7691.issn: 0036-
+8075, 1095-9203.doi:10.1126/science.adh7691. (Visited on 02/26/2026).
+[82] Luciano Loris Viteritti et al.Beyond Variational Bias: Resolving Intertwined
+Orders in the Hubbard Model. 2026. arXiv:2604.21978 [cond-mat.str-el].
+url:https://arxiv.org/abs/2604.21978.
+[83] Markus Schmitt et al. “Quantum Phase Transition Dynamics in the Two-
+Dimensional Transverse-Field Ising Model”. In:Science Advances8.37 (Sept.
+2022), eabl6850.issn: 2375-2548.doi:10.1126/sciadv.abl6850. (Visited on
+11/03/2025).
+[84] Andrea Damascelli, Zahid Hussain, and Zhi-Xun Shen. “Angle-Resolved Pho-
+toemission Studies of the Cuprate Superconductors”. In:Reviews of Modern
+Physics75.2 (Apr. 2003), pp. 473–541.issn: 0034-6861, 1539-0756.doi:10.
+1103/RevModPhys.75.473. (Visited on 02/19/2026).
+[85] Renate Landig et al. “Measuring the Dynamic Structure Factor of a Quantum
+Gas Undergoing a Structural Phase Transition”. In:Nature Communications6.1
+(May 2015), p. 7046.issn: 2041-1723.doi:10.1038/ncomms8046. (Visited on
+04/07/2026).
+[86] Dmitry A. Abanin et al. “Many-Body Localization, Thermalization, and Entan-
+glement”. In:Reviews of Modern Physics91.2 (May 2019), p. 021001.issn: 0034-
+6861, 1539-0756.doi:10.1103/RevModPhys.91.021001. arXiv:1804.11065
+[cond-mat]. (Visited on 11/03/2025).
+[87] Wojciech De Roeck and François Huveneers. “Stability and Instability towards
+Delocalization in Many-Body Localization Systems”. In:Physical Review B
+95.15 (Apr. 2017), p. 155129.issn: 2469-9950, 2469-9969.doi:10 . 1103 /
+PhysRevB.95.155129. (Visited on 04/07/2026).
+[88] Frank Wilczek. “Quantum Time Crystals”. In:Physical Review Letters
+109.16 (Oct. 2012), p. 160401.issn: 0031-9007, 1079-7114.doi:10 . 1103 /
+PhysRevLett.109.160401. (Visited on 04/07/2026).
+[89] J. Zhang et al. “Observation of a Discrete Time Crystal”. In:Nature543.7644
+(Mar. 2017), pp. 217–220.issn: 0028-0836, 1476-4687.doi:10 . 1038 /
+nature21413. (Visited on 04/07/2026).
+[90] Tiago Mendes-Santos, Markus Schmitt, and Markus Heyl. “Highly Resolved
+Spectral Functions of Two-Dimensional Systems with Neural Quantum States”.
+In:Phys. Rev. Lett.131 (4 July 2023), p. 046501.doi:10.1103/PhysRevLett.
+131.046501.url:https://link.aps.org/doi/10.1103/PhysRevLett.131.
+046501.
+32
+[91] Vighnesh Dattatraya Naik, Zheng-Hang Sun, and Markus Heyl. “Real-time Dy-
+namics in 3D for up to 1000 Qubits with Neural Quantum States: Quenches and
+the Quantum Kibble–Zurek Mechanism”. In:arXiv:2604.05032(2026).url:
+https://arxiv.org/abs/2604.05032.
+[92] Matija Medvidović and Dries Sels. “Variational quantum dynamics of two-
+dimensional rotor models”. In:PRX Quantum4.4 (2023), p. 040302.
+[93] AlessandroSinibaldietal.“UnbiasingTime-DependentVariationalMonteCarlo
+by Projected Quantum Evolution”. In:Quantum7 (Oct. 2023), p. 1131.issn:
+2521-327X.doi:10.22331/q-2023-10-10-1131. (Visited on 11/13/2025).
+[94] Anka Van De Walle, Markus Schmitt, and Annabelle Bohrdt. “Many-Body Dy-
+namics with Explicitly Time-Dependent Neural Quantum States”. In:Machine
+Learning: Science and Technology6.4 (Dec. 2025), p. 045011.issn: 2632-2153.
+doi:10.1088/2632-2153/ae0f39. (Visited on 04/01/2026).
+[95] Alessandro Sinibaldi et al. “Time-Dependent Neural Galerkin Method for Quan-
+tum Dynamics”. In:Physical Review Letters136.12 (Mar. 2026), p. 120402.issn:
+0031-9007, 1079-7114.doi:10.1103/kqvx-dl54. (Visited on 04/01/2026).
+[96] Giacomo Torlai and Roger G. Melko. “Latent Space Purification via Neural
+Density Operators”. In:Physical Review Letters120.24 (June 2018), p. 240503.
+doi:10.1103/PhysRevLett.120.240503.
+[97] Michael J Hartmann and Giuseppe Carleo. “Neural-network approach to dissi-
+pativequantummany-bodydynamics”.In:Physical review letters122.25(2019),
+p. 250502.
+[98] Alexandra Nagy and Vincenzo Savona. “Variational Quantum Monte Carlo
+Method with a Neural-Network Ansatz for Open Quantum Systems”. In:Physi-
+cal Review Letters122.25 (June 2019), p. 250501.doi:10.1103/PhysRevLett.
+122.250501.
+[99] Filippo Vicentini et al. “Variational Neural-Network Ansatz for Steady States
+in Open Quantum Systems”. In:Physical Review Letters122.25 (June 2019).
+issn: 1079-7114.doi:10.1103/physrevlett.122.250503.url:http://dx.
+doi.org/10.1103/PhysRevLett.122.250503.
+[100] Nobuyuki Yoshioka and Ryusuke Hamazaki. “Constructing neural stationary
+states for open quantum many-body systems”. In:Physical Review B99.21
+(June 2019).issn: 2469-9969.doi:10.1103/physrevb.99.214306.url:http:
+//dx.doi.org/10.1103/PhysRevB.99.214306.
+[101] Moritz Reh, Markus Schmitt, and Martin Gärttner. “Time-dependent varia-
+tional principle for open quantum systems with artificial neural networks”. In:
+Physical Review Letters127.23 (2021), p. 230501.
+[102] Di Luo et al. “Autoregressive Neural Network for Simulating Open Quantum
+Systems via a Probabilistic Formulation”. In:Phys. Rev. Lett.128 (9 Feb. 2022),
+p. 090501.doi:10.1103/PhysRevLett.128.090501.url:https://link.aps.
+org/doi/10.1103/PhysRevLett.128.090501.
+[103] SimonKotheandPeterKirton.“Liouville-SpaceNeuralNetworkRepresentation
+of Density Matrices”. In:Physical Review A109.6 (June 2024), p. 062215.doi:
+10.1103/PhysRevA.109.062215.
+[104] Johannes Mellak, Enrico Arrigoni, and Wolfgang von der Linden. “Deep Neural
+Networks as Variational Solutions for Correlated Open Quantum Systems”. In:
+Communications Physics7.1 (Aug. 2024), p. 268.doi:10.1038/s42005-024-
+01757-9.
+33
+[105] Lu Wei et al. “Variational Transformer Ansatz for the Density Operator of
+Steady States in Dissipative Quantum Many-Body Systems”. In:Physical Re-
+view B112.6 (Aug. 2025), p. 064303.doi:10.1103/bpf7-d1yp.
+[106] Joshua Lin et al. “Real-time dynamics of the Schwinger model as an open quan-
+tum system with Neural Density Operators”. In:Journal of High Energy Physics
+2024.6 (June 2024).issn: 1029-8479.doi:10 . 1007 / jhep06(2024 ) 211.url:
+http://dx.doi.org/10.1007/JHEP06(2024)211.
+[107] Tatiana Vovk et al. “Neural quantum states for emitter dynamics in waveguide
+QED”. In:Phys. Rev. A113 (5 May 2026), p. 053708.doi:10.1103/qccj-6vyt.
+url:https://link.aps.org/doi/10.1103/qccj-6vyt.
+[108] Gianluca Lagnese et al.Neural Network Modeling of Many-Body Super- and
+Sub-Radiant Dynamics. 2026. arXiv:2605.04640 [quant-ph].
+[109] Moritz Reh, Markus Schmitt, and Martin Gärttner. “Optimizing Design Choices
+for Neural Quantum States”. In:Physical Review B107.19 (May 2023),
+p. 195115.issn: 2469-9950, 2469-9969.doi:10.1103/PhysRevB.107.195115.
+(Visited on 04/19/2024).
+[110] Chi-Fang (Anthony) Chen, Andrew Lucas, and Chao Yin. “Speed limits and
+locality in many-body quantum dynamics”. In:Reports on Progress in Physics
+86.11 (Sept. 2023), p. 116001.doi:10.1088/1361-6633/acfaae.url:https:
+//doi.org/10.1088/1361-6633/acfaae.
+[111] Elliott H. Lieb and Derek W. Robinson. “The finite group velocity of quan-
+tum spin systems”. In:Communications in Mathematical Physics28.3 (1972),
+pp. 251–257.issn: 1432-0916.doi:10.1007/BF01645779.url:https://doi.
+org/10.1007/BF01645779.
+[112] M. B. Hastings.Locality in Quantum Systems. 2010. arXiv:1008 . 5137
+[math-ph].url:https://arxiv.org/abs/1008.5137.
+[113] J. Eisert, M. Cramer, and M. B. Plenio. “Colloquium: Area laws for the en-
+tanglement entropy”. In:Rev. Mod. Phys.82 (1 Feb. 2010), pp. 277–306.doi:
+10.1103/RevModPhys.82.277.url:https://link.aps.org/doi/10.1103/
+RevModPhys.82.277.
+[114] Ian Goodfellow, Yoshua Bengio, and Aaron Courville. “Convolutional Net-
+works”. In:Deep Learning. Cambridge, MA: MIT Press, 2016. Chap. 9.url:
+https://www.deeplearningbook.org/contents/convnets.html(visited on
+05/14/2024).
+[115] Taco Cohen and Max Welling. “Group Equivariant Convolutional Networks”.
+In:Proceedings of the 33rd International Conference on Machine Learning. New
+York, NY, 2016.
+[116] Michael El-Batanouny and Frederick Wooten.Symmetry and Condensed Matter
+Physics: A Computational Approach. Cambridge, UK New York: Cambridge
+University Press, 2008.isbn: 978-0-511-39482-9 978-0-511-39417-1.
+[117] Daisuke Tahara and Masatoshi Imada. “Variational Monte Carlo Method Com-
+bined with Quantum-Number Projection and Multi-Variable Optimization”. In:
+Journal of the Physical Society of Japan77.11 (Nov. 2008), p. 114701.issn:
+0031-9015,1347-4073.doi:10.1143/JPSJ.77.114701.(Visitedon07/16/2024).
+[118] Yusuke Nomura. “Helping Restricted Boltzmann Machines with Quantum-State
+Representation by Restoring Symmetry”. In:Journal of Physics: Condensed
+Matter33.17 (Apr. 2021), p. 174003.issn: 0953-8984, 1361-648X.doi:10 .
+1088/1361-648X/abe268. (Visited on 04/24/2024).
+[119] Tom Vieijra et al. “Restricted Boltzmann Machines for Quantum States with
+Non-Abelian or Anyonic Symmetries”. In:Phys. Rev. Lett.124 (9 Mar. 2020),
+34
+p. 097201.doi:10.1103/PhysRevLett.124.097201.url:https://link.aps.
+org/doi/10.1103/PhysRevLett.124.097201.
+[120] Di Luo et al. “Gauge-Invariant and Anyonic-Symmetric Autoregressive Neural
+Network for Quantum Lattice Models”. In:Physical Review Research5.1 (Mar.
+2023), p. 013216.issn: 2643-1564.doi:10.1103/PhysRevResearch.5.013216.
+(Visited on 05/07/2024).
+[121] Kenny Choo et al. “Symmetries and Many-Body Excitations with Neural-
+Network Quantum States”. In:Physical Review Letters121.16 (Oct. 2018),
+p. 167204.issn: 0031-9007, 1079-7114.doi:10 . 1103 / PhysRevLett . 121 .
+167204. (Visited on 10/28/2025).
+[122] Marin Bukov, Markus Schmitt, and Maxime Dupont. “Learning the Ground
+State of a Non-Stoquastic Quantum Hamiltonian in a Rugged Neural Network
+Landscape”. In:SciPost Physics10.6 (June 2021), p. 147.issn: 2542-4653.doi:
+10.21468/SciPostPhys.10.6.147. (Visited on 10/30/2025).
+[123] LixingZhangandDiLuo.Neural Transformer Backflow for Solving Momentum-
+Resolved Ground States of Strongly Correlated Materials. Sept. 2025.doi:
+10 . 48550 / arXiv . 2509 . 09275. arXiv:2509 . 09275 [cond-mat]. (Visited on
+09/24/2025).
+[124] Tom Westerhout et al. “Generalization properties of neural network approxi-
+mations to frustrated magnet ground states”. In:Nature Communications11.1
+(Mar. 27, 2020), p. 1593.issn: 2041-1723.doi:10.1038/s41467-020-15402-w.
+url:https://doi.org/10.1038/s41467-020-15402-w.
+[125] Attila Szabó and Claudio Castelnovo. “Neural network wave functions and the
+sign problem”. In:Physical Review Research2.3 (2020), p. 033075.
+[126] Ao Chen et al. “Neural network evolution strategy for solving quantum sign
+structures”. In:Phys. Rev. Res.4 (2 May 2022), p. L022026.doi:10.1103/
+PhysRevResearch.4.L022026.url:https://link.aps.org/doi/10.1103/
+PhysRevResearch.4.L022026.
+[127] Di Luo and Bryan K. Clark. “Backflow Transformations via Neural Networks
+for Quantum Many-Body Wave Functions”. In:Phys. Rev. Lett.122 (22 June
+2019), p. 226401.doi:10 . 1103 / PhysRevLett . 122 . 226401.url:https : / /
+link.aps.org/doi/10.1103/PhysRevLett.122.226401.
+[128] James Stokes et al. “Phases of two-dimensional spinless lattice fermions with
+first-quantized deep neural-network quantum states”. In:Phys. Rev. B102 (20
+Nov. 2020), p. 205122.doi:10 . 1103 / PhysRevB . 102 . 205122.url:https :
+//link.aps.org/doi/10.1103/PhysRevB.102.205122.
+[129] Javier Robledo Moreno et al. “Fermionic wave functions from neural-network
+constrained hidden states”. In:Proceedings of the National Academy of Sciences
+119.32 (2022), e2122059119.doi:10.1073/pnas.2122059119. eprint:https:
+//www.pnas.org/doi/pdf/10.1073/pnas.2122059119.url:https://www.
+pnas.org/doi/abs/10.1073/pnas.2122059119.
+[130] Chloé Gauvin-Ndiaye et al. “Mott Transition and Volume Law Entanglement
+with Neural Quantum States”. In:Phys. Rev. Lett.134 (7 Feb. 2025), p. 076502.
+doi:10.1103/PhysRevLett.134.076502.url:https://link.aps.org/doi/
+10.1103/PhysRevLett.134.076502.
+[131] Hannah Lange et al. “Simulating the Two-Dimensionalt−JModel at Finite
+Doping with Neural Quantum States”. In:Phys. Rev. Lett.135 (13 Sept. 2025),
+p. 136504.doi:10.1103/rc31-5hl9.url:https://link.aps.org/doi/10.
+1103/rc31-5hl9.
+35
+[132] Fei-Fei Li et al.CS231n Convolutional Neural Networks for Visual Recogni-
+tion. https://cs231n.github.io/convolutional-networks/#overview. (Visited on
+04/19/2024).
+[133] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E Hinton. “ImageNet Classifica-
+tion with Deep Convolutional Neural Networks”. In:Advances in Neural Infor-
+mation Processing Systems. Vol. 25. Curran Associates, Inc., 2012. (Visited on
+01/10/2025).
+[134] Xiao Liang et al. “Solving Frustrated Quantum Many-Particle Models with
+Convolutional Neural Networks”. In:Physical Review B98.10 (Sept. 2018),
+p. 104426.issn: 2469-9950, 2469-9969.doi:10.1103/PhysRevB.98.104426.
+(Visited on 11/13/2025).
+[135] Kenny Choo, Titus Neupert, and Giuseppe Carleo. “Two-Dimensional Frus-
+trated J 1 - J 2 Model Studied with Neural Network Quantum States”. In:
+Physical Review B100.12 (Sept. 2019), p. 125124.issn: 2469-9950, 2469-9969.
+doi:10.1103/PhysRevB.100.125124. (Visited on 11/13/2025).
+[136] Louis Sharma et al.Comparing Symmetrized Determinant Neural Quantum
+States for the Hubbard Model. Oct. 2025.doi:10.48550/arXiv.2510.11710.
+arXiv:2510.11710 [cond-mat]. (Visited on 11/07/2025).
+[137] Michael M. Bronstein et al.Geometric Deep Learning: Grids, Groups, Graphs,
+Geodesics, and Gauges. May 2021.doi:10.48550/arXiv.2104.13478. arXiv:
+2104.13478 [cs]. (Visited on 03/24/2026).
+[138] Christopher Roth and Allan H. MacDonald.Group Convolutional Neural
+Networks Improve Quantum State Accuracy. May 2021. arXiv:2104 . 05085
+[cond-mat, physics:quant-ph]. (Visited on 04/19/2024).
+[139] LucianoLorisViteritti,RiccardoRende,andFedericoBecca.“TransformerVari-
+ational Wave Functions for Frustrated Quantum Spin Systems”. In:Physical
+Review Letters130.23 (June 2023), p. 236401.issn: 0031-9007, 1079-7114.doi:
+10.1103/PhysRevLett.130.236401. (Visited on 04/19/2024).
+[140] Rajah P. Nutakki, Ahmedeo Shokry, and Filippo Vicentini.Design Princi-
+ples of Deep Translationally-Symmetric Neural Quantum States for Frustrated
+Magnets. May 2025.doi:10.48550/arXiv.2505.03466. arXiv:2505.03466
+[cond-mat]. (Visited on 10/23/2025).
+[141] Kaiming He et al.Deep Residual Learning for Image Recognition. Dec. 2015.
+doi:10 . 48550 / arXiv . 1512 . 03385. arXiv:1512 . 03385 [cs]. (Visited on
+11/14/2025).
+[142] Alexey Dosovitskiy et al.An Image Is Worth 16x16 Words: Transformers for
+Image Recognition at Scale. June 2021. arXiv:2010.11929 [cs]. (Visited on
+05/10/2024).
+[143] Zhuang Liu et al. “A ConvNet for the 2020s”. In:2022 IEEE/CVF Conference
+on Computer Vision and Pattern Recognition (CVPR). New Orleans, LA, USA:
+IEEE, June 2022, pp. 11966–11976.isbn: 978-1-6654-6946-3.doi:10 . 1109 /
+CVPR52688.2022.01167. (Visited on 10/06/2025).
+[144] Imelda Romero, Jannes Nys, and Giuseppe Carleo. “Spectroscopy of two-
+dimensional interacting lattice electrons using symmetry-aware neural backflow
+transformations”. In:Communications Physics8.1 (2025), p. 46.issn: 2399-
+3650.doi:10.1038/s42005-025-01955-z.url:https://doi.org/10.1038/
+s42005-025-01955-z.
+[145] Luca Gravina, Vincenzo Savona, and Filippo Vicentini. “Neural Projected
+Quantum Dynamics: A Systematic Study”. In:Quantum9 (July 2025), p. 1803.
+36
+issn: 2521-327X.doi:10 . 22331 / q - 2025 - 07 - 22 - 1803. arXiv:2410 . 10720
+[quant-ph]. (Visited on 11/14/2025).
+[146] Ao Chen, Vighnesh Dattatraya Naik, and Markus Heyl.Convolutional Trans-
+former Wave Functions. Mar. 2025.doi:10.48550/arXiv.2503.10462. arXiv:
+2503.10462 [cond-mat]. (Visited on 03/17/2025).
+[147] Mohamed Hibat-Allah et al. “Recurrent Neural Network Wave Functions”. In:
+Physical Review Research2.2 (June 2020), p. 023358.issn: 2643-1564.doi:
+10.1103/PhysRevResearch.2.023358. (Visited on 10/29/2025).
+[148] Yuan-HangZhangandMassimilianoDiVentra.“TransformerQuantumState:A
+Multipurpose Model for Quantum Many-Body Problems”. In:Physical Review
+B107.7 (Feb. 2023), p. 075147.issn: 2469-9950, 2469-9969.doi:10 . 1103 /
+PhysRevB.107.075147. (Visited on 10/30/2025).
+[149] Kyle Sprague and Stefanie Czischek. “Variational Monte Carlo with Large
+Patched Transformers”. In:Communications Physics7.1 (Mar. 2024), p. 90.
+issn: 2399-3650.doi:10.1038/s42005-024-01584-y. (Visited on 10/29/2025).
+[150] Mohamed Hibat-Allah, Roger G. Melko, and Juan Carrasquilla. “Investigat-
+ing Topological Order Using Recurrent Neural Networks”. In:Physical Review
+B108.7 (Aug. 2023), p. 075152.issn: 2469-9950, 2469-9969.doi:10 . 1103 /
+PhysRevB.108.075152. (Visited on 10/29/2025).
+[151] M. Schuyler Moss et al.Leveraging Recurrence in Neural Network Wavefunc-
+tions for Large-Scale Simulations of Heisenberg Antiferromagnets on the Square
+Lattice. Oct. 2025.doi:10 . 48550 / arXiv . 2502 . 17144. arXiv:2502 . 17144
+[cond-mat]. (Visited on 10/28/2025).
+[152] Massimo Bortone, Yannic Rath, and George H. Booth. “Impact of Conditional
+Modelling for a Universal Autoregressive Quantum State”. In:Quantum8 (Feb.
+2024), p. 1245.issn: 2521-327X.doi:10.22331/q-2024-02-08-1245. arXiv:
+2306.05917 [quant-ph]. (Visited on 10/30/2025).
+[153] Di Luo et al. “Gauge Equivariant Neural Networks for Quantum Lattice Gauge
+Theories”. In:Physical Review Letters127.27 (Dec. 2021), p. 276402.issn:
+0031-9007, 1079-7114.doi:10 . 1103 / PhysRevLett . 127 . 276402. (Visited on
+08/23/2024).
+[154] Di Luo et al.Gauge Equivariant Neural Networks for 2+1D U(1)
+Gauge Theory Simulations in Hamiltonian Formulation. Nov. 2022. arXiv:
+2211.03198 [cond-mat, physics:hep-lat, physics:quant-ph]. (Visited on
+08/23/2024).
+[155] Matteo Favoni et al. “Lattice Gauge Equivariant Convolutional Neural Net-
+works”. In:Physical Review Letters128.3 (Jan. 2022), p. 032003.issn: 0031-
+9007, 1079-7114.doi:10 . 1103 / PhysRevLett . 128 . 032003. (Visited on
+08/23/2024).
+[156] Dominik S Kufel et al. “Approximately Symmetric Neural Networks for Quan-
+tum Spin Liquids”. In:Physical Review Letters135.5 (2025), p. 056702.
+[157] Diederik P. Kingma and Jimmy Ba.Adam: A Method for Stochastic Optimiza-
+tion. Jan. 2017.doi:10.48550/arXiv.1412.6980. arXiv:1412.6980 [cs].
+(Visited on 01/28/2026).
+[158] Mohamed Hibat-Allah et al. “Recurrent Neural Network Wave Functions for
+Rydberg Atom Arrays on Kagome Lattice”. In:Communications Physics8.1
+(July 2025), p. 308.issn: 2399-3650.doi:10 . 1038 / s42005 - 025 - 02226 - 7.
+(Visited on 11/13/2025).
+[159] Hannah Lange et al. “Neural Network Approach to Quasiparticle Dispersions in
+Doped Antiferromagnets”. In:Communications Physics7.1 (June 2024), p. 187.
+37
+issn: 2399-3650.doi:10 . 1038 / s42005 - 024 - 01678 - 7. arXiv:2310 . 08578
+[cond-mat]. (Visited on 10/30/2025).
+[160] Andrew Jreissaty et al. “Entanglement and Optimization within Autoregres-
+sive Neural Quantum States”. In:Physical Review Research8.1 (Feb. 2026),
+p. 013147.issn: 2643-1564.doi:10.1103/t2cg-kr7y. (Visited on 03/24/2026).
+[161] JonasB.RigoandMarkusSchmitt.Operator Lanczos Approach Enabling Neural
+Quantum States as Real-Frequency Impurity Solvers. Dec. 2025.doi:10.48550/
+arXiv.2512.08624. arXiv:2512.08624 [cond-mat]. (Visited on 02/11/2026).
+[162] Aleksei Malyshev, Markus Schmitt, and A. I. Lvovsky.Neural Quantum States
+and Peaked Molecular Wave Functions: Curse or Blessing?Aug. 2024.doi:
+10 . 48550 / arXiv . 2408 . 07625. arXiv:2408 . 07625 [quant-ph]. (Visited on
+10/30/2025).
+[163] Sandro Sorella. “Green Function Monte Carlo with Stochastic Reconfiguration”.
+In:Physical Review Letters80.20 (May 1998), pp. 4558–4561.issn: 0031-9007,
+1079-7114.doi:10.1103/PhysRevLett.80.4558. (Visited on 04/04/2024).
+[164] S. Amari and S. C. Douglas. “Why Natural Gradient?” In:Proceedings 1998
+IEEE International Conference on Acoustics, Speech and Signal Processing.
+Vol. 2. 1998, pp. 1213–1216.
+[165] Luciano Loris Viteritti et al.Transformer Wave Function for the Shastry-
+Sutherland Model: Emergence of a Spin-Liquid Phase. Feb. 2024. arXiv:2311.
+16889 [cond-mat]. (Visited on 04/19/2024).
+[166] Gil Goldshlager, Nilin Abrahamsen, and Lin Lin. “A Kaczmarz-inspired ap-
+proach to accelerate the optimization of neural network wavefunctions”. In:
+Journal of Computational Physics516 (Nov. 2024), p. 113351.issn: 0021-9991.
+doi:10.1016/j.jcp.2024.113351.url:http://dx.doi.org/10.1016/j.
+jcp.2024.113351.
+[167] Dian Wu et al. “Variational benchmarks for quantum many-body problems”.
+In:Science386.6719 (2024), pp. 296–301.doi:10 . 1126 / science . adg9774.
+eprint:https://www.science.org/doi/pdf/10.1126/science.adg9774.url:
+https://www.science.org/doi/abs/10.1126/science.adg9774.
+[168] HeliaKamaletal.Comment on “Spin-1/2 Kagome Heisenberg Antiferromagnet:
+Machine Learning Discovery of the Spinon Pair-Density-Wave Ground State”.
+May 2026. arXiv:2605.28861 [cond-mat.str-el].url:https://arxiv.org/
+abs/2605.28861.
+[169] Damian Hofmann et al. “Role of stochastic noise and generalization error in the
+time propagation of neural-network quantum states”. en. In:SciPost Physics
+12.5 (May 2022), p. 165.issn: 2542-4653.doi:10.21468/SciPostPhys.12.5.
+165.url:https://scipost.org/10.21468/SciPostPhys.12.5.165(visited
+on 07/22/2024).
+[170] Markus Schmitt and Moritz Reh. “jVMC: Versatile and Performant Varia-
+tional Monte Carlo Leveraging Automated Differentiation and GPU Accel-
+eration”. In:SciPost Physics Codebases(Aug. 2022), p. 2.doi:10 . 21468 /
+SciPostPhysCodeb.2. (Visited on 11/17/2025).
+[171] GianlucaLagneseetal.“Neuralnetworkmodelingofmany-bodysuper-andsub-
+radiant dynamics”. In:arXiv:2605.04640(2026).doi:10.48550/arXiv.2605.
+04640.url:http://arxiv.org/abs/2605.04640(visited on 05/07/2026).
+[172] Wladislaw Krinitsin and Markus Schmitt. “Time-dependent variational Monte
+Carlo without bias”. In:arXiv:2605.03930(2026).url:https://arxiv.org/
+abs/2605.03930.
+38
+[173] Wouter Kool, Herke van Hoof, and Max Welling.Stochastic Beams and Where
+to Find Them: The Gumbel-Top-k Trick for Sampling Sequences Without Re-
+placement. May 2019.doi:10.48550/arXiv.1903.06059. arXiv:1903.06059
+[cs]. (Visited on 01/28/2026).
+[174] Ao Chen and Christopher Roth.Lrux: Fast Low-Rank Updates of Determinants
+and Pfaffians in JAX. Feb. 2026.doi:10.48550/arXiv.2602.05255. arXiv:
+2602.05255 [cond-mat]. (Visited on 04/05/2026).
+[175] Filippo Vicentini et al. “NetKet 3: Machine Learning Toolbox for Many-Body
+Quantum Systems”. In:SciPost Physics Codebases(Aug. 2022), p. 7.doi:10.
+21468/SciPostPhysCodeb.7. (Visited on 11/17/2025).
+[176] Chen Ao, chrisrothUT, and Zhanghao Zhouyin.ChenAo-Phys/quantax.
+https://github.com/ChenAo-Phys/quantax. Apr. 2026.url:https://github.
+com/ChenAo-Phys/quantax.
+[177] James Bradbury et al.JAX: composable transformations of Python+NumPy
+programs. Version 0.3.13. 2018.url:http://github.com/jax-ml/jax.
+[178] Sergey Bravyi et al.The Complexity of Stoquastic Local Hamiltonian Problems.
+Oct. 2007.doi:10 . 48550 / arXiv . quant - ph / 0606140. arXiv:quant - ph /
+0606140. (Visited on 11/03/2025).
+[179] Milad Marvian, Daniel A. Lidar, and Itay Hen. “On the Computational Com-
+plexity of Curing Non-Stoquastic Hamiltonians”. In:Nature Communications
+10 (2019), p. 1571.doi:10.1038/s41467-019-09501-6.url:https://doi.
+org/10.1038/s41467-019-09501-6.
+[180] V. J. Emery. “Theory of High- T c Superconductivity in Oxides”. In:Physical
+Review Letters58.26 (June 1987), pp. 2794–2797.issn: 0031-9007.doi:10 .
+1103/PhysRevLett.58.2794. (Visited on 02/03/2026).
+[181] Danfeng Li et al. “Superconductivity in an Infinite-Layer Nickelate”. In:Nature
+572.7771 (Aug. 2019), pp. 624–627.issn: 0028-0836, 1476-4687.doi:10.1038/
+s41586-019-1496-5. (Visited on 02/03/2026).
+[182] Yusuke Nomura and Ryotaro Arita. “Superconductivity in Infinite-Layer Nicke-
+lates”.In:Reports on Progress in Physics85.5(May2022),p.052501.issn:0034-
+4885, 1361-6633.doi:10.1088/1361-6633/ac5a60. (Visited on 02/03/2026).
+[183] Yusuke Nomura et al. “Strong-Coupling High- T c Superconductivity in
+Doped Correlated Band Insulators”. In:Physical Review B112.2 (July 2025),
+p. L020504.issn: 2469-9950, 2469-9969.doi:10.1103/dygc-94fq. (Visited on
+01/29/2026).
+[184] Shaofeng Wang et al. “Emerging Characteristics and Properties of Moiré Ma-
+terials”. In:Nanomaterials13.21 (Oct. 2023), p. 2881.issn: 2079-4991.doi:
+10.3390/nano13212881. (Visited on 02/03/2026).
+[185] Di Luo, David D. Dai, and Liang Fu.Simulating moiré quantum matter with
+neural network. 2024. arXiv:2406 . 17645 [cond-mat.str-el].url:https :
+//arxiv.org/abs/2406.17645.
+[186] Chetan Nayak et al. “Non-Abelian Anyons and Topological Quantum Com-
+putation”. In:Reviews of Modern Physics80.3 (2008), pp. 1083–1159.doi:
+10 . 1103 / RevModPhys . 80 . 1083.url:https : / / link . aps . org / doi / 10 .
+1103/RevModPhys.80.1083.
+[187] Philipp Gegenwart, Qimiao Si, and Frank Steglich. “Quantum Criticality in
+Heavy-Fermion Metals”. In:Nature Physics4.3 (Mar. 2008), pp. 186–197.issn:
+1745-2473, 1745-2481.doi:10.1038/nphys892. (Visited on 01/29/2026).
+[188] Stefan Kirchner et al. “Colloquium: Heavy-electron Quantum Criticality and
+Single-Particle Spectroscopy”. In:Reviews of Modern Physics92.1 (Mar. 2020),
+39
+p. 011002.issn: 0034-6861, 1539-0756.doi:10.1103/RevModPhys.92.011002.
+(Visited on 01/29/2026).
+[189] Chong Wang et al. “Deconfined Quantum Critical Points: Symmetries and Du-
+alities”. In:Physical Review X7.3 (Sept. 2017), p. 031051.doi:10 . 1103 /
+PhysRevX . 7 . 031051. arXiv:1703 . 02426 [cond-mat.str-el].url:https :
+//link.aps.org/doi/10.1103/PhysRevX.7.031051.
+[190] Hui Shao, Wenan Guo, and Anders W. Sandvik. “Quantum Criticality with Two
+Length Scales”. In:Science352.6282 (Apr. 2016), pp. 213–216.doi:10.1126/
+science.aad5007.url:https://www.science.org/doi/10.1126/science.
+aad5007.
+[191] Riccardo Rende et al.Scaling Laws for Neural-Network Quantum States.
+June 2026.doi:10 . 48550 / arXiv . 2606 . 02794. arXiv:2606 . 02794
+[cond-mat.dis-nn].url:https : / / arxiv . org / abs / 2606 . 02794(visited
+on 06/03/2026).
+[192] Chae-Yeun Park and Michael J. Kastoryano. “Expressive Power of Complex-
+Valued Restricted Boltzmann Machines for Solving Nonstoquastic Hamiltoni-
+ans”. In:Physical Review B106.13 (Oct. 2022), p. 134437.issn: 2469-9950,
+2469-9969.doi:10.1103/PhysRevB.106.134437. (Visited on 03/25/2026).
+[193] Thomas Spriggs et al.Accurate Ground States of SU(2) Lattice Gauge Theory
+in2 + 1Dand3 + 1D. Mar. 2026.doi:10 . 1103 / wsk2 - qcvy.url:https :
+//link.aps.org/doi/10.1103/wsk2-qcvy.
+[194] Tom Vieijra and Jannes Nys. “Many-body quantum states with exact conserva-
+tion of non-Abelian and lattice symmetries through variational Monte Carlo”.
+In:Phys. Rev. B104 (4 July 2021), p. 045123.doi:10.1103/PhysRevB.104.
+045123.url:https://link.aps.org/doi/10.1103/PhysRevB.104.045123.
+[195] Xiao-Gang Wen. “Colloquium: Zoo of Quantum-Topological Phases of Mat-
+ter”. In:Reviews of Modern Physics89.4 (2017), p. 041004.doi:10 . 1103 /
+RevModPhys . 89 . 041004.url:https : / / link . aps . org / doi / 10 . 1103 /
+RevModPhys.89.041004.
+[196] N.Brambillaetal.“QCDandStronglyCoupledGaugeTheories:Challengesand
+Perspectives”. In:The European Physical Journal C74.10 (Oct. 2014), p. 2981.
+issn: 1434-6044, 1434-6052.doi:10.1140/epjc/s10052-014-2981-5. (Visited
+on 12/10/2025).
+[197] KeitaroNagata.“Finite-DensityLatticeQCDandSignProblem:CurrentStatus
+and Open Problems”. In:Progress in Particle and Nuclear Physics127 (Nov.
+2022), p. 103991.issn: 01466410.doi:10.1016/j.ppnp.2022.103991. (Visited
+on 12/10/2025).
+[198] Immanuel Bloch, Jean Dalibard, and Wilhelm Zwerger. “Many-Body Physics
+with Ultracold Gases”. In:Reviews of Modern Physics80.3 (2008), pp. 885–
+964.doi:10.1103/RevModPhys.80.885.url:https://doi.org/10.1103/
+RevModPhys.80.885.
+[199] I. M. Georgescu, S. Ashhab, and Franco Nori. “Quantum Simulation”. In:Re-
+views of Modern Physics86.1 (2014), pp. 153–185.doi:10.1103/RevModPhys.
+86.153.url:https://doi.org/10.1103/RevModPhys.86.153.
+[200] Ehud Altman et al. “Quantum Simulators: Architectures and Opportunities”.
+In:PRX Quantum2.1 (2021), p. 017003.doi:10.1103/PRXQuantum.2.017003.
+url:https://doi.org/10.1103/PRXQuantum.2.017003.
+[201] D. N. Basov, R. D. Averitt, and D. Hsieh. “Towards Properties on Demand
+in Quantum Materials”. In:Nature Materials16 (2017), pp. 1077–1088.doi:
+10.1038/nmat5017.url:https://doi.org/10.1038/nmat5017.
+40
+[202] AlbertodelaTorreetal.“Colloquium:Nonthermalpathwaystoultrafastcontrol
+in quantum materials”. In:Rev. Mod. Phys.93 (4 Oct. 2021), p. 041002.doi:
+10 . 1103 / RevModPhys . 93 . 041002.url:https : / / link . aps . org / doi / 10 .
+1103/RevModPhys.93.041002.
+[203] D. Fausti et al. “Light-Induced Superconductivity in a Stripe-Ordered Cuprate”.
+In:Science331.6014 (Jan. 2011), pp. 189–191.doi:10.1126/science.1197294.
+[204] Soonwon Choi et al. “Observation of discrete time-crystalline order in a disor-
+dered dipolar many-body system”. In:Nature543.7644 (Mar. 2017), pp. 221–
+225.doi:10.1038/nature21426.
+[205] Matija Medvidović et al.Adiabatic transport of neural network quantum states.
+2025. arXiv:2510.15030 [quant-ph].url:https://arxiv.org/abs/2510.
+15030.
+[206] Agnes Valenti et al. “Correlation-enhanced neural networks as interpretable
+variational quantum states”. In:Phys. Rev. Res.4 (1 Jan. 2022), p. L012010.
+doi:10.1103/PhysRevResearch.4.L012010.url:https://link.aps.org/
+doi/10.1103/PhysRevResearch.4.L012010.
+[207] T. Mendes-Santos et al. “Wave-Function Network Description and Kolmogorov
+Complexity of Quantum Many-Body Systems”. In:Phys. Rev. X14 (2 May
+2024), p. 021029.doi:10.1103/PhysRevX.14.021029.url:https://link.
+aps.org/doi/10.1103/PhysRevX.14.021029.
+[208] Tobias Wiener, Laurin Brunner, and Markus Heyl. “Universal Symmetry-
+Breaking Dynamics at Continuous Phase Transitions: Evidence for a New Dy-
+namicalCriticalExponent”.In:arXiv:2605.07753(2026).url:https://arxiv.
+org/abs/2605.07753.
+[209] Vighnesh Dattatraya Naik and Markus Heyl. “Persistent coherent quantum dy-
+namics in 2D long-range magnets via magnon binding”. In:arXiv:2512.09037
+(2026).url:https://arxiv.org/abs/2512.09037.
+[210] Andrew D. King et al. “Beyond-classical computation in quantum simulation”.
+In:Science388.6743 (2025), pp. 199–204.doi:10 . 1126 / science . ado6285.
+eprint:https://www.science.org/doi/pdf/10.1126/science.ado6285.url:
+https://www.science.org/doi/abs/10.1126/science.ado6285.
+[211] Joseph Vovrosh et al. “Simulating dynamics of the two-dimensional transverse-
+field Ising model: a comparative study of large-scale classical numerics”. In:
+arXiv:2511.19340(2025).url:https://arxiv.org/abs/2511.19340.
+[212] M. Raissi, P. Perdikaris, and G.E. Karniadakis. “Physics-informed neural net-
+works: A deep learning framework for solving forward and inverse problems
+involving nonlinear partial differential equations”. In:Journal of Computational
+Physics378 (2019), pp. 686–707.issn: 0021-9991.doi:https://doi.org/10.
+1016/j.jcp.2018.10.045.url:https://www.sciencedirect.com/science/
+article/pii/S0021999118307125.
+[213] Zihao Qi, Christopher Earls, and Yang Peng. “Neural Operator Quantum State:
+A Foundation Model for Quantum Dynamics”. In:arXiv:2603.25066(2026).
+url:https://arxiv.org/abs/2603.25066.
+[214] Arnab Banerjee et al. “Neutron Scattering in the Proximate Quantum Spin
+Liquidα-RuCl 3”. In:Science356.6342 (June 2017), pp. 1055–1059.issn: 0036-
+8075, 1095-9203.doi:10.1126/science.aah6015. (Visited on 12/09/2025).
+[215] G. R. Stewart. “Unconventional Superconductivity”. In:Advances in Physics
+66.2 (Apr. 2017), pp. 75–196.issn: 0001-8732.doi:10.1080/00018732.2017.
+1331615. (Visited on 02/03/2026).
+41
+[216] Tom Manovitz et al. “Quantum coarsening and collective dynamics on a pro-
+grammable simulator”. en. In:Nature638.8049 (Feb. 2025), pp. 86–92.issn:
+1476-4687.doi:10.1038/s41586-024-08353-5.url:https://www.nature.
+com/articles/s41586-024-08353-5(visited on 07/01/2025).
+[217] Wladislaw Krinitsin et al. “Roughening Dynamics of Interfaces in the Two-
+Dimensional Quantum Ising Model”. In:Physical Review Letters134.24 (June
+2025), p. 240402.doi:10.1103/9bsk- x9rw.url:https://link.aps.org/
+doi/10.1103/9bsk-x9rw(visited on 06/25/2025).
+[218] SanjayMoudgalya,B.AndreiBernevig,andNicolasRegnault.“Quantummany-
+body scars and Hilbert space fragmentation: a review of exact results”. In:Re-
+ports on Progress in Physics85.8 (2022), p. 086501.doi:10 . 1088 / 1361 -
+6633/ac73a0.url:https://iopscience.iop.org/article/10.1088/1361-
+6633/ac73a0.
+[219] DanielAdleretal.“ObservationofHilbertspacefragmentationandfractonicex-
+citations in 2D”. In:Nature636.8041 (2024), pp. 80–85.doi:10.1038/s41586-
+024-08188-0.url:https://www.nature.com/articles/s41586-024-08188-
+0.
+[220] Monika Aidelsburger et al. “Cold atoms meet lattice gauge theory”. In:Philo-
+sophical Transactions of the Royal Society A: Mathematical, Physical and Engi-
+neering Sciences380.2216 (2022), p. 20210064.doi:10.1098/rsta.2021.0064.
+url:https://royalsocietypublishing.org/doi/10.1098/rsta.2021.0064.
+[221] Michael Meth et al. “Simulating two-dimensional lattice gauge theories on a
+qudit quantum computer”. In:Nature Physics21.4 (2025), pp. 570–576.doi:
+10.1038/s41567- 025- 02797- w.url:https://www.nature.com/articles/
+s41567-025-02797-w.
+[222] Andrew D. King et al. “Beyond-classical computation in quantum simulation”.
+In:Science388.6743 (2025), pp. 199–204.doi:10 . 1126 / science . ado6285.
+eprint:https://www.science.org/doi/pdf/10.1126/science.ado6285.url:
+https://www.science.org/doi/abs/10.1126/science.ado6285.
+[223] Joseph Vovrosh et al. “Simulating dynamics of the two-dimensional transverse-
+field Ising model: A comparative study of large-scale classical numerics”. In:
+Phys. Rev. Res.8 (2 June 2026), p. 023311.doi:10.1103/x4gs- g63p.url:
+https://link.aps.org/doi/10.1103/x4gs-g63p.
+[224] R. Haghshenas et al. “Digital quantum magnetism on a trapped-ion quantum
+computer”. In:Nature653.8113 (2026), pp. 56–62.doi:10.1038/s41586-026-
+10445-3.url:https://www.nature.com/articles/s41586-026-10445-3.
+42

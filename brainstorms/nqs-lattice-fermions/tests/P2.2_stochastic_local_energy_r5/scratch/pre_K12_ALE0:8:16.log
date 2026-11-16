@@ -1,0 +1,3 @@
+=== H4 distorted chain R=4.4 K=12 dim=4356 E_FCI=-1.985064 HF wt=0.493 <|C|>=530 (3.6s)
+  warm start: 100 L-BFGS its, dE=1.153 mHa (2s); P=4684 <|C|>_pi=530; cal: a=99us b=1.38us/amp ts=105us bg=0.75us/term; real-kernel wall ALE0(Kd=16)/EXACT per sample=0.2344 CI=[0.22827917599426528, 0.2412292949991077]
+  ALE0:8:16 seed=0: steps=658 anchors=83 dE(C_b)[ops]=1.145 [cal]=1.078 dE(C_b/2)[ops]=1.082 last dE=1.126 mHa (44s)

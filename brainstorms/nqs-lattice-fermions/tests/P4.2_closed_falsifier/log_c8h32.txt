@@ -1,0 +1,23 @@
+[     0.5s] target 4x3o 4x3:5 irrep={'Mx': 1, 'My': 1} dim=16632 n_irrep=4152 E0=-7.2330203724 gap/V=1.2985e-02 (sign half only) npar=818
+[     0.8s] LM retrain c8h32: npar=818 start relerr=49.4401%
+[    25.7s]   it 10 relerr=3.5301% accepted lm/sr/none={'lm': 10, 'sr': 0, 'none': 0} (25s)
+[    50.0s]   it 20 relerr=2.6677% accepted lm/sr/none={'lm': 20, 'sr': 0, 'none': 0} (50s)
+[    74.1s]   it 30 relerr=2.5191% accepted lm/sr/none={'lm': 30, 'sr': 0, 'none': 0} (74s)
+[    97.9s]   it 40 relerr=2.3891% accepted lm/sr/none={'lm': 40, 'sr': 0, 'none': 0} (97s)
+[   121.8s]   it 50 relerr=2.2494% accepted lm/sr/none={'lm': 50, 'sr': 0, 'none': 0} (121s)
+[   145.2s]   it 60 relerr=2.0304% accepted lm/sr/none={'lm': 60, 'sr': 0, 'none': 0} (145s)
+[   168.7s]   it 70 relerr=1.8993% accepted lm/sr/none={'lm': 70, 'sr': 0, 'none': 0} (168s)
+[   192.5s]   it 80 relerr=1.7959% accepted lm/sr/none={'lm': 80, 'sr': 0, 'none': 0} (192s)
+[   217.0s]   it 90 relerr=1.7459% accepted lm/sr/none={'lm': 90, 'sr': 0, 'none': 0} (216s)
+[   241.1s]   it 100 relerr=1.7247% accepted lm/sr/none={'lm': 100, 'sr': 0, 'none': 0} (241s)
+[   265.5s]   it 110 relerr=1.7169% accepted lm/sr/none={'lm': 110, 'sr': 0, 'none': 0} (265s)
+[   289.6s]   it 120 relerr=1.7096% accepted lm/sr/none={'lm': 120, 'sr': 0, 'none': 0} (289s)
+[   313.5s]   it 130 relerr=1.7087% accepted lm/sr/none={'lm': 130, 'sr': 0, 'none': 0} (313s)
+[   338.1s]   it 140 relerr=1.7079% accepted lm/sr/none={'lm': 140, 'sr': 0, 'none': 0} (338s)
+[   362.3s]   it 150 relerr=1.6966% accepted lm/sr/none={'lm': 150, 'sr': 0, 'none': 0} (362s)
+[   386.4s]   it 160 relerr=1.6846% accepted lm/sr/none={'lm': 160, 'sr': 0, 'none': 0} (386s)
+[   410.5s]   it 170 relerr=1.6764% accepted lm/sr/none={'lm': 170, 'sr': 0, 'none': 0} (410s)
+[   434.5s]   it 180 relerr=1.6699% accepted lm/sr/none={'lm': 180, 'sr': 0, 'none': 0} (434s)
+[   458.1s]   it 190 relerr=1.6671% accepted lm/sr/none={'lm': 190, 'sr': 0, 'none': 0} (458s)
+[   480.7s] wall limit reached after 199 iterations
+[   480.7s] RESULT c8h32: npar=818 iters=199 relerr=1.6652% (SR-600 base 1.536%) accepted={'lm': 199, 'sr': 0, 'none': 0} wall=480s

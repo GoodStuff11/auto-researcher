@@ -1,0 +1,5 @@
+[11:10:51] RLIMIT_CPU 600 s set before any ED; mode census
+[11:12:02] 7x2: D=252252 sector levels found 62 (N_LOW=60) E0=-9.882136 chi={'My': -1, 'Mx': 1} S0=1 R_PAIR=4.92 (11 pairs) R_SITE=4.99 (12 pairs) (70.6s)
+[11:12:02] census 7x2: {"size": "7x2", "V": 14, "D": 252252, "nup": 5, "n": 0.7142857142857143, "omega1": 0.1510338289432962, "n_found": 62, "n_low": 60, "omega_top": 1.0937006508499483, "nwin": 49, "dim_sector": null, "ov2": 0.9296390301337336, "E0": -9.882136038179533, "chi": "{'My': -1, 'Mx': 1}", "S0": 1.0, "n_pair": 11, "n_site": 12}
+[11:12:02] build cpu 262s
+[11:12:02] total wall 71s, CPU 262s

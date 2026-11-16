@@ -1,0 +1,3 @@
+[hg_S/A] L=12 sweeps= 3467 t_sw=5.777e-03s tau=1.14+-0.11 cost=6.592e-03s acc=0.33 <E>/Ne=-0.559 cpu=20s
+[hg_S/A] L=16 sweeps= 3635 t_sw=2.481e-02s tau=1.14+-0.11 cost=2.825e-02s acc=0.34 <E>/Ne=-0.553 cpu=90s
+CPU 121.33+0.68 s

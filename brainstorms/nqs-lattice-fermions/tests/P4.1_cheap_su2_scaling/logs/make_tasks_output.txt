@@ -1,0 +1,5 @@
+Lx=16: r = 12.55 -> nnbf n_eq = 37645; irrep (Mx,My) = (1,1); seeds [0, 1]
+Lx=12: r = 16.93 -> nnbf n_eq = 50785; irrep (Mx,My) = (1,1); seeds [0]
+Lx=8: r = 13.98 -> nnbf n_eq = 41932; irrep (Mx,My) = (1,1); seeds [0, 1]
+Lx=4: r = 4.03 -> nnbf n_eq = 12079; irrep (Mx,My) = (1,1); seeds [0, 1, 2]
+wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_scaling/tasks.txt: 40 tasks (array 0-39)

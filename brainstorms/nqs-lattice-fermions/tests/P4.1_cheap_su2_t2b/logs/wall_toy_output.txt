@@ -1,0 +1,46 @@
+== identity control: plain t2b.py vs t2b_wall.py, same args (20 steps)
+[13:43:01] S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0: L=8 Ne=6 H=16 P=1175 (che@16 P=1175) threads=4 pf=fast host=kim-compute-03.physics.cornell.edu
+[13:43:02] thermalised: acceptance 0.405
+[13:43:02] it 1 E -4.976438 std 1.422 acc 0.326 |upd| 1.21e-01 t(mcmc/eloc/grad/sr) 0.02/0.03/0.03/0.00s elapsed 0.000 h
+[13:43:02] CHECKPOINT it 5: E -5.428057 +- 0.000000 (3136 exact) (0 s)
+[13:43:02] CHECKPOINT it 10: E -5.476232 +- 0.000000 (3136 exact) (0 s)
+[13:43:03] final E (average of last 5 steps) -5.4915839 +- 0.0000000 (3136 samples, 0 s), <S^2> 2.0e-17
+[13:43:03] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results_preflight_wall/plain_s12/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0.json
+[13:43:06] S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_wall: L=8 Ne=6 H=16 P=1175 (che@16 P=1175) threads=4 pf=fast host=kim-compute-03.physics.cornell.edu
+[13:43:07] thermalised: acceptance 0.405
+[13:43:07] it 1 E -4.976438 std 1.422 acc 0.326 |upd| 1.21e-01 t(mcmc/eloc/grad/sr) 0.02/0.03/0.03/0.00s elapsed 0.000 h
+[13:43:07] CHECKPOINT it 5: E -5.428057 +- 0.000000 (3136 exact) (0 s)
+[13:43:07] CHECKPOINT it 10: E -5.476232 +- 0.000000 (3136 exact) (0 s)
+[13:43:08] final E (average of last 5 steps) -5.4915839 +- 0.0000000 (3136 samples, 0 s), <S^2> 2.0e-17
+[13:43:08] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results_preflight_wall/id_s12/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_wall.json
+[13:43:11] S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0: L=8 Ne=6 H=16 P=1175 (che@16 P=1175) threads=4 pf=fast host=kim-compute-03.physics.cornell.edu
+[13:43:12] thermalised: acceptance 0.405
+[13:43:12] it 1 E -4.976438 std 1.422 acc 0.326 |upd| 1.21e-01 t(mcmc/eloc/grad/sr) 0.02/0.03/0.02/0.00s elapsed 0.000 h
+[13:43:14] CHECKPOINT it 5: E -5.424188 +- 0.019170 (2048 samples) (2 s)
+[13:43:17] CHECKPOINT it 10: E -5.457935 +- 0.017439 (2048 samples) (2 s)
+[13:43:21] final E (average of last 5 steps) -5.4765279 +- 0.0100195 (4096 samples, 3 s)
+[13:43:21] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results_preflight_wall/plain_s24/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0.json
+[13:43:23] S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_wall: L=8 Ne=6 H=16 P=1175 (che@16 P=1175) threads=4 pf=fast host=kim-compute-03.physics.cornell.edu
+[13:43:24] thermalised: acceptance 0.405
+[13:43:24] it 1 E -4.976438 std 1.422 acc 0.326 |upd| 1.21e-01 t(mcmc/eloc/grad/sr) 0.02/0.03/0.02/0.00s elapsed 0.000 h
+[13:43:26] CHECKPOINT it 5: E -5.424188 +- 0.019170 (2048 samples) (2 s)
+[13:43:28] CHECKPOINT it 10: E -5.457935 +- 0.017439 (2048 samples) (2 s)
+[13:43:32] final E (average of last 5 steps) -5.4765279 +- 0.0100195 (4096 samples, 3 s)
+[13:43:32] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results_preflight_wall/id_s24/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_wall.json
+== toy che_wall (40 steps = 20 x toy ratio 2, checkpoints at 25 and 50%)
+[13:43:35] S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_wall: L=8 Ne=6 H=16 P=1175 (che@16 P=1175) threads=4 pf=fast host=kim-compute-03.physics.cornell.edu
+[13:43:35] thermalised: acceptance 0.405
+[13:43:35] it 1 E -4.976438 std 1.422 acc 0.326 |upd| 1.21e-01 t(mcmc/eloc/grad/sr) 0.02/0.03/0.02/0.00s elapsed 0.000 h
+[13:43:36] CHECKPOINT it 10: E -5.476232 +- 0.000000 (3136 exact) (0 s)
+[13:43:37] CHECKPOINT it 20: E -5.497954 +- 0.000000 (3136 exact) (0 s)
+[13:43:38] final E (average of last 10 steps) -5.5096139 +- 0.0000000 (3136 samples, 0 s), <S^2> -1.8e-18
+[13:43:38] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results_preflight_wall/s12/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_wall.json
+[13:43:41] S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_wall: L=8 Ne=6 H=16 P=1175 (che@16 P=1175) threads=4 pf=fast host=kim-compute-03.physics.cornell.edu
+[13:43:41] thermalised: acceptance 0.405
+[13:43:42] it 1 E -4.976438 std 1.422 acc 0.326 |upd| 1.21e-01 t(mcmc/eloc/grad/sr) 0.02/0.03/0.03/0.00s elapsed 0.000 h
+[13:43:44] CHECKPOINT it 10: E -5.457935 +- 0.017439 (2048 samples) (2 s)
+[13:43:47] CHECKPOINT it 20: E -5.481971 +- 0.010218 (2048 samples) (2 s)
+[13:43:52] final E (average of last 10 steps) -5.5157663 +- 0.0062538 (4096 samples, 3 s)
+[13:43:52] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results_preflight_wall/s24/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_wall.json
+== resume control: rerunning a finished wall task is skipped
+[13:43:54] /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results_preflight_wall/s24/S4x2_N6_U8_tp-0.25_pg11_che_H16_seed0_wall.json exists; skipping

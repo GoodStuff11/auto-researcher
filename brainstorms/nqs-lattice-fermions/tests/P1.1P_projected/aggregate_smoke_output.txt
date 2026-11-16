@@ -1,0 +1,15 @@
+Pre-committed rule: robust = guards & fP>=0.5 & ratio>=0.5; symdom = guards & (ratio<=0.3 | fP<=0.3); ratio = med dE_sign(P,W)/med dE_sign(U,W)
+instance 0: INCOMPLETE (seeds with both arms: [], common widths []) -> AMBIGUOUS
+instance 1: INCOMPLETE (seeds with both arms: [], common widths []) -> AMBIGUOUS
+instance 2: INCOMPLETE (seeds with both arms: [], common widths []) -> AMBIGUOUS
+instance 3 {'Lx': 3, 'Ly': 3, 'bcx': 'pbc', 'bcy': 'pbc', 'nup': 3, 'ndn': 3, 'U': 8.0, 'tp': -0.25}  W=8  seeds=[1234, 2345, 3456]
+  guards OK
+       U: dE_tot=0.64697 dE_sign=0.32851 f_E=0.508 f_C=0.801 <S2>=2.583 ov0=0.259 w_sign=2.168e-01  (medians)
+      UP: dE_tot=0.07490 dE_sign=0.00046 f_E=0.006 f_C=0.374 <S2>=5.934 ov0=0.985 w_sign=2.841e-05  (medians)
+       P: dE_tot=0.03806 dE_sign=0.00026 f_E=0.007 f_C=0.210 <S2>=5.977 ov0=0.994 w_sign=1.752e-05  (medians)
+     U_S: dE_tot=0.23486 dE_sign=0.00575 f_E=0.027 f_C=0.136 <S2>=6.000 ov0=0.953 w_sign=9.443e-04  (medians)
+    UP_S: dE_tot=0.02374 dE_sign=0.00000 f_E=0.000 f_C=0.000 <S2>=6.000 ov0=0.997 w_sign=2.138e-29  (medians)
+     P_S: dE_tot=0.00467 dE_sign=-0.00000 f_E=-0.000 f_C=0.000 <S2>=6.000 ov0=1.000 w_sign=6.291e-30  (medians)
+  fP=0.007  ratio P/U=0.001  [diag: U->P/U=0.001  P_S/U=-0.000]  robust=False symdom=True
+GLOBAL VERDICT: AMBIGUOUS
+  sign branch live on instances: none

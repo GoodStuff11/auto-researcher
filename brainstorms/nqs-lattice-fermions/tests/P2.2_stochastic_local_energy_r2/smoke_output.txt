@@ -1,0 +1,75 @@
+args: {'n_atoms': 4, 'ns': [1, 2], 'bond_length': 2.8, 'geometry': 'ring', 'hidden': 8, 'maxiter': 150, 'snapshots': [], 'init_scale': 0.05, 'seed': 1234, 'n_rows': 400, 'exact_rows_max': 15000, 'top_tail': 0.001, 'kappa_scale': [8, 32, 64, 4000], 'bias_tol': 0.00016, 'de_max_mHa': 10.0, 'en_delta': 0.05, 'alphas': [0.5, 0.9], 'delta_p': [0.0, 0.5, 1.0], 'k_grid': [1, 4, 16, 64, 256], 'n_eps': 17, 'kappa_override': None, 'out': '/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.2_stochastic_local_energy_r2/results_smoke.json', 'smoke': True, 'aggregate': None}
+H2 STO-3G R=1.4: E_RHF=-1.116714 (ref -1.116714)  E_FCI=-1.137276 (ref -1.137284)
+H4 ring ns=2 (K=8, dim=784): max |H_SC - H_Epq| = 6.63e-14
+  EN diagonal update err=1.93e-14  frozen-ratio err=2.66e-15  fast-forward err=1.78e-15
+  backflow x1e-2: |FB-exact|=1.50e+00 |LRX-exact|=9.37e-03;  x1e-3: |FB-exact|=1.52e-01 |LRX-exact|=9.42e-05
+  gradient check: max rel err = 2.09e-10   (0.4s)
+chemistry-scale kappa (N=8, M=32, hidden=64, 4000 terms): kH=0.01 kFB=0.00989 kEN=0.00503 kLRX=0.266 kSetup=1.26 kSetupLRX=4.47 t_fwd=10.23 us (0.3s)
+
+=== H4 ring R=2.8 ns=1: K=4 M=8 dim=36 E_RHF=-1.719790 E_FCI=-1.957174 Ecorr=-237.4 mHa gap(S_z=0)=0.0324 HF wt=0.430 frustr=0.103 nnz/row=14 (build 0.0s)
+  it=  150 dE=   0.000 mHa VarEx=2.68e-15 VarRows=2.68e-15 <|C|>=14 rows=36 ELchk=6.1e-09 fwdchk=8.7e-16 (opt 0.0s, total 0.3s)
+     decisive kappa (chemistry scale): kH=0.01 kFB=0.00989 kEN=0.00503 kLRX=0.266 kSetup=1.26 kSetupLRX=4.47 (t_fwd=10.23 us/amp)
+     instance kappa: kH=0.357 kFB=0.318 kEN=0.257 kLRX=20.2 kSetup=2.6 kSetupLRX=3.1 (t_fwd=0.54 us/amp)
+     sign mismatch: FB=0.392 LRX=0.087 EN=0.103  resid frac: FB=1.028 LRX=0.516 EN=0.831
+     EXACT       C/C_exact=         1  
+     SCREEN_H    C/C_exact=         1  eps=1e-08 nD=14.1 bias=0
+     SCREEN_FB   C/C_exact=    0.8103  eps=3.16e-06 nD=9.85 bias=4.19e-12
+     SCREEN_EN   C/C_exact=     7.192  eps=1e-08 delta_P=1 nD=13.9 bias=3.28e-13
+     COMP_FB     C/C_exact=     1.059  eps=1e-08 nD=13.6 bias=-1.21e-09
+     COMP_EN     C/C_exact=     7.192  eps=1e-08 delta_P=1 nD=13.9 bias=2.87e-13
+     SCREEN_LRX  C/C_exact=     1.307  eps=0.001 nD=9.42 bias=2.61e-09
+     COMP_LRX    C/C_exact=       1.6  eps=3.16e-08 nD=13.4 bias=7.55e-09
+     HB          C/C_exact= 2.389e+13  K=256
+     SS          C/C_exact=     0.999  K=1 eps=1e-07 alpha=0 nD=14.1
+     SCVSS       C/C_exact=     1.086  K=1 eps=1e-08 alpha=0.9 nD=13.6
+     POS_FB      C/C_exact=    0.9111  K=1 eps=0.000316 alpha=0.9 nD=9.42
+     POS_HYB     C/C_exact=     1.125  K=4 eps=1e-08 alpha=0.5 delta_P=1 nD=13.9
+     PT2IS       C/C_exact=     1.028  K=1 eps=1e-08 alpha=0.5 delta_P=1 nD=13.9
+     SCV_LRX     C/C_exact=     1.614  K=1 eps=1e-08 alpha=0.9 nD=13.9
+     POS_LRX     C/C_exact=     1.441  K=1 eps=0.001 alpha=0.9 nD=9.42
+     MLMC        C/C_exact=     2.735  K=16 K1=16 eps=1e-08 alpha=0.5 nD=13.6
+     SCV_ADA     C/C_exact=     1.108  K=1 eps=1e-08 alpha=0.9 nD=13.6
+     MLMC_ADA    C/C_exact=     1.895  K=4 K1=4 eps=1e-08 alpha=0.5 nD=13.6
+     ISFB        C/C_exact=    0.8476  K=1 eps=0.000316 alpha=0.9 nD=9.42
+     ORACLE_SIGN C/C_exact=     1.028  K=1 eps=1e-08 alpha=0.5 delta_P=1 nD=13.9
+     ORACLE_IS   C/C_exact= 8.968e+12  K=256
+     -> R2.0 (revived SCV) vs best non-SCV control (SCREEN_FB): M_R2.0 = 1.341
+     -> control best = SCREEN_FB;  M_R2.1 = 1.124;  M_R2.2 = 1.269;  M_R2.3 = 1.779;  M_R2.4 = 3.376;  M_R2.5 = 1.367;  M_(R2.4+R2.5) = 2.339
+     [sensitivity, instance kappa] M_R2.0=1.35 ctrl=SS M_R2.1=1.217 M_R2.2=1.207 M_R2.3=15.31 M_R2.4=8.26 M_R2.5=1.366 M_(R2.4+R2.5)=3.87
+
+=== H4 ring R=2.8 ns=2: K=8 M=16 dim=784 E_RHF=-1.878565 E_FCI=-2.038176 Ecorr=-159.6 mHa gap(S_z=0)=0.0169 HF wt=0.436 frustr=0.129 nnz/row=101 (build 0.2s)
+  it=  150 dE=   0.522 mHa VarEx=7.89e-04 VarRows=7.89e-04 <|C|>=101 rows=784 ELchk=8.0e-13 fwdchk=5.3e-16 (opt 0.2s, total 7.8s)
+     decisive kappa (chemistry scale): kH=0.01 kFB=0.00989 kEN=0.00503 kLRX=0.266 kSetup=1.26 kSetupLRX=4.47 (t_fwd=10.23 us/amp)
+     instance kappa: kH=0.147 kFB=0.179 kEN=0.127 kLRX=3.99 kSetup=2.61 kSetupLRX=3.27 (t_fwd=0.37 us/amp)
+     sign mismatch: FB=0.119 LRX=0.005 EN=0.128  resid frac: FB=0.786 LRX=0.098 EN=0.883
+     EXACT       C/C_exact=         1  
+     SCREEN_H    C/C_exact=    0.5184  eps=0.00316 nD=52 bias=3.56e-05
+     SCREEN_FB   C/C_exact=    0.5458  eps=3.16e-06 nD=52 bias=3.31e-05
+     SCREEN_EN   C/C_exact=    0.5275  eps=1e-05 delta_P=0 nD=51.8 bias=4.27e-05
+     COMP_FB     C/C_exact=    0.5458  eps=3.16e-06 nD=52 bias=3.41e-05
+     COMP_EN     C/C_exact=    0.5011  eps=0.0001 delta_P=0 nD=46.1 bias=0.000111
+     SCREEN_LRX  C/C_exact=    0.7935  eps=3.16e-05 nD=47.3 bias=-1.02e-06
+     COMP_LRX    C/C_exact=    0.7654  eps=0.0001 nD=44.3 bias=9.48e-05
+     HB          C/C_exact=     47.55  K=64
+     SS          C/C_exact=    0.5287  K=1 eps=0.00316 alpha=0 nD=52
+     SCVSS       C/C_exact=    0.4511  K=4 eps=0.001 alpha=0.5 nD=31.3
+     POS_FB      C/C_exact=    0.4404  K=4 eps=0.001 alpha=0.5 nD=31.3
+     POS_HYB     C/C_exact=    0.5517  K=4 eps=0.0001 alpha=0.5 delta_P=0 nD=46.1
+     PT2IS       C/C_exact=    0.5331  K=4 eps=0.0001 alpha=0.5 delta_P=0 nD=46.1
+     SCV_LRX     C/C_exact=    0.5716  K=4 eps=0.00316 alpha=0.5 nD=15.2
+     POS_LRX     C/C_exact=    0.5758  K=4 eps=0.00316 alpha=0.9 nD=15.2
+     MLMC        C/C_exact=    0.4892  K=1 K1=16 eps=0.001 alpha=0.5 nD=31.3
+     SCV_ADA     C/C_exact=    0.4582  K=4 eps=0.001 alpha=0.5 nD=31.3
+     MLMC_ADA    C/C_exact=    0.4917  K=1 K1=16 eps=0.001 alpha=0.5 nD=31.3
+     ISFB        C/C_exact=    0.4531  K=4 eps=0.001 alpha=0.5 nD=31.3
+     ORACLE_SIGN C/C_exact=    0.5297  K=1 eps=0.0001 alpha=0.5 delta_P=0 nD=46.1
+     ORACLE_IS   C/C_exact=     5.185  K=16
+     -> R2.0 (revived SCV) vs best non-SCV control (COMP_EN): M_R2.0 = 0.9003
+     -> control best = SCVSS;  M_R2.1 = 0.9761;  M_R2.2 = 1.182;  M_R2.3 = 1.267;  M_R2.4 = 1.084;  M_R2.5 = 1.016;  M_(R2.4+R2.5) = 1.09
+     [sensitivity, instance kappa] M_R2.0=1.371 ctrl=SCREEN_H M_R2.1=1.361 M_R2.2=1.349 M_R2.3=7.635 M_R2.4=1.521 M_R2.5=1.364 M_(R2.4+R2.5)=1.521
+
+VERDICT: {"ns": [1, 2], "M_orb": [8, 16], "dE_final_mHa": [5.10702591327572e-12, 0.5220426292371627], "R2.0": {"M_by_ns": [1.3408619156067088, 0.900262316318583], "verdict": "AMBIGUOUS"}, "R2.1": {"M_by_ns": [1.1244649101203488, 0.976133411349463], "verdict": "AMBIGUOUS"}, "R2.2": {"M_by_ns": [1.2689751893026802, 1.181732716903912], "verdict": "FAIL"}, "R2.3": {"M_by_ns": [1.7789169954299175, 1.267103704109682], "verdict": "FAIL"}, "R2.4": {"M_by_ns": [3.3757155537249224, 1.0844154843418745], "verdict": "FAIL"}, "R2.5": {"M_by_ns": [1.367116592291858, 1.015724180740668], "verdict": "FAIL"}, "R2.4+R2.5": {"M_by_ns": [2.3385494739423955, 1.0899716658346774], "verdict": "FAIL"}}
+
+real	0m9.320s
+user	0m31.436s
+sys	0m1.168s

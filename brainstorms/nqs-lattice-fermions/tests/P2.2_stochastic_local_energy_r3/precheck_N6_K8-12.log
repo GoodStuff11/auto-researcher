@@ -1,0 +1,45 @@
+
+=== H6 ring R=2.8 6-31G** active K=8 M=16 dim=3136 E_RHF=-3.057914 E_FCI=-3.155309 Ecorr=-97.4 mHa gap=0.1075 HF wt=0.838 frustr=0.144 p-MOs=2 mean p-weight(external MOs)=0.999 window K_W=6 nnz/row=134 (build 4.6s)
+  seed=0 NNBFJ dE=   0.304 mHa Var(EL)=1.10e-03 <|C|>=134 <keys>=126.7 (multi 6.9) ELchk=4.0e-15 KEYX-EXACT max=3.5e-02 |W1_ext|=1.15 (train 3s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.31 SCREEN=0.943 SS=0.946 PFCV=1.55
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1.02 SCREEN=0.928 SS=0.936 PFCV=1.19
+      SCREEN eps=0.001 K=0 bias=0.0077+-0.0007 mHa top1%share=0.44
+      SS     eps=0 K=64 bias=0.0000+-0.0000 mHa top1%share=0.00
+      PFCV   eps=0.03 K=16 bias=-0.7822+-0.3763 mHa top1%share=0.60
+  seed=0 WIBJ  dE=   0.325 mHa Var(EL)=1.19e-03 <|C|>=134 <keys>=126.7 (multi 6.9) ELchk=4.4e-15 KEYX-EXACT max=4.4e-16 |W1_ext|=0 (train 3s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=1.25
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1
+  seed=0 SHRJ  dE=   0.380 mHa Var(EL)=1.34e-03 <|C|>=134 <keys>=126.7 (multi 6.9) ELchk=4.4e-15 KEYX-EXACT max=1.4e-03 |W1_ext|=0.0173 (train 3s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.26 PFCV=1.44
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=1 PFCV=1.02
+      PFCV   eps=0.03 K=4 bias=-0.0064+-0.0155 mHa top1%share=0.64
+
+=== H6 ring R=2.8 6-31G** active K=10 M=20 dim=14400 E_RHF=-3.057914 E_FCI=-3.157753 Ecorr=-99.8 mHa gap=0.1084 HF wt=0.839 frustr=0.145 p-MOs=4 mean p-weight(external MOs)=0.999 window K_W=6 nnz/row=243 (build 8.1s)
+  seed=0 NNBFJ dE=   0.589 mHa Var(EL)=2.22e-03 <|C|>=236 <keys>=130.4 (multi 49.6) ELchk=3.6e-15 KEYX-EXACT max=2.3e-02 |W1_ext|=2.12 (train 22s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.12 SCREEN=0.914 SS=0.934 PFCV=1.31
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.823 SCREEN=0.907 SS=0.545 PFCV=1.01
+      SCREEN eps=0.001 K=0 bias=0.0147+-0.0010 mHa top1%share=0.64
+      SS     eps=0 K=64 bias=0.0000+-0.0000 mHa top1%share=0.00
+      PFCV   eps=0.03 K=16 bias=0.0505+-0.4657 mHa top1%share=0.25
+  seed=0 WIBJ  dE=   0.895 mHa Var(EL)=3.47e-03 <|C|>=236 <keys>=130.4 (multi 49.6) ELchk=5.3e-15 KEYX-EXACT max=8.9e-16 |W1_ext|=0 (train 20s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=1.08
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.817
+  seed=0 SHRJ  dE=   1.067 mHa Var(EL)=3.88e-03 <|C|>=236 <keys>=130.4 (multi 49.6) ELchk=5.8e-15 KEYX-EXACT max=1.4e-02 |W1_ext|=0.0885 (train 19s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.11 PFCV=1.29
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.818 PFCV=0.854
+      PFCV   eps=0.01 K=4 bias=-0.1932+-0.2059 mHa top1%share=0.83
+
+=== H6 ring R=2.8 6-31G** active K=12 M=24 dim=48400 E_RHF=-3.057914 E_FCI=-3.160363 Ecorr=-102.4 mHa gap=0.1090 HF wt=0.840 frustr=0.148 p-MOs=6 mean p-weight(external MOs)=0.996 window K_W=6 nnz/row=440 (build 26.5s)
+  seed=0 NNBFJ dE=   1.729 mHa Var(EL)=6.19e-03 <|C|>=416 <keys>=139.0 (multi 87.5) ELchk=4.9e-15 KEYX-EXACT max=3.5e-02 |W1_ext|=2.67 (train 82s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=1.01 SCREEN=0.934 SS=0.945 PFCV=1.15
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.663 SCREEN=0.905 SS=0.7 PFCV=0.725
+      SCREEN eps=0.001 K=0 bias=0.0136+-0.0011 mHa top1%share=0.62
+      SS     eps=0 K=64 bias=0.0000+-0.0000 mHa top1%share=0.00
+      PFCV   eps=0.03 K=16 bias=-1.3591+-0.7295 mHa top1%share=0.35
+  seed=0 WIBJ  dE=   2.197 mHa Var(EL)=8.76e-03 <|C|>=416 <keys>=139.0 (multi 87.5) ELchk=7.5e-15 KEYX-EXACT max=8.9e-16 |W1_ext|=0 (train 87s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 KEYX=0.931
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.66
+  seed=0 SHRJ  dE=   2.368 mHa Var(EL)=9.40e-03 <|C|>=416 <keys>=139.0 (multi 87.5) ELchk=5.8e-15 KEYX-EXACT max=3.7e-03 |W1_ext|=0.111 (train 95s)
+      C/C_EXACT(own state), wall-clock: EXACT=1 PFDET(biased)=0.949 PFCV=1.05
+      C/C_EXACT(own state), operation count: EXACT=1 KEYX=0.66 PFCV=0.702
+      PFCV   eps=0.03 K=16 bias=-0.0228+-0.0987 mHa top1%share=0.43

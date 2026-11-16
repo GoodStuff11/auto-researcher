@@ -1,0 +1,10 @@
+[14:10:21] cost[lr] L= 12 Ne= 126 setup=1.484e-03 T_E=4.174e-03 sweep=1.278e-02 brute=1.499e-01 eps=1.0e-13 drift=4.4e-13
+[14:10:21] cost[lr] L= 16 Ne= 224 setup=2.321e-03 T_E=1.036e-02 sweep=2.484e-02 brute=5.216e-01 eps=5.0e-15 drift=1.9e-13
+[14:10:24] cost[lr] L= 20 Ne= 350 setup=3.919e-03 T_E=1.452e-02 sweep=4.524e-02 brute=2.136e+00 eps=2.4e-14 drift=1.6e-13
+[14:10:31] cost[lr] L= 24 Ne= 504 setup=8.035e-03 T_E=2.476e-02 sweep=1.028e-01 brute=6.663e+00 eps=1.4e-15 drift=2.5e-13
+[14:10:31] cost[lr] slopes setup=1.52 E=1.06 sweep=1.74 brute=3.14 eps=1.0e-13 drift=4.4e-13 -> AMBIGUOUS
+[14:10:31] cost[agp] L= 12 Ne= 126 setup=4.394e-04 T_E=3.257e-03 sweep=nan brute=5.514e-02 eps=1.0e-15 drift=0.0e+00
+[14:10:31] cost[agp] L= 16 Ne= 224 setup=7.797e-04 T_E=7.150e-03 sweep=nan brute=2.570e-01 eps=8.0e-15 drift=0.0e+00
+[14:10:33] cost[agp] L= 20 Ne= 350 setup=2.013e-03 T_E=1.782e-02 sweep=nan brute=1.158e+00 eps=1.1e-14 drift=0.0e+00
+[14:10:40] cost[agp] L= 24 Ne= 504 setup=4.863e-03 T_E=5.056e-02 sweep=nan brute=3.591e+00 eps=3.4e-14 drift=0.0e+00
+[14:10:40] cost[agp] slopes setup=2.25 E=2.40 sweep=nan brute=3.26 eps=3.4e-14 drift=0.0e+00 -> AMBIGUOUS

@@ -1,0 +1,3 @@
+[full_S/A] L=12 sweeps= 2195 t_sw=9.117e-03s tau=1.04+-0.13 cost=9.508e-03s acc=0.31 <E>/Ne=-0.476 cpu=20s
+[full_S/A] L=16 sweeps= 2587 t_sw=3.493e-02s tau=1.03+-0.12 cost=3.584e-02s acc=0.31 <E>/Ne=-0.482 cpu=90s
+CPU 121.23+0.71 s

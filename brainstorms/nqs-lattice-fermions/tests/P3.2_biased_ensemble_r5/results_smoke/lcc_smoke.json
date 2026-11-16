@@ -1,0 +1,257 @@
+{
+ "results_smoke/w6": {
+  "LCC-warm-est-loo": {
+   "dec": "UUUUUU",
+   "all": {
+    "n": 6,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   },
+   "inner": {
+    "n": 4,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   },
+   "detail": [
+    {
+     "reason": "slope"
+    },
+    {
+     "reason": "slope"
+    },
+    {
+     "reason": "slope"
+    },
+    {
+     "reason": "slope"
+    },
+    {
+     "reason": "slope"
+    },
+    {
+     "dc": 0.0033093208596850646,
+     "se": 0.0010996929319415346,
+     "beta_lo": 42.14828568414379,
+     "eps": 1.0379139498787162,
+     "b": 0.024625294553063642,
+     "half": 0.03859821809352007
+    }
+   ]
+  },
+  "LCC-warm-est-in": {
+   "dec": "UUUUUU",
+   "all": {
+    "n": 6,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   },
+   "inner": {
+    "n": 4,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   }
+  },
+  "LCC-warm-oracle-loo": {
+   "dec": "UUUUUU",
+   "all": {
+    "n": 6,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   },
+   "inner": {
+    "n": 4,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   }
+  },
+  "LCC-warm-oracle-in": {
+   "dec": "UUUUUU",
+   "all": {
+    "n": 6,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   },
+   "inner": {
+    "n": 4,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   }
+  },
+  "LCC-cold-est-loo": {
+   "dec": "UUUUUU",
+   "all": {
+    "n": 6,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   },
+   "inner": {
+    "n": 4,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   },
+   "detail": [
+    {
+     "reason": "slope"
+    },
+    {
+     "reason": "slope"
+    },
+    {
+     "reason": "slope"
+    },
+    {
+     "reason": "slope"
+    },
+    {
+     "reason": "slope"
+    },
+    {
+     "reason": "slope"
+    }
+   ]
+  },
+  "LCC-cold-est-in": {
+   "dec": "UUUUUU",
+   "all": {
+    "n": 6,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   },
+   "inner": {
+    "n": 4,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   }
+  },
+  "LCC-cold-oracle-loo": {
+   "dec": "UUUUUU",
+   "all": {
+    "n": 6,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   },
+   "inner": {
+    "n": 4,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   }
+  },
+  "LCC-cold-oracle-in": {
+   "dec": "UUUUUU",
+   "all": {
+    "n": 6,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   },
+   "inner": {
+    "n": 4,
+    "commit": 0,
+    "wrong": 0,
+    "CW": 0.0,
+    "DEC": 0.0
+   }
+  },
+  "sampled": {
+   "flip": 0.0,
+   "CW": 0.0,
+   "DEC": 0.0
+  },
+  "R0P": {
+   "per_target": [
+    "BU",
+    "UU",
+    "UU",
+    "UU",
+    "UU",
+    "UU"
+   ],
+   "CW": 0.0,
+   "DEC": 0.08333333333333333
+  },
+  "R0P-warm": {
+   "per_target": [
+    "BU",
+    "BB",
+    "BU",
+    "UU",
+    "UU",
+    "UU"
+   ],
+   "CW": 0.0,
+   "DEC": 0.3333333333333333
+  },
+  "R0P-warm-abs": {
+   "per_target": [
+    "BU",
+    "BB",
+    "BU",
+    "UU",
+    "UU",
+    "UU"
+   ],
+   "CW": 0.0,
+   "DEC": 0.3333333333333333
+  },
+  "EC": {
+   "per_target": [
+    "UU",
+    "UU",
+    "UU",
+    "UU",
+    "UU",
+    "UU"
+   ],
+   "CW": 0.0,
+   "DEC": 0.0
+  },
+  "ECor": {
+   "per_target": [
+    "BB",
+    "AA",
+    "AA",
+    "AA",
+    "AA",
+    "AA"
+   ],
+   "CW": 0.3333333333333333,
+   "DEC": 1.0
+  }
+ },
+ "verdict": {
+  "tag": "LCC-warm-est-loo",
+  "CW": 0.0,
+  "DEC_inner": 0.0,
+  "sampled_ok": true,
+  "verdict": "FAIL"
+ }
+}

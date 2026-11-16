@@ -1,0 +1,20 @@
+== LH-HFDS (Route 6.1'): exactness (fast carried-table E_loc vs brute, sorted rows + JW signs)
+   L= 4 Ne=  14 n_conn=   32 E_fast=-12.207012816242 E_brute=-12.207012816242 rel_err=5.4e-16
+   L= 6 Ne=  32 n_conn=   59 E_fast=-420.235516100911 E_brute=-420.235516100914 rel_err=8.2e-15
+   L= 8 Ne=  56 n_conn=  112 E_fast=-104.215661868701 E_brute=-104.215661868701 rel_err=1.4e-16
+== LH-HFDS (Route 6.1'): timing per connection
+   L=24 Ne= 504 n_conn=  951 setup=6.102e-01s t_c=7.260e-04s t_brute/conn=3.657e-03s speedup=5
+   L=32 Ne= 896 n_conn= 1662 setup=3.267e+00s t_c=1.777e-03s t_brute/conn=1.690e-02s speedup=10
+   L=40 Ne=1400 n_conn= 2611 setup=1.223e+01s t_c=2.083e-03s t_brute/conn=4.910e-02s speedup=24
+== LH-HFDS (Route 6.1'): max rel_err=8.2e-15 slope(t_c vs N_e)=1.06 speedup(largest L)=24 -> T1 PASS
+total 28.0s
+== Tree-HFDS (Route 6.4): exactness (fast carried-table E_loc vs brute, sorted rows + JW signs)
+   L= 4 Ne=  14 n_conn=   29 E_fast=-13.119597013900 E_brute=-13.119597013900 rel_err=8.8e-16
+   L= 6 Ne=  32 n_conn=   60 E_fast=-21.474233041720 E_brute=-21.474233041720 rel_err=7.9e-16
+   L= 8 Ne=  56 n_conn=  103 E_fast=-34.723062629710 E_brute=-34.723062629710 rel_err=2.4e-15
+== Tree-HFDS (Route 6.4): timing per connection
+   L=16 Ne= 224 n_conn=  406 setup=1.229e-01s t_c=1.041e-03s t_brute/conn=1.069e-03s speedup=1
+   L=24 Ne= 504 n_conn=  947 setup=1.032e+00s t_c=1.490e-03s t_brute/conn=7.218e-03s speedup=5
+   L=32 Ne= 896 n_conn= 1656 setup=5.729e+00s t_c=2.640e-03s t_brute/conn=2.162e-02s speedup=8
+== Tree-HFDS (Route 6.4): max rel_err=2.4e-15 slope(t_c vs N_e)=0.66 speedup(largest L)=8 -> T1 AMBIGUOUS
+total 14.4s

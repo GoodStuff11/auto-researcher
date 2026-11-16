@@ -1,0 +1,99 @@
+[09:40:56] 3x2: D=90 sector levels found 12 (N_LOW=11) E0=-4.062964 chi={'My': -1, 'Mx': -1} S0=1 R_PAIR=1.64 (1 pairs) R_SITE=1.83 (4 pairs) (0.1s)
+[09:40:56] census 3x2: sector dim 12 lowest omegas [1.399, 1.691, 2.339, 2.509, 3.303, 3.675, 3.891, 5.29, 5.941, 6.331] #levels(omega<=1t) 0
+[09:40:56] 3x2 tp      ov=0.869 dE=0.7338 dE_L1=0.1578 s<E0=True | pair:K=1 d/a0=-1.51 spin:K=7 d/a0=+0.04(ns) charge:K=7 d/a0=-0.05(ns) pairSF:K=5 d/a0=+0.28 spinSF:K=2 d/a0=-11.52 chargeSF:K=1 d/a0=+0.18
+[09:40:56]       ratios  pair: L1R -0.66 ORC3 +1.05 RWR* +1.00 RWR0 +0.88 R +0.53 H -0.61 RWR1 +0.88 | spin: L1R +4.50 ORC3 -1.24 RWR* +0.45 RWR0 +4.11 R -7.20 H +3.26 RWR1 +4.92 | charge: L1R -4.24 ORC3 +3.16 RWR* +3.16 RWR0 -5.18 R -3.83 H -10.51 RWR1 -5.66
+[09:40:56] 3x2 J       ov=0.897 dE=0.5636 dE_L1=0.1258 s<E0=True | pair:K=2 d/a0=-2.48 spin:K=2 d/a0=-0.58 charge:K=1 d/a0=-0.76 pairSF:K=1 d/a0=+0.23 spinSF:K=2 d/a0=-11.40 chargeSF:K=1 d/a0=+0.28
+[09:40:56]       ratios  pair: L1R +0.73 ORC3 +0.86 RWR* +1.01 RWR0 +0.96 R +0.56 H +0.46 RWR1 +1.00 | spin: L1R -0.19 ORC3 +1.15 RWR* +1.04 RWR0 +0.57 R +0.32 H +0.13 RWR1 +0.54 | charge: L1R +0.91 ORC3 +0.92 RWR* +1.00 RWR0 +1.21 R +1.19 H +1.01 RWR1 +1.31
+[09:40:56] 3x2 dens_s0 ov=0.870 dE=1.1364 dE_L1=0.1414 s<E0=True | pair:K=7 d/a0=-0.34 spin:K=3 d/a0=+0.38 charge:K=5 d/a0=+0.66 pairSF:K=6 d/a0=+0.09(ns) spinSF:K=3 d/a0=+4.73 chargeSF:K=1 d/a0=+1.66
+[09:40:56]       ratios  pair: L1R +0.59 ORC3 +2.17 RWR* +1.03 RWR0 +0.35 R +1.80 H +0.35 RWR1 +0.15 | spin: L1R +0.35 ORC3 +0.70 RWR* +0.89 RWR0 +1.38 R +2.04 H +1.43 RWR1 +1.39 | charge: L1R +1.44 ORC3 +0.46 RWR* +0.88 RWR0 +1.59 R +1.11 H +1.72 RWR1 +1.62
+[09:40:56] 3x2 spin_s0 ov=0.914 dE=0.6259 dE_L1=0.0914 s<E0=True | pair:K=6 d/a0=+0.67 spin:K=2 d/a0=+0.97 charge:K=1 d/a0=+0.86 pairSF:K=2 d/a0=+0.42 spinSF:K=1 d/a0=+15.82 chargeSF:K=1 d/a0=+0.27
+[09:40:56]       ratios  pair: L1R -0.33 ORC3 -0.25 RWR* +0.98 RWR0 +1.10 R +0.74 H +0.34 RWR1 +1.27 | spin: L1R +0.36 ORC3 +1.07 RWR* +0.99 RWR0 +0.99 R +0.74 H +0.57 RWR1 +1.00 | charge: L1R +0.66 ORC3 +0.63 RWR* +0.99 RWR0 +1.10 R +0.86 H +0.83 RWR1 +0.84
+[09:41:01] 3x2 pair_s0 ov=0.886 dE=0.6558 dE_L1=0.1160 s<E0=True | pair:K=2 d/a0=+1.00 spin:K=2 d/a0=+0.95 charge:K=5 d/a0=+0.18 pairSF:K=2 d/a0=+0.36 spinSF:K=5 d/a0=-5.35 chargeSF:K=1 d/a0=+0.50
+[09:41:01]       ratios  pair: L1R +0.09 ORC3 +0.57 RWR* +0.93 RWR0 +1.04 R +0.50 H +0.38 RWR1 +1.06 | spin: L1R +0.56 ORC3 +0.88 RWR* +0.91 RWR0 +0.93 R +0.92 H +0.56 RWR1 +0.96 | charge: L1R -1.61 ORC3 -0.05 RWR* +1.11 RWR0 -1.50 R -2.49 H -1.10 RWR1 -2.18
+[09:41:01] 3x2 dens_s1 ov=0.856 dE=1.2578 dE_L1=0.1494 s<E0=True | pair:K=8 d/a0=-0.07(ns) spin:K=8 d/a0=+0.10(ns) charge:K=3 d/a0=-1.78 pairSF:K=1 d/a0=-0.62 spinSF:K=11 d/a0=-2.11 chargeSF:K=1 d/a0=-0.99
+[09:41:01]       ratios  pair: L1R -13.98 ORC3 -10.72 RWR* +1.67 RWR0 +2.83 R +7.21 H +7.04 RWR1 +1.50 | spin: L1R +1.56 ORC3 +1.70 RWR* +0.42 RWR0 +0.29 R +0.09 H -0.85 RWR1 -0.05 | charge: L1R +0.44 ORC3 +0.67 RWR* +1.00 RWR0 +0.88 R +0.83 H +0.81 RWR1 +0.87
+[09:41:01] 3x2 spin_s1 ov=0.915 dE=0.4805 dE_L1=0.1045 s<E0=True | pair:K=2 d/a0=+0.59 spin:K=1 d/a0=+1.61 charge:K=1 d/a0=-0.51 pairSF:K=2 d/a0=+0.12 spinSF:K=2 d/a0=+5.92 chargeSF:K=1 d/a0=-0.35
+[09:41:01]       ratios  pair: L1R +1.76 ORC3 +0.82 RWR* +0.96 RWR0 +1.08 R +2.57 H +1.44 RWR1 +1.20 | spin: L1R +0.39 ORC3 +0.98 RWR* +0.98 RWR0 +0.97 R +0.89 H +0.55 RWR1 +0.96 | charge: L1R +1.23 ORC3 +1.12 RWR* +1.02 RWR0 +0.93 R +0.98 H +1.05 RWR1 +1.18
+[09:41:01] 3x2 pair_s1 ov=0.880 dE=0.7255 dE_L1=0.1197 s<E0=True | pair:K=1 d/a0=+0.98 spin:K=1 d/a0=-0.21 charge:K=1 d/a0=-2.06 pairSF:K=6 d/a0=-0.04(ns) spinSF:K=1 d/a0=-4.72 chargeSF:K=1 d/a0=+0.58
+[09:41:01]       ratios  pair: L1R +0.14 ORC3 +1.52 RWR* +0.97 RWR0 +0.91 R +0.64 H +0.58 RWR1 +1.00 | spin: L1R -0.32 ORC3 +0.67 RWR* +1.11 RWR0 +0.91 R +1.80 H -0.39 RWR1 +0.86 | charge: L1R +0.67 ORC3 +0.86 RWR* +0.99 RWR0 +0.89 R +0.87 H +0.80 RWR1 +0.93
+[09:41:03] 3x3: D=1680 sector levels found 60 (N_LOW=59) E0=-6.558475 chi={'My': 1, 'Mx': 1, 'D': 1} S0=0 R_PAIR=1.83 (12 pairs) R_SITE=2.32 (2 pairs) (2.6s)
+[09:41:03] census 3x3: sector dim 60 lowest omegas [0.387, 1.461, 1.701, 1.908, 2.056, 2.35, 2.588, 2.985, 3.058, 3.284] #levels(omega<=1t) 1
+[09:41:04] 3x3 tp      ov=0.929 dE=0.4448 dE_L1=0.0918 s<E0=True | pair:K=1 d/a0=-1.52 spin:K=1 d/a0=+0.13 charge:K=6 d/a0=+4.60 pairSF:K=1 d/a0=-0.39 spinSF:K=3 d/a0=-3.70 chargeSF:K=1 d/a0=+0.29
+[09:41:04]       ratios  pair: L1R +0.24 ORC3 +0.84 RWR* +0.92 RWR0 +0.89 R +0.48 H +0.37 RWR1 +0.81 | spin: L1R +0.32 ORC3 +1.06 RWR* +0.71 RWR0 +1.48 R +0.73 H +0.54 RWR1 +1.47 | charge: L1R +0.39 ORC3 +0.76 RWR* +1.03 RWR0 +0.59 R +0.54 H +0.17 RWR1 +0.58
+[09:41:04] 3x3 J       ov=0.928 dE=0.1950 dE_L1=0.0654 s<E0=True | pair:K=1 d/a0=-1.82 spin:K=1 d/a0=+0.26 charge:K=1 d/a0=+1.91 pairSF:K=1 d/a0=-0.83 spinSF:K=1 d/a0=-3.75 chargeSF:K=1 d/a0=+0.14
+[09:41:04]       ratios  pair: L1R +0.15 ORC3 +0.84 RWR* +0.97 RWR0 +0.98 R +0.57 H +0.26 RWR1 +0.89 | spin: L1R +0.15 ORC3 +0.85 RWR* +0.74 RWR0 +1.33 R +0.53 H +0.27 RWR1 +1.42 | charge: L1R +0.04 ORC3 +1.83 RWR* +0.69 RWR0 +1.15 R +1.64 H +1.29 RWR1 +1.32
+[09:41:05] 3x3 dens_s0 ov=0.904 dE=0.9429 dE_L1=0.1319 s<E0=True | pair:K=1 d/a0=-2.30 spin:K=1 d/a0=+0.13 charge:K=11 d/a0=+15.73 pairSF:K=1 d/a0=-0.51 spinSF:K=1 d/a0=-3.63 chargeSF:K=1 d/a0=+0.62
+[09:41:05]       ratios  pair: L1R +0.47 ORC3 +0.78 RWR* +1.01 RWR0 +0.87 R +0.67 H +0.33 RWR1 +0.79 | spin: L1R +0.49 ORC3 +1.02 RWR* +0.88 RWR0 +1.39 R +0.93 H +0.46 RWR1 +1.29 | charge: L1R +0.39 ORC3 +0.49 RWR* +1.02 RWR0 +0.84 R +0.59 H +0.47 RWR1 +0.85
+[09:41:05] 3x3 spin_s0 ov=0.927 dE=0.1641 dE_L1=0.0586 s<E0=True | pair:K=1 d/a0=-1.50 spin:K=2 d/a0=+0.07(ns) charge:K=1 d/a0=+5.74 pairSF:K=1 d/a0=-0.84 spinSF:K=1 d/a0=-0.98 chargeSF:K=1 d/a0=+0.05(ns)
+[09:41:05]       ratios  pair: L1R +0.19 ORC3 +1.02 RWR* +0.99 RWR0 +0.88 R +0.46 H +0.26 RWR1 +0.80 | spin: L1R -0.27 ORC3 +1.98 RWR* -0.01 RWR0 +3.05 R +0.77 H -0.03 RWR1 +3.30 | charge: L1R +0.16 ORC3 +0.58 RWR* +0.98 RWR0 +0.75 R +0.37 H +0.36 RWR1 +0.70
+[09:41:05] 3x3 pair_s0 ov=0.927 dE=0.1787 dE_L1=0.0605 s<E0=True | pair:K=1 d/a0=+0.90 spin:K=1 d/a0=+0.13 charge:K=1 d/a0=-2.17 pairSF:K=1 d/a0=+0.30 spinSF:K=3 d/a0=+0.83 chargeSF:K=1 d/a0=+0.15
+[09:41:05]       ratios  pair: L1R -0.12 ORC3 +1.09 RWR* +0.84 RWR0 +0.85 R +0.16 H -0.08 RWR1 +0.78 | spin: L1R +0.10 ORC3 +1.12 RWR* +0.34 RWR0 +1.99 R +0.68 H +0.19 RWR1 +2.12 | charge: L1R +0.14 ORC3 +1.32 RWR* +0.90 RWR0 +1.03 R -0.03 H +0.23 RWR1 +0.72
+[09:41:06] 3x3 dens_s1 ov=0.896 dE=0.7877 dE_L1=0.1149 s<E0=True | pair:K=1 d/a0=-1.45 spin:K=1 d/a0=+0.19 charge:K=1 d/a0=+9.03 pairSF:K=1 d/a0=-0.84 spinSF:K=1 d/a0=-1.28 chargeSF:K=1 d/a0=-0.85
+[09:41:06]       ratios  pair: L1R -0.11 ORC3 +0.69 RWR* +0.92 RWR0 +0.88 R +0.49 H +0.03 RWR1 +0.73 | spin: L1R +0.14 ORC3 +0.91 RWR* +0.83 RWR0 +1.10 R +0.54 H +0.24 RWR1 +1.05 | charge: L1R +0.66 ORC3 +0.90 RWR* +0.96 RWR0 +0.94 R +0.49 H +0.72 RWR1 +0.92
+[09:41:06] 3x3 spin_s1 ov=0.902 dE=0.7746 dE_L1=0.1740 s<E0=True | pair:K=14 d/a0=+0.47 spin:K=5 d/a0=-0.07(ns) charge:K=5 d/a0=+7.55 pairSF:K=1 d/a0=+0.17 spinSF:K=3 d/a0=+6.53 chargeSF:K=1 d/a0=-0.25
+[09:41:06]       ratios  pair: L1R -0.05 ORC3 +0.39 RWR* +0.66 RWR0 +0.69 R +0.37 H -0.03 RWR1 +0.60 | spin: L1R -0.04 ORC3 +1.10 RWR* +1.50 RWR0 -0.53 R -0.50 H -0.39 RWR1 -0.48 | charge: L1R +0.48 ORC3 +0.42 RWR* +1.01 RWR0 +0.80 R +0.59 H +0.36 RWR1 +0.83
+[09:41:07] 3x3 pair_s1 ov=0.937 dE=0.1932 dE_L1=0.0565 s<E0=True | pair:K=1 d/a0=-1.52 spin:K=1 d/a0=+0.13 charge:K=1 d/a0=+2.52 pairSF:K=1 d/a0=-0.82 spinSF:K=1 d/a0=-2.57 chargeSF:K=1 d/a0=-0.07(ns)
+[09:41:07]       ratios  pair: L1R -0.01 ORC3 +0.79 RWR* +0.97 RWR0 +0.99 R +0.45 H +0.25 RWR1 +0.93 | spin: L1R +0.09 ORC3 +1.23 RWR* +0.65 RWR0 +1.62 R +0.94 H +0.40 RWR1 +1.76 | charge: L1R +0.16 ORC3 +1.05 RWR* +0.96 RWR0 +0.82 R +0.61 H +0.47 RWR1 +0.70
+[09:41:12] 6x2: D=34650 sector levels found 62 (N_LOW=60) E0=-8.765585 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=4.10 (7 pairs) R_SITE=4.18 (4 pairs) (5.3s)
+[09:41:12] census 6x2: sector dim None lowest omegas [0.231, 0.334, 0.417, 0.464, 0.527, 0.706, 0.757, 0.792, 0.827, 0.887] #levels(omega<=1t) 11
+[09:41:17] 6x2 tp      ov=0.932 dE=0.2580 dE_L1=0.0656 s<E0=True | pair:K=2 d/a0=-2.67 spin:K=2 d/a0=+0.56 charge:K=2 d/a0=-1.06 pairSF:K=2 d/a0=-0.20 spinSF:K=21 d/a0=-0.99 chargeSF:K=1 d/a0=+0.09(ns)
+[09:41:17]       ratios  pair: L1R +0.09 ORC3 +0.88 RWR* +0.87 RWR0 +0.91 R +0.59 H +0.18 RWR1 +0.91 | spin: L1R -0.06 ORC3 +1.24 RWR* +0.57 RWR0 +0.98 R +0.22 H -0.04 RWR1 +0.98 | charge: L1R +0.05 ORC3 +0.62 RWR* +0.89 RWR0 +0.88 R +0.54 H +0.24 RWR1 +0.88
+[09:41:20] 6x2 J       ov=0.935 dE=0.1633 dE_L1=0.0518 s<E0=True | pair:K=2 d/a0=-2.72 spin:K=1 d/a0=+0.64 charge:K=2 d/a0=-0.71 pairSF:K=3 d/a0=-0.37 spinSF:K=9 d/a0=-1.28 chargeSF:K=1 d/a0=+0.08(ns)
+[09:41:20]       ratios  pair: L1R +0.04 ORC3 +0.81 RWR* +0.89 RWR0 +1.00 R +0.45 H +0.26 RWR1 +1.01 | spin: L1R -0.01 ORC3 +1.52 RWR* +0.71 RWR0 +0.91 R +0.11 H +0.02 RWR1 +0.90 | charge: L1R +0.11 ORC3 +1.30 RWR* +0.59 RWR0 +1.26 R +0.51 H +0.61 RWR1 +1.29
+[09:41:23] 6x2 dens_s0 ov=0.905 dE=1.1053 dE_L1=0.1547 s<E0=True | pair:K=9 d/a0=-2.93 spin:K=inf d/a0=-0.02(ns) charge:K=inf d/a0=+0.03(ns) pairSF:K=9 d/a0=-0.28 spinSF:K=19 d/a0=-1.96 chargeSF:K=1 d/a0=+0.85
+[09:41:23]       ratios  pair: L1R +0.01 ORC3 +0.47 RWR* +0.66 RWR0 +0.72 R +0.08 H +0.33 RWR1 +0.73 | spin: L1R +2.45 ORC3 -6.43 RWR* +5.11 RWR0 +0.30 R +0.41 H +6.07 RWR1 +1.51 | charge: L1R +6.91 ORC3 -16.19 RWR* +3.14 RWR0 +20.79 R +24.81 H +4.46 RWR1 +23.24
+[09:41:26] 6x2 spin_s0 ov=0.935 dE=0.1423 dE_L1=0.0459 s<E0=True | pair:K=2 d/a0=-2.48 spin:K=1 d/a0=+0.83 charge:K=2 d/a0=-0.58 pairSF:K=3 d/a0=-0.33 spinSF:K=9 d/a0=-1.15 chargeSF:K=1 d/a0=+0.07(ns)
+[09:41:26]       ratios  pair: L1R +0.02 ORC3 +0.79 RWR* +0.92 RWR0 +1.00 R +0.30 H +0.17 RWR1 +1.01 | spin: L1R -0.00 ORC3 +1.39 RWR* +0.82 RWR0 +0.81 R +0.01 H +0.01 RWR1 +0.81 | charge: L1R -0.09 ORC3 +1.15 RWR* +0.56 RWR0 +1.27 R +0.34 H +0.16 RWR1 +1.31
+[09:41:30] 6x2 pair_s0 ov=0.935 dE=0.1534 dE_L1=0.0507 s<E0=True | pair:K=2 d/a0=-2.40 spin:K=1 d/a0=+0.53 charge:K=2 d/a0=-0.78 pairSF:K=3 d/a0=-0.42 spinSF:K=5 d/a0=-0.88 chargeSF:K=1 d/a0=+0.03(ns)
+[09:41:30]       ratios  pair: L1R -0.01 ORC3 +0.85 RWR* +0.87 RWR0 +1.02 R +0.58 H +0.20 RWR1 +1.04 | spin: L1R -0.02 ORC3 +1.68 RWR* +0.77 RWR0 +0.83 R +0.04 H -0.01 RWR1 +0.83 | charge: L1R -0.07 ORC3 +1.18 RWR* +0.45 RWR0 +1.40 R +0.61 H +0.17 RWR1 +1.43
+[09:41:33] 6x2 dens_s1 ov=0.926 dE=0.4542 dE_L1=0.0974 s<E0=True | pair:K=2 d/a0=-3.46 spin:K=3 d/a0=+0.26 charge:K=inf d/a0=-0.45 pairSF:K=4 d/a0=-0.45 spinSF:K=9 d/a0=-0.93 chargeSF:K=1 d/a0=-0.11
+[09:41:33]       ratios  pair: L1R -0.04 ORC3 +0.74 RWR* +0.73 RWR0 +0.89 R +0.51 H -0.00 RWR1 +0.89 | spin: L1R -0.15 ORC3 +1.48 RWR* +0.55 RWR0 +1.07 R +0.29 H -0.15 RWR1 +1.03 | charge: L1R -0.96 ORC3 +1.39 RWR* +0.52 RWR0 -0.26 R +0.06 H -0.65 RWR1 -0.29
+[09:41:36] 6x2 spin_s1 ov=0.934 dE=0.2023 dE_L1=0.0618 s<E0=True | pair:K=2 d/a0=+1.36 spin:K=4 d/a0=-0.20 charge:K=16 d/a0=+0.79 pairSF:K=4 d/a0=+0.25 spinSF:K=22 d/a0=+0.56 chargeSF:K=49 d/a0=-0.06(ns)
+[09:41:36]       ratios  pair: L1R +0.01 ORC3 +0.64 RWR* +0.80 RWR0 +0.19 R -0.02 H +0.13 RWR1 +0.19 | spin: L1R -0.04 ORC3 +2.51 RWR* +0.62 RWR0 +0.38 R -0.26 H -0.04 RWR1 +0.40 | charge: L1R +0.13 ORC3 +0.39 RWR* +1.17 RWR0 +0.33 R +0.22 H +0.19 RWR1 +0.33
+[09:41:39] 6x2 pair_s1 ov=0.927 dE=0.4206 dE_L1=0.0952 s<E0=True | pair:K=6 d/a0=-1.36 spin:K=2 d/a0=+0.36 charge:K=inf d/a0=+0.37 pairSF:K=5 d/a0=+0.18 spinSF:K=30 d/a0=-0.72 chargeSF:K=inf d/a0=+0.04(ns)
+[09:41:39]       ratios  pair: L1R +0.40 ORC3 +0.65 RWR* +0.61 RWR0 +1.19 R +0.89 H +0.40 RWR1 +1.19 | spin: L1R -0.07 ORC3 +0.59 RWR* +0.36 RWR0 +0.61 R -0.30 H +0.17 RWR1 +0.60 | charge: L1R -0.14 ORC3 +0.58 RWR* +1.53 RWR0 -0.47 R -0.91 H -0.13 RWR1 -0.49
+[09:41:44] 4x3: D=34650 sector levels found 62 (N_LOW=60) E0=-8.948665 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.59 (10 pairs) R_SITE=2.96 (9 pairs) (5.4s)
+[09:41:44] census 4x3: sector dim None lowest omegas [0.161, 0.254, 0.323, 0.391, 0.483, 0.548, 0.699, 0.795, 0.862, 0.921] #levels(omega<=1t) 11
+[09:41:50] 4x3 tp      ov=0.935 dE=0.1735 dE_L1=0.0475 s<E0=True | pair:K=1 d/a0=-0.56 spin:K=3 d/a0=+0.24 charge:K=inf d/a0=+0.04(ns) pairSF:K=1 d/a0=-0.27 spinSF:K=17 d/a0=-0.78 chargeSF:K=inf d/a0=-0.02(ns)
+[09:41:50]       ratios  pair: L1R +0.06 ORC3 +0.66 RWR* +0.93 RWR0 +0.76 R +0.38 H +0.23 RWR1 +0.77 | spin: L1R -0.15 ORC3 +1.41 RWR* +1.07 RWR0 -0.81 R -0.25 H -0.13 RWR1 -0.82 | charge: L1R +0.47 ORC3 -0.31 RWR* +2.65 RWR0 -1.48 R -3.13 H -1.31 RWR1 -1.72
+[09:41:53] 4x3 J       ov=0.937 dE=0.1052 dE_L1=0.0334 s<E0=True | pair:K=1 d/a0=-0.58 spin:K=1 d/a0=+0.44 charge:K=56 d/a0=-0.07(ns) pairSF:K=1 d/a0=-0.51 spinSF:K=16 d/a0=-1.01 chargeSF:K=1 d/a0=+0.05(ns)
+[09:41:53]       ratios  pair: L1R +0.08 ORC3 +0.68 RWR* +0.94 RWR0 +0.85 R +0.47 H +0.23 RWR1 +0.85 | spin: L1R -0.05 ORC3 +0.88 RWR* +0.96 RWR0 -0.08 R -0.05 H -0.05 RWR1 -0.08 | charge: L1R +0.33 ORC3 +0.74 RWR* +1.02 RWR0 +1.26 R +1.71 H +0.77 RWR1 +1.43
+[09:41:56] 4x3 dens_s0 ov=0.913 dE=0.8720 dE_L1=0.1436 s<E0=True | pair:K=22 d/a0=-1.08 spin:K=inf d/a0=-0.04(ns) charge:K=16 d/a0=-1.66 pairSF:K=3 d/a0=-0.33 spinSF:K=26 d/a0=-0.98 chargeSF:K=1 d/a0=+0.41
+[09:41:56]       ratios  pair: L1R +0.17 ORC3 +0.39 RWR* +0.87 RWR0 +0.79 R +0.34 H +0.51 RWR1 +0.78 | spin: L1R +2.11 ORC3 +0.99 RWR* +7.17 RWR0 +3.24 R +1.88 H +1.77 RWR1 +2.47 | charge: L1R +0.12 ORC3 +0.18 RWR* +0.90 RWR0 +0.94 R +0.46 H +0.32 RWR1 +0.96
+[09:41:59] 4x3 spin_s0 ov=0.936 dE=0.1363 dE_L1=0.0443 s<E0=True | pair:K=30 d/a0=+0.25 spin:K=2 d/a0=-1.05 charge:K=58 d/a0=-0.18 pairSF:K=inf d/a0=-0.00(ns) spinSF:K=inf d/a0=+0.01(ns) chargeSF:K=1 d/a0=+0.04(ns)
+[09:41:59]       ratios  pair: L1R +0.13 ORC3 +0.76 RWR* +0.67 RWR0 +1.25 R +0.61 H +0.23 RWR1 +1.08 | spin: L1R +0.06 ORC3 +0.98 RWR* +0.44 RWR0 +1.33 R +0.23 H +0.08 RWR1 +1.33 | charge: L1R +0.30 ORC3 +0.22 RWR* +0.67 RWR0 +1.07 R +0.74 H +0.39 RWR1 +1.17
+[09:42:03] 4x3 pair_s0 ov=0.937 dE=0.1059 dE_L1=0.0332 s<E0=True | pair:K=1 d/a0=-0.55 spin:K=1 d/a0=+0.46 charge:K=8 d/a0=-0.09(ns) pairSF:K=1 d/a0=-0.54 spinSF:K=6 d/a0=-0.91 chargeSF:K=1 d/a0=+0.06(ns)
+[09:42:03]       ratios  pair: L1R +0.05 ORC3 +0.69 RWR* +0.88 RWR0 +0.90 R +0.35 H +0.23 RWR1 +0.90 | spin: L1R -0.03 ORC3 +0.89 RWR* +0.94 RWR0 +0.08 R -0.01 H -0.03 RWR1 +0.07 | charge: L1R +0.06 ORC3 +0.42 RWR* +0.72 RWR0 +1.53 R +1.23 H +0.34 RWR1 +1.65
+[09:42:06] 4x3 dens_s1 ov=0.929 dE=0.3317 dE_L1=0.0655 s<E0=True | pair:K=13 d/a0=-1.18 spin:K=1 d/a0=+0.43 charge:K=10 d/a0=-0.66 pairSF:K=1 d/a0=-0.48 spinSF:K=16 d/a0=-0.58 chargeSF:K=1 d/a0=-0.30
+[09:42:06]       ratios  pair: L1R +0.06 ORC3 +0.41 RWR* +0.93 RWR0 +0.87 R +0.47 H +0.22 RWR1 +0.84 | spin: L1R -0.08 ORC3 +0.93 RWR* +0.67 RWR0 +0.41 R +0.01 H -0.09 RWR1 +0.40 | charge: L1R +0.01 ORC3 +0.25 RWR* +0.60 RWR0 +1.26 R +0.61 H +0.31 RWR1 +1.30
+[09:42:09] 4x3 spin_s1 ov=0.936 dE=0.1194 dE_L1=0.0397 s<E0=True | pair:K=29 d/a0=-0.22 spin:K=5 d/a0=-0.17 charge:K=21 d/a0=+0.08(ns) pairSF:K=1 d/a0=-0.20 spinSF:K=17 d/a0=-0.67 chargeSF:K=1 d/a0=-0.03(ns)
+[09:42:09]       ratios  pair: L1R +0.10 ORC3 +0.53 RWR* +1.22 RWR0 +0.52 R -0.09 H -0.11 RWR1 +0.41 | spin: L1R +0.28 ORC3 +0.43 RWR* -1.55 RWR0 +4.60 R +1.11 H +0.52 RWR1 +4.61 | charge: L1R -0.10 ORC3 +0.57 RWR* +1.56 RWR0 -0.09 R +0.76 H +0.45 RWR1 -0.22
+[09:42:12] 4x3 pair_s1 ov=0.925 dE=0.4691 dE_L1=0.1092 s<E0=True | pair:K=inf d/a0=+0.13 spin:K=5 d/a0=-0.25 charge:K=10 d/a0=-0.23 pairSF:K=inf d/a0=+0.08(ns) spinSF:K=38 d/a0=-1.15 chargeSF:K=1 d/a0=+0.11
+[09:42:12]       ratios  pair: L1R +0.95 ORC3 +0.43 RWR* +1.31 RWR0 +1.88 R +1.12 H +1.44 RWR1 +1.64 | spin: L1R +0.29 ORC3 +0.17 RWR* +0.61 RWR0 +2.17 R +0.64 H +0.32 RWR1 +2.15 | charge: L1R +0.07 ORC3 -0.20 RWR* +0.10 RWR0 +1.79 R +1.31 H +0.39 RWR1 +1.88
+--- K_half medians over scored states (inf = not reached by N_LOW)
+  pair      3x2: 2.0  3x3: 1.0  6x2: 2.0  4x3: 17.5
+  spin      3x2: 2.0  3x3: 1.0  6x2: 2.0  4x3: 2.0
+  charge    3x2: 1.0  3x3: 1.0  6x2: 2.0  4x3: 13.0
+  pairSF    3x2: 2.0  3x3: 1.0  6x2: 3.5  4x3: 1.0
+  spinSF    3x2: 2.0  3x3: 1.0  6x2: 14.0  4x3: 17.0
+  chargeSF  3x2: 1.0  3x3: 1.0  6x2: 1.0  4x3: 1.0
+  pair-A    3x2: 6.0  3x3: 1.0  6x2: 8.0  4x3: 3.0
+  spin-A    3x2: 1.5  3x3: 1.0  6x2: 3.0  4x3: 9.0
+  charge-A  3x2: 1.0  3x3: 5.0  6x2: 10.0  4x3: 19.0
+AOW (route 8.4): pass-observables 0/3, kill-observables 2/3 -> KILL
+G4 (ESR0 Gate 4): pair FAIL  spin PASS  charge FAIL
+  tracked L1R      all 0.13 (n=83)  3x2 0.45  3x3 0.05  6x2 0.00  4x3 0.05
+  tracked ORC3     all 0.77 (n=83)  3x2 0.80  3x3 0.86  6x2 0.86  4x3 0.53
+  tracked ORC6     all 0.86 (n=83)  3x2 0.95  3x3 0.91  6x2 0.86  4x3 0.68
+  tracked ORCmax   all 0.96 (n=83)  3x2 1.00  3x3 1.00  6x2 0.91  4x3 0.95
+  tracked RWRstar  all 0.93 (n=83)  3x2 1.00  3x3 0.95  6x2 0.91  4x3 0.84
+  tracked RWR_0    all 0.84 (n=83)  3x2 0.90  3x3 1.00  6x2 0.77  4x3 0.68
+  tracked RWR_R    all 0.52 (n=83)  3x2 0.80  3x3 0.59  6x2 0.32  4x3 0.37
+  tracked RWR_H    all 0.23 (n=83)  3x2 0.60  3x3 0.14  6x2 0.05  4x3 0.16
+  tracked RWR1     all 0.82 (n=83)  3x2 0.90  3x3 0.95  6x2 0.77  4x3 0.63
+  tracked TMW      all 0.52 (n=83)  3x2 1.00  3x3 0.55  6x2 0.09  4x3 0.47
+RWR (route 8.1): RWR* 0.93 (n=83); RWR-R 0.52 (n=83); RWR-R 3x2 0.80 4x3 0.37; ORC3 4x3 0.53 -> KILL
+TMW (route 8.5): all 0.52; 3x2 1.00 4x3 0.47; ORC3 4x3 0.53 L1R 4x3 0.05 -> KILL
+RWR-SF (route 8.8): all 0.49 (n=47); 3x2 0.86 (n=14) 4x3 0.33 (n=9); 3x2 0.86 3x3 0.43 6x2 0.20 4x3 0.33 -> KILL
+SF (route 8.3): G4 per SF obs ['PASS', 'FAIL', 'PASS']; SF not smaller than partner at 4x3: 1/3 -> UNCLEAR
+[09:42:12] total 77s

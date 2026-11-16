@@ -1,0 +1,14 @@
+dense     L=8: t_sw=1.214e-02 tau=1.13+-0.19 sweeps=1209  L=12: t_sw=7.939e-02 tau=0.61+-0.15 sweeps=315  L=16: t_sw=3.761e-01 tau=1.45+-0.55 sweeps=320
+half      L=8: t_sw=3.384e-02 tau=1.27+-0.37 sweeps=439  L=12: t_sw=9.377e-02 tau=1.00+-0.33 sweeps=268  L=16: t_sw=2.540e-01 tau=2.15+-0.77 sweeps=471
+nnbf_H32  L=8: t_sw=2.683e-02 tau=0.97+-0.27 sweeps=367  L=12: t_sw=3.408e-01 tau=0.74+-0.54 sweeps=59  L=16: t_sw=1.700e+00 tau=nan+-nan sweeps=30
+nnbf_H6   L=8: t_sw=1.634e-02 tau=1.28+-0.32 sweeps=600  L=12: t_sw=9.065e-02 tau=2.11+-1.10 sweeps=222  L=16: t_sw=5.116e-01 tau=1.00+-0.54 sweeps=99
+quarter   L=8: t_sw=3.212e-02 tau=0.94+-0.23 sweeps=462  L=12: t_sw=8.794e-02 tau=1.42+-0.55 sweeps=285  L=16: t_sw=2.233e-01 tau=1.74+-0.54 sweeps=538
+R_D[half] = c_dense / c_half: L=8: 0.32+-0.11 (t_sw ratio 0.36); L=12: 0.52+-0.21 (t_sw ratio 0.85); L=16: 1.00+-0.52 (t_sw ratio 1.48)
+   half: R_D(16) < 3 -> Diagnostic stands
+   R_N[nnbf_H32 / half] (reported only): L=8: 0.61+-0.25 (t_sw 0.79); L=12: 2.69+-2.15 (t_sw 3.63); L=16: nan+-nan (t_sw 6.69)
+   R_N[nnbf_H6 / half] (reported only): L=8: 0.49+-0.19 (t_sw 0.48); L=12: 2.04+-1.25 (t_sw 0.97); L=16: 0.93+-0.60 (t_sw 2.01)
+R_D[quarter] = c_dense / c_quarter: L=8: 0.46+-0.14 (t_sw ratio 0.38); L=12: 0.39+-0.18 (t_sw ratio 0.90); L=16: 1.40+-0.69 (t_sw ratio 1.68)
+   quarter: R_D(16) < 3 -> Diagnostic stands
+   R_N[nnbf_H32 / quarter] (reported only): L=8: 0.87+-0.33 (t_sw 0.84); L=12: 2.02+-1.66 (t_sw 3.88); L=16: nan+-nan (t_sw 7.61)
+   R_N[nnbf_H6 / quarter] (reported only): L=8: 0.70+-0.25 (t_sw 0.51); L=12: 1.53+-0.99 (t_sw 1.03); L=16: 1.31+-0.81 (t_sw 2.29)
+VERDICT: Saturation Diagnostic stands

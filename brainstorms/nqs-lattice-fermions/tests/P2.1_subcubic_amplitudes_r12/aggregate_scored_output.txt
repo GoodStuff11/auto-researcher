@@ -1,0 +1,25 @@
+inst   V    gap      arm  n_eff  P/dS  conv  steps    dE_tot   dE_sign    f_E   spread  cpu_s
+  20   8  0.066     full    464 10.55  True   1050  1.12e-02  1.47e-03  0.131  4.7e-13     54
+  20   8  0.066     half    304  6.91  True    950  3.31e-02  3.59e-03  0.108  1.1e-13     45
+  20   8  0.066  quarter    224  5.09  True    800  9.28e-02  1.46e-02  0.157  7.7e-14     39
+  21   9  0.145     full    575  9.58 False   1579  1.41e-02  6.82e-04  0.048  4.4e-13     90
+  21   9  0.145     half    395  6.58  True   1050  5.04e-02  2.93e-03  0.058  1.6e-13     62
+  21   9  0.145  quarter    350  5.83  True    550  7.19e-02  6.15e-03  0.086  4.9e-14     33
+  22  10  0.387     full    699  5.92  True    800  1.69e-03  2.14e-06  0.001  1.6e-12     45
+  22  10  0.387     half    449  3.81  True    750  4.67e-03  4.34e-06  0.001  2.9e-12     42
+  22  10  0.387  quarter    349  2.96  True    800  9.81e-03  5.21e-05  0.005  5.4e-13     45
+  23  12  0.085     full    986  1.36 False    757  4.91e-02  7.48e-03  0.152  4.0e-13    206
+  23  12  0.085     half    626  0.86  True    700  7.75e-02  1.26e-02  0.163  1.3e-13    191
+  23  12  0.085  quarter    506  0.70 False    757  9.89e-02  1.52e-02  0.154  7.2e-14    206
+dense / full dE_sign (reported only): {}
+total CPU-s: 1058
+half: INCONCLUSIVE  (1 counted sizes < 3)
+    inst 20 V=8: rho = 2.439
+    inst 21 V=9: not counted: unconverged
+    inst 22 V=10: not counted: premise dE_sign(full) = 2.14e-06 < 0.001
+    inst 23 V=12: not counted: unconverged
+quarter: INCONCLUSIVE  (1 counted sizes < 3)
+    inst 20 V=8: rho = 9.924
+    inst 21 V=9: not counted: unconverged
+    inst 22 V=10: not counted: premise dE_sign(full) = 2.14e-06 < 0.001
+    inst 23 V=12: not counted: unconverged

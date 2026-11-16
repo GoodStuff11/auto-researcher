@@ -1,0 +1,12 @@
+[12:45:00] 3x3: D=1680 sector levels found 60 (N_LOW=3) E0=-6.558475 chi={'My': 1, 'Mx': 1, 'D': 1} S0=0 R_PAIR=1.83 (12 pairs) R_SITE=2.32 (2 pairs) (2.6s)
+[12:45:01] gradcheck ground state E: dir 0 FD -5.48664497e-02 analytic -5.48664498e-02 rel 1.87e-09
+[12:45:01] gradcheck ground state E: dir 1 FD -3.87140611e-01 analytic -3.87140611e-01 rel 1.30e-10
+[12:45:01] gradcheck ground state E: dir 2 FD -4.32221874e-02 analytic -4.32221874e-02 rel 5.37e-10
+[12:45:01] gradcheck ground state E: dir 3 FD -3.87265762e-01 analytic -3.87265761e-01 rel 8.77e-11
+[12:45:01] gradcheck response R (spin): dir 0 FD -6.49853300e+04 analytic -6.49853295e+04 rel 6.63e-09
+[12:45:01] gradcheck response R (spin): dir 1 FD +9.69809071e+04 analytic +9.69809058e+04 rel 1.35e-08
+[12:45:01] gradcheck response R (spin): dir 2 FD +6.32692533e+04 analytic +6.32692529e+04 rel 5.57e-09
+[12:45:01] gradcheck response R (spin): dir 3 FD +1.45147034e+05 analytic +1.45147029e+05 rel 3.29e-08
+[12:45:01] gradcheck: R(y_exact) = 1.434143 is below R of 5 random perturbations: True
+GRADCHECK PASS
+4.76 user 0.25 sys 3.18 wall

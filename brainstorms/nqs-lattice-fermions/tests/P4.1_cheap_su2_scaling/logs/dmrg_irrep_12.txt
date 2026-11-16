@@ -1,0 +1,9 @@
+[2026-11-16T02:15:16.576] maxdim   100  E = -24.6569529720  truncerr = 9.207e-04  maxlinkdim 100  noise 1e-06  (115 s)
+[2026-11-16T02:16:41.991] maxdim   200  E = -25.0520764470  truncerr = 3.647e-04  maxlinkdim 200  noise 1e-06  (85 s)
+[2026-11-16T02:23:22.347] maxdim   400  E = -25.1911407815  truncerr = 1.796e-04  maxlinkdim 400  noise 1e-06  (400 s)
+[2026-11-16T02:28:33.202] maxdim   600  E = -25.2345160845  truncerr = 1.177e-04  maxlinkdim 600  noise 0e+00  (311 s)
+[2026-11-16T02:37:39.188] maxdim   800  E = -25.2563609968  truncerr = 9.216e-05  maxlinkdim 800  noise 0e+00  (546 s)
+[2026-11-16T02:46:58.088] maxdim  1000  E = -25.2703345755  truncerr = 7.944e-05  maxlinkdim 1000  noise 0e+00  (559 s)
+E_extrap = -25.3429107416 +- 7.26e-02  (last stage -25.2703345755; slope 9.248e+02); N_e check QN(("Nf",30,-1),("Sz",0))
+reflection characters: <Inv> = +0.999944  <My> = +0.776535  <Mx> = <Inv><My> = +0.776492
+wrote dmrg_irrep/dmrg_S12x3_N30_Sz20_U8_tp-0.25.json

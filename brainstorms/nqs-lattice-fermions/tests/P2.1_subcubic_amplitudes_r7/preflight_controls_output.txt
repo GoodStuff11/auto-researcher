@@ -1,0 +1,20 @@
+[10:37:53] toy nnbf      P=918 dE_sign=0.08084 dE_tot=0.27901 s/step=0.24
+[10:37:53] toy sj        P=928 dE_sign=0.10680 dE_tot=0.40584 s/step=0.17
+[10:37:53] toy lh_plus   P=919 dE_sign=0.05403 dE_tot=0.20324 s/step=0.57
+[10:37:53] toy lh_site   P=931 dE_sign=0.06869 dE_tot=0.22503 s/step=0.35
+[10:37:53] toy hfps_plus P=986 dE_sign=0.03229 dE_tot=0.19989 s/step=0.40
+[10:37:53] toy hfps_site P=954 dE_sign=0.04114 dE_tot=0.22019 s/step=0.30
+[10:37:53] toy agpj      P=924 dE_sign=0.05166 dE_tot=0.35273 s/step=0.07
+[10:37:53] toy positive control (route := reference itself, foil := Slater x J): PROMOTE {'dE_sign_route': 0.08083550683520357, 'dE_sign_ref': 0.08083550683520357, 'dE_sign_foil': 0.10679858763450234, 'rho_N': 1.0, 'rho_F': 0.7568967776226365, 'rho_t': 1.0}
+[10:37:53] toy negative control (route := projected BCS x J, no backflow): KILL {'dE_sign_route': 0.05165672564534418, 'dE_sign_ref': 0.08083550683520357, 'dE_sign_foil': 0.041144610118303504, 'rho_N': 0.6390350932128734, 'rho_F': 1.2554919221938206, 'rho_t': 1.2642288759735578}
+[10:37:53] toy pipeline (route arm; verdict meaningless at toy size): PROMOTE {'dE_sign_route': 0.03229333009907265, 'dE_sign_ref': 0.08083550683520357, 'dE_sign_foil': 0.041144610118303504, 'rho_N': 0.39949437275018135, 'rho_F': 0.7848738876421314, 'rho_t': 0.7164329557852811}
+[10:37:53] CONTROLS: intended verdicts
+[10:37:53] toy nnbf      P=918 dE_sign=0.08084 dE_tot=0.27901 s/step=0.24
+[10:37:53] toy sj        P=928 dE_sign=0.10680 dE_tot=0.40584 s/step=0.17
+[10:37:53] toy lh_plus   P=919 dE_sign=0.05403 dE_tot=0.20324 s/step=0.57
+[10:37:53] toy lh_site   P=931 dE_sign=0.06869 dE_tot=0.22503 s/step=0.35
+[10:37:53] toy sh_plus   P=959 dE_sign=0.04027 dE_tot=0.20437 s/step=1.62
+[10:37:53] toy positive control (route := reference itself, foil := Slater x J): PROMOTE {'dE_sign_route': 0.08083550683520357, 'dE_sign_ref': 0.08083550683520357, 'dE_sign_foil': 0.10679858763450234, 'rho_N': 1.0, 'rho_F': 0.7568967776226365, 'rho_t': 1.0}
+[10:37:53] toy negative control (route := Slater x J, foil := better lh arm): KILL {'dE_sign_route': 0.10679858763450234, 'dE_sign_ref': 0.08083550683520357, 'dE_sign_foil': 0.05402562713877046, 'rho_N': 1.3211841159384174, 'rho_F': 1.9768134733573572, 'rho_t': 1.4545690608778972} foil = lh_plus (dE_sign 0.05403)
+[10:37:53] toy pipeline (route arm; verdict meaningless at toy size): PROMOTE {'dE_sign_route': 0.0402667901125664, 'dE_sign_ref': 0.08083550683520357, 'dE_sign_foil': 0.05402562713877046, 'rho_N': 0.4981324629368236, 'rho_F': 0.745327583317764, 'rho_t': 0.7324709700878635}
+[10:37:53] CONTROLS: intended verdicts

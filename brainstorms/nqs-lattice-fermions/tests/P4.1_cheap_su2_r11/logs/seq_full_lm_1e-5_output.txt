@@ -1,0 +1,6 @@
+[17:12:45] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[17:13:29] step 1: R 0.2690 (predicted gain 0.3784 of g, truncated Ritz 0.3784); s 1.0; |z| 0.040; |dtheta| 1.015; rank 1739 [2.1 CPU-min]
+[17:14:13] step 2: R 0.4338 (predicted gain 0.2180 of g, truncated Ritz 0.2180); s 1.0; |z| 0.026; |dtheta| 0.771; rank 1758 [4.1 CPU-min]
+[17:14:52] step 3: R 0.5121 (predicted gain 0.0868 of g, truncated Ritz 0.0868); s 1.0; |z| 0.017; |dtheta| 0.533; rank 1735 [5.9 CPU-min]
+[17:15:29] step 4: R 0.5392 (predicted gain 0.0307 of g, truncated Ritz 0.0307); s 1.0; |z| 0.009; |dtheta| 0.431; rank 1742 [7.7 CPU-min]
+[17:15:29] wrote seq_full_lm_thr1e-05_tau0.05.json (166 s, 7.7 CPU-min)

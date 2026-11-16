@@ -1,0 +1,78 @@
+R15 T0 evidence: is the 24-site che energy still falling at the end of its budget?
+
+== S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0.json  [final avg E -16.43073 +- 0.00477, capped False]: iters 1000, logged up to step 1000
+   steps (   0, 250]  <E_sampled>   -15.97924 +- 0.09494   eps 3.766e-02   lr(end) 0.0500
+   steps ( 250, 500]  <E_sampled>   -16.34540 +- 0.01023   eps 1.561e-02   lr(end) 0.0500
+   steps ( 500, 750]  <E_sampled>   -16.38521 +- 0.00782   eps 1.321e-02   lr(end) 0.0275
+   steps ( 750,1000]  <E_sampled>   -16.42414 +- 0.00756   eps 1.087e-02   lr(end) 0.0050
+   slope constant-lr tail  steps (250,500]: dE/d(1000 steps) = -0.4287 +- 0.1141 (t = -3.76, n = 25)
+   slope last 250 logged   steps (750,1000]: dE/d(1000 steps) = -0.1662 +- 0.1013 (t = -1.64, n = 25)
+
+== S8x3_N20_U8_tp-0.25_pg11_che_H48_seed0.json  [final avg E -16.43476 +- 0.00481, capped True]: iters 1000, logged up to step 950
+   steps (   0, 250]  <E_sampled>   -16.01477 +- 0.09174   eps 3.552e-02   lr(end) 0.0500
+   steps ( 250, 500]  <E_sampled>   -16.33743 +- 0.01090   eps 1.609e-02   lr(end) 0.0500
+   steps ( 500, 750]  <E_sampled>   -16.36980 +- 0.01330   eps 1.414e-02   lr(end) 0.0275
+   steps ( 750,1000]  <E_sampled>   -16.43050 +- 0.00825   eps 1.048e-02   lr(end) 0.0050
+   slope constant-lr tail  steps (250,500]: dE/d(1000 steps) = -0.3618 +- 0.1348 (t = -2.68, n = 25)
+   slope last 250 logged   steps (700,950]: dE/d(1000 steps) = -0.2643 +- 0.1201 (t = -2.20, n = 25)
+
+== S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0_ckpt.npz [running, 3000-step protocol]: iters 3000, logged up to step 1850
+   steps (   0, 250]  <E_sampled>   -15.97924 +- 0.09494   eps 3.766e-02   lr(end) 0.0500
+   steps ( 250, 500]  <E_sampled>   -16.34540 +- 0.01023   eps 1.561e-02   lr(end) 0.0500
+   steps ( 500, 750]  <E_sampled>   -16.37379 +- 0.00822   eps 1.390e-02   lr(end) 0.0500
+   steps ( 750,1000]  <E_sampled>   -16.38979 +- 0.00741   eps 1.294e-02   lr(end) 0.0500
+   steps (1000,1250]  <E_sampled>   -16.39995 +- 0.00727   eps 1.232e-02   lr(end) 0.0500
+   steps (1250,1500]  <E_sampled>   -16.39458 +- 0.00762   eps 1.265e-02   lr(end) 0.0500
+   steps (1500,1750]  <E_sampled>   -16.41235 +- 0.00715   eps 1.158e-02   lr(end) 0.0470
+   steps (1750,2000]  <E_sampled>   -16.42801 +- 0.00766   eps 1.063e-02   lr(end) 0.0388
+   slope constant-lr tail  steps (1250,1500]: dE/d(1000 steps) = -0.1274 +- 0.1047 (t = -1.22, n = 25)
+   slope last 250 logged   steps (1600,1850]: dE/d(1000 steps) = -0.1318 +- 0.0662 (t = -1.99, n = 25)
+   CHECKPOINT step 750: E -16.39377 +- 0.00868 (32768 samples), eps 1.270e-02
+   CHECKPOINT step 1500: E -16.40283 +- 0.00703 (32768 samples), eps 1.215e-02
+
+== S8x3_N20_U8_tp-0.25_pg11_pcg_H25_seed0_ckpt.npz [running, 3000-step protocol]: iters 3000, logged up to step 650
+   steps (   0, 250]  <E_sampled>   -15.91667 +- 0.10728   eps 4.143e-02   lr(end) 0.0500
+   steps ( 250, 500]  <E_sampled>   -16.29153 +- 0.01232   eps 1.885e-02   lr(end) 0.0500
+   steps ( 500, 750]  <E_sampled>   -16.34384 +- 0.00784   eps 1.570e-02   lr(end) 0.0500
+   slope last 250 logged   steps (400,650]: dE/d(1000 steps) = -0.0235 +- 0.1022 (t = -0.23, n = 25)
+
+== S8x3_N20_U8_tp-0.25_pg11_r1_H44_seed0_ckpt.npz [running, 3000-step protocol]: iters 3000, logged up to step 2000
+   steps (   0, 250]  <E_sampled>   -15.86468 +- 0.11457   eps 4.456e-02   lr(end) 0.0500
+   steps ( 250, 500]  <E_sampled>   -16.17673 +- 0.01528   eps 2.577e-02   lr(end) 0.0500
+   steps ( 500, 750]  <E_sampled>   -16.33134 +- 0.00788   eps 1.646e-02   lr(end) 0.0500
+   steps ( 750,1000]  <E_sampled>   -16.35053 +- 0.00889   eps 1.530e-02   lr(end) 0.0500
+   steps (1000,1250]  <E_sampled>   -16.38564 +- 0.00720   eps 1.319e-02   lr(end) 0.0500
+   steps (1250,1500]  <E_sampled>   -16.40547 +- 0.00465   eps 1.199e-02   lr(end) 0.0500
+   steps (1500,1750]  <E_sampled>   -16.41687 +- 0.00707   eps 1.131e-02   lr(end) 0.0470
+   steps (1750,2000]  <E_sampled>   -16.44030 +- 0.00493   eps 9.894e-03   lr(end) 0.0388
+   slope constant-lr tail  steps (1250,1500]: dE/d(1000 steps) = -0.0942 +- 0.0629 (t = -1.50, n = 25)
+   slope last 250 logged   steps (1750,2000]: dE/d(1000 steps) = -0.0684 +- 0.0684 (t = -1.00, n = 25)
+   CHECKPOINT step 750: E -16.32866 +- 0.00913 (32768 samples), eps 1.662e-02
+   CHECKPOINT step 1500: E -16.39233 +- 0.00741 (32768 samples), eps 1.278e-02
+
+== 12 sites S4x3_N10_U8_tp-0.25_pg11_che_H32_seed0.json: exact eps at checkpoints 250:2.524e-03 500:1.967e-03 750:1.615e-03; final (avg) eps 1.352e-03
+
+== 12 sites S4x3_N10_U8_tp-0.25_pg11_che_H4_seed0.json: exact eps at checkpoints 250:7.437e-03 500:6.823e-03 750:5.824e-03; final (avg) eps 4.863e-03
+
+== 12 sites S4x3_N10_U8_tp-0.25_pg11_che_H8_seed0.json: exact eps at checkpoints 250:4.908e-03 500:3.673e-03 750:2.992e-03; final (avg) eps 2.511e-03
+
+== 12 sites S4x3_N10_U8_tp-0.25_pg11_foil_H0_seed0.json: exact eps at checkpoints 250:3.964e-01 500:2.465e-01 750:5.074e-02; final (avg) eps 8.859e-02
+
+== 12 sites S4x3_N10_U8_tp-0.25_pg11_pcg_H15_seed0.json: exact eps at checkpoints 250:2.804e-03 500:2.085e-03 750:1.589e-03; final (avg) eps 1.284e-03
+
+== 12 sites S4x3_N10_U8_tp-0.25_pg11_r1_H25_seed0.json: exact eps at checkpoints 250:5.164e-03 500:3.930e-03 750:2.856e-03; final (avg) eps 2.313e-03
+
+== 12 sites S4x3_N10_U8_tp-0.25_pg11_pcg_H15_seed0_ckpt.npz (3000 steps, running): exact eps 750:1.771e-03 1500:1.360e-03 2250:1.052e-03
+
+== 12-site pilot pg_che [final avg exact E -7.805526, eps 2.858e-03]: iters 1000, logged up to step 1000
+   steps (   0, 250]  <E_sampled>    -7.71074 +- 0.06049   eps 1.497e-02   lr(end) 0.0500
+   steps ( 250, 500]  <E_sampled>    -7.79576 +- 0.00234   eps 4.105e-03   lr(end) 0.0500
+   steps ( 500, 750]  <E_sampled>    -7.80104 +- 0.00380   eps 3.432e-03   lr(end) 0.0275
+   steps ( 750,1000]  <E_sampled>    -7.80330 +- 0.00294   eps 3.143e-03   lr(end) 0.0050
+   slope constant-lr tail  steps (250,500]: dE/d(1000 steps) = -0.0230 +- 0.0328 (t = -0.70, n = 25)
+   slope last 250 logged   steps (750,1000]: dE/d(1000 steps) = -0.0021 +- 0.0417 (t = -0.05, n = 25)
+
+== 24-site che, H = 16: W-24 averaged final (1000 steps) vs T2b current-parameter checkpoints
+   E(T2b step 750) - E(W-24 avg) = +0.03696 +- 0.00990  (+3.73 sigma)
+   E(T2b step 1500) - E(W-24 avg) = +0.02790 +- 0.00849  (+3.28 sigma)
+   E(1500) - E(750) at constant lr 0.05 = -0.00906 +- 0.01117  (-0.81 sigma)

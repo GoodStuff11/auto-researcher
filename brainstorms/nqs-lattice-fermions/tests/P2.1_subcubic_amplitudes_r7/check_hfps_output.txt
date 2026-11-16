@@ -1,0 +1,22 @@
+[10:35:01] check geometry (OBC patch indexing): True
+[10:35:01] check amplitude [hfps_plus inst 9 {'mode': 'hfps', 'patch': 'plus', 'F': 3, 'Ha': 3}] ansatz vs augmented det: 7.8e-16
+[10:35:01] check grad [hfps_plus inst 9 Ha=3, proj=none]: analytic -3.7925075242e+00 fd -3.7925075231e+00 rel 2.9e-10
+[10:35:01] check grad [hfps_plus inst 9 Ha=3, proj=chi]: analytic -1.2473542369e+01 fd -1.2473542369e+01 rel 3.2e-13
+[10:35:01] check amplitude [hfps_site inst 9 {'mode': 'hfps', 'patch': 'site', 'F': 3, 'Ha': 4}] ansatz vs augmented det: 5.8e-16
+[10:35:01] check grad [hfps_site inst 9 Ha=4, proj=none]: analytic -7.8711644241e+00 fd -7.8711644242e+00 rel 2.3e-11
+[10:35:01] check grad [hfps_site inst 9 Ha=4, proj=chi]: analytic 4.5913947973e+00 fd 4.5913947981e+00 rel 1.8e-10
+[10:35:01] check amplitude [hfps_plus inst 8 {'mode': 'hfps', 'patch': 'plus', 'F': 3, 'Ha': 3}] ansatz vs augmented det: 1.1e-15
+[10:35:01] check grad [hfps_plus inst 8 Ha=3, proj=none]: analytic 3.6594510949e+00 fd 3.6594510961e+00 rel 3.4e-10
+[10:35:01] check grad [hfps_plus inst 8 Ha=3, proj=chi]: analytic 3.5745406685e+00 fd 3.5745406679e+00 rel 1.6e-10
+[10:35:01] check O_P [hfps_plus] vs fd: 1.8e-08
+[10:35:05] check fast E_loc == (H psi)/psi on all 1680 configs (0 near-node skipped) [hfps_plus, OBC 3x3, full psi incl. Jastrow]: 3.4e-12
+[10:35:05] check amplitude [hfps_site inst 8 {'mode': 'hfps', 'patch': 'site', 'F': 3, 'Ha': 4}] ansatz vs augmented det: 1.1e-15
+[10:35:05] check grad [hfps_site inst 8 Ha=4, proj=none]: analytic 8.5526721578e+00 fd 8.5526721545e+00 rel 3.8e-10
+[10:35:05] check grad [hfps_site inst 8 Ha=4, proj=chi]: analytic 3.5068734969e+00 fd 3.5068734969e+00 rel 3.7e-12
+[10:35:05] check O_P [hfps_site] vs fd: 5.7e-09
+[10:35:08] check fast E_loc == (H psi)/psi on all 1680 configs (0 near-node skipped) [hfps_site, OBC 3x3, full psi incl. Jastrow]: 1.3e-11
+[10:35:08] ALL CHECKS PASSED
+
+real	0m7.296s
+user	0m8.463s
+sys	0m0.196s

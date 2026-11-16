@@ -1,0 +1,6 @@
+# n tp U D E0 gap_full gap_in gap_in/V chi S same_sector e0_match  (or skip reason)
+5 -0.400  8.0 627264 -11.42503170 0.23832 0.46790 0.03899 Tx+1Ty+1Mx+1My+1 S=0 same-sector OK E0 OK (88.0s)
+5 -0.320  8.0 627264 -11.18218472 0.31345 0.40469 0.03372 Tx+1Ty+1Mx+1My+1 S=0 same-sector OK E0 OK (87.0s)
+5 -0.250  8.0 627264 -11.03036810 0.37940 0.43466 0.03622 Tx+1Ty+1Mx+1My+1 S=0 same-sector OK E0 OK (92.8s)
+5 +0.250  8.0 627264 -10.71160864 0.63789 1.20642 0.10053 Tx+1Ty+1Mx+1My+1 S=0 same-sector OK E0 OK (100.8s)
+# SELECTED (min gap_in): n=5 tp=-0.320 U=8 gap_in=0.40469 (0.03372 per site) chi={'Ty': 1, 'Tx': 1, 'My': 1, 'Mx': 1} S=0

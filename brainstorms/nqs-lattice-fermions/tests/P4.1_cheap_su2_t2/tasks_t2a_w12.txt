@@ -1,0 +1,6 @@
+t2a pcg 16
+t2a r1 16
+t2a foil 16
+w12 che 4
+w12 che 8
+w12 che 32

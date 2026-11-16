@@ -1,0 +1,13 @@
+  DAV 4x2 delta 0.03: n=24 states=8 coverage 1.00 median width/w_ex 1.00 median width/|delta| 5.09
+  L1R 4x2 delta 0.03: n=24 states=8 coverage 0.75 median width/w_ex 0.69 median width/|delta| 3.40
+  DAV 5x2 delta 0.03: n=24 states=8 coverage 1.00 median width/w_ex 0.94 median width/|delta| 5.95
+  L1R 5x2 delta 0.03: n=24 states=8 coverage 0.75 median width/w_ex 0.81 median width/|delta| 5.64
+  DAV 4x3 delta 0.03: n=18 states=8 coverage 1.00 median width/w_ex 1.06 median width/|delta| 5.85
+  L1R 4x3 delta 0.03: n=18 states=8 coverage 0.83 median width/w_ex 0.68 median width/|delta| 3.59
+  DAV 4x2 delta 0.05: n=24 states=8 coverage 1.00 median width/w_ex 0.99 median width/|delta| 5.07
+  L1R 4x2 delta 0.05: n=24 states=8 coverage 0.75 median width/w_ex 0.71 median width/|delta| 3.43
+  DAV 5x2 delta 0.05: n=23 states=8 coverage 1.00 median width/w_ex 1.06 median width/|delta| 6.16
+  L1R 5x2 delta 0.05: n=23 states=8 coverage 0.78 median width/w_ex 0.82 median width/|delta| 5.82
+  DAV 4x3 delta 0.05: n=17 states=8 coverage 1.00 median width/w_ex 1.14 median width/|delta| 5.88
+  L1R 4x3 delta 0.05: n=17 states=8 coverage 0.82 median width/w_ex 0.46 median width/|delta| 3.62
+VERDICT 12.3d: PASS

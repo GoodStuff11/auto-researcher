@@ -1,0 +1,50 @@
+[     0.0s] selftest(a) OBC 3x2 2+2 dim=90 |H-H^T|=0.0e+00 E0=-4.0629644119 bonds hop=11 (expect 7 NN + 4 diag) OK
+[     0.2s] selftest(a') vs P2.1 tj_core: 3x2:2 -4.0629644119 (-4.062964411903416), 4x3:3 -9.16758855 (-9.16758855) OK
+[     1.2s] selftest(b) 4x4 OBC 2+2: max|[H,P_g]v|=5.3e-15 U^T U=I (2.2e-16) GS irrep {'Mx': -1, 'My': -1, 'D': -1} E0 irrep -8.4763955759 vs full -8.4763955759 OK
+[     1.7s] selftest(c) MFNGO log-derivative max rel err over 426 params = 5.25e-07 OK
+[     1.7s] selftest(d) kernel on 4x2o vs 4x4o at shared displacements: max diff 0.0e+00 OK
+[     1.7s] selftest(e) anchored wrapper amplitude identity 0.0e+00 OK
+[     1.7s] SELFTEST PASSED
+[     2.2s] target 4x4o 4x4:2 irrep={'Mx': 1, 'My': 1, 'D': -1} dim=10920 n_irrep=1395 E0=-9.6675110278 gap/V=5.4039e-02 (sign half only) npar=426
+[     2.2s]   [cp restart 0] step 1/60 E=-3.77725117,-3.06339947 lr=0.055 relerr=1.716e-01,3.282e-01
+[     2.3s]   [cp restart 0] step 7/60 E=-4.09956378,-3.18192049 lr=0.0974 relerr=1.009e-01,3.022e-01
+[     2.4s]   [cp restart 0] step 13/60 E=-4.37437127,-3.75159136 lr=0.0432 relerr=4.065e-02,1.772e-01
+[     2.5s]   [cp restart 0] step 19/60 E=-4.50283844,-4.14382282 lr=0.0191 relerr=1.248e-02,9.121e-02
+[     2.6s]   [cp restart 0] step 25/60 E=-4.53049842,-4.32535729 lr=0.0169 relerr=6.411e-03,5.140e-02
+[     2.6s]   [cp restart 0] step 31/60 E=-4.54925583,-4.46999401 lr=0.03 relerr=2.297e-03,1.968e-02
+[     2.7s]   [cp restart 0] step 37/60 E=-4.55537649,-4.54174162 lr=0.0531 relerr=9.548e-04,3.945e-03
+[     2.8s]   [cp restart 0] step 43/60 E=-4.55658861,-4.55594861 lr=0.0941 relerr=6.890e-04,8.293e-04
+[     2.8s]   [cp restart 0] step 49/60 E=-4.55676351,-4.55680097 lr=0.167 relerr=6.506e-04,6.424e-04
+[     2.9s]   [cp restart 0] step 55/60 E=-4.55679533,-4.55679791 lr=0.2 relerr=6.437e-04,6.431e-04
+[     3.0s]   [cp restart 0] step 60/60 E=-4.55679662,-4.55679677 lr=0.2 relerr=6.434e-04,6.433e-04
+[     3.0s]   [cp restart 1] step 1/60 E=-2.35168100,-3.22903534 lr=0.055 relerr=4.842e-01,2.918e-01
+[     3.1s]   [cp restart 1] step 7/60 E=-3.44652129,-4.22541031 lr=0.0974 relerr=2.441e-01,7.332e-02
+[     3.2s]   [cp restart 1] step 13/60 E=-3.98649251,-4.38939547 lr=0.0863 relerr=1.257e-01,3.736e-02
+[     3.2s]   [cp restart 1] step 19/60 E=-4.54075772,-4.54594360 lr=0.153 relerr=4.161e-03,3.024e-03
+[     3.3s]   [cp restart 1] step 25/60 E=-4.55655654,-4.55568847 lr=0.135 relerr=6.960e-04,8.864e-04
+[     3.4s]   [cp restart 1] step 31/60 E=-4.55689067,-4.55667790 lr=0.12 relerr=6.227e-04,6.694e-04
+[     3.5s]   [cp restart 1] step 37/60 E=-4.55681464,-4.55677801 lr=0.106 relerr=6.394e-04,6.475e-04
+[     3.5s]   [cp restart 1] step 43/60 E=-4.55680053,-4.55679283 lr=0.0941 relerr=6.425e-04,6.442e-04
+[     3.6s]   [cp restart 1] step 49/60 E=-4.55679721,-4.55679618 lr=0.167 relerr=6.432e-04,6.435e-04
+[     3.7s]   [cp restart 1] step 55/60 E=-4.55679681,-4.55679659 lr=0.0739 relerr=6.433e-04,6.434e-04
+[     3.8s]   [cp restart 1] step 60/60 E=-4.55679673,-4.55679666 lr=0.119 relerr=6.433e-04,6.434e-04
+[     3.8s] source cp: relerr=['6.43e-04', '6.43e-04'] |theta-theta_init|=4.375 identified 12/426 frac_identified=0.497 wall=1.6s
+[     3.8s] arm cp: charged source wall time 1.6s
+[     6.3s] arm cp@0     : E=-2.14811163 eps=4.6996e-01 (raw 4.7259e-01, irrep weight 0.015) A/V=1.5139e-01 sign-agree=0.0325 Pd=-1.6251e-03 fid=0.0008
+[     7.5s]   [cp] step 2/24 eps=3.00462e-01 lr=0.0605
+[     8.7s]   [cp] step 4/24 eps=1.77971e-01 lr=0.0732
+[    10.8s] arm cp@4     : E=-6.81997865 eps=1.7797e-01 (raw 4.3891e-01, irrep weight 0.083) A/V=6.8535e-02 sign-agree=0.1092 Pd=5.0829e-04 fid=0.0430
+[    12.1s]   [cp] step 6/24 eps=1.41120e-01 lr=0.0443
+[    13.3s]   [cp] step 8/24 eps=1.05632e-01 lr=0.0536
+[    15.4s] arm cp@8     : E=-7.97740437 eps=1.0563e-01 (raw 2.1364e-01, irrep weight 0.436) A/V=4.9797e-02 sign-agree=0.2665 Pd=2.1626e-03 fid=0.1119
+[    16.6s]   [cp] step 10/24 eps=8.18129e-02 lr=0.0648
+[    17.8s]   [cp] step 12/24 eps=5.77261e-02 lr=0.0785
+[    19.8s] arm cp@12    : E=-8.74389381 eps=5.7726e-02 (raw 1.5703e-01, irrep weight 0.432) A/V=1.7613e-02 sign-agree=0.7231 Pd=3.4487e-03 fid=0.3304
+[    21.0s]   [cp] step 14/24 eps=3.65899e-02 lr=0.0949
+[    22.2s]   [cp] step 16/24 eps=2.30921e-02 lr=0.115
+[    23.3s]   [cp] step 18/24 eps=1.34387e-02 lr=0.139
+[    24.6s]   [cp] step 20/24 eps=9.21509e-03 lr=0.0841
+[    25.8s]   [cp] step 22/24 eps=7.35902e-03 lr=0.102
+[    26.9s]   [cp] step 24/24 eps=6.67427e-03 lr=0.123
+[    29.0s] arm cp@24    : E=-9.56072269 eps=6.6743e-03 (raw 3.5774e-02, irrep weight 0.828) A/V=9.9670e-04 sign-agree=0.9938 Pd=5.3662e-03 fid=0.9380
+[    29.0s] done (results_smoke/task6.json)

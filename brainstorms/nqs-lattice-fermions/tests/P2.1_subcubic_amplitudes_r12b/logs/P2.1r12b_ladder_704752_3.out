@@ -1,0 +1,30 @@
+[15:19:40] instance 24 {'Lx': 7, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=84084 E0=-7.8159469909 gap=0.0369 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=3078 arm=full seed=11 threads=1
+[15:19:44] arm full: F=4 Ha=0 n_eff=1325 P/dim_S_chi=0.43 calib=5.33e-15
+[15:19:46] full: it     0 E-E0 = 1.887485 best = 1.887485 (1.997 CPU-s/step)
+[15:21:23] full: it    50 E-E0 = 0.194701 best = 0.185956 (1.917 CPU-s/step)
+[15:22:57] full: it   100 E-E0 = 0.116574 best = 0.108008 (1.893 CPU-s/step)
+[15:24:32] full: it   150 E-E0 = 0.081646 best = 0.081646 (1.885 CPU-s/step)
+[15:26:12] full: it   200 E-E0 = 0.125107 best = 0.073986 (1.912 CPU-s/step)
+[15:27:53] full: it   250 E-E0 = 0.094470 best = 0.072104 (1.929 CPU-s/step)
+[15:29:33] full: it   300 E-E0 = 0.070266 best = 0.068689 (1.937 CPU-s/step)
+[15:31:14] full: it   350 E-E0 = 0.109641 best = 0.068654 (1.947 CPU-s/step)
+[15:32:49] full: it   400 E-E0 = 0.071146 best = 0.068654 (1.938 CPU-s/step)
+[15:34:20] full: it   450 E-E0 = 0.084952 best = 0.063119 (1.923 CPU-s/step)
+[15:35:50] full: it   500 E-E0 = 0.097659 best = 0.063119 (1.910 CPU-s/step)
+[15:37:18] full: it   550 E-E0 = 0.080853 best = 0.062535 (1.895 CPU-s/step)
+[15:38:45] full: it   600 E-E0 = 0.073028 best = 0.062535 (1.880 CPU-s/step)
+[15:40:10] full: it   650 E-E0 = 0.062942 best = 0.062289 (1.866 CPU-s/step)
+[15:41:33] full: it   700 E-E0 = 0.093214 best = 0.062289 (1.852 CPU-s/step)
+[15:42:58] full: it   750 E-E0 = 0.067058 best = 0.062289 (1.840 CPU-s/step)
+[15:44:23] full: it   800 E-E0 = 0.087534 best = 0.062289 (1.831 CPU-s/step)
+[15:45:48] full: it   850 E-E0 = 0.063083 best = 0.061898 (1.822 CPU-s/step)
+[15:47:15] full: it   900 E-E0 = 0.068767 best = 0.061898 (1.818 CPU-s/step)
+[15:48:44] full: it   950 E-E0 = 0.067494 best = 0.061898 (1.815 CPU-s/step)
+[15:50:12] full: it  1000 E-E0 = 0.067961 best = 0.061898 (1.811 CPU-s/step)
+[15:51:40] full: it  1050 E-E0 = 0.059595 best = 0.058628 (1.808 CPU-s/step)
+[15:53:06] full: it  1100 E-E0 = 0.069539 best = 0.058628 (1.803 CPU-s/step)
+[15:54:32] full: it  1150 E-E0 = 0.062211 best = 0.058628 (1.800 CPU-s/step)
+[15:55:58] full: it  1200 E-E0 = 0.064982 best = 0.058628 (1.796 CPU-s/step)
+[15:57:22] full: stop = plateau at it 1250; best E - E0 = 0.058628; SR CPU 2240 s
+[15:57:50] full [P]: dE_tot=0.058628 dE_sign=0.003762 f_E=0.064 spread=8.6e-13; max |masked entry| proposed by SR = 0.0e+00
+[15:57:50] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r12b/results/t1_full_inst24_s11.json

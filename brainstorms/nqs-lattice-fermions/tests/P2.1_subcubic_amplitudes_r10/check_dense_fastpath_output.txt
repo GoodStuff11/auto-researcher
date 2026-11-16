@@ -1,0 +1,3 @@
+inst 9: fast vs generic amplitude 4.2e-16; per-sample grad 4.2e-16; summed per-sample vs full 3.3e-17
+inst 8: fast vs generic amplitude 5.4e-16; per-sample grad 3.9e-16; summed per-sample vs full 6.4e-17
+FASTPATH CHECK PASS

@@ -1,0 +1,9 @@
+[11:31:05] instance 4 D=420420 arm=lh_site seed=22 E0=-9.7918583301 gap=0.02492 |G|=4 dim_S_chi=15080
+[11:31:24] arm lh_site: {'mode': 'lh', 'patch': 'site', 'F': 5, 'Ha': 3} n_params=1641 target=1626 calib=1.65e-13
+[11:31:30] lh_site: it     0  E = -8.06142867  |f| = 1.40e+00  (5.94 s/step)
+[11:34:02] lh_site: it    25  E = -9.34394043  |f| = 3.24e-01  (6.04 s/step)
+[11:36:33] lh_site: it    50  E = -9.52604037  |f| = 1.84e-01  (6.04 s/step)
+[11:39:00] lh_site: it    74  E = -9.60339664  |f| = 1.75e-01  (6.08 s/step)
+[11:41:12] lh_site [P]: dE_tot=0.18813 dE_sign=0.05519 f_E=0.293 spread=4.4e-13 ov0=0.545 (129 s)
+[11:42:53] lh_site [P_S]: dE_tot=0.09361 dE_sign=0.02450 f_E=0.262 spread=3.8e-13 ov0=0.787 (102 s)
+[11:42:53] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r9/results/t2_lh_site_inst4_s22.json

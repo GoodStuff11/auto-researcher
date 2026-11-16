@@ -1,0 +1,8 @@
+[14:15:07] threads 1
+[14:15:08] per-step CPU-s: lrk@0=0.048, wid@0=0.018
+[14:15:08] budget trainA: projected 73 CPU-s + 1 used now; invocation cap 580; leaf ledger 13 of 1800
+[14:15:20] A size 0 lrk seed 11: n_params 606 (foil 486) dE_tot 0.01919 dE_sign 0.00280 (13 CPU-s)
+[14:15:35] A size 0 lrk seed 22: n_params 606 (foil 486) dE_tot 0.00630 dE_sign 0.00127 (14 CPU-s)
+[14:15:40] A size 0 wid seed 11: n_params 616 (foil 486) dE_tot 0.01755 dE_sign 0.00224 (6 CPU-s)
+[14:15:47] A size 0 wid seed 22: n_params 616 (foil 486) dE_tot 0.00834 dE_sign 0.00113 (6 CPU-s)
+[14:15:47] leaf ledger now 52 s

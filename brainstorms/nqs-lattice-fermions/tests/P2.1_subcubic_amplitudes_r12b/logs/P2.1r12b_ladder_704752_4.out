@@ -1,0 +1,24 @@
+[15:19:40] instance 24 {'Lx': 7, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=84084 E0=-7.8159469909 gap=0.0369 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=3078 arm=half seed=11 threads=1
+[15:19:44] arm half: F=4 Ha=0 n_eff=835 P/dim_S_chi=0.27 calib=5.33e-15
+[15:19:46] half: it     0 E-E0 = 1.889124 best = 1.889124 (2.022 CPU-s/step)
+[15:21:25] half: it    50 E-E0 = 0.216282 best = 0.216282 (1.953 CPU-s/step)
+[15:23:01] half: it   100 E-E0 = 0.192718 best = 0.160640 (1.931 CPU-s/step)
+[15:24:38] half: it   150 E-E0 = 0.127517 best = 0.127517 (1.928 CPU-s/step)
+[15:26:21] half: it   200 E-E0 = 0.112078 best = 0.112078 (1.956 CPU-s/step)
+[15:28:04] half: it   250 E-E0 = 0.131048 best = 0.106297 (1.974 CPU-s/step)
+[15:29:46] half: it   300 E-E0 = 0.113724 best = 0.104485 (1.981 CPU-s/step)
+[15:31:29] half: it   350 E-E0 = 0.120221 best = 0.104485 (1.991 CPU-s/step)
+[15:33:04] half: it   400 E-E0 = 0.154029 best = 0.103987 (1.978 CPU-s/step)
+[15:34:37] half: it   450 E-E0 = 0.150028 best = 0.098883 (1.962 CPU-s/step)
+[15:36:09] half: it   500 E-E0 = 0.150765 best = 0.094773 (1.948 CPU-s/step)
+[15:37:37] half: it   550 E-E0 = 0.091591 best = 0.091591 (1.932 CPU-s/step)
+[15:39:06] half: it   600 E-E0 = 0.103442 best = 0.091591 (1.917 CPU-s/step)
+[15:40:32] half: it   650 E-E0 = 0.105629 best = 0.090568 (1.902 CPU-s/step)
+[15:41:58] half: it   700 E-E0 = 0.113457 best = 0.089846 (1.887 CPU-s/step)
+[15:43:24] half: it   750 E-E0 = 0.098287 best = 0.087023 (1.876 CPU-s/step)
+[15:44:51] half: it   800 E-E0 = 0.115027 best = 0.087023 (1.867 CPU-s/step)
+[15:46:18] half: it   850 E-E0 = 0.108399 best = 0.087023 (1.858 CPU-s/step)
+[15:47:48] half: it   900 E-E0 = 0.093512 best = 0.087023 (1.855 CPU-s/step)
+[15:49:17] half: stop = plateau at it 950; best E - E0 = 0.087023; SR CPU 1759 s
+[15:49:47] half [P]: dE_tot=0.087023 dE_sign=0.007767 f_E=0.089 spread=2.4e-13; max |masked entry| proposed by SR = 0.0e+00
+[15:49:47] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r12b/results/t1_half_inst24_s11.json

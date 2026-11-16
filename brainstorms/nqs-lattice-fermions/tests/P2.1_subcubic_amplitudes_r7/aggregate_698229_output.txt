@@ -1,0 +1,6 @@
+[10:54:52] lh_plus  steps= 75 stop=None P=1617 dE_tot=0.18609 dE_sign=0.06549 spread=4.0e-13 E(50)=-9.504211 s/step=12.83
+[10:54:52] lh_site  steps= 75 stop=None P=1641 dE_tot=0.20807 dE_sign=0.07548 spread=2.8e-13 E(50)=-9.513120 s/step=9.24
+[10:54:52] nnbf     steps= 75 stop=None P=1626 dE_tot=0.24804 dE_sign=0.08799 spread=2.6e-13 E(50)=-9.451324 s/step=3.68
+[10:54:52] lh_3x3   steps= 75 stop=None P=1625 dE_tot=0.13636 dE_sign=0.03878 spread=2.0e-13 E(50)=-9.588218 s/step=16.12
+[10:54:52] ROUTE 6.1' (LH-HFDS) T2 VERDICT: KILL  rho_F = 0.868 > 0.85 (does not beat the one-site foil)  dE_sign_route=0.06549 dE_sign_ref=0.08799 dE_sign_foil=0.07548 rho_N=0.7443 rho_F=0.8676 rho_t=0.7503
+[10:54:52] reported only: lh_3x3 rho_N = 0.441

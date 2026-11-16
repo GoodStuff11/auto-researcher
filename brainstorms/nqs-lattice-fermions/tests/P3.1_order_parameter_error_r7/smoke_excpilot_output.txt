@@ -1,0 +1,39 @@
+[14:59:26] small: D=10920 ED [-8.476395575934244, -8.37584026628098, -8.30965898809856, -8.268710215368367] |G|=8 chi={'My': -1, 'Mx': -1, 'D': -1} S0=1 (0 s)
+[14:59:26] 12 in-irrep (chi, S=1) levels: omega = [0.943, 1.1107, 1.184, 1.361, 1.493, 1.7298, 1.7434, 2.0493, 2.1532, 2.2066, 2.2877, 2.3324] (1 s)
+[14:59:26] PRE-REGISTERED RULE: GO to step 2 iff eps_k/omega_k <= 0.4 (k=1..3) AND out-of-24-window weight <= 0.03 (k=1..3) AND |<psi0|phi_k>|^2 <= 0.02 (k=1..3) AND exact pair ESR0/ORC in [0.7,1.3]; MUTATE iff eps_1/omega_1 > 1 or any out-of-window weight > 0.05; otherwise CONDITIONAL (step 2 scored on spin and pair only).
+[14:59:27] FD check dir 0: FD -2.84549448e-02 analytic -2.84549448e-02 rel err 1.4e-09 (pen 1.557e+00)
+[14:59:27] FD check dir 1: FD +1.89129546e-02 analytic +1.89129545e-02 rel err 5.0e-09 (pen 1.557e+00)
+[14:59:27] FD check dir 2: FD -3.61299659e-02 analytic -3.61299660e-02 rel err 2.5e-09 (pen 1.557e+00)
+[14:59:27] FD check dir 3: FD +2.75320077e-02 analytic +2.75320077e-02 rel err 1.4e-09 (pen 1.557e+00)
+[14:59:27] FD check max rel err 5.0e-09 -> ok
+[14:59:27] small: penalty reference = exact psi_0; ESR/ORC target = r7 synthetic state (machinery only)
+[14:59:27] phi_1: it     0  F = -6.63198808  E = -8.05851980  pen = 1.43e+00  |<psi0|phi>|^2=7.133e-01 |<1|phi>|^2=0.0773 P3=0.2161 argmax=3  (0.06 s/step)
+[14:59:30] phi_1: it    50  F = -7.45416645  E = -7.46003746  pen = 5.87e-03  |<psi0|phi>|^2=2.936e-03 |<1|phi>|^2=0.8737 P3=0.9791 argmax=1  (0.06 s/step)
+[14:59:32] phi_1: it   100  F = -7.49667938  E = -7.49691337  pen = 2.34e-04  |<psi0|phi>|^2=1.170e-04 |<1|phi>|^2=0.9509 P3=0.9910 argmax=1  (0.06 s/step)
+[14:59:35] phi_1: it   150  F = -7.51304440  E = -7.51412290  pen = 1.08e-03  |<psi0|phi>|^2=5.392e-04 |<1|phi>|^2=0.9863 P3=0.9949 argmax=1  (0.06 s/step)
+[14:59:38] phi_1: it   200  F = -7.49518535  E = -7.49576775  pen = 5.82e-04  |<psi0|phi>|^2=2.912e-04 |<1|phi>|^2=0.9798 P3=0.9907 argmax=1  (0.05 s/step)
+[14:59:40] phi_1: it   250  F = -7.52260420  E = -7.52311427  pen = 5.10e-04  |<psi0|phi>|^2=2.550e-04 |<1|phi>|^2=0.9947 P3=0.9972 argmax=1  (0.05 s/step)
+[14:59:43] phi_1: it   300  F = -7.52747840  E = -7.52748205  pen = 3.65e-06  |<psi0|phi>|^2=1.826e-06 |<1|phi>|^2=0.9961 P3=0.9985 argmax=1  (0.05 s/step)
+[14:59:46] phi_1: it   350  F = -7.53171591  E = -7.53171981  pen = 3.90e-06  |<psi0|phi>|^2=1.951e-06 |<1|phi>|^2=0.9993 P3=0.9996 argmax=1  (0.05 s/step)
+[14:59:48] phi_1: it   399  F = -7.53273367  E = -7.53273367  pen = 8.57e-09  |<psi0|phi>|^2=4.287e-09 |<1|phi>|^2=0.9998 P3=0.9999 argmax=1  (0.05 s/step)
+[14:59:49] phi_1: training wall 22 s (0.05 s/step); ground-state training 15229 s -> ratio 0.00
+[14:59:49] phi_2: it     0  F = -6.47476574  E = -8.05647626  pen = 1.58e+00  |<psi0|phi>|^2=7.124e-01 |<2|phi>|^2=0.0467 P3=0.2165 argmax=3  (0.05 s/step)
+[14:59:51] phi_2: it    50  F = -7.23513033  E = -7.24946760  pen = 1.43e-02  |<psi0|phi>|^2=7.129e-03 |<2|phi>|^2=0.0163 P3=0.9772 argmax=3  (0.05 s/step)
+[14:59:54] phi_2: it   100  F = -7.22891598  E = -7.23287742  pen = 3.96e-03  |<psi0|phi>|^2=1.969e-03 |<2|phi>|^2=0.0001 P3=0.9782 argmax=3  (0.05 s/step)
+[14:59:57] phi_2: it   150  F = -7.24683943  E = -7.24804363  pen = 1.20e-03  |<psi0|phi>|^2=5.996e-04 |<2|phi>|^2=0.0640 P3=0.9860 argmax=3  (0.05 s/step)
+[14:59:59] phi_2: it   200  F = -7.25454501  E = -7.25478231  pen = 2.37e-04  |<psi0|phi>|^2=5.983e-05 |<2|phi>|^2=0.2383 P3=0.9844 argmax=3  (0.05 s/step)
+[15:00:02] phi_2: it   250  F = -7.32941604  E = -7.33042488  pen = 1.01e-03  |<psi0|phi>|^2=4.656e-04 |<2|phi>|^2=0.7110 P3=0.9955 argmax=2  (0.05 s/step)
+[15:00:05] phi_2: it   300  F = -7.31603729  E = -7.31764156  pen = 1.60e-03  |<psi0|phi>|^2=2.753e-04 |<2|phi>|^2=0.9094 P3=0.9862 argmax=2  (0.05 s/step)
+[15:00:07] phi_2: it   350  F = -7.35477973  E = -7.35501983  pen = 2.40e-04  |<psi0|phi>|^2=1.103e-04 |<2|phi>|^2=0.9735 P3=0.9976 argmax=2  (0.05 s/step)
+[15:00:10] phi_2: it   399  F = -7.36281530  E = -7.36282443  pen = 9.13e-06  |<psi0|phi>|^2=7.798e-07 |<2|phi>|^2=0.9919 P3=0.9995 argmax=2  (0.05 s/step)
+[15:00:10] phi_2: training wall 22 s (0.05 s/step); ground-state training 15229 s -> ratio 0.00
+[15:00:10] phi_1: E=-7.532738 matched level 1 (omega=0.9430) eps=+0.0007 eps/omega=0.001 | |<1|phi>|^2=0.9998 ||P3 phi||^2=0.9999 out-of-12-window=0.0001 |<psi0|phi>|^2=0.0000 |<psi|phi>|^2=1.36e-08 S2=2.00e+00 top levels [1, 2, 3, 11, 6]
+[15:00:10] phi_2: E=-7.362858 matched level 2 (omega=1.1107) eps=+0.0028 eps/omega=0.003 | |<2|phi>|^2=0.9922 ||P3 phi||^2=0.9995 out-of-12-window=0.0004 |<psi0|phi>|^2=0.0000 |<psi|phi>|^2=3.17e-07 S2=2.00e+00 top levels [2, 3, 1, 4, 5]
+[15:00:10] principal angles span(phi_1..2) vs span(|1..2>): [0.56, 5.06] deg (cosines [1.0, 0.9961])
+[15:00:10] estimated epsh/omegah (one Krylov step) = [0.001, 0.002] vs exact eps/omega = [0.001, 0.003]
+[15:00:10] pair: delta=-1.707e-06 | ESR0(K=2) -2.071e-05 ratio 12.135 | ORC(K=2) -2.249e-05 ratio 13.179 | L1R ratio 9.225 | ESR0/ORC 0.921 (K_1/2=2) | S3 interval delta_hat*[1,1.00] = ratio [12.135,12.156] report
+[15:00:10] spin: delta=+3.134e-04 | ESR0(K=2) +1.487e-04 ratio 0.474 | ORC(K=2) +1.577e-04 ratio 0.503 | L1R ratio 0.280 | ESR0/ORC 0.943 (K_1/2=6) | S3 interval delta_hat*[1,1.00] = ratio [0.474,0.475] report
+[15:00:10] charge: delta=-6.279e-06 | ESR0(K=2) +3.724e-05 ratio -5.931 | ORC(K=2) +4.776e-05 ratio -7.606 | L1R ratio -4.019 | ESR0/ORC 0.780 (K_1/2=11) | S3 interval delta_hat*[1,1.00] = ratio [-5.931,-5.942] report
+[15:00:10] smoke training: |<1|phi_1>|^2 = 0.9998, eps_1/omega_1 = 0.001 (need >= 0.95 and <= 0.1) -> ok
+[15:00:10] SMOKE PASS
+[15:00:10] done (44 s)

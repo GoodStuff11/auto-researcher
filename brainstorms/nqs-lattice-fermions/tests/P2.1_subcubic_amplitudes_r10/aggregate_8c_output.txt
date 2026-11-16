@@ -1,0 +1,11 @@
+dense HFPS F=4   L=8: t_sw=1.197e-02 tau=1.11+-0.13 sweeps=2450  L=12: t_sw=7.904e-02 tau=1.38+-0.36 sweeps=635  L=16: t_sw=3.816e-01 tau=1.50+-0.60 sweeps=289
+7.1 LH-HFPS      L=8: t_sw=3.583e-02 tau=0.96+-0.18 sweeps=829  L=12: t_sw=1.157e-01 tau=0.78+-0.18 sweeps=434  L=16: t_sw=4.239e-01 tau=1.36+-0.55 sweeps=261
+NNBF H=128       L=8: t_sw=1.329e-01 tau=0.63+-0.19 sweeps=228  L=12: t_sw=1.456e+00 tau=0.88+-0.90 sweeps=35  L=16: t_sw=9.743e+00 tau=nan+-nan sweeps=12
+NNBF H=32        L=8: t_sw=2.861e-02 tau=0.81+-0.13 sweeps=1029  L=12: t_sw=3.711e-01 tau=0.99+-0.45 sweeps=137  L=16: t_sw=2.174e+00 tau=1.07+-0.90 sweeps=52
+NNBF H=6         L=8: t_sw=1.593e-02 tau=1.17+-0.17 sweeps=1842  L=12: t_sw=9.557e-02 tau=1.10+-0.28 sweeps=525  L=16: t_sw=5.411e-01 tau=0.79+-0.34 sweeps=204
+NNBF H=64        L=8: t_sw=4.922e-02 tau=0.69+-0.15 sweeps=612  L=12: t_sw=7.259e-01 tau=0.50+-0.20 sweeps=71  L=16: t_sw=4.578e+00 tau=nan+-nan sweeps=26
+R[dense HFPS F=4 / route]: L=8: R=0.39+-0.09 (t_sw ratio 0.33); L=12: R=1.22+-0.43 (t_sw ratio 0.68); L=16: R=0.99+-0.56 (t_sw ratio 0.90) -> KILL-COST (uncertain)
+R[NNBF H=128 / route]: L=8: R=2.43+-0.85 (t_sw ratio 3.71); L=12: R=14.28+-14.96 (t_sw ratio 12.59); L=16: R=nan+-nan (t_sw ratio 22.98) -> KILL-COST
+R[NNBF H=32 / route]: L=8: R=0.68+-0.16 (t_sw ratio 0.80); L=12: R=4.09+-2.11 (t_sw ratio 3.21); L=16: R=4.03+-3.77 (t_sw ratio 5.13) -> DOWNGRADE (uncertain)
+R[NNBF H=6 / route]: L=8: R=0.54+-0.13 (t_sw ratio 0.44); L=12: R=1.17+-0.41 (t_sw ratio 0.83); L=16: R=0.74+-0.44 (t_sw ratio 1.28) -> KILL-COST (uncertain)
+R[NNBF H=64 / route]: L=8: R=0.99+-0.28 (t_sw ratio 1.37); L=12: R=4.05+-1.90 (t_sw ratio 6.28); L=16: R=nan+-nan (t_sw ratio 10.80) -> KILL-COST

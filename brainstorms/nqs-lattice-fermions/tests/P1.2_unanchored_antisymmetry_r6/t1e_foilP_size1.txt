@@ -1,0 +1,5 @@
+[14:28:23] threads 1
+[14:28:24] budget foilP: projected 114 CPU-s + 1 used now; invocation cap 580; leaf ledger 777 of 1800
+[14:29:07] size 1 foilP seed 11 chi {'My': 1, 'Mx': 1}: dE_tot 0.01167 dE_sign 0.00111 (43 CPU-s)
+[14:29:52] size 1 foilP seed 22 chi {'My': 1, 'Mx': 1}: dE_tot 0.02368 dE_sign 0.00221 (45 CPU-s)
+[14:29:52] leaf ledger now 866 s

@@ -1,0 +1,1 @@
+checkpoint resume (inst 23 half_F16, F=16, n_eff=1622; 60 steps straight vs 30 + resume to 60): steps 60 vs 60; max |traj diff| = 0.0e+00; dE_sign 1.1656744064e-02 vs 1.1656744064e-02; dE_tot 1.2520212582e-01 vs 1.2520212582e-01; EXACT=True

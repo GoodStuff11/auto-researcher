@@ -1,0 +1,23 @@
+[11:05:56] instance 7 D=34650 arm=nnbf_c seed=11 E0=-8.9486649196 gap=0.09579 |G|=4 dim_S_chi=1782
+[11:05:58] arm nnbf_c: {'mode': 'full', 'Hs': 16} n_params=2128 target=918 calib=5.86e-14
+[11:05:58] nnbf_c: it     0  E = -7.46776075  |f| = 2.39e+00  (0.22 s/step)
+[11:06:02] nnbf_c: it    25  E = -8.75331239  |f| = 2.42e-01  (0.18 s/step)
+[11:06:03] nnbf_c: it    29  E = -8.79884846  |f| = 1.87e-01  (0.18 s/step)
+[11:06:07] nnbf_c [P]: dE_tot=0.14884 dE_sign=0.02192 f_E=0.147 spread=3.6e-14 ov0=0.785 (4 s)
+[11:06:11] nnbf_c [P_S]: dE_tot=0.05499 dE_sign=0.00468 f_E=0.085 spread=3.6e-13 ov0=0.972 (4 s)
+[11:06:11] toy lh_3x3   P=959 steps=30 dE_sign=0.04859 dE_tot=0.21321 s/step=0.70
+[11:06:11] toy lh_plus  P=919 steps=30 dE_sign=0.05403 dE_tot=0.20324 s/step=0.57
+[11:06:11] toy lh_site  P=931 steps=30 dE_sign=0.06869 dE_tot=0.22503 s/step=0.35
+[11:06:11] toy nnbf     P=918 steps=30 dE_sign=0.08084 dE_tot=0.27901 s/step=0.24
+[11:06:11] toy sj       P=928 steps=30 dE_sign=0.10680 dE_tot=0.40584 s/step=0.17
+[11:06:11] toy nnbf_c   P=2128 steps=30 dE_sign=0.02192 dE_tot=0.14884 s/step=0.18
+[11:06:17] sign-exact control: dE_tot=0.02738 dE_sign=-1.78e-14 spread=1.0e-12
+[11:06:17] toy positive control (route := sign-exact state): PROMOTE rho_N = -0.000, rho_C = -0.000 <= 0.75; rho_F = -0.000 <= 0.85
+[11:06:17] toy negative control A (route := Slater x Jastrow): KILL rho_C = 4.873 >= 1.0 (compute-matched NNBF at least as good); rho_F = 1.977 > 0.85 (3x3 does not beat the plus patch)
+[11:06:17] toy negative control B (route := nnbf_c itself): KILL rho_C = 1.000 >= 1.0 (compute-matched NNBF at least as good)
+[11:06:17] toy pipeline (lh_3x3; verdict meaningless at toy size): KILL rho_C = 2.217 >= 1.0 (compute-matched NNBF at least as good); rho_F = 0.899 > 0.85 (3x3 does not beat the plus patch)
+[11:06:17] CONTROLS: intended verdicts
+
+real	0m21.720s
+user	1m21.637s
+sys	0m3.175s

@@ -1,0 +1,80 @@
+[
+ {
+  "time": "2026-11-16 10:56:43",
+  "mode": "foil",
+  "cpu": 158.975997462,
+  "note": "sizes 0,1,2 seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 10:57:02",
+  "mode": "checks",
+  "cpu": 13.77446107,
+  "note": ""
+ },
+ {
+  "time": "2026-11-16 10:57:45",
+  "mode": "train",
+  "cpu": 35.73420704,
+  "note": "sizes 0 arms ws,wide seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 10:57:52",
+  "mode": "train-abort",
+  "cpu": 4.34640239,
+  "note": "sizes 1 arms ws,wide"
+ },
+ {
+  "time": "2026-11-16 10:58:48",
+  "mode": "checks",
+  "cpu": 16.006815711,
+  "note": ""
+ },
+ {
+  "time": "2026-11-16 11:04:11",
+  "mode": "train",
+  "cpu": 318.491856228,
+  "note": "sizes 1 arms ws,wide seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 11:09:42",
+  "mode": "train",
+  "cpu": 323.993054884,
+  "note": "sizes 2 arms ws,wide seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 11:15:39",
+  "mode": "train",
+  "cpu": 343.070711446,
+  "note": "sizes 0,1 arms dt,widet seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 11:17:40",
+  "mode": "diagnostics",
+  "cpu": 30.0,
+  "note": "profiling of one ws step (2 s) and three 8-step dt stability probes (9+9+9 s), logged by hand"
+ },
+ {
+  "time": "2026-11-16 11:17:48",
+  "mode": "checks",
+  "cpu": 7.981650781,
+  "note": ""
+ },
+ {
+  "time": "2026-11-16 11:20:53",
+  "mode": "train",
+  "cpu": 178.915515552,
+  "note": "sizes 1 arms dts seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 11:25:21",
+  "mode": "train",
+  "cpu": 256.198320356,
+  "note": "sizes 2 arms dts,widet seeds 11,22"
+ },
+ {
+  "time": "2026-11-16 11:30:22",
+  "mode": "train",
+  "cpu": 124.60650184,
+  "note": "sizes 1,2 arms widets seeds 11,22"
+ }
+]

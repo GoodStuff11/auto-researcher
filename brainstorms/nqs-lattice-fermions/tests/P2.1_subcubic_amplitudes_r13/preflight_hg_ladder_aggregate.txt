@@ -1,0 +1,5 @@
+VERDICT hg (Round 12 rule): INCONCLUSIVE (1 counted sizes < 3)
+    inst 20 V=8: rho = 0.825
+    inst 23 V=12: not counted: unconverged
+    inst 24 V=None: missing
+    inst 25 V=None: missing

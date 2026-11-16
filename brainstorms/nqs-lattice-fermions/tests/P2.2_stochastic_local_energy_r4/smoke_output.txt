@@ -1,0 +1,70 @@
+H2 R=1.4: E_RHF 6-31G**=-1.131284 (lit. -1.13128); (ns,np)=(4,3) E_RHF=-1.132223 (must be lower; HF limit -1.13363)
+  spatial vs spin-orbital Slater-Condon rows: max |diff| = 4.2e-17
+  NNBFJ: exact-ratio err=2.8e-14 keyed-ratio err=8.5e-14 grad rel err=1.5e-09 blocks=1 features=[12] jastrow features=12
+  WIBJ : exact-ratio err=2.3e-13 keyed-ratio err=1.7e-13 grad rel err=1.5e-09 blocks=1 features=[8] jastrow features=8
+  CGK  : exact-ratio err=3.6e-14 keyed-ratio err=9.5e-14 grad rel err=1.4e-09 blocks=1 features=[12] jastrow features=12
+  XSK  : exact-ratio err=1.5e-11 keyed-ratio err=1.4e-11 grad rel err=3.3e-10 blocks=2 features=[4, 4] jastrow features=8
+  FJ   : exact-ratio err=2.3e-13 keyed-ratio err=2.1e-12 grad rel err=3.2e-10 blocks=1 features=[8] jastrow features=8
+  R4.0 Cholesky contraction == enumerated class sum: max rel dev = 1.2e-10 over 30 keys (Cholesky reconstruction err 1.7e-16)
+  TRUNC per-sample truncation error, sparse formula vs direct rows: max |diff| = 2.2e-16
+  (1.7s)
+SMOKE CHECKS PASS
+
+=== [A] H4 distorted chain R=4.4 d=0.25 K=5 dim=100 E_RHF=-1.767174 E_FCI=-1.984735 HF wt=0.490 frustr=0.192 nnz/row=55 (0.6s)
+  seed=0 NNBFJ dE=   0.466 mHa Var(EL)=1.46e-04 KEYX-EL max=3.1e-15 ops(KEYX/EXACT, ED size)=1.627 (train 0s)
+      SCREEN exact bias (mHa): 0.0001:0.0000 0.001:-0.0002 0.01:-0.5543
+      TRUNC batch bias (mHa): 50:35.7755+-7.2682 200:9.2522+-1.6652
+      SS selected (half A) eps=0.0001 K=1 inc ratio (half B)=0.000
+  seed=0 WIBJ  dE=   0.581 mHa Var(EL)=2.89e-04 KEYX-EL max=2.7e-15 ops(KEYX/EXACT, ED size)=1.601 (train 0s)
+  seed=0 CGK   dE=   0.528 mHa Var(EL)=1.03e-04 KEYX-EL max=4.9e-15 ops(KEYX/EXACT, ED size)=1.652 (train 0s)
+  seed=0 XSK   dE=   0.816 mHa Var(EL)=4.59e-04 KEYX-EL max=1.6e-15 ops(KEYX/EXACT, ED size)=0.710 (train 0s)
+  seed=0 FJ    dE=   0.581 mHa Var(EL)=2.89e-04 KEYX-EL max=1.1e-15 ops(KEYX/EXACT, ED size)=1.601 (train 0s)
+  seed=1 NNBFJ dE=   0.035 mHa Var(EL)=1.66e-04 KEYX-EL max=1.3e-15 ops(KEYX/EXACT, ED size)=1.627 (train 0s)
+      SCREEN exact bias (mHa): 0.0001:0.0001 0.001:-0.0005 0.01:-0.4648
+      TRUNC batch bias (mHa): 50:19.3109+-8.2489 200:9.8441+-2.2559
+      SS selected (half A) eps=0.01 K=1 inc ratio (half B)=0.399
+  seed=1 WIBJ  dE=   0.055 mHa Var(EL)=2.58e-04 KEYX-EL max=1.2e-14 ops(KEYX/EXACT, ED size)=1.601 (train 0s)
+  seed=1 CGK   dE=   0.523 mHa Var(EL)=6.71e-05 KEYX-EL max=1.8e-14 ops(KEYX/EXACT, ED size)=1.652 (train 0s)
+  seed=1 XSK   dE=   4.796 mHa Var(EL)=6.12e-04 KEYX-EL max=8.4e-15 ops(KEYX/EXACT, ED size)=0.710 (train 0s)
+  seed=1 FJ    dE=   0.055 mHa Var(EL)=2.58e-04 KEYX-EL max=2.8e-14 ops(KEYX/EXACT, ED size)=1.601 (train 0s)
+
+=== [A] H4 distorted chain R=4.4 d=0.25 K=6 dim=225 E_RHF=-1.767174 E_FCI=-1.984758 HF wt=0.490 frustr=0.192 nnz/row=93 (0.6s)
+  seed=0 NNBFJ dE=   0.281 mHa Var(EL)=6.43e-04 KEYX-EL max=5.3e-15 ops(KEYX/EXACT, ED size)=1.666 (train 0s)
+      SCREEN exact bias (mHa): 0.0001:-0.0003 0.001:0.0000 0.01:-0.5104
+      TRUNC batch bias (mHa): 50:36.2976+-6.0439 200:10.6349+-1.4181
+      SS selected (half A) eps=0.001 K=1 inc ratio (half B)=0.000
+  seed=0 WIBJ  dE=   0.572 mHa Var(EL)=2.50e-04 KEYX-EL max=2.0e-15 ops(KEYX/EXACT, ED size)=1.122 (train 0s)
+  seed=0 CGK   dE=   4.628 mHa Var(EL)=7.27e-04 KEYX-EL max=1.4e-14 ops(KEYX/EXACT, ED size)=1.666 (train 0s)
+  seed=0 XSK   dE=   3.932 mHa Var(EL)=5.47e-04 KEYX-EL max=1.8e-15 ops(KEYX/EXACT, ED size)=0.578 (train 0s)
+  seed=0 FJ    dE=   0.575 mHa Var(EL)=2.68e-04 KEYX-EL max=2.3e-11 ops(KEYX/EXACT, ED size)=1.122 (train 0s)
+  seed=1 NNBFJ dE=   0.756 mHa Var(EL)=4.77e-04 KEYX-EL max=1.8e-15 ops(KEYX/EXACT, ED size)=1.666 (train 0s)
+      SCREEN exact bias (mHa): 0.0001:-0.0000 0.001:-0.0005 0.01:-0.5844
+      TRUNC batch bias (mHa): 50:48.4905+-14.7134 200:10.5408+-1.8228
+      SS selected (half A) eps=0.001 K=1 inc ratio (half B)=0.000
+  seed=1 WIBJ  dE=   0.090 mHa Var(EL)=3.60e-04 KEYX-EL max=1.6e-15 ops(KEYX/EXACT, ED size)=1.122 (train 0s)
+  seed=1 CGK   dE=   0.624 mHa Var(EL)=4.11e-04 KEYX-EL max=1.6e-15 ops(KEYX/EXACT, ED size)=1.666 (train 0s)
+  seed=1 XSK   dE=   3.465 mHa Var(EL)=9.58e-04 KEYX-EL max=1.1e-15 ops(KEYX/EXACT, ED size)=0.578 (train 0s)
+  seed=1 FJ    dE=   0.099 mHa Var(EL)=3.72e-04 KEYX-EL max=1.8e-15 ops(KEYX/EXACT, ED size)=1.122 (train 0s)
+
+=== [S] H4 distorted chain R=2.0 d=0.25 basis(ns,np)=(2,1) K=20 M=40 E_RHF=-2.155268 N_chol(1e-6)=128 (6.40 K) N_chol(1e-4)=91 (build 1s)
+  <|C|>=1674  kept fraction by eps: 0.0001:0.861 0.001:0.575 0.01:0.167
+  NNBFJ ops KEYX/EXACT=2.0767 floor share=0.10 wall KEYX/EXACT=2.8456 KEYX-EXACT rel dev=4.7e-16
+  WIBJ  ops KEYX/EXACT=0.3165 floor share=0.68 wall KEYX/EXACT=1.2069 KEYX-EXACT rel dev=3.5e-16
+  CGK   ops KEYX/EXACT=0.3646 floor share=0.59 wall KEYX/EXACT=1.2898 KEYX-EXACT rel dev=8.4e-16
+  XSK   ops KEYX/EXACT=0.3500 floor share=0.79 wall KEYX/EXACT=1.3188 KEYX-EXACT rel dev=4.3e-16
+  FJ    ops KEYX/EXACT=0.3165 floor share=0.68 wall KEYX/EXACT=1.1193 KEYX-EXACT rel dev=1.8e-16 | R4.0 contraction/enumeration ops=0.67 (identity dev 2.3e-05)
+
+=== [S] H4 distorted chain R=2.0 d=0.25 basis(ns,np)=(3,2) K=36 M=72 E_RHF=-2.157986 N_chol(1e-6)=276 (7.67 K) N_chol(1e-4)=193 (build 4s)
+  <|C|>=5881  kept fraction by eps: 0.0001:0.863 0.001:0.498 0.01:0.069
+  NNBFJ ops KEYX/EXACT=2.5174 floor share=0.09 wall KEYX/EXACT=4.0948 KEYX-EXACT rel dev=7.3e-16
+  WIBJ  ops KEYX/EXACT=0.2602 floor share=0.83 wall KEYX/EXACT=0.9169 KEYX-EXACT rel dev=6.2e-16
+  CGK   ops KEYX/EXACT=0.2785 floor share=0.77 wall KEYX/EXACT=1.0462 KEYX-EXACT rel dev=3.5e-16
+  XSK   ops KEYX/EXACT=0.3353 floor share=0.83 wall KEYX/EXACT=1.0136 KEYX-EXACT rel dev=2.9e-16
+  FJ    ops KEYX/EXACT=0.2602 floor share=0.83 wall KEYX/EXACT=0.8940 KEYX-EXACT rel dev=8.3e-16 | R4.0 contraction/enumeration ops=0.69 (identity dev 2.8e-04)
+[smoke-scale verdict logic, H4 only, not decisive]
+{"R4.1": {"verdict": "FAIL", "accuracy": "ACC_FAIL", "M_op_by_K": {"20": 0.63, "36": 0.556}}, "R4.2": {"verdict": "FAIL", "accuracy": "ACC_FAIL", "M_op_by_K": {"20": 0.631, "36": 0.698}}, "R3.1'": {"verdict": "PASS", "accuracy": "ACC_OK", "M_op_by_K": {"20": 0.314, "36": 0.298}}}
+controls transferred: {"SCREEN_eps": "0.001", "TRUNC_BU": null}
+
+real	0m14.436s
+user	0m13.605s
+sys	0m0.788s

@@ -1,0 +1,15 @@
+[14:02:42] check inst 20 {'Lx': 4, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4}: D=560 E0=-5.18994107 gap=0.0657 (>= 0.02: True) |G|=4 dim_S_chi=44 V_h half=4 quarter=2
+[14:02:42] check inst 21 {'Lx': 3, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4}: D=1680 E0=-6.55847519 gap=0.1445 (>= 0.02: True) |G|=8 dim_S_chi=60 V_h half=5 quarter=4
+[14:02:42] check inst 22 {'Lx': 5, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4}: D=1260 E0=-6.84887628 gap=0.3865 (>= 0.02: True) |G|=4 dim_S_chi=118 V_h half=5 quarter=3
+[14:02:42] check inst 23 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 5, 'ndn': 5, 'tp': -0.25, 'J': 0.4}: D=16632 E0=-7.23302037 gap=0.0847 (>= 0.02: True) |G|=4 dim_S_chi=724 V_h half=6 quarter=4
+[14:02:42] check (i) masked full == HFPSAnsatz: max |diff| = 0.0e+00
+[14:02:43] check (ii) inst 21 half: explicit amplitude rel err 4.2e-16
+[14:02:43] check (ii) inst 21 quarter: explicit amplitude rel err 4.6e-16
+[14:02:43] check (ii) inst 23 half: explicit amplitude rel err 1.1e-15
+[14:02:43] check (ii) inst 23 quarter: explicit amplitude rel err 1.4e-15
+[14:02:43] check grad [half inst20, proj=chi]: analytic -3.0228256260e+00 fd -3.0228256258e+00 rel 6.9e-11
+[14:02:43] check (iv) half: max |force|, |O| on masked entries = 0.0e+00
+[14:02:43] check grad [quarter inst20, proj=chi]: analytic -1.1064727703e+01 fd -1.1064727703e+01 rel 3.3e-11
+[14:02:43] check (iv) quarter: max |force|, |O| on masked entries = 0.0e+00
+[14:02:43] CHECK PASS
+CPU 1.19 user 0.11 sys

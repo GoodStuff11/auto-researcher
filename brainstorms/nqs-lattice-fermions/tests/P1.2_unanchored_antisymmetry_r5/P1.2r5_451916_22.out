@@ -1,0 +1,47 @@
+[07:08:10] check inst 9 D=90 frame K: E=30 edges, max|sum_e c_e y(m_e) - H_K y| = 8.9e-16
+[07:08:10] check inst 9 D=90 frame X: E=18 edges, max|sum_e c_e y(m_e) - H_X y| = 5.6e-17
+[07:08:10] check inst 8 D=560 frame K: E=32 edges, max|sum_e c_e y(m_e) - H_K y| = 8.9e-16
+[07:08:10] check inst 8 D=560 frame X: E=20 edges, max|sum_e c_e y(m_e) - H_X y| = 2.2e-16
+[07:08:10] check FRD-K grad proj=none: analytic 1.1368320329e+00 fd 1.1368320324e+00 (rel 4.3e-10); O vs fd 1.5e-08
+[07:08:10] check FRD-K grad proj=chi: analytic 4.5892863467e+00 fd 4.5892863456e+00 (rel 2.4e-10); per-amplitude psi_P 1.3e-16; O vs fd 5.9e-10
+[07:08:10] check FRD-K per-sample E_loc == (H psi)/psi on all 90 configs: 1.8e-15 (NNBF per-sample path 4.6e-15); flip_weight 0.781; base evals per E_loc mean 102.6
+[07:08:10] check FRD-X grad proj=none: analytic -9.9104166334e-02 fd -9.9104165985e-02 (rel 3.5e-10); O vs fd 2.2e-10
+[07:08:10] check FRD-X grad proj=chi: analytic 5.5831513214e-01 fd 5.5831513190e-01 (rel 2.4e-10); per-amplitude psi_P 1.7e-16; O vs fd 1.7e-10
+[07:08:10] check FRD-X per-sample E_loc == (H psi)/psi on all 90 configs: 9.5e-16 (NNBF per-sample path 4.6e-15); flip_weight 0.004; base evals per E_loc mean 39.4
+[07:08:20] check sampled force (inst 8 D=560): exact expectation of the sampled estimator vs force 9.9e-16; 40000 Metropolis samples rel err 0.140 vs iid-predicted 8.798 (acceptance 0.159)
+[07:08:20] check parameter match inst 0: nnbf6 1734, nnbf4 1284, frdK (base 4, alpha width 3, E=84) 1719
+[07:08:20] check parameter match inst 0: nnbf6 1734, nnbf4 1284, frdX (base 4, alpha width 4, E=48) 1656
+[07:08:20] ALL R5 CHECKS PASSED
+[07:08:34] instance 0 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=1681680 arm=frdX seed=33 shift=0.001
+[07:09:07] ED [-11.388010886295234, -11.338627749487598, -11.329223800405993, -11.317360511481414] deg 1 |G|=8 chi={'My': 1, 'Mx': 1, 'D': -1} S=0; dim P_chi 210430, dim P_S P_chi 30220 (33 s)
+[07:10:24] arm frdX: {'kind': 'frd', 'frame': 'X', 'base_Hs': 4, 'alpha_width': 4, 'E': 48} n_params=1656 (control 1734) calib=-5.33e-15
+[07:10:49] frdX: it     0  E = -9.59300840  |f| = 2.00e+00  (24.24 s/step)
+[07:30:29] frdX: it    50  E = -11.14776882  |f| = 5.66e-01  (23.61 s/step)
+[07:50:00] frdX: it   100  E = -11.25978626  |f| = 2.63e-01  (23.52 s/step)
+[08:09:40] frdX: it   150  E = -11.26727747  |f| = 2.21e-01  (23.55 s/step)
+[08:29:07] frdX: it   200  E = -11.28604279  |f| = 1.79e-01  (23.50 s/step)
+[08:48:26] frdX: it   250  E = -11.29171193  |f| = 1.41e-01  (23.43 s/step)
+[09:08:06] frdX: it   300  E = -11.30294541  |f| = 1.18e-01  (23.46 s/step)
+[09:27:36] frdX: it   350  E = -11.31136836  |f| = 6.06e-02  (23.45 s/step)
+[09:47:01] frdX: it   400  E = -11.31573191  |f| = 4.29e-02  (23.43 s/step)
+[10:06:24] frdX: it   450  E = -11.31615991  |f| = 4.35e-02  (23.42 s/step)
+[10:25:47] frdX: it   500  E = -11.31586822  |f| = 4.97e-02  (23.40 s/step)
+[10:45:10] frdX: it   550  E = -11.31566028  |f| = 5.45e-02  (23.39 s/step)
+[11:04:34] frdX: it   600  E = -11.31202943  |f| = 8.19e-02  (23.38 s/step)
+[11:23:46] frdX: it   650  E = -11.29837528  |f| = 1.06e-01  (23.35 s/step)
+[11:43:09] frdX: it   700  E = -11.31830478  |f| = 4.68e-02  (23.35 s/step)
+[12:02:33] frdX: it   750  E = -11.31639180  |f| = 6.00e-02  (23.34 s/step)
+[12:21:56] frdX: it   800  E = -11.31085366  |f| = 8.66e-02  (23.34 s/step)
+[12:41:19] frdX: it   850  E = -11.31038686  |f| = 1.02e-01  (23.33 s/step)
+[13:00:41] frdX: it   900  E = -11.31697748  |f| = 5.10e-02  (23.33 s/step)
+[13:20:10] frdX: it   950  E = -11.31990988  |f| = 4.36e-02  (23.33 s/step)
+[13:39:39] frdX: it  1000  E = -11.32129166  |f| = 3.70e-02  (23.33 s/step)
+[13:59:09] frdX: it  1050  E = -11.32199369  |f| = 2.51e-02  (23.33 s/step)
+[14:18:40] frdX: it  1100  E = -11.32152768  |f| = 3.31e-02  (23.34 s/step)
+[14:38:11] frdX: it  1150  E = -11.31421769  |f| = 6.59e-02  (23.34 s/step)
+[14:57:12] frdX: it  1199  E = -11.31976399  |f| = 4.56e-02  (23.34 s/step)
+[15:04:01] frdX [P]: dE_tot=0.06515 dE_sign=0.01559 f_E=0.239 w_sign=7.68e-03 spread=5.5e-13 ov0=0.919 (394 s)
+[15:10:16] frdX [P_S]: dE_tot=0.03429 dE_sign=0.00789 f_E=0.230 w_sign=5.41e-03 spread=1.7e-12 ov0=0.948 (376 s)
+[15:10:22] frdX: flip_weight=1.441e-02 E(alpha=0, co-adapted; diagnostic)=-11.047691
+[15:10:31] frdX sampled: E_exact=-11.32 mean=-11.33 stderr=0.004145 z=0.6012 var_mc=0.2109 var_ex=0.2241 kurt_ex=1.36e+07 tail_share=0.5064 max_dev_sigma=26.81 accept=0.3061 n=2e+04 per_amp_check=2.168e-16 (9 s)
+[15:10:31] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.2_unanchored_antisymmetry_r5/results/inst0_frdX_s33_sh0.001.json

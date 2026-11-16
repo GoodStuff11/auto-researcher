@@ -1,0 +1,16 @@
+[11:13:20] RLIMIT_CPU 600 s set before any ED; mode smoke
+[11:13:21] 5x2: D=4200 sector levels found 42 (N_LOW=40) E0=-7.423758 chi={'My': -1, 'Mx': 1} S0=1 R_PAIR=3.28 (5 pairs) R_SITE=3.38 (4 pairs) (0.7s)
+[11:13:21] census 5x2: {"size": "5x2", "V": 10, "D": 4200, "nup": 3, "n": 0.6, "omega1": 0.33125161273679904, "n_found": 42, "n_low": 40, "omega_top": 3.07029617149111, "nwin": 4, "dim_sector": null, "ov2": 0.9492211188278075, "E0": -7.423758379422828, "chi": "{'My': -1, 'Mx': 1}", "S0": 1.0, "n_pair": 5, "n_site": 4}
+[11:13:21] build cpu 1s
+[11:13:23] 5x2 tp      (s-E0)/w1 -0.20 cpu 2s | pair: L1R -0.24 ORC3 +0.15 SCRu-R2 +1.51 SCRu-R4 +1.09 SCRd-R4 +1.86 SCR2-R +0.58 SD4 +0.00 SCRu-04 +0.95 SCRu-Rdef4 +0.73 | spin: L1R -0.09 ORC3 +1.02 SCRu-R2 +1.04 SCRu-R4 +0.98 SCRd-R4 +1.09 SCR2-R +0.75 SD4 +0.02 SCRu-04 +0.97 SCRu-Rdef4 +1.05 | charge: L1R -0.20 ORC3 +0.29 SCRu-R2 +0.95 SCRu-R4 +1.14 SCRd-R4 +0.50 SCR2-R +0.35 SD4 -0.05 SCRu-04 +0.95 SCRu-Rdef4 +0.86
+[11:13:25] 5x2 J       (s-E0)/w1 -0.22 cpu 2s | pair: L1R +0.15 ORC3 +0.71 SCRu-R2 +1.89 SCRu-R4 +0.96 SCRd-R4 +1.00 SCR2-R +1.31 SD4 +0.47 SCRu-04 +0.96 SCRu-Rdef4 +1.15 | spin: L1R +0.00 ORC3 +0.84 SCRu-R2 +0.73 SCRu-R4 +1.06 SCRd-R4 +0.87 SCR2-R +0.92 SD4 +0.16 SCRu-04 +0.99 SCRu-Rdef4 +1.35 | charge(ns): L1R -3.49 ORC3 +2.67 SCRu-R2 -0.71 SCRu-R4 +0.92 SCRd-R4 -3.33 SCR2-R +3.25 SD4 -4.97 SCRu-04 +0.45 SCRu-Rdef4 -1.65
+  tracked L1R        5x2 0.00 (n=5)
+  tracked ORC3       5x2 0.60 (n=5)
+  tracked SCRu-R2    5x2 1.00 (n=5)
+  tracked SCRu-R4    5x2 1.00 (n=5)
+  tracked SCRd-R4    5x2 1.00 (n=5)
+  tracked SCR2-R     5x2 0.80 (n=5)
+  tracked SD4        5x2 0.00 (n=5)
+  tracked SCRu-04    5x2 1.00 (n=5)
+  tracked SCRu-Rdef4 5x2 1.00 (n=5)
+[11:13:25] total wall 5s, CPU 5s

@@ -1,0 +1,27 @@
+[11:14:42] instance 0: D=1681680 E0=-11.3880108863 |G|=8 S=0 dim_S_chi=30220 deg=1
+[11:15:38] instance 0 hfps_plus    {'mode': 'hfps', 'patch': 'plus', 'F': 4, 'Ha': 1} P=1750 (target 1734, matched True) E(it0)=-9.53822334 28.21 s/step at 4 threads
+[11:16:19] instance 0 hfps_site    {'mode': 'hfps', 'patch': 'site', 'F': 4, 'Ha': 1} P=1718 (target 1734, matched True) E(it0)=-9.53845343 20.42 s/step at 4 threads
+[11:18:43] instance 0 hfps_dense   {'mode': 'hfps_dense', 'F': 4, 'Ha': 0} P=1804 (target 1734, matched True) E(it0)=-9.53944271 72.03 s/step at 4 threads
+	Command being timed: "python3 t3_hfps.py --mode preflight --instance 0 --arms hfps_plus,hfps_site,hfps_dense --preflight-steps 2"
+	User time (seconds): 924.08
+	System time (seconds): 37.40
+	Percent of CPU this job got: 327%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 4:53.37
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 3095840
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 723479
+	Voluntary context switches: 1580
+	Involuntary context switches: 357701
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 40
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
