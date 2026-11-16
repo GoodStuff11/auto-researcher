@@ -137,7 +137,7 @@ Provide each worker with:
 #### 3. Leaf Artifact Schema (Written by Workers to `.subproblems/P{i}_{slug}.md`)
 ```markdown
 # Subproblem: [P{i} Title]
-**Parent Chain**: [P{parent} -> P{i}]  **Status**: Completed | Under Mutation
+**Parent Chain**: [P{parent} -> P{i}]  **Status**: OPEN | DORMANT | EXHAUSTED at this scale | ANSWERED | PROVEN-IMPOSSIBLE (must match the Leaf Status Summary)
 
 ### 1. Mathematical Abstraction & Barriers
 * **Formulation**: Explicit inputs, outputs, and what "solved" means.
@@ -165,7 +165,34 @@ Provide each worker with:
 
 ### 5. Local Autopsy Log
 * Log of all killed parent ideas and why they were mutated or discarded.
+
+## Leaf Status Summary
+* **State**: OPEN | DORMANT | EXHAUSTED at this scale | ANSWERED | PROVEN-IMPOSSIBLE
+* **Updated**: YYYY-MM-DD (after which result)
+* **Conclusion**: two or three sentences a reader can trust without reading the leaf.
+* (state-specific fields, see "Leaf Status Summary rules" below)
 ```
+
+#### 3a. Leaf Status Summary Rules (Mandatory, Always the Last Section)
+
+Every leaf artifact ends with `## Leaf Status Summary`. It is the **last** heading of the file: rounds, results and notes are inserted *above* it, never after it, and the summary is rewritten (not appended to) whenever the leaf's state changes or a result lands. It is written for a reader who reads nothing else in the leaf.
+
+**Common fields (all states):** `State`, `Updated` (date and the result that triggered the update), `Conclusion`, `Scope` (instances, sizes, sectors and compute regime the conclusion covers), and `Compute spent` (CPU-hours, from the master compute ledger).
+
+**Leaf still live: `State: OPEN` or `DORMANT`.** Add:
+* `Most promising direction`: the single best live route, with its mechanism, the strongest evidence for it so far and the evidence against it.
+* `Next step`: the concrete next test (tier, cost, pre-registered rule in one line), or the job in flight and what each verdict will trigger.
+* `What would close it`: the result that would move the leaf to EXHAUSTED, ANSWERED or PROVEN-IMPOSSIBLE.
+
+**Leaf truly complete: `State: ANSWERED`, `PROVEN-IMPOSSIBLE` or `EXHAUSTED at this scale`.** These states are allowed only with a **closure certificate** containing all of:
+1. `Claim`: the exact statement that is now settled, with its scope.
+2. `Decisive evidence`: the results that settle it (job ids or derivations, verdicts under pre-registered rules, and the critic that reviewed them). For PROVEN-IMPOSSIBLE, the proof or its location and the model it holds in.
+3. `Why no doubt remains`: every critic objection and confound raised in the leaf, each with how it was resolved, plus the cross-node critic's objections that touch this leaf.
+4. `Falsifiers run`: every falsifier named by the leaf's diagnostics or critics, with its result. A named falsifier that has not run blocks these states.
+5. `Missing ingredients exhausted` (EXHAUSTED only): every ingredient named by the Saturation Diagnostic, the route generated from it, and the tier at which it was killed. An ingredient without a killed route blocks EXHAUSTED; the leaf stays DORMANT.
+6. `What would reopen it`: the specific new evidence, scale or method that would invalidate the claim.
+
+If any certificate item cannot be filled honestly, the leaf is DORMANT, not closed. The per-leaf critic signs off on every certificate before the state changes, and the master's "Current leaf state" table copies each leaf's `State` and `Conclusion` verbatim.
 
 #### 4. The Fan-In Synthesis (Incremental Master Compilation)
 As each worker returns (not after all of them), the orchestrator lints that artifact with `python3 check_brainstorm.py .subproblems/P{i}_{slug}.md`. An artifact with Markdown errors is fixed, or sent back to its worker. The orchestrator then reads it and adds or updates its row in the **Master Leaf Synthesis Matrix** in `brainstorm-<slug>.md`, together with its pipeline state and `Blocked on` entry (step 0):
