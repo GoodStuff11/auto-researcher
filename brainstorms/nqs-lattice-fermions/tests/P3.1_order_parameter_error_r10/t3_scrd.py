@@ -46,6 +46,13 @@ Per task (one ground-state seed; phases in order, JSON rewritten after every pha
           (3 x (cold + (T-1) warm)); ratio = (a(psi') - a(psi)) / delta.
        F2 "wider state": a fresh NNBF of width 2 x --gs-width trained until its CPU time equals the CPU time of
           phase A plus phase C (the response route's total), capped at --gs-iters + F1 steps.
+       F3 "Davidson with trained correction networks" (added by the T3 design critic, 2026-11-16): the phase-C
+          pipeline with the observable sources replaced by b_p = unit(Q (H - E)^p phi), p = 1, 2, 3 (no observable
+          information), same init, steps and passes; ratio from its phi_4. Its exact analogue SCRdE0 (phase B,
+          reported) tracks 14 of 14 4x3 T1 items (critic_t3_foil_check.py): an exact shift-invert of the residual
+          is inverse iteration, so the exact references cannot show that the observable sources matter.
+  MC (reported, critic 2026-11-16): the SCRd-NN Ritz chain and the readout delta-hat with S, H and <A> estimated
+     from Ns exact draws (Ns = 1e4 and 1e5, 5 draws each; median ratio scored as MC10000 and MC100000).
 Scored item: |delta| >= 0.10 |a_0|. Tracked: ratio in [1/2, 2].
 
 Pre-registered rule (copied into the leaf, "T3 design for route 10.1 (2026-11-16)", before submission):
@@ -55,9 +62,10 @@ Pre-registered rule (copied into the leaf, "T3 design for route 10.1 (2026-11-16
   PREMISE-FAIL   SCRd0 (exact responses) tracks < 0.75 n. The T2-v2 premise does not transfer to this
                  instance; no route verdict.
   KILL (10.1d)   SCRd-NN (T = 4) tracks < 0.5 n.
-  KILL (Gate 2)  a foil (F0 = NN0, F1 or F2) tracks at least as many items as SCRd-NN.
+  KILL (Gate 2)  a foil (F0 = NN0, F1, F2 or F3) tracks at least as many items as SCRd-NN.
   PASS           SCRd-NN tracks >= 0.75 n, including >= 1 spin item if any spin item is scored, AND
-                 SCRd-NN tracks >= max(F0, F1, F2) + ceil(0.25 n).
+                 SCRd-NN tracks >= max(F0, F1, F2, F3) + ceil(0.25 n). Scope label of a PASS: "sampled Ritz
+                 and readout" if MC100000 tracks >= 0.75 n, else "exact-sum Ritz and readout only".
   AMBIGUOUS      otherwise.
   INVALID        any validity assert failed (s >= E_0, a non-finite objective, a control that fails).
   INCOMPLETE     n >= 6 but some task has not reached phase "done" (resubmit that seed; its ground state is
@@ -69,7 +77,11 @@ Checkpointed early stop (--aggregate on partial JSONs, the "pass2" checkpoint = 
   reachable, where an item is reachable if its SCRd-NN pass-2 ratio lies in [0.5 - 0.30, 2 + 0.60]. The
   margin 0.30 is 2.5 x the largest pass-2 -> pass-4 change of any exact item in job 699756 (0.12, charge,
   seed 11). It is evaluated only after the cold-start budget of every network is spent, so a slow starter
-  cannot trigger it. Partial results may kill early, never promote.
+  cannot trigger it. Partial results may kill early, never promote. The check prints WAIT until every task has
+  passed pass 2 (or finished with no scored item).
+Width-ladder guard (critic 2026-11-16): a probe at a width below 6 is a valid target only if the median overlap^2
+  is >= 0.85 (the real 4x4 states have 0.91-0.94 at V = 16); otherwise the ladder stops and the trained-response
+  step is recorded as untested. A KILL at a width below 6 is recorded as "KILL at width W".
 
 Usage
   python3 t3_scrd.py --mode run --size 4x3 --seed 11       (one Slurm task; JSON results/t3/t3_4x3_w6_s11.json)
@@ -132,8 +144,11 @@ t1 = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(t1)
 rc, log, unit = t1.rc, t1.log, t1.unit
 REAL = ("pair", "spin", "charge")
+KRYLOV = ("kry1", "kry2", "kry3")     # observable-free sources of the critic foil F3 (SCRdE)
 WINDOW = 1.0
+MC_NS, MC_DRAWS = (10_000, 100_000), 5   # sampled-Ritz replay (reported; critic 2026-11-16)
 MARGIN_LO, MARGIN_HI = 0.30, 0.60
+OV2_MIN = 0.85   # width-ladder guard (critic 2026-11-16): real 4x4 states 0.91-0.94 at V = 16
 
 
 def cpu():
@@ -199,6 +214,11 @@ class Ctx:
 
     def source(self, k, phi):
         phi = unit(phi)
+        if k in KRYLOV:                       # critic foil F3: b_p = unit(Q (H - E)^p phi), no observable
+            E, v = self.E(phi), phi
+            for _ in range(KRYLOV.index(k) + 1):
+                v = self.sg.project(self.m.H @ v - E * v)
+            return unit(self.Q(v, phi))
         b = self.Q(self.apply(k, phi) - self.a(k, phi) * phi, phi)
         return unit(b)
 
@@ -296,6 +316,40 @@ def perturbed_copy(C, ans_gs, width, seed, scale):
     return ans
 
 
+def mc_ritz(C, vecs, ns, rng):
+    """Lowest Ritz vector of span(vecs) with S and H estimated from ns exact draws of the mixture guide."""
+    B = np.array([unit(v) for v in vecs])
+    HB = np.array([C.m.H @ b for b in B])
+    pi = np.mean(B ** 2, axis=0)
+    pi /= pi.sum()
+    x = rng.choice(len(pi), size=ns, p=pi)
+    w = 1.0 / pi[x]
+    Bx, HBx = B[:, x], HB[:, x]
+    S = (Bx * w) @ Bx.T / ns
+    H = (Bx * w) @ HBx.T / ns
+    S, H = 0.5 * (S + S.T), 0.5 * (H + H.T)
+    lam, V = np.linalg.eigh(S)
+    keep = lam > 1e-11 * lam.max()
+    X = V[:, keep] / np.sqrt(lam[keep])
+    ev, Y = np.linalg.eigh(X.T @ H @ X)
+    v = unit((X @ Y[:, 0]) @ B)
+    return v if v @ vecs[0] >= 0 else -v
+
+
+def mc_delta(C, k, phi, psi, ns, rng):
+    """a(phi) - a(psi) from ns shared draws of g = (phi^2 + psi^2) / 2 (correlated reweighting)."""
+    phi, psi = unit(phi), unit(psi)
+    g = 0.5 * (phi ** 2 + psi ** 2)
+    g /= g.sum()
+    x = rng.choice(len(g), size=ns, p=g)
+    w = 1.0 / g[x]
+    out = []
+    for v in (phi, psi):
+        Av = C.apply(k, v)
+        out.append(float(np.sum(w * v[x] * Av[x]) / np.sum(w * v[x] ** 2)))
+    return out[0] - out[1]
+
+
 # ============================================================================ one task
 class Task:
     def __init__(self, args, C=None):
@@ -361,33 +415,37 @@ class Task:
         r = C.m.H @ psi - C.E(psi) * psi
         self.score("L1R", C.ritz_vec([psi, r])[0])
         self.score("ORC3", C.ritz_vec([psi, r] + [C.U[:, i] for i in range(3)])[0])
-        phi = psi
-        for t in range(1, self.a.T + 1):
-            s = C.shift(phi)
-            ys = [C.solve(C.source(k, phi), s, phi) for k in REAL]
-            if t == 1:
-                phi = C.ritz_vec([phi, C.m.H @ phi - C.E(phi) * phi] + ys + [C.Kv(y) for y in ys])[0]
-            else:
-                phi = C.ritz_vec([phi] + ys)[0]
-            if t == self.a.T:
-                self.score(f"SCRd0_T{t}", phi)
+        for arm, srcs in (("SCRd0", REAL), ("SCRdE0", KRYLOV)):   # SCRdE0: exact F3 analogue (reported)
+            phi = psi
+            for t in range(1, self.a.T + 1):
+                s = C.shift(phi)
+                ys = [C.solve(C.source(k, phi), s, phi) for k in srcs]
+                if t == 1:
+                    phi = C.ritz_vec([phi, C.m.H @ phi - C.E(phi) * phi] + ys + [C.Kv(y) for y in ys])[0]
+                else:
+                    phi = C.ritz_vec([phi] + ys)[0]
+                if t == self.a.T:
+                    self.score(f"{arm}_T{t}", phi)
         self.out["cpu"]["B"] = cpu() - c0
 
-    def responses(self, ans_gs):
+    def responses(self, ans_gs, srcs=REAL, tag="SCRdNN", seed_off=0):
+        """Phase C (srcs = REAL, tag SCRdNN) or the critic foil F3 (srcs = KRYLOV, tag F3): identical pipeline,
+        budget and initialisation; only the sources differ. Returns the total response SR steps."""
         a, C, psi = self.a, self.C, self.psi
         c0 = cpu()
         nets, phi = [], psi
         steps_total = 0
+        chain = []
         for t in range(1, a.T + 1):
             s = C.shift(phi)
             us = []
-            for j, k in enumerate(REAL):
+            for j, k in enumerate(srcs):
                 b = C.source(k, phi)
                 if t == 1:
                     if a.resp_init == "gs":
-                        ans = perturbed_copy(C, ans_gs, a.gs_width, a.seed + 100 * (j + 1), 0.05)
+                        ans = perturbed_copy(C, ans_gs, a.gs_width, a.seed + 100 * (j + 1) + seed_off, 0.05)
                     else:
-                        ans = rc.nnbf(C.m, a.gs_width, a.seed + 100 * (j + 1))
+                        ans = rc.nnbf(C.m, a.gs_width, a.seed + 100 * (j + 1) + seed_off)
                     nets.append(ans)
                 ans = nets[j]
                 if t == 1 and j == 0:
@@ -396,7 +454,8 @@ class Task:
                     u0.append(resp_eval(ans, C, phi, b, s, a)[2])
                 iters = a.resp_cold if t == 1 else a.resp_warm
                 rec = train(ans, lambda x, b=b, s=s, phi=phi: self._resp_obj(x, phi, b, s), C, a,
-                            np.random.default_rng(a.seed + 1000 * t + j), iters, f"pass {t} response {k}")
+                            np.random.default_rng(a.seed + 1000 * t + j + seed_off), iters,
+                            f"{tag} pass {t} response {k}")
                 steps_total += rec["steps"]
                 R, _, u, _ = resp_eval(ans, C, phi, b, s, a)
                 y = C.solve(b, s, phi)
@@ -404,25 +463,70 @@ class Task:
                 eta = 1.0 - float(unit(u) @ unit(y)) ** 2
                 uw, yw = C.Uw.T @ u, C.Uw.T @ y
                 eta_low = 1.0 - float(uw @ yw) ** 2 / float((uw @ uw) * (yw @ yw))
-                self.out["resp"].append(dict(pass_=t, obs=k, R=R, R_star=Rstar, R_over_Rstar=R / Rstar, eta=eta,
-                                             eta_low=eta_low, steps=rec["steps"], cpu=rec["cpu"],
+                self.out["resp"].append(dict(arm=tag, pass_=t, obs=k, R=R, R_star=Rstar, R_over_Rstar=R / Rstar,
+                                             eta=eta, eta_low=eta_low, steps=rec["steps"], cpu=rec["cpu"],
                                              s_minus_E0=s - C.E0))
-                log(f"    pass {t} {k}: R/R* {R / Rstar:.4f} eta {eta:.3f} eta_low {eta_low:.3f}")
+                log(f"    {tag} pass {t} {k}: R/R* {R / Rstar:.4f} eta {eta:.3f} eta_low {eta_low:.3f}")
                 us.append(u)
+            chain.append(us)
+            last = "F3" if tag == "F3" else f"{tag}_T{t}"
+            name = last if t == a.T else f"{tag}_T{t}"
             if t == 1:
-                self.score("NN0", C.ritz_vec([phi, C.m.H @ phi - C.E(phi) * phi] + u0
-                                             + [C.Kv(v) for v in u0])[0])
+                if tag == "SCRdNN":
+                    self.score("NN0", C.ritz_vec([phi, C.m.H @ phi - C.E(phi) * phi] + u0
+                                                 + [C.Kv(v) for v in u0])[0])
                 phi = C.ritz_vec([phi, C.m.H @ phi - C.E(phi) * phi] + us + [C.Kv(v) for v in us])[0]
-                self.score("SCRdNN_T1", phi)
             else:
                 phi = C.ritz_vec([phi] + us)[0]
-                self.score(f"SCRdNN_T{t}", phi)
-            self.out["phase"] = f"pass{t}"
-            self.out["cpu"][f"C_pass{t}"] = cpu() - c0
+            self.score(name, phi)
+            if tag == "SCRdNN":
+                self.out["phase"] = f"pass{t}"
+            self.out["cpu"][f"{tag}_pass{t}"] = cpu() - c0
             self.dump()
-        self.out["cpu"]["C"] = cpu() - c0
-        self.out["resp_steps_total"] = steps_total
+        self.out["cpu"]["C" if tag == "SCRdNN" else tag] = cpu() - c0
+        self.out[f"{tag}_steps_total"] = steps_total
+        if tag == "SCRdNN":
+            self.out["resp_steps_total"] = steps_total
+            self.chain = chain
         return steps_total
+
+    def mc_replay(self):
+        """Reported arm (critic 2026-11-16): the SCRd-NN Ritz chain and the readout delta-hat with every matrix
+        element SAMPLED, emulating VMC local estimators with exact draws (no Markov chain). The trained vectors are
+        reused (they were trained against the exact-Ritz phi_t). Ritz matrices: x ~ pi = mean_i B_i(x)^2 over the
+        normalised basis; S_ij = <B_i B_j / pi>, H_ij = <B_i (H B_j) / pi>. Readout: correlated reweighting from
+        g = (phi_T^2 + psi^2) / 2, a(v) = <v (A v) / g> / <v^2 / g>. MC_DRAWS draws at each Ns in MC_NS."""
+        C, psi = self.C, self.psi
+        try:
+            c0 = cpu()
+            res = {}
+            for ns in MC_NS:
+                draws = []
+                for d in range(MC_DRAWS):
+                    rng = np.random.default_rng(10_000 * self.a.seed + 10 * ns // 1000 + d)
+                    phi = psi
+                    for t, us in enumerate(self.chain, start=1):
+                        if t == 1:
+                            basis = [phi, C.m.H @ phi - C.E(phi) * phi] + us + [C.Kv(v) for v in us]
+                        else:
+                            basis = [phi] + us
+                        phi = mc_ritz(C, basis, ns, rng)
+                    r = {}
+                    for k in REAL:
+                        it = self.out["items"][k]
+                        r[k] = mc_delta(C, k, phi, psi, ns, rng) / it["delta"]
+                    draws.append(r)
+                med = {k: float(np.median([r[k] for r in draws])) for k in REAL}
+                self.out["ratios"][f"MC{ns}"] = med
+                res[str(ns)] = draws
+                log(f"  seed {self.a.seed} MC{ns:<7d} median " + " ".join(f"{k} {med[k]:+.3f}" for k in REAL)
+                    + " | draws " + " ".join(f"{k} [" + ",".join(f"{r[k]:+.2f}" for r in draws) + "]" for k in REAL))
+            self.out["mc_draws"] = res
+            self.out["cpu"]["MC"] = cpu() - c0
+        except Exception as e:                 # a reported arm never stops the decisive run
+            self.out["mc_error"] = repr(e)
+            log(f"  MC replay failed (reported arm only): {e!r}")
+        self.dump()
 
     def _resp_obj(self, ans, phi, b, s):
         R, yP, _, g = resp_eval(ans, self.C, phi, b, s, self.a)
@@ -477,6 +581,8 @@ class Task:
         self.out["phase"] = "B"
         self.dump()
         steps = self.responses(ans_gs)
+        self.mc_replay()
+        self.responses(ans_gs, srcs=KRYLOV, tag="F3", seed_off=50)   # critic foil F3 (Gate 2), same budget
         self.foils(ans_gs, steps)
         self.out["phase"] = "done"
         log(f"seed {self.a.seed}: done (wall {time.time() - self.t0:.0f} s, cpu {cpu():.0f} s); "
@@ -511,8 +617,8 @@ def verdict(recs):
     if any(r.get("phase") != "done" for r in recs):
         det["incomplete_seeds"] = [r["seed"] for r in recs if r.get("phase") != "done"]
         return "INCOMPLETE", det
-    c = {arm: count(items, arm) for arm in ("L1R", "ORC3", "SCRd0_T4", "NN0", "SCRdNN_T1", "SCRdNN_T2",
-                                           "SCRdNN_T4", "F1", "F2")}
+    c = {arm: count(items, arm) for arm in ("L1R", "ORC3", "SCRd0_T4", "SCRdE0_T4", "NN0", "SCRdNN_T1",
+                                           "SCRdNN_T2", "SCRdNN_T4", "F1", "F2", "F3", "MC10000", "MC100000")}
     det["tracked"] = c
     spin_items = [rr for _, k, rr in items if k == "spin"]
     spin_ok = (not spin_items) or any(tracked(rr.get("SCRdNN_T4", {}).get("spin")) for rr in spin_items)
@@ -520,7 +626,7 @@ def verdict(recs):
         1 for rr in spin_items if tracked(rr.get("SCRdNN_T4", {}).get("spin")))
     controls_ok = c["L1R"] <= 0.25 * n
     det["controls_ok"] = controls_ok
-    nn, foil = c["SCRdNN_T4"], max(c["NN0"], c["F1"], c["F2"])
+    nn, foil = c["SCRdNN_T4"], max(c["NN0"], c["F1"], c["F2"], c["F3"])
     if c["SCRd0_T4"] < 0.75 * n:
         v = "PREMISE-FAIL"
     elif nn < 0.5 * n:
@@ -533,11 +639,17 @@ def verdict(recs):
         v = "AMBIGUOUS"
     if not controls_ok and v in ("PASS", "AMBIGUOUS"):
         v = "INVALID (control)"
+    if v == "PASS":   # scope label (critic 2026-11-16): sampled Ritz and readout at Ns = 1e5
+        det["scope"] = ("sampled Ritz and readout" if c["MC100000"] >= 0.75 * n
+                        else "exact-sum Ritz and readout only")
     return v, det
 
 
 def checkpoint_pass2(recs):
-    done = [r for r in recs if "SCRdNN_T2" in r.get("ratios", {})]
+    done = [r for r in recs if "SCRdNN_T2" in r.get("ratios", {})
+            or (r.get("phase") == "done" and not any(r["items"][k]["scored"] for k in REAL))]
+    if len(done) < len(recs):   # the leaf reads this check only when every task has passed pass 2
+        return "WAIT", dict(tasks_at_pass2=len(done), tasks=len(recs))
     items = items_of(done)
     n = len(items)
     reach = sum(1 for _, k, rr in items if 0.5 - MARGIN_LO <= rr["SCRdNN_T2"][k] <= 2.0 + MARGIN_HI)
@@ -561,7 +673,7 @@ def selftest():
     obs = [(s, k) for s in (11, 22, 33, 44, 55, 66) for k in REAL]          # 18 items
     N = len(obs)
 
-    def mk(nn, f1=0.1, f2=0.1, ex=1.0, l1=0.1, n0=0.1, scored=None, spin_nn=None):
+    def mk(nn, f1=0.1, f2=0.1, ex=1.0, l1=0.1, n0=0.1, scored=None, spin_nn=None, f3=0.1, mc=None):
         spec = []
         for i, (s, k) in enumerate(obs):
             x = nn[i]
@@ -569,7 +681,8 @@ def selftest():
                 x = spin_nn
             spec.append((s, k, True if scored is None else scored[i],
                          {"L1R": l1, "ORC3": 1.0, "SCRd0_T4": ex, "NN0": n0, "SCRdNN_T1": x, "SCRdNN_T2": x,
-                          "SCRdNN_T4": x, "F1": f1, "F2": f2}))
+                          "SCRdNN_T4": x, "F1": f1, "F2": f2, "F3": f3, "SCRdE0_T4": 1.0,
+                          "MC10000": x if mc is None else mc, "MC100000": x if mc is None else mc}))
         return synth(spec)
     good = [1.0] * N
     foil_close = mk(good)
@@ -588,6 +701,8 @@ def selftest():
         ("KILL 10.1d 8/18", mk([1.0] * 8 + [0.1] * 10), "KILL (10.1d)"),
         ("KILL Gate 2 (F1)", mk(good, f1=1.0), "KILL (Gate 2)"),
         ("KILL Gate 2 (NN0)", mk(good, n0=1.0), "KILL (Gate 2)"),
+        ("KILL Gate 2 (F3)", mk(good, f3=1.0), "KILL (Gate 2)"),
+        ("PASS exact-sum scope", mk(good, mc=0.1), "PASS"),
         ("AMBIGUOUS 12/18", mk([1.0] * 12 + [0.1] * 6), "AMBIGUOUS"),
         ("AMBIGUOUS no spin", mk(good, spin_nn=0.1, scored=one_spin), "AMBIGUOUS"),
         ("AMBIGUOUS foil 14/18", foil_close, "AMBIGUOUS"),
@@ -597,9 +712,18 @@ def selftest():
     for lab, recs, want in cases:
         v, det = verdict(recs)
         ok &= v == want
-        print(f"selftest {lab:22s} expected {want:18s} got {v:18s} n={det.get('n_items')} {det.get('tracked', '')}")
-    for lab, x, want in (("checkpoint continue", 0.3, "CONTINUE"), ("checkpoint kill", 0.1, "EARLY KILL (10.1d)")):
-        v, det = checkpoint_pass2(mk([x] * N))
+        if lab.startswith("PASS"):
+            ok &= det.get("scope") == ("exact-sum Ritz and readout only" if "scope" in lab
+                                       else "sampled Ritz and readout")
+        print(f"selftest {lab:22s} expected {want:18s} got {v:18s} n={det.get('n_items')} "
+              f"scope={det.get('scope')} {det.get('tracked', '')}")
+    wait = mk([0.1] * N)
+    wait[0]["phase"] = "A"
+    del wait[0]["ratios"]["SCRdNN_T2"]
+    for lab, recs, want in (("checkpoint continue", mk([0.3] * N), "CONTINUE"),
+                            ("checkpoint kill", mk([0.1] * N), "EARLY KILL (10.1d)"),
+                            ("checkpoint wait", wait, "WAIT")):
+        v, det = checkpoint_pass2(recs)
         ok &= v == want
         print(f"selftest {lab:22s} expected {want:18s} got {v:18s} {det}")
     print(f"SELFTEST {'PASS' if ok else 'FAIL'}")
@@ -613,13 +737,17 @@ def aggregate(paths, which):
             f"{k}{'' if r['items'][k]['scored'] else '(ns)'} " + " ".join(
                 f"{a} {x[k]:+.2f}" for a, x in r["ratios"].items()) for k in REAL if k in r["items"]))
         for q in r.get("resp", []):
-            log(f"   pass {q['pass_']} {q['obs']}: R/R* {q['R_over_Rstar']:.4f} eta {q['eta']:.3f} "
+            log(f"   {q.get('arm', 'SCRdNN')} pass {q['pass_']} {q['obs']}: R/R* {q['R_over_Rstar']:.4f} eta {q['eta']:.3f} "
                 f"eta_low {q['eta_low']:.3f} steps {q['steps']}")
     if which == "target":
         n = len(items_of(recs))
         ov = [round(r.get("overlap2", float("nan")), 4) for r in recs]
         v = "TARGET-OK" if n >= 9 else "NO-TARGET"
-        log(f"T3 TARGET PROBE: {v} | scored items {n} (need >= 9) over {len(recs)} seeds; overlap^2 {ov}")
+        med = float(np.median([r.get("overlap2", float("nan")) for r in recs]))
+        rep = med >= OV2_MIN
+        log(f"T3 TARGET PROBE: {v} | scored items {n} (need >= 9) over {len(recs)} seeds; overlap^2 {ov}; median "
+            f"{med:.4f} {'representative' if rep else 'NOT representative'} (critic guard: median >= {OV2_MIN}, "
+            f"binding for widths below 6)")
         return 0
     if which == "pass2":
         v, det = checkpoint_pass2(recs)

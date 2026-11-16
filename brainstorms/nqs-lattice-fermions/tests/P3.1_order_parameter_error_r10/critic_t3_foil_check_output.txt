@@ -1,0 +1,12 @@
+[12:59:42] 4x3: D=34650 sector levels found 17 (N_LOW=15) E0=-8.948665 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.59 (10 pairs) R_SITE=2.96 (9 pairs) (2.8s)
+[12:59:42] census 4x3: {"size": "4x3", "V": 12, "D": 34650, "nup": 4, "n": 0.6666666666666666, "omega1": 0.16083591005649467, "n_found": 17, "n_low": 15, "omega_top": 1.2385365673037985, "nwin": 11, "dim_sector": null, "ov2": 0.9393790503782488, "E0": -8.948664919561418, "chi": "{'My': 1, 'Mx': 1}", "S0": 0.0, "n_pair": 10, "n_site": 9}
+[12:59:53] 4x3 tp       | pair SCRd0 +0.82 SCRdE0 +1.00 L1R +0.07 SD4 +0.25 | spin SCRd0 +0.25 SCRdE0 +1.00 L1R -0.07 SD4 -0.14 | charge(ns) SCRd0 +0.28 SCRdE0 +1.00 L1R +0.30 SD4 +0.72
+[13:00:02] 4x3 J        | pair SCRd0 +0.84 SCRdE0 +1.00 L1R +0.06 SD4 +0.25 | spin SCRd0 +0.56 SCRdE0 +1.00 L1R -0.02 SD4 -0.01 | charge(ns) SCRd0 +0.71 SCRdE0 +1.00 L1R +1.66 SD4 +1.25
+[13:00:11] 4x3 dens_s0  | pair SCRd0 +0.94 SCRdE0 +1.00 L1R +0.20 SD4 +0.58 | spin(ns) SCRd0 +9.11 SCRdE0 +1.03 L1R +10.01 SD4 +16.09 | charge SCRd0 +0.98 SCRdE0 +1.00 L1R +0.18 SD4 +0.56
+[13:00:20] 4x3 spin_s0  | pair SCRd0 +1.28 SCRdE0 +1.00 L1R +0.09 SD4 +0.35 | spin SCRd0 +1.32 SCRdE0 +1.00 L1R +0.07 SD4 +0.23 | charge(ns) SCRd0 +1.52 SCRdE0 +1.00 L1R +0.02 SD4 -0.01
+[13:00:29] 4x3 pair_s0  | pair SCRd0 +0.88 SCRdE0 +1.00 L1R +0.07 SD4 +0.24 | spin SCRd0 +0.63 SCRdE0 +1.00 L1R -0.01 SD4 +0.02 | charge(ns) SCRd0 +1.10 SCRdE0 +1.00 L1R +0.18 SD4 +0.58
+[13:00:38] 4x3 dens_s1  | pair SCRd0 +0.95 SCRdE0 +1.00 L1R +0.04 SD4 +0.36 | spin SCRd0 +0.89 SCRdE0 +1.00 L1R -0.05 SD4 -0.01 | charge SCRd0 +1.08 SCRdE0 +1.00 L1R +0.07 SD4 +0.49
+[13:00:47] 4x3 spin_s1  | pair SCRd0 +0.53 SCRdE0 +1.00 L1R +0.05 SD4 +0.31 | spin(ns) SCRd0 -2.90 SCRdE0 +1.00 L1R -0.26 SD4 -0.79 | charge(ns) SCRd0 +0.46 SCRdE0 +1.00 L1R -0.26 SD4 -0.42
+[13:00:56] 4x3 pair_s1  | pair(ns) SCRd0 +1.72 SCRdE0 +1.00 L1R +1.17 SD4 +2.59 | spin(ns) SCRd0 +2.37 SCRdE0 +1.00 L1R +0.44 SD4 +0.85 | charge(ns) SCRd0 +7.15 SCRdE0 +1.00 L1R -1.35 SD4 -3.17
+[13:00:56] CRITIC FOIL CHECK 4x3 (exact): scored items 14; tracked SCRd0 13, SCRdE0 14, SD4 2, L1R 0
+294.97 user 10.98 sys 77.56 wall
