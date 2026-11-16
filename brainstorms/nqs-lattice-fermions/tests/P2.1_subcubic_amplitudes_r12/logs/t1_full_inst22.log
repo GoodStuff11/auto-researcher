@@ -1,0 +1,21 @@
+[14:09:03] instance 22 {'Lx': 5, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 2, 'ndn': 2, 'tp': -0.25, 'J': 0.4} D=1260 E0=-6.8488762799 gap=0.3865 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=118 arm=full seed=11
+[14:09:03] arm full: F=4 Ha=0 n_eff=699 P/dim_S_chi=5.92 calib=3.55e-15
+[14:09:03] full: it     0 E-E0 = 1.573198 best = 1.573198 (0.074 CPU-s/step)
+[14:09:06] full: it    50 E-E0 = 0.011935 best = 0.009116 (0.062 CPU-s/step)
+[14:09:09] full: it   100 E-E0 = 0.006878 best = 0.005448 (0.059 CPU-s/step)
+[14:09:12] full: it   150 E-E0 = 0.003591 best = 0.003591 (0.058 CPU-s/step)
+[14:09:15] full: it   200 E-E0 = 0.004625 best = 0.003554 (0.059 CPU-s/step)
+[14:09:18] full: it   250 E-E0 = 0.002798 best = 0.002787 (0.059 CPU-s/step)
+[14:09:21] full: it   300 E-E0 = 0.002917 best = 0.002572 (0.058 CPU-s/step)
+[14:09:23] full: it   350 E-E0 = 0.002315 best = 0.002315 (0.057 CPU-s/step)
+[14:09:26] full: it   400 E-E0 = 0.003843 best = 0.002293 (0.057 CPU-s/step)
+[14:09:29] full: it   450 E-E0 = 0.002258 best = 0.002070 (0.057 CPU-s/step)
+[14:09:32] full: it   500 E-E0 = 0.002934 best = 0.001983 (0.057 CPU-s/step)
+[14:09:34] full: it   550 E-E0 = 0.001893 best = 0.001893 (0.057 CPU-s/step)
+[14:09:37] full: it   600 E-E0 = 0.004644 best = 0.001876 (0.057 CPU-s/step)
+[14:09:40] full: it   650 E-E0 = 0.001775 best = 0.001775 (0.056 CPU-s/step)
+[14:09:42] full: it   700 E-E0 = 0.003158 best = 0.001775 (0.056 CPU-s/step)
+[14:09:45] full: it   750 E-E0 = 0.001693 best = 0.001688 (0.056 CPU-s/step)
+[14:09:48] full: stop = plateau at it 800; best E - E0 = 0.001688; SR CPU 45 s
+[14:09:48] full [P]: dE_tot=0.001688 dE_sign=0.000002 f_E=0.001 spread=1.6e-12; max |masked entry| proposed by SR = 0.0e+00
+[14:09:48] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r12/results/t1_full_inst22_s11.json

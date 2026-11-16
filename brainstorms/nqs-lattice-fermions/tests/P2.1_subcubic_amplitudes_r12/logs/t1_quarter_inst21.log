@@ -1,0 +1,16 @@
+[14:09:03] instance 21 {'Lx': 3, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 3, 'ndn': 3, 'tp': -0.25, 'J': 0.4} D=1680 E0=-6.5584751880 gap=0.1445 |G|=8 chi={'My': 1, 'Mx': 1, 'D': 1} dim_S_chi=60 arm=quarter seed=11
+[14:09:03] arm quarter: F=4 Ha=0 n_eff=350 P/dim_S_chi=5.83 calib=-4.44e-15
+[14:09:03] quarter: it     0 E-E0 = 1.001362 best = 1.001362 (0.076 CPU-s/step)
+[14:09:06] quarter: it    50 E-E0 = 0.104674 best = 0.104674 (0.066 CPU-s/step)
+[14:09:10] quarter: it   100 E-E0 = 0.083212 best = 0.083212 (0.064 CPU-s/step)
+[14:09:13] quarter: it   150 E-E0 = 0.078010 best = 0.078010 (0.063 CPU-s/step)
+[14:09:16] quarter: it   200 E-E0 = 0.179140 best = 0.078010 (0.062 CPU-s/step)
+[14:09:19] quarter: it   250 E-E0 = 0.084601 best = 0.078010 (0.061 CPU-s/step)
+[14:09:21] quarter: it   300 E-E0 = 0.074643 best = 0.074643 (0.061 CPU-s/step)
+[14:09:24] quarter: it   350 E-E0 = 1.142705 best = 0.071892 (0.060 CPU-s/step)
+[14:09:27] quarter: it   400 E-E0 = 0.100679 best = 0.071892 (0.060 CPU-s/step)
+[14:09:30] quarter: it   450 E-E0 = 0.104448 best = 0.071892 (0.060 CPU-s/step)
+[14:09:33] quarter: it   500 E-E0 = 0.076438 best = 0.071892 (0.060 CPU-s/step)
+[14:09:36] quarter: stop = plateau at it 550; best E - E0 = 0.071892; SR CPU 33 s
+[14:09:36] quarter [P]: dE_tot=0.071892 dE_sign=0.006153 f_E=0.086 spread=4.9e-14; max |masked entry| proposed by SR = 0.0e+00
+[14:09:36] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r12/results/t1_quarter_inst21_s11.json
