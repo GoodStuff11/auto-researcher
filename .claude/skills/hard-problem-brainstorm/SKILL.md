@@ -3,9 +3,10 @@ name: hard-problem-brainstorm
 description: >
   Use when a user wants to find, formalize, and tackle high-impact open problems in science, mathematics,
   or computational engineering. Decomposes problems into structural invariants, enforces novelty audits
-  against existing literature, executes persistent mutation/replenishment loops until viable routes survive,
-  supports parallel subagent fan-out across all leaf subproblems, detects cluster environments to dispatch
-  computations via sbatch, and terminates at concrete, 24-hour falsification tests.
+  against existing literature, persists in generating and mutating ideas (not in spending compute) until
+  viable routes survive, supports parallel subagent fan-out across all leaf subproblems, and falsifies
+  routes at the cheapest decisive tier. Every cluster job goes through compute_gate.py, which refuses
+  jobs whose result is predictable, whose verdict would not change a decision, or that exceed the budget.
 ---
 
 # Hard Problem Brainstorming Procedure
@@ -15,14 +16,22 @@ A structured procedure for finding and attacking high-impact open problems witho
 Files in this skill's base directory:
 - `SKILL.md` (this procedure)
 - `check_brainstorm.py` (mechanical syntax, invariant and Markdown-structure linter; accepts files or directories)
+- `compute_gate.py` (the only sanctioned way to submit cluster jobs: enforces the Compute Value Gate, keeps the compute ledger, renders it as Markdown; `python3 compute_gate.py --help`)
+- `tests/test_compute_gate.py` (tests for the gate; output in `tests/test_compute_gate_output.txt`)
 - `templates/spec_invariants_template.md` (immutable problem anchor template)
 
 ---
 
 ## Non-Negotiable Operational Rules
 
+0. **Compute Is Spent Only When It Changes a Decision (overrides every rule below).** The goal is the conclusion a careful PI would reach with the least compute, not the most tests run. Persistence applies to *ideas*: generating, mutating, gating and T0/T1 work cost thinking, not cluster time, and they never stop while a leaf is open. Persistence never applies to *jobs*. A job runs only if it passes the Compute Value Gate (Stage 3.5.6), and the agent does not grade its own gate:
+   - **Every `sbatch` goes through `python3 <skill-dir>/compute_gate.py submit`**, including resumes, extensions, extra seeds and re-runs. Calling `sbatch` directly is a procedure violation. The tool refuses a job whose value-of-information note is incomplete, whose predicted verdict would not change the decision, whose cost exceeds its tier or the budget, or whose leaf is in a run of jobs that changed nothing.
+   - **Above 10 CPU-hours, an independent compute auditor (Stage 3.5.7) must approve the job.** It is a fresh agent with no stake in the route. It plays the role the user would play, so the user is not interrupted.
+   - **The cheapest evidence that could kill a route comes first, always.** A T0 argument (scaling, operation count, small lemma) that would have killed a route after a large job has run is the most expensive mistake this procedure can make.
+   - **The budget is set once at Step 0.** Leaves draw from it, and a leaf whose spend stops changing decisions is closed as DORMANT, not funded further. Only jobs above 1000 CPU-hours, and changes to the budget, go to the user.
+   - **When no job passes the gate, keep thinking, not computing.** Refill routes at T0 and T1, or close the leaf with a Saturation Diagnostic. "Not worth running" is a valid and valuable outcome; record the prediction instead of the job.
 1. **Anti-Drift Anchoring**: Step 0 (Invariants) is immutable once set. No subsequent phase, subagent worker, or critic pass may soften, redefine, or bypass the Hard Core or Unacceptable Outcome.
-2. **Persistence Mandate (Zero Early Surrender)**: The agent is strictly forbidden from terminating with "no viable routes found" or giving up when a batch of candidate ideas is killed. Falsification is a diagnostic signal to trigger branching, mutation, or fresh generation, not a stopping condition. Every run must persist until at least 1–2 genuinely viable routes survive all gates or reach a decisive 24-hour test.
+2. **Persistence Mandate in Ideas, Not in Jobs (Zero Early Surrender)**: The agent is strictly forbidden from terminating with "no viable routes found" or giving up when a batch of candidate ideas is killed. Falsification is a diagnostic signal to trigger branching, mutation, or fresh generation, not a stopping condition. Persistence means more routes generated and gated at T0 and T1; it never justifies a job that fails the Compute Value Gate (rule 0). A leaf ends honestly in one of the states of the Leaf Status Summary (ANSWERED, PROVEN-IMPOSSIBLE, EXHAUSTED at this scale, DORMANT), never by surrender and never by spending past the point where results change decisions.
 3. **The Novelty & Adoption Mandate**: The goal is strictly novel directions. If a proposed idea already exists in the literature:
    - It cannot be presented as a novel solution.
    - You must answer: "Why is this not the universal standard in widespread use?"
@@ -30,8 +39,8 @@ Files in this skill's base directory:
    - The route is disqualified unless the core of the proposal is a concrete mechanism that bypasses that exact adoption bottleneck.
 4. **Problem-Specific Anti-Patterns as Mutation Fuel**: Failures are stored locally within the working file (`brainstorm-<slug>.md`). Killed ideas are not dead ends; their specific failure mechanisms form the boundary conditions for the next generation of mutated ideas.
 5. **Zero Subjective Scoring**: Never assign numeric ratings, promise multipliers, or arbitrary tractability scores. Ideas survive or die based on explicit binary gates.
-6. **Decisive Termination**: For every live route, the next step is the cheapest analytical derivation or numerical micro-step that could kill it (Stage 3.5 tiers). A multi-seed decisive test (T3, at most 24 CPU-hours per task by default) is reserved for routes that already passed the cheaper tiers.
-7. **Cluster & Compute Environment Awareness**: Before running any diagnostic scripts or benchmarks, detect if the environment is an HPC cluster (check for `sbatch`, Slurm environment variables, or module systems). If on a cluster, never run heavy workloads interactively or directly on login nodes—generate and submit jobs via Slurm `sbatch` scripts with appropriate partition, walltime, and resource allocations. **Every job must pass the Compute Value Gate (Stage 3.5.6)**: a written value-of-information note, cost tiers with escalating justification, incremental ladders, a compute ledger, and a standing queue review that cancels, without asking, any job that can no longer change a decision. Jobs above 1000 CPU-hours always need the user's approval.
+6. **Decisive Termination**: For every live route, the next step is the cheapest analytical derivation or numerical micro-step that could kill it (Stage 3.5 tiers). A multi-seed decisive test (T3) is reserved for routes that already passed the cheaper tiers. Caps are per *job* in total CPU-hours (Stage 3.5.6 cost tiers), never per task: an 85-task array spent 8,906 CPU-hours in the first run without breaking any per-task cap.
+7. **Cluster & Compute Environment Awareness**: Before running any diagnostic scripts or benchmarks, detect if the environment is an HPC cluster (check for `sbatch`, Slurm environment variables, or module systems). If on a cluster, never run heavy workloads interactively or directly on login nodes. Generate Slurm scripts with a measured wall time, and submit them only through `compute_gate.py submit` (rule 0, Stage 3.5.6). The standing queue review cancels, without asking, any job that can no longer change a decision (`compute_gate.py cancel`).
 8. **Mathematical Rigor**: Write all variables, operators, inequalities, and expressions in explicit LaTeX ($...$ inline, $$...$$ display). Every symbol must be defined at first use.
 9. **Markdown Hygiene (Every `.md` Must Lint Clean)**: Every Markdown file this procedure writes or edits must pass `check_brainstorm.py` with **zero errors and zero warnings** before it is handed back or synthesized. That includes the master `brainstorm-<slug>.md`, every `.subproblems/P{i}_*.md` leaf artifact, and any brief or note. Lint the whole working directory in one call with `python3 check_brainstorm.py <working-dir>`. The linter detects each file's role (master, leaf or other). Rules that are easy to break when pasting logs or appending sections:
    - Put a blank line before every opening code fence and after every closing fence, even inside a list item. Otherwise Obsidian merges the fence into the preceding list item or paragraph, pairs every later fence off by one, and leaves an extra code block that never closes (M2, M3).
@@ -58,6 +67,7 @@ Define and freeze:
 2. **The Unacceptable Outcome**: The exact condition that makes a proposed solution worthless in practice (e.g., bounds energy but misses off-diagonal order; scales exponentially with system volume; requires tuning to measure zero).
 3. **The Minimal Contrast Foil**: The simplest existing baseline, status-quo method, or standard ansatz that any credible advance must beat under identical evaluation constraints.
 4. **Saturated / Existing Solutions**: List existing methods already known to address parts of the problem, along with why they are insufficient.
+5. **Compute Budget**: the total CPU-hours for the whole brainstorm and the default per leaf, set once and recorded in the Invariants. Use the user's figure if they gave one. Otherwise ask once, together with the Stage 1.5 routing question (one interruption, not a recurring checkpoint); if there is still no answer, use 2000 CPU-hours in all and 300 per leaf, and say so in the Summary. Then run `python3 <skill-dir>/compute_gate.py init <working-dir> --slug <slug> --total-cpuh X --per-leaf-cpuh Y`. Only the user changes the budget afterwards.
 
 ---
 
@@ -94,7 +104,7 @@ Stop recursing when a node reaches a concrete question that a single researcher 
 
 ## Stage 1.5 — Execution Routing: Single vs. Parallel Fan-Out
 
-Present the leaf summary table to the user and prompt for the routing mode:
+Present the leaf summary table to the user and prompt for the routing mode, and in the same prompt for the compute budget if Step 0 did not get one (Step 0, item 5). This is the only routine question to the user; after it, the procedure runs on its own, and the compute auditor (Stage 3.5.7) stands in for the user on spending decisions up to 1000 CPU-hours per job.
 - **Option 1 (Mode A: Focused Deep-Dive)**: User selects 1 leaf node. Continue synchronously through Stages 2–4 in `brainstorm-<slug>.md`.
 - **Option 2 (Mode B: Parallel Fan-Out)**: Tackle all leaf subproblems simultaneously via worker subagents.
 
@@ -110,7 +120,7 @@ Mode B is dependency-driven, not phase-driven. Each leaf advances through its ow
 - **Act on each arrival immediately.** When any agent or job for leaf $P_i$ finishes, advance $P_i$ in the same turn, without waiting for its siblings:
   1. When a worker returns: lint its artifact (rule 9), and fix it or send it back. Add or update its row in the synthesis matrix. Spawn that leaf's critic right away (see the Evaluation Protocol: one critic per leaf, or per small batch of leaves that return together).
   2. When a critic returns: apply its accepted objections. A route that is killed or downgraded goes straight back to a mutation worker for that leaf (Stage 3.3). A route that survives with a fixable test defect gets a fix worker, or the orchestrator fixes it.
-  3. When a test is ready and critic-clean: submit its job right away (fire-and-forget on Slurm).
+  3. When a test is ready and critic-clean: write its value-of-information note, run `compute_gate.py check`, get the compute auditor's approval if the cap is above 10 CPU-hours, then `compute_gate.py submit` right away (fire-and-forget on Slurm). A refusal is a result: act on the prediction, find a cheaper version, or close the route.
   4. When a result lands: record it, apply the Stage 4 Autopsy & Re-Loop rule for that leaf, and run the cross-pollination check against the leaves still running (step 5).
 - **Explicit dependencies are the only barriers.** Keep a `Blocked on` column. A leaf waits only if its premise, instance, metric or baseline depends on a result that is not yet available, for example "the premise of P1.3 depends on the verdict of P1.1". When a result arrives, unblock exactly the leaves that list it. A critical-path test is run first, but it does **not** hold back leaves that do not depend on it. If only part of a leaf depends on a pending result, start the independent part now and record the pending part as a follow-up.
 - **Broadcast, don't restart.** When a result, correction or new anti-pattern affects leaves that are still running, send it to those workers as a message (e.g. "the competitor you were told about is in another symmetry sector"). Do not wait for them to finish and then redo the work.
@@ -128,9 +138,9 @@ Provide each worker with:
 - The specific node definition (statement, unlock, parent blockage, cited obstacles).
 - The prompt mandate:
   > "You are an expert computational and theoretical researcher analyzing subproblem $P_i$. 
-  > Execute Stage 2 (Barrier Isolation), Stage 3 (Candidate Routes with Gates 0–3, Mutation Loops, and Persistence Rules), and Stage 4 (24-Hour Decisive Test) strictly for this node.
-  > You are strictly forbidden from terminating without at least one surviving route. If candidate routes fail, apply the Stage 3.3 Mutation and Replenishment protocols until a viable route survives.
-  > If generating or executing code, check if the system is an HPC cluster with Slurm; if so, wrap jobs in `sbatch`.
+  > Execute Stage 2 (Barrier Isolation), Stage 3 (Candidate Routes with Gates 0–4, Mutation Loops, and Persistence Rules) and Stage 3.5 (Evidence Tiers) strictly for this node.
+  > Persist in ideas, not in jobs (rule 0). If candidate routes fail, apply the Stage 3.3 Mutation and Replenishment protocols at T0 and T1. Try the cheapest argument that could kill each route before proposing any computation.
+  > Do not submit Slurm jobs yourself. For each test you propose, write its script with a measured wall time and a value-of-information note `tests/<dir>/voi.md` in the format of `compute_gate.py --help`, and run `python3 <skill-dir>/compute_gate.py check <working-dir> <script> --voi <voi.md>`. Report the check output; the orchestrator handles auditing and submission. A job the gate refuses is replaced by its recorded prediction or a cheaper version, not argued past the gate.
   > Output your result to `.subproblems/P{i}_{slug}.md` matching the standard Leaf Artifact Schema. Do not soften the frozen invariants.
   > Before returning, run `python3 <skill-dir>/check_brainstorm.py .subproblems/P{i}_{slug}.md` and fix every error and warning (Markdown Hygiene, rule 9). Paste-in logs need a blank line before and after their code fence."
 
@@ -207,7 +217,7 @@ If any certificate item cannot be filled honestly, the leaf is DORMANT, not clos
 #### 4. The Fan-In Synthesis (Incremental Master Compilation)
 As each worker returns (not after all of them), the orchestrator lints that artifact with `python3 check_brainstorm.py .subproblems/P{i}_{slug}.md`. An artifact with Markdown errors is fixed, or sent back to its worker. The orchestrator then reads it and adds or updates its row in the **Master Leaf Synthesis Matrix** in `brainstorm-<slug>.md`, together with its pipeline state and `Blocked on` entry (step 0):
 
-| Node | Subproblem Name | Status | Top Surviving Route | Sharpest Gap | 24-Hour Decisive Micro-Test | Cross-Node Dependencies |
+| Node | Subproblem Name | Status | Top Surviving Route | Sharpest Gap | Next Decisive Test (tier, CPU-h cap) | Cross-Node Dependencies |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **P1.1** | ... | SURVIVED | ... | ... | ... | Unblocks P1.2 |
 | **P1.2** | ... | SURVIVED (via Mutation) | ... | ... | ... | Unblocks P2.1 |
@@ -218,7 +228,7 @@ Each time a leaf returns or a result lands, the orchestrator checks it against e
 - **Mechanism Transfer**: Can a mechanism that survived in $P_1$ resolve the sharpest gap in $P_3$? If $P_3$ is still running, message its worker now.
 - **Cascade Refinement**: If a mutation or result in $P_1$ changed the interface to $P_2$ (a premise, instance, metric or baseline), harmonize the boundary conditions. Update `Blocked on` for $P_2$, or broadcast the change if $P_2$ is running.
 - **Domino Invalidation**: If a result kills a premise, mark every leaf that depends on it, and send those leaves to mutation right away.
-- **Critical Path Recommendation**: Select the highest-leverage 24-hour test and submit it first, the one that unblocks the most downstream work. Only the leaves that list it in `Blocked on` wait for it; every other leaf keeps moving.
+- **Critical Path Recommendation**: Select the highest-leverage test that passes the Compute Value Gate and submit it first, the one that unblocks the most downstream work per CPU-hour. Only the leaves that list it in `Blocked on` wait for it; every other leaf keeps moving.
 
 ---
 
@@ -309,11 +319,11 @@ For each surviving route, state the **Sharpest Gap**: the missing lemma, unprove
 | :--- | :--- | :--- | :--- |
 | **T0 Analysis** | Lemmas, counting and dimension arguments, small linear-algebra models (e.g. a $2\times2$ effective model), operation counts, asymptotic cost and extensivity estimates, known results | minutes of agent time, no job | mechanisms impossible in principle; cost models that cannot win; Gate 4 failures |
 | **T1 Toy computation** | Exact computation on a toy instance that keeps the Hard Core (Hilbert dimension up to about $10^4$), plus the mandatory pre-flight dry run (3.5.4) | under 10 CPU-minutes; a short interactive allocation or a tiny job | structural failures, invalid instances, broken controls, the three-size Gate 4 trend |
-| **T2 Pilot** | One seed at the decisive instance size, with checkpointed early-stop rules (3.5.5) | under 2 CPU-hours per task by default | weak effects, wrong regime, premise failures |
-| **T3 Decisive** | The multi-seed, pre-registered test of Stage 4, sized by power analysis (3.5.5) | under 24 CPU-hours per task by default | only routes that passed T0–T2 |
+| **T2 Pilot** | One seed at the decisive instance size, with checkpointed early-stop rules (3.5.5) | under 10 CPU-hours per job by default | weak effects, wrong regime, premise failures |
+| **T3 Decisive** | The pre-registered test of Stage 4, sized by power analysis (3.5.5), seeds released one at a time | per job, by the cost tiers of 3.5.6 | only routes that passed T0–T2 |
 
 * **Each tier has its own pre-registered kill rule**, written before that tier runs. A T0 or T1 kill is as final as a T3 kill when its argument or computation is checked by the per-leaf critic.
-* **Budget caps need a written exception.** A T3 task above the cap, or an instance above about $10^6$ states, requires a stated reason why no smaller instance keeps the Hard Core. The default instance is the smallest one that does (e.g. $4\times2$, $3\times3$, $2\times L$ ladders), not the largest one exact diagonalization allows.
+* **Budget caps need a written exception.** A job above its tier (3.5.6), or an instance above about $10^6$ states, requires a stated reason why no smaller instance keeps the Hard Core. The default instance is the smallest one that does (e.g. $4\times2$, $3\times3$, $2\times L$ ladders), not the largest one exact diagonalization allows.
 * **A premise shared by several routes is tested once, first.** If routes $X$, $Y$, $Z$ all assume the same premise (an instance has a target, a regime exists, a reference is valid), test that premise at the cheapest tier that decides it, and let its result prune all three.
 
 ### 3.5.2 The Route Portfolio (Per Leaf)
@@ -336,7 +346,7 @@ Each leaf maintains a portfolio table (in its artifact, section "Route Portfolio
 The orchestrator (and any worker that owns a leaf) follows this loop. It replaces "design one test, submit, wait":
 
 1. **Before submitting a T2 or T3 job**, write the decision tree: for each pre-registered verdict (PASS, FAIL, AMBIGUOUS, INCOMPLETE), the next action and, where it is a test, its design. When the result lands, the next step starts in the same turn.
-2. **Submit, then switch immediately.** In the same turn as the `sbatch`, take the next route in the portfolio and advance it one step at the cheapest tier it still needs (T0 analysis or a T1 toy computation).
+2. **Submit, then switch immediately.** In the same turn as the `compute_gate.py submit`, take the next route in the portfolio and advance it one step at the cheapest tier it still needs (T0 analysis or a T1 toy computation).
 3. **Fill every idle slot with non-compute work**, in this order:
    * T0 analysis of live routes that have not passed T0 (proofs of the sharpest gap, Gate 4 cost and extensivity arguments);
    * T1 toy computations and pre-flight dry runs for routes about to be promoted;
@@ -371,35 +381,67 @@ Run the complete pipeline (train, aggregate, verdict) on a toy instance with a d
 
 ### 3.5.6 Compute Value Gate (Every Job Must Earn Its Cost)
 
-Compute is a scarce, shared resource. A job is submitted only if what it can teach is worth its cost. "The rule says to test it" is not a justification; the decision the result changes is.
+Compute is a scarce, shared resource. A job is submitted only if what it can teach is worth its cost. "The rule says to test it" is not a justification; the decision the result changes is. The gate is enforced by `compute_gate.py`, not by the agent's own judgement: every submission, resume, extension or re-run goes through `compute_gate.py submit`, which refuses on any failed rule (G1–G7 in its `--help`).
 
-**Value-of-information note (written in the leaf before every T2 or T3 submission).** It has five lines, and a job without them is not submitted:
+**The waste this gate exists to stop.** In the first run of this procedure about half of 28,000 CPU-hours went to jobs whose verdict changed no decision. The patterns were:
+* a large array run before the T0 argument that later killed the route anyway (an 8,900 CPU-hour job returned AMBIGUOUS, then a scaling argument killed it for free);
+* runs that could not converge in their budget, resumed three times and each time ended UNCLEAR;
+* extra seeds after the verdict was already decided from stored seeds;
+* overpowered tests: 18 tasks to measure an effect $10^5$ times the threshold, where one would have decided it;
+* repeat pilots that returned the same answer, and wall-time misses followed by resumes.
+
+**Value-of-information note (`tests/<dir>/voi.md`, linked from the leaf, written before every job of any tier).** One `key: value` line per field; `compute_gate.py --help` gives the exact keys. A job without every field is refused (G1):
 1. **Decision.** For each pre-registered verdict, the concrete next action it triggers. If two verdicts trigger the same action, they are one verdict for this purpose.
-2. **Prediction.** The outcome expected from the T0 analysis and T1 data, with a rough probability. If one outcome is predicted with probability at least 0.8 *and* that outcome leaves the leaf's decision unchanged, **do not run the job**: record the prediction and act on it, naming the cheap evidence that would overturn it.
-3. **Cost.** Expected and capped CPU-hours (CPUs per task × wall time × tasks), and the leaf's running total from the compute ledger.
-4. **Cheapest decisive version.** Why no smaller instance, fewer seeds, fewer steps, fewer arms, or a single rung of a ladder decides the same question. Arms that are "reported only" must be justified separately or dropped.
-5. **Power.** With the measured run-to-run spread (not the per-run error bar), the probability that the job returns AMBIGUOUS or INCOMPLETE. If it is above about 0.3, redesign before submitting.
+2. **Prediction and p.** The verdict expected from the T0 analysis and T1 data, with its probability, and whether that predicted verdict changes the decision. If $p\ge0.8$ and it does not, the gate refuses the job (G2): record the prediction, act on it, and name the cheap evidence that would overturn it. The threshold moves with the agent's track record (3.5.8).
+3. **Cheapest kill tried.** The T0 argument most likely to kill the route (operation count, scaling or extensivity argument, small effective-model lemma, known result) and its outcome. "None exists" must say why.
+4. **Cost.** The capped CPU-hours (array tasks × tasks × CPUs × wall time). The gate computes it from the `#SBATCH` lines and refuses if it exceeds the declared figure (G3), the tier (G4), or the leaf or brainstorm budget (G5).
+5. **Cheapest decisive version.** Why no smaller instance, fewer seeds, fewer steps, fewer arms, or a single rung decides the same question. Arms that are "reported only" are justified separately or dropped.
+6. **Convergence.** Evidence from a pilot trajectory that the run ends converged within its budget. A design that can end "unconverged" or "unclear" is redesigned, not run. A resume is a new submission with its own note.
+7. **Wall-time basis.** Measured time per step × steps, plus about 30%. Guessed wall times cause timeouts and resumes.
+8. **Power, both ways.** With the measured run-to-run spread (not the per-run error bar), the probability that the job returns AMBIGUOUS or INCOMPLETE; above about 0.3, redesign. And the opposite check: if the expected margin is many spreads beyond the threshold, one seed on one instance decides it, so request one.
 
-**Cost tiers (CPU-hours per job, capped).**
+**Cost tiers (CPU-hours per job, capped; enforced by G4).**
 
 | Tier | Requirement before submission |
 | :--- | :--- |
 | at most 10 | value-of-information note |
-| 10–100 | note, plus the per-leaf critic agrees in writing that the job is the cheapest decisive version |
-| 100–1000 | note and critic, plus the route has already passed T2, and the leaf's cumulative spend is stated; ladders and seed sweeps must be incremental (below) |
-| above 1000 | **never automatic: ask the user**, with the note, the cost in plain numbers, and the cheaper alternative that was rejected and why |
+| 10–100 | note, plus `auditor: APPROVED <date>` from the independent compute auditor (3.5.7) |
+| 100–1000 | note and auditor, plus `passed-t2:` naming the T2 the route already passed; the leaf's cumulative spend is checked against its budget |
+| above 1000 | **never automatic: ask the user**, with the note, the cost in plain numbers, and the cheaper alternative that was rejected and why; record `user-approval:` |
 
-**Incremental ladders and sweeps.** Size ladders, seed sweeps and multi-arm grids are submitted one rung at a time: the smallest rung that can kill first, each later rung only if the earlier rung leaves the question open. A pre-registered rule may span several rungs, but the compute is released rung by rung. A single large array for a whole ladder is not allowed above 100 CPU-hours.
+**Release compute one unit at a time.** Seeds, instances, arms and ladder rungs are submitted sequentially at every cost tier: the unit that can kill first, each later unit only if the earlier ones leave the question open. A pre-registered rule may span several units, but compute is released unit by unit, and the rule is applied after each. A single large array for a whole ladder or seed sweep is not allowed above 100 CPU-hours.
 
-**Compute ledger.** The master document keeps a table with one row per submitted job: leaf, job id, tier, CPU-hours requested, CPU-hours used, verdict, and whether the verdict changed a decision. Report the running totals per leaf and overall with every synthesis. A leaf whose spend is high and whose verdicts rarely changed a decision is a signal to close it with a Saturation Diagnostic.
+**Compute ledger.** `compute/ledger.tsv` is written by the tool, one row per job, matched to `sacct` by a unique job name (`hpb-<slug>-<leaf>-<route>-<NNN>`) so reused job ids are never miscounted. After each result, run `compute_gate.py refresh` and `compute_gate.py record <job> --verdict ... --changed yes|no --hit yes|no|na`. The master document's `## Compute Ledger` section is the output of `compute_gate.py report`, pasted in with every synthesis.
 
-**Queue review (cancel without asking).** Every time a result lands, and before any wait, re-check every queued and running job against its value-of-information note. Cancel immediately, without asking, any job whose result can no longer change a decision: its verdict is already decided from data on disk, its leaf is closed, its question has moved to another job, or its outcome is now predicted with probability at least 0.8 by cheaper evidence. Record the cancellation and the reason in the leaf and the ledger. Partially needed array jobs are trimmed to the tasks that still matter (`scancel` by task index).
+**Queue review (cancel without asking).** Every time a result lands, and before any wait, re-check every queued and running job against its value-of-information note. Cancel immediately with `compute_gate.py cancel <job> --reason ...`, without asking, any job whose result can no longer change a decision: its verdict is already decided from data on disk, its leaf is closed, its question has moved to another job, or its outcome is now predicted with probability at least the skip threshold by cheaper evidence. Partially needed array jobs are trimmed to the tasks that still matter (`scancel` by task index, then record it).
+
+### 3.5.7 The Compute Auditor (Stands In for the User)
+
+The agent that designed a route wants to see it tested; it should not also judge whether the test is worth its cost. For every job above 10 CPU-hours, spawn a **fresh** agent with no access to the route's history beyond what is listed here. Give it only the value-of-information note, the `#SBATCH` script, the output of `compute_gate.py check` and `compute_gate.py report`, and the leaf's T0 and T1 evidence for this route. Its mandate:
+
+> "You are the PI who pays for this compute and wants the right conclusion at the least cost. Approve this job only if all of the following hold, and otherwise say which fails and what to do instead (act on the prediction, a cheaper version, a T0 argument to try first, or close the route):
+> 1. Its verdicts lead to different next actions, and the predicted verdict is not already near-certain from the T0 and T1 evidence.
+> 2. The cheapest argument that could kill the route has been tried, and no T0 or T1 step could decide the question instead.
+> 3. It is the smallest version that decides the question: one instance, one seed, one rung, the fewest arms, the shortest run. Nothing is overpowered.
+> 4. The pilot evidence shows it will converge within its wall time, and the wall time is measured, not guessed.
+> 5. The leaf's recent jobs have been changing decisions; if not, this job has a concrete reason to break the pattern.
+> 6. Spending this on this leaf is a better use of the remaining budget than any other open leaf's next step.
+> Answer APPROVED or REFUSED, with one sentence per failed item. Be stingy: a refusal costs minutes, a wasted job costs hours."
+
+On APPROVED, write `auditor: APPROVED <date>` into the note; the auditor's reasons go in the leaf next to the note. On REFUSED, do what it says. Do not re-ask a fresh auditor with the same note; change the design first.
+
+### 3.5.8 Diminishing Returns and Prediction Calibration
+
+* **No-change streak (G6).** When a leaf's last 3 finished jobs all changed no decision, the gate refuses further jobs for that leaf. The leaf moves to DORMANT with a Saturation Diagnostic unless a `reopen-justification` (a new ingredient, a different question, a cheaper decisive test) is approved by the auditor. Thinking-queue work on the leaf continues.
+* **Leaf budget (G5).** A leaf that reaches its budget is closed or made cheaper, not topped up; only the user moves budget between leaves or raises the total.
+* **Calibration.** Every job's prediction and probability go in the ledger, and `record --hit` scores them. When at least 5 predictions with $p\ge0.8$ are scored, the gate adjusts the skip threshold of G2: to 0.7 if at least 90% hit (the agent's confident predictions are reliable, so skip more jobs), and to 0.9 if fewer than 75% hit (they are not, so test more). `compute_gate.py report` prints the current calibration.
+* **Report.** With every synthesis, read the report's flags (streaks, wall-time misses, calibration, budget left) and act on each before the next submission.
 
 ---
 
 ## Stage 4 — The Decisive Test (Tier 3) & Compute Execution
 
-Take a route that has passed T0–T2 (Stage 3.5) and design the minimal decisive calculation that can falsify it. Respect the T3 budget cap, the pre-flight dry run (3.5.4), power sizing (3.5.5) and the Compute Value Gate (3.5.6). A T3 whose outcome the T0 and T1 evidence already predicts with high confidence is not run.
+Take a route that has passed T0–T2 (Stage 3.5) and design the minimal decisive calculation that can falsify it. Respect the pre-flight dry run (3.5.4), power sizing (3.5.5), the Compute Value Gate (3.5.6) and the compute auditor (3.5.7). A T3 whose outcome the T0 and T1 evidence already predicts with high confidence is not run; the prediction is recorded instead.
 
 ### 1. Test Specification
 1. **Target Instance**: The minimal non-trivial instance preserving the Hard Core (e.g., 2x2 cluster, N=2 particle sector, smallest non-Abelian group).
@@ -421,10 +463,10 @@ Before running any code or generating test scripts:
 
        ```bash
        #!/bin/bash
-       #SBATCH --job-name=micro_test
-       #SBATCH --output=micro_test_%j.log
-       #SBATCH --error=micro_test_%j.err
-       #SBATCH --time=01:00:00
+       # --job-name is set by compute_gate.py (unique per job); do not rely on it here
+       #SBATCH --output=micro_test_%x_%A_%a.log
+       #SBATCH --error=micro_test_%x_%A_%a.err
+       #SBATCH --time=01:00:00   # measured time per step x steps x 1.3 (wall-time-basis in voi.md)
        #SBATCH --nodes=1
        #SBATCH --ntasks=1
        #SBATCH --cpus-per-task=4
@@ -434,7 +476,8 @@ Before running any code or generating test scripts:
        python3 micro_test.py
        ```
 
-     - Submit via `sbatch submit_test.sbatch` and monitor via `squeue -u $USER`.
+     - A value-of-information note `voi.md` next to the script (3.5.6).
+     - Check with `python3 <skill-dir>/compute_gate.py check <working-dir> submit_test.sbatch --voi voi.md`, get the auditor's approval above 10 CPU-hours (3.5.7), then submit with `compute_gate.py submit` (same arguments). Never call `sbatch` directly. Monitor via `squeue -u $USER`; after it finishes, `compute_gate.py refresh` and `compute_gate.py record`.
 3. **Autopsy & Re-Loop Rule**: If the computation yields a **FAIL**, log the failure mechanism into `## Problem Anti-Patterns & Killed Routes`, mark the route `KILLED` in the leaf's Route Portfolio, launch the pre-planned FAIL action from its decision tree, and refill the portfolio (Stage 3.3) if it drops below 3 live routes. The other live routes were already advancing while this job ran (Stage 3.5.3), so a kill never restarts the leaf from scratch. Do not stop.
 
 ---
@@ -457,15 +500,15 @@ Resolve all syntax and formatting failures flagged by the linter until the summa
 
 Spawn a fresh adversarial critic agent with this mandate:
 > "Act as a hostile referee whose sole objective is to break the surviving routes in this document. 
-> 1. Verify Persistence: Check if the generator attempted only one round of ideas and stopped. If all ideas were dismissed without mutation or replacement, flag this as a critical failure.
+> 1. Verify Persistence in ideas: Check if the generator attempted only one round of ideas and stopped. If all ideas were dismissed without mutation or replacement at T0 and T1, flag this as a critical failure. Do not demand more compute as a remedy: persistence is about routes, not jobs.
 > 2. Challenge Novelty: Identify if this route is an existing published method under new terminology. If it exists, why is it not standard practice? Name the unstated adoption barrier.
 > 3. Find the implicit assumption that sweeps the Hard Core under the rug.
-> 4. Determine whether the 24-hour test can be trivially satisfied by the Minimal Contrast Foil.
-> 5. Verify whether compute scripts conform to the environment (Slurm/sbatch if on a cluster).
+> 4. Determine whether the decisive test can be trivially satisfied by the Minimal Contrast Foil.
+> 5. Verify whether compute scripts conform to the environment (Slurm on a cluster) and were submitted only through `compute_gate.py` (every job id appears in `compute/ledger.tsv`).
 > 6. Check whether any proposed step repeats a mechanism logged in the Problem Anti-Patterns section.
 > 7. Check tier discipline: could this route have been killed at a cheaper tier (a T0 argument such as a small effective-model lemma, an operation count, or an extensivity argument; or a T1 toy run)? Is a T2 or T3 job requested without a passed T0 and T1, without a pre-flight dry run whose controls behave, without power sizing, or above the budget cap without a written exception?
 > 8. Check Gate 4: does the claimed gain survive with system size, or is it a finite-size bonus or an exponential-cost operation in disguise?
-> 9. Check compute value (Stage 3.5.6): is every requested job the cheapest decisive version, is its outcome already predictable from cheaper evidence, would any verdict leave the decision unchanged, and is its cost tier justified?
+> 9. Check compute value (Stage 3.5.6–3.5.8): is every requested job the cheapest decisive version (one seed, one rung, released sequentially, not overpowered), is its outcome already predictable from cheaper evidence, would any verdict leave the decision unchanged, was a T0 kill argument tried first, will it converge within a measured wall time, and has the leaf's recent spend been changing decisions? Name every past job in the ledger whose verdict a cheaper argument could have given.
 > Return only a numbered list of concrete, fatal objections categorized as Major or Minor. Do not provide praise or vague commentary."
 
 Address all major critiques in place. Log every action in the `Revision & Critic Log`.
