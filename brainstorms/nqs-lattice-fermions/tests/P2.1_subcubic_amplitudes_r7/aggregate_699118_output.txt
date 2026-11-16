@@ -1,0 +1,8 @@
+[11:05:07] hfps_plus steps= 75 stop=None P=1642 dE_tot=0.08035 dE_sign=0.01257 spread=3.3e-13 E(50)=-9.694885 s/step=7.93
+[11:05:07] hfps_site steps= 75 stop=None P=1610 dE_tot=0.09712 dE_sign=0.01703 spread=2.2e-13 E(50)=-9.664215 s/step=5.36
+[11:05:07] agpj      steps= 75 stop=None P=1633 dE_tot=0.20910 dE_sign=0.05374 spread=1.0e-13 E(50)=-9.542809 s/step=2.09
+[11:05:07] nnbf      steps= 75 stop=None P=1626 dE_tot=0.24804 dE_sign=0.08799 spread=2.6e-13 E(50)=-9.451324 s/step=3.68
+[11:05:07] lh_plus   steps= 75 stop=None P=1617 dE_tot=0.18609 dE_sign=0.06549 spread=4.0e-13 E(50)=-9.504211 s/step=12.83
+[11:05:07] lh_site   steps= 75 stop=None P=1641 dE_tot=0.20807 dE_sign=0.07548 spread=2.8e-13 E(50)=-9.513120 s/step=9.24
+[11:05:07] ROUTE 7.1 (LH-HFPS) T2 VERDICT: PROMOTE  rho_N = 0.143 <= 1.15 and rho_F = 0.738 <= 0.85  dE_sign_route=0.01257 dE_sign_ref=0.08799 dE_sign_foil=0.01703 rho_N=0.1428 rho_F=0.7378 rho_t=0.3239
+[11:05:07] reported only: agpj (projected BCS x J) rho_N = 0.611

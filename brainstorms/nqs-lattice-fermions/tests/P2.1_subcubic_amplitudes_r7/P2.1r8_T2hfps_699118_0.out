@@ -5,3 +5,6 @@
 [10:48:52] hfps_plus: it    25  E = -9.60370393  |f| = 2.96e-01  (7.94 s/step)
 [10:52:10] hfps_plus: it    50  E = -9.69488481  |f| = 1.52e-01  (7.95 s/step)
 [10:55:17] hfps_plus: it    74  E = -9.71121472  |f| = 1.32e-01  (7.90 s/step)
+[10:56:56] hfps_plus [P]: dE_tot=0.08035 dE_sign=0.01257 f_E=0.156 spread=3.3e-13 ov0=0.880 (94 s)
+[10:58:29] hfps_plus [P_S]: dE_tot=0.07052 dE_sign=0.01145 f_E=0.162 spread=6.3e-13 ov0=0.882 (92 s)
+[10:58:29] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results_hfps/t2_hfps_plus_inst4_s11.json
