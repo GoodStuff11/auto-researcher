@@ -1,0 +1,6 @@
+selftest PASS                   expected PASS                                     got PASS                                     {'n_items': 8, 'tracked': {'RWRstarK': 8, 'SCRu0_T4': 6}, 'spin_tracked_SCRu0_T4': 1}
+selftest AMBIGUOUS (no spin)    expected AMBIGUOUS                                got AMBIGUOUS                                {'n_items': 8, 'tracked': {'RWRstarK': 8, 'SCRu0_T4': 6}, 'spin_tracked_SCRu0_T4': 0}
+selftest AMBIGUOUS (5 of 8)     expected AMBIGUOUS                                got AMBIGUOUS                                {'n_items': 8, 'tracked': {'RWRstarK': 8, 'SCRu0_T4': 5}, 'spin_tracked_SCRu0_T4': 2}
+selftest KILL 10.1u             expected KILL (10.1u)                             got KILL (10.1u)                             {'n_items': 8, 'tracked': {'RWRstarK': 8, 'SCRu0_T4': 3}, 'spin_tracked_SCRu0_T4': 1}
+selftest KILL class             expected KILL (response class: oracle ceiling)    got KILL (response class: oracle ceiling)    {'n_items': 8, 'tracked': {'RWRstarK': 5, 'SCRu0_T4': 8}, 'spin_tracked_SCRu0_T4': 2}
+SELFTEST PASS

@@ -1,0 +1,10 @@
+[11:13:58] RLIMIT_CPU 600 s set before any ED; mode copytoy
+[11:13:58] copytoy eps=0.3 M=1 D=    6 1-F=0.083 nwin=   0 SCRu-R4 median +1.001 (min +0.996, max +1.003)
+[11:13:58] copytoy eps=0.3 M=2 D=   36 1-F=0.158 nwin=   0 SCRu-R4 median +0.974 (min +0.960, max +0.990)
+[11:13:58] copytoy eps=0.3 M=3 D=  216 1-F=0.228 nwin=   0 SCRu-R4 median +0.962 (min +0.952, max +0.965)
+[11:14:02] copytoy eps=0.3 M=4 D= 1296 1-F=0.292 nwin=   0 SCRu-R4 median +0.953 (min +0.929, max +0.956)
+[11:14:02] copytoy eps=0.5 M=1 D=    6 1-F=0.200 nwin=   0 SCRu-R4 median +1.001 (min +0.998, max +1.003)
+[11:14:02] copytoy eps=0.5 M=2 D=   36 1-F=0.360 nwin=   0 SCRu-R4 median +0.966 (min +0.955, max +0.979)
+[11:14:02] copytoy eps=0.5 M=3 D=  216 1-F=0.488 nwin=   0 SCRu-R4 median +0.963 (min +0.961, max +0.976)
+[11:14:06] copytoy eps=0.5 M=4 D= 1296 1-F=0.590 nwin=   0 SCRu-R4 median +1.053 (min +1.048, max +1.068)
+[11:14:06] total wall 8s, CPU 8s

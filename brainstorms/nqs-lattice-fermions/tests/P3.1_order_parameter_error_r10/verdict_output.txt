@@ -1,0 +1,14 @@
+[11:25:47] RLIMIT_CPU 600 s set before any ED; mode verdict
+sizes present: ['4x3', '5x2', '7x2']
+  tracked L1R        5x2 0.00 (n=19)  4x3 0.00 (n=15)  7x2 0.00 (n=12)  3x3 nan (n=0)  6x2 nan (n=0)
+  tracked ORC3       5x2 0.47 (n=19)  4x3 0.67 (n=15)  7x2 0.83 (n=12)  3x3 nan (n=0)  6x2 nan (n=0)
+  tracked SCRu-R2    5x2 0.95 (n=19)  4x3 0.80 (n=15)  7x2 1.00 (n=12)  3x3 nan (n=0)  6x2 nan (n=0)
+  tracked SCRu-R4    5x2 0.89 (n=19)  4x3 0.93 (n=15)  7x2 1.00 (n=12)  3x3 nan (n=0)  6x2 nan (n=0)
+  tracked SCRd-R4    5x2 0.89 (n=19)  4x3 0.80 (n=15)  7x2 1.00 (n=12)  3x3 nan (n=0)  6x2 nan (n=0)
+  tracked SCR2-R     5x2 0.68 (n=19)  4x3 0.73 (n=15)  7x2 1.00 (n=12)  3x3 nan (n=0)  6x2 nan (n=0)
+  tracked SD4        5x2 0.32 (n=19)  4x3 0.20 (n=15)  7x2 0.00 (n=12)  3x3 nan (n=0)  6x2 nan (n=0)
+  tracked SCRu-04    5x2 1.00 (n=19)  4x3 0.87 (n=15)  7x2 nan (n=0)  3x3 nan (n=0)  6x2 nan (n=0)
+  tracked SCRu-Rdef4 5x2 0.95 (n=19)  4x3 0.93 (n=15)  7x2 nan (n=0)  3x3 nan (n=0)  6x2 nan (n=0)
+  copytoy medians: eps0.3_M1 +1.01 eps0.3_M2 +0.97 eps0.3_M3 +0.96 eps0.3_M4 +0.94 eps0.5_M1 +1.00 eps0.5_M2 +0.98 eps0.5_M3 +0.96 eps0.5_M4 +1.04 -> in range: True
+ROUTE 10.1u SCRu-R4: 5x2 0.89 4x3 0.93 7x2 1.00 | ORC3 5x2 0.47 4x3 0.67 7x2 0.83 | SD4 5x2 0.32 4x3 0.20 7x2 0.00 -> PASS
+[11:25:47] total wall 0s, CPU 0s

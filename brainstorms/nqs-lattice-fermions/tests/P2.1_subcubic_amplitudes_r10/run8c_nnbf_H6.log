@@ -1,0 +1,3 @@
+[NNBF H=6] L= 8 Ne= 56 sweeps=1842 t_sw=1.593e-02s tau=1.17+-0.17 cost=1.858e-02s acc=0.33 <E>/Ne=-0.628
+[NNBF H=6] L=12 Ne=126 sweeps= 525 t_sw=9.557e-02s tau=1.10+-0.28 cost=1.052e-01s acc=0.33 <E>/Ne=-0.630
+[NNBF H=6] L=16 Ne=224 sweeps= 204 t_sw=5.411e-01s tau=0.79+-0.34 cost=4.299e-01s acc=0.32 <E>/Ne=-0.626

@@ -1,0 +1,44 @@
+[11:26:37] small: D=10920 ED [-8.476395575934244, -8.37584026628098, -8.30965898809856, -8.268710215368367] |G|=8 chi={'My': -1, 'Mx': -1, 'D': -1} S0=1 (0 s)
+[11:26:37] seed 0: overlap^2 0.9975 | pair delta +9.143e-05 ns spin delta +9.306e-04 scored charge delta +3.283e-03 scored
+[11:26:37] seed 1: overlap^2 0.8759 | pair delta -5.812e-05 ns spin delta +1.326e-03 scored charge delta +9.203e-04 scored
+[11:26:37] scored items: 4
+[11:26:37]   seed 0 L1R          pair +0.373 spin +0.628 charge +0.718  (wall 0 s, cpu 2 s)
+[11:26:37]   seed 0 RWRstarK     pair +1.000 spin +1.000 charge +1.000  (wall 1 s, cpu 2 s)
+[11:26:37]   seed 1 L1R          pair +1.666 spin +0.443 charge +0.667  (wall 1 s, cpu 2 s)
+[11:26:37]   seed 1 RWRstarK     pair +0.468 spin +0.901 charge +0.889  (wall 1 s, cpu 2 s)
+[11:26:37] oracle ceiling RWRstarK tracks 4 of 4
+[11:26:37]     response s0 SCRu0 pass 1 [decide] (s-E0)/omega1 -0.470 |<psi0|y>|^2 0.000 0.001 0.002
+[11:26:37]   seed 0 RWRK0        pair +1.001 spin +0.998 charge +0.999  (wall 1 s, cpu 3 s)
+[11:26:38]     response s0 SCRu0 pass 2 [decide] (s-E0)/omega1 -0.479 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:38]   seed 0 SCRu0_T2     pair +1.000 spin +1.000 charge +1.000  (wall 1 s, cpu 4 s)
+[11:26:38]     response s0 SCRu0 pass 3 [decide] (s-E0)/omega1 -0.479 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:38]     response s0 SCRu0 pass 4 [decide] (s-E0)/omega1 -0.479 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:38]   seed 0 SCRu0_T4     pair +1.000 spin +1.000 charge +1.000  (wall 1 s, cpu 5 s)
+[11:26:38] seed 0: SCRu0 CPU 3 s
+[11:26:38]     response s1 SCRu0 pass 1 [decide] (s-E0)/omega1 +0.101 |<psi0|y>|^2 0.000 0.003 0.000
+[11:26:38]   seed 1 RWRK0        pair +2.038 spin +1.235 charge +1.487  (wall 1 s, cpu 6 s)
+[11:26:38]     response s1 SCRu0 pass 2 [decide] (s-E0)/omega1 -0.318 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:38]   seed 1 SCRu0_T2     pair +1.335 spin +1.077 charge +1.070  (wall 2 s, cpu 6 s)
+[11:26:38]     response s1 SCRu0 pass 3 [decide] (s-E0)/omega1 -0.415 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:39]     response s1 SCRu0 pass 4 [decide] (s-E0)/omega1 -0.448 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:39]   seed 1 SCRu0_T4     pair +1.053 spin +1.018 charge +1.010  (wall 2 s, cpu 8 s)
+[11:26:39] seed 1: SCRu0 CPU 3 s
+[11:26:39]     response s0 SCRd0 pass 2 [decide] (s-E0)/omega1 -0.479 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:39]     response s0 SCRd0 pass 3 [decide] (s-E0)/omega1 -0.479 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:39]     response s0 SCRd0 pass 4 [decide] (s-E0)/omega1 -0.479 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:39]   seed 0 SCRd0_T4     pair +0.999 spin +1.000 charge +1.000  (wall 2 s, cpu 10 s)
+[11:26:39]     response s1 SCRd0 pass 2 [decide] (s-E0)/omega1 -0.318 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:39]     response s1 SCRd0 pass 3 [decide] (s-E0)/omega1 -0.318 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:40]     response s1 SCRd0 pass 4 [decide] (s-E0)/omega1 -0.318 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:40]   seed 1 SCRd0_T4     pair +1.489 spin +1.084 charge +1.084  (wall 3 s, cpu 12 s)
+[11:26:40]     response s0 SCRu0def pass 1 [default] (s-E0)/omega1 -0.012 |<psi0|y>|^2 0.000 0.001 0.002
+[11:26:40]     response s0 SCRu0def pass 2 [default] (s-E0)/omega1 -0.000 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:40]     response s0 SCRu0def pass 3 [default] (s-E0)/omega1 +0.000 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:40]     response s0 SCRu0def pass 4 [default] (s-E0)/omega1 +0.000 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:40]   seed 0 SCRu0def_T4  pair +1.000 spin +1.000 charge +1.000  (wall 4 s, cpu 14 s)
+[11:26:40]     response s1 SCRu0def pass 1 [default] (s-E0)/omega1 -3.637 |<psi0|y>|^2 0.000 0.003 0.000
+[11:26:41]     response s1 SCRu0def pass 2 [default] (s-E0)/omega1 -0.242 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:41]     response s1 SCRu0def pass 3 [default] (s-E0)/omega1 -0.033 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:41]     response s1 SCRu0def pass 4 [default] (s-E0)/omega1 -0.003 |<psi0|y>|^2 0.000 0.000 0.000
+[11:26:41]   seed 1 SCRu0def_T4  pair +1.072 spin +1.020 charge +1.014  (wall 4 s, cpu 16 s)
+[11:26:41] T2-v2 VERDICT: PASS | {'n_items': 4, 'tracked': {'RWRstarK': 4, 'SCRu0_T4': 4}, 'spin_tracked_SCRu0_T4': 2} | wall 4 s, cpu 16 s

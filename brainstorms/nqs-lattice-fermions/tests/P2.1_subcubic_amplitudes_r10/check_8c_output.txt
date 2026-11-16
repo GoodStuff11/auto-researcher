@@ -1,0 +1,11 @@
+check dense L=4 cfg 0: E_loc fast=-9.3566470785 brute=-9.3566470785 rel.err=6.9e-16
+check dense L=4 cfg 1: E_loc fast=-6.6806598179 brute=-6.6806598179 rel.err=4.6e-16
+check dense L=4 cfg 2: E_loc fast=-8.3719132918 brute=-8.3719132918 rel.err=1.1e-15
+check dense L=4 cfg 3: E_loc fast=-4.8669028948 brute=-4.8669028948 rel.err=7.6e-16
+check dense L=4 cfg 4: E_loc fast=-9.7600869731 brute=-9.7600869731 rel.err=1.2e-15
+check dense L=6 cfg 0: E_loc fast=-19.6512342089 brute=-19.6512342089 rel.err=5.2e-15
+check dense L=6 cfg 1: E_loc fast=-19.3208483195 brute=-19.3208483195 rel.err=1.9e-15
+check dense L=6 cfg 2: E_loc fast=-13.6120832991 brute=-13.6120832991 rel.err=1.2e-15
+check dense L=6 cfg 3: E_loc fast=-16.2482072835 brute=-16.2482072835 rel.err=2.9e-15
+check dense L=6 cfg 4: E_loc fast=-16.1341864773 brute=-16.1341864773 rel.err=1.5e-15
+CHECK PASS

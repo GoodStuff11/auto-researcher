@@ -1,0 +1,3 @@
+[dense HFPS F=4] L= 8 Ne= 56 sweeps=2450 t_sw=1.197e-02s tau=1.11+-0.13 cost=1.327e-02s acc=0.31 <E>/Ne=-0.482
+[dense HFPS F=4] L=12 Ne=126 sweeps= 635 t_sw=7.904e-02s tau=1.38+-0.36 cost=1.094e-01s acc=0.31 <E>/Ne=-0.459
+[dense HFPS F=4] L=16 Ne=224 sweeps= 289 t_sw=3.816e-01s tau=1.50+-0.60 cost=5.730e-01s acc=0.30 <E>/Ne=-0.441

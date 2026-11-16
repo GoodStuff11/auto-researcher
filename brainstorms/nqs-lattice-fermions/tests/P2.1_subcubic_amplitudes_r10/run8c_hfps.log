@@ -1,0 +1,3 @@
+[7.1 LH-HFPS] L= 8 Ne= 56 sweeps= 829 t_sw=3.583e-02s tau=0.96+-0.18 cost=3.424e-02s acc=0.30 <E>/Ne=-0.475
+[7.1 LH-HFPS] L=12 Ne=126 sweeps= 434 t_sw=1.157e-01s tau=0.78+-0.18 cost=8.972e-02s acc=0.31 <E>/Ne=-0.475
+[7.1 LH-HFPS] L=16 Ne=224 sweeps= 261 t_sw=4.239e-01s tau=1.36+-0.55 cost=5.779e-01s acc=0.31 <E>/Ne=-0.481

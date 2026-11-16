@@ -1,0 +1,8 @@
+[10:57:09] threads 1
+[10:57:09] per-step CPU-s: ws@0=0.036, wide@0=0.019
+[10:57:09] budget train: projected 55 CPU-s for 4 runs + 1 used now; invocation cap 540; task ledger 173 of 1800
+[10:57:21] size 0 ws seed 11: n_params 931 (foil 486) width 6 H2 5 dE_tot 0.00938 dE_sign 0.00100 (11 CPU-s)
+[10:57:32] size 0 ws seed 22: n_params 931 (foil 486) width 6 H2 5 dE_tot 0.00524 dE_sign 0.00031 (12 CPU-s)
+[10:57:39] size 0 wide seed 11: n_params 941 (foil 486) width 13 H2 0 dE_tot 0.01370 dE_sign 0.00093 (6 CPU-s)
+[10:57:45] size 0 wide seed 22: n_params 941 (foil 486) width 13 H2 0 dE_tot 0.00367 dE_sign 0.00057 (6 CPU-s)
+[10:57:45] invocation CPU total 36 s (ledger now 208 s)

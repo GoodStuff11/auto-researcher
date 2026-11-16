@@ -1,0 +1,8 @@
+[11:17:41] threads 1
+[11:17:44] CHECK D size 0 feat G: FastDRF vs DRF amplitudes and force rel diff 3.1e-16
+[11:17:44] CHECK D size 0 feat O: FastDRF vs DRF amplitudes and force rel diff 0.0e+00
+[11:17:47] CHECK D size 1 feat G: FastDRF vs DRF amplitudes and force rel diff 5.9e-15
+[11:17:48] CHECK D size 1 feat O: FastDRF vs DRF amplitudes and force rel diff 0.0e+00
+[11:17:48] CHECK B dt feat G: force vs FD worst rel 3.39e-08; per_sample_O vs force rows 1.5e-16
+[11:17:48] CHECK B dt feat O: force vs FD worst rel 8.73e-07; per_sample_O vs force rows 1.7e-16
+[11:17:48] CHECKS valid: True

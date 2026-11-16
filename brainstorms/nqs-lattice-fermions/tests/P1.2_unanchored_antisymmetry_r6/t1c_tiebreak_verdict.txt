@@ -1,0 +1,12 @@
+  8.3 size 2: dEs foil 0.04962 wide 0.03801 ws 0.03766 r 0.991 counted True
+VERDICT route 8.3: KILL
+  8.4-as-run size 0: dEs foil 0.00401 widet 0.00093 dt 0.00121 r 1.303 counted False
+  8.4-as-run size 1: dEs foil 0.01107 widet 0.00821 dt 0.01107 r 1.348 counted True
+VERDICT route 8.4-as-run: INCOMPLETE
+  8.4 size 1: dEs foil 0.01107 widet 0.00821 dts 0.00979 r 1.191 counted True
+  8.4 size 2: dEs foil 0.04962 widet 0.04450 dts 0.03985 r 0.895 counted True
+VERDICT route 8.4: UNDECIDED
+  8.4-tiebreak size 1: dEs foil 0.01107 widets 0.00993 dts 0.00979 r 0.985 counted True
+  8.4-tiebreak size 2: dEs foil 0.04962 widets 0.04170 dts 0.03985 r 0.956 counted True
+VERDICT route 8.4-tiebreak: KILL
+task CPU ledger: 1812 s

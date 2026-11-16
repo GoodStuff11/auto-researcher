@@ -1,0 +1,5 @@
+[11:10:46] RLIMIT_CPU 600 s set before any ED; mode census
+[11:10:46] 5x2: D=4200 sector levels found 42 (N_LOW=40) E0=-7.423758 chi={'My': -1, 'Mx': 1} S0=1 R_PAIR=3.28 (5 pairs) R_SITE=3.38 (4 pairs) (0.6s)
+[11:10:46] census 5x2: {"size": "5x2", "V": 10, "D": 4200, "nup": 3, "n": 0.6, "omega1": 0.3312516127368301, "n_found": 42, "n_low": 40, "omega_top": 3.070296171491126, "nwin": 4, "dim_sector": null, "ov2": 0.9492211188278075, "E0": -7.423758379422791, "chi": "{'My': -1, 'Mx': 1}", "S0": 1.0, "n_pair": 5, "n_site": 4}
+[11:10:46] build cpu 3s
+[11:10:46] total wall 1s, CPU 3s
