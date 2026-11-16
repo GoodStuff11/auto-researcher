@@ -1,0 +1,18 @@
+[13:42:22] 4x2: D=560 sector levels found 44 (N_LOW=15) E0=-5.189941 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.46 (5 pairs) R_SITE=2.59 (4 pairs) (0.3s)
+[13:42:22] census 4x2: {"size": "4x2", "V": 8, "D": 560, "nup": 3, "n": 0.75, "omega1": 0.15544884738732545, "n_found": 44, "n_low": 15, "omega_top": 3.317100306433911, "nwin": 4, "dim_sector": 44, "ov2": 0.9591663046625439, "E0": -5.189941065066815, "chi": "{'My': 1, 'Mx': 1}", "S0": 0.0, "n_pair": 5, "n_site": 4}
+[13:42:22] gap surgery: level 1 moved from omega 0.1554 to 0.0200
+[13:42:22] build cpu 1s
+[13:42:23] 4x2 tp      |<1|psi>|^2 0.0406 cpu 3s | pair L1R -0.03 SD4 -0.04 DAV-R +0.31 OBS-R +0.45 RND-R +0.41 | spin L1R -0.00 SD4 +0.01 DAV-R +0.36 OBS-R +0.41 RND-R +0.42 | charge L1R -0.03 SD4 -0.05 DAV-R +0.27 OBS-R +0.51 RND-R +0.55
+[13:42:23] 4x2 J       |<1|psi>|^2 0.0405 cpu 3s | pair L1R -0.02 SD4 -0.00 DAV-R +0.20 OBS-R +0.31 RND-R +0.22 | spin L1R +0.01 SD4 +0.02 DAV-R +0.21 OBS-R +0.26 RND-R +0.23 | charge L1R +0.11 SD4 +0.15 DAV-R +0.33 OBS-R +0.51 RND-R +0.38
+[13:42:24] 4x2 dens_s0 |<1|psi>|^2 0.0403 cpu 3s | pair L1R +0.00 SD4 +0.04 DAV-R +0.21 OBS-R +0.55 RND-R +0.27 | spin L1R +0.00 SD4 +0.01 DAV-R +0.18 OBS-R +0.43 RND-R +0.34 | charge L1R +0.02 SD4 +0.04 DAV-R +0.18 OBS-R +0.65 RND-R +0.26
+[13:42:25] 4x2 spin_s0 |<1|psi>|^2 0.0399 cpu 3s | pair L1R +0.06 SD4 +0.06 DAV-R +0.27 OBS-R +0.30 RND-R +0.41 | spin L1R -0.00 SD4 +0.00 DAV-R +0.20 OBS-R +0.18 RND-R +0.35 | charge L1R +0.06 SD4 +0.07 DAV-R +0.26 OBS-R +0.41 RND-R +0.26
+[13:42:25] 4x2 pair_s0 |<1|psi>|^2 0.0405 cpu 3s | pair L1R +0.04 SD4 +0.05 DAV-R +0.21 OBS-R +0.39 RND-R +0.48 | spin L1R +0.00 SD4 +0.01 DAV-R +0.17 OBS-R +0.31 RND-R +0.42 | charge L1R +0.06 SD4 +0.08 DAV-R +0.20 OBS-R +0.46 RND-R +0.56
+[13:42:26] 4x2 dens_s1 |<1|psi>|^2 0.0405 cpu 3s | pair L1R +0.02 SD4 +0.06 DAV-R +0.26 OBS-R +0.51 RND-R +0.40 | spin L1R -0.00 SD4 +0.01 DAV-R +0.21 OBS-R +0.40 RND-R +0.42 | charge L1R -0.13 SD4 -0.12 DAV-R +0.11 OBS-R +0.40 RND-R +0.29
+[13:42:27] 4x2 spin_s1 |<1|psi>|^2 0.0406 cpu 3s | pair L1R +0.03 SD4 +0.04 DAV-R +0.28 OBS-R +0.43 RND-R +0.25 | spin L1R +0.00 SD4 +0.01 DAV-R +0.28 OBS-R +0.34 RND-R +0.29 | charge L1R +0.01 SD4 +0.01 DAV-R +0.23 OBS-R +0.38 RND-R +0.26
+[13:42:27] 4x2 pair_s1 |<1|psi>|^2 0.0406 cpu 2s | pair L1R +0.03 SD4 +0.05 DAV-R +0.44 OBS-R +0.49 RND-R +0.54 | spin L1R +0.00 SD4 +0.02 DAV-R +0.43 OBS-R +0.37 RND-R +0.48 | charge L1R -0.07 SD4 -0.10 DAV-R +0.27 OBS-R +0.51 RND-R +0.42
+  tracked L1R    4x2_d0.02 0.00 (n=24)
+  tracked SD4    4x2_d0.02 0.00 (n=24)
+  tracked DAV-R  4x2_d0.02 0.00 (n=24)
+  tracked OBS-R  4x2_d0.02 0.25 (n=24)
+  tracked RND-R  4x2_d0.02 0.12 (n=24)
+[13:42:27] total CPU 22s

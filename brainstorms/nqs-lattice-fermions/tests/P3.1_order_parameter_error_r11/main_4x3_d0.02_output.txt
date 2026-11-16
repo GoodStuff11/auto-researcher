@@ -1,0 +1,15 @@
+[13:43:42] 4x3: D=34650 sector levels found 17 (N_LOW=15) E0=-8.948665 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.59 (10 pairs) R_SITE=2.96 (9 pairs) (3.0s)
+[13:43:42] census 4x3: {"size": "4x3", "V": 12, "D": 34650, "nup": 4, "n": 0.6666666666666666, "omega1": 0.16083591005649467, "n_found": 17, "n_low": 15, "omega_top": 1.2385365673037985, "nwin": 11, "dim_sector": null, "ov2": 0.9393790503782488, "E0": -8.948664919561418, "chi": "{'My': 1, 'Mx': 1}", "S0": 0.0, "n_pair": 10, "n_site": 9}
+[13:43:42] gap surgery: level 1 moved from omega 0.1608 to 0.0200
+[13:43:42] build cpu 11s
+[13:43:59] 4x3 tp      |<1|psi>|^2 0.0598 cpu 68s | pair L1R +0.02 SD4 +0.06 DAV-R +0.20 OBS-R +0.26 RND-R +0.06 | spin L1R -0.00 SD4 -0.01 DAV-R +0.04 OBS-R +0.03 RND-R +0.00 | charge(ns) L1R +0.62 SD4 +2.25 DAV-R +3.71 OBS-R -0.00 RND-R -1.78
+[13:44:15] 4x3 J       |<1|psi>|^2 0.0601 cpu 65s | pair L1R +0.01 SD4 +0.04 DAV-R +0.17 OBS-R +0.25 RND-R +0.04 | spin L1R -0.00 SD4 -0.00 DAV-R +0.06 OBS-R +0.07 RND-R +0.01 | charge(ns) L1R -0.36 SD4 -0.18 DAV-R +0.31 OBS-R +0.97 RND-R -0.91
+[13:44:31] 4x3 dens_s0 |<1|psi>|^2 0.0462 cpu 63s | pair L1R +0.14 SD4 +0.36 DAV-R +0.58 OBS-R +0.66 RND-R +0.17 | spin L1R -0.03 SD4 -0.05 DAV-R +0.02 OBS-R +0.07 RND-R +0.06 | charge L1R +0.17 SD4 +0.54 DAV-R +0.92 OBS-R +0.80 RND-R +0.16
+[13:44:46] 4x3 spin_s0 |<1|psi>|^2 0.0540 cpu 62s | pair L1R +0.01 SD4 +0.05 DAV-R +0.15 OBS-R +0.41 RND-R +0.09 | spin L1R +0.01 SD4 +0.03 DAV-R +0.22 OBS-R +0.22 RND-R +0.14 | charge(ns) L1R +0.01 SD4 +0.04 DAV-R +0.05 OBS-R +1.91 RND-R +0.46
+[13:45:02] 4x3 pair_s0 |<1|psi>|^2 0.0600 cpu 62s | pair L1R +0.01 SD4 +0.04 DAV-R +0.15 OBS-R +0.24 RND-R +0.05 | spin L1R -0.00 SD4 +0.00 DAV-R +0.05 OBS-R +0.07 RND-R +0.01 | charge(ns) L1R +0.15 SD4 +0.40 DAV-R +0.47 OBS-R +0.85 RND-R +0.65
+  tracked L1R    4x3_d0.02 0.00 (n=11)
+  tracked SD4    4x3_d0.02 0.09 (n=11)
+  tracked DAV-R  4x3_d0.02 0.18 (n=11)
+  tracked OBS-R  4x3_d0.02 0.18 (n=11)
+  tracked RND-R  4x3_d0.02 0.00 (n=11)
+[13:45:02] total CPU 331s

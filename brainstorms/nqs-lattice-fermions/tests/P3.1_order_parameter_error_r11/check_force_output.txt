@@ -1,0 +1,21 @@
+[13:48:40] 4x2: D=560 sector levels found 44 (N_LOW=15) E0=-5.189941 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.46 (5 pairs) R_SITE=2.59 (4 pairs) (0.3s)
+[13:48:51]   seed net: 40 steps, best -5.01938102, 11 CPU-s (0.268 CPU-s/step)
+pair   Ns   2000 draw 0: R exact 129.0071 sampled 250.5658 | cos(f_s, f_e) +0.814 |f_s|/|f_e| 2.318
+pair   Ns   2000 draw 1: R exact 129.0071 sampled 36.6664 | cos(f_s, f_e) +0.914 |f_s|/|f_e| 0.148
+pair   Ns   2000 draw 2: R exact 129.0071 sampled 117.8948 | cos(f_s, f_e) +0.839 |f_s|/|f_e| 1.696
+pair   Ns  50000 draw 0: R exact 129.0071 sampled 146.3205 | cos(f_s, f_e) +0.998 |f_s|/|f_e| 1.206
+pair   Ns  50000 draw 1: R exact 129.0071 sampled 135.0255 | cos(f_s, f_e) +0.999 |f_s|/|f_e| 1.089
+pair   Ns  50000 draw 2: R exact 129.0071 sampled 116.8758 | cos(f_s, f_e) +0.990 |f_s|/|f_e| 0.867
+spin   Ns   2000 draw 0: R exact 3.8147 sampled 4.2730 | cos(f_s, f_e) +0.904 |f_s|/|f_e| 1.111
+spin   Ns   2000 draw 1: R exact 3.8147 sampled 4.4751 | cos(f_s, f_e) +0.961 |f_s|/|f_e| 1.374
+spin   Ns   2000 draw 2: R exact 3.8147 sampled 4.7722 | cos(f_s, f_e) +0.878 |f_s|/|f_e| 1.543
+spin   Ns  50000 draw 0: R exact 3.8147 sampled 3.9919 | cos(f_s, f_e) +0.996 |f_s|/|f_e| 1.044
+spin   Ns  50000 draw 1: R exact 3.8147 sampled 3.6631 | cos(f_s, f_e) +0.997 |f_s|/|f_e| 0.959
+spin   Ns  50000 draw 2: R exact 3.8147 sampled 3.7956 | cos(f_s, f_e) +0.998 |f_s|/|f_e| 0.953
+charge Ns   2000 draw 0: R exact 53.7844 sampled 90.7437 | cos(f_s, f_e) +0.918 |f_s|/|f_e| 1.747
+charge Ns   2000 draw 1: R exact 53.7844 sampled 52.5453 | cos(f_s, f_e) +0.980 |f_s|/|f_e| 0.969
+charge Ns   2000 draw 2: R exact 53.7844 sampled 58.6360 | cos(f_s, f_e) +0.946 |f_s|/|f_e| 1.486
+charge Ns  50000 draw 0: R exact 53.7844 sampled 65.5305 | cos(f_s, f_e) +0.997 |f_s|/|f_e| 1.339
+charge Ns  50000 draw 1: R exact 53.7844 sampled 50.6550 | cos(f_s, f_e) +0.999 |f_s|/|f_e| 0.940
+charge Ns  50000 draw 2: R exact 53.7844 sampled 52.7034 | cos(f_s, f_e) +0.998 |f_s|/|f_e| 0.955
+24.38 user 1.52 sys

@@ -575,7 +575,10 @@ The two conditional leaves wait for redesign before they spend compute:
     * Lower the trust threshold so that the foil is not trivially abstained on.
 ### Current Critical Path (2026-11-16)
 Two leaves are open, and each waits on named jobs (Pipeline State table).
-* **P3.1, route 10.1d.** Probe 702393 checks the target at width 6 on $4\times3$ $4+4$. On TARGET-OK the T3 runs (`submit_t3.sbatch`, about 35 CPU-h). PASS needs the trained, observable-sourced responses to beat the matched Davidson foil F3 by $\lceil0.25n\rceil$ items; a tie with F3 closes the leaf with its diagnostic. A PASS is one size only, and the sampled force stays untested.
+* **P3.1, route 10.1d.** Probe 702393 checks the target at width 6 on $4\times3$ $4+4$. On TARGET-OK the T3 runs (`submit_t3.sbatch`, about 35 CPU-h). PASS needs the trained, observable-sourced responses to beat the matched Davidson foil F3 by $\lceil0.25n\rceil$ items; a tie with F3 closes the leaf with its diagnostic. A PASS is one size only.
+    * **Round 11 (thinking work, no jobs).** The sampled training force is GAP-CLOSED at toy size: 3×3 and 4×2, $N_s=2000$, exact and sampled force both track 1.00, a ceiling result.
+    * Route 10.4 (observable-free Davidson error bars) is KILLED at T1 by a gap-surgery stress: it tracks 0.00–0.18 with the competitor at $\Delta=0.02t$, against 1.00 without noise.
+    * The same stress drops 10.1d's chain to 0.17–0.25. A 10.1d PASS must therefore be scoped to in-sector gaps above the shift offset, $\omega_1\gtrsim0.1t$.
 * **P4.1, route R2 `pcg-scal`.** T2b (699824) at 24 sites, with the equal-wall-time che arm (703587), decides it, scored against the 24-site reference 687302: PASS needs $\rho_{24}+2\sigma\le0.60$, a rise from 12 sites of at most 0.15, and a win over `r1`. A PASS scores parameter efficiency unless an equal-wall-time `che` arm is added. Also pending: the R1 size ladder 686990 (expected Gate 4 FAIL), the R3 W-24 resume 700568, and the generality jobs 637776 and 637777.
 * Closed leaves keep only their named follow-ups (sampled block Lanczos for P3.2; R5.2 and F_A2 for P2.2; the compiled-update falsifier for P2.1); none is scheduled.
 

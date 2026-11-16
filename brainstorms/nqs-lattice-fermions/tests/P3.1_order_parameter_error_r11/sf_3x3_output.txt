@@ -1,0 +1,13 @@
+[13:49:22] 3x3: D=1680 sector levels found 60 (N_LOW=15) E0=-6.558475 chi={'My': 1, 'Mx': 1, 'D': 1} S0=0 R_PAIR=1.83 (12 pairs) R_SITE=2.32 (2 pairs) (2.8s)
+[13:49:27]   seed net: 40 steps, best -6.44597760, 23 CPU-s (0.582 CPU-s/step)
+[13:49:58] 3x3 tp      cpu 123s | pair L1R +0.15 SCRd0 +0.98 NN-exact +0.73 NN-sampled +0.68 | spin(ns) L1R -1.35 SCRd0 +1.29 NN-exact +0.57 NN-sampled +2.31 | charge L1R +0.44 SCRd0 +0.97 NN-exact +0.73 NN-sampled +0.79 | median R/R*, eta: exact 1.118 0.131 sampled 1.089 0.164
+[13:50:29] 3x3 J       cpu 123s | pair L1R +0.16 SCRd0 +0.98 NN-exact +0.82 NN-sampled +0.82 | spin(ns) L1R +0.10 SCRd0 +1.03 NN-exact +1.04 NN-sampled +1.06 | charge L1R +0.38 SCRd0 +0.97 NN-exact +0.79 NN-sampled +0.78 | median R/R*, eta: exact 1.159 0.162 sampled 1.127 0.120
+[13:50:59] 3x3 dens_s0 cpu 120s | pair L1R +0.36 SCRd0 +0.97 NN-exact +0.88 NN-sampled +0.87 | spin(ns) L1R -0.18 SCRd0 +1.14 NN-exact +1.26 NN-sampled +0.97 | charge L1R +0.33 SCRd0 +0.99 NN-exact +0.91 NN-sampled +0.95 | median R/R*, eta: exact 1.116 0.121 sampled 1.111 0.147
+[13:51:29] 3x3 spin_s0 cpu 122s | pair L1R -0.01 SCRd0 +0.96 NN-exact +0.75 NN-sampled +0.67 | spin(ns) L1R -1.81 SCRd0 +1.61 NN-exact +3.05 NN-sampled +0.12 | charge L1R +0.23 SCRd0 +0.98 NN-exact +0.83 NN-sampled +0.76 | median R/R*, eta: exact 1.100 0.112 sampled 1.113 0.153
+  tracked L1R        3x3 0.00 (n=8, states=4)
+  tracked SCRd0      3x3 1.00 (n=8, states=4)
+  tracked NN-exact   3x3 1.00 (n=8, states=4)
+  tracked NN-sampled 3x3 1.00 (n=8, states=4)
+  exact    median R/R* 1.118 median eta 0.130 (pass 4 only: eta 0.102)
+  sampled  median R/R* 1.113 median eta 0.144 (pass 4 only: eta 0.121)
+[13:51:29] total CPU 516s
