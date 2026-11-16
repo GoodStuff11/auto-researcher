@@ -1,0 +1,22 @@
+[15:20:27] instance 25 {'Lx': 5, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 7, 'ndn': 7, 'tp': -0.25, 'J': 0.4} D=51480 E0=-7.2718171320 gap=0.1963 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1615 arm=quarter seed=11 threads=1
+[15:20:28] arm quarter: F=4 Ha=0 n_eff=839 P/dim_S_chi=0.52 calib=2.13e-14
+[15:20:30] quarter: it     0 E-E0 = 1.646518 best = 1.646518 (1.449 CPU-s/step)
+[15:21:38] quarter: it    50 E-E0 = 0.100271 best = 0.090847 (1.354 CPU-s/step)
+[15:22:45] quarter: it   100 E-E0 = 0.058307 best = 0.053334 (1.346 CPU-s/step)
+[15:23:53] quarter: it   150 E-E0 = 0.055559 best = 0.048263 (1.343 CPU-s/step)
+[15:25:03] quarter: it   200 E-E0 = 0.063907 best = 0.048263 (1.353 CPU-s/step)
+[15:26:15] quarter: it   250 E-E0 = 0.057638 best = 0.047860 (1.369 CPU-s/step)
+[15:27:27] quarter: it   300 E-E0 = 0.064894 best = 0.044906 (1.379 CPU-s/step)
+[15:28:40] quarter: it   350 E-E0 = 0.072885 best = 0.043918 (1.386 CPU-s/step)
+[15:29:52] quarter: it   400 E-E0 = 0.051029 best = 0.043918 (1.391 CPU-s/step)
+[15:31:05] quarter: it   450 E-E0 = 0.052103 best = 0.041769 (1.397 CPU-s/step)
+[15:32:15] quarter: it   500 E-E0 = 0.055662 best = 0.041769 (1.396 CPU-s/step)
+[15:33:20] quarter: it   550 E-E0 = 0.055837 best = 0.041769 (1.387 CPU-s/step)
+[15:34:25] quarter: it   600 E-E0 = 0.065635 best = 0.041769 (1.379 CPU-s/step)
+[15:35:30] quarter: it   650 E-E0 = 0.049805 best = 0.040371 (1.372 CPU-s/step)
+[15:36:34] quarter: it   700 E-E0 = 0.049111 best = 0.040371 (1.364 CPU-s/step)
+[15:37:36] quarter: it   750 E-E0 = 0.047458 best = 0.040371 (1.356 CPU-s/step)
+[15:38:38] quarter: it   800 E-E0 = 0.043417 best = 0.040371 (1.348 CPU-s/step)
+[15:39:38] quarter: stop = plateau at it 850; best E - E0 = 0.040371; SR CPU 1139 s
+[15:39:50] quarter [P]: dE_tot=0.040371 dE_sign=0.004067 f_E=0.101 spread=6.2e-13; max |masked entry| proposed by SR = 0.0e+00
+[15:39:50] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r12b/results/t1_quarter_inst25_s11.json

@@ -1,0 +1,25 @@
+[15:19:40] instance 24 {'Lx': 7, 'Ly': 2, 'bcx': 'obc', 'bcy': 'obc', 'nup': 6, 'ndn': 6, 'tp': -0.25, 'J': 0.4} D=84084 E0=-7.8159469909 gap=0.0369 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=3078 arm=quarter seed=11 threads=1
+[15:19:44] arm quarter: F=4 Ha=0 n_eff=625 P/dim_S_chi=0.20 calib=5.33e-15
+[15:19:46] quarter: it     0 E-E0 = 1.890233 best = 1.890233 (2.011 CPU-s/step)
+[15:21:25] quarter: it    50 E-E0 = 0.296149 best = 0.204027 (1.958 CPU-s/step)
+[15:23:01] quarter: it   100 E-E0 = 0.232495 best = 0.187441 (1.934 CPU-s/step)
+[15:24:38] quarter: it   150 E-E0 = 0.204674 best = 0.178854 (1.929 CPU-s/step)
+[15:26:21] quarter: it   200 E-E0 = 0.235851 best = 0.178854 (1.955 CPU-s/step)
+[15:28:04] quarter: it   250 E-E0 = 0.203104 best = 0.169708 (1.972 CPU-s/step)
+[15:29:46] quarter: it   300 E-E0 = 0.254028 best = 0.169708 (1.980 CPU-s/step)
+[15:31:29] quarter: it   350 E-E0 = 0.199988 best = 0.169708 (1.990 CPU-s/step)
+[15:33:04] quarter: it   400 E-E0 = 0.193686 best = 0.165221 (1.977 CPU-s/step)
+[15:34:37] quarter: it   450 E-E0 = 0.175242 best = 0.162370 (1.961 CPU-s/step)
+[15:36:08] quarter: it   500 E-E0 = 0.223494 best = 0.162370 (1.947 CPU-s/step)
+[15:37:37] quarter: it   550 E-E0 = 0.155997 best = 0.155997 (1.930 CPU-s/step)
+[15:39:05] quarter: it   600 E-E0 = 0.196971 best = 0.154130 (1.915 CPU-s/step)
+[15:40:31] quarter: it   650 E-E0 = 0.169816 best = 0.154130 (1.899 CPU-s/step)
+[15:41:56] quarter: it   700 E-E0 = 0.168509 best = 0.154130 (1.885 CPU-s/step)
+[15:43:23] quarter: it   750 E-E0 = 0.165486 best = 0.154130 (1.874 CPU-s/step)
+[15:44:50] quarter: it   800 E-E0 = 0.160308 best = 0.150471 (1.865 CPU-s/step)
+[15:46:16] quarter: it   850 E-E0 = 0.213999 best = 0.150471 (1.856 CPU-s/step)
+[15:47:47] quarter: it   900 E-E0 = 0.163092 best = 0.150471 (1.852 CPU-s/step)
+[15:49:17] quarter: it   950 E-E0 = 0.326266 best = 0.150471 (1.849 CPU-s/step)
+[15:50:44] quarter: stop = plateau at it 1000; best E - E0 = 0.150471; SR CPU 1845 s
+[15:51:16] quarter [P]: dE_tot=0.150471 dE_sign=0.023125 f_E=0.154 spread=1.5e-13; max |masked entry| proposed by SR = 0.0e+00
+[15:51:16] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r12b/results/t1_quarter_inst24_s11.json
