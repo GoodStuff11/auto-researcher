@@ -1,0 +1,29 @@
+== (i) amplitude: augmented det vs explicit det(F0 + K C); full vs t1_r7.LHHFPS
+   5x3obc: full vs LHHFPS max rel err 0.0e+00
+   5x3obc half   : V_h=8 n_aug=14 patch coverage=1.00 max rel err 8.0e-14
+   5x3obc quarter: V_h=6 n_aug=12 patch coverage=0.87 max rel err 5.3e-15
+   6: full vs LHHFPS max rel err 0.0e+00
+   6 half   : V_h=18 n_aug=34 patch coverage=1.00 max rel err 7.1e-15
+   6 quarter: V_h=9 n_aug=25 patch coverage=0.75 max rel err 7.1e-15
+   8: full vs LHHFPS max rel err 0.0e+00
+   8 half   : V_h=32 n_aug=60 patch coverage=1.00 max rel err 7.2e-15
+   8 quarter: V_h=16 n_aug=44 patch coverage=0.75 max rel err 2.1e-14
+== (ii) fast E_loc vs brute (explicit amplitude, sorted rows, JW signs), after accepted moves
+   5x3obc half   : E_fast=-5.556605315720 E_brute=-5.556605315720 max rel err 1.1e-14
+   5x3obc quarter: E_fast=-9.599189162879 E_brute=-9.599189162879 max rel err 1.8e-15
+   6 half   : E_fast=-14.326546027941 E_brute=-14.326546027941 max rel err 1.5e-15
+   6 quarter: E_fast=-15.118191714454 E_brute=-15.118191714454 max rel err 7.8e-15
+   8 half   : E_fast=-35.210967270891 E_brute=-35.210967270891 max rel err 4.5e-15
+   8 quarter: E_fast=-30.860858022586 E_brute=-30.860858022587 max rel err 1.4e-14
+== (iii) drift over 10000 accepted moves, no refresh (checkpoint every 1000)
+   5x3obc half   : accepts=10000 acceptance=0.42 max drift=2.0e-11 (6s)
+   5x3obc quarter: accepts=10000 acceptance=0.44 max drift=4.4e-12 (5s)
+   6 half   : accepts=10000 acceptance=0.35 max drift=9.7e-12 (10s)
+   6 quarter: accepts=10000 acceptance=0.36 max drift=3.0e-09 (10s)
+   8 half   : accepts=10000 acceptance=0.35 max drift=1.2e-11 (14s)
+   8 quarter: accepts=10000 acceptance=0.35 max drift=1.9e-11 (14s)
+CHECK PASS
+
+real	1m2.357s
+user	1m1.871s
+sys	0m0.129s
