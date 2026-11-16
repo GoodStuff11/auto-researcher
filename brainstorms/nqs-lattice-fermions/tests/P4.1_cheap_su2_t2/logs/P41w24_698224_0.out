@@ -18,3 +18,9 @@ task 0 on kim-compute-04.physics.cornell.edu: vmc_t2.py --mode train --arm che -
 [11:09:41] it 700 E -16.417618 std 1.234 acc 0.234 |upd| 1.67e-01 t(mcmc/eloc/grad/sr) 0.26/3.42/0.33/0.15s elapsed 0.796 h
 [11:13:07] it 750 E -16.411930 std 0.998 acc 0.232 |upd| 1.38e-01 t(mcmc/eloc/grad/sr) 0.24/3.39/0.32/0.15s elapsed 0.853 h
 [11:16:30] it 800 E -16.355635 std 1.252 acc 0.236 |upd| 9.92e-02 t(mcmc/eloc/grad/sr) 0.26/3.42/0.33/0.15s elapsed 0.909 h
+[11:19:57] it 850 E -16.407645 std 1.006 acc 0.231 |upd| 7.21e-02 t(mcmc/eloc/grad/sr) 0.25/3.37/0.36/0.15s elapsed 0.967 h
+[11:23:22] it 900 E -16.458184 std 1.095 acc 0.240 |upd| 4.60e-02 t(mcmc/eloc/grad/sr) 0.28/3.33/0.33/0.15s elapsed 1.024 h
+[11:26:47] it 950 E -16.440963 std 0.977 acc 0.238 |upd| 2.95e-02 t(mcmc/eloc/grad/sr) 0.25/3.29/0.33/0.15s elapsed 1.081 h
+[11:30:13] it 1000 E -16.372039 std 1.199 acc 0.226 |upd| 2.29e-02 t(mcmc/eloc/grad/sr) 0.25/3.38/0.35/0.15s elapsed 1.138 h
+[11:34:46] final E (average of last 250 steps) -16.4307284 +- 0.0047658 (65536 samples, 273 s)
+[11:34:46] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/results/w24/S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0.json
