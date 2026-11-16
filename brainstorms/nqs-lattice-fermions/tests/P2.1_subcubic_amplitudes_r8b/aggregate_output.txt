@@ -1,0 +1,16 @@
+arm             L   Ne  sweeps   t_sw[s]   tau_int        cost[s]    acc
+6.1' LH-HFDS    8   56    652 5.617e-02  1.22+-0.29 6.828e-02 0.32
+6.1' LH-HFDS   12  126    531 1.446e-01  0.99+-0.23 1.434e-01 0.32
+6.1' LH-HFDS   16  224    498 3.251e-01  1.48+-0.43 4.799e-01 0.31
+7.3 SH-HFDS     8   56    661 5.753e-02  0.98+-0.22 5.657e-02 0.30
+7.3 SH-HFDS    12  126    541 1.465e-01  0.73+-0.16 1.073e-01 0.30
+7.3 SH-HFDS    16  224    507 3.182e-01  0.98+-0.23 3.132e-01 0.29
+7.1 LH-HFPS     8   56    965 3.841e-02  0.92+-0.16 3.530e-02 0.30
+7.1 LH-HFPS    12  126    643 1.201e-01  0.87+-0.20 1.044e-01 0.31
+7.1 LH-HFPS    16  224    449 3.580e-01  1.23+-0.36 4.419e-01 0.32
+NNBF (H=6)      8   56   2205 1.832e-02  1.14+-0.14 2.086e-02 0.33
+NNBF (H=6)     12  126    828 9.304e-02  1.12+-0.23 1.046e-01 0.33
+NNBF (H=6)     16  224    344 4.614e-01  1.00+-0.33 4.602e-01 0.32
+6.1' LH-HFDS: L=8: R=0.31+-0.08 (t_sw ratio 0.33); L=12: R=0.73+-0.22 (t_sw ratio 0.64); L=16: R=0.96+-0.42 (t_sw ratio 1.42) -> KILL-COST (uncertain: 1-sigma interval at L=16 straddles a threshold)
+7.3 SH-HFDS: L=8: R=0.37+-0.09 (t_sw ratio 0.32); L=12: R=0.98+-0.28 (t_sw ratio 0.64); L=16: R=1.47+-0.60 (t_sw ratio 1.45) -> DOWNGRADE (uncertain: 1-sigma interval at L=16 straddles a threshold)
+7.1 LH-HFPS: L=8: R=0.59+-0.13 (t_sw ratio 0.48); L=12: R=1.00+-0.30 (t_sw ratio 0.77); L=16: R=1.04+-0.46 (t_sw ratio 1.29) -> DOWNGRADE (uncertain: 1-sigma interval at L=16 straddles a threshold)

@@ -1,0 +1,3 @@
+[7.1 LH-HFPS] L= 8 Ne= 56 sweeps= 965 (burn 96) t_sw=3.841e-02s tau_int=0.92+-0.16 (W=6) cost=t_sw*tau=3.530e-02s prop/sweep=90 acc=0.30 <E_loc>/Ne=-0.476 cpu=35s
+[7.1 LH-HFPS] L=12 Ne=126 sweeps= 643 (burn 64) t_sw=1.201e-01s tau_int=0.87+-0.20 (W=7) cost=t_sw*tau=1.044e-01s prop/sweep=202 acc=0.31 <E_loc>/Ne=-0.476 cpu=75s
+[7.1 LH-HFPS] L=16 Ne=224 sweeps= 449 (burn 44) t_sw=3.580e-01s tau_int=1.23+-0.36 (W=8) cost=t_sw*tau=4.419e-01s prop/sweep=356 acc=0.32 <E_loc>/Ne=-0.482 cpu=160s

@@ -1,0 +1,18 @@
+check L=4 cfg 0: E_loc fast=-10.3005413163 brute=-10.3005413163 rel.err=1.6e-16 |carried log|psi| - fresh|=0.0e+00
+check L=4 cfg 1: E_loc fast=-9.5612384213 brute=-9.5612384213 rel.err=5.0e-16 |carried log|psi| - fresh|=1.8e-15
+check L=4 cfg 2: E_loc fast=-10.3103381354 brute=-10.3103381354 rel.err=7.9e-16 |carried log|psi| - fresh|=0.0e+00
+check L=4 cfg 3: E_loc fast=-7.3988394199 brute=-7.3988394199 rel.err=0.0e+00 |carried log|psi| - fresh|=0.0e+00
+check L=4 cfg 4: E_loc fast=-11.4412578579 brute=-11.4412578579 rel.err=4.3e-16 |carried log|psi| - fresh|=0.0e+00
+check L=4 cfg 5: E_loc fast=-8.7088971808 brute=-8.7088971808 rel.err=5.5e-16 |carried log|psi| - fresh|=1.8e-15
+check L=6 cfg 0: E_loc fast=-17.9596949442 brute=-17.9596949442 rel.err=1.5e-15 |carried log|psi| - fresh|=7.1e-15
+check L=6 cfg 1: E_loc fast=-20.5124474258 brute=-20.5124474258 rel.err=2.8e-15 |carried log|psi| - fresh|=3.6e-15
+check L=6 cfg 2: E_loc fast=-17.2523620251 brute=-17.2523620251 rel.err=1.4e-15 |carried log|psi| - fresh|=0.0e+00
+check L=6 cfg 3: E_loc fast=-17.0031991352 brute=-17.0031991352 rel.err=9.9e-16 |carried log|psi| - fresh|=3.6e-15
+check L=6 cfg 4: E_loc fast=-19.6368376102 brute=-19.6368376102 rel.err=1.7e-15 |carried log|psi| - fresh|=3.6e-15
+check L=6 cfg 5: E_loc fast=-22.2812710370 brute=-22.2812710370 rel.err=2.6e-15 |carried log|psi| - fresh|=7.1e-15
+proposal symmetric (8 neighbours each, symmetric adjacency): True
+CHECK PASS
+
+real	0m0.574s
+user	0m0.382s
+sys	0m0.106s
