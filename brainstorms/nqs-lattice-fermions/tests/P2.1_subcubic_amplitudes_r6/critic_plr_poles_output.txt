@@ -1,0 +1,10 @@
+  eps=1e-01  log10|psi_PLR,up|=    -4.85  log10|psi_LH,up|=  -5.08
+  eps=1e-02  log10|psi_PLR,up|=    -7.07  log10|psi_LH,up|=  -5.54
+  eps=1e-03  log10|psi_PLR,up|=    -2.77  log10|psi_LH,up|=  -5.40
+  eps=1e-04  log10|psi_PLR,up|=   +26.64  log10|psi_LH,up|=  -5.39
+  eps=1e-05  log10|psi_PLR,up|=   +62.22  log10|psi_LH,up|=  -5.39
+  eps=1e-06  log10|psi_PLR,up|=   +96.85  log10|psi_LH,up|=  -5.39
+check1 asymptotic slope (eps=1e-4..1e-6): PLR=-35.11, predicted 1-M=-35
+check1 L=6 M=36: slope dlog|psi|/dlog eps  PLR=-21.31 (pole order predicted 1-M=-35)  LH-HFDS=+0.03 (finite: predicted 0)
+check2 L=6 (V=36, 800 spin blocks): spearman(log|prod f|, -log|det A0|)=-0.25; log10|prod f| median -0.02, max +22.41; log10|det A0| min -8.77
+check2 L=8 (V=64, 800 spin blocks): spearman(log|prod f|, -log|det A0|)=-0.25; log10|prod f| median -0.06, max +77.65; log10|det A0| min -13.41
