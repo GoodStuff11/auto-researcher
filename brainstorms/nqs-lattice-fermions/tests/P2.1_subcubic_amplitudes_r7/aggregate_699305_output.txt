@@ -1,0 +1,5 @@
+[11:42:40] sh_plus   steps= 75 stop=None P=1625 dE_tot=0.16588 dE_sign=0.05229 spread=2.7e-13 E(50)=-9.537704 s/step=30.42
+[11:42:40] nnbf      steps= 75 stop=None P=1626 dE_tot=0.24804 dE_sign=0.08799 spread=2.6e-13 E(50)=-9.451324 s/step=3.68
+[11:42:40] lh_plus   steps= 75 stop=None P=1617 dE_tot=0.18609 dE_sign=0.06549 spread=4.0e-13 E(50)=-9.504211 s/step=12.83
+[11:42:40] lh_site   steps= 75 stop=None P=1641 dE_tot=0.20807 dE_sign=0.07548 spread=2.8e-13 E(50)=-9.513120 s/step=9.24
+[11:42:40] ROUTE 7.3 (SH-HFDS) T2 VERDICT: PROMOTE  rho_N = 0.594 <= 1.15 and rho_F = 0.798 <= 0.85; foil = lh_plus (dE_sign 0.06549)  dE_sign_route=0.05229 dE_sign_ref=0.08799 dE_sign_foil=0.06549 rho_N=0.5943 rho_F=0.7984 rho_t=0.6688
