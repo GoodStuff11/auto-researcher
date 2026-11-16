@@ -1,0 +1,6 @@
+[10:23:48] threads 1
+[10:23:48] cost L=4 V=16 Ne=14 E_H=132: NNBF-6 3.4 us/amp, DRF-H 33.5 us/amp, ratio 9.75
+[10:23:49] cost L=5 V=25 Ne=22 E_H=224: NNBF-6 7.3 us/amp, DRF-H 71.0 us/amp, ratio 9.66
+[10:23:49] cost L=6 V=36 Ne=32 E_H=340: NNBF-6 15.2 us/amp, DRF-H 139.1 us/amp, ratio 9.15
+[10:23:51] cost L=7 V=49 Ne=42 E_H=480: NNBF-6 27.6 us/amp, DRF-H 223.8 us/amp, ratio 8.10
+[10:23:51] cost: log-log slope of the DRF/NNBF per-amplitude ratio in N_e = -0.16; local-energy passes per sample are equal (1 + n_conn) for both by construction

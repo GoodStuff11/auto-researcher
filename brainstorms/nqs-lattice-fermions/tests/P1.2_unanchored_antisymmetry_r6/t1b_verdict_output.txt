@@ -1,0 +1,16 @@
+[10:36:24] threads 1
+synthetic [1.0, 0.95, 1.1]: KILL (want KILL) OK
+synthetic [0.5, 0.6, 0.55]: PASS-W (want PASS-W) OK
+synthetic [0.8, 0.85, 0.95]: UNDECIDED (want UNDECIDED) OK
+  DRF-K size 0: dEs_W 0.00302 dEs_drf 0.00706 r_W 2.342 counted False
+  DRF-K size 1: dEs_W 0.01558 dEs_drf 0.02375 r_W 1.525 counted True
+  DRF-K size 2: dEs_W 0.00934 dEs_drf 0.01995 r_W 2.136 counted True
+VERDICT DRF-K: KILL
+  DRF-X size 0: dEs_W 0.00302 dEs_drf 0.01632 r_W 5.412 counted False
+  DRF-X size 1: dEs_W 0.01558 dEs_drf 0.03657 r_W 2.347 counted True
+  DRF-X size 2: dEs_W 0.00934 dEs_drf 0.01324 r_W 1.417 counted True
+VERDICT DRF-X: KILL
+  DRF-H size 0: dEs_W 0.00302 dEs_drf 0.02415 r_W 8.007 counted False
+  DRF-H size 1: dEs_W 0.01558 dEs_drf 0.02373 r_W 1.523 counted True
+  DRF-H size 2: dEs_W 0.00934 dEs_drf 0.01780 r_W 1.905 counted True
+VERDICT DRF-H: KILL

@@ -1,0 +1,23 @@
+[10:27:28] threads 1
+[10:27:30] budget: projected 302 CPU-s for 2 runs + 3 used; cap 600 (per-step CPU-s: drfX@2=0.463)
+[10:27:31] s2 drfX 11: it     0  E = -5.75733629  |f| = 1.13e+00  (0.70 s/step)
+[10:27:51] s2 drfX 11: it    50  E = -6.70971509  |f| = 4.00e-01  (0.40 s/step)
+[10:28:10] s2 drfX 11: it   100  E = -6.79910670  |f| = 6.13e-01  (0.39 s/step)
+[10:28:30] s2 drfX 11: it   150  E = -6.87498888  |f| = 4.10e-01  (0.40 s/step)
+[10:28:50] s2 drfX 11: it   200  E = -6.89278613  |f| = 3.96e-01  (0.40 s/step)
+[10:29:09] s2 drfX 11: it   250  E = -6.86924706  |f| = 5.52e-01  (0.39 s/step)
+[10:29:28] s2 drfX 11: it   299  E = -6.91990661  |f| = 3.42e-01  (0.39 s/step)
+[10:29:29] size 2 drfX seed 11: n_params 989 (T 1110) dE_tot 0.09538 dE_sign 0.01209 (119 s, 119 CPU-s)
+[10:29:30] s2 drfX 22: it     0  E = -5.75705920  |f| = 1.17e+00  (0.58 s/step)
+[10:29:50] s2 drfX 22: it    50  E = -6.71439179  |f| = 5.21e-01  (0.41 s/step)
+[10:30:10] s2 drfX 22: it   100  E = -6.84215327  |f| = 5.20e-01  (0.40 s/step)
+[10:30:30] s2 drfX 22: it   150  E = -6.85023314  |f| = 4.83e-01  (0.40 s/step)
+[10:30:50] s2 drfX 22: it   200  E = -6.88155600  |f| = 4.60e-01  (0.40 s/step)
+[10:31:09] s2 drfX 22: it   250  E = -6.91521227  |f| = 3.75e-01  (0.40 s/step)
+[10:31:29] s2 drfX 22: it   299  E = -6.91669825  |f| = 2.11e-01  (0.40 s/step)
+[10:31:30] size 2 drfX seed 22: n_params 989 (T 1110) dE_tot 0.09036 dE_sign 0.01439 (120 s, 120 CPU-s)
+[10:31:30] invocation CPU total 241 s
+
+real	4m2.143s
+user	3m26.248s
+sys	0m34.806s

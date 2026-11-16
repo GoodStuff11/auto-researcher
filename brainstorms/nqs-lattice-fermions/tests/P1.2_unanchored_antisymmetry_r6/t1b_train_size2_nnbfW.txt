@@ -1,0 +1,23 @@
+[10:27:16] threads 1
+[10:27:17] budget: projected 88 CPU-s for 2 runs + 1 used; cap 600 (per-step CPU-s: nnbfW@2=0.123)
+[10:27:17] s2 nnbfW 11: it     0  E = -5.76007013  |f| = 1.29e+00  (0.12 s/step)
+[10:27:23] s2 nnbfW 11: it    50  E = -6.79189455  |f| = 3.64e-01  (0.11 s/step)
+[10:27:29] s2 nnbfW 11: it   100  E = -6.86878461  |f| = 3.39e-01  (0.11 s/step)
+[10:27:34] s2 nnbfW 11: it   150  E = -6.88206005  |f| = 3.07e-01  (0.11 s/step)
+[10:27:40] s2 nnbfW 11: it   200  E = -6.88521530  |f| = 4.06e-01  (0.11 s/step)
+[10:27:46] s2 nnbfW 11: it   250  E = -6.92338135  |f| = 2.79e-01  (0.11 s/step)
+[10:27:52] s2 nnbfW 11: it   299  E = -6.93179775  |f| = 2.19e-01  (0.11 s/step)
+[10:27:53] size 2 nnbfW seed 11: n_params 1110 (T 1110) dE_tot 0.07319 dE_sign 0.01280 (35 s, 35 CPU-s)
+[10:27:53] s2 nnbfW 22: it     0  E = -5.75908733  |f| = 1.28e+00  (0.12 s/step)
+[10:27:59] s2 nnbfW 22: it    50  E = -6.78008579  |f| = 3.50e-01  (0.12 s/step)
+[10:28:05] s2 nnbfW 22: it   100  E = -6.85366148  |f| = 3.88e-01  (0.12 s/step)
+[10:28:11] s2 nnbfW 22: it   150  E = -6.87597303  |f| = 4.15e-01  (0.12 s/step)
+[10:28:17] s2 nnbfW 22: it   200  E = -6.90154971  |f| = 3.18e-01  (0.12 s/step)
+[10:28:24] s2 nnbfW 22: it   250  E = -6.93542834  |f| = 1.89e-01  (0.12 s/step)
+[10:28:30] s2 nnbfW 22: it   299  E = -6.93168852  |f| = 2.33e-01  (0.12 s/step)
+[10:28:31] size 2 nnbfW seed 22: n_params 1110 (T 1110) dE_tot 0.07087 dE_sign 0.00934 (38 s, 38 CPU-s)
+[10:28:31] invocation CPU total 74 s
+
+real	1m14.766s
+user	1m10.300s
+sys	0m4.049s
