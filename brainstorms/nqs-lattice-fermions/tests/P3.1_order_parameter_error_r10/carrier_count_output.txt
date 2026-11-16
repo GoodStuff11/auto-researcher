@@ -1,0 +1,12 @@
+11 pair SCRd0_T4 0.895 SCRu0_T2 0.946 SCRu0_T4 0.916
+11 spin SCRd0_T4 1.195 SCRu0_T2 1.156 SCRu0_T4 1.122
+11 charge SCRd0_T4 0.594 SCRu0_T2 0.623 SCRu0_T4 0.743
+22 pair SCRd0_T4 0.927 SCRu0_T2 0.959 SCRu0_T4 0.969
+22 spin SCRd0_T4 1.217 SCRu0_T2 1.168 SCRu0_T4 1.130
+22 charge SCRd0_T4 0.675 SCRu0_T2 0.696 SCRu0_T4 0.782
+33 pair SCRd0_T4 0.967 SCRu0_T2 0.985 SCRu0_T4 0.985
+33 charge SCRd0_T4 0.684 SCRu0_T2 0.705 SCRu0_T4 0.795
+scored items 8
+tracked counts (ratio in [1/2,2]): {'L1R': 0, 'RWRstarK': 8, 'RWRK0': 7, 'SCRu0_T2': 8, 'SCRu0_T4': 8, 'SCRd0_T4': 8, 'SCRu0def_T4': 8}
+SCRd0_T4 spin items: [('11', 1.1945567418341725), ('22', 1.2171320192543909)]
+carrier rule: SCRd0 tracks 8 of 8 (>= 6 -> 10.1d)

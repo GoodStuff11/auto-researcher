@@ -1,0 +1,10 @@
+[12:49:14] POWER 4 seeds, PASS-world sigma 0.15 tau 0.10: f mean 0.972 sd 0.057 | {"AMBIGUOUS": 0.013, "PASS": 0.987}
+[12:49:14] POWER 4 seeds, PASS-world sigma 0.30 tau 0.15: f mean 0.886 sd 0.100 | {"AMBIGUOUS": 0.131, "KILL (10.1d)": 0.001, "PASS": 0.868}
+[12:49:15] POWER 4 seeds, noisy sigma 0.50 tau 0.20: f mean 0.742 sd 0.139 | {"AMBIGUOUS": 0.505, "KILL (10.1d)": 0.049, "PASS": 0.446}
+[12:49:15] POWER 4 seeds, charge lost (mu_charge = log 0.40): f mean 0.695 sd 0.109 | {"AMBIGUOUS": 0.746, "KILL (10.1d)": 0.029, "PASS": 0.225}
+[12:49:15] POWER 4 seeds, KILL-world (ratio ~ 0.15): f mean 0.008 sd 0.026 | {"KILL (10.1d)": 1.0}
+[12:49:16] POWER 6 seeds, PASS-world sigma 0.15 tau 0.10: f mean 0.972 sd 0.051 | {"AMBIGUOUS": 0.002, "PASS": 0.998}
+[12:49:16] POWER 6 seeds, PASS-world sigma 0.30 tau 0.15: f mean 0.879 sd 0.093 | {"AMBIGUOUS": 0.061, "KILL (10.1d)": 0.0, "PASS": 0.939}
+[12:49:16] POWER 6 seeds, noisy sigma 0.50 tau 0.20: f mean 0.738 sd 0.120 | {"AMBIGUOUS": 0.387, "KILL (10.1d)": 0.02, "PASS": 0.593}
+[12:49:17] POWER 6 seeds, charge lost (mu_charge = log 0.40): f mean 0.684 sd 0.099 | {"AMBIGUOUS": 0.662, "KILL (10.1d)": 0.01, "PASS": 0.329}
+[12:49:17] POWER 6 seeds, KILL-world (ratio ~ 0.15): f mean 0.009 sd 0.023 | {"KILL (10.1d)": 1.0}
