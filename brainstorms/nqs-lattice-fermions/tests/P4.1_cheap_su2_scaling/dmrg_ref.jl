@@ -27,6 +27,11 @@ Options (all optional; --key=value form):
                     (energy, truncation error) pairs are variational and extrapolable.
   --cutoff=FLOAT    SVD cutoff (default 1e-12).
   --threads=INT     BLAS threads (default 16).
+  --sector=INT      0 (default): plain DMRG (lowest state of the (N_e, S^z) sector). +1 or -1: DMRG of
+                    H + penalty * (1 - sector*My)/2, i.e. the lowest state with y-mirror character My = sector
+                    (amendment 2026-11-16: reference for the (+,+)-projected VMC arms). Output file gets
+                    _Myp / _Mym; <H> of the final MPS and its characters are recorded.
+  --penalty=FLOAT   penalty weight (default 10.0, larger than any low-lying gap).
   --write_above=INT environment tensors are written to disk (ITensorMPS write_when_maxdim_exceeds)
                     for stages with maxdim above this value (default 1000000 = never), to stay within memory.
   --write_path=PATH directory for those files (default: Julia tempdir(), i.e. node-local /tmp).
@@ -53,7 +58,7 @@ include(joinpath(@__DIR__, "logging.jl"))
 function parse_cli(args)
     o = Dict{String,Any}("Lx" => 4, "Ly" => 3, "Ne" => -1, "Sz2" => 0, "U" => 8.0, "tp" => -0.25,
         "maxdims" => "100,200,400,800,1200,1600,2000", "sweeps" => 4, "noise" => 1e-6,
-        "cutoff" => 1e-12, "threads" => 16, "write_above" => 1000000, "write_path" => tempdir(), "outdir" => joinpath(@__DIR__, "dmrg"), "overwrite" => false)
+        "cutoff" => 1e-12, "threads" => 16, "sector" => 0, "penalty" => 10.0, "write_above" => 1000000, "write_path" => tempdir(), "outdir" => joinpath(@__DIR__, "dmrg"), "overwrite" => false)
     for a in args
         if a == "--overwrite"
             o["overwrite"] = true
@@ -104,6 +109,29 @@ function initial_state(N, Ne, Sz2)
     return st
 end
 
+"""
+My (y -> Ly-1-y in every column) as an MPO: product over columns x of the fermionic transposition of
+sites a = x*Ly+1 and c = x*Ly+Ly, for each spin s: S_s = 1 - n_as - n_cs + c+_as c_cs + c+_cs c_as
+(= (-1)^{n_d}, d = (c_a - c_c)/sqrt2; maps c_a <-> c_c and fixes the vacuum). Ly = 3 only.
+"""
+function my_mpo(sites, Lx, Ly)
+    @assert Ly == 3
+    M = MPO(sites, "Id")
+    for x in 0:Lx-1
+        a, c = x * Ly + 1, x * Ly + Ly
+        for (n, cd, cc) in (("Nup", "Cdagup", "Cup"), ("Ndn", "Cdagdn", "Cdn"))
+            os = OpSum()
+            os += 1.0, "Id", a
+            os += -1.0, n, a
+            os += -1.0, n, c
+            os += 1.0, cd, a, cc, c
+            os += 1.0, cd, c, cc, a
+            M = apply(MPO(os, sites), M; cutoff=1e-14)
+        end
+    end
+    return M
+end
+
 function fswap_gate(s1, s2)
     # fermionic swap of two adjacent Electron sites: |a,b> -> (-1)^{n(a) n(b)} |b,a>
     nf = (0, 1, 1, 2)  # Emp, Up, Dn, UpDn
@@ -148,13 +176,21 @@ function run_dmrg(o)
     Lx, Ly, Ne, Sz2 = o["Lx"], o["Ly"], o["Ne"], o["Sz2"]
     N = Lx * Ly
     mkpath(o["outdir"])
-    fn = joinpath(o["outdir"], @sprintf("dmrg_S%dx%d_N%d_Sz2%d_U%g_tp%g.json", Lx, Ly, Ne, Sz2, o["U"], o["tp"]))
+    sec = o["sector"]
+    stag = sec == 0 ? "" : (sec > 0 ? "_Myp" : "_Mym")
+    fn = joinpath(o["outdir"], @sprintf("dmrg_S%dx%d_N%d_Sz2%d%s_U%g_tp%g.json", Lx, Ly, Ne, Sz2, stag, o["U"], o["tp"]))
     if isfile(fn) && !o["overwrite"]
         println("$fn exists; skipping")
         return
     end
     sites = siteinds("Electron", N; conserve_qns=true)
-    H = hubbard_mpo(sites, Lx, Ly, o["U"], o["tp"])
+    H0 = hubbard_mpo(sites, Lx, Ly, o["U"], o["tp"])
+    H = H0
+    if sec != 0  # H + penalty * (1 - sec*My)/2: DMRG restricted (variationally) to the My = sec sector
+        My = my_mpo(sites, Lx, Ly)
+        Id = MPO(sites, "Id")
+        H = +(H0, (0.5 * o["penalty"]) * Id, (-0.5 * o["penalty"] * sec) * My; cutoff=1e-13)
+    end
     st = initial_state(N, Ne, Sz2)
     psi = random_mps(sites, st; linkdims=10)
     md = o["maxdims"]
@@ -186,10 +222,12 @@ function run_dmrg(o)
     @printf("E_extrap = %.10f +- %.2e  (last stage %.10f; slope %.3e); N_e check %s\n", Eex, err,
         stages[end]["energy"], coef[2], string(nN))
     ci, cy, cx = reflection_characters(psi, sites, Lx, Ly, Ne)
+    EH = real(inner(psi', H0, psi) / inner(psi, psi))
+    @printf("sector My = %+d: <H> of final MPS = %.10f (penalised energy %.10f)\n", sec, EH, stages[end]["energy"])
     @printf("reflection characters: <Inv> = %+.6f  <My> = %+.6f  <Mx> = <Inv><My> = %+.6f\n", ci, cy, cx)
     open(fn, "w") do f
         js = "{\"Lx\": $Lx, \"Ly\": $Ly, \"N\": $N, \"Ne\": $Ne, \"Sz2\": $Sz2, \"U\": $(o["U"]), \"tp\": $(o["tp"]), " *
-             "\"E_extrap\": $Eex, \"E_extrap_err\": $err, \"E_last\": $(stages[end]["energy"]), \"chi_inv\": $ci, \"chi_My\": $cy, \"chi_Mx\": $cx, \"stages\": [" *
+             "\"E_extrap\": $Eex, \"E_extrap_err\": $err, \"E_last\": $(stages[end]["energy"]), \"chi_inv\": $ci, \"chi_My\": $cy, \"chi_Mx\": $cx, \"sector_My\": $sec, \"penalty\": $(o["penalty"]), \"E_H_final\": $EH, \"stages\": [" *
              join([@sprintf("{\"maxdim\": %d, \"energy\": %.12f, \"truncerr\": %.6e, \"maxlinkdim\": %d, \"seconds\": %.1f, \"noise\": %.1e}",
                  s["maxdim"], s["energy"], s["truncerr"], s["maxlinkdim"], s["seconds"], s["noise"]) for s in stages], ", ") * "]}"
         write(f, js)

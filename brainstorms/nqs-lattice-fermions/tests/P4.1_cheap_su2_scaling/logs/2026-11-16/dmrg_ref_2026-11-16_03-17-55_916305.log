@@ -1,0 +1,15 @@
+================================================================================
+Timestamp: 2026-11-16T03:17:56
+Command run: julia dmrg_ref.jl --Lx=4 --sector=-1 --maxdims=100,200,400,600,800,1000,1200 --sweeps=10 --noise=1e-4 --threads=8 --outdir=dmrg_sector --overwrite
+================================================================================
+[2026-11-16T03:20:54.784] maxdim   100  E = -7.6195846067  truncerr = 5.265e-04  maxlinkdim 100  noise 1e-04  (74 s)
+[2026-11-16T03:21:37.479] maxdim   200  E = -7.6868957531  truncerr = 2.093e-04  maxlinkdim 200  noise 1e-04  (42 s)
+[2026-11-16T03:22:54.053] maxdim   400  E = -7.7076111651  truncerr = 2.658e-05  maxlinkdim 400  noise 1e-04  (77 s)
+[2026-11-16T03:24:53.187] maxdim   600  E = -7.7163952582  truncerr = 6.707e-06  maxlinkdim 600  noise 1e-04  (119 s)
+[2026-11-16T03:27:05.501] maxdim   800  E = -7.7230985389  truncerr = 1.415e-06  maxlinkdim 800  noise 0e+00  (132 s)
+[2026-11-16T03:29:51.582] maxdim  1000  E = -7.7257558703  truncerr = 2.725e-07  maxlinkdim 1000  noise 0e+00  (166 s)
+[2026-11-16T03:32:48.728] maxdim  1200  E = -7.7265187104  truncerr = 5.498e-08  maxlinkdim 1200  noise 0e+00  (177 s)
+E_extrap = -7.7265489058 +- 3.02e-05  (last stage -7.7265187104; slope 2.453e+03); N_e check QN(("Nf",10,-1),("Sz",0))
+sector My = -1: <H> of final MPS = -7.7265199107 (penalised energy -7.7265187104)
+reflection characters: <Inv> = +0.981816  <My> = -1.000000  <Mx> = <Inv><My> = -0.981816
+wrote dmrg_sector/dmrg_S4x3_N10_Sz20_Mym_U8_tp-0.25.json

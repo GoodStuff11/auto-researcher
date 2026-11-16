@@ -1,0 +1,57 @@
+[04:02:58] check two-site t-J singlet energy -0.400000000000 (exact -J = -0.4)
+[04:02:58] check smoke t-J: D=90 herm 0.0e+00 [H,S2] 6.2e-16 [H,U_g] 1.8e-16 (|G|=12, chi={'Tx': 1, 'My': 1, 'Mx': 1}) P_chi idem 1.6e-16 P_chi psi0-psi0 1.9e-15 P_S idem 2.5e-16 [P_S,P_chi] 7.0e-17
+[04:02:58] check [S+,U_g] 1.4e-15; sector dims: chi 9.0 (rank 9), S=0 & chi 5.0 (rank 5)
+[04:02:58] check grad [full K=2, proj=none]: analytic 1.6347412409e-01 fd 1.6347412424e-01
+[04:02:58] check grad [full K=2, proj=chi]: analytic 4.2260904623e-01 fd 4.2260904620e-01; O_P vs fd 3.1e-10; per-amplitude psi_P 2.7e-16
+[04:02:58] check grad [full K=2, proj=spin_chi]: analytic 3.4049877222e-01 fd 3.4049877251e-01
+[04:02:58] check grad [lr K=3 r=2, proj=none]: analytic 2.1384765990e-01 fd 2.1384765958e-01
+[04:02:58] check grad [lr K=3 r=2, proj=chi]: analytic -5.1420733391e-02 fd -5.1420733449e-02; O_P vs fd 2.9e-10; per-amplitude psi_P 1.4e-16
+[04:02:58] check grad [lr K=3 r=2, proj=spin_chi]: analytic -9.3599571631e-02 fd -9.3599571649e-02
+[04:02:58] check fast E_loc == (H psi)/psi on all 90 configs [lr K=3 r=2]: fast 1.0e-13 brute 3.0e-15
+[04:02:58] check grad [lr r=0, proj=none]: analytic -4.6063970933e-02 fd -4.6063970860e-02
+[04:02:58] check grad [lr r=0, proj=chi]: analytic 7.7334867530e-02 fd 7.7334867399e-02; O_P vs fd 1.1e-10; per-amplitude psi_P 1.5e-16
+[04:02:58] check grad [lr r=0, proj=spin_chi]: analytic 1.6387010039e-02 fd 1.6387009527e-02
+[04:02:58] check fast E_loc == (H psi)/psi on all 90 configs [lr r=0]: fast 1.5e-15 brute 3.8e-16
+[04:02:58] check grad [agp K=3 r=2, proj=none]: analytic -3.8712711326e-01 fd -3.8712711325e-01
+[04:02:58] check grad [agp K=3 r=2, proj=chi]: analytic -8.7960467650e-01 fd -8.7960467621e-01; O_P vs fd 2.5e-10; per-amplitude psi_P 0.0e+00
+[04:02:58] check grad [agp K=3 r=2, proj=spin_chi]: analytic -9.0237464023e-01 fd -9.0237464079e-01
+[04:02:58] check fast E_loc == (H psi)/psi on all 90 configs [agp K=3 r=2]: fast 1.1e-13 brute 1.0e-15
+[04:02:58] check grad [agp r=0, proj=none]: analytic -1.2201696100e-01 fd -1.2201696098e-01
+[04:02:58] check grad [agp r=0, proj=chi]: analytic -6.7121716739e-02 fd -6.7121716185e-02; O_P vs fd 8.4e-10; per-amplitude psi_P 1.9e-16
+[04:02:58] check grad [agp r=0, proj=spin_chi]: analytic -7.6474683795e-02 fd -7.6474683031e-02
+[04:02:58] check fast E_loc == (H psi)/psi on all 90 configs [agp r=0]: fast 6.3e-14 brute 5.3e-16
+[04:02:58] check 6x6 sweep: 21/200 accepted, drift 8.8e-15, carried E_loc vs brute 1.2e-15
+[04:02:58] ALL CHECKS PASSED
+[04:03:19] instance 3 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 5, 'ndn': 5, 'tp': -0.25, 'J': 0.4} D=2018016 arm=nnbfj seed=22
+[04:05:59] projected sector dimensions: dim range(P_chi) = 252402, dim range(P_S P_chi) = 42302
+[04:05:59] ED levels [-12.503400661832597, -12.490261309104756, -12.413796266824559, -12.41136348055966] deg 1; |G|=8 chi(psi_0)={'My': 1, 'Mx': 1, 'D': 1}; S(psi_0)=0 (159 s)
+[04:09:29] arm nnbfj: {'mode': 'full', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 4, 'Ha': 11} n_params=1466 target=1478 proj=chi calib=8.35e-14 init |P psi|/|psi|=3.818e-01
+[04:09:45] nnbfj: it     0  E = -11.05357257  |f| = 2.11e+00  (16.03 s/step)
+[04:22:55] nnbfj: it    50  E = -12.35695216  |f| = 1.17e-01  (15.82 s/step)
+[04:36:04] nnbfj: it   100  E = -12.38672635  |f| = 6.41e-02  (15.80 s/step)
+[04:49:11] nnbfj: it   150  E = -12.39511124  |f| = 5.33e-02  (15.78 s/step)
+[05:02:21] nnbfj: it   200  E = -12.39132317  |f| = 1.30e-01  (15.78 s/step)
+[05:15:30] nnbfj: it   250  E = -12.39921423  |f| = 7.82e-02  (15.78 s/step)
+[05:28:41] nnbfj: it   300  E = -12.40139943  |f| = 6.52e-02  (15.79 s/step)
+[05:41:44] nnbfj: it   350  E = -12.39904526  |f| = 1.00e-01  (15.77 s/step)
+[05:54:54] nnbfj: it   400  E = -12.40225053  |f| = 7.64e-02  (15.77 s/step)
+[06:08:00] nnbfj: it   450  E = -12.39886276  |f| = 1.34e-01  (15.77 s/step)
+[06:20:59] nnbfj: it   500  E = -12.40402490  |f| = 3.33e-02  (15.75 s/step)
+[06:34:02] nnbfj: it   550  E = -12.39979209  |f| = 1.20e-01  (15.74 s/step)
+[06:47:05] nnbfj: it   600  E = -12.38941327  |f| = 2.05e-01  (15.73 s/step)
+[07:00:08] nnbfj: it   650  E = -12.40108956  |f| = 8.61e-02  (15.73 s/step)
+[07:13:10] nnbfj: it   700  E = -12.39977374  |f| = 1.30e-01  (15.72 s/step)
+[07:26:12] nnbfj: it   750  E = -12.40355507  |f| = 6.64e-02  (15.72 s/step)
+[07:39:21] nnbfj: it   800  E = -12.40364175  |f| = 9.35e-02  (15.72 s/step)
+[07:52:27] nnbfj: it   850  E = -12.40574539  |f| = 1.45e-02  (15.72 s/step)
+[08:05:32] nnbfj: it   900  E = -12.38913644  |f| = 4.06e-01  (15.72 s/step)
+[08:18:35] nnbfj: it   950  E = -12.40358693  |f| = 1.21e-01  (15.72 s/step)
+[08:31:37] nnbfj: it  1000  E = -12.40407441  |f| = 9.50e-02  (15.71 s/step)
+[08:44:38] nnbfj: it  1050  E = -12.39789318  |f| = 4.04e-01  (15.71 s/step)
+[08:57:42] nnbfj: it  1100  E = -12.39323214  |f| = 2.61e-01  (15.71 s/step)
+[09:10:44] nnbfj: it  1150  E = -12.40628357  |f| = 3.95e-02  (15.70 s/step)
+[09:23:31] nnbfj: it  1199  E = -12.40576969  |f| = 9.08e-02  (15.70 s/step)
+[09:35:32] nnbfj [P]: dE_tot=0.09695 dE_sign=0.02067 f_E=0.213 eC=3.67e-03 spread=8.2e-13 S2=0.137 ov0=0.815 (711 s)
+[09:46:38] nnbfj [P_S]: dE_tot=0.05907 dE_sign=0.01451 f_E=0.246 eC=3.68e-03 spread=1.1e-12 S2=0.000 ov0=0.835 (666 s)
+[09:46:46] nnbfj sampled: E_exact=-12.41 mean=-12.41 stderr=0.004212 z=0.7724 var_mc=0.2984 var_ex=0.3339 kurt_ex=5.208e+05 tail_share=0.3263 max_dev_sigma=15.03 accept=0.3505 n=2e+04 per_amp_check=1.45e-16 (8 s)
+[09:46:46] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r5/results/inst3_nnbfj_s22.json

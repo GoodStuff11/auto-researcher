@@ -1,0 +1,56 @@
+[11:28:52] check two-site t-J singlet energy -0.400000000000 (exact -J = -0.4)
+[11:28:53] check smoke t-J: D=90 herm 0.0e+00 [H,S2] 6.2e-16 [H,U_g] 1.8e-16 (|G|=12, chi={'Tx': 1, 'My': 1, 'Mx': 1}) P_chi idem 1.6e-16 P_chi psi0-psi0 1.9e-15 P_S idem 2.5e-16 [P_S,P_chi] 7.0e-17
+[11:28:53] check [S+,U_g] 1.4e-15; sector dims: chi 9.0 (rank 9), S=0 & chi 5.0 (rank 5)
+[11:28:53] check grad [full K=2, proj=none]: analytic 1.6347412409e-01 fd 1.6347412424e-01
+[11:28:53] check grad [full K=2, proj=chi]: analytic 4.2260904623e-01 fd 4.2260904620e-01; O_P vs fd 3.1e-10; per-amplitude psi_P 2.7e-16
+[11:28:53] check grad [full K=2, proj=spin_chi]: analytic 3.4049877222e-01 fd 3.4049877251e-01
+[11:28:53] check grad [lr K=3 r=2, proj=none]: analytic 2.1384765990e-01 fd 2.1384765958e-01
+[11:28:53] check grad [lr K=3 r=2, proj=chi]: analytic -5.1420733391e-02 fd -5.1420733449e-02; O_P vs fd 2.9e-10; per-amplitude psi_P 1.4e-16
+[11:28:53] check grad [lr K=3 r=2, proj=spin_chi]: analytic -9.3599571631e-02 fd -9.3599571649e-02
+[11:28:53] check fast E_loc == (H psi)/psi on all 90 configs [lr K=3 r=2]: fast 1.0e-13 brute 3.0e-15
+[11:28:53] check grad [lr r=0, proj=none]: analytic -4.6063970933e-02 fd -4.6063970860e-02
+[11:28:53] check grad [lr r=0, proj=chi]: analytic 7.7334867530e-02 fd 7.7334867399e-02; O_P vs fd 1.1e-10; per-amplitude psi_P 1.5e-16
+[11:28:53] check grad [lr r=0, proj=spin_chi]: analytic 1.6387010039e-02 fd 1.6387009527e-02
+[11:28:53] check fast E_loc == (H psi)/psi on all 90 configs [lr r=0]: fast 1.5e-15 brute 3.8e-16
+[11:28:53] check grad [agp K=3 r=2, proj=none]: analytic -3.8712711326e-01 fd -3.8712711325e-01
+[11:28:53] check grad [agp K=3 r=2, proj=chi]: analytic -8.7960467650e-01 fd -8.7960467621e-01; O_P vs fd 2.5e-10; per-amplitude psi_P 0.0e+00
+[11:28:53] check grad [agp K=3 r=2, proj=spin_chi]: analytic -9.0237464023e-01 fd -9.0237464079e-01
+[11:28:53] check fast E_loc == (H psi)/psi on all 90 configs [agp K=3 r=2]: fast 1.1e-13 brute 1.0e-15
+[11:28:53] check grad [agp r=0, proj=none]: analytic -1.2201696100e-01 fd -1.2201696098e-01
+[11:28:53] check grad [agp r=0, proj=chi]: analytic -6.7121716739e-02 fd -6.7121716185e-02; O_P vs fd 8.4e-10; per-amplitude psi_P 1.9e-16
+[11:28:53] check grad [agp r=0, proj=spin_chi]: analytic -7.6474683795e-02 fd -7.6474683031e-02
+[11:28:53] check fast E_loc == (H psi)/psi on all 90 configs [agp r=0]: fast 6.3e-14 brute 5.3e-16
+[11:28:53] check 6x6 sweep: 21/200 accepted, drift 8.8e-15, carried E_loc vs brute 1.2e-15
+[11:28:53] ALL CHECKS PASSED
+[11:29:16] instance 3 {'Lx': 4, 'Ly': 4, 'bcx': 'obc', 'bcy': 'obc', 'nup': 5, 'ndn': 5, 'tp': -0.25, 'J': 0.4} D=2018016 arm=sjnet seed=33
+[11:32:30] projected sector dimensions: dim range(P_chi) = 252402, dim range(P_S P_chi) = 42302
+[11:32:30] ED levels [-12.503400661832597, -12.490261309104756, -12.413796266824559, -12.41136348055966] deg 1; |G|=8 chi(psi_0)={'My': 1, 'Mx': 1, 'D': 1}; S(psi_0)=0 (194 s)
+[11:36:30] arm sjnet: {'mode': 'lr', 'K': 1, 'r': 0, 'shared_ref': True, 'Hs': 0, 'Ha': 39} n_params=1486 target=1478 proj=chi calib=7.46e-14 init |P psi|/|psi|=3.819e-01
+[11:36:40] sjnet: it     0  E = -11.05701927  |f| = 1.21e+00  (10.47 s/step)
+[11:45:03] sjnet: it    50  E = -12.28210049  |f| = 1.30e-01  (10.05 s/step)
+[11:53:26] sjnet: it   100  E = -12.33528834  |f| = 1.71e-01  (10.06 s/step)
+[12:01:49] sjnet: it   150  E = -12.35110851  |f| = 1.91e-01  (10.06 s/step)
+[12:10:13] sjnet: it   200  E = -12.35750394  |f| = 4.90e-02  (10.07 s/step)
+[12:18:35] sjnet: it   250  E = -12.36139430  |f| = 3.37e-02  (10.06 s/step)
+[12:27:22] sjnet: it   300  E = -12.36446299  |f| = 6.97e-02  (10.14 s/step)
+[12:35:51] sjnet: it   350  E = -12.36588845  |f| = 4.48e-01  (10.15 s/step)
+[12:44:33] sjnet: it   400  E = -12.36719791  |f| = 6.57e-01  (10.18 s/step)
+[12:53:13] sjnet: it   450  E = -12.36665804  |f| = 5.75e+00  (10.21 s/step)
+[13:01:51] sjnet: it   500  E = -12.36940643  |f| = 5.08e+00  (10.22 s/step)
+[13:10:29] sjnet: it   550  E = -12.36514239  |f| = 2.16e+01  (10.23 s/step)
+[13:19:15] sjnet: it   600  E = -12.33431149  |f| = 3.67e+01  (10.26 s/step)
+[13:27:52] sjnet: it   650  E = -12.37068220  |f| = 1.74e+01  (10.26 s/step)
+[13:36:37] sjnet: it   700  E = -12.36989753  |f| = 8.25e+00  (10.28 s/step)
+[13:45:36] sjnet: it   750  E = -12.36286445  |f| = 6.43e+01  (10.31 s/step)
+[13:54:03] sjnet: it   800  E = -12.36868228  |f| = 9.70e+00  (10.30 s/step)
+[14:02:27] sjnet: it   850  E = -12.35027027  |f| = 2.67e+01  (10.29 s/step)
+[14:10:49] sjnet: it   900  E = -12.37221920  |f| = 9.14e+00  (10.28 s/step)
+[14:19:11] sjnet: it   950  E = -12.34389992  |f| = 7.35e+01  (10.26 s/step)
+[14:27:31] sjnet: it  1000  E = -12.36511340  |f| = 2.13e+01  (10.25 s/step)
+[14:35:53] sjnet: it  1050  E = -12.36617959  |f| = 2.48e+01  (10.24 s/step)
+[14:44:16] sjnet: it  1100  E = -12.35454143  |f| = 5.93e+01  (10.23 s/step)
+[14:52:38] sjnet: it  1150  E = -12.36813392  |f| = 3.22e+01  (10.22 s/step)
+[15:00:49] sjnet: it  1199  E = -12.37078358  |f| = 5.00e+01  (10.22 s/step)
+[15:13:30] sjnet [P]: dE_tot=0.12990 dE_sign=0.03740 f_E=0.288 eC=5.48e-03 spread=1.4e-12 S2=0.180 ov0=0.694 (755 s)
+[15:26:16] sjnet [P_S]: dE_tot=0.07884 dE_sign=0.02554 f_E=0.324 eC=5.55e-03 spread=5.0e-13 S2=0.000 ov0=0.718 (766 s)
+[15:26:16] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r5/results/inst3_sjnet_s33.json
