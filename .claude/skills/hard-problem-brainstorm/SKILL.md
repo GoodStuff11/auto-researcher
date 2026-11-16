@@ -30,7 +30,7 @@ Files in this skill's base directory:
    - The route is disqualified unless the core of the proposal is a concrete mechanism that bypasses that exact adoption bottleneck.
 4. **Problem-Specific Anti-Patterns as Mutation Fuel**: Failures are stored locally within the working file (`brainstorm-<slug>.md`). Killed ideas are not dead ends; their specific failure mechanisms form the boundary conditions for the next generation of mutated ideas.
 5. **Zero Subjective Scoring**: Never assign numeric ratings, promise multipliers, or arbitrary tractability scores. Ideas survive or die based on explicit binary gates.
-6. **Decisive Termination**: The terminal output is the single smallest analytical derivation or numerical micro-step capable of killing the route within 24 hours.
+6. **Decisive Termination**: For every live route, the next step is the cheapest analytical derivation or numerical micro-step that could kill it (Stage 3.5 tiers). A multi-seed decisive test (T3, at most 24 CPU-hours per task by default) is reserved for routes that already passed the cheaper tiers.
 7. **Cluster & Compute Environment Awareness**: Before running any diagnostic scripts or benchmarks, detect if the environment is an HPC cluster (check for `sbatch`, Slurm environment variables, or module systems). If on a cluster, never run heavy workloads interactively or directly on login nodes—generate and submit jobs via Slurm `sbatch` scripts with appropriate partition, walltime, and resource allocations.
 8. **Mathematical Rigor**: Write all variables, operators, inequalities, and expressions in explicit LaTeX ($...$ inline, $$...$$ display). Every symbol must be defined at first use.
 9. **Markdown Hygiene (Every `.md` Must Lint Clean)**: Every Markdown file this procedure writes or edits must pass `check_brainstorm.py` with **zero errors and zero warnings** before it is handed back or synthesized. That includes the master `brainstorm-<slug>.md`, every `.subproblems/P{i}_*.md` leaf artifact, and any brief or note. Lint the whole working directory in one call with `python3 check_brainstorm.py <working-dir>`. The linter detects each file's role (master, leaf or other). Rules that are easy to break when pasting logs or appending sections:
@@ -38,6 +38,7 @@ Files in this skill's base directory:
    - Never continue a list with text indented by 4 or more spaces after a code fence or a table. That text renders as a code block (M4). Start a new top-level list instead.
    - Put a blank line before and after every table. Without the blank line after, the next line is swallowed into the table (M5).
    - Close every inline code span and every inline math span on the same line or paragraph (M6, M7).
+10. **Route Portfolio, Cheapest Falsifier First (Never Wait on One Route)**: Each leaf keeps a *portfolio* of several live routes, not one "top route". Evidence is gathered in tiers (Stage 3.5): analysis first, then toy computation, then a short pilot, and a multi-seed decisive test last. A running job blocks only the route it tests, never the leaf. The moment a job is submitted, work switches to the next route in the portfolio. While any job runs, every free agent slot is filled with tier-0 or tier-1 work on other routes (rule: *submit-and-switch*).
 
 ---
 
@@ -104,8 +105,8 @@ Present the leaf summary table to the user and prompt for the routing mode:
 #### 0. Pipelined Orchestration (No Global Barriers)
 Mode B is dependency-driven, not phase-driven. Each leaf advances through its own pipeline as soon as its own inputs are ready. The orchestrator never waits for "all workers" (or "all critics", or "all tests") before moving a leaf that is not blocked.
 - **Per-leaf state machine.** Track every leaf in a status table at the top of `## Master Leaf Synthesis Matrix`:
-  `DISPATCHED → RETURNED → LINTED → CRITIC → (MUTATE → RETURNED …) → TEST-READY → SUBMITTED → RESULT → (autopsy → MUTATE …)`
-  Record the current state and what, if anything, the leaf is blocked on.
+  `DISPATCHED → RETURNED → LINTED → CRITIC → PORTFOLIO-ACTIVE → (routes climb T0 → T1 → T2 → T3 independently) → CLOSED`
+  Record the current state, the number of live routes, the routes in flight (job ids), and what, if anything, the leaf is blocked on. Route-level state lives in each leaf's Route Portfolio table (Stage 3.5.2). A leaf with a job in flight is **not** blocked while it has another live route below T3.
 - **Act on each arrival immediately.** When any agent or job for leaf $P_i$ finishes, advance $P_i$ in the same turn, without waiting for its siblings:
   1. When a worker returns: lint its artifact (rule 9), and fix it or send it back. Add or update its row in the synthesis matrix. Spawn that leaf's critic right away (see the Evaluation Protocol: one critic per leaf, or per small batch of leaves that return together).
   2. When a critic returns: apply its accepted objections. A route that is killed or downgraded goes straight back to a mutation worker for that leaf (Stage 3.3). A route that survives with a fixable test defect gets a fix worker, or the orchestrator fixes it.
@@ -113,7 +114,8 @@ Mode B is dependency-driven, not phase-driven. Each leaf advances through its ow
   4. When a result lands: record it, apply the Stage 4 Autopsy & Re-Loop rule for that leaf, and run the cross-pollination check against the leaves still running (step 5).
 - **Explicit dependencies are the only barriers.** Keep a `Blocked on` column. A leaf waits only if its premise, instance, metric or baseline depends on a result that is not yet available, for example "the premise of P1.3 depends on the verdict of P1.1". When a result arrives, unblock exactly the leaves that list it. A critical-path test is run first, but it does **not** hold back leaves that do not depend on it. If only part of a leaf depends on a pending result, start the independent part now and record the pending part as a follow-up.
 - **Broadcast, don't restart.** When a result, correction or new anti-pattern affects leaves that are still running, send it to those workers as a message (e.g. "the competitor you were told about is in another symmetry sector"). Do not wait for them to finish and then redo the work.
-- **Keep agents busy.** Run up to the concurrency limit (the session's workflow-size guideline, or the user's instruction). When an agent finishes and work is queued, start the next queued item (mutation, critic, fix, test build) in the same turn. Idle waiting is acceptable only when every remaining item is blocked or running. In that case wait for notifications; never poll.
+- **Keep agents busy (submit-and-switch, Stage 3.5.3).** Run up to the concurrency limit (the session's workflow-size guideline, or the user's instruction). When an agent finishes and work is queued, start the next queued item (mutation, critic, fix, test build) in the same turn. Every Slurm submission is followed, in the same turn, by dispatching T0 or T1 work on another live route of that leaf or of another leaf. Idle waiting is acceptable only when every live route of every leaf is in flight or dependency-blocked (Stage 3.5.3, item 5). In that case wait for notifications.
+- **Two queues, one scheduler.** Keep a *compute queue* (T2 and T3 jobs, limited by the cluster) and a *thinking queue* (T0 analysis, T1 toy runs, pre-flight dry runs, gating of new routes, Gate 0 checks, critics, decision-tree pre-planning). The thinking queue is never allowed to empty while the compute queue is busy, unless every leaf is closed.
 - **Incremental synthesis.** The Master Leaf Synthesis Matrix and the Cross-Pollination section are updated row by row as leaves arrive, not compiled once at the end. A final whole-document lint and a cross-node critic pass (Evaluation Protocol) close each round, but they never hold back per-leaf progress.
 
 #### 1. Directory Setup
@@ -147,11 +149,15 @@ Provide each worker with:
   - Route 1.1 (Mutated from 1.0): [Modified Mechanism addressing Gate X] -> SURVIVED
 * **Generation Batch 2 (if needed)**: ...
 
-### 3. Top Surviving Route & Sharpest Gap
-* **Mechanism**: ...
-* **Sharpest Gap**: The missing lemma, unproven scaling, or unverified physical assumption.
+### 3. Route Portfolio & Sharpest Gaps
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| R1 | T1 | IN-FLIGHT(job id) | — | ... | PASS → ...; FAIL → ... |
 
-### 4. 24-Hour Decisive Test & Compute Execution
+* For every live route: **Mechanism**, **Sharpest Gap** (the missing lemma, unproven scaling, or unverified assumption), and its **Gate 4 claim** (cost versus $N$; extensive gain or finite-size bonus).
+* **Tier log**: each T0 argument, T1 toy result and pre-flight dry-run output, with its kill rule and verdict.
+
+### 4. Tier-3 Decisive Test & Compute Execution (only for routes that passed T0–T2)
 * **Minimal Instance**: Smallest non-trivial model retaining the Hard Core.
 * **Scalar Metric $M$**: Exact mathematical definition.
 * **Execution Plan**: Shell command or Slurm job script (`run_test.sbatch`) if on an HPC cluster.
@@ -197,7 +203,7 @@ Each time a leaf returns or a result lands, the orchestrator checks it against e
 Generate an initial pool of 3–4 candidate routes. Ingest the local "Problem Anti-Patterns & Killed Routes" section first to avoid re-treading dead ends.
 
 ### 3.2 Binary Falsification Gates
-Subject each candidate route to four binary elimination gates:
+Subject each candidate route to five binary elimination gates:
 
 * **Gate 0: Novelty & Adoption Reality Check**
   - Is this approach already known or essentially identical to an existing baseline?
@@ -218,6 +224,12 @@ Subject each candidate route to four binary elimination gates:
 
 * **Gate 3: The Hard-Core Shield**
   - Does the mechanism secretly simplify away the Hard Core identified in Step 0 (e.g., vanishing sign problem only in bipartite lattices; bounded entanglement only in 1D; non-interacting limits)?
+  - Verdict: PASS / FAIL.
+
+* **Gate 4: Scaling & Relevance**
+  - State the asymptotic claim explicitly: the cost per amplitude, sample or step as a function of system size $N$, and whether the claimed gain should hold *per site* (extensive) or only as a finite-size bonus.
+  - Is there a standard argument that the gain vanishes with $N$ (e.g., a fixed number of mean-field components captures non-extensive correlation; a symmetry restoration is a finite-size effect; an exact-sum or full-vector operation is exponential)?
+  - If the claim survives on paper, it must be checked at tier 1 on at least three toy sizes *before* any tier-3 investment (Stage 3.5). A method whose benefit exists only on small clusters fails here, not after the decisive test.
   - Verdict: PASS / FAIL.
 
 ---
@@ -244,15 +256,80 @@ If an idea is completely irrecoverable (e.g., fundamentally violates a no-go the
 2. **Active / Interactive Probing**: If passive representations hit complexity walls, formulate a route based on active, adaptive query algorithms or localized projective measurements.
 3. **Cross-Field Translation**: Port a concrete mathematical technique from an adjacent field that conquered an analogous barrier, modifying it to respect the Hard Core.
 
-**Termination Condition for Stage 3**: Continue the generate $\to$ gate $\to$ mutate loop until **at least 1–2 distinct, fully qualified candidate routes survive all 4 gates**.
+**Termination Condition for Stage 3**: Continue the generate $\to$ gate $\to$ mutate loop until **at least 3 distinct candidate routes survive all 5 gates** (the starting Route Portfolio of Stage 3.5). Generation does not stop when the first route survives: the portfolio is refilled whenever it drops below 3 live routes.
 
 For each surviving route, state the **Sharpest Gap**: the missing lemma, unproven scaling behavior, or unverified physical assumption required for the route to function.
 
 ---
 
-## Stage 4 — The 24-Hour Decisive Test & Compute Execution
+## Stage 3.5 — Evidence Tiers & the Route Portfolio (Submit-and-Switch)
 
-Take the top surviving route and design the minimal diagnostic calculation or numerical check to attempt to falsify it immediately.
+**Core Objective**: Kill weak routes in minutes, not days, and never let one long job idle a leaf. Every gate-surviving route climbs a ladder of increasingly expensive evidence. A route is promoted only after it passes the cheaper tier, and while it waits on a job, the other routes keep moving.
+
+### 3.5.1 The Evidence Tiers
+
+| Tier | What it is | Budget (default cap) | Typical kills |
+| :--- | :--- | :--- | :--- |
+| **T0 Analysis** | Lemmas, counting and dimension arguments, small linear-algebra models (e.g. a $2\times2$ effective model), operation counts, asymptotic cost and extensivity estimates, known results | minutes of agent time, no job | mechanisms impossible in principle; cost models that cannot win; Gate 4 failures |
+| **T1 Toy computation** | Exact computation on a toy instance that keeps the Hard Core (Hilbert dimension up to about $10^4$), plus the mandatory pre-flight dry run (3.5.4) | under 10 CPU-minutes; a short interactive allocation or a tiny job | structural failures, invalid instances, broken controls, the three-size Gate 4 trend |
+| **T2 Pilot** | One seed at the decisive instance size, with checkpointed early-stop rules (3.5.5) | under 2 CPU-hours per task by default | weak effects, wrong regime, premise failures |
+| **T3 Decisive** | The multi-seed, pre-registered test of Stage 4, sized by power analysis (3.5.5) | under 24 CPU-hours per task by default | only routes that passed T0–T2 |
+
+* **Each tier has its own pre-registered kill rule**, written before that tier runs. A T0 or T1 kill is as final as a T3 kill when its argument or computation is checked by the per-leaf critic.
+* **Budget caps need a written exception.** A T3 task above the cap, or an instance above about $10^6$ states, requires a stated reason why no smaller instance keeps the Hard Core. The default instance is the smallest one that does (e.g. $4\times2$, $3\times3$, $2\times L$ ladders), not the largest one exact diagonalization allows.
+* **A premise shared by several routes is tested once, first.** If routes $X$, $Y$, $Z$ all assume the same premise (an instance has a target, a regime exists, a reference is valid), test that premise at the cheapest tier that decides it, and let its result prune all three.
+
+### 3.5.2 The Route Portfolio (Per Leaf)
+
+Each leaf maintains a portfolio table (in its artifact, section "Route Portfolio") with one row per live route:
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+
+* **Route states**: `GATED → T0 → T1 → T2 → T3 → VERDICT`, plus `IN-FLIGHT(job id)` while a job runs and `KILLED(tier, reason)`.
+* **Portfolio size.** Keep at least 3 live routes per leaf whenever the leaf is not yet closed. When the count drops below 3, refill immediately with Operation A (mutation of the latest kill) or Operation B (orthogonal replenishment) from Stage 3.3, gated as usual.
+* **Breadth before depth.** All live routes are taken through T0 and T1 together, in parallel. At most one or two routes per leaf are promoted to T3 at the same time, chosen by these ordering rules (binary comparisons, no scores, rule 5):
+  1. a route that has passed a higher tier goes before one that has not;
+  2. among equals, a route whose test would decide a premise shared by other routes goes first;
+  3. among equals, the route with the cheaper next tier goes first.
+* **A route in flight does not block its leaf.** A leaf is blocked only when *every* live route is `IN-FLIGHT` or waiting on a stated cross-leaf dependency.
+
+### 3.5.3 Submit-and-Switch Scheduling
+
+The orchestrator (and any worker that owns a leaf) follows this loop. It replaces "design one test, submit, wait":
+
+1. **Before submitting a T2 or T3 job**, write the decision tree: for each pre-registered verdict (PASS, FAIL, AMBIGUOUS, INCOMPLETE), the next action and, where it is a test, its design. When the result lands, the next step starts in the same turn.
+2. **Submit, then switch immediately.** In the same turn as the `sbatch`, take the next route in the portfolio and advance it one step at the cheapest tier it still needs (T0 analysis or a T1 toy computation).
+3. **Fill every idle slot with non-compute work**, in this order:
+   * T0 analysis of live routes that have not passed T0 (proofs of the sharpest gap, Gate 4 cost and extensivity arguments);
+   * T1 toy computations and pre-flight dry runs for routes about to be promoted;
+   * generation and gating of replacement routes when a portfolio is below 3;
+   * deeper Gate 0 literature checks on routes approaching T3;
+   * per-leaf critics on routes that have not yet been tested;
+   * decision-tree pre-planning for jobs in flight.
+4. **On every job checkpoint or completion**, apply the early-stop rule (3.5.5) or the verdict rule, update the portfolio row, and launch the pre-planned next action.
+5. **Idle waiting is legitimate only** when every live route in every leaf is `IN-FLIGHT` or dependency-blocked, and no route is below T0 or T1. In that case wait for notifications.
+
+### 3.5.4 Mandatory Pre-Flight Dry Run (Before Any T2 or T3 Submission)
+
+Run the complete pipeline (train, aggregate, verdict) on a toy instance with a deliberately short budget, and record its output in the leaf artifact:
+
+* the instance parameters pass explicit validity asserts (e.g. an active-space size not exceeding the orbital count; the target symmetry sector exists and is the one the reference uses);
+* the positive control returns its intended verdict, and the negative control returns its intended verdict, *in every case the rule will see* (a positive control must be a perfect partner regardless of which branch the trial state is in);
+* the aggregate script parses the outputs and prints a verdict from synthetic results that cover every rule branch;
+* the reference method (ED, DMRG, ...) matches an independent check on the toy instance in the same sector the arms use.
+
+### 3.5.5 Decisive by Design: Power Sizing and Early Stops
+
+* **Power sizing.** From the T2 pilot's seed-to-seed and sampling spread, choose seeds, samples and steps so that the PASS and FAIL thresholds are separated by at least $2\sigma$ of the scored metric. A T3 test that is likely to return AMBIGUOUS is redesigned before submission, not resolved afterwards with "add more seeds".
+* **Checkpointed early stops.** T2 and T3 jobs write checkpoints and per-checkpoint metrics. The pre-registered rule includes futility and early-kill clauses at fixed fractions of the budget (e.g. 25% and 50%): if the metric at a checkpoint is already outside the PASS region by more than its projected remaining improvement (measured on the pilot's trajectory), cancel the job and record the verdict at that checkpoint.
+* **Anytime reporting.** Partial checkpoint metrics are read and logged when they appear. They may *kill* early under the pre-registered rule, but never *promote* early.
+
+---
+
+## Stage 4 — The Decisive Test (Tier 3) & Compute Execution
+
+Take a route that has passed T0–T2 (Stage 3.5) and design the minimal decisive calculation that can falsify it. Respect the T3 budget cap, the pre-flight dry run (3.5.4) and power sizing (3.5.5).
 
 ### 1. Test Specification
 1. **Target Instance**: The minimal non-trivial instance preserving the Hard Core (e.g., 2x2 cluster, N=2 particle sector, smallest non-Abelian group).
@@ -288,7 +365,7 @@ Before running any code or generating test scripts:
        ```
 
      - Submit via `sbatch submit_test.sbatch` and monitor via `squeue -u $USER`.
-3. **Autopsy & Re-Loop Rule**: If the computation yields a **FAIL**, log the failure mechanism into `## Problem Anti-Patterns & Killed Routes`, then return to Stage 3.3 to mutate the route or activate the secondary surviving route. Do not stop.
+3. **Autopsy & Re-Loop Rule**: If the computation yields a **FAIL**, log the failure mechanism into `## Problem Anti-Patterns & Killed Routes`, mark the route `KILLED` in the leaf's Route Portfolio, launch the pre-planned FAIL action from its decision tree, and refill the portfolio (Stage 3.3) if it drops below 3 live routes. The other live routes were already advancing while this job ran (Stage 3.5.3), so a kill never restarts the leaf from scratch. Do not stop.
 
 ---
 
@@ -316,6 +393,8 @@ Spawn a fresh adversarial critic agent with this mandate:
 > 4. Determine whether the 24-hour test can be trivially satisfied by the Minimal Contrast Foil.
 > 5. Verify whether compute scripts conform to the environment (Slurm/sbatch if on a cluster).
 > 6. Check whether any proposed step repeats a mechanism logged in the Problem Anti-Patterns section.
+> 7. Check tier discipline: could this route have been killed at a cheaper tier (a T0 argument such as a small effective-model lemma, an operation count, or an extensivity argument; or a T1 toy run)? Is a T2 or T3 job requested without a passed T0 and T1, without a pre-flight dry run whose controls behave, without power sizing, or above the budget cap without a written exception?
+> 8. Check Gate 4: does the claimed gain survive with system size, or is it a finite-size bonus or an exponential-cost operation in disguise?
 > Return only a numbered list of concrete, fatal objections categorized as Major or Minor. Do not provide praise or vague commentary."
 
 Address all major critiques in place. Log every action in the `Revision & Critic Log`.
