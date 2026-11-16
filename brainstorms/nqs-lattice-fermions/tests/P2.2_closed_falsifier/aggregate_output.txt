@@ -1,0 +1,13 @@
+=== mode ale (R5.2, cold start, step-limited)
+premise STEP-LIMITED: False (EXACT median dE at C_b/2 223.606, at C_b 220.476 mHa)
+[ops] ctrl*=SS:1e-2:16 D=9.413 nu=152.556 route*=ALE0:8:16 Rh=42.049 Rf=24.030 best route(C_b/2)=33.620 best ctrl(C_b)=7.407 -> AMBIGUOUS
+      medians at C_b:   ALE0:4:16=27.776  ALE0:8:16=24.030  ALE1:4:16=221.739  EXACT=220.476  EXACTNF=67.920  SCREEN:3e-3=11.896  SCREEN:1e-2=14.181  SS:1e-2:16=9.413
+      medians at C_b/2: ALE0:4:16=159.845  ALE0:8:16=42.049  ALE1:4:16=233.044  EXACT=223.606  EXACTNF=221.401  SCREEN:3e-3=15.597  SCREEN:1e-2=17.641  SS:1e-2:16=15.977
+[cal] ctrl*=SCREEN:3e-3 D=12.799 nu=152.190 route*=ALE0:8:16 Rh=90.367 Rf=35.731 best route(C_b/2)=52.572 best ctrl(C_b)=11.257 -> AMBIGUOUS
+      medians at C_b:   ALE0:4:16=37.539  ALE0:8:16=35.731  ALE1:4:16=221.157  EXACT=211.116  EXACTNF=58.926  SCREEN:3e-3=12.799  SCREEN:1e-2=18.219  SS:1e-2:16=20.852
+      medians at C_b/2: ALE0:4:16=167.486  ALE0:8:16=90.367  ALE1:4:16=232.898  EXACT=223.364  EXACTNF=222.200  SCREEN:3e-3=20.653  SCREEN:1e-2=37.656  SS:1e-2:16=83.990
+VERDICT R5.2 cold-start: INCONCLUSIVE (premise STEP-LIMITED fails)
+=== mode fj (F_A2 accuracy premise)
+fj=0 K=12 seed=0: dE=0.3899 mHa
+fj=1 K=12 seed=0: dE=0.3885 mHa
+VERDICT F_A2 premise: KILL-F_A2

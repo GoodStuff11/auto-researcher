@@ -1,0 +1,18 @@
+=== H4 distorted chain R=4.4 K=12 dim=4356 E_FCI=-1.985064 HF wt=0.493 <|C|>=530 (4.0s)
+cold start dE=577.61 mHa P=4684 <|C|>_pi=530 budget ops=1.120e+10 cal=33.69s
+  EXACT        seed= 0 steps=  52 anchors=  0 dE(C_b)[ops]=  44.692 [cal]=  43.469 dE(C_b/2)[ops]= 128.592 (3s)
+  EXACT        seed= 1 steps=  52 anchors=  0 dE(C_b)[ops]= 220.476 [cal]= 211.116 dE(C_b/2)[ops]= 225.061 (3s)
+  EXACT        seed= 2 steps=  52 anchors=  0 dE(C_b)[ops]= 221.093 [cal]= 221.483 dE(C_b/2)[ops]= 223.606 (3s)
+  EXACTNF      seed=10 steps=  52 anchors=  0 dE(C_b)[ops]=  28.476 [cal]=  27.656 dE(C_b/2)[ops]= 119.768 (3s)
+  EXACTNF      seed=11 steps=  52 anchors=  0 dE(C_b)[ops]= 189.569 [cal]= 186.547 dE(C_b/2)[ops]= 221.401 (3s)
+  EXACTNF      seed=12 steps=  52 anchors=  0 dE(C_b)[ops]=  67.920 [cal]=  58.926 dE(C_b/2)[ops]= 277.694 (3s)
+  SCREEN:3e-3  seed= 0 steps= 259 anchors=  0 dE(C_b)[ops]=  11.896 [cal]=  11.257 dE(C_b/2)[ops]=  11.892 (16s)
+  SCREEN:3e-3  seed= 1 steps= 263 anchors=  0 dE(C_b)[ops]=  10.061 [cal]=  12.799 dE(C_b/2)[ops]=  15.597 (16s)
+  SCREEN:3e-3  seed= 2 steps= 300 anchors=  0 dE(C_b)[ops]=  22.179 [cal]= 220.523 dE(C_b/2)[ops]= 219.731 (19s)
+  SCREEN:1e-2  seed= 0 steps= 400 anchors=  0 dE(C_b)[ops]=  14.181 [cal]=  19.595 dE(C_b/2)[ops]=  16.800 (25s)
+  SCREEN:1e-2  seed= 1 steps= 400 anchors=  0 dE(C_b)[ops]=  16.758 [cal]=  18.219 dE(C_b/2)[ops]=  17.718 (24s)
+  SCREEN:1e-2  seed= 2 steps= 400 anchors=  0 dE(C_b)[ops]=  12.214 [cal]=  18.149 dE(C_b/2)[ops]=  17.641 (24s)
+  SS:1e-2:16   seed= 0 steps= 349 anchors=  0 dE(C_b)[ops]=   9.413 [cal]=  15.608 dE(C_b/2)[ops]=  13.194 (30s)
+  SS:1e-2:16   seed= 1 steps= 356 anchors=  0 dE(C_b)[ops]=   7.407 [cal]=  34.691 dE(C_b/2)[ops]=  15.977 (30s)
+  SS:1e-2:16   seed= 2 steps= 347 anchors=  0 dE(C_b)[ops]=  13.508 [cal]=  20.852 dE(C_b/2)[ops]=  18.290 (29s)
+done (236s) -> /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.2_closed_falsifier/results/ale_EXACT_EXACTNF_SCREEN-3e-3_SCREEN-1e-2_SS-1e-2-16.json

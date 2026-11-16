@@ -1,0 +1,13 @@
+ seed        d truth NAIVE-x NAIVE-s L1-x PBL-x | sampled n_s=20000: L1 (A/B/U)  PBL (A/B/U)
+ 1234  -0.0005   B      A       U      B     B   |     0/0/40     0/9/31
+ 1234  -0.0002   B      A       U      A     U   |     0/0/40     2/0/38
+ 1234  +0.0005   A      A       A      A     A   |    14/0/26     36/0/4
+ 2345  -0.0005   B      A       U      B     B   |     0/2/38    0/13/27
+ 2345  -0.0002   B      A       U      B     U   |     0/1/39     0/3/37
+ 2345  +0.0005   A      A       U      A     A   |    12/0/28     37/0/3
+ 3456  -0.0005   B      A       U      B     U   |     0/0/40     0/2/38
+ 3456  -0.0002   B      A       A      A     A   |     2/0/38    10/0/30
+ 3456  +0.0005   A      A       A      A     A   |    19/0/21     40/0/0
+|N0| (exact naive wrong) = 6 of 9
+L1: exact fixes 4/6, exact new wrong 0 -> premise True; sampled (R=40): f=0.013 w=0.006 -> LOSES
+PBL: exact fixes 2/6, exact new wrong 0 -> premise False

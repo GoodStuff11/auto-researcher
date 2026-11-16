@@ -1,0 +1,24 @@
+[     0.5s] target 4x3o 4x3:5 irrep={'Mx': 1, 'My': 1} dim=16632 n_irrep=4152 E0=-7.2330203724 gap/V=1.2985e-02 (sign half only) npar=426
+[     0.8s] LM retrain spin_jas2cs: npar=538 start relerr=34.8007%
+[    19.6s]   it 10 relerr=12.1231% accepted lm/sr/none={'lm': 8, 'sr': 2, 'none': 0} (19s)
+[    45.6s]   it 20 relerr=10.6311% accepted lm/sr/none={'lm': 8, 'sr': 12, 'none': 0} (45s)
+[    71.4s]   it 30 relerr=9.7323% accepted lm/sr/none={'lm': 8, 'sr': 22, 'none': 0} (71s)
+[    87.8s]   it 40 relerr=6.6584% accepted lm/sr/none={'lm': 18, 'sr': 22, 'none': 0} (87s)
+[   104.0s]   it 50 relerr=6.0318% accepted lm/sr/none={'lm': 28, 'sr': 22, 'none': 0} (103s)
+[   120.2s]   it 60 relerr=5.5688% accepted lm/sr/none={'lm': 38, 'sr': 22, 'none': 0} (120s)
+[   136.5s]   it 70 relerr=5.0303% accepted lm/sr/none={'lm': 48, 'sr': 22, 'none': 0} (136s)
+[   152.5s]   it 80 relerr=4.4202% accepted lm/sr/none={'lm': 58, 'sr': 22, 'none': 0} (152s)
+[   175.2s]   it 90 relerr=4.2438% accepted lm/sr/none={'lm': 61, 'sr': 29, 'none': 0} (175s)
+[   201.2s]   it 100 relerr=4.2319% accepted lm/sr/none={'lm': 61, 'sr': 39, 'none': 0} (201s)
+[   227.3s]   it 110 relerr=4.2232% accepted lm/sr/none={'lm': 61, 'sr': 49, 'none': 0} (227s)
+[   253.1s]   it 120 relerr=4.2149% accepted lm/sr/none={'lm': 61, 'sr': 59, 'none': 0} (253s)
+[   279.0s]   it 130 relerr=4.2066% accepted lm/sr/none={'lm': 61, 'sr': 69, 'none': 0} (278s)
+[   304.9s]   it 140 relerr=4.1982% accepted lm/sr/none={'lm': 61, 'sr': 79, 'none': 0} (304s)
+[   330.9s]   it 150 relerr=4.1895% accepted lm/sr/none={'lm': 61, 'sr': 89, 'none': 0} (330s)
+[   357.1s]   it 160 relerr=4.1805% accepted lm/sr/none={'lm': 61, 'sr': 99, 'none': 0} (357s)
+[   383.1s]   it 170 relerr=4.1710% accepted lm/sr/none={'lm': 61, 'sr': 109, 'none': 0} (383s)
+[   409.2s]   it 180 relerr=4.1611% accepted lm/sr/none={'lm': 61, 'sr': 119, 'none': 0} (409s)
+[   435.2s]   it 190 relerr=4.1505% accepted lm/sr/none={'lm': 61, 'sr': 129, 'none': 0} (435s)
+[   460.9s]   it 200 relerr=4.1389% accepted lm/sr/none={'lm': 61, 'sr': 139, 'none': 0} (460s)
+[   482.4s] wall limit reached after 208 iterations
+[   482.4s] RESULT spin_jas2cs: npar=538 iters=208 relerr=4.1286% (SR-600 base 1.536%) accepted={'lm': 61, 'sr': 147, 'none': 0} wall=482s

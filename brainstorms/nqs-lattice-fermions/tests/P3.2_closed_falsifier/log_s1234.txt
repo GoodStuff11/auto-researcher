@@ -1,0 +1,11 @@
+[14:18:44] instance: t'_c=-0.470482 min gap 1.001e-03 D=245025
+[14:18:46] s=1234 d=-0.0005 truth=B | E-E0: A 1.05e-02 B 1.32e-02 (L1: A 6.84e-03 B 5.62e-03; PBL 3.42e-03) | c_A=-0.238 c_B=+0.250 | exact: NAIVE A NAIVE-s U L1 B PBL B
+[14:18:47]     n_s=2000: sampled L1 {'A': 0, 'B': 0, 'U': 40}  PBL {'A': 4, 'B': 8, 'U': 28}
+[14:18:50]     n_s=20000: sampled L1 {'A': 0, 'B': 0, 'U': 40}  PBL {'A': 0, 'B': 9, 'U': 31}
+[14:18:52] s=1234 d=-0.0002 truth=B | E-E0: A 9.02e-03 B 1.35e-02 (L1: A 5.35e-03 B 5.83e-03; PBL 2.82e-03) | c_A=-0.238 c_B=+0.250 | exact: NAIVE A NAIVE-s U L1 A PBL U
+[14:18:53]     n_s=2000: sampled L1 {'A': 1, 'B': 0, 'U': 39}  PBL {'A': 5, 'B': 2, 'U': 33}
+[14:18:56]     n_s=20000: sampled L1 {'A': 0, 'B': 0, 'U': 40}  PBL {'A': 2, 'B': 0, 'U': 38}
+[14:18:58] s=1234 d=+0.0005 truth=A | E-E0: A 7.68e-03 B 1.62e-02 (L1: A 4.06e-03 B 8.48e-03; PBL 2.69e-03) | c_A=-0.238 c_B=+0.250 | exact: NAIVE A NAIVE-s A L1 A PBL A
+[14:18:59]     n_s=2000: sampled L1 {'A': 0, 'B': 0, 'U': 40}  PBL {'A': 11, 'B': 1, 'U': 28}
+[14:19:02]     n_s=20000: sampled L1 {'A': 14, 'B': 0, 'U': 26}  PBL {'A': 36, 'B': 0, 'U': 4}
+[14:19:02] done, wall 56s -> /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.2_closed_falsifier/results/s1234.json
