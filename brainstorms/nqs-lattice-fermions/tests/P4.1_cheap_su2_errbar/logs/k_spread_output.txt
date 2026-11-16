@@ -1,0 +1,14 @@
+run                                                E       dE proto steps chains lr H n_eval
+W-24 H16 (698224 t0)                       -16.43073  0.00477 cold  1000/1000 1024 0.05 16 65536
+W-24 H48 (698224 t1/700568)                -16.43309  0.00489 cold  1000/1000 1024 0.05 48 65536
+R15b A final (705667)                      -16.43988  0.00668 warm  300/300 1024 0.02 16 65536
+R15b B (704030 t1)                         -16.43576  0.00430 warm  75/75 4096 0.02 16 65536
+R15b A interim (704030 t0, capped 288)     -16.42171  0.00445 warm  288/300 1024 0.02 16 65536
+warm-start family (R15b A interim, A final, B): n=3 SD=0.00952 median sigma=0.00445 k=2.14  (95% CI on k: 1.11-13.44)
+cold 1000-step family (W-24 H16, H48): n=2 SD=0.00167 median sigma=0.00483 k=0.35  (95% CI on k: 0.15-11.05)
+A interim vs final: diff=-0.01816 = 2.26 x combined sigma; implied per-run k=2.26
+k estimates: warm 2.14, cold 0.35, A pair 2.26; max rounded up to 0.5 -> k_eff = 2.5
+results/t2b 24-site JSON: ['S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0.json', 'S8x3_N20_U8_tp-0.25_pg11_r1_H44_seed0.json']
+results/t2b_wall exists: False
+aggregation report outputs in logs/ (excluding the pre-run wall_report_now): []
+files with a VERDICT line outside preflight/check/pipeline: ['/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/logs/wall_report_now_output.txt']
