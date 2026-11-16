@@ -1,0 +1,1 @@
+[16:44:22] CHECK A copied pass 1 vs foil rel 0.00e+00; CHECK B kernel grad vs FD rel 1.01e-10; CHECK C E[phi=0]-E_foil 0.00e+00; T0 lemma max|grad| at phi=0 0.00e+00; valid True

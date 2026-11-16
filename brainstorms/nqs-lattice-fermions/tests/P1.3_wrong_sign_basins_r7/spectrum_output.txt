@@ -1,0 +1,15 @@
+[16:44:41] threads 1
+[16:44:41] spectrum: projected 225 CPU-s + 0 used; invocation cap 580; review ledger 0 of 1800
+[16:44:42] t' -0.45: chi {'My': 1, 'Mx': 1} gap 0.0913 in-sector levels-E0 [0.0, 0.1798, 0.1822, 0.2109] <S^2> [0.0, 2.0, 6.0, 0.0] Delta_in 0.1798 admissible False
+[16:44:43] t' -0.35: chi {'My': 1, 'Mx': 1} gap 0.1055 in-sector levels-E0 [0.0, 0.1986, 0.2072, 0.2188] <S^2> [0.0, 2.0, 0.0, 6.0] Delta_in 0.1986 admissible False
+[16:44:44] t' -0.25: chi {'My': 1, 'Mx': 1} gap 0.0847 in-sector levels-E0 [0.0, 0.1558, 0.2087, 0.2571] <S^2> [0.0, 0.0, 2.0, 6.0] Delta_in 0.1558 admissible False
+[16:44:44]   r6 cold start S seed 11: dEt 0.05568 ov_k [0.92062, 0.04608, 0.00011, 0.00019] trapped False
+[16:44:44]   r6 cold start S seed 22: dEt 0.04916 ov_k [0.92959, 0.04174, 0.00244, 0.00044] trapped False
+[16:44:44]   r6 cold start S seed 33: dEt 0.05116 ov_k [0.92969, 0.04123, 0.00028, 0.00092] trapped False
+[16:44:45] t' -0.15: chi {'My': 1, 'Mx': 1} gap 0.0648 in-sector levels-E0 [0.0, 0.1217, 0.1946, 0.2914] <S^2> [0.0, 0.0, 2.0, 0.0] Delta_in 0.1217 admissible True
+[16:44:45] t' -0.05: chi {'My': 1, 'Mx': 1} gap 0.0842 in-sector levels-E0 [0.0, 0.1533, 0.1871, 0.2912] <S^2> [0.0, 0.0, 2.0, 0.0] Delta_in 0.1533 admissible False
+[16:44:46] t' +0.05: chi {'My': 1, 'Mx': 1} gap 0.1507 in-sector levels-E0 [0.0, 0.2107, 0.2356, 0.3837] <S^2> [0.0, 2.0, 0.0, 0.0] Delta_in 0.2107 admissible False
+[16:44:47] t' +0.15: chi {'My': 1, 'Mx': 1} gap 0.2410 in-sector levels-E0 [0.0, 0.2559, 0.3413, 0.448] <S^2> [0.0, 2.0, 0.0, 0.0] Delta_in 0.2559 admissible False
+[16:44:47] t' +0.25: chi {'My': 1, 'Mx': 1} gap 0.2453 in-sector levels-E0 [0.0, 0.3119, 0.4624, 0.5168] <S^2> [0.0, 2.0, 0.0, 0.0] Delta_in 0.3119 admissible False
+[16:44:48] t' +0.35: chi {'My': 1, 'Mx': 1} gap 0.2500 in-sector levels-E0 [0.0, 0.3723, 0.5821, 0.5942] <S^2> [0.0, 2.0, 0.0, 0.0] Delta_in 0.3723 admissible False
+[16:44:48] R7.3 spectrum gate: OPEN (trap test runs at t' = -0.15)

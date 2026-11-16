@@ -1,0 +1,5 @@
+[16:47:18] s=3456 d=-0.0050 gap1=0.0255 gap2=0.686 truth=B b_A=3.39e-02 b_B=1.22e-02 bL_A=3.05e-02 bL_B=4.86e-03 | NAIVE-x B L1-x B | NAIVE-s 0/40/0 L1-s 0/33/7 | R_pair 0.632 Bhatt 0.198
+[16:47:21] s=3456 d=-0.0020 gap1=0.0102 gap2=0.678 truth=B b_A=1.76e-02 b_B=1.34e-02 bL_A=1.44e-02 bL_B=5.77e-03 | NAIVE-x B L1-x B | NAIVE-s 0/15/25 L1-s 0/27/13 | R_pair 0.633 Bhatt 0.198
+[16:47:24] s=3456 d=+0.0020 gap1=0.0102 gap2=0.677 truth=A b_A=6.20e-03 b_B=2.53e-02 bL_A=3.32e-03 bL_B=1.73e-02 | NAIVE-x A L1-x A | NAIVE-s 40/0/0 L1-s 25/0/15 | R_pair 0.635 Bhatt 0.198
+[16:47:28] s=3456 d=+0.0050 gap1=0.0254 gap2=0.683 truth=A b_A=5.40e-03 b_B=4.21e-02 bL_A=2.73e-03 bL_B=3.36e-02 | NAIVE-x A L1-x A | NAIVE-s 40/0/0 L1-s 33/0/7 | R_pair 0.637 Bhatt 0.198
+seed 3456 cpu 67.63+3.64 s wall 41.16 s

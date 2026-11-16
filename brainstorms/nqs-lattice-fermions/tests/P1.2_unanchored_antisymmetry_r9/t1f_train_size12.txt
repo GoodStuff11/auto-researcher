@@ -1,0 +1,12 @@
+[16:44:36] budget size 1 seed 11 arms ['free', 'rpc']: projected 62 CPU-s + 2 used; invocation cap 580; ledger 2 of 1800
+[16:44:38] size 1 seed 11 free: dEs 0.01169 (foil 0.01280) dE_complex 0.07152 flipw 0.0010 |cos| 0.999 nit 500 cpu 2
+[16:44:44] size 1 seed 11 rpc: dEs 0.01280 (foil 0.01280) dE_complex 0.07319 flipw 0.0000 |cos| 0.996 nit 42 cpu 6
+[16:44:45] budget size 1 seed 22 arms ['free', 'rpc']: projected 57 CPU-s + 11 used; invocation cap 580; ledger 2 of 1800
+[16:44:47] size 1 seed 22 free: dEs 0.00828 (foil 0.00934) dE_complex 0.06865 flipw 0.0007 |cos| 0.999 nit 500 cpu 2
+[16:44:54] size 1 seed 22 rpc: dEs 0.00934 (foil 0.00934) dE_complex 0.07087 flipw 0.0000 |cos| 1.000 nit 53 cpu 7
+[16:44:56] budget size 2 seed 11 arms ['free', 'rpc']: projected 51 CPU-s + 22 used; invocation cap 580; ledger 2 of 1800
+[16:44:58] size 2 seed 11 free: dEs 0.03251 (foil 0.04962) dE_complex 0.15347 flipw 0.0162 |cos| 0.997 nit 500 cpu 2
+[16:45:03] size 2 seed 11 rpc: dEs 0.04962 (foil 0.04962) dE_complex 0.16254 flipw 0.0000 |cos| 1.000 nit 51 cpu 5
+[16:45:04] budget size 2 seed 22 arms ['free', 'rpc']: projected 53 CPU-s + 30 used; invocation cap 580; ledger 2 of 1800
+[16:45:06] size 2 seed 22 free: dEs 0.03293 (foil 0.04962) dE_complex 0.15427 flipw 0.0173 |cos| 0.997 nit 500 cpu 2
+[16:45:12] size 2 seed 22 rpc: dEs 0.04962 (foil 0.04962) dE_complex 0.16149 flipw 0.0000 |cos| 1.000 nit 35 cpu 6

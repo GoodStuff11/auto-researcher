@@ -1,0 +1,6 @@
+[16:44:29] budget size 0 seed 11 arms ['free', 'rpc']: projected 21 CPU-s + 0 used; invocation cap 580; ledger 1 of 1800
+[16:44:29] size 0 seed 11 free: dEs 0.00193 (foil 0.00502) dE_complex 0.04972 flipw 0.0018 |cos| 0.998 nit 494 cpu 0
+[16:44:29] size 0 seed 11 rpc: dEs 0.00502 (foil 0.00502) dE_complex 0.05310 flipw 0.0000 |cos| 0.999 nit 54 cpu 0
+[16:44:29] budget size 0 seed 22 arms ['free', 'rpc']: projected 21 CPU-s + 1 used; invocation cap 580; ledger 1 of 1800
+[16:44:29] size 0 seed 22 free: dEs 0.00184 (foil 0.00299) dE_complex 0.02143 flipw 0.0010 |cos| 0.998 nit 500 cpu 0
+[16:44:29] size 0 seed 22 rpc: dEs 0.00299 (foil 0.00299) dE_complex 0.02241 flipw 0.0000 |cos| 1.000 nit 49 cpu 0

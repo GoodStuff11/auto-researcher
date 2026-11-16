@@ -1,0 +1,6 @@
+[16:58:54] per-step CPU-s: lrkN@1=0.535, widN@1=0.140
+[16:58:54] budget trainN: projected 457 CPU-s + 5 used; invocation cap 580; review ledger 701 of 1800
+[17:01:29] size 1 lrkN seed 11: n_params 650 (foil 530) dE_tot 0.02979 dE_sign 0.00273 (154 CPU-s)
+[17:04:01] size 1 lrkN seed 22: n_params 650 (foil 530) dE_tot 0.02796 dE_sign 0.00289 (151 CPU-s)
+[17:04:42] size 1 widN seed 11: n_params 675 (foil 530) dE_tot 0.04355 dE_sign 0.00451 (41 CPU-s)
+[17:05:24] size 1 widN seed 22: n_params 675 (foil 530) dE_tot 0.04204 dE_sign 0.00555 (41 CPU-s)

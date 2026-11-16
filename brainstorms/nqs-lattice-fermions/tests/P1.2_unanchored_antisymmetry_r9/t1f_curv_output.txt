@@ -1,0 +1,10 @@
+[16:46:11] size 0 seed 11: ratio +0.1817 ratio2 +0.1334 occ +0.2041 rand +2.5160 free_dir -2.1137
+[16:46:11] size 0 seed 22: ratio +0.1737 ratio2 +0.1168 occ +0.1891 rand +2.5695 free_dir -1.4610
+[16:46:14] size 1 seed 11: ratio +0.3701 ratio2 +0.2789 occ +0.3939 rand +4.3671 free_dir -1.8799
+[16:46:17] size 1 seed 22: ratio +0.3344 ratio2 +0.2475 occ +0.3521 rand +4.5769 free_dir -1.6485
+[16:46:20] size 2 seed 11: ratio +0.3088 ratio2 +0.2175 occ +0.3299 rand +4.5223 free_dir -1.9808
+[16:46:22] size 2 seed 22: ratio +0.3014 ratio2 +0.2172 occ +0.3383 rand +4.4498 free_dir -1.4131
+[16:46:22] median size 0: ratio +0.1777 ratio2 +0.1251 occ +0.1966 rand +2.5428 free_dir -1.7873
+[16:46:22] median size 1: ratio +0.3522 ratio2 +0.2632 occ +0.3730 rand +4.4720 free_dir -1.7642
+[16:46:22] median size 2: ratio +0.3051 ratio2 +0.2173 occ +0.3341 rand +4.4861 free_dir -1.6969
+[16:46:22] VERDICT phase-family second-order premise: FAMILY-KILL; CPU 11 s

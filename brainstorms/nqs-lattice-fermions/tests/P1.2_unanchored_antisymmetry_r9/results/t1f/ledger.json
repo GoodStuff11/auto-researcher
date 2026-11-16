@@ -1,0 +1,50 @@
+[
+ {
+  "time": "2026-11-16 16:44:22",
+  "mode": "checks",
+  "cpu": 0.65077157,
+  "note": ""
+ },
+ {
+  "time": "2026-11-16 16:44:29",
+  "mode": "train",
+  "cpu": 1.015874995,
+  "note": "sizes [0] arms ['free', 'rpc'] seeds [11, 22]"
+ },
+ {
+  "time": "2026-11-16 16:45:12",
+  "mode": "train",
+  "cpu": 37.851624382,
+  "note": "sizes [1, 2] arms ['free', 'rpc'] seeds [11, 22]"
+ },
+ {
+  "time": "2026-11-16 16:46:22",
+  "mode": "curv",
+  "cpu": 11.291931493,
+  "note": ""
+ },
+ {
+  "time": "2026-11-16 16:51:38",
+  "mode": "foilN",
+  "cpu": 234.702613454,
+  "note": "sizes [1, 2] wn 2"
+ },
+ {
+  "time": "2026-11-16 16:58:45",
+  "mode": "trainN",
+  "cpu": 415.790633176,
+  "note": "sizes [2] arms ['lrkN', 'widN'] wn 2"
+ },
+ {
+  "time": "2026-11-16 17:05:24",
+  "mode": "trainN",
+  "cpu": 393.146302121,
+  "note": "sizes [1] arms ['lrkN', 'widN'] wn 2"
+ },
+ {
+  "time": "2026-11-16 17:12:27",
+  "mode": "trainN",
+  "cpu": 393.37877383,
+  "note": "sizes [1] arms ['widNL'] wn 2"
+ }
+]

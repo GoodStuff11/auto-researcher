@@ -1,0 +1,18 @@
+caps: 4 threads; this run <= 600 CPU-s; ledger so far 4 CPU-s
+R scan: H6 R=3.0 gap=0.0414 Ha
+  H4 CAN SCREEN f=0.8085 (own 0.8085) eps*=2.51e-02 err=1.62e-05
+  H4 CAN VPS1   f=0.8085 (own 0.8085) eps*=2.51e-02 err=1.49e-05 floor=1.48e-05
+  H4 CAN VPSg   f=0.8095 (own 0.8095) eps*=1.33e-07 err=3.39e-20 floor=-2.22e-16
+  H4 LOW SCREEN f=0.6940 (own 0.3931) eps*=2.24e-03 err=5.88e-07
+  H4 LOW VPS1   f=1.3011 (own 0.7371) eps*=5.01e-05 err=1.67e-04 floor=1.66e-04
+  H4 LOW VPSg   f=1.3011 (own 0.7371) eps*=5.62e-05 err=1.67e-04 floor=1.66e-04
+H4 R=3.0: gap=0.0555 HFw=0.701 frustr=0.164
+  H6 CAN SCREEN f=0.8911 (own 0.8911) eps*=6.31e-03 err=9.48e-05
+  H6 CAN VPS1   f=0.9169 (own 0.9169) eps*=7.94e-04 err=1.80e-04 floor=1.80e-04
+  H6 CAN VPSg   f=0.9999 (own 0.9999) eps*=1.78e-10 err=7.37e-05 floor=6.71e-05
+  H6 LOW SCREEN f=0.3056 (own 0.1576) eps*=2.24e-03 err=6.59e-05
+  H6 LOW VPS1   f=1.0026 (own 0.5171) eps*=1.78e-05 err=1.33e-04 floor=1.33e-04
+  H6 LOW VPSg   f=1.0026 (own 0.5171) eps*=1.78e-05 err=1.33e-04 floor=1.33e-04
+H6 R=3.0: gap=0.0414 HFw=0.573 frustr=0.214
+VERDICT: {"INVALID": true}
+cpu this run 3 s; ledger total 7 of 1800 CPU-s

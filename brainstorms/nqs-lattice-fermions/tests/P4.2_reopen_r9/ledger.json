@@ -1,0 +1,14 @@
+[
+ {
+  "variant": "gf",
+  "out": "results/gf.json",
+  "cpu_s": 291.761517,
+  "threads": 1
+ },
+ {
+  "variant": "fsym",
+  "out": "results/fsym.json",
+  "cpu_s": 303.765354,
+  "threads": 1
+ }
+]

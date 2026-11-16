@@ -1,0 +1,26 @@
+[
+ {
+  "time": "2026-11-16 16:44:48",
+  "mode": "spectrum",
+  "cpu": 7.510835266,
+  "note": "OPEN (trap test runs at t' = -0.15)"
+ },
+ {
+  "time": "2026-11-16 16:46:15",
+  "mode": "lmfit",
+  "cpu": 79.086606349,
+  "note": "seeds [11]"
+ },
+ {
+  "time": "2026-11-16 16:49:29",
+  "mode": "lmfit",
+  "cpu": 184.097574355,
+  "note": "seeds [22, 33]"
+ },
+ {
+  "time": "2026-11-16 16:53:48",
+  "mode": "capture",
+  "cpu": 218.428224357,
+  "note": "NO-BASIN (0 of 3 cold runs captured by the competitor): R7.3 KILLED"
+ }
+]

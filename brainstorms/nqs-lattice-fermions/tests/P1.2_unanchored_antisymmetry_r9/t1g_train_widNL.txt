@@ -1,0 +1,4 @@
+[17:05:53] per-step CPU-s: widNL@1=0.179
+[17:05:53] budget trainN: projected 448 CPU-s + 2 used; invocation cap 580; review ledger 1094 of 1800
+[17:09:00] size 1 widNL seed 11: n_params 675 (foil 530) dE_tot 0.03273 dE_sign 0.00348 (186 CPU-s)
+[17:12:27] size 1 widNL seed 22: n_params 675 (foil 530) dE_tot 0.02461 dE_sign 0.00278 (206 CPU-s)

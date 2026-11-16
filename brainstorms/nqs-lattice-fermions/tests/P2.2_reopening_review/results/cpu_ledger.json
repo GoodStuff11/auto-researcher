@@ -1,0 +1,41 @@
+{
+ "runs": [
+  {
+   "sizes": [
+    4,
+    6
+   ],
+   "smoke": true,
+   "cpu_s": 3.623794,
+   "wall_s": 1.1644480228424072
+  },
+  {
+   "sizes": [
+    4,
+    6
+   ],
+   "smoke": true,
+   "cpu_s": 3.17634,
+   "wall_s": 0.7255425453186035
+  },
+  {
+   "sizes": [
+    6,
+    8,
+    10
+   ],
+   "smoke": false,
+   "cpu_s": 600.0,
+   "note": "killed by RLIMIT_CPU (600 s) during H10 LOW; charged at the cap; stdout in t1_output.txt"
+  },
+  {
+   "sizes": [
+    10
+   ],
+   "smoke": false,
+   "cpu_s": 374.740224,
+   "wall_s": 250.10396075248718
+  }
+ ],
+ "total_cpu_s": 981.540358
+}
