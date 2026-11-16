@@ -6,3 +6,5 @@
 [10:33:31] lh_plus: it    50  E = -9.50421074  |f| = 1.97e-01  (12.70 s/step)
 [10:38:42] lh_plus: it    74  E = -9.60343558  |f| = 1.78e-01  (12.79 s/step)
 [10:41:37] lh_plus [P]: dE_tot=0.18609 dE_sign=0.06549 f_E=0.352 spread=4.0e-13 ov0=0.428 (168 s)
+[10:44:14] lh_plus [P_S]: dE_tot=0.09904 dE_sign=0.03312 f_E=0.334 spread=2.7e-13 ov0=0.704 (158 s)
+[10:44:14] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results/t2_lh_plus_inst4_s11.json

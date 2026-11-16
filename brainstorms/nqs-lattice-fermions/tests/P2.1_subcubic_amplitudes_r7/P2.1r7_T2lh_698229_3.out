@@ -4,3 +4,7 @@
 [10:29:01] lh_3x3: it     0  E = -8.05608897  |f| = 1.49e+00  (16.64 s/step)
 [10:35:42] lh_3x3: it    25  E = -9.37637083  |f| = 3.21e-01  (16.09 s/step)
 [10:42:25] lh_3x3: it    50  E = -9.58821848  |f| = 1.98e-01  (16.10 s/step)
+[10:48:49] lh_3x3: it    74  E = -9.65205833  |f| = 1.54e-01  (16.07 s/step)
+[10:51:46] lh_3x3 [P]: dE_tot=0.13636 dE_sign=0.03878 f_E=0.284 spread=2.0e-13 ov0=0.660 (168 s)
+[10:54:09] lh_3x3 [P_S]: dE_tot=0.06559 dE_sign=0.01632 f_E=0.249 spread=8.7e-13 ov0=0.851 (143 s)
+[10:54:09] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r7/results/t2_lh_3x3_inst4_s11.json
