@@ -1,0 +1,13 @@
+  OBS 4x2        n=24 coverage 1.00 median width/w_ex 1.26 median width/|delta| 6.30
+  OBS 4x2_d0.02  n=24 coverage 1.00 median width/w_ex 1.26 median width/|delta| 6.23
+  OBS 5x2        n=20 coverage 1.00 median width/w_ex 2.63 median width/|delta| 13.06
+  OBS 5x2_d0.02  n=24 coverage 1.00 median width/w_ex 2.86 median width/|delta| 18.70
+  OBS 4x3        n= 8 coverage 1.00 median width/w_ex 1.81 median width/|delta| 10.19
+  OBS 4x3_d0.02  n= 7 coverage 1.00 median width/w_ex 2.72 median width/|delta| 14.80
+  DAV 4x2        n=24 coverage 1.00 median width/w_ex 0.87 median width/|delta| 4.94
+  DAV 4x2_d0.02  n=24 coverage 1.00 median width/w_ex 0.97 median width/|delta| 4.90
+  DAV 5x2        n=20 coverage 1.00 median width/w_ex 1.31 median width/|delta| 7.85
+  DAV 5x2_d0.02  n=24 coverage 1.00 median width/w_ex 1.05 median width/|delta| 6.19
+  DAV 4x3        n= 8 coverage 1.00 median width/w_ex 0.88 median width/|delta| 4.40
+  DAV 4x3_d0.02  n= 7 coverage 1.00 median width/w_ex 0.95 median width/|delta| 4.01
+VERDICT 12.3u: UNCLEAR  (DAV block under the same rule: PASS; W2 label: adds nothing)

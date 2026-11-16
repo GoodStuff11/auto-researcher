@@ -1,0 +1,7 @@
+  selftest want KILL (Gate 2)  got KILL (Gate 2)  ok
+  selftest want PASS           got PASS           ok
+  selftest want KILL           got KILL           ok
+  selftest want KILL           got KILL           ok
+  selftest want AMBIGUOUS      got AMBIGUOUS      ok
+  selftest want AMBIGUOUS      got AMBIGUOUS      ok
+SELFTEST PASS

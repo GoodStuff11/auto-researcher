@@ -1,0 +1,13 @@
+[16:47:34] 5x2: D=4200 sector levels found 17 (N_LOW=15) E0=-7.423758 chi={'My': -1, 'Mx': 1} S0=1 R_PAIR=3.28 (5 pairs) R_SITE=3.38 (4 pairs) (0.4s)
+[16:47:34] census 5x2: {"size": "5x2", "V": 10, "D": 4200, "nup": 3, "n": 0.6, "omega1": 0.3312516127367875, "n_found": 17, "n_low": 15, "omega_top": 1.98833582018624, "nwin": 4, "dim_sector": null, "ov2": 0.9492211188278075, "E0": -7.423758379422791, "chi": "{'My': -1, 'Mx': 1}", "S0": 1.0, "n_pair": 5, "n_site": 4}
+[16:47:34] gap surgery: level 1 moved from omega 0.3313 to 0.0200
+[16:47:34] build cpu 2s; MSR sources: pair 4 (dists [3.0, 3.16, 3.54, 4.0]), spin 4 (dists [3.0, 3.16, 4.0, 4.12]), charge 4 (dists [3.0, 3.16, 4.0, 4.12])
+[16:47:37] 5x2 tp      w1 0.050 g(OBS) 0.405 g(DAV) 0.239 g(L1R) 9.792 a2 OBS 0.57 MSR 3.38 cpu 14s | pair OBS +0.56 DAV +0.13 MSR +0.18 RND +0.27 | spin OBS +0.09 DAV +0.14 MSR +0.30 RND +0.33 | charge OBS +0.20 DAV +0.12 MSR +0.41 RND +0.41
+[16:47:41] 5x2 J       w1 0.050 g(OBS) 0.469 g(DAV) 0.156 g(L1R) 9.490 a2 OBS 0.81 MSR 3.08 cpu 13s | pair OBS +0.48 DAV +0.11 MSR +0.39 RND +0.33 | spin OBS +0.17 DAV +0.13 MSR +0.27 RND +0.24 | charge OBS +0.09 DAV -0.01 MSR +0.41 RND +0.38
+[16:47:44] 5x2 dens_s0 w1 0.041 g(OBS) 0.524 g(DAV) 0.177 g(L1R) 9.495 a2 OBS 0.84 MSR 3.41 cpu 14s | pair OBS +0.42 DAV +0.41 MSR +1.40 RND +0.49 | spin OBS +0.35 DAV +0.26 MSR +0.12 RND +0.11 | charge OBS +0.78 DAV -0.37 MSR +0.30 RND -0.11
+[16:47:48] 5x2 spin_s0 w1 0.050 g(OBS) 0.414 g(DAV) 0.135 g(L1R) 9.645 a2 OBS 0.84 MSR 2.80 cpu 13s | pair OBS +0.20 DAV +0.21 MSR +0.48 RND +0.28 | spin OBS +0.10 DAV +0.12 MSR +0.17 RND +0.18 | charge OBS +0.11 DAV +0.06 MSR +0.18 RND +0.27
+[16:47:51] 5x2 pair_s0 w1 0.050 g(OBS) 0.408 g(DAV) 0.219 g(L1R) 9.464 a2 OBS 1.02 MSR 3.36 cpu 14s | pair OBS +0.45 DAV +0.49 MSR +0.52 RND +0.68 | spin OBS +0.13 DAV +0.09 MSR +0.25 RND +0.25 | charge OBS +0.09 DAV +0.16 MSR +0.23 RND +0.42
+[16:47:54] 5x2 dens_s1 w1 0.047 g(OBS) 0.319 g(DAV) 0.160 g(L1R) 9.598 a2 OBS 1.04 MSR 2.95 cpu 14s | pair OBS +0.38 DAV +0.41 MSR +0.21 RND +0.24 | spin OBS +0.01 DAV +0.15 MSR +0.03 RND +0.29 | charge OBS +0.31 DAV +0.37 MSR +0.39 RND +0.33
+[16:47:58] 5x2 spin_s1 w1 0.000 g(OBS) 0.205 g(DAV) 0.925 g(L1R) 9.363 a2 OBS 1.31 MSR 4.52 cpu 14s | pair OBS -0.11 DAV +0.83 MSR +0.87 RND +0.80 | spin OBS +1.14 DAV +1.04 MSR +1.06 RND +1.48 | charge OBS +0.36 DAV +0.91 MSR +3.44 RND +1.17
+[16:48:01] 5x2 pair_s1 w1 0.050 g(OBS) 0.411 g(DAV) 0.224 g(L1R) 9.831 a2 OBS 0.61 MSR 3.00 cpu 14s | pair OBS +0.50 DAV +0.46 MSR +0.61 RND +0.35 | spin OBS +0.10 DAV +0.08 MSR +0.12 RND +0.28 | charge OBS +0.36 DAV +0.21 MSR +0.40 RND +0.43
+[16:48:01] total CPU 110s

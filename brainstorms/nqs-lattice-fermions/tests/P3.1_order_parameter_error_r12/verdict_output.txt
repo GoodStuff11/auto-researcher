@@ -1,0 +1,29 @@
+tracked fraction (scored items):
+  native 4x2 n=24 states=8 OBS 0.96 DAV 1.00 MSR 1.00 | median sum alpha^2 OBS 1.64 MSR 5.40
+  native 5x2 n=20 states=8 OBS 0.60 DAV 1.00 MSR 0.65 | median sum alpha^2 OBS 0.36 MSR 1.00
+  native 4x3 n= 8 states=4 OBS 0.75 DAV 0.75 MSR 0.75 | median sum alpha^2 OBS 0.62 MSR 1.29
+  stress 4x2 n=24 states=8 OBS 0.12 DAV 0.00 MSR 1.00 RND 1.00 | median sum alpha^2 OBS 1.99 MSR 7.14
+  stress 5x2 n=24 states=8 OBS 0.12 DAV 0.12 MSR 0.21 RND 0.17 | median sum alpha^2 OBS 0.84 MSR 3.22
+  stress 4x3 n= 7 states=3 OBS 0.29 DAV 0.29 MSR 0.29 RND 0.00 | median sum alpha^2 OBS 0.68 MSR 2.41
+witness and block (FC = certified & untracked, CT = certified & tracked; over scored items):
+  native 4x2 OBS: n=24 FC 0.04 CT 0.96 abstained  0 coverage nan median width ratio nan honest 0.96 | median g-hat 0.213
+  native 4x2 DAV: n=24 FC 0.00 CT 1.00 abstained  0 coverage nan median width ratio nan honest 1.00 | median g-hat 0.242
+  native 4x2 L1R witness: median g-hat 7.245
+  native 5x2 OBS: n=20 FC 0.40 CT 0.60 abstained  0 coverage nan median width ratio nan honest 0.60 | median g-hat 0.937
+  native 5x2 DAV: n=20 FC 0.00 CT 1.00 abstained  0 coverage nan median width ratio nan honest 1.00 | median g-hat 0.783
+  native 5x2 L1R witness: median g-hat 9.317
+  native 4x3 OBS: n= 8 FC 0.25 CT 0.75 abstained  0 coverage nan median width ratio nan honest 0.75 | median g-hat 0.411
+  native 4x3 DAV: n= 8 FC 0.25 CT 0.75 abstained  0 coverage nan median width ratio nan honest 0.75 | median g-hat 0.430
+  native 4x3 L1R witness: median g-hat 10.877
+  stress 4x2 OBS: n=24 FC 0.00 CT 0.00 abstained 24 coverage 1.00 median width ratio 1.26 honest 1.00 | median g-hat 0.061
+  stress 4x2 DAV: n=24 FC 0.50 CT 0.00 abstained 12 coverage 1.00 median width ratio 0.96 honest 0.50 | median g-hat 0.100
+  stress 4x2 L1R witness: median g-hat 7.382
+  stress 5x2 OBS: n=24 FC 0.88 CT 0.12 abstained  0 coverage nan median width ratio nan honest 0.12 | median g-hat 0.409
+  stress 5x2 DAV: n=24 FC 0.88 CT 0.12 abstained  0 coverage nan median width ratio nan honest 0.12 | median g-hat 0.198
+  stress 5x2 L1R witness: median g-hat 9.546
+  stress 4x3 OBS: n= 7 FC 0.71 CT 0.29 abstained  0 coverage nan median width ratio nan honest 0.29 | median g-hat 0.469
+  stress 4x3 DAV: n= 7 FC 0.71 CT 0.29 abstained  0 coverage nan median width ratio nan honest 0.29 | median g-hat 0.217
+  stress 4x3 L1R witness: median g-hat 11.279
+VERDICT 12.1 OGW: KILL  (DAV witness under the same rule: KILL; W2 label: observable sourcing adds)
+VERDICT 12.3 CBR: INCOMPLETE  (DAV block under the same rule: INCOMPLETE; W2 label: observable sourcing adds)
+VERDICT 12.4 MSR: UNCLEAR
