@@ -1,0 +1,3 @@
+task0: {"valid": true, "gap": 0.002294020110413797, "v_abs": 0.0025581980809512767, "T2a_abs": "VOTE-INERT", "gate4_lift": "EXTENSIVE-OK"}
+task1: {"valid": true, "gap": 0.002294020110413797, "u_frozen": 1.504108664365367, "T2b": "KILLED"}
+dryrun: {"valid": true, "gap": 0.020000000000000892, "v_abs": 0.0, "T2a_abs": "VOTE-INERT", "v_rflip": 2.061571255336544, "T2a_rflip": "VOTE-CARRIES", "v_ident": 0.0, "T2a_ident": "VOTE-INERT", "u_frozen": 4.440892098500428e-14, "T2b": "DROP-IN-PASS", "gate4_lift": "EXTENSIVE-OK"}
