@@ -1,0 +1,7 @@
+[13:40:50] L=12 Ne=10 n_q= 3: che H=16 P=2637 t=0.464s [mcmc 0.07 eloc 0.26 grad 0.09] | pcg H=15 P=2696 t=0.766s [mcmc 0.09 eloc 0.50 grad 0.13] | ratio 1.65 (median of pairs 1.65) | wall 16s
+[13:40:50]     profile (2048 configs, no P_G): che_logpsi0 5.2 ms, pcg_fc 1.8 ms, pcg_X 2.1 ms, pcg_pf 2.3 ms, pcg_logpsi0 8.7 ms
+[13:40:50] wrote ../P4.1_cheap_su2_t2b/results/timing_wall/retime_kim-compute-03.physics.cornell.edu_t4.json
+
+real	0m18.605s
+user	0m58.828s
+sys	0m1.689s

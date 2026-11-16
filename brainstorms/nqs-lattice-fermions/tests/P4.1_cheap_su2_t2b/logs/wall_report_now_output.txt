@@ -1,0 +1,4 @@
+VERDICT T2b original rule: INCOMPLETE
+VERDICT T2b with the equal-wall-time amendment: INCOMPLETE
+  24-site pcg missing
+  original verdict INCOMPLETE stands (the amendment acts only on a PASS)

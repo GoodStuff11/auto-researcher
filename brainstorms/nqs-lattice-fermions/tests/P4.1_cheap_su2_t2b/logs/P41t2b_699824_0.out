@@ -1,0 +1,16 @@
+task 0 on kim-compute-02.physics.cornell.edu: t2b.py --mode train --arm pcg --Lx 8 --Ly 3 --pg=1,1 --seed 0 --iters 3000 --n-chains 1024 --threads 4 --max-hours 12.0 --ckpts 750,1500,2250 --ckpt-eval 32768 --outdir /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results/t2b --n-eval 262144 --futility 750:8,1500:5 --fut-che /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/../P4.1_cheap_su2_t2/results/w24/S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0.json
+[11:50:08] S8x3_N20_U8_tp-0.25_pg11_pcg_H25_seed0: L=24 Ne=20 H=25 P=9788 (che@16 P=9711) threads=4 pf=fast host=kim-compute-02.physics.cornell.edu
+[11:51:19] thermalised: acceptance 0.327
+[11:51:30] it 1 E -13.358391 std 4.295 acc 0.307 |upd| 4.06e-01 t(mcmc/eloc/grad/sr) 0.82/8.98/0.69/0.24s elapsed 0.003 h
+[12:00:08] it 50 E -15.815275 std 1.849 acc 0.247 |upd| 2.94e-01 t(mcmc/eloc/grad/sr) 0.76/9.00/0.65/0.23s elapsed 0.147 h
+[12:08:58] it 100 E -15.990211 std 1.511 acc 0.241 |upd| 2.56e-01 t(mcmc/eloc/grad/sr) 0.78/8.97/0.65/0.24s elapsed 0.294 h
+[12:17:46] it 150 E -16.026608 std 1.831 acc 0.257 |upd| 2.34e-01 t(mcmc/eloc/grad/sr) 0.75/8.70/0.64/0.23s elapsed 0.441 h
+[12:26:34] it 200 E -16.152159 std 1.284 acc 0.248 |upd| 2.51e-01 t(mcmc/eloc/grad/sr) 0.76/8.83/0.66/0.24s elapsed 0.588 h
+[12:35:22] it 250 E -16.145325 std 1.647 acc 0.233 |upd| 2.34e-01 t(mcmc/eloc/grad/sr) 0.84/8.82/0.66/0.24s elapsed 0.734 h
+[12:44:18] it 300 E -16.203356 std 1.605 acc 0.230 |upd| 2.33e-01 t(mcmc/eloc/grad/sr) 0.82/9.25/0.64/0.24s elapsed 0.883 h
+[12:53:18] it 350 E -16.259408 std 1.224 acc 0.244 |upd| 2.32e-01 t(mcmc/eloc/grad/sr) 0.76/9.11/0.65/0.24s elapsed 1.033 h
+[13:02:29] it 400 E -16.275659 std 1.211 acc 0.238 |upd| 2.26e-01 t(mcmc/eloc/grad/sr) 0.78/9.53/0.66/0.22s elapsed 1.186 h
+[13:11:43] it 450 E -16.363017 std 1.329 acc 0.233 |upd| 2.19e-01 t(mcmc/eloc/grad/sr) 0.78/9.02/0.68/0.24s elapsed 1.340 h
+[13:21:00] it 500 E -16.322171 std 1.396 acc 0.232 |upd| 2.39e-01 t(mcmc/eloc/grad/sr) 0.78/9.44/0.66/0.24s elapsed 1.495 h
+[13:30:19] it 550 E -16.372405 std 1.278 acc 0.237 |upd| 2.37e-01 t(mcmc/eloc/grad/sr) 0.81/9.75/0.66/0.24s elapsed 1.650 h
+[13:39:41] it 600 E -16.348953 std 1.458 acc 0.237 |upd| 2.23e-01 t(mcmc/eloc/grad/sr) 1.53/9.19/0.63/0.24s elapsed 1.806 h

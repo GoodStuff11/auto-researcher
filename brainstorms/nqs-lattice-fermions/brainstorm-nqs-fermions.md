@@ -576,7 +576,7 @@ The two conditional leaves wait for redesign before they spend compute:
 ### Current Critical Path (2026-11-16)
 Two leaves are open, and each waits on named jobs (Pipeline State table).
 * **P3.1, route 10.1d.** Probe 702393 checks the target at width 6 on $4\times3$ $4+4$. On TARGET-OK the T3 runs (`submit_t3.sbatch`, about 35 CPU-h). PASS needs the trained, observable-sourced responses to beat the matched Davidson foil F3 by $\lceil0.25n\rceil$ items; a tie with F3 closes the leaf with its diagnostic. A PASS is one size only, and the sampled force stays untested.
-* **P4.1, route R2 `pcg-scal`.** T2b (699824) at 24 sites decides it, scored against the 24-site reference 687302: PASS needs $\rho_{24}+2\sigma\le0.60$, a rise from 12 sites of at most 0.15, and a win over `r1`. A PASS scores parameter efficiency unless an equal-wall-time `che` arm is added. Also pending: the R1 size ladder 686990 (expected Gate 4 FAIL), the R3 W-24 resume 700568, and the generality jobs 637776 and 637777.
+* **P4.1, route R2 `pcg-scal`.** T2b (699824) at 24 sites, with the equal-wall-time che arm (703587), decides it, scored against the 24-site reference 687302: PASS needs $\rho_{24}+2\sigma\le0.60$, a rise from 12 sites of at most 0.15, and a win over `r1`. A PASS scores parameter efficiency unless an equal-wall-time `che` arm is added. Also pending: the R1 size ladder 686990 (expected Gate 4 FAIL), the R3 W-24 resume 700568, and the generality jobs 637776 and 637777.
 * Closed leaves keep only their named follow-ups (sampled block Lanczos for P3.2; R5.2 and F_A2 for P2.2; the compiled-update falsifier for P2.1); none is scheduled.
 
 ### New candidate from the critic pass
