@@ -1,0 +1,8 @@
+[11:05:48] ops per amplitude: lh_3x3 3474; NNBF H=8: 1824, H=12: 2664, H=16: 3504, H=20: 4344, H=24: 5184, H=32: 6864, H=48: 10224 -> H_c = 16
+[11:05:49] nnbf_c: {'mode': 'full', 'Hs': 16} P=3736 E(it0)=-8.06055497
+[11:05:50] nnbf_w: {'mode': 'full', 'Hs': 48} P=10488 E(it0)=-8.05587323
+[11:05:50] rewrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r9/preflight_config.json: H_c = 16 (op-count matched), H_w = 48 (reported only)
+
+real	0m11.690s
+user	0m30.915s
+sys	0m1.860s
