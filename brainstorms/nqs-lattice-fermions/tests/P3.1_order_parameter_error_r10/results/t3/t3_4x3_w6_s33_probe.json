@@ -1,0 +1,118 @@
+{
+ "args": {
+  "mode": "run",
+  "size": "4x3",
+  "seed": 33,
+  "gs_width": 6,
+  "gs_iters": 1200,
+  "resp_cold": 600,
+  "resp_warm": 200,
+  "T": 4,
+  "resp_init": "gs",
+  "sr_lr": 0.05,
+  "sr_shift": 0.001,
+  "sr_samples": 2000,
+  "o_chunk": 8,
+  "chunk": 32768,
+  "n_low": 15,
+  "timing_steps": 5,
+  "params_dir": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r10/results/t3/params",
+  "out": "results/t3/t3_4x3_w6_s33_probe.json",
+  "aggregate": null,
+  "checkpoint": "final",
+  "selftest_verdict": false,
+  "cpu_budget": 1000000000.0,
+  "stop_after": "A",
+  "target": "trained",
+  "dry_target": false
+ },
+ "size": "4x3",
+ "seed": 33,
+ "E0": -8.94866491956139,
+ "a0": {
+  "pair": 0.0018562878988306354,
+  "spin": -0.013462155588038208,
+  "charge": -0.0028409830890823223
+ },
+ "items": {
+  "pair": {
+   "a_psi": 0.0018080528284732406,
+   "delta": 4.823507035739481e-05,
+   "scored": false
+  },
+  "spin": {
+   "a_psi": -0.013372791416022366,
+   "delta": -8.93641720158423e-05,
+   "scored": false
+  },
+  "charge": {
+   "a_psi": -0.0025982155319747217,
+   "delta": -0.00024276755710760057,
+   "scored": false
+  }
+ },
+ "ratios": {},
+ "resp": [],
+ "cpu": {
+  "A": 898.232361,
+  "total": 905.462468
+ },
+ "phase": "A",
+ "gs_train": {
+  "steps": 1200,
+  "best": -8.920216769829327,
+  "cpu": 898.218616,
+  "trace": [
+   [
+    0,
+    -7.478204537812028
+   ],
+   [
+    100,
+    -8.839073860726232
+   ],
+   [
+    200,
+    -8.883810950640667
+   ],
+   [
+    300,
+    -8.905237678044053
+   ],
+   [
+    400,
+    -8.915192714479968
+   ],
+   [
+    500,
+    -8.917076208963428
+   ],
+   [
+    600,
+    -8.916228268845407
+   ],
+   [
+    700,
+    -8.914307769896158
+   ],
+   [
+    800,
+    -8.917096766812524
+   ],
+   [
+    900,
+    -8.918535357924483
+   ],
+   [
+    1000,
+    -8.919103448621597
+   ],
+   [
+    1100,
+    -8.91956345193587
+   ]
+  ]
+ },
+ "overlap2": 0.9847402448126988,
+ "dE": 0.028448149732065886
+}
