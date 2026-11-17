@@ -327,7 +327,7 @@ def pretrain(a):
     th0 = ctx.m.init(0).numpy()
     E_init = ctx.energy(torch.tensor(th0))[0]
     best = dict(E=np.inf, th=th0.copy())
-    it, traj, t0 = [0], [], time.time()
+    it, traj, t0, flag = [0], [], time.time(), dict(capped=False)
 
     def f(th):
         E, g = ctx.energy_grad(th)
@@ -345,13 +345,14 @@ def pretrain(a):
                 f"[{cpu():.1f} CPU-min]")
             np.save(os.path.join(RES, "theta_nnbf_pre_ckpt.npy"), best["th"])
         if cpu() > a.cpu_cap:
+            flag["capped"] = True  # newer scipy swallows StopIteration from callbacks, so record it here
             raise StopIteration
     try:
         minimize(f, th0, jac=True, method="L-BFGS-B", callback=cb,
                  options=dict(maxiter=a.pre_iters, maxcor=30, ftol=1e-15, gtol=1e-10))
-        capped = False
     except StopIteration:
-        capped = True
+        flag["capped"] = True
+    capped = flag["capped"]
     np.save(os.path.join(RES, "theta_nnbf_pre.npy"), best["th"])
     eps = (best["E"] - E0) / abs(E0)
     e_at = {n: (E - E0) / abs(E0) for n, E in traj}

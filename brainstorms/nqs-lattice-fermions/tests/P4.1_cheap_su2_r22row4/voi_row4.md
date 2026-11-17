@@ -1,0 +1,19 @@
+# VOI note: P4.1 ledger row 4, cheaper version: rank5 alone + pcg by dominance (`submit_row4.sbatch`, resume of 742206)
+
+* leaf: P4.1
+* route: R2 (`pcg`), decided through R20 step 2 (`abl-rank`); ledger row 4
+* tier: T1
+* resume-of: 742206
+* decision: RULE_amend3.md (rho_abl only; RULE.md thresholds, RULE_amend1 hard cap, RULE_amend2 guard unchanged). rank5 to STOP-RULE / STOP-NOGAIN / 30-step cap; if settled, pcg one step at a time until eps_pcg <= 0.60 x min(eps_rank5_end, eps_rank5_inf) (PAIRING-KEPT by dominance), or to its own stop, then rho_abl read normally (PAIRING-KEPT <= 0.60, PAIRING-RETRACTED >= 0.85, else ABL-CONFOUNDED; UNSETTLED at the cap -> AMBIGUOUS). PAIRING-KEPT -> R2's mechanism attributed at 12 sites on polished arms, pairing credit in the summary uses this ablation, row 4 closes; ABL-CONFOUNDED -> R2 flagged "mechanism unattributed", row 4 closes; PAIRING-RETRACTED -> R2's pairing claim retracted, row 4 closes.
+* prediction: PAIRING-KEPT by dominance.
+  * rank5: predicted gain/g fell 0.100 -> 0.069 -> 0.047 over steps 6-8 (x0.68-0.69 per step); STOP-RULE (< 1e-3) after about 10-11 more steps at x0.69, 17 at x0.8. Its 5-gain fit (r 0.764, RMS 0.41) gives eps_inf 5.98e-4; with STOP-RULE the tail is 0 and eps_end lands about 6.0-6.4e-4, so L5 about 6.0-6.4e-4 and the dominance line 0.60 L5 about 3.6-3.8e-4.
+  * pcg: at 4.230e-4 after 9 steps; its last 5 gains average 4.3e-5 in eps per step (8-10% of eps), fitted r 0.91. Reaching 3.6-3.8e-4 needs about 2-4 steps; ladder steps never raise E.
+  * P(PAIRING-KEPT) 0.70 (0.65 by dominance, 0.05 read normally); P(ABL-CONFOUNDED) 0.18 (rank5 polishes further than its fit, below about 5.5e-4, and pcg slows); P(PAIRING-RETRACTED) 0.02; P(AMBIGUOUS) 0.06 (rank5 capped with an unsettled fit); P(INCOMPLETE) 0.04.
+* p: 0.70
+* prediction-changes-decision: yes. Current state: row 4 open, R2's pairing attribution provisional (rho_abl 0.550 on unfinished arms; critic objection 13 asks for the like-for-like ablation). The predicted outcome closes row 4 and turns the attribution from provisional to polished; ABL-CONFOUNDED (p 0.18) or RETRACTED would instead remove the pairing credit from the Answer and the R2 card. Either way ledger row 4 leaves the closure certificate's open list.
+* cheapest-kill-tried: (1) Reading rho_abl now from 742206: forbidden (arms unfinished; INCOMPLETE). (2) The 13.0 CPU-h three-arm resume: G2 p 0.55, PASS PENDING AUDIT; the che arm (r about 0.975) is its expensive and AMBIGUOUS-prone half and does not enter rho_abl, so it is dropped (rho_pol stays provisional). (3) pcg is run only until the dominance line is crossed, using that ladder steps never raise E. (4) A pure prediction cannot replace the run: rank5's endpoint is uncertain by about 10% and the dominance line sits within one or two pcg steps of the current pcg value.
+* cost-cpuh: 7.0
+* cheapest-version: one arm (rank5) to its stop, the second (pcg) only as far as the dominance read needs; no che; 1 CPU, sequential. Expected use 2-3.3 CPU-h; under 10 CPU-h, so no auditor is needed.
+* convergence: rank5 by the pre-registered predicted-gain stop (likely STOP-RULE, tail 0) or the 30-step cap with the RULE_amend2 fit; pcg needs no convergence for PAIRING-KEPT (dominance), and otherwise uses its own pre-registered stop and fit.
+* wall-time-basis: measured in 742206 (logs/arm_*_output.txt, 1 thread, wall ~= CPU): rank5 8.14 mean / 8.84 max per step, set-up 0.6; pcg 8.07 / 9.40, set-up 0.3 (re-launched per step, about 9.9 per call worst). Worst: rank5 22 x 8.84 + 0.7 = 195 min, pcg 21 x 9.9 = 208 min, total 403 min -> --time 07:00:00 on 1 CPU = 7.0 CPU-h. Expected: rank5 10-17 steps (82-150 min) + pcg 2-5 calls (20-50 min).
+* power: deterministic (exact sums, no seeds; one instance, one seed, as all r22 arms). P(INCOMPLETE) about 0.04 (the 400-minute driver budget is reached only if rank5 needs its full 22 steps and pcg needs more than 20 calls).

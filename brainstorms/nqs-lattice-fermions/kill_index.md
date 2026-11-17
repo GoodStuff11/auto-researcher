@@ -352,6 +352,7 @@ One row per KILLED or SHELVED route, grouped by leaf. **Code** is where the rout
 | R38 | P4.1 | guided (flattened) sampling for the SR step (`guided`) | T1 | median R(60) 0.512 < 0.60 against 0.7475 for the exact polish; flat last steps (noise floor) | [[leaves/P4.1/cards/R38]] | proposed entry (guided sampling plateaus at half the gap) |
 | R34 | P4.1 | importance-reweighted sample reuse across SR steps (`reuse`) | G4 | at 24 sites the reused row still needs its local energy, 85-90% of the step: (sampling + row)/row = 1.05-1.08 for `che`/`pcg`, rule needs 2 | [[leaves/P4.1/cards/R34]] | route-specific |
 | R39 | P4.1 | James-Stein shrinkage of the sampled SR force (`js-force`, translation repair of R36) | T1 | mode-wise and grouped shrinkage at or below the plain sampled force (rule: base + 0.02); most force modes have SNR below one | [[leaves/P4.1/cards/R39]] | proposed entry (force shrinkage cannot replace samples) |
+| R40 | P4.1 | same NNBF reading charges (`che`) vs spins (`nnbf_SG`), both exactly projected and ladder-polished, 12 sites (`che-vs-spin`) | SHELVED | compute auditor REFUSED (11.0 CPU-h): seed-robust LOSS p about 0.1, AMBIGUOUS likeliest, NO-LOSS would not carry to 24+ sites; pretraining cost unmeasured (~440 > 360 CPU-min cap); inconsistent seed margin | [[leaves/P4.1/cards/R40]] | route-specific |
 
 ### P4.2 — Size-transferable fermionic NQS
 

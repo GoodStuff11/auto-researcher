@@ -1,0 +1,6 @@
+[16:19:04] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[16:19:07] start eps 7.217364e-04 (valid True) [set-up 0.06 CPU-min]
+[16:21:19] build 0: eps 7.217364e-04 plain 7.034659e-04 rank 2435 |d| 1.872 cos_prev None; ; accepted plain eps 7.034659e-04 [build 2.16, total 2.26 CPU-min]
+[16:21:19] running: gamma 8.324e-06 = 1.14 gamma_LM; verdict-so-far TOO-COSTLY
+[16:23:36] build 1: eps 7.034659e-04 plain 6.911462e-04 rank 2434 |d| 1.471 cos_prev 0.9460256518858603; m1:7.031510e-04; accepted plain eps 6.911462e-04 [build 2.21, total 4.54 CPU-min]
+[16:23:36] running: gamma 6.833e-06 = 0.94 gamma_LM; verdict-so-far TOO-COSTLY
