@@ -1,2 +1,15 @@
 [10:12:26] full_F4: D=51480 gap=0.1963 n_eff=1514 calib=2.1e-14; start E-E0 = 0.013781786 (stored scored 0.013781786); setup+recovery CPU 5 s
 [10:12:41] full_F4: replay budget dE_sign = 1.480484e-03 (stored 1.480484e-03, rel 0.0e+00)
+[10:20:45] full_F4: polish CPU cap at iteration 273; E-E0 0.013782 -> 0.013567 (273 it, 290 ev, 480 CPU-s, drop over last 50 it 2.7e-05)
+[10:20:59] full_F4: polished dE_tot = 1.356711e-02 dE_sign = 1.495182e-03 spread = 5.2e-13
+[10:20:59] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r15b/results/polish_full_F4_inst25.json
+[10:22:12] replayed SR steps 500..526: max |E - stored E| = 0.0e+00
+[10:22:13] half_F16: D=51480 gap=0.1963 n_eff=2561 calib=2.1e-14; start E-E0 = 0.023879456 (stored scored 0.023879456); setup+recovery CPU 72 s
+[10:22:29] half_F16: replay budget dE_sign = 2.834411e-03 (stored 2.834411e-03, rel 0.0e+00)
+[10:30:36] half_F16: polish CPU cap at iteration 188; E-E0 0.023879 -> 0.021171 (188 it, 199 ev, 482 CPU-s, drop over last 50 it 3.7e-04)
+[10:30:52] half_F16: polished dE_tot = 2.117100e-02 dE_sign = 2.529666e-03 spread = 2.6e-12
+[10:30:52] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r15b/results/polish_half_F16_inst25.json
+full_F4   start E-E0 0.013782 -> polished 0.013567; dE_sign 1.4805e-03 -> 1.4952e-03; dE_tot 1.3567e-02; CPU cap at iteration 273, 273 it, last-50 drop 2.7e-05; replay ok True; CPU 513 s
+half_F16  start E-E0 0.023879 -> polished 0.021171; dE_sign 2.8344e-03 -> 2.5297e-03; dE_tot 2.1171e-02; CPU cap at iteration 188, 188 it, last-50 drop 3.7e-04; replay ok True; CPU 586 s
+dE_tot ratio (reported only): 1.560
+VERDICT R15.1 (V=15 polished): INCONCLUSIVE; rho_pol = 1.692  (half_F16: still falling at the cap (3.7e-04 > 0.0002 over 50 it))

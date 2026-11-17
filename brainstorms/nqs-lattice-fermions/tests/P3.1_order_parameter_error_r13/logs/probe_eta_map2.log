@@ -1,0 +1,7 @@
+4x3: nwin 11, window weight f of exact DAV responses: median 0.002 range 0.000-0.767
+ETA=(2.0, 1.0): median eta 0.832 median eta_low 0.933
+ETA=(2.0, 1.2): median eta 0.844 median eta_low 0.933
+ETA=(2.2, 1.0): median eta 0.852 median eta_low 0.935
+ETA=(1.8, 1.2): median eta 0.823 median eta_low 0.931
+ETA=(1.5, 1.5): median eta 0.818 median eta_low 0.922
+measured trained Davidson (F3, job 705951): eta_low 0.90, eta 0.85

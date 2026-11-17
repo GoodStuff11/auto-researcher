@@ -1,0 +1,3 @@
+r22 ladder arm che on kim-compute-03.physics.cornell.edu, job 742206_2
+[10:31:42] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[10:31:44] che: P 2637; checks {'start_vs_r19': 0.0, 'valid': True} [0.06 CPU-min]

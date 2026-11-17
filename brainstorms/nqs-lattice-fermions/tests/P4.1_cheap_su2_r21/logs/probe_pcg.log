@@ -1,0 +1,7 @@
+[10:13:59] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[10:15:49] pcg r19 N8: E -7.8206489238 recorded -7.8206489238 |diff| 0.0e+00 VALID True; eps 9.26189e-04 [1.83 CPU-min]
+[10:16:44] cut 1e-05: rank 1225; |z| 0.000; predicted drop of eps 0.0002; s 1.0; eps 9.26189e-04 -> 9.26101e-04 (drop 0.01%); grad outside kept: euclid 9.037e-01, natural 9.997e-01 [2.76 CPU-min]
+[10:17:06] cut 1e-06: rank 1900; |z| 0.013; predicted drop of eps 0.2542; s 0.5; eps 9.26189e-04 -> 8.05402e-04 (drop 13.04%); grad outside kept: euclid 6.355e-02, natural 4.635e-01 [3.13 CPU-min]
+[10:17:40] cut 1e-07: rank 2375; |z| 0.017; predicted drop of eps 0.4099; s 0.25; eps 9.26189e-04 -> 8.41968e-04 (drop 9.09%); grad outside kept: euclid 2.451e-03, natural 1.372e-01 [3.69 CPU-min]
+[10:18:15] cut 1e-08: rank 2624; |z| 0.018; predicted drop of eps 0.4664; s None; eps 9.26189e-04 -> 9.26189e-04 (drop 0.00%); grad outside kept: euclid 5.282e-05, natural 1.987e-02 [4.28 CPU-min]
+[10:18:15] RULE (pcg): control drop 0.01%; best ladder drop 13.04% -> FROZEN-ARTEFACT [4.28 CPU-min, 257 s wall]

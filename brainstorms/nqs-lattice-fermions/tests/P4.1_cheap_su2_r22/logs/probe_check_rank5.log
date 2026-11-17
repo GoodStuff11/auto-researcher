@@ -1,0 +1,6 @@
+[10:25:14] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[10:25:33] rank5: g 1.005234e-02; checks {'rank12_vs_pcg': 8.881784197001252e-16, 'start_vs_truncate': 1.7763568394002505e-15, 'chain_rule_rel': 0.0, 'nparam': 2672, 'valid': True} [0.34 CPU-min]
+
+real	0m23.444s
+user	0m18.311s
+sys	0m4.311s

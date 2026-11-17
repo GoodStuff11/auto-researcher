@@ -1,0 +1,7 @@
+[10:23:45] census 4x3: {"size": "4x3", "V": 12, "D": 34650, "nup": 4, "n": 0.6666666666666666, "omega1": 0.16083591005649467, "n_found": 17, "n_low": 15, "omega_top": 1.2385365673037985, "nwin": 11, "dim_sector": null, "ov2": 0.9393790503782488, "E0": -8.948664919561418, "chi": "{'My': 1, 'Mx': 1}", "S0": 0.0, "n_pair": 10, "n_site": 9}
+4x3: nwin 11, window weight f of exact DAV responses: median 0.002 range 0.000-0.767
+ETA=(0.3, 0.5): median eta 0.254 median eta_low 0.865
+ETA=(0.9, 0.5): median eta 0.514 median eta_low 0.882
+ETA=(2.0, 1.0): median eta 0.832 median eta_low 0.933
+ETA=(3.0, 0.5): median eta 0.901 median eta_low 0.936
+measured trained Davidson (F3, job 705951): eta_low 0.90, eta 0.85

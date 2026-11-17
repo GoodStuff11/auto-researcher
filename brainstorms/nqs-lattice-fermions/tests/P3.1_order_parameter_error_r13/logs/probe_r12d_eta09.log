@@ -1,0 +1,4 @@
+ETA=(0.9, 0.5) DAV 4x2 delta 0.05: n, coverage, median w/wex, median w/|delta| = (0.9583333333333334, 0.940900645209972, 4.899971126589346, 24)
+ETA=(0.9, 0.5) L1R 4x2 delta 0.05: n, coverage, median w/wex, median w/|delta| = (0.75, 0.7055199843446098, 3.426068869826077, 24)
+ETA=(0.9, 0.5) DAV 5x2 delta 0.05: n, coverage, median w/wex, median w/|delta| = (0.9565217391304348, 1.0380958831703362, 5.831903958697321, 23)
+ETA=(0.9, 0.5) L1R 5x2 delta 0.05: n, coverage, median w/wex, median w/|delta| = (0.782608695652174, 0.8222130650393357, 5.8220291198880165, 23)

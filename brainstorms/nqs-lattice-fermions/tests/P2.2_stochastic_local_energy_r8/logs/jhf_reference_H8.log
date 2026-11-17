@@ -1,0 +1,20 @@
+H8 n=4900 E0=-3.94474801 E_RHF(SCF)=-3.57234732 E[RHF vector]=-3.57234732 (check) dE_RHF=372.40 mHa cpu=2s
+ G: P=1 nit=6 E=-3.89797721 cpu=2s
+ JD: P=8 nit=21 E=-3.92235981 cpu=2s
+ JF: P=36 nit=255 E=-3.93710884 cpu=3s
+ NNBF-J h4 trained: nit=1500 cpu=37s; snapshots ['NNBFJ_0.74', 'NNBFJ_final']
+ target dE (mHa): psi0=-0.000 NNBFJ_0.74=0.583 NNBFJ_final=0.036
+ ref=RHF eps_S: trL_ref=1.293e-02 need delta<=0.124 pred d_rev^2 trL=41.15 tau | excess/tau: psi0=25.7 NNBFJ_0.74=26 NNBFJ_final=25.8 (on ref -2.5e-19) cpu=49s
+ ref=RHF grid_end: trL_ref=1.758e-01 need delta<=0.034 pred d_rev^2 trL=559.59 tau | excess/tau: psi0=207 NNBFJ_0.74=208 NNBFJ_final=207 (on ref -3.4e-17) cpu=59s
+ ref=RHF: dE=372.40 mHa infid=5.352e-01 delta_rev=0.798 delta_fwd=0.798 ref-zero=0 psi0-wt-there=0.0e+00 |psi0/ref| q01/50/99=[0.0002636195915186054, 0.23964646245023752, 16.302114842819275] sign-mismatch wt=2.39e-13
+ ref=G eps_S: trL_ref=8.358e-03 need delta<=0.155 pred d_rev^2 trL=5.64 tau | excess/tau: psi0=9.53 NNBFJ_0.74=9.66 NNBFJ_final=9.56 (on ref 4.5e-19) cpu=67s
+ ref=G grid_end: trL_ref=1.236e-01 need delta<=0.040 pred d_rev^2 trL=83.37 tau | excess/tau: psi0=64.5 NNBFJ_0.74=65.8 NNBFJ_final=64.4 (on ref -9.3e-18) cpu=77s
+ ref=G: dE=46.77 mHa infid=1.304e-01 delta_rev=0.367 delta_fwd=0.367 ref-zero=0 psi0-wt-there=0.0e+00 |psi0/ref| q01/50/99=[0.001136237897977768, 0.4596288571873079, 12.336067976803328] sign-mismatch wt=2.39e-13
+ ref=JD eps_S: trL_ref=6.450e-03 need delta<=0.176 pred d_rev^2 trL=3.28 tau | excess/tau: psi0=5.36 NNBFJ_0.74=5.49 NNBFJ_final=5.36 (on ref -2.3e-19) cpu=85s
+ ref=JD grid_end: trL_ref=9.158e-02 need delta<=0.047 pred d_rev^2 trL=46.57 tau | excess/tau: psi0=35.1 NNBFJ_0.74=35.2 NNBFJ_final=35 (on ref 3.6e-18) cpu=95s
+ ref=JD: dE=22.39 mHa infid=9.910e-02 delta_rev=0.319 delta_fwd=0.319 ref-zero=2 psi0-wt-there=9.3e-23 |psi0/ref| q01/50/99=[0.012994024500938648, 0.9440717899043953, 15.807194302329552] sign-mismatch wt=2.39e-13
+ ref=JF eps_S: trL_ref=6.463e-03 need delta<=0.176 pred d_rev^2 trL=2.11 tau | excess/tau: psi0=3.12 NNBFJ_0.74=3.18 NNBFJ_final=2.99 (on ref 4.9e-19) cpu=103s
+ ref=JF grid_end: trL_ref=9.137e-02 need delta<=0.047 pred d_rev^2 trL=29.89 tau | excess/tau: psi0=16.5 NNBFJ_0.74=16.7 NNBFJ_final=16.2 (on ref -5.5e-18) cpu=112s
+ ref=JF: dE=7.64 mHa infid=6.435e-02 delta_rev=0.256 delta_fwd=0.256 ref-zero=92 psi0-wt-there=2.1e-14 |psi0/ref| q01/50/99=[0.7651995429604331, 1.5727345569773032, 45.94887727558885] sign-mismatch wt=2.37e-13
+total cpu 112s
+wall 112.68 s user 108.45 s

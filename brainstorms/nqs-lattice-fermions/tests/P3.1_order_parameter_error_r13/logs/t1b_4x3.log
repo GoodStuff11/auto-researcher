@@ -1,0 +1,13 @@
+[10:19:02] 4x3: D=34650 sector levels found 17 (N_LOW=15) E0=-8.948665 chi={'My': 1, 'Mx': 1} S0=0 R_PAIR=2.59 (10 pairs) R_SITE=2.96 (9 pairs) (2.8s)
+[10:19:02] census 4x3: {"size": "4x3", "V": 12, "D": 34650, "nup": 4, "n": 0.6666666666666666, "omega1": 0.16083591005649467, "n_found": 17, "n_low": 15, "omega_top": 1.2385365673037985, "nwin": 11, "dim_sector": null, "ov2": 0.9393790503782488, "E0": -8.948664919561418, "chi": "{'My': 1, 'Mx': 1}", "S0": 0.0, "n_pair": 10, "n_site": 9}
+[10:19:02] gap surgery: level 1 moved from omega 0.1608 to 0.0500
+[10:19:02] build cpu 10s
+[10:19:18] 4x3 tp      w1 0.057 a2 OBS 0.60 MSR 2.07 | coh2 OBS 0.642 MSR 1.858 cpu 62s | pair OBS +0.44 MSR +0.63 | spin OBS +0.07 MSR +0.10 | charge(ns) OBS +0.90 MSR +0.39
+[10:19:34] 4x3 J       w1 0.058 a2 OBS 0.59 MSR 2.14 | coh2 OBS 0.586 MSR 1.935 cpu 62s | pair OBS +0.45 MSR +0.59 | spin OBS +0.13 MSR +0.12 | charge(ns) OBS -0.28 MSR +1.17
+[10:19:49] 4x3 dens_s0 w1 0.021 a2 OBS 1.01 MSR 2.20 | coh2 OBS 1.217 MSR 2.323 cpu 62s | pair OBS +0.91 MSR +0.99 | spin OBS +0.64 MSR +0.93 | charge OBS +1.01 MSR +1.12
+[10:20:04] 4x3 spin_s0 w1 0.035 a2 OBS 1.05 MSR 2.92 | coh2 OBS 1.237 MSR 3.056 cpu 60s | pair OBS +0.53 MSR +0.77 | spin OBS +0.33 MSR +0.64 | charge(ns) OBS +0.64 MSR -0.25
+[10:20:19] 4x3 pair_s0 w1 0.058 a2 OBS 0.62 MSR 2.16 | coh2 OBS 0.647 MSR 1.929 cpu 60s | pair OBS +0.54 MSR +0.62 | spin OBS +0.15 MSR +0.13 | charge(ns) OBS +0.72 MSR +1.99
+[10:20:34] 4x3 dens_s1 w1 0.055 a2 OBS 0.95 MSR 2.00 | coh2 OBS 0.834 MSR 1.762 cpu 60s | pair OBS +0.64 MSR +0.72 | spin OBS +0.16 MSR +0.22 | charge OBS +1.23 MSR +1.02
+[10:20:49] 4x3 spin_s1 w1 0.051 a2 OBS 0.50 MSR 2.18 | coh2 OBS 0.312 MSR 1.939 cpu 60s | pair OBS +0.30 MSR +0.48 | spin OBS -0.22 MSR -0.15 | charge(ns) OBS +0.07 MSR -0.24
+[10:20:49] soft CPU guard: stop before state 7
+[10:20:49] total CPU 435s
