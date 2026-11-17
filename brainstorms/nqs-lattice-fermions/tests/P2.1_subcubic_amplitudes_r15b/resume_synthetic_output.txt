@@ -1,0 +1,7 @@
+OK  rho 1.69: KILL (want KILL)
+OK  rho 1.10: PASS (want PASS)
+OK  rho 1.20: AMBIGUOUS (want AMBIGUOUS)
+OK  still falling, rho 1.6: AMBIGUOUS (want AMBIGUOUS)
+OK  replay mismatch: AMBIGUOUS (want AMBIGUOUS)
+OK  missing: MISSING (want MISSING)
+SYNTHETIC PASS (6 cases)

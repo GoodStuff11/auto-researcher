@@ -1,0 +1,2 @@
+[10:31:46] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[10:32:04] pcg: P 2696; checks {'start_vs_r19': 0.0, 'valid': True} [0.33 CPU-min]

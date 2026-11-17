@@ -269,6 +269,8 @@ Provide each worker with:
 ## Leaf Status Summary
 * **State**: OPEN | DORMANT | EXHAUSTED at this scale | EXHAUSTED at this budget | ANSWERED | PROVEN-IMPOSSIBLE
 * **Updated**: YYYY-MM-DD (after which result)
+* **Question**: the leaf's question, copied word for word from its bullet in the master's Final Tree.
+* **Answer**: the direct answer to that question, in plain words (rules in 3a, "The answer comes first").
 * **Conclusion**: two or three sentences a reader can trust without reading the leaf.
 * (state-specific fields, see "Leaf Status Summary rules" below)
 ```
@@ -276,6 +278,16 @@ Provide each worker with:
 #### 3a. Leaf Status Summary Rules (Mandatory, Always the Last Section)
 
 Every leaf artifact ends with `## Leaf Status Summary`. It is the **last** heading of the file: rounds, results and notes are inserted *above* it, never after it, and the summary is rewritten (not appended to) when the leaf's state changes. When a result lands without changing the state, update only the fields it touches (`Updated`, `Next step`, the affected evidence sentence, `Compute spent`); a full rewrite on every result costs agent time and changes nothing a reader needs. It is written for a reader who reads nothing else in the leaf.
+
+**The answer comes first, in plain words (mandatory).** A summary exists to answer the question the leaf was created for, not to narrate the run. The user reads the `Question` and `Answer` lines first, and often only those, so they must make sense on their own:
+* `Question` is copied word for word from the leaf's bullet in the master's `### Final Tree` (Stage 1). It is never paraphrased, narrowed or replaced by the question of the current round. If the leaf's work drifted to a narrower question, the answer says so in its own words ("We could only test this on 12-site clusters: ...").
+* `Answer` starts with the direct reply: **Yes**, **No**, **Partly** or **Not known yet** for a yes/no question, or the value itself for a "how much" or "which" question ("Mostly amplitudes."). It then says in at most four short sentences (about 100 words) what the run found that answers *that* question, with at most one or two key numbers, each with what it is compared to. Write it so that a physicist outside this subfield understands it on first reading:
+  - no route codes, job ids, tier or gate codes, arm names (`pcg`, `che`), verdict labels (CONFOUNDED, NO-TARGET), library numbers or rule thresholds;
+  - no acronym or symbol that is not in the question itself, unless it is explained in a few words in the same sentence;
+  - say what was compared with what in ordinary words ("the network with a pairing layer was 24% more accurate than the same network without it"), not as a ratio name;
+  - state the scope in plain words (cluster sizes, models) and the single most important caveat, nothing else.
+* `Conclusion` may be more technical, but it must agree with `Answer` and add only what a specialist needs. Every other part of the summary (the self-contained argument below) supports the answer; none of it may contradict it or change its subject.
+* **Self-check before saving.** Read only `Question` and `Answer`. If the answer does not respond to the question as asked (for example, it reports a ratio between two arms when the question asks "can X be done at cost below Y"), or if it uses a term the question does not define, rewrite it. The per-leaf critic applies the same check, and the master copies `Answer`, not `Conclusion`, into its tables and Summary.
 
 **Self-contained argument (the standard every summary must meet).** After reading only the summary, the user must be able to explain the idea or the closure to a colleague and defend it against obvious objections. Field lists are not enough. The summary therefore contains, in prose (about 400–900 words; longer only if the argument needs it):
 * **The question in plain terms**: what problem this leaf attacks and why it matters for NQS of fermions (or the domain at hand), with every symbol and acronym defined at first use. No route labels ("7.1", "R2", "frdK") without saying what they are.
@@ -288,7 +300,7 @@ Every leaf artifact ends with `## Leaf Status Summary`. It is the **last** headi
 
 Write it so that each claim is traceable: cite the section or job id where the number comes from in parentheses, but make the argument readable without following those pointers.
 
-**Common fields (all states):** `State`, `Updated` (date and the result that triggered the update), `Conclusion`, `Scope` (instances, sizes, sectors and compute regime the conclusion covers), and `Compute spent` (CPU-hours, from the master compute ledger).
+**Common fields (all states):** `State`, `Updated` (date and the result that triggered the update), `Question`, `Answer`, `Conclusion`, `Scope` (instances, sizes, sectors and compute regime the conclusion covers), and `Compute spent` (CPU-hours, from the master compute ledger).
 
 **Leaf still live: `State: OPEN` or `DORMANT`.** Add:
 * `Most promising direction`: the single best live route, with its mechanism, the strongest evidence for it so far and the evidence against it.
@@ -304,7 +316,7 @@ Write it so that each claim is traceable: cite the section or job id where the n
 5. `Missing ingredients exhausted` (both EXHAUSTED states): every ingredient named by the Saturation Diagnostic, the route generated from it, and the tier at which it was killed, or, for EXHAUSTED at this budget only, the gate refusal that stopped it. An ingredient with neither blocks EXHAUSTED; the leaf stays DORMANT.
 6. `What would reopen it`: the specific new evidence, scale or method that would invalidate the claim. For EXHAUSTED at this budget, also each refused step's capped cost and the budget that would fund it.
 
-If any certificate item cannot be filled honestly, the leaf is DORMANT, not closed. The per-leaf critic signs off on every certificate before the state changes, and the master's "Current leaf state" table copies each leaf's `State` and `Conclusion` verbatim.
+If any certificate item cannot be filled honestly, the leaf is DORMANT, not closed. The per-leaf critic signs off on every certificate before the state changes, and the master's "Current leaf state" table copies each leaf's `State`, `Question` and `Answer` verbatim.
 
 #### 3b. The Leaf State Machine: Entering and Leaving DORMANT
 
@@ -349,6 +361,14 @@ As each worker returns (not after all of them), the orchestrator lints that arti
 | **P1.1** | ... | SURVIVED | ... | ... | ... | Unblocks P1.2 |
 | **P1.2** | ... | SURVIVED (via Mutation) | ... | ... | ... | Unblocks P2.1 |
 | **P2.1** | ... | SURVIVED | ... | ... | ... | Independent |
+
+**The master Summary.** The master's `## Summary` answers the problem, in plain words, before it reports anything else. It is kept current with every leaf update and has this order:
+1. **The question.** One or two sentences stating what the whole brainstorm asks, in the words of the Final Tree's top-level nodes.
+2. **The answers, one per leaf.** For every leaf, in Final Tree order: the leaf's Final Tree question (shortened only by dropping symbols, never by changing what is asked), its state in plain words ("settled", "closed without a final answer because the next test was too expensive", "still open"), and its `Answer` copied from the Leaf Status Summary. The same rules apply as in 3a: lead with the direct reply (Yes, No, Partly, Not known yet, or the value asked for); no route codes, job ids, arm names, verdict labels or undefined acronyms.
+3. **What it adds up to.** At most five short bullets answering each top-level node of the Final Tree (P1, P2, ...) from its leaves' answers, in plain words.
+4. **Then the details** for specialists: open work, the cross-leaf picture, running jobs, the findings library and the Kill Index. Technical shorthand is allowed here, but each item still says what it means for the answer.
+
+A Summary that leads with state bookkeeping ("after the four gated jobs, ...") or with route names is rewritten. The test is the same as for a leaf: a reader who stops after part 3 knows what the brainstorm found about each question it set out to answer.
 
 #### 5. Cross-Pollination Analysis (Run on Every Arrival)
 Each time a leaf returns or a result lands, the orchestrator checks it against every other leaf, whether finished or still running:
@@ -602,7 +622,7 @@ The procedure must keep moving without supervision, survive the loss of its own 
   5. rebuild the thinking queue from 3.5.3, step 3, and continue.
 * **Crashes.** A job that ends FAILED, OUT_OF_MEMORY, NODE_FAIL or BOOT_FAIL gave no verdict: record it with `--changed crash`. Crashes do not count toward the no-change streak. One plain resubmission is allowed (for example after a node failure). After two crashes in a row, the gate refuses the script until the crash is reproduced at T1 with the pre-flight dry run, fixed, and the fix stated in a `fixed:` line. The fix must be new: a fix already tried by a run that crashed does not count. An array job in which only some tasks failed is recorded by its verdict, not as a crash. A TIMEOUT is not a crash but a wall-time miss: re-measure the time per step and resubmit only what the last checkpoint did not cover, as a gated resume.
 * **Submission environment.** `compute_gate.py submit` strips inherited `SLURM_*` and `SBATCH_*` variables before calling `sbatch`, so a job never inherits the orchestrator's own allocation and environment overrides cannot change the cost the gate computed. Anything run with `srun` from inside an allocation needs the same care.
-* **Finishing the run.** The run is over when every leaf is in a terminal state, or is DORMANT with no open reopening-ledger row the agent can work on (only `GATE-REFUSED` rows waiting on the user's budget or approval); by 3b, such a leaf has already taken exit 3. Then, in one pass: `refresh` and `report`, the cross-node critic (including a final review of every library entry's status and scope), a final master Summary, a whole-directory lint, and a report to the user. The final Summary covers what each leaf established, every leaf's state, the library's index (the lessons that reach beyond this problem), compute spent against budget, and what the user could fund next: the refused steps with their costs. Do not idle with an empty queue, and do not spend remaining budget just because it is there.
+* **Finishing the run.** The run is over when every leaf is in a terminal state, or is DORMANT with no open reopening-ledger row the agent can work on (only `GATE-REFUSED` rows waiting on the user's budget or approval); by 3b, such a leaf has already taken exit 3. Then, in one pass: `refresh` and `report`, the cross-node critic (including a final review of every library entry's status and scope), a final master Summary, a whole-directory lint, and a report to the user. The final Summary opens with the problem's top-level question and, for every leaf, its Final Tree question and its plain-words `Answer` (as in "The master Summary" below), then covers what each leaf established, every leaf's state, the library's index (the lessons that reach beyond this problem), compute spent against budget, and what the user could fund next: the refused steps with their costs. Do not idle with an empty queue, and do not spend remaining budget just because it is there.
 
 ---
 
@@ -677,6 +697,7 @@ Spawn a fresh adversarial critic agent with this mandate:
 > 8. Check Gate 4: does the claimed gain survive with system size, or is it a finite-size bonus or an exponential-cost operation in disguise?
 > 9. Check compute value (Stage 3.5.6–3.5.8): is every requested job the cheapest decisive version (one seed, one rung, released sequentially, not overpowered), is its outcome already predictable from cheaper evidence, would any verdict leave the decision unchanged, was a T0 kill argument tried first, will it converge within a measured wall time, and has the leaf's recent spend been changing decisions? Name every past job in the ledger whose verdict a cheaper argument could have given.
 > 10. Check the kills, not only the survivors: for each route card killed since the last review, is **The idea** described fairly and completely, does the **Evidence** support **Why this kills it**, is the kill's scope stated honestly, and is the **Strongest case against the kill** the real strongest one? A kill whose reasoning does not hold is reopened (its card returns to LIVE with the objection recorded).
+> 11. Check the answer: read only the Leaf Status Summary's `Question` and `Answer` (and, for the cross-node critic, the master Summary's first three parts). Is `Question` the leaf's Final Tree question word for word? Does `Answer` respond to that question as asked, starting with the direct reply, in words a physicist outside the subfield understands, with no route codes, job ids, arm names, verdict labels or undefined acronyms? Does it agree with the evidence and the Conclusion? An answer that fails is a Major objection.
 > Return only a numbered list of concrete, fatal objections categorized as Major or Minor. Do not provide praise or vague commentary."
 
 Address all major critiques in place. Log every action in the `Revision & Critic Log`.

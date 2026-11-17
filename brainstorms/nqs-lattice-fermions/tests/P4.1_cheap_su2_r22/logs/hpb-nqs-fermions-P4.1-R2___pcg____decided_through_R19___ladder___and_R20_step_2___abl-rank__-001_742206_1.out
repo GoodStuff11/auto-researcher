@@ -1,1 +1,3 @@
 r22 ladder arm rank5 on kim-cpu-02.physics.cornell.edu, job 742206_1
+[10:31:46] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[10:32:22] rank5: P 2672; checks {'rank12_vs_pcg': 8.881784197001252e-16, 'start_vs_truncate': 1.7763568394002505e-15, 'chain_rule_rel': 0.0, 'nparam': 2672, 'valid': True} [0.63 CPU-min]

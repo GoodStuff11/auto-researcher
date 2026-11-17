@@ -1,0 +1,8 @@
+[10:36:42] half_F16: D=51480 n_eff=2561 calib=2.1e-14; loaded x_pol E-E0 = 0.021171001 (stored 0.021171001, |diff| 0.0e+00); setup CPU 3 s
+[10:36:51] half_F16: replay budget dE_sign = 2.529666e-03 (stored 2.529666e-03, rel 0.0e+00)
+[10:38:16] half_F16: resume convergence guard at iteration 50; E-E0 0.021171 -> 0.020971 (50 it, 55 ev, 83 CPU-s, last-50 drop 2.0e-04)
+[10:38:25] half_F16: resumed dE_tot = 2.097108e-02 dE_sign = 2.509218e-03 spread = 2.1e-13
+[10:38:25] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r15b/results/resume_half_F16_inst25.json
+full_F4   E-E0 0.013782 -> 0.013567; dE_sign 1.4952e-03; dE_tot 1.3567e-02; CPU cap at iteration 273, 273 it, last-50 drop 2.7e-05; replay ok True
+half_F16  E-E0 0.021171 -> 0.020971; dE_sign 2.5092e-03; dE_tot 2.0971e-02; convergence guard at iteration 50, 50 it, last-50 drop 2.0e-04; replay ok True
+VERDICT R15.1 resume (V=15, half_F16 resumed to the guard): KILL; rho_pol = 1.678  (rho_pol(15) = 1.678 > 1.25)

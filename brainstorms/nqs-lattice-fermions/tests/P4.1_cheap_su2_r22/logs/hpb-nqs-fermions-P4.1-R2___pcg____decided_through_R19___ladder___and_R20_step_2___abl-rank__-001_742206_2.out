@@ -1,3 +1,6 @@
 r22 ladder arm che on kim-compute-03.physics.cornell.edu, job 742206_2
 [10:31:42] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
 [10:31:44] che: P 2637; checks {'start_vs_r19': 0.0, 'valid': True} [0.06 CPU-min]
+[10:34:27] step 1: cut 1e-07 s 0.25 eps 1.21719e-03 -> 1.13111e-03 (drop 7.07%); predicted gain 4.36e-02 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:skip [2.8 CPU-min, step 2.68, wall 167 s]
+[10:37:09] step 2: cut 1e-06 s 0.5 eps 1.13111e-03 -> 1.03833e-03 (drop 8.20%); predicted gain 5.02e-02 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:skip [5.5 CPU-min, step 2.69, wall 329 s]
+[10:39:56] step 3: cut 1e-05 s 1.0 eps 1.03833e-03 -> 9.50612e-04 (drop 8.45%); predicted gain 3.04e-02 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:skip [8.2 CPU-min, step 2.77, wall 495 s]

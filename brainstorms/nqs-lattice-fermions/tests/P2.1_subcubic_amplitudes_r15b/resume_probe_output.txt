@@ -1,0 +1,3 @@
+[10:35:02] half_F16: D=51480 n_eff=2561 calib=2.1e-14; loaded x_pol E-E0 = 0.021171001 (stored 0.021171001, |diff| 0.0e+00); setup CPU 3 s
+[10:35:23] PROBE half_F16: 10 it, 14 ev, 1.89 CPU-s/it, 1.35 CPU-s/ev; E-E0 0.021171 -> 0.021131; total CPU 24 s
+TOTAL CPU 19.11+4.84 s

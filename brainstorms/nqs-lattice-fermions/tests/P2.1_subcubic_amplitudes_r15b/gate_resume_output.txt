@@ -1,0 +1,4 @@
+cap = 1 array x 2.67 h x (1 tasks x 1 cpus) = 2.7 CPU-h
+leaf P2.1: committed 1.0 / 300 CPU-h; brainstorm committed 10.5 / 2000.0 CPU-h
+skip threshold: base 0.8 (0 scored predictions); leaf no-change streak: 1; script crash run: 0; VOI digest: 69b7f6453e4d
+GATE: PASS
