@@ -2,7 +2,7 @@
 """
 compute_gate.py — the only sanctioned way to spend cluster compute in a hard-problem-brainstorm run.
 
-It enforces the Compute Value Gate (SKILL.md, Stage 3.5.6) mechanically: a job is submitted only
+It enforces the Compute Value Gate (ref/compute.md, Stage 3.5.6) mechanically: a job is submitted only
 if its value-of-information (VOI) note is complete, its cost fits its tier and the brainstorm's
 budget, it is not predicted to leave the decision unchanged, its leaf is not in a run of jobs
 that changed nothing, and it is not a resubmission of a script that keeps crashing. Every
@@ -505,7 +505,7 @@ def gate(workdir, script, voi_path, pre_audit=False):
     info.update(leaf=leaf, leaf_budget=lb, leaf_committed=lc, total_committed=tc)
     if lc + cap > lb:
         fails.append(f"G5 leaf {leaf} budget: committed {lc:.1f} + {cap:.1f} > {lb:g} CPU-h. "
-                     f"Find a cheaper version or record GATE-REFUSED(budget) (SKILL.md section 3b)")
+                     f"Find a cheaper version or record GATE-REFUSED(budget) (ref/states.md, section 3b)")
     if tc + cap > float(budget["total_cpuh"]):
         fails.append(f"G5 brainstorm budget: committed {tc:.1f} + {cap:.1f} > {budget['total_cpuh']} CPU-h")
 
@@ -823,7 +823,7 @@ def cmd_report(a):
         out.append(f"| {lf} | {len(lr)} | {used:.1f} | {lc:.1f} | {lb:g} | {nc:.1f} | {st} |")
         if st >= STREAK:
             flags.append(f"* **{lf}**: last {st} finished jobs changed no decision; G6 blocks further jobs. "
-                         f"The leaf is DORMANT (SKILL.md section 3b) unless the auditor approves a reopen justification.")
+                         f"The leaf is DORMANT (ref/states.md, section 3b) unless the auditor approves a reopen justification.")
         if lc >= 0.9 * lb:
             flags.append(f"* **{lf}**: {lc:.1f} of {lb:g} CPU-h committed; plan the leaf's exit (section 3b) now.")
     tot_used = sum(fnum(r["used_cpuh"]) for r in rows)

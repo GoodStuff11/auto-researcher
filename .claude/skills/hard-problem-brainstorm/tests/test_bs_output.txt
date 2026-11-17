@@ -1,0 +1,8 @@
+test_dry_run_writes_nothing (__main__.Migrate.test_dry_run_writes_nothing) ... ok
+test_migrate_is_lossless_and_rewrites_links (__main__.Migrate.test_migrate_is_lossless_and_rewrites_links) ... ok
+test_new_leaf_new_card_state_context_show (__main__.Scaffold.test_new_leaf_new_card_state_context_show) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.169s
+
+OK

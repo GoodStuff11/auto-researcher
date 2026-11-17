@@ -39,6 +39,6 @@ test_submit_dup_refresh_cancel_report (__main__.SecondPass.test_submit_dup_refre
 test_submit_strips_slurm_env (__main__.SecondPass.test_submit_strips_slurm_env) ... ok
 
 ----------------------------------------------------------------------
-Ran 39 tests in 0.883s
+Ran 39 tests in 0.660s
 
 OK

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-Tests for the route-card, Kill Index and findings-library checks of check_brainstorm.py.
+Tests for check_brainstorm.py on the leaves/ layout: route-card files, leaf summaries (Question against the
+Final Tree, Answer opening, Status/State agreement), problem files, the Kill Index, the findings library,
+size caps, and the legacy-layout warning.
 
     python3 tests/test_check_brainstorm.py          (from the skill directory)
 
-Writes small leaf, library and master files to a temporary directory, lints them, and checks the
-reported errors and warnings. Prints one line per test; exits non-zero on any failure.
+Builds small working directories in a temporary directory, lints them, and checks the reported errors
+and warnings. Prints one line per test; exits non-zero on any failure.
 """
 import os
 import subprocess
@@ -20,7 +22,7 @@ IDEA = ("Replace the single backflow determinant by a product of local sign fact
         "reference state's own hopping ratios, so that wrong signs near holes can flip without "
         "changing the amplitude network; it should help because the residual sign error sits next to holes.")
 
-KILLED_CARD = f"""### R1.0 — Local hop-ratio sign factors (KILLED)
+CARD = f"""# R1.0 — Local hop-ratio sign factors (KILLED)
 * **The idea**: {IDEA}
 * **Lineage**: initial batch.
 * **Outcome**: KILLED at T1 (2026-11-16)
@@ -33,17 +35,40 @@ KILLED_CARD = f"""### R1.0 — Local hop-ratio sign factors (KILLED)
 * **Lesson**: L1.
 """
 
-LEAF_HEAD = """# Subproblem: P1.2 Test leaf
-**Parent Chain**: P1 -> P1.2  **Status**: DORMANT
+QUESTION = "Can a translation-equivariant network trained at $L$ initialize $2L$ with a converged energy error?"
 
-### 1b. Analogy Map
-* Barrier restated: estimate a signed sum from few evaluations. Sources: control variates in statistics, multilevel Monte Carlo, sketching.
-
+MASTER = f"""# Brainstorm: test
+## Summary
+x
+## Invariants
+The Hard Core. The Unacceptable Outcome.
+## Stage 1 — Decomposition
+### Final Tree
+* **P4.2 [leaf] — Size-transferable networks.** {QUESTION}
+## Stage 1.5 — Routing
+Mode B. Master Leaf Synthesis Matrix lives in the current leaf state table.
 """
 
-SUMMARY = """## Leaf Status Summary
-* **State**: DORMANT
+
+def summary(question=QUESTION, answer="Not known. None of the transferable designs got close.", state="DORMANT",
+            status="DORMANT", tail=""):
+    return f"""# Subproblem: P4.2 Size-transferable networks
+**Parent Chain**: P4 -> P4.2  **Status**: {status}
+
+## Route Portfolio
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+{tail}
+## Leaf Status Summary
+* **State**: {state}
+* **Updated**: 2026-11-17 (after the capacity test)
+* **Question**: {question}
+* **Answer**: {answer}
+* **What we showed**: every size-independent design stalled at about 6% error on the 16-site target.
+* **What it would take**: a transferable design that converges when trained on the target itself.
 """
+
 
 LIBRARY = """# Findings Library: test
 
@@ -64,123 +89,120 @@ LIBRARY = """# Findings Library: test
 * **Sources**: P1.2 R1.0, R2.1, R3.4.
 """
 
+PROBLEM = """# Problem: P4.2 Size-transferable networks
+
+### 1. Mathematical Abstraction & Barriers
+* **Formulation**: x
+
+### 1b. Analogy Map
+* Barrier restated: reuse a fitted model on a larger domain. Sources: multigrid, transfer learning, renormalisation.
+"""
+
 
 def lint(path):
     r = subprocess.run([sys.executable, LINTER, path], capture_output=True, text=True)
     return r.returncode, r.stdout
 
 
-class RouteCards(unittest.TestCase):
+class Layout(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        self.p = os.path.join(self.tmp.name, "P1.2_test.md")
+        self.wd = self.tmp.name
+        self.leaf = os.path.join(self.wd, "leaves", "P4.2")
+        os.makedirs(os.path.join(self.leaf, "cards"))
+        os.makedirs(os.path.join(self.leaf, "log"))
+        self.w("brainstorm-test.md", MASTER)
+        self.w("library.md", LIBRARY)
+        self.w("kill_index.md", "# Kill Index\n\n| Route | Card |\n| :--- | :--- |\n| R1.0 | [[leaves/P4.2/cards/R1.0]] |\n")
+        self.w("leaves/P4.2/summary.md", summary())
+        self.w("leaves/P4.2/problem.md", PROBLEM)
+        self.w("leaves/P4.2/cards/R1.0.md", CARD)
 
     def tearDown(self):
         self.tmp.cleanup()
 
-    def write(self, body):
-        with open(self.p, "w") as fh:
-            fh.write(body)
+    def w(self, rel, text):
+        with open(os.path.join(self.wd, rel), "w") as fh:
+            fh.write(text)
 
-    def test_complete_killed_card_passes(self):
-        self.write(LEAF_HEAD + "## Route Register\n\n" + KILLED_CARD + "\n" + SUMMARY)
-        rc, out = lint(self.p)
+    def test_clean_directory_passes(self):
+        rc, out = lint(self.wd)
         self.assertEqual(rc, 0, out)
-        self.assertIn("0 error(s), 0 warning(s)", out)
+        self.assertNotIn("[WARNING]", out, out)
+        for role in ("master", "library", "kill-index", "leaf-summary", "leaf-problem", "card"):
+            self.assertIn(f"(role: {role})", out)
 
-    def test_missing_kill_fields(self):
-        card = KILLED_CARD.replace("* **Strongest case against the kill**: the toys are unprojected; answered by the projected re-check, which had no target.\n", "")
-        self.write(LEAF_HEAD + "## Route Register\n\n" + card + "\n" + SUMMARY)
-        rc, out = lint(self.p)
-        self.assertEqual(rc, 1)
-        self.assertIn("missing '**Strongest case against the kill**:'", out)
+    def test_question_must_match_final_tree(self):
+        self.w("leaves/P4.2/summary.md", summary(question="Can a network trained on 8 sites start well on 16 sites?"))
+        rc, out = lint(os.path.join(self.leaf, "summary.md"))
+        self.assertIn("S3 Question is not the leaf's Final Tree question", out)
 
-    def test_kill_needs_code(self):
-        card = KILLED_CARD.replace("KILLED at T1", "KILLED by the toy run")
-        self.write(LEAF_HEAD + "## Route Register\n\n" + card + "\n" + SUMMARY)
-        rc, out = lint(self.p)
+    def test_answer_must_open_with_direct_reply(self):
+        self.w("leaves/P4.2/summary.md", summary(answer="For the networks we built, going from 8 to 16 sites did not work."))
+        rc, out = lint(os.path.join(self.leaf, "summary.md"))
+        self.assertIn("S4", out)
+
+    def test_status_must_match_state(self):
+        self.w("leaves/P4.2/summary.md", summary(status="OPEN"))
+        rc, out = lint(os.path.join(self.leaf, "summary.md"))
+        self.assertIn("S2", out)
+
+    def test_summary_fields_and_last_section(self):
+        s = summary().replace("* **What it would take**: a transferable design that converges when trained on the target itself.\n", "")
+        self.w("leaves/P4.2/summary.md", s + "\n## Notes\nx\n")
+        rc, out = lint(os.path.join(self.leaf, "summary.md"))
+        self.assertIn("missing '**What it would take**:'", out)
+        self.assertIn("must be the last section", out)
+
+    def test_summary_cap(self):
+        self.w("leaves/P4.2/summary.md", summary(tail="".join(f"| R{i} | T1 | LIVE | — | {'x' * 120} | y |\n" for i in range(80))))
+        rc, out = lint(os.path.join(self.leaf, "summary.md"))
+        self.assertIn("C0", out)
+
+    def test_card_file_checks(self):
+        self.w("leaves/P4.2/cards/R1.0.md", CARD.replace("KILLED at T1", "KILLED by a toy run"))
+        rc, out = lint(os.path.join(self.leaf, "cards", "R1.0.md"))
         self.assertIn("R2", out)
-
-    def test_short_idea_warns(self):
-        card = KILLED_CARD.replace(IDEA, "FRD-K on hole hops.")
-        self.write(LEAF_HEAD + "## Route Register\n\n" + card + "\n" + SUMMARY)
-        rc, out = lint(self.p)
-        self.assertIn("R3", out)
-
-    def test_shelved_and_live_cards(self):
-        shelved = ("### R2.0 — Bigger ladder (SHELVED)\n* **The idea**: " + IDEA + "\n* **Lineage**: Operation B.\n"
-                   "* **Outcome**: SHELVED (G5 budget)\n* **Why shelved**: 400 CPU-h against 120 left.\n"
-                   "* **What would unshelve it**: a leaf budget of 500 CPU-h.\n")
-        live = "### R3.0 — Something live (LIVE)\n* **The idea**: " + IDEA + "\n* **Lineage**: Operation A from R1.0.\n* **Outcome**: LIVE (T1)\n"
-        self.write(LEAF_HEAD + "## Route Register\n\n" + shelved + "\n" + live + "\n" + SUMMARY)
-        rc, out = lint(self.p)
-        self.assertEqual(rc, 0, out)
-
-    def test_register_must_precede_summary(self):
-        self.write(LEAF_HEAD + SUMMARY + "\n## Route Register\n\n" + KILLED_CARD)
-        rc, out = lint(self.p)
-        self.assertIn("must come before '## Leaf Status Summary'", out)
-
-    def test_cross_field_needs_source_analogy(self):
-        card = KILLED_CARD.replace("* **Lineage**: initial batch.", "* **Lineage**: cross-field translation from multilevel Monte Carlo.")
-        self.write(LEAF_HEAD + "## Route Register\n\n" + card + "\n" + SUMMARY)
-        rc, out = lint(self.p)
+        self.w("leaves/P4.2/cards/R1.0.md", CARD.replace("* **Lineage**: initial batch.", "* **Lineage**: cross-field translation from multigrid."))
+        rc, out = lint(os.path.join(self.leaf, "cards", "R1.0.md"))
         self.assertIn("R4", out)
-        card = card.replace("* **Outcome**:", "* **Source analogy**: multilevel Monte Carlo (Giles 2008) telescopes a costly estimator over coarse levels; here levels are lattice sizes; it worked because level differences have small variance; gap: no small-variance coupling between sizes.\n* **Outcome**:")
-        self.write(LEAF_HEAD + "## Route Register\n\n" + card + "\n" + SUMMARY)
-        rc, out = lint(self.p)
-        self.assertEqual(rc, 0, out)
+        self.w("leaves/P4.2/cards/R1.0.md", "* **The idea**: no title line\n")
+        rc, out = lint(os.path.join(self.leaf, "cards", "R1.0.md"))
+        self.assertIn("must start with '# R<id>", out)
 
-    def test_missing_analogy_map_warns(self):
-        self.write(LEAF_HEAD.replace("### 1b. Analogy Map", "### 1b. Something else") + "## Route Register\n\n" + KILLED_CARD + "\n" + SUMMARY)
-        rc, out = lint(self.p)
+    def test_kill_index_links_resolve(self):
+        self.w("kill_index.md", "# Kill Index\n\n| Route | Card |\n| :--- | :--- |\n| R9 | [[leaves/P4.2/cards/R9]] |\n")
+        rc, out = lint(os.path.join(self.wd, "kill_index.md"))
+        self.assertIn("K2 link [[leaves/P4.2/cards/R9]] has no card file", out)
+
+    def test_problem_needs_analogy_map(self):
+        self.w("leaves/P4.2/problem.md", PROBLEM.replace("### 1b. Analogy Map", "### 1b. Notes"))
+        rc, out = lint(os.path.join(self.leaf, "problem.md"))
         self.assertIn("A0", out)
 
-    def test_missing_register_warns(self):
-        self.write(LEAF_HEAD + SUMMARY)
-        rc, out = lint(self.p)
-        self.assertIn("R0 leaf has no '## Route Register'", out)
-
-
-class Library(unittest.TestCase):
-    def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
-        self.p = os.path.join(self.tmp.name, "library.md")
-
-    def tearDown(self):
-        self.tmp.cleanup()
-
-    def test_complete_library_passes(self):
-        open(self.p, "w").write(LIBRARY)
-        rc, out = lint(self.p)
-        self.assertIn("(role: library)", out)
-        self.assertIn("0 error(s), 0 warning(s)", out)
-
-    def test_missing_field_and_bad_status(self):
+    def test_library_fields_and_caps(self):
         bad = LIBRARY.replace("* **How to use it**: compare any new sign layer against matched width first.\n", "")
         bad = bad.replace("PROVISIONAL (2026", "LIKELY (2026")
-        open(self.p, "w").write(bad)
-        rc, out = lint(self.p)
-        self.assertEqual(rc, 1)
+        bad = bad.replace("* **Sources**: P1.2 R1.0, R2.1, R3.4.", "* **Sources**: " + "long " * 700)
+        self.w("library.md", bad)
+        rc, out = lint(os.path.join(self.wd, "library.md"))
         self.assertIn("missing '**How to use it**:'", out)
         self.assertIn("L2", out)
+        self.assertIn("C1", out)
 
+    def test_logs_are_archives(self):
+        self.w("leaves/P4.2/log/round-01.md", "# Log\n" + "long text " * 5000 + "\n")
+        rc, out = lint(os.path.join(self.leaf, "log", "round-01.md"))
+        self.assertIn("(role: archive)", out)
+        self.assertNotIn("C0", out)
 
-class Master(unittest.TestCase):
-    def test_master_needs_kill_index_and_library(self):
-        with tempfile.TemporaryDirectory() as d:
-            p = os.path.join(d, "brainstorm-x.md")
-            open(p, "w").write("# B\n## Summary\nx\n## Invariants\nThe Hard Core. The Unacceptable Outcome.\n"
-                               "## Stage 1\nx\n## Stage 1.5\nx\n## Master Leaf Synthesis Matrix\nx\n"
-                               "## Revision & Critic Log\nx\n")
-            rc, out = lint(p)
-            self.assertIn("K0", out)
-            self.assertIn("K1", out)
-            open(p, "a").write("## Kill Index\nx\n")
-            open(os.path.join(d, "library.md"), "w").write(LIBRARY)
-            rc, out = lint(p)
-            self.assertNotIn("K0", out)
-            self.assertNotIn("K1", out)
+    def test_legacy_leaf_warns(self):
+        p = os.path.join(self.wd, "old.md")
+        with open(p, "w") as fh:
+            fh.write("# Subproblem: P1.2 Old\n**Parent Chain**: P1 -> P1.2  **Status**: OPEN\n\n### 1b. Analogy Map\nx\n\n## Route Register\n\n### "
+                     + CARD[2:] + "\n## Leaf Status Summary\n* **State**: OPEN\n")
+        rc, out = lint(p)
+        self.assertIn("L9 legacy single-file leaf", out)
 
 
 if __name__ == "__main__":
