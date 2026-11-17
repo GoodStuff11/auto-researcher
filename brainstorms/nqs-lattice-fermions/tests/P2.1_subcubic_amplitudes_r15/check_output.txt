@@ -1,0 +1,19 @@
+OK  rho 1.7 unconverged: KILL (want KILL)
+OK  rho 1.4 converged: KILL (want KILL)
+OK  rho 1.4 unconverged: INCONCLUSIVE (want INCONCLUSIVE)
+OK  rho 1.0 converged: NO-KILL (want NO-KILL)
+OK  rho 1.0 active 0.6: INCONCLUSIVE (want INCONCLUSIVE)
+OK  rho 1.0 unconverged: INCONCLUSIVE (want INCONCLUSIVE)
+OK  rho 1.0 spread fail: INCONCLUSIVE (want INCONCLUSIVE)
+OK  rho 1.6 active 0.6: KILL (want KILL)
+SYNTHETIC PASS (8 cases)
+CPU 0.30+0.13 s
+[10:04:10] check (i) inst 20: explicit amplitude rel err 3.5e-16 (active fraction on sample 0.54)
+[10:04:10] check (i) inst 23: explicit amplitude rel err 8.5e-16 (active fraction on sample 0.51)
+[10:04:10] check (ii) gate open == HFPSAnsatz: max |diff| = 0.0e+00
+[10:04:11] check (iii) gate = checkerboard == half: rel diff 0.0e+00
+[10:04:11] check grad [sgate inst20, proj=none]: analytic 7.4676325763e+00 fd 7.4676325754e+00 rel 1.2e-10
+[10:04:11] check (v) penalty gradient: analytic -8.0257051870e-01 fd -8.0257051868e-01 rel 2.4e-11 (A = 0.2511, a = 0.454)
+[10:04:11] CHECK PASS
+CPU 0.74+0.13 s
+per-sample vs summed grad max rel 3.5993344869750755e-16

@@ -1,0 +1,93 @@
+{
+ "uniform": {
+  "rows": [
+   {
+    "L": 16,
+    "nbonds_ordered": 84,
+    "mean_total": 69.5,
+    "max_total": 107,
+    "se_total": 2.9987497394747695,
+    "mean_per_hop": 1.4995860862469002,
+    "worst_single_hop": 13
+   },
+   {
+    "L": 64,
+    "nbonds_ordered": 420,
+    "mean_total": 880.1,
+    "max_total": 1505,
+    "se_total": 51.974989177488055,
+    "mean_per_hop": 3.7959998344925987,
+    "worst_single_hop": 72
+   },
+   {
+    "L": 256,
+    "nbonds_ordered": 1860,
+    "mean_total": 16941.1,
+    "max_total": 30601,
+    "se_total": 1162.2577594922736,
+    "mean_per_hop": 16.275959783580273,
+    "worst_single_hop": 1280
+   },
+   {
+    "L": 1024,
+    "nbonds_ordered": 7812,
+    "mean_total": 406276.05,
+    "max_total": 668636,
+    "se_total": 23665.8408656311,
+    "mean_per_hop": 94.33187491893361,
+    "worst_single_hop": 18432
+   }
+  ],
+  "exponent_total": 2.090309772565418,
+  "exponent_per_hop": 1.0012759032063614,
+  "exponent_last_pair": 2.2919304309351074,
+  "verdict": "PASS"
+ },
+ "nodbl": {
+  "rows": [
+   {
+    "L": 16,
+    "nbonds_ordered": 84,
+    "mean_total": 99.55,
+    "max_total": 154,
+    "se_total": 5.333139319387785,
+    "mean_per_hop": 1.359122532584991,
+    "worst_single_hop": 10
+   },
+   {
+    "L": 64,
+    "nbonds_ordered": 420,
+    "mean_total": 1576.3,
+    "max_total": 2121,
+    "se_total": 73.31528149028688,
+    "mean_per_hop": 4.30222919362663,
+    "worst_single_hop": 96
+   },
+   {
+    "L": 256,
+    "nbonds_ordered": 1860,
+    "mean_total": 35824.1,
+    "max_total": 58135,
+    "se_total": 2070.53910359114,
+    "mean_per_hop": 21.967781926391602,
+    "worst_single_hop": 1440
+   },
+   {
+    "L": 1024,
+    "nbonds_ordered": 7812,
+    "mean_total": 890426.05,
+    "max_total": 1229752,
+    "se_total": 36213.442512655085,
+    "mean_per_hop": 130.2406496454985,
+    "worst_single_hop": 24576
+   }
+  ],
+  "exponent_total": 2.1943338506845267,
+  "exponent_per_hop": 1.104965715252792,
+  "exponent_last_pair": 2.317746717352604,
+  "verdict": "PASS"
+ },
+ "cpu_min": 0.22190071525,
+ "samples": 20,
+ "seed": 0
+}

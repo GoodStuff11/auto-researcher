@@ -1,0 +1,3 @@
+uniform {'L': 4096, 'nbonds_ordered': 32004, 'mean_total': 9566628.0, 'max_total': 10508416, 'se_total': 359584.7582241564, 'mean_per_hop': 540.2065541112762, 'worst_single_hop': 269568}
+nodbl {'L': 4096, 'nbonds_ordered': 32004, 'mean_total': 26912054.25, 'max_total': 28929734, 'se_total': 1038095.6391739862, 'mean_per_hop': 961.3423000754738, 'worst_single_hop': 276480}
+CPU-min 0.35952232255000005

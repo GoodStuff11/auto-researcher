@@ -1,0 +1,5 @@
+[10:08:30] replayed SR steps 500..526: max |E - stored E| = 0.0e+00
+[10:08:30] half_F16: D=51480 gap=0.1963 n_eff=2561 calib=2.1e-14; start E-E0 = 0.023879456 (stored scored 0.023879456); setup+recovery CPU 46 s
+[10:08:42] PROBE half_F16: 5 iterations, 8 evaluations, 1.45 CPU-s/evaluation, 2.32 CPU-s/iteration; E-E0 0.023879 -> 0.023066
+[10:08:51] PROBE budget CPU 9 s (dE_sign 2.7079e-03); total 67 s
+TOTAL CPU 56.34+10.95 s

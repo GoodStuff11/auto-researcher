@@ -1,2 +1,5 @@
 H8 n=4900 E0=-3.94474801 |psi0| quantiles 1/10/50%: [7.23621502e-09 1.02005736e-05 9.91389533e-04] cpu=2s
  seed=0 nit=1500 dE=0.001 mHa infid=3.96e-07 | eps_S: excess=3.087e-06 (0.02 tau) screen-bias=1.27e-04 d_eff=6.29e-04 pred_rel=2.81e-09 pred_add=7.83e-05 top1%: |r| med 2.44e+01 max 7.46e+02 share 0.97 | end: excess=3.773e-07 (0.00 tau) | snaps dE<=2.0:it80 exc=9.40e-04 d_eff=3.7e-02 rel=9.9e-06 add=2.8e-01 dE<=0.74:it90 exc=1.86e-03 d_eff=2.8e-02 rel=5.6e-06 add=1.6e-01 dE<=0.2:it120 exc=6.25e-04 d_eff=1.3e-02 rel=1.3e-06 add=3.5e-02 | train cpu 58s total cpu 87s
+ seed=1 nit=1500 dE=0.000 mHa infid=3.53e-07 | eps_S: excess=5.411e-07 (0.00 tau) screen-bias=1.27e-04 d_eff=5.94e-04 pred_rel=2.51e-09 pred_add=6.99e-05 top1%: |r| med 2.12e+01 max 4.44e+02 share 0.81 | end: excess=3.068e-07 (0.00 tau) | snaps dE<=2.0:it90 exc=3.95e-03 d_eff=8.3e-02 rel=4.9e-05 add=1.4e+00 dE<=0.74:it100 exc=3.29e-03 d_eff=3.2e-02 rel=7.3e-06 add=2.0e-01 dE<=0.2:it130 exc=2.31e-04 d_eff=1.4e-02 rel=1.4e-06 add=3.8e-02 | train cpu 59s total cpu 146s
+H8: median excess at eps_S = 1.8138733068156388e-06 Ha (0.01 tau); grid end 3.420465663944284e-07
+wall 146.50 user 144.74 sys 1.47

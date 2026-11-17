@@ -73,7 +73,7 @@ def analyse(psi0, phi, L, nz, H, mask_h, P, Y_diag):
     return out
 
 
-def run(nat, seeds, maxiter, seed_cpu=1e9):
+def run(nat, seeds, maxiter, seed_cpu=1e9, hidden=64, hj=32):
     t0 = time.time()
     H, codes, occ, K, nocc = rt.build(nat, 3.0, "LOW")
     w, v = rt.lowest(H, 1)
@@ -94,8 +94,9 @@ def run(nat, seeds, maxiter, seed_cpu=1e9):
         Ls[k] = (L, mask, Yd)
     res = dict(n_atoms=nat, n=n, E0=E0, runs=[])
     for seed in seeds:
-        a = A_(); a.hidden, a.hj, a.window, a.groups = 64, 32, None, 2
+        a = A_(); a.hidden, a.hj, a.window, a.groups = hidden, hj, None, 2
         net = kc.make_net(K, nat, "NNBFJ", a, seed)
+        print(f" seed={seed} hidden={hidden} hj={hj} P={len(net.theta0)} dim={n}", flush=True)
         t1 = pg.cpu()
         snaps = {}  # DIAGNOSTIC (not in the rule): first iterate (checked every 10) with dE <= target
         cnt = [0]
@@ -149,11 +150,15 @@ def main():
     ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     ap.add_argument("--maxiter", type=int, default=3000)
     ap.add_argument("--seed-cpu", type=float, default=1e9)
+    ap.add_argument("--hidden", type=int, default=64)
+    ap.add_argument("--hj", type=int, default=32)
+    ap.add_argument("--tag", default="")
     a = ap.parse_args()
-    res = run(a.n, a.seeds, a.maxiter, a.seed_cpu)
+    res = run(a.n, a.seeds, a.maxiter, a.seed_cpu, a.hidden, a.hj)
+    res["hidden"], res["hj"] = a.hidden, a.hj
     m = res["median_excess_eps_S"]
     print(f"H{a.n}: median excess at eps_S = {m} Ha ({(m or 0)/TAU:.2f} tau); grid end {res['median_excess_grid_end']}")
-    with open(os.path.join(HERE, "results", f"real_error_H{a.n}.json"), "w") as fh:
+    with open(os.path.join(HERE, "results", f"real_error_H{a.n}{a.tag}.json"), "w") as fh:
         json.dump(res, fh, indent=1)
 
 

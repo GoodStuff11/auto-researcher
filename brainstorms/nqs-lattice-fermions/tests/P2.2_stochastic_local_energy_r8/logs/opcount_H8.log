@@ -1,0 +1,3 @@
+eps=2.24e-03: <conn>=359.6 <kept>=26.7 <dropped>=332.9 <kept 2-ball>=283 <kept 3-ball>=1352 of n=4900 <local triangle-gadget work>=1349
+eps=1.00e-01: <conn>=359.6 <kept>=11.1 <dropped>=348.4 <kept 2-ball>=68 <kept 3-ball>=240 of n=4900 <local triangle-gadget work>=525
+cpu 5s

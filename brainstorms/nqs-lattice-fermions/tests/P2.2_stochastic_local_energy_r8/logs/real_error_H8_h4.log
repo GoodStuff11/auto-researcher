@@ -1,0 +1,4 @@
+H8 n=4900 E0=-3.94474801 |psi0| quantiles 1/10/50%: [7.23621502e-09 1.02005736e-05 9.91389533e-04] cpu=2s
+ seed=0 hidden=4 hj=4 P=916 dim=4900
+ seed=0 nit=1500 dE=0.029 mHa infid=3.29e-05 | eps_S: excess=5.808e-06 (0.03 tau) screen-bias=1.31e-04 d_eff=5.73e-03 pred_rel=2.34e-07 pred_add=6.51e-03 top1%: |r| med 1.30e+01 max 4.95e+02 share 0.01 | end: excess=1.520e-05 (0.08 tau) | snaps dE<=2.0:it140 exc=9.59e-05 d_eff=5.0e-02 rel=1.8e-05 add=5.0e-01 dE<=0.74:it150 exc=6.50e-05 d_eff=3.4e-02 rel=8.1e-06 add=2.2e-01 dE<=0.2:it320 exc=1.91e-05 d_eff=1.8e-02 rel=2.2e-06 add=6.2e-02 | train cpu 45s total cpu 73s
+H8: median excess at eps_S = 5.807928162718034e-06 Ha (0.03 tau); grid end 1.5196790961902754e-05

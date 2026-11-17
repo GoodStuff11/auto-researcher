@@ -41,3 +41,22 @@ small-psi0 dets and are expected to be worse there, so PASS here is optimistic a
 
 ## Budget
 <= 10 CPU-minutes interactive total (RLIMIT_CPU 600 s), BLAS threads = 1, no sbatch.
+
+## Addendum A1 (written after the main H6/H8 runs, before this run)
+Main runs: the hidden-64 NNBF-J has P > dim (H8: ~10^4 parameters vs 4900 determinants), and full-sum L-BFGS
+drives it to dE ~ 1e-3 mHa (essentially exact), far more accurate than the leaf's states (0.70-0.74 mHa).
+The main-rule verdict is reported as is, but it is not representative. A1: one H8 run, seed 0, with an
+UNDER-parameterized NNBF-J (hidden 4, hj 4, P ~ 900 << 4900), maxiter 1500 or 120 CPU-s. Same thresholds on
+its final state at eps_S, if dE < 1.6 mHa: KILL > tau, PASS-T1b <= 0.3 tau, AMBIGUOUS between. Labelled
+post-hoc-registered (rule written after seeing the main numbers, before this run).
+
+## Results (logs/real_error_H6.log, real_error_H8.log, real_error_H8_h4.log, opcount_H8.log; results/real_error_H*.json)
+CPU: H6 109 s, H8 146 s, A1 73 s, op-count 5 s, smoke 6 s: ~340 s total.
+* Main rule (NNBF-J h64/hj32): H6, 3 seeds, dE ~1e-7 mHa, median excess(eps_S) 4.5e-9 Ha (0.00 tau);
+  H8, 2 seeds, dE 0.001/0.000 mHa, median 1.8e-6 Ha (0.01 tau). Grid end 2.8e-9 / 3.4e-7. -> PASS-T1b.
+* A1 (H8, h4/hj4, P = 916 < 4900): dE 0.029 mHa, excess 5.8e-6 (0.03 tau), grid end 1.5e-5 (0.08 tau). -> PASS-T1b.
+* Diagnostic snapshots (not in the rule), first iterate with dE <= 0.74 mHa:
+  H6 h64: 4.0e-5, 5.7e-5, 8.0e-5 (0.2-0.4 tau); H8 h4: 6.5e-5 (0.33 tau); H8 h64: 1.9e-3, 3.3e-3 (9-16 tau).
+* Noise model: the real excess is 25-1000x the relative-model prediction delta_eff^2 tr L and 30-1000x below the
+  additive-model prediction. Small-psi0 dets carry |psi_NN/psi0 - 1| ~ 10-25 (median over top 1% Y_ii), but the
+  absolute error there stays |psi0|-scaled, so the L-weighted excess stays small on converged states.

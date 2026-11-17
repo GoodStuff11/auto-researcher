@@ -1,0 +1,11 @@
+uniform L=   16: mean connected/config 6.9500e+01 (se 3.0e+00, max 1.070e+02); mean per allowed hop 1.500e+00; worst hop 13
+uniform L=   64: mean connected/config 8.8010e+02 (se 5.2e+01, max 1.505e+03); mean per allowed hop 3.796e+00; worst hop 72
+uniform L=  256: mean connected/config 1.6941e+04 (se 1.2e+03, max 3.060e+04); mean per allowed hop 1.628e+01; worst hop 1280
+uniform L= 1024: mean connected/config 4.0628e+05 (se 2.4e+04, max 6.686e+05); mean per allowed hop 9.433e+01; worst hop 18432
+uniform fitted exponent: per configuration 2.090 (last pair 256->1024: 2.292); per hop 1.001 -> RULE (per-configuration): PASS
+nodbl   L=   16: mean connected/config 9.9550e+01 (se 5.3e+00, max 1.540e+02); mean per allowed hop 1.359e+00; worst hop 10
+nodbl   L=   64: mean connected/config 1.5763e+03 (se 7.3e+01, max 2.121e+03); mean per allowed hop 4.302e+00; worst hop 96
+nodbl   L=  256: mean connected/config 3.5824e+04 (se 2.1e+03, max 5.814e+04); mean per allowed hop 2.197e+01; worst hop 1440
+nodbl   L= 1024: mean connected/config 8.9043e+05 (se 3.6e+04, max 1.230e+06); mean per allowed hop 1.302e+02; worst hop 24576
+nodbl   fitted exponent: per configuration 2.194 (last pair 256->1024: 2.318); per hop 1.105 -> RULE (per-configuration): PASS
+[0.22 CPU-min, 13 s wall]

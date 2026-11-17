@@ -1,0 +1,2 @@
+VERDICT R15.6 T1 (V=12): KILL; rho(12) = 2.574 > 1.59 (no better than half_F4, rho 1.587)
+hop statistics on the scored state: {'rows_changed': 3.807312093386098, 'rows_active_both': 2.055681142408653, 'gate_flips': 1.751630950977441, 'rows_touched_full': 5.867403672446188, 'acceptance': 0.48157357912857934, 'n_moves': 146160, 'rows_changed_over_full': 0.6488921345680628}

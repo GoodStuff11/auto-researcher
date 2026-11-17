@@ -1,0 +1,22 @@
+[10:07:39] controller project: initial bias shift 0.1546
+[10:07:39] instance 23 D=16632 E0=-7.2330203724 gap=0.0847 n_eff=998 calib=2.40e-14 threads=1
+[10:07:39] it     0 E-E0 = 0.881114 best = 0.881114 active = 0.496 A = 0.3019 lam = 0.00e+00 (0.376 CPU-s/step)
+[10:07:55] it    50 E-E0 = 0.167776 best = 0.163053 active = 0.500 A = 0.1332 lam = 0.00e+00 (0.309 CPU-s/step)
+[10:08:10] it   100 E-E0 = 0.192673 best = 0.163049 active = 0.495 A = 0.1240 lam = 0.00e+00 (0.309 CPU-s/step)
+[10:08:26] it   150 E-E0 = 0.201186 best = 0.163049 active = 0.480 A = 0.1161 lam = 0.00e+00 (0.309 CPU-s/step)
+[10:08:41] it   200 E-E0 = 0.175386 best = 0.151515 active = 0.498 A = 0.1508 lam = 0.00e+00 (0.309 CPU-s/step)
+[10:08:56] it   250 E-E0 = 0.151255 best = 0.151255 active = 0.497 A = 0.1536 lam = 0.00e+00 (0.309 CPU-s/step)
+[10:09:12] it   300 E-E0 = 0.184043 best = 0.151255 active = 0.487 A = 0.1340 lam = 0.00e+00 (0.308 CPU-s/step)
+[10:09:27] it   350 E-E0 = 0.178021 best = 0.148491 active = 0.491 A = 0.1268 lam = 0.00e+00 (0.308 CPU-s/step)
+[10:09:43] it   400 E-E0 = 0.174916 best = 0.146152 active = 0.497 A = 0.1182 lam = 0.00e+00 (0.308 CPU-s/step)
+[10:09:58] it   450 E-E0 = 0.204845 best = 0.146152 active = 0.500 A = 0.1078 lam = 0.00e+00 (0.307 CPU-s/step)
+[10:10:14] it   500 E-E0 = 0.174659 best = 0.146152 active = 0.495 A = 0.1192 lam = 0.00e+00 (0.308 CPU-s/step)
+[10:10:30] it   550 E-E0 = 0.158614 best = 0.142487 active = 0.491 A = 0.1214 lam = 0.00e+00 (0.310 CPU-s/step)
+[10:10:45] it   600 E-E0 = 0.151729 best = 0.142487 active = 0.496 A = 0.1282 lam = 0.00e+00 (0.309 CPU-s/step)
+[10:11:00] it   650 E-E0 = 0.163251 best = 0.142487 active = 0.492 A = 0.1254 lam = 0.00e+00 (0.309 CPU-s/step)
+[10:11:16] it   700 E-E0 = 0.189575 best = 0.142487 active = 0.490 A = 0.1235 lam = 0.00e+00 (0.308 CPU-s/step)
+[10:11:31] stop = plateau at it 750; best E - E0 = 0.142487 at active fraction 0.495; SR CPU 231 s
+[10:11:36] [P]: dE_tot=0.142487 dE_sign=0.020466 spread=9.4e-14; hops: {'rows_changed': 3.807312093386098, 'rows_active_both': 2.055681142408653, 'gate_flips': 1.751630950977441, 'rows_touched_full': 5.867403672446188, 'acceptance': 0.48157357912857934, 'n_moves': 146160, 'rows_changed_over_full': 0.6488921345680628}
+[10:11:36] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r15/results/t1_sgate_inst23_s11.json
+[10:11:36] VERDICT R15.6 T1 (V=12): KILL; rho(12) = 2.574 > 1.59 (no better than half_F4, rho 1.587)
+TOTAL CPU 205.06+33.06 s wall 239.04 s
