@@ -1,0 +1,13 @@
+[17:02:34] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[17:04:07] timing (CPU-min): energy 0.045, jacobian 1.167, gram 0.233, eigh 0.043; eps 7.2174e-04; R2 KILLED
+[17:04:31] exact metric: best gain 0.000e+00 (eps units 0.000e+00)
+[17:04:58] effective dimension sum(lev) 2162.9 of 2638; leverage share on below-median Born rows 0.111
+Traceback (most recent call last):
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P5.1_rowsample_r01/rowsample.py", line 147, in <module>
+    main()
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P5.1_rowsample_r01/rowsample.py", line 133, in main
+    phis.append(g / gx)
+                ~~^~~~
+ZeroDivisionError: float division by zero
+Command exited with non-zero status 1
+maxrss 8006548 KB, cpu 131.53+41.10 s

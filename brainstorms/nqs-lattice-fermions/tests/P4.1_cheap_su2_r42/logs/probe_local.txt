@@ -1,0 +1,27 @@
+che 1 {"start_cpu": 1.0241726702833334, "step_cpu": [0.17013934769999994, 0.16571494190000013, 0.16599157993333313, 0.16501738636666663], "step_cpu_med": 0.16585326091666663, "last": {"E": -15.023906277184386, "acc": 0.34965853658536583, "upd": 0.38247865913550483, "F": 0.6519714932288707, "ess": 823.7105625854983}, "s2_plus_eloc_128": 0.03596010095000013, "s2_mean_128": 1.1408934040342988, "el_mean_128": -10.954815711406805}
+che 0 {"start_cpu": 0.7128802161500001, "step_cpu": [0.16632672108333368, 0.1671812562666668, 0.1651274224999999, 0.16527144006666683], "step_cpu_med": 0.16579908057500026, "last": {"E": -14.621269863246011, "acc": 0.2839340490797546, "upd": 0.37938241684513946, "F": 1.0, "ess": 1024.0}, "s2_plus_eloc_128": 0.033687940716666365, "s2_mean_128": 2.184789808971347, "el_mean_128": -8.433449438097483}
+nnbf 1 {"start_cpu": 0.3697433315666667, "step_cpu": [0.09009820556666659, 0.08843850031666678, 0.09026063650000005, 0.08971055116666671], "step_cpu_med": 0.08990437836666665, "last": {"E": -14.7513174360725, "acc": 0.34675872650556194, "upd": 0.23777699780294007, "F": 0.6495669295997568, "ess": 832.252527811777}, "s2_plus_eloc_128": 0.016589179349999927, "s2_mean_128": 1.2950020113142637, "el_mean_128": -10.340038128324975}
+nnbf 0 {"start_cpu": 0.3780910981499992, "step_cpu": [0.09052146563333441, 0.0909751996999999, 0.0906727135333334, 0.0911787687833332], "step_cpu_med": 0.09082395661666665, "last": {"E": -14.514050901346828, "acc": 0.2914678373735446, "upd": 0.21604992181078328, "F": 1.0, "ess": 1024.0}, "s2_plus_eloc_128": 0.017160734966665814, "s2_mean_128": 1.414827004456129, "el_mean_128": -9.93605479271875}
+	Command being timed: "/home/jek354/.conda/envs/lit_env/bin/python -u r42.py --mode probe --probe-steps 4 --probe-plain 1"
+	User time (seconds): 218.67
+	System time (seconds): 62.19
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 4:41.56
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 866844
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 39764696
+	Voluntary context switches: 1653
+	Involuntary context switches: 106052
+	Swaps: 0
+	File system inputs: 304
+	File system outputs: 48
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

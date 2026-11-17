@@ -1,0 +1,28 @@
+(a) che: guided E -5.98887 +- 0.04026, exact -5.99886, z +0.25, F last 0.796 [PASS]
+(b) che: S2 estimator 0.0000000000, exact 0.0000000000 [PASS]
+(a) nnbf: guided E -5.37310 +- 0.03972, exact -5.38393, z +0.27, F last 0.788 [PASS]
+(b) nnbf: S2 estimator 0.4248383369, exact 0.4248383369 [PASS]
+(c) che 8x3: max |S2_loc| over 64 samples 5.94e-13 [PASS]
+	Command being timed: "/home/jek354/.conda/envs/lit_env/bin/python -u r42.py --mode check --n-chains 512"
+	User time (seconds): 16.90
+	System time (seconds): 0.83
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:17.82
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 757436
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 309434
+	Voluntary context switches: 1882
+	Involuntary context switches: 6162
+	Swaps: 0
+	File system inputs: 256
+	File system outputs: 24
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

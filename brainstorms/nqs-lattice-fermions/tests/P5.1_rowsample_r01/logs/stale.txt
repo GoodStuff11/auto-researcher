@@ -1,0 +1,6 @@
+[17:13:03] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[17:15:32] target: exact gain 1.255e-04 [2.53 CPU-min]
+[17:18:33] near: phi [0.985 0.996]; top-10% leverage overlap with target 0.994 [5.54 CPU-min]
+[17:21:04] far: phi [0.948]; top-10% leverage overlap with target 0.927 [8.04 CPU-min]
+[17:21:04] R51.3 T1b: phi(near) 0.990, phi(far) 0.948 -> PASS
+maxrss 11844760 KB, cpu 364.96+117.97 s

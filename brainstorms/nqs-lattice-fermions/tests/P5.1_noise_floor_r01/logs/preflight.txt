@@ -1,0 +1,8 @@
+[16:57:25] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[16:57:43] N 16384 tau 0.005 step 1: R +0.5459 (dR +0.0104); unique 6243; |dtheta| 0.075 [0.37 CPU-min, step 0.221]
+[16:57:56] N 16384 tau 0.005 step 2: R +0.5525 (dR +0.0066); unique 6272; |dtheta| 0.077 [0.58 CPU-min, step 0.218]
+[16:57:56] done: 2 steps, 0.58 CPU-min, 33 s
+[16:58:00] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[16:58:32] N 65536 tau 0.005 step 1: R +0.5575 (dR +0.0220); unique 14915; |dtheta| 0.088 [0.59 CPU-min, step 0.441]
+[16:58:58] N 65536 tau 0.005 step 2: R +0.5671 (dR +0.0096); unique 14890; |dtheta| 0.089 [1.02 CPU-min, step 0.438]
+[16:58:58] done: 2 steps, 1.03 CPU-min, 59 s

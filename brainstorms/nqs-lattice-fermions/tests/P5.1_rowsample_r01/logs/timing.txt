@@ -1,0 +1,4 @@
+[17:00:48] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[17:02:17] timing (CPU-min): energy 0.046, jacobian 1.121, gram 0.233, eigh 0.043; eps 7.2174e-04; R2 KILLED
+[17:02:17] done 1.55 CPU-min
+maxrss 4741724 KB, cpu 57.87+35.45 s

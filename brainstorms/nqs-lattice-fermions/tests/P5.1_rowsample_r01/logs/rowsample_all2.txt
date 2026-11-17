@@ -1,0 +1,10 @@
+[17:05:42] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[17:07:12] timing (CPU-min): energy 0.043, jacobian 1.138, gram 0.231, eigh 0.042; eps 7.2174e-04; R2 KILLED
+[17:07:42] exact metric: best gain 1.255e-04; c 1e-05 tau 0.0005: +1.72e-05; c 1e-05 tau 0.001: +2.86e-05; c 1e-05 tau 0.002: +3.46e-05; c 1e-05 tau 0.004: -2.22e-05; c 1e-06 tau 0.0005: +3.01e-05; c 1e-06 tau 0.001: +5.51e-05; c 1e-06 tau 0.002: +8.45e-05; c 1e-06 tau 0.004: -6.46e-05; c 1e-07 tau 0.0005: +7.23e-05; c 1e-07 tau 0.001: +1.25e-04; c 1e-07 tau 0.002: +2.54e-05; c 1e-07 tau 0.004: -3.39e-03
+[17:08:09] effective dimension sum(lev) 2162.9 of 2638; leverage share on below-median Born rows 0.111
+[17:09:14] born m=21096: phi [0.235 0.218] [3.59 CPU-min]
+[17:10:19] guided m=21096: phi [0.731 0.72 ] [4.67 CPU-min]
+[17:11:24] leverage m=21096: phi [1.037 0.958] [5.75 CPU-min]
+[17:11:24] R3: phi(leverage, 8P) 0.998, phi(Born, 8P) 0.226 -> PASS
+[17:11:24] done 5.75 CPU-min
+maxrss 8005044 KB, cpu 304.99+40.29 s
