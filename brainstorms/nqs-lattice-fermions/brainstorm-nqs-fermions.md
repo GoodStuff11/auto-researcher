@@ -135,6 +135,14 @@ A result meeting any of the following is worthless:
 * **P4.1 [leaf] — Exact spin-SU(2) for fermionic NQS at sub-projection cost.** Can the total-spin sector $S$ be imposed on a determinant- or Pfaffian-based NQS exactly, at cost below the $\mathcal{O}(N_{\mathrm{grid}})$ spin-projection quadrature, without sacrificing backflow expressivity?
 * **P4.2 [leaf] — Size-transferable fermionic NQS.** Can a translation-equivariant fermionic NQS trained at $L$ initialize (or directly evaluate) $2L$ with an energy error per site that is already close to converged, so that finite-size scaling needs a fraction of the per-size retraining cost?
 
+**P5 — Optimising fermionic NQS to what they can represent (added 2026-11-17).**
+* *Statement*: Trained fermionic NQS stop far above the lowest energy their own parameters can reach, so comparisons between ansätze measure the optimiser as much as the ansatz.
+* *Why the field cares*: Every architecture claim (signs, symmetry, cost, size transfer) rests on trained energies; if training is the bottleneck, better ansätze cannot be recognised.
+* *Evidence*: this brainstorm's own results (library L29, L33, L59–L61; P4.1 rounds 19–24: exact linear-method steps, quasi-Newton and Anderson schemes and guided sampled SR all stall well short of the polished state at 12 sites; P4.2's frozen-cutoff artefact; P2.1's polished re-scores); field work on MinSR and SPRING (Chen & Heyl 2024; Goldshlager, Abrahamsen & Lin).
+* *Current direction and why*: Stochastic reconfiguration and its kernel-trick variants, chosen because they are cheap per step and stable; their convergence to the representable minimum is rarely measured.
+* *Feasibility*: Open; the representable minimum is computable by exact sums only on small clusters, which is where the leaf's diagnostics start.
+* **P5.1 [leaf] — Efficient optimisation of fermionic NQS to their representable minimum.** Can a determinant- or Pfaffian-based fermionic NQS be optimised to within a small fraction of the lowest energy its own parameters can represent, at a sampled cost per step that grows polynomially with system size and with fewer total samples than stochastic reconfiguration or MinSR need for the same accuracy?
+
 ---
 
 ## Stage 1.5 — Execution Routing
@@ -149,6 +157,7 @@ A result meeting any of the following is worthless:
 | P3.2 | Bias-diagnosing biased-ensemble tests | P3 |
 | P4.1 | Exact spin-SU(2) for fermionic NQS at sub-projection cost | P4 |
 | P4.2 | Size-transferable fermionic NQS | P4 |
+| P5.1 | Efficient optimisation of fermionic NQS to their representable minimum | P5 |
 
 **Routing decision**: Mode B (parallel fan-out) over all nine leaves, as the user asked when invoking the skill.
 Compute environment: Slurm cluster (`sbatch` at `/usr/local/slurm/current/bin/sbatch`). Workers write `tests/P{i}_*/micro_test.py` and `submit_test.sbatch` and do not submit. The orchestrator submits only the critical-path test (see Cross-Pollination).

@@ -4,3 +4,8 @@
 [16:21:19] running: gamma 8.324e-06 = 1.14 gamma_LM; verdict-so-far TOO-COSTLY
 [16:23:36] build 1: eps 7.034659e-04 plain 6.911462e-04 rank 2434 |d| 1.471 cos_prev 0.9460256518858603; m1:7.031510e-04; accepted plain eps 6.911462e-04 [build 2.21, total 4.54 CPU-min]
 [16:23:36] running: gamma 6.833e-06 = 0.94 gamma_LM; verdict-so-far TOO-COSTLY
+[16:25:51] build 2: eps 6.911462e-04 plain 6.794270e-04 rank 2432 |d| 1.192 cos_prev 0.9652638779829177; m1:6.892275e-04 m2:6.881532e-04; accepted plain eps 6.794270e-04 [build 2.13, total 6.78 CPU-min]
+[16:25:51] running: gamma 6.299e-06 = 0.87 gamma_LM; verdict-so-far KILL
+[16:28:11] build 3: eps 6.794270e-04 plain 6.681382e-04 rank 2430 |d| 0.997 cos_prev 0.9644549020713004; m1:6.668648e-04 m2:6.730275e-04 m3:6.690211e-04; accepted AA m=1 eps 6.668648e-04 [build 2.18, total 9.11 CPU-min]
+[16:28:11] running: gamma 6.066e-06 = 0.83 gamma_LM; verdict-so-far KILL
+exit 137

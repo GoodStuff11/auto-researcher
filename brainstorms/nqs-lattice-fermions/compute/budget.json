@@ -12,7 +12,8 @@
     "P3.1",
     "P3.2",
     "P4.1",
-    "P4.2"
+    "P4.2",
+    "P5.1"
   ],
   "leaf_overrides": {},
   "skip_threshold": 0.8,
