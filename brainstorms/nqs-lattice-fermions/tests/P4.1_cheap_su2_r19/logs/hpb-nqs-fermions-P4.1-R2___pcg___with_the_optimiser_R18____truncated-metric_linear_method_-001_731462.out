@@ -1,0 +1,3 @@
+rung 1 on kim-compute-03.physics.cornell.edu, job 731462
+[02:13:42] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[02:13:57] pcg: P 2696; E(theta0) -7.8178466957 stored -7.8178466957 (diff 8.9e-16); eps0 1.2842e-03; VALID True [0.3 CPU-min]

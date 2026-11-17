@@ -1,0 +1,7 @@
+[02:13:46] size 1 seed 11: D 16632 rank(S) 1464 edges 68 pairs 678 | S -9.7317 rand +1.2675 site -1.3438 edge -4.6158 ratio2 +0.2789 free_dir -1.8799 | capture S 0.603 site 0.413 edge 0.440 ratio2 0.118 rand 0.065 | CPU 22 s
+[02:14:07] size 1 seed 22: D 16632 rank(S) 1464 edges 68 pairs 678 | S -10.2161 rand +1.3952 site -0.9168 edge -4.1530 ratio2 +0.2475 free_dir -1.6485 | capture S 0.626 site 0.498 edge 0.494 ratio2 0.206 rand 0.100 | CPU 44 s
+[02:14:36] size 2 seed 11: D 16632 rank(S) 1760 edges 75 pairs 897 | S -4.4814 rand +1.1618 site -0.1169 edge -2.8234 ratio2 +0.2175 free_dir -1.9808 | capture S 0.451 site 0.255 edge 0.303 ratio2 0.072 rand 0.089 | CPU 72 s
+[02:15:04] size 2 seed 22: D 16632 rank(S) 1760 edges 75 pairs 897 | S -4.4263 rand +1.0074 site +0.0103 edge -2.7311 ratio2 +0.2172 free_dir -1.4131 | capture S 0.539 site 0.366 edge 0.416 ratio2 0.167 rand 0.145 | CPU 100 s
+[02:15:04] median size 1: S -9.9739 rand +1.3314 site -1.1303 edge -4.3844 ratio2 +0.2632 free_dir -1.7642 cap_S +0.6141 cap_site +0.4556 cap_edge +0.4667 cap_ratio2 +0.1620 cap_rand +0.0823
+[02:15:04] median size 2: S -4.4538 rand +1.0846 site -0.0533 edge -2.7772 ratio2 +0.2173 free_dir -1.6969 cap_S +0.4946 cap_site +0.3107 cap_edge +0.3592 cap_ratio2 +0.1197 cap_rand +0.1170
+[02:15:04] VERDICT cross-site/two-hop phase span: FAMILY-OPEN; CPU 100 s

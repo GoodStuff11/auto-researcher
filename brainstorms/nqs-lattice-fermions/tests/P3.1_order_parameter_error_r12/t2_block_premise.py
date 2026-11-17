@@ -41,6 +41,10 @@ Options
   --chunk INT               amplitude-evaluation chunk size (default 32768)
   --cpu-budget FLOAT        CPU-seconds; DAV-0 starts only if it projects to fit (default 6600)
   --out PATH                JSON output, rewritten after every arm
+  --reuse PATH              (added 2026-11-17) load the finished arms of every seed that has a DAV-R block in PATH
+                            (the cancelled job 707298 finished seed 11) instead of recomputing them; the per-seed
+                            noise stream (rng 50000 + seed) makes the remaining seeds identical to a full run.
+                            The validity check still runs for every seed, and the reused delta must match.
   --aggregate PATH          print the verdict from an output JSON and exit
   --selftest-verdict        synthetic records for every verdict branch
 """
@@ -206,7 +210,29 @@ class BlockRun(t2v2.Run):
         log(f"scored items: {n_sc}")
         cov_so_far, left = 0, n_sc
         per = 0.0
+        done = set()
+        if a.reuse:
+            old = json.load(open(a.reuse))["seeds"]
+            for s in seeds:
+                o, d = old.get(str(s)), self.out["seeds"][str(s)]
+                if not o or any("DAV-R" not in o[k]["br"] for k in REAL):
+                    continue
+                for k in REAL:
+                    assert abs(o[k]["delta"] - d[k]["delta"]) <= 1e-9 * abs(d[k]["delta"]), ("reuse mismatch", s, k)
+                    assert o[k]["scored"] == d[k]["scored"], ("reuse scored mismatch", s, k)
+                    d[k]["br"] = {arm: tuple(v) for arm, v in o[k]["br"].items()}
+                d["ghat_DAV-R"] = o["ghat_DAV-R"]
+                d["reused_from"] = os.path.abspath(a.reuse)
+                done.add(s)
+                sc = [k for k in REAL if d[k]["scored"]]
+                left -= len(sc)
+                cov_so_far += sum(1 for k in sc if d[k]["br"]["DAV-R"][0] - 0.1 * abs(d[k]["delta"]) <= d[k]["a0"]
+                                  <= d[k]["br"]["DAV-R"][1] + 0.1 * abs(d[k]["delta"]))
+                log(f"seed {s}: REUSED from {a.reuse} (DAV-R covered so far {cov_so_far}, scored items left {left})")
+            self.dump()
         for s in seeds:
+            if s in done:
+                continue
             c0 = cpu()
             d, psi = self.out["seeds"][str(s)], self.psi[s]
             L = [unit(psi), unit(m.H @ psi - float(psi @ (m.H @ psi)) * psi)]
@@ -242,7 +268,7 @@ class BlockRun(t2v2.Run):
             if cpu() + per > a.cpu_budget:
                 log(f"soft budget: DAV-0 skipped from seed {s}"); break
             d = self.out["seeds"][str(s)]
-            if "invalid" in d:
+            if "invalid" in d or "DAV-0" in d[REAL[0]]["br"]:
                 continue
             blk, g = self.chain_block(self.psi[s], None)
             d["ghat_DAV-0"] = g
@@ -267,6 +293,7 @@ def main():
     p.add_argument("--window-all", action="store_true")
     p.add_argument("--cpu-budget", type=float, default=6600.0)
     p.add_argument("--out", default=None)
+    p.add_argument("--reuse", default=None)
     p.add_argument("--aggregate", default=None)
     p.add_argument("--selftest-verdict", action="store_true")
     a = p.parse_args()

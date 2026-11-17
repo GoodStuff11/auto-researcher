@@ -1,0 +1,4 @@
+# P4.2 r10 pre-registered rule (written 2026-11-17, before any polish run)
+Polish each saved 3000-step SR state of job 704844 (4x3 OBC 5+5; base 1.294%, spin_jas2cs 1.268%, c8h32 1.057%) with up to 8 exact-sum truncated-metric LM steps (P4.1 R11 recipe: tangent metric orthogonalised against Psi, relative cutoff 1e-5, lowest LM root with |z|<=0.05, line search s in {1,1/2,1/4}, stop at first non-lowering step); r* = lowest polished relerr. All energies are exact sums (no statistical error).
+KILL of the ansatz attribution (the gap was an optimiser effect; DIAGNOSTIC-FALSIFIED, reopens P4.2 on U3) if r* <= 0.77% (2x over the SR-600 base). ATTRIBUTION HOLDS (DIAGNOSTIC-HOLDS) if every polished arm stays > 1.02%. AMBIGUOUS otherwise (0.77% < r* <= 1.02%).
+Reported beside the verdict, not part of it: fraction of each arm's relerr removed by polishing, and whether the family ranking (c8h32 < spin_jas2cs < base) and the best-family gain ratio over polished base change.

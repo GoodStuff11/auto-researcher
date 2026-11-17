@@ -1,0 +1,7 @@
+# 2026-11-17 dry run of the new --reuse option (login node, 1 BLAS thread, ulimit -t 300, under 5 CPU-s in total)
+# Small instance (4x4 OBC 2+2), --cpu-budget 0: (1) full run; (2) same run with --reuse of the full JSON.
+full : ('KILL', {'L1R': (3, 2.2656119989209182), 'DAVR': (2, 3.5607637716979217, 2)})
+reuse: ('KILL', {'L1R': (3, 2.2656119989209182), 'DAVR': (2, 3.5607637716979217, 2)})
+# Seed 0 logged "REUSED ... (DAV-R covered so far 2, scored items left 2)"; its brackets are identical to the full run.
+# Seed 1 recomputed and INVALID by design (as in dryrun_t2_block_output.txt). The small-instance verdict checks machinery only.
+# results/t2_block_main.json (job 707298) has DAV-R and ghat_DAV-R for seed 11 only, so --reuse loads seed 11 and runs 22, 33.

@@ -1,0 +1,1 @@
+[02:15:30] size 1 seed 11: global lambda_min -214801.8404; participation of eigvec 1 of D 16632; CPU 2 s

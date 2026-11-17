@@ -1,0 +1,9 @@
+thr 1e-5 undamped
+[     1.7s]   step 1: relerr 1.7784% (pred 1.7784%) s=1.0 rank=14 |z|=0.000 |dth|=0.000 [1 CPU-s]
+[     1.7s] RESULT base: relerr 1.7784% -> 1.7784% (1 accepted steps, 1 CPU-s)
+thr 1e-8 undamped
+[     1.7s]   step 1: relerr 1.7784% (pred 1.7784%) s=1.0 rank=34 |z|=0.000 |dth|=0.000 [1 CPU-s]
+[     1.7s] RESULT base: relerr 1.7784% -> 1.7784% (1 accepted steps, 1 CPU-s)
+thr 1e-11 undamped
+[     1.8s]   step 1: no lowering trial [(1.0, 0.264426691688399), (0.5, 0.06440705986682713), (0.25, 0.020519064155112066)]; stop
+[     1.8s] RESULT base: relerr 1.7784% -> 1.7784% (0 accepted steps, 1 CPU-s)

@@ -1,0 +1,10 @@
+[02:05:07] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[02:05:17] pcg: P 2696; E(theta0) -7.8178466957 stored -7.8178466957 (diff 8.9e-16); eps0 1.2842e-03; VALID True [0.2 CPU-min]
+[02:08:03] step 1: E -7.82026204 eps 9.7561e-04 R 0.2403 (predicted gain 0.2586); s 1.0; |z| 0.022; |dtheta| 0.576; rank 1240 [3.0 CPU-min, step 2.8, wall 178 s]
+[02:08:03] wrote seq_pcg.json (178 s, 3.0 CPU-min)
+	User time (seconds): 129.79
+	System time (seconds): 49.73
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:00.85
+	Maximum resident set size (kbytes): 9096864
+
+[exited with code 0]

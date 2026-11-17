@@ -1,0 +1,11 @@
+[02:04:29] instance 25 {'Lx': 5, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 7, 'ndn': 7, 'tp': -0.25, 'J': 0.4} D=51480 E0=-7.2718171320 gap=0.1963 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1615 arm=half seed=11 threads=1
+[02:04:30] arm half: F=16 Ha=0 n_eff=2561 P/dim_S_chi=1.59 calib=2.13e-14
+[02:04:32] half: it     0 E-E0 = 1.650024 best = 1.650024 (1.503 CPU-s/step)
+[02:05:45] half: it    50 E-E0 = 0.094242 best = 0.091849 (1.464 CPU-s/step)
+[02:06:59] half: it   100 E-E0 = 0.050841 best = 0.048212 (1.465 CPU-s/step)
+[02:08:13] half: it   150 E-E0 = 0.042777 best = 0.039841 (1.465 CPU-s/step)
+[02:09:26] half: it   200 E-E0 = 0.036012 best = 0.033042 (1.464 CPU-s/step)
+[02:10:40] half: it   250 E-E0 = 0.042626 best = 0.033042 (1.463 CPU-s/step)
+[02:11:53] half: it   300 E-E0 = 0.035156 best = 0.032470 (1.463 CPU-s/step)
+[02:13:07] half: it   350 E-E0 = 0.038404 best = 0.029963 (1.463 CPU-s/step)
+[02:14:20] half: it   400 E-E0 = 0.029899 best = 0.029032 (1.462 CPU-s/step)

@@ -1,0 +1,13 @@
+{
+ "valid": false,
+ "rho_N4": null,
+ "verdict_N4": "INCOMPLETE",
+ "rho_N8": null,
+ "verdict_N8": "INCOMPLETE",
+ "exact_verdict": "INCOMPLETE",
+ "sampled": {},
+ "sampled_arms_required": [
+  "che"
+ ],
+ "sampled_verdict": "INCOMPLETE"
+}
