@@ -1,11 +1,5 @@
 test_calibration_threshold (__main__.Gate.test_calibration_threshold) ... ok
-test_g1_missing (__main__.Gate.test_g1_missing) ... /home/jek354/research/.claude/worktrees/skill-compute-gate/.claude/skills/hard-problem-brainstorm/tests/test_compute_gate.py:135: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmp81hd4u_v/work/tests/P2.1_r1/voi.md' mode='r' encoding='utf-8'>
-  txt = open(v).read().replace("* **convergence**: pilot energy flat to 1e-4 by step 600 of 1000", "* **convergence**: TODO")
-ResourceWarning: Enable tracemalloc to get the object allocation traceback
-/home/jek354/research/.claude/worktrees/skill-compute-gate/.claude/skills/hard-problem-brainstorm/tests/test_compute_gate.py:136: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmp81hd4u_v/work/tests/P2.1_r1/voi.md' mode='w' encoding='utf-8'>
-  open(v, "w").write(txt)
-ResourceWarning: Enable tracemalloc to get the object allocation traceback
-ok
+test_g1_missing (__main__.Gate.test_g1_missing) ... ok
 test_g2_predicted (__main__.Gate.test_g2_predicted) ... ok
 test_g3_declared (__main__.Gate.test_g3_declared) ... ok
 test_g4_tiers (__main__.Gate.test_g4_tiers) ... ok
@@ -13,22 +7,38 @@ test_g5_budget (__main__.Gate.test_g5_budget) ... ok
 test_g6_streak (__main__.Gate.test_g6_streak) ... ok
 test_no_budget_refused (__main__.Gate.test_no_budget_refused) ... ok
 test_pass_small (__main__.Gate.test_pass_small) ... ok
-test_submit_dup_refresh_cancel_report (__main__.Gate.test_submit_dup_refresh_cancel_report) ... /home/jek354/research/.claude/worktrees/skill-compute-gate/.claude/skills/hard-problem-brainstorm/tests/test_compute_gate.py:204: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmp8ae070j_/calls.log' mode='r' encoding='utf-8'>
-  self.assertIn("--job-name=hpb-demo-P2.1-R2-001", open(self.log).read())
-ResourceWarning: Enable tracemalloc to get the object allocation traceback
-/home/jek354/research/.claude/worktrees/skill-compute-gate/.claude/skills/hard-problem-brainstorm/tests/test_compute_gate.py:223: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmp8ae070j_/work/tests/P2.1_r1/submit2.sbatch' mode='w' encoding='utf-8'>
-  open(s2, "w").write(sbatch_text(time="00:30:00"))
-ResourceWarning: Enable tracemalloc to get the object allocation traceback
-/home/jek354/research/.claude/worktrees/skill-compute-gate/.claude/skills/hard-problem-brainstorm/tests/test_compute_gate.py:237: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmp8ae070j_/ledger_report.md' mode='w' encoding='utf-8'>
-  open(md, "w").write(out)
-ResourceWarning: Enable tracemalloc to get the object allocation traceback
-ok
+test_submit_dup_refresh_cancel_report (__main__.Gate.test_submit_dup_refresh_cancel_report) ... ok
 test_array (__main__.Parsers.test_array) ... ok
 test_no_time_refused (__main__.Parsers.test_no_time_refused) ... ok
 test_sbatch_forms (__main__.Parsers.test_sbatch_forms) ... ok
 test_walltime (__main__.Parsers.test_walltime) ... ok
+test_cancel_is_kept_out_of_streak (__main__.ReviewFixes.test_cancel_is_kept_out_of_streak) ... ok
+test_cancel_unledgered (__main__.ReviewFixes.test_cancel_unledgered) ... ok
+test_crash_loop_needs_a_new_fix (__main__.ReviewFixes.test_crash_loop_needs_a_new_fix) ... ok
+test_g6_quick_exempt_and_no_auditor_below_10 (__main__.ReviewFixes.test_g6_quick_exempt_and_no_auditor_below_10) ... ok
+test_pre_audit (__main__.ReviewFixes.test_pre_audit) ... ok
+test_set_budget (__main__.ReviewFixes.test_set_budget) ... ok
+test_unknown_leaf_refused (__main__.ReviewFixes.test_unknown_leaf_refused) ... ok
+test_user_approval_keeps_audit (__main__.ReviewFixes.test_user_approval_keeps_audit) ... ok
+test_calibration_threshold (__main__.SecondPass.test_calibration_threshold) ... ok
+test_crash_excluded_from_streak_and_crash_loop (__main__.SecondPass.test_crash_excluded_from_streak_and_crash_loop) ... ok
+test_digest_voided_by_edit (__main__.SecondPass.test_digest_voided_by_edit) ... ok
+test_g1_missing (__main__.SecondPass.test_g1_missing) ... ok
+test_g2_predicted (__main__.SecondPass.test_g2_predicted) ... ok
+test_g3_declared (__main__.SecondPass.test_g3_declared) ... ok
+test_g4_tiers (__main__.SecondPass.test_g4_tiers) ... ok
+test_g5_budget (__main__.SecondPass.test_g5_budget) ... ok
+test_g6_streak (__main__.SecondPass.test_g6_streak) ... ok
+test_gpu_cost (__main__.SecondPass.test_gpu_cost) ... ok
+test_no_budget_refused (__main__.SecondPass.test_no_budget_refused) ... ok
+test_pass_small (__main__.SecondPass.test_pass_small) ... ok
+test_quick_note_for_tiny_jobs (__main__.SecondPass.test_quick_note_for_tiny_jobs) ... ok
+test_reconcile_finds_unledgered (__main__.SecondPass.test_reconcile_finds_unledgered) ... ok
+test_refresh_marks_crash_and_record_crash (__main__.SecondPass.test_refresh_marks_crash_and_record_crash) ... ok
+test_submit_dup_refresh_cancel_report (__main__.SecondPass.test_submit_dup_refresh_cancel_report) ... ok
+test_submit_strips_slurm_env (__main__.SecondPass.test_submit_strips_slurm_env) ... ok
 
 ----------------------------------------------------------------------
-Ran 14 tests in 0.254s
+Ran 39 tests in 0.883s
 
 OK
