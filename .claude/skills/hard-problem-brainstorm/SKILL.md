@@ -37,12 +37,12 @@ Files in this skill's base directory:
    - You must answer: "Why is this not the universal standard in widespread use?"
    - What hidden bottleneck, scaling limit, instability, or data barrier prevents practitioners from adopting it?
    - The route is disqualified unless the core of the proposal is a concrete mechanism that bypasses that exact adoption bottleneck.
-4. **Problem-Specific Anti-Patterns as Mutation Fuel**: Failures are stored locally within the working file (`brainstorm-<slug>.md`). Killed ideas are not dead ends; their specific failure mechanisms form the boundary conditions for the next generation of mutated ideas.
+4. **Every Idea and Every Kill Is Explained; Lessons Are Kept**: Every route gets a self-contained route card stating what the idea is and, if it was killed, where it died (gate or tier code), by what rule, on what evidence, by what inference, what the kill leaves open, and the strongest case against the kill. Lessons that reach beyond one route go into the findings library (`library.md`). Killed ideas are not dead ends: their failure mechanisms, read from the cards and the library, are the boundary conditions for the next generation of routes. See "Ideas, Kills and Lessons".
 5. **Zero Subjective Scoring**: Never assign numeric ratings, promise multipliers, or arbitrary tractability scores. Ideas survive or die based on explicit binary gates.
 6. **Decisive Termination**: For every live route, the next step is the cheapest analytical derivation or numerical micro-step that could kill it (Stage 3.5 tiers). A multi-seed decisive test (T3) is reserved for routes that already passed the cheaper tiers. Caps are per *job* in total CPU-hours (Stage 3.5.6 cost tiers), never per task: an 85-task array spent 8,906 CPU-hours in the first run without breaking any per-task cap.
 7. **Cluster & Compute Environment Awareness**: Before running any diagnostic scripts or benchmarks, detect if the environment is an HPC cluster (check for `sbatch`, Slurm environment variables, or module systems). If on a cluster, never run heavy workloads interactively or directly on login nodes. Generate Slurm scripts with a measured wall time, and submit them only through `compute_gate.py submit` (rule 0, Stage 3.5.6). The standing queue review cancels, without asking, any job that can no longer change a decision (`compute_gate.py cancel`).
 8. **Mathematical Rigor**: Write all variables, operators, inequalities, and expressions in explicit LaTeX ($...$ inline, $$...$$ display). Every symbol must be defined at first use.
-9. **Markdown Hygiene (Every `.md` Must Lint Clean)**: Every Markdown file this procedure writes or edits must pass `check_brainstorm.py` with **zero errors and zero warnings** before it is handed back or synthesized. That includes the master `brainstorm-<slug>.md`, every `.subproblems/P{i}_*.md` leaf artifact, and any brief or note. Lint the whole working directory in one call with `python3 check_brainstorm.py <working-dir>`. The linter detects each file's role (master, leaf or other). Rules that are easy to break when pasting logs or appending sections:
+9. **Markdown Hygiene (Every `.md` Must Lint Clean)**: Every Markdown file this procedure writes or edits must pass `check_brainstorm.py` with **zero errors and zero warnings** before it is handed back or synthesized. That includes the master `brainstorm-<slug>.md`, every `.subproblems/P{i}_*.md` leaf artifact, the findings library `library.md`, and any brief or note. The linter also checks that every route card and library entry has all its fields, and that every kill names its gate or tier code. Lint the whole working directory in one call with `python3 check_brainstorm.py <working-dir>`. The linter detects each file's role (master, leaf or other). Rules that are easy to break when pasting logs or appending sections:
    - Put a blank line before every opening code fence and after every closing fence, even inside a list item. Otherwise Obsidian merges the fence into the preceding list item or paragraph, pairs every later fence off by one, and leaves an extra code block that never closes (M2, M3).
    - Never continue a list with text indented by 4 or more spaces after a code fence or a table. That text renders as a code block (M4). Start a new top-level list instead.
    - Put a blank line before and after every table. Without the blank line after, the next line is swallowed into the table (M5).
@@ -56,6 +56,89 @@ Files in this skill's base directory:
 The procedure supports two execution paths:
 - **Mode A (Focused Deep-Dive)**: Writes and edits a single file `brainstorm-<slug>.md`.
 - **Mode B (Parallel Subagent Fan-Out)**: Uses `brainstorm-<slug>.md` as the master index and orchestrator, dispatching worker subagents that write into `.subproblems/P{i}_<slug>.md`, then synthesizing them into a master Leaf Comparison Matrix.
+
+In both modes, two more records are kept: a **route card** for every idea ever generated (in the leaf's `## Route Register`, or in the single document in Mode A), indexed in the master's `## Kill Index`; and the **findings library** `library.md` next to the master. Both are defined in the next section.
+
+---
+
+## Ideas, Kills and Lessons: Route Cards, the Kill Index and the Findings Library
+
+The user must be able to read what each idea was, why it was killed, and what the run learned, and decide for themselves whether they agree. Two records serve this, and both are held to the same standard as the Leaf Status Summary (3a): **complete and self-contained.** A reader with domain background who has not followed the run must understand every entry without opening anything else. Every symbol and acronym is defined at first use, no route codename appears without saying what it is, and every number comes with its comparison (arm versus foil, instance, size) and its uncertainty. A pointer to a job id or a section may support a claim, but it never replaces the explanation.
+
+### Route cards (one per idea, live or dead)
+
+Every route ever generated gets a card, including routes killed at a gate within minutes of being proposed, so that every decision can be checked. Cards live in the leaf's `## Route Register` section, just above the final `## Leaf Status Summary` (in Mode A, in a `## Route Register` section of the single document). A card is written when the route is generated and completed in the same turn as its outcome. When the outcome changes, the card is rewritten, not appended to.
+
+```markdown
+### R<id> — <short descriptive name, not just a code> (<LIVE | KILLED | SHELVED | MERGED>)
+* **The idea**: what the route does, in plain terms; what it changes relative to the Minimal Contrast Foil; and why it was expected to work (the mechanism, not the name). At least 25 words.
+* **Lineage**: how it arose (initial batch, Operation A from R<x> after its kill at <code>, Operation B, a reopening-ledger ingredient) and what it later became (mutated into R<y>, merged into R<z>).
+* **Outcome**: LIVE (tier reached) | KILLED at <code> (date) | SHELVED (<compute-gate reason>) | MERGED into R<z>.
+* **Kill rule**: the gate's question, or the pre-registered rule, quoted as written before the test.
+* **Evidence**: the argument or the measurement — instance, size, arm against foil, the numbers side by side with their uncertainties, and the job id or derivation.
+* **Why this kills it**: the inference from the evidence to the verdict, step by step.
+* **What the kill does not rule out**: its scope (sizes, instances, regimes), and the nearest variant that this evidence would not kill.
+* **Strongest case against the kill**: the best argument that the kill is wrong (a confound, an unfair comparison, an untested regime, an optimiser rather than an ansatz effect), and how it was answered, or "unresolved".
+* **Checked by**: the critic (per-leaf or cross-node) or auditor who reviewed the kill, and the date.
+* **Lesson**: the library entry this kill supports (L<n>), or "route-specific", with one sentence on why it does not generalise.
+```
+
+The last seven fields are required for a KILLED card. A SHELVED card instead has **Why shelved** (which compute-gate rule refused the next step, its capped cost, and the prediction that made it not worth running) and **What would unshelve it**. A LIVE or MERGED card needs only the first three fields. The linter enforces this (R0–R3).
+
+**Where a route died: kill codes.** The `KILLED at <code>` in the Outcome uses the procedure's own vocabulary, so a reader knows at once what kind of evidence ended it:
+
+| Code | Killed because | Evidence it rests on |
+| :--- | :--- | :--- |
+| `G0` | it is known, and the reason it is not standard practice is not fixed (Gate 0) | citations and the adoption barrier they show |
+| `G1` | it violates a conservation law, a symmetry, or a complexity bound (Gate 1) | an argument |
+| `G2` | a cheap baseline or the foil reaches the same metric (Gate 2) | an argument or a cheap computation |
+| `G3` | it works only by removing the Hard Core (Gate 3) | an argument |
+| `G4` | its gain or its cost does not survive growing system size (Gate 4) | a scaling argument or the three-size T1 trend |
+| `T0` | an analytical argument at tier 0 (lemma, operation count, small effective model) | a derivation |
+| `T1`, `T2`, `T3` | it failed its pre-registered rule at that evidence tier | a computation, with its rule |
+| `CRITIC` | a critic objection not tied to one gate (for example, its test cannot tell it from the foil) | the objection and the check that confirmed it |
+
+`SHELVED` is not a kill: the idea was not refuted, its next step was refused by the compute gate (G2 predicted outcome, G5 budget, the auditor, or awaiting the user). Readers should weigh a shelved idea as untested.
+
+**The Kill Index.** The master document keeps a `## Kill Index` table with one row per KILLED or SHELVED route, grouped by leaf: route, leaf, the idea in one line, where it died (the code), why in one line, a link to its card, and its library entry if any. It is updated in the same turn as each card. It is the reader's map; the cards are the explanations.
+
+### The findings library (`library.md`)
+
+The library collects what the run learned that is worth knowing beyond the single route or leaf that taught it: mechanisms that explain several outcomes, results about the problem itself, and traps in method that a later project should avoid. It is the main thing the user carries away from a run, so it is organised for reading, not in the order things happened.
+
+**What enters the library.** A result or a kill becomes an entry when at least one of these holds:
+* it explains two or more outcomes (routes, leaves or tests) by one mechanism;
+* it would change how someone attacks a different problem or uses a different method;
+* it is a trap in testing or measurement that was caught (a confound, a control that does not control, a metric that a trivial state games).
+
+A kill whose reason applies only to that route stays on its card ("route-specific").
+
+**Organisation.** The file starts with an **index**: one line per entry, giving its number, status and lesson sentence. Entries are grouped under four headings:
+1. `## About the problem itself`: properties of the target (for example, where the error of a method actually sits).
+2. `## About methods`: what works or fails, and why. This is also where the general anti-patterns live, the failure mechanisms that killed routes in more than one place, so new routes are generated against them.
+3. `## About testing and measurement`: confounds, fair comparisons, controls, metrics.
+4. `## About process and compute`: what wasted or saved compute and agent effort.
+
+Each entry uses this form:
+
+```markdown
+### L<n>. <the lesson, as one complete sentence>
+* **Status**: ESTABLISHED | PROVISIONAL | REFUTED (date)
+* **Applies to**: the class of problems, methods or tests this lesson reaches beyond this brainstorm.
+* **The lesson**: a self-contained explanation — what holds, and the mechanism that makes it hold — written for a reader who has not seen this run.
+* **Evidence**: the chain of results that supports it: each comparison, its instance and size, the numbers with uncertainties, and the route cards or leaves it comes from.
+* **Scope and limits**: exactly where it was tested and what it does not show.
+* **Counter-evidence and open questions**: results that cut against it, and what would overturn it.
+* **How to use it**: the concrete consequence for future work (for example, "test X before investing in Y", "always add control Z").
+* **Sources**: route cards (leaf and R<id>), job ids, derivations, and literature.
+```
+
+**Status rules.**
+* **ESTABLISHED** only if the lesson holds on every case it was tested on, within its stated scope, and the cross-node critic has signed off. A lesson that holds on some cases and not others is not hedged as "not universal": its scope is narrowed until it holds everywhere stated, or it stays PROVISIONAL.
+* **PROVISIONAL** while the evidence is one instance, one size or one seed, or has not yet been reviewed.
+* **REFUTED** entries are kept, with what refuted them under Counter-evidence, so the reader can see how understanding changed.
+
+**Maintenance.** An entry is written or revised in the same turn as the result or kill that teaches it, and the route card's **Lesson** field links to it. Entries are edited in place, never appended to. The cross-node critic reviews every new or changed entry each round: does the evidence support the generalisation, and is the scope honest? Generation of new routes (Stage 3.1, Operation B) reads the library first. At the end of a run, the final master Summary points to the library's index.
 
 ---
 
@@ -121,12 +204,12 @@ Mode B is dependency-driven, not phase-driven. Each leaf advances through its ow
   1. When a worker returns: lint its artifact (rule 9), and fix it or send it back. Add or update its row in the synthesis matrix. Spawn that leaf's critic right away (see the Evaluation Protocol: one critic per leaf, or per small batch of leaves that return together).
   2. When a critic returns: apply its accepted objections. A route that is killed or downgraded goes straight back to a mutation worker for that leaf (Stage 3.3). A route that survives with a fixable test defect gets a fix worker, or the orchestrator fixes it.
   3. When a test is ready and critic-clean: write its value-of-information note, run `compute_gate.py check`, get the compute auditor's approval if the cap is above 10 CPU-hours, then `compute_gate.py submit` right away (fire-and-forget on Slurm). A refusal is a result: act on the prediction, find a cheaper version, or close the route.
-  4. When a result lands: record it, apply the Stage 4 Autopsy & Re-Loop rule for that leaf, and run the cross-pollination check against the leaves still running (step 5).
+  4. When a result lands: record it, apply the Stage 4 Autopsy & Re-Loop rule for that leaf (route card, Kill Index row, library entry if the reason generalises), and run the cross-pollination check against the leaves still running (step 5).
 - **Explicit dependencies are the only barriers.** Keep a `Blocked on` column. A leaf waits only if its premise, instance, metric or baseline depends on a result that is not yet available, for example "the premise of P1.3 depends on the verdict of P1.1". When a result arrives, unblock exactly the leaves that list it. A critical-path test is run first, but it does **not** hold back leaves that do not depend on it. If only part of a leaf depends on a pending result, start the independent part now and record the pending part as a follow-up.
 - **Broadcast, don't restart.** When a result, correction or new anti-pattern affects leaves that are still running, send it to those workers as a message (e.g. "the competitor you were told about is in another symmetry sector"). Do not wait for them to finish and then redo the work.
 - **Keep agents busy (submit-and-switch, Stage 3.5.3).** Run up to the concurrency limit (the session's workflow-size guideline, or the user's instruction). When an agent finishes and work is queued, start the next queued item (mutation, critic, fix, test build) in the same turn. Every Slurm submission is followed, in the same turn, by dispatching T0 or T1 work on another live route of that leaf or of another leaf. Auditors, critics and pending user approvals are background work too: dispatch them and switch, never wait on them. Idle waiting is acceptable only under the stricter test of Stage 3.5.3, step 5, and then only in the way Stage 3.5.9 describes.
 - **Two queues, one scheduler.** Keep a *compute queue* (T2 and T3 jobs, limited by the cluster) and a *thinking queue* (T0 analysis, T1 toy runs, pre-flight dry runs, gating of new routes, Gate 0 checks, critics, decision-tree pre-planning, falsifiers of DORMANT and terminal leaves, the cross-node critic and master synthesis; full list in Stage 3.5.3, step 3). The thinking queue is never allowed to empty while the compute queue is busy, unless every leaf is in a terminal state (ANSWERED, PROVEN-IMPOSSIBLE, EXHAUSTED at this scale or at this budget) or is DORMANT with no open reopening-ledger row that fits T0 or T1. "Every live route is in flight" does not empty the thinking queue (Stage 3.5.3, step 5).
-- **Incremental synthesis.** The Master Leaf Synthesis Matrix and the Cross-Pollination section are updated row by row as leaves arrive, not compiled once at the end. A final whole-document lint and a cross-node critic pass (Evaluation Protocol) close each round, but they never hold back per-leaf progress.
+- **Incremental synthesis.** The Master Leaf Synthesis Matrix, the Kill Index, the findings library and the Cross-Pollination section are updated as leaves and results arrive, not compiled once at the end. A final whole-document lint and a cross-node critic pass (Evaluation Protocol) close each round, but they never hold back per-leaf progress.
 
 #### 1. Directory Setup
 Create `.subproblems/` inside the working directory.
@@ -142,6 +225,7 @@ Provide each worker with:
   > Persist in ideas, not in jobs (rule 0). If candidate routes fail, apply the Stage 3.3 Mutation and Replenishment protocols at T0 and T1. Try the cheapest argument that could kill each route before proposing any computation.
   > Do not submit Slurm jobs yourself. For each test you propose, write its script with a measured wall time and a value-of-information note `tests/<dir>/voi.md` in the format of `compute_gate.py --help`, and run `python3 <skill-dir>/compute_gate.py check <working-dir> <script> --voi <voi.md> --pre-audit` (a job above 10 CPU-hours then shows PASS PENDING AUDIT; that is expected, not a refusal). Report the check output; the orchestrator handles auditing and submission. A job the gate refuses is replaced by its recorded prediction or a cheaper version, not argued past the gate.
   > Output your result to `.subproblems/P{i}_{slug}.md` matching the standard Leaf Artifact Schema. Do not soften the frozen invariants.
+  > Write a complete, self-contained route card in the `## Route Register` for every route you generate, including routes killed at a gate, so the user can judge each decision (SKILL.md, "Ideas, Kills and Lessons"). When a kill's reason generalises beyond the route, propose a findings-library entry in the same format in your return message; the orchestrator owns `library.md`.
   > Before returning, run `python3 <skill-dir>/check_brainstorm.py .subproblems/P{i}_{slug}.md` and fix every error and warning (Markdown Hygiene, rule 9). Paste-in logs need a blank line before and after their code fence."
 
 #### 3. Leaf Artifact Schema (Written by Workers to `.subproblems/P{i}_{slug}.md`)
@@ -154,9 +238,9 @@ Provide each worker with:
 * **The Node Barrier**: Where existing methods halt against the Hard Core.
 
 ### 2. Candidate Routes, Gates & Mutation Cycles
-* **Generation Batch 1**:
-  - Route 1.0: [Mechanism] -> Killed at Gate X [Reason]
-  - Route 1.1 (Mutated from 1.0): [Modified Mechanism addressing Gate X] -> SURVIVED
+* **Generation Batch 1** (one line per route; the full explanation is its card in the Route Register):
+  - R1.0 <descriptive name>: KILLED at G2 — <one-line reason>
+  - R1.1 <descriptive name> (Operation A from R1.0): LIVE (T1)
 * **Generation Batch 2 (if needed)**: ...
 
 ### 3. Route Portfolio & Sharpest Gaps
@@ -173,8 +257,10 @@ Provide each worker with:
 * **Execution Plan**: Shell command or Slurm job script (`run_test.sbatch`) if on an HPC cluster.
 * **Thresholds**: PASS (value), FAIL (value), AMBIGUOUS (action).
 
-### 5. Local Autopsy Log
-* Log of all killed parent ideas and why they were mutated or discarded.
+## Route Register
+### R1.0 — <descriptive name> (KILLED)
+* **The idea**: ...
+* (every field of the route card; see "Ideas, Kills and Lessons")
 
 ## Leaf Status Summary
 * **State**: OPEN | DORMANT | EXHAUSTED at this scale | EXHAUSTED at this budget | ANSWERED | PROVEN-IMPOSSIBLE
@@ -191,7 +277,8 @@ Every leaf artifact ends with `## Leaf Status Summary`. It is the **last** headi
 * **The question in plain terms**: what problem this leaf attacks and why it matters for NQS of fermions (or the domain at hand), with every symbol and acronym defined at first use. No route labels ("7.1", "R2", "frdK") without saying what they are.
 * **The idea or mechanism**: what the approach does and *why it should work*, explained physically or mathematically, not by name.
 * **The chain of evidence**: premise → test → result → inference, step by step. For each step: what was compared with what (the arm and its foil), on which instance and size, the key numbers side by side with their uncertainties, and why that comparison is fair (matched parameters, matched wall time, pre-registered rule).
-* **Why the alternatives fail or are worse**: the strongest competing routes or baselines and the evidence against them.
+* **Why the alternatives fail or are worse**: the strongest competing routes or baselines and the evidence against them, summarised from their route cards (cite R<id>).
+* **What this leaf taught beyond itself**: the findings-library entries it produced or changed (L<n>, one line each).
 * **The strongest objection and the answer to it**: the best counterargument a skeptical referee would raise (from the critics, the cross-node critic, or a confound found later), and how the evidence answers it, or an honest statement that it is not answered.
 * **Limits**: what the conclusion does not cover (sizes, instances, sectors, optimisation regime, sampled versus exact arithmetic).
 
@@ -283,7 +370,7 @@ Each time a leaf returns or a result lands, the orchestrator checks it against e
 **Core Objective**: Identify and refine candidate routes until at least 1–2 robust proposals pass all elimination gates. You must not surrender if initial ideas fail.
 
 ### 3.1 Initial Generation Batch
-Generate an initial pool of 3–4 candidate routes. Ingest the local "Problem Anti-Patterns & Killed Routes" section first to avoid re-treading dead ends.
+Generate an initial pool of 3–4 candidate routes. Read the findings library (`library.md`, especially "About methods") and the master's Kill Index first, so no new route repeats a mechanism that already failed. Write a route card for each route as it is generated.
 
 ### 3.2 Binary Falsification Gates
 Subject each candidate route to five binary elimination gates:
@@ -334,7 +421,7 @@ Do not throw away the whole idea if only one part triggered a gate failure. Muta
    - Branch Route $X \to X'$: Introduce a perturbation parameter $\lambda \in [0, 1]$ connecting the tractable simplified regime to the full Hard Core. Formulate the route as an analytical continuation or controlled adiabatic deformation starting from the known limit.
 
 #### Operation B: Orthogonal Replenishment (New Seed Generation)
-If an idea is completely irrecoverable (e.g., fundamentally violates a no-go theorem), log it to `## Problem Anti-Patterns & Killed Routes` and generate a fresh replacement route using one of three forced orthogonal directions:
+If an idea is completely irrecoverable (e.g., fundamentally violates a no-go theorem), complete its route card (KILLED, with the gate code, the evidence and the strongest case against the kill), add its Kill Index row and, if the reason generalises, a library entry, and generate a fresh replacement route using one of three forced orthogonal directions:
 1. **Duality / Frame Transformation**: If current ideas operate in real space, formulate the candidate in dual momentum, graph, or phase space.
 2. **Active / Interactive Probing**: If passive representations hit complexity walls, formulate a route based on active, adaptive query algorithms or localized projective measurements.
 3. **Cross-Field Translation**: Port a concrete mathematical technique from an adjacent field that conquered an analogous barrier, modifying it to respect the Hard Core.
@@ -493,7 +580,7 @@ The procedure must keep moving without supervision, survive the loss of its own 
   5. rebuild the thinking queue from 3.5.3, step 3, and continue.
 * **Crashes.** A job that ends FAILED, OUT_OF_MEMORY, NODE_FAIL or BOOT_FAIL gave no verdict: record it with `--changed crash`. Crashes do not count toward the no-change streak. One plain resubmission is allowed (for example after a node failure). After two crashes in a row, the gate refuses the script until the crash is reproduced at T1 with the pre-flight dry run, fixed, and the fix stated in a `fixed:` line. The fix must be new: a fix already tried by a run that crashed does not count. An array job in which only some tasks failed is recorded by its verdict, not as a crash. A TIMEOUT is not a crash but a wall-time miss: re-measure the time per step and resubmit only what the last checkpoint did not cover, as a gated resume.
 * **Submission environment.** `compute_gate.py submit` strips inherited `SLURM_*` and `SBATCH_*` variables before calling `sbatch`, so a job never inherits the orchestrator's own allocation and environment overrides cannot change the cost the gate computed. Anything run with `srun` from inside an allocation needs the same care.
-* **Finishing the run.** The run is over when every leaf is in a terminal state, or is DORMANT with no open reopening-ledger row the agent can work on (only `GATE-REFUSED` rows waiting on the user's budget or approval); by 3b, such a leaf has already taken exit 3. Then, in one pass: `refresh` and `report`, the cross-node critic, a final master Summary, a whole-directory lint, and a report to the user. The final Summary covers what each leaf established, every leaf's state, compute spent against budget, and what the user could fund next: the refused steps with their costs. Do not idle with an empty queue, and do not spend remaining budget just because it is there.
+* **Finishing the run.** The run is over when every leaf is in a terminal state, or is DORMANT with no open reopening-ledger row the agent can work on (only `GATE-REFUSED` rows waiting on the user's budget or approval); by 3b, such a leaf has already taken exit 3. Then, in one pass: `refresh` and `report`, the cross-node critic (including a final review of every library entry's status and scope), a final master Summary, a whole-directory lint, and a report to the user. The final Summary covers what each leaf established, every leaf's state, the library's index (the lessons that reach beyond this problem), compute spent against budget, and what the user could fund next: the refused steps with their costs. Do not idle with an empty queue, and do not spend remaining budget just because it is there.
 
 ---
 
@@ -536,7 +623,7 @@ Before running any code or generating test scripts:
 
      - A value-of-information note `voi.md` next to the script (3.5.6).
      - Check with `python3 <skill-dir>/compute_gate.py check <working-dir> submit_test.sbatch --voi voi.md`, get the auditor's approval above 10 CPU-hours (3.5.7), then submit with `compute_gate.py submit` (same arguments). Never call `sbatch` directly. Monitor via `squeue -u $USER`; after it finishes, `compute_gate.py refresh` and `compute_gate.py record`.
-3. **Autopsy & Re-Loop Rule**: If the computation yields a **FAIL**, log the failure mechanism into `## Problem Anti-Patterns & Killed Routes`, mark the route `KILLED` in the leaf's Route Portfolio, launch the pre-planned FAIL action from its decision tree, and refill the portfolio (Stage 3.3) if it drops below 3 live routes. The other live routes were already advancing while this job ran (Stage 3.5.3), so a kill never restarts the leaf from scratch. Do not stop.
+3. **Autopsy & Re-Loop Rule**: If the computation yields a **FAIL**, complete the route's card (`KILLED at T<k>`, the pre-registered rule, the numbers against the foil with their uncertainties, the inference, what the kill does not rule out, and the strongest case against it). Add its Kill Index row, and write or revise a library entry if the failure mechanism generalises. Mark the route `KILLED` in the leaf's Route Portfolio, launch the pre-planned FAIL action from its decision tree, and refill the portfolio (Stage 3.3) if it drops below 3 live routes. The other live routes were already advancing while this job ran (Stage 3.5.3), so a kill never restarts the leaf from scratch. Do not stop.
 
 ---
 
@@ -552,9 +639,9 @@ Resolve all syntax and formatting failures flagged by the linter until the summa
 
 **Scheduling (Mode B)**: critics are pipelined too (Mode B step 0).
 - Spawn a **per-leaf critic** as soon as that leaf's artifact returns and lints clean, or a critic for a small batch of leaves that return together. Do not wait for the whole fan-out.
-- Point the per-leaf critic at that leaf's artifact and test code, plus the master Invariants and Anti-Patterns. Have it read the test code itself, not only the markdown.
+- Point the per-leaf critic at that leaf's artifact and test code, plus the master Invariants, the Kill Index and the findings library. Have it read the test code itself, not only the markdown. The critic signs each kill it has checked in that card's **Checked by** field.
 - Each critic's objections go straight to that leaf's fix or mutation step.
-- A single **cross-node critic** closes each round, once the last leaf of the round has passed its own critic. It checks only claims that span leaves: shared baselines, shared instances, corrections that must propagate, and global anti-patterns. It never holds back per-leaf progress.
+- A single **cross-node critic** closes each round, once the last leaf of the round has passed its own critic. It checks only claims that span leaves: shared baselines, shared instances, corrections that must propagate, and the findings library. For every new or changed library entry, it asks whether the evidence supports the generalisation and whether the scope is honest, and it alone can set an entry to ESTABLISHED. It never holds back per-leaf progress.
 
 Spawn a fresh adversarial critic agent with this mandate:
 > "Act as a hostile referee whose sole objective is to break the surviving routes in this document. 
@@ -563,10 +650,11 @@ Spawn a fresh adversarial critic agent with this mandate:
 > 3. Find the implicit assumption that sweeps the Hard Core under the rug.
 > 4. Determine whether the decisive test can be trivially satisfied by the Minimal Contrast Foil.
 > 5. Verify whether compute scripts conform to the environment (Slurm on a cluster) and were submitted only through `compute_gate.py` (`compute_gate.py reconcile` reports no unledgered job, and every job id cited in the documents appears in `compute/ledger.tsv`).
-> 6. Check whether any proposed step repeats a mechanism logged in the Problem Anti-Patterns section.
+> 6. Check whether any proposed step repeats a failure mechanism recorded in the findings library or on a route card in the Kill Index.
 > 7. Check tier discipline: could this route have been killed at a cheaper tier (a T0 argument such as a small effective-model lemma, an operation count, or an extensivity argument; or a T1 toy run)? Is a T2 or T3 job requested without a passed T0 and T1, without a pre-flight dry run whose controls behave, without power sizing, or above the budget cap without a written exception?
 > 8. Check Gate 4: does the claimed gain survive with system size, or is it a finite-size bonus or an exponential-cost operation in disguise?
 > 9. Check compute value (Stage 3.5.6–3.5.8): is every requested job the cheapest decisive version (one seed, one rung, released sequentially, not overpowered), is its outcome already predictable from cheaper evidence, would any verdict leave the decision unchanged, was a T0 kill argument tried first, will it converge within a measured wall time, and has the leaf's recent spend been changing decisions? Name every past job in the ledger whose verdict a cheaper argument could have given.
+> 10. Check the kills, not only the survivors: for each route card killed since the last review, is **The idea** described fairly and completely, does the **Evidence** support **Why this kills it**, is the kill's scope stated honestly, and is the **Strongest case against the kill** the real strongest one? A kill whose reasoning does not hold is reopened (its card returns to LIVE with the objection recorded).
 > Return only a numbered list of concrete, fatal objections categorized as Major or Minor. Do not provide praise or vague commentary."
 
 Address all major critiques in place. Log every action in the `Revision & Critic Log`.

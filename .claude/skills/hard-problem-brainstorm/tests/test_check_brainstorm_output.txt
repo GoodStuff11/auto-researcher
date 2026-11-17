@@ -1,0 +1,15 @@
+test_complete_library_passes (__main__.Library.test_complete_library_passes) ... ok
+test_missing_field_and_bad_status (__main__.Library.test_missing_field_and_bad_status) ... ok
+test_master_needs_kill_index_and_library (__main__.Master.test_master_needs_kill_index_and_library) ... ok
+test_complete_killed_card_passes (__main__.RouteCards.test_complete_killed_card_passes) ... ok
+test_kill_needs_code (__main__.RouteCards.test_kill_needs_code) ... ok
+test_missing_kill_fields (__main__.RouteCards.test_missing_kill_fields) ... ok
+test_missing_register_warns (__main__.RouteCards.test_missing_register_warns) ... ok
+test_register_must_precede_summary (__main__.RouteCards.test_register_must_precede_summary) ... ok
+test_shelved_and_live_cards (__main__.RouteCards.test_shelved_and_live_cards) ... ok
+test_short_idea_warns (__main__.RouteCards.test_short_idea_warns) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.772s
+
+OK

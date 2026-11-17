@@ -18,9 +18,26 @@ The document role is detected per file:
     * master  : file name starts with "brainstorm-", or the file contains "## Invariants".
                 Full structural checks (required core sections, Mode A stages / Mode B matrix,
                 invariants completeness) plus all hygiene checks.
+                Mode B masters also need a "## Kill Index" section and a library.md next to them
+                (warnings K0, K1).
     * leaf    : the first heading starts with "# Subproblem:".
                 Leaf schema checks ("**Parent Chain**" and "**Status**" present) plus all hygiene
                 checks. The master-only "missing core section" errors are not raised.
+                Route Register checks:
+                    R0 a "## Route Register" section exists (warning) and comes before the final
+                       "## Leaf Status Summary" (error);
+                    R1 every route card ("### R<id> ...") has **The idea**, **Lineage** and
+                       **Outcome**; a KILLED card also has **Kill rule**, **Evidence**, **Why this
+                       kills it**, **What the kill does not rule out**, **Strongest case against the
+                       kill**, **Checked by** and **Lesson**; a SHELVED card has **Why shelved** and
+                       **What would unshelve it** (errors);
+                    R2 a KILLED outcome names where it died: "KILLED at G0".."G4", "T0".."T3" or
+                       "CRITIC" (error);
+                    R3 **The idea** has at least 25 words (warning).
+    * library : a file named library.md (the findings library). Every "### L<n>. ..." entry has
+                **Status** (ESTABLISHED, PROVISIONAL or REFUTED), **Applies to**, **The lesson**,
+                **Evidence**, **Scope and limits**, **Counter-evidence and open questions**,
+                **How to use it** and **Sources** (errors L1, L2; warning L0 if there are no entries).
     * other   : any other Markdown file (briefs, notes). Hygiene checks only.
 
 Hygiene checks (all roles):
@@ -100,8 +117,101 @@ LIST_RE = re.compile(r"^\s*([*+-]|\d+[.)])\s")
 SKIP_DIRS = {"tests", "__pycache__", ".git"}
 
 
+ROUTE_COMMON = ["The idea", "Lineage", "Outcome"]
+ROUTE_KILLED = ["Kill rule", "Evidence", "Why this kills it", "What the kill does not rule out",
+                "Strongest case against the kill", "Checked by", "Lesson"]
+ROUTE_SHELVED = ["Why shelved", "What would unshelve it"]
+KILL_CODE_RE = re.compile(r"KILLED at (G[0-4]|T[0-3]|CRITIC)\b")
+LIBRARY_FIELDS = ["Status", "Applies to", "The lesson", "Evidence", "Scope and limits",
+                  "Counter-evidence and open questions", "How to use it", "Sources"]
+LIBRARY_STATUS_RE = re.compile(r"\*\*Status\*\*\s*:\s*\**\s*(ESTABLISHED|PROVISIONAL|REFUTED)\b")
+MIN_IDEA_WORDS = 25
+
+
+def _field(block, name):
+    """Value text of a '**name**:' field in a block of lines, or None."""
+    m = re.search(r"\*\*" + re.escape(name) + r"\*\*\s*:\s*(.*)", block)
+    return m.group(1).strip() if m else None
+
+
+def _section(lines, title_re):
+    """(start, end) line indices of the '## ' section whose title matches, or None."""
+    start = None
+    for i, line in enumerate(lines):
+        if re.match(r"^##\s", line):
+            if start is not None:
+                return start, i
+            if re.match(title_re, line):
+                start = i
+    return (start, len(lines)) if start is not None else None
+
+
+def _cards(lines, start, end, head_re):
+    """Split lines[start:end] into (title_line_no, title, text) blocks at '### ' headings matching head_re."""
+    out, cur = [], None
+    for i in range(start, end):
+        if re.match(r"^###\s", lines[i]):
+            if cur:
+                out.append(cur)
+            cur = (i + 1, lines[i].strip(), "") if re.match(head_re, lines[i]) else None
+        elif cur:
+            cur = (cur[0], cur[1], cur[2] + lines[i])
+    if cur:
+        out.append(cur)
+    return out
+
+
+def check_route_register(lines):
+    """Leaf: a '## Route Register' of route cards, above the final Leaf Status Summary. (level, line, msg)."""
+    out = []
+    sec = _section(lines, r"^##\s+Route Register")
+    if sec is None:
+        return [("WARNING", 1, "R0 leaf has no '## Route Register' section: every route ever generated needs a route card (SKILL.md, Route Register).")]
+    summ = _section(lines, r"^##\s+Leaf Status Summary")
+    if summ is not None and summ[0] < sec[0]:
+        out.append(("ERROR", sec[0] + 1, "R0 '## Route Register' must come before '## Leaf Status Summary', which is always the last section."))
+    cards = _cards(lines, sec[0] + 1, sec[1], r"^###\s+R")
+    if not cards:
+        out.append(("WARNING", sec[0] + 1, "R0 Route Register has no route cards ('### R<id> — <name> (<state>)')."))
+    for ln, title, text in cards:
+        need = list(ROUTE_COMMON)
+        outcome = _field(text, "Outcome") or ""
+        if "KILLED" in outcome:
+            need += ROUTE_KILLED
+            if not KILL_CODE_RE.search(outcome):
+                out.append(("ERROR", ln, f"R2 {title}: a KILLED outcome must name where it died, e.g. 'KILLED at G4' or 'KILLED at T1' or 'KILLED at CRITIC'."))
+        elif "SHELVED" in outcome:
+            need += ROUTE_SHELVED
+        for f in need:
+            v = _field(text, f)
+            if v is None or v == "":
+                out.append(("ERROR", ln, f"R1 {title}: route card is missing '**{f}**:'."))
+        idea = _field(text, "The idea") or ""
+        if idea and len(idea.split()) < MIN_IDEA_WORDS:
+            out.append(("WARNING", ln, f"R3 {title}: 'The idea' has {len(idea.split())} words; explain the mechanism and why it should work in plain terms (at least {MIN_IDEA_WORDS} words)."))
+    return out
+
+
+def check_library(lines):
+    """library.md: '### L<n>. <lesson>' entries, each with every field. (level, line, msg)."""
+    out = []
+    entries = _cards(lines, 0, len(lines), r"^###\s+L\d+")
+    if not entries:
+        out.append(("WARNING", 1, "L0 library has no entries ('### L<n>. <one-sentence lesson>')."))
+    for ln, title, text in entries:
+        for f in LIBRARY_FIELDS:
+            v = _field(text, f)
+            if v is None or v == "":
+                out.append(("ERROR", ln, f"L1 {title}: library entry is missing '**{f}**:'."))
+        if _field(text, "Status") is not None and not LIBRARY_STATUS_RE.search(text):
+            out.append(("ERROR", ln, f"L2 {title}: Status must be ESTABLISHED, PROVISIONAL or REFUTED."))
+    return out
+
+
 def detect_role(filepath, content):
-    """Classify a Markdown file as 'master', 'leaf' or 'other'."""
+    """Classify a Markdown file as 'library', 'master', 'leaf' or 'other'."""
+    if os.path.basename(filepath) == "library.md":
+        return "library"
     if os.path.basename(filepath).startswith("brainstorm-") or re.search(r"^##\s+Invariants", content, re.MULTILINE):
         return "master"
     for line in content.splitlines():
@@ -228,11 +338,26 @@ def check_file(filepath):
         elif "Master Leaf Synthesis Matrix" not in content and "Leaf Comparison Matrix" not in content:
             print("[WARNING] Mode B indicated, but no Master Leaf Matrix found in document.")
             warnings += 1
+        if not re.search(r"^##\s+Kill Index", content, re.MULTILINE):
+            print("[WARNING] K0 master has no '## Kill Index' (one row per killed or shelved route, linking its route card).")
+            warnings += 1
+        if not os.path.exists(os.path.join(os.path.dirname(filepath) or ".", "library.md")):
+            print("[WARNING] K1 no library.md next to the master: the findings library is required (SKILL.md, Findings Library).")
+            warnings += 1
+    elif role == "library":
+        for level, ln, msg in check_library(lines):
+            print(f"[{level}] Line {ln}: {msg}")
+            errors += level == "ERROR"
+            warnings += level == "WARNING"
     elif role == "leaf":
         for pattern in REQUIRED_LEAF_FIELDS:
             if not re.search(pattern, content):
                 print(f"[ERROR] Leaf artifact is missing the field matching: '{pattern}'")
                 errors += 1
+        for level, ln, msg in check_route_register(lines):
+            print(f"[{level}] Line {ln}: {msg}")
+            errors += level == "ERROR"
+            warnings += level == "WARNING"
 
     # 2. Zero Early Surrender
     for phrase in SURRENDER_PHRASES:
