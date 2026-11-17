@@ -5,24 +5,24 @@
 
 | Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| R51.1 noise-floor scaling (`nfloor`) | T1 | T2 unit 1 prepared (gate PASS, 2.3 CPU-h), not submitted | orchestrator submission | `tests/P5.1_noise_floor_r01/RULE_B.md` | REACHES → total-samples comparison with plain SR, then 24 sites; NOISE-FLOOR → unit 2 (16N, half length), variance-reduction routes first; NOT-NOISE → confirm with 16N, conditioning routes (R51.3) first; AMBIGUOUS → unit 2 |
-| R51.3 leverage-score row sampling (`levrow`) | T1 | T1 and T1b PASS | — | T1c (card): 10 polishing steps at ≥3× the exact ladder's rate per CPU-min | PASS → sampled-VMC version (leverage-weighted draws) at 12 then 24 sites; KILL → translation repair (rows by force contribution) |
+| R51.1 noise-floor scaling (`nfloor`) | T1 | T2 unit 1 submitted (gated job, 2.3 CPU-h) | unit 1 result | `tests/P5.1_noise_floor_r01/RULE_B.md` | REACHES → total-samples comparison with plain SR, then 24 sites; NOISE-FLOOR → unit 2 (16N, half length), variance-reduction routes first; NOT-NOISE → confirm with 16N, conditioning routes (R51.3) first; AMBIGUOUS → unit 2 |
+| R51.3 leverage-score row sampling (`levrow`) | T1 | T1, T1b PASS; T1c MARGINAL (2.40×); T1d ladder baseline from same point 0.44 γ_LM | T1d comparison arm (gated quick job, gate PASS, not submitted) | `tests/P5.1_rowsample_r01/RULE_T1d.md` (ρ ≥ 3 PASS, < 1.5 KILL) | PASS → sampled-VMC version (leverage-weighted draws) at 12 then 24 sites; KILL → translation repair (rows by force contribution); MARGINAL → wait on R51.1 |
 | R51.7 step decay + iterate averaging (`rmavg`) | T0 | GATED | R51.1 unit 2 (half-length arm) | STEP-NOISE promotes; NOT-NOISE kills at T0 | STEP-NOISE → T1 run of the decaying schedule; NOT-NOISE → KILLED |
 
 Killed this round: R51.2 (T1), R51.4 (G4), R51.5 (T0), R51.6 (T1) — `kill_index.md`. Log `round-01`.
 
 ## Leaf Status Summary
 * **State**: OPEN
-* **Updated**: 2026-11-17 (round 1: setup, first batch, three T1 tests)
+* **Updated**: 2026-11-17 (round 2: R51.3 T1c MARGINAL, T1d baseline run; R51.1 unit 1 submitted)
 * **Question**: Can a determinant- or Pfaffian-based fermionic NQS be optimised to within a small fraction of the lowest energy its own parameters can represent, at a sampled cost per step that grows polynomially with system size and with fewer total samples than stochastic reconfiguration or MinSR need for the same accuracy?
 * **Answer**: Not known. On one 12-site state, most of the stall of the best sampled method came from how it chose its step size, and a much cheaper way to build the parameter metric kept the exact polishing step, but neither has yet been run to the end of an optimisation or compared in total samples.
 * **What we showed**: For a 12-site doped Hubbard network state, sampled natural-gradient training stopped at about half of the energy gap that exact optimisation removes; in its last 20 steps the shortest step size never raised the energy and gained 4 times more per step than the sizes picked by a held-out energy check, whose noise was twice one step's gain. Building the parameter metric from 13% of the configurations, chosen by how much each one shapes the metric (its "leverage"), kept the whole exact polishing step, against a quarter when chosen by wave-function weight, and leverage computed 20 steps earlier still kept 95%. Compressing the full metric instead cannot help, because computing each configuration's derivatives, not combining them, is 80% of its cost.
 * **What it would take**: The fixed-step-size scaling test (about 2 CPU-hours) to show whether the remaining stall falls with more samples per step; a multi-step polishing run of the leverage-sampled metric against exact polishing per CPU-minute (about 10 CPU-minutes); then an optimiser using both, run to convergence and scored in total samples against plain stochastic reconfiguration at 12 sites and once at 24 sites.
 * **Conclusion**: R38's guided-SR plateau ($R\approx0.51$ vs 0.7475 polished) is mainly a step-selection floor (oracle-best 0.0079/step vs realised 0.0020 over steps 41–60; fixed length 0.005 positive in 60/60 steps, $0.0078\pm0.0006$). Leverage-score row sampling at $m=8P$ reproduces the exact metric's step ($\phi=0.998$ vs Born 0.226, guided 0.726; stale scores 0.990 near, 0.948 far). The exact metric build is Jacobian-dominated (1.14 of 1.41 CPU-min), which kills product sketches (R51.2).
 * **Scope**: open $4\times3$ Hubbard, $5+5$, $U=8$, $t'=-0.25$, `che` neural backflow (2637 parameters); exact sums; one SR-trained start and one polished endpoint; one-step and stored-data counterfactuals only; no 24-site evidence.
-* **Compute spent**: 0.35 CPU-h (interactive; no jobs).
+* **Compute spent**: 0.60 CPU-h interactive; R51.1 unit 1 (2.3 CPU-h cap) submitted.
 * **Most promising direction**: R51.3, leverage-sampled metric: one step reproduces the exact metric's gain from 13% of rows and the scores stay valid for at least 20 steps, which would bring the metric to about 0.2 CPU-min against 1.9; against it, every result is a single step at one state.
-* **Next step**: submit R51.1 unit 1 (2.3 CPU-h, `RULE_B.md`); pre-register and run R51.3's T1c (10 leverage-row polishing steps against the exact ladder's rate, about 10 CPU-min interactive).
+* **Next step**: submit R51.3's T1d comparison arm (`submit_t1d_cont.sbatch`, 0.2 CPU-h cap, gate PASS): the exact ladder from T1c's endpoint ran at only 0.44 of T1c's comparator rate, so R51.3 must reach 3× that like-for-like rate; await R51.1 unit 1 (submitted).
 * **What would close it**: ANSWERED (yes) if an optimiser reaches within 10% of the polished gap with fewer total samples than SR at 12 sites and keeps that ratio at 24 sites; EXHAUSTED at this scale if R51.1 returns NOT-NOISE and every conditioning route (R51.3 and its successors) is killed.
 
 ### The question and the argument

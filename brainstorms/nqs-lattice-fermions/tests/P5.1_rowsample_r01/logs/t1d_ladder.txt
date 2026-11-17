@@ -1,0 +1,7 @@
+[17:35:14] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[17:35:17] start eps 6.11115e-04; setup 0.06 CPU-min (not charged)
+[17:38:03] step 1: cut 1e-06 s 1.0 eps -> 6.01188e-04 [step 2.76, process 2.82 CPU-min]
+[17:40:46] step 2: cut 1e-07 s 0.5 eps -> 5.97888e-04 [step 2.73, process 5.54 CPU-min]
+[17:43:28] step 3: cut 1e-06 s 1.0 eps -> 5.84794e-04 [step 2.68, process 8.22 CPU-min]
+[17:43:28] ladder: eps 6.11115e-04 -> 5.84794e-04 in 3 steps, 8.16 CPU-min; gamma_L 3.225e-06 (0.44 gamma_LM)
+maxrss 9275440 KB, cpu 365.64+130.21 s

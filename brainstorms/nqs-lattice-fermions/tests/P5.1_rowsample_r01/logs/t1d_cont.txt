@@ -1,0 +1,8 @@
+[17:44:42] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[17:44:46] start eps 6.11115e-04; target eps_L 5.84794e-04; gamma_L 3.225e-06
+[17:45:32] step 11: cut 1e-07 tau 0.001 eps -> 6.05520e-04 [step 0.76]
+[17:46:17] step 12: cut 1e-06 tau 0.002 eps -> 5.98489e-04 [step 0.76]
+[17:47:03] step 13: cut 1e-07 tau 0.001 eps -> 5.92017e-04 [step 0.75]
+[17:47:46] step 14: cut 1e-07 tau 0.001 eps -> 5.86737e-04 [step 0.72]
+[17:48:29] step 15: cut 1e-06 tau 0.002 eps -> 5.80417e-04 [step 0.71]
+[17:48:29] T1d: 5 steps, reached eps_L True; rho 2.37 (full score cost 1.70) -> MARGINAL

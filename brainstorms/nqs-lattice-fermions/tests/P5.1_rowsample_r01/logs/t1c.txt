@@ -1,0 +1,16 @@
+[17:25:57] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[17:25:57] setup 0.06 CPU-min (not charged)
+[17:27:51] leverage scores at start: 1.896 CPU-min; sum 2162.9
+[17:27:58] check: |G/2 - f_full|/|f_full| = 1.34e-09; E diff 0.0e+00 [0.13 CPU-min, not charged]
+[17:28:27] step 1: cut 1e-07 tau 0.001 eps 7.21736e-04 -> 7.05118e-04 (gain 1.66e-05); distinct rows 11827; rungs 1e-05:0.002 1e-06:0.002 1e-07:0.001 [step 0.48, charged 2.38, process 2.56 CPU-min]
+[17:28:54] step 2: cut 1e-07 tau 0.001 eps 7.05118e-04 -> 6.93250e-04 (gain 1.19e-05); distinct rows 11941; rungs 1e-05:0.002 1e-06:0.002 1e-07:0.001 [step 0.45, charged 2.83, process 3.01 CPU-min]
+[17:29:21] step 3: cut 1e-06 tau 0.002 eps 6.93250e-04 -> 6.79860e-04 (gain 1.34e-05); distinct rows 12091; rungs 1e-05:0.002 1e-06:0.002 1e-07:0.001 [step 0.45, charged 3.28, process 3.46 CPU-min]
+[17:29:48] step 4: cut 1e-06 tau 0.002 eps 6.79860e-04 -> 6.69735e-04 (gain 1.01e-05); distinct rows 12001; rungs 1e-05:0.002 1e-06:0.002 1e-07:0.001 [step 0.45, charged 3.72, process 3.90 CPU-min]
+[17:30:14] step 5: cut 1e-07 tau 0.001 eps 6.69735e-04 -> 6.57044e-04 (gain 1.27e-05); distinct rows 12018; rungs 1e-05:0.002 1e-06:0.002 1e-07:0.001 [step 0.44, charged 4.16, process 4.34 CPU-min]
+[17:30:41] step 6: cut 1e-06 tau 0.002 eps 6.57044e-04 -> 6.46899e-04 (gain 1.01e-05); distinct rows 12082; rungs 1e-05:0.002 1e-06:0.002 1e-07:0.001 [step 0.44, charged 4.60, process 4.78 CPU-min]
+[17:31:07] step 7: cut 1e-07 tau 0.001 eps 6.46899e-04 -> 6.37136e-04 (gain 9.76e-06); distinct rows 12013; rungs 1e-05:0.002 1e-06:0.002 1e-07:0.001 [step 0.44, charged 5.03, process 5.21 CPU-min]
+[17:31:33] step 8: cut 1e-06 tau 0.002 eps 6.37136e-04 -> 6.27580e-04 (gain 9.56e-06); distinct rows 12018; rungs 1e-05:0.002 1e-06:0.002 1e-07:0.001 [step 0.44, charged 5.47, process 5.65 CPU-min]
+[17:31:59] step 9: cut 1e-07 tau 0.001 eps 6.27580e-04 -> 6.20015e-04 (gain 7.56e-06); distinct rows 11914; rungs 1e-05:0.002 1e-06:0.002 1e-07:0.001 [step 0.43, charged 5.90, process 6.09 CPU-min]
+[17:32:26] step 10: cut 1e-06 tau 0.002 eps 6.20015e-04 -> 6.11115e-04 (gain 8.90e-06); distinct rows 11934; rungs 1e-05:0.002 1e-06:0.002 1e-07:0.001 [step 0.44, charged 6.34, process 6.52 CPU-min]
+[17:32:26] T1c: eps 7.21736e-04 -> 6.11115e-04 in 10 steps, charged 6.34 CPU-min (scores 1.90); gamma/gamma_LM 2.40 (without score cost 3.42) -> MARGINAL
+maxrss 7897808 KB, cpu 323.15+68.70 s
