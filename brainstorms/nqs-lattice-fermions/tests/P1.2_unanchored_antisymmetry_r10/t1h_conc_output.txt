@@ -1,0 +1,4 @@
+[02:16:07] size 1 seed 11: lam(S) -9.7317 | S: q/max|g|^2 -2.00e-06 PN 27 | free: q/max|g|^2 -2.36e-04 PN 170 | rand: q/max|g|^2 +9.62e-02 PN 39 | CPU 13 s
+[02:16:19] size 1 seed 22: lam(S) -10.2161 | S: q/max|g|^2 -2.98e-06 PN 31 | free: q/max|g|^2 -2.67e-04 PN 341 | rand: q/max|g|^2 +7.19e-02 PN 43 | CPU 24 s
+[02:16:35] size 2 seed 11: lam(S) -4.4814 | S: q/max|g|^2 -2.60e-05 PN 12 | free: q/max|g|^2 -9.09e-04 PN 348 | rand: q/max|g|^2 +7.92e-02 PN 118 | CPU 41 s
+[02:16:52] size 2 seed 22: lam(S) -4.4263 | S: q/max|g|^2 -3.84e-06 PN 86 | free: q/max|g|^2 -8.59e-04 PN 636 | rand: q/max|g|^2 +7.82e-02 PN 64 | CPU 57 s

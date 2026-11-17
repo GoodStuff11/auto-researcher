@@ -1,0 +1,3 @@
+[02:22:07] size 1 seed 11: setup 12.3 s; per eval S 24.1 ms rand 24.0 ms Sb 24.2 ms; dE_sign 0.8 s; projected (2 inits x 300 it x 1.3) 72 CPU-s
+[02:22:25] size 2 seed 11: setup 17.1 s; per eval S 28.8 ms rand 28.6 ms Sb 29.0 ms; dE_sign 0.8 s; projected (2 inits x 300 it x 1.3) 87 CPU-s
+[02:22:25] PROJECTED full run 159 CPU-s (2.7 CPU-min); timing CPU 32 s

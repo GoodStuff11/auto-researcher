@@ -1,0 +1,2 @@
+[02:24:39] size 2 seed 11: tight tol dE_complex 0.16091 dEs 0.04303 nit 94 msg CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH
+[02:24:55] size 2 seed 22: tight tol dE_complex 0.16032 dEs 0.04355 nit 86 msg CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH

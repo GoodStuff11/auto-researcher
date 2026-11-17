@@ -1,0 +1,14 @@
+P2.2 R7.4 T1 (2026-11-17), rule in RULE.md.  H6 LOW, R=3.0, 400 dets, exact psi0.  CPU ~480 s total (interactive, no sbatch).
+
+Exact reduction (dual = PSD completion): b_opt = max over correlation matrices T on the connected components of the kept graph of
+sum_dropped e_ij (T_c(i)c(j) - 1).  The kept graph is connected at every grid eps up to 0.1 Ha (largest grid point), so b_opt = 0 everywhere.
+Full primal SDP (SCS, 400x400) at eps = 2.24e-3 (f = 0.306): certified excess 2.3e-11 Ha after PSD repair, max free entry 3.9 Ha (30 max|h|).
+Excess of that same Y on psi0 (1 + delta xi), median of 5: 1.8e-6 Ha (delta = 1e-3), 1.84e-4 Ha (delta = 1e-2, 0.92 tau).
+Primal at eps = 0.1 timed out (300 s wall) and was not rerun (budget).
+
+f at tau:  SCREEN (uncertified) 0.306 | VPS1 (product-weight diagonal) 1.003 (3.28x) | best diagonal floor sum(|e|-e) 0.596 (1.95x) | OPT 0.134 at the grid end (0.44x).
+Verdict under RULE.md: PASS-T1 (ratio 0.44 < 3).  Caveat: the optimum is psi0-tuned (Y psi0 = 0); its value is set by robustness off psi0,
+which is what the drafted H8 job (voi.md) tests.  gadget.py: triangle-only explicit construction is incomplete (5924/20244 dropped pairs
+lack a common kept neighbour), so its off-psi0 numbers are not a certificate.
+Files: dual_output.txt, results/h6_opt_dualonly.json, results/h6_primal_eps2.24e-3.json, primal_output_eps1e-1.txt (truncated run), gadget_output.txt, results/h6_gadget.json.
+venv: /home/jek354/.venvs/p22-cvxpy (cvxpy 1.9.3; isolated, base env untouched).

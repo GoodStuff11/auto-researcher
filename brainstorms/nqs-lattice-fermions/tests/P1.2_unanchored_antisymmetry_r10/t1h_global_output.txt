@@ -1,1 +1,4 @@
 [02:15:30] size 1 seed 11: global lambda_min -214801.8404; participation of eigvec 1 of D 16632; CPU 2 s
+[02:15:31] size 1 seed 22: global lambda_min -25030.5925; participation of eigvec 1 of D 16632; CPU 2 s
+[02:15:32] size 2 seed 11: global lambda_min -74948.8248; participation of eigvec 1 of D 16632; CPU 3 s
+[02:15:33] size 2 seed 22: global lambda_min -650160.8307; participation of eigvec 1 of D 16632; CPU 4 s

@@ -1,0 +1,7 @@
+[02:22:47] size 1 seed 11 S: dEs 0.01038 (foil 0.01280) dE_complex 0.07244 flips 546 (psi0 weight 0.0024, near-node 0.0020) |cos| 0.9994 nit 41 params 1464 cpu 4 | S-nn dEs 0.01229 flips 178
+[02:22:49] size 1 seed 11 rand: dEs 0.01280 (foil 0.01280) dE_complex 0.07319 flips 0 (psi0 weight 0.0000, near-node 0.0000) |cos| 1.0000 nit 7 params 1464 cpu 1
+[02:22:51] size 1 seed 11 Sb: dEs 0.01280 (foil 0.01280) dE_complex 0.07282 flips 0 (psi0 weight 0.0000, near-node 0.0000) |cos| 0.9996 nit 35 params 1464 cpu 3
+[02:23:07] size 1 seed 22 S: dEs 0.00798 (foil 0.00934) dE_complex 0.07037 flips 665 (psi0 weight 0.0020, near-node 0.0018) |cos| 0.9992 nit 46 params 1464 cpu 4 | S-nn dEs 0.00911 flips 177
+[02:23:08] size 1 seed 22 rand: dEs 0.00934 (foil 0.00934) dE_complex 0.07087 flips 0 (psi0 weight 0.0000, near-node 0.0000) |cos| 1.0000 nit 7 params 1464 cpu 1
+[02:23:12] size 1 seed 22 Sb: dEs 0.00934 (foil 0.00934) dE_complex 0.07047 flips 0 (psi0 weight 0.0000, near-node 0.0000) |cos| 0.9995 nit 53 params 1464 cpu 4
+[02:23:12] train CPU 41 s

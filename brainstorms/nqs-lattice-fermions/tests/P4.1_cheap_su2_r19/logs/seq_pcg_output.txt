@@ -1,2 +1,11 @@
 [02:13:42] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
 [02:13:57] pcg: P 2696; E(theta0) -7.8178466957 stored -7.8178466957 (diff 8.9e-16); eps0 1.2842e-03; VALID True [0.3 CPU-min]
+[02:17:36] step 1: E -7.82026204 eps 9.7561e-04 R 0.2403 (predicted gain 0.2586); s 1.0; |z| 0.022; |dtheta| 0.576; rank 1240 [3.9 CPU-min, step 3.6, wall 235 s]
+[02:21:15] step 2: E -7.82056310 eps 9.3715e-04 R 0.2702 (predicted gain 0.0308); s 1.0; |z| 0.007; |dtheta| 0.295; rank 1234 [7.6 CPU-min, step 3.6, wall 454 s]
+[02:24:55] step 3: E -7.82061481 eps 9.3055e-04 R 0.2754 (predicted gain 0.0055); s 1.0; |z| 0.003; |dtheta| 0.139; rank 1227 [11.2 CPU-min, step 3.6, wall 674 s]
+[02:28:37] step 4: E -7.82063513 eps 9.2795e-04 R 0.2774 (predicted gain 0.0024); s 1.0; |z| 0.002; |dtheta| 0.111; rank 1231 [14.9 CPU-min, step 3.7, wall 896 s]
+[02:32:13] step 5: E -7.82064192 eps 9.2708e-04 R 0.2781 (predicted gain 0.0009); s 1.0; |z| 0.001; |dtheta| 0.064; rank 1227 [18.5 CPU-min, step 3.6, wall 1113 s]
+[02:35:49] step 6: E -7.82064587 eps 9.2658e-04 R 0.2785 (predicted gain 0.0006); s 1.0; |z| 0.001; |dtheta| 0.055; rank 1229 [22.1 CPU-min, step 3.6, wall 1328 s]
+[02:39:21] step 7: E -7.82064769 eps 9.2635e-04 R 0.2786 (predicted gain 0.0003); s 1.0; |z| 0.001; |dtheta| 0.038; rank 1226 [25.6 CPU-min, step 3.5, wall 1540 s]
+[02:42:48] step 8: E -7.82064892 eps 9.2619e-04 R 0.2788 (predicted gain 0.0002); s 1.0; |z| 0.000; |dtheta| 0.034; rank 1228 [29.0 CPU-min, step 3.4, wall 1747 s]
+[02:42:48] wrote seq_pcg.json (1747 s, 29.0 CPU-min)

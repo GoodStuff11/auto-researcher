@@ -9,3 +9,12 @@
 [02:11:53] half: it   300 E-E0 = 0.035156 best = 0.032470 (1.463 CPU-s/step)
 [02:13:07] half: it   350 E-E0 = 0.038404 best = 0.029963 (1.463 CPU-s/step)
 [02:14:20] half: it   400 E-E0 = 0.029899 best = 0.029032 (1.462 CPU-s/step)
+[02:15:34] half: it   450 E-E0 = 0.047158 best = 0.026089 (1.462 CPU-s/step)
+[02:16:47] half: it   500 E-E0 = 0.041135 best = 0.026089 (1.462 CPU-s/step)
+[02:18:01] half: it   550 E-E0 = 0.036325 best = 0.023879 (1.462 CPU-s/step)
+[02:19:14] half: it   600 E-E0 = 0.028356 best = 0.023879 (1.462 CPU-s/step)
+[02:20:28] half: it   650 E-E0 = 0.042655 best = 0.023879 (1.462 CPU-s/step)
+[02:21:41] half: it   700 E-E0 = 0.033882 best = 0.023879 (1.461 CPU-s/step)
+[02:22:53] half: stop = plateau at it 750; best E - E0 = 0.023879; SR CPU 1096 s
+[02:23:02] half [P]: dE_tot=0.023879 dE_sign=0.002834 f_E=0.119 spread=3.0e-13; max |masked entry| proposed by SR = 0.0e+00
+[02:23:02] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r12d/results/half_F16/t1_half_inst25_s11.json

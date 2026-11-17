@@ -1,0 +1,53 @@
+[     0.4s] instance t'=0.25 J=0.4: E0=-12.81808701 E1=-12.79277607 <S2>=-1.38e-18 gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': -1.0} -> ACCEPT
+[     0.5s] target 4x4 t'=0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} n_irrep=105 E0=-12.81808701 (full -12.81808701) gap/V=2.3863e-01 no same-irrep competitor below 0.005 t/site: sign half only
+[     0.5s] projected-sector dimension 105 / route parameters 122 = 0.9
+[     0.5s] calibration: E_sign(exact signs) - E0 = 0.000e+00; Pd(E0)=8.3002e-03
+[     0.5s] check: seed-0 MF init eps=0.6063989731 vs 451914 0.3181487336 -> False
+[     0.6s]   [src anchor 0.01 restart 0] step 1/100 E=-1.90535849,1.61334478 lr=0.055 relerr=7.870e-01,1.183e+00
+[     0.6s]   [src anchor 0.01 restart 0] step 11/100 E=-1.90647318,1.60168175 lr=0.00892 relerr=7.869e-01,1.181e+00
+[     0.7s]   [src anchor 0.01 restart 0] step 21/100 E=-1.92198796,1.59034988 lr=0.0116 relerr=7.852e-01,1.180e+00
+[     0.7s]   [src anchor 0.01 restart 0] step 31/100 E=-1.94013145,1.57751249 lr=0.015 relerr=7.831e-01,1.179e+00
+[     0.8s]   [src anchor 0.01 restart 0] step 41/100 E=-1.95859331,1.56219723 lr=0.0194 relerr=7.811e-01,1.177e+00
+[     0.8s]   [src anchor 0.01 restart 0] step 51/100 E=-1.96875245,1.54879394 lr=0.0252 relerr=7.799e-01,1.175e+00
+[     0.9s]   [src anchor 0.01 restart 0] step 61/100 E=-1.99064008,1.53076548 lr=0.0164 relerr=7.775e-01,1.173e+00
+[     0.9s]   [src anchor 0.01 restart 0] step 71/100 E=-2.03511255,1.50621344 lr=0.0106 relerr=7.725e-01,1.171e+00
+[     1.0s]   [src anchor 0.01 restart 0] step 81/100 E=-2.04451729,1.49098261 lr=0.0138 relerr=7.715e-01,1.169e+00
+[     1.0s]   [src anchor 0.01 restart 0] step 91/100 E=-2.05235707,1.47495221 lr=0.0178 relerr=7.706e-01,1.167e+00
+[     1.0s]   [src anchor 0.01 restart 0] step 100/100 E=-2.07622805,1.45638801 lr=0.0105 relerr=7.679e-01,1.165e+00
+[     1.0s] source anchor 0.01: relerr=['7.68e-01', '1.17e+00'] |d|=0.126 wall=0.5s
+[     1.1s]   [src anchor 0.001 restart 0] step 1/100 E=-1.90535849,1.61334478 lr=0.055 relerr=7.870e-01,1.183e+00
+[     1.1s]   [src anchor 0.001 restart 0] step 11/100 E=-1.98062625,1.52311429 lr=0.0357 relerr=7.786e-01,1.173e+00
+[     1.1s]   [src anchor 0.001 restart 0] step 21/100 E=-2.15869500,1.32441252 lr=0.0463 relerr=7.587e-01,1.150e+00
+[     1.2s]   [src anchor 0.001 restart 0] step 31/100 E=-2.43908551,0.99669573 lr=0.06 relerr=7.274e-01,1.113e+00
+[     1.2s]   [src anchor 0.001 restart 0] step 41/100 E=-2.71213392,0.44288651 lr=0.0778 relerr=6.968e-01,1.050e+00
+[     1.3s]   [src anchor 0.001 restart 0] step 51/100 E=-3.01427369,-0.64029521 lr=0.2 relerr=6.631e-01,9.274e-01
+[     1.3s]   [src anchor 0.001 restart 0] step 61/100 E=-3.44368050,-1.92828647 lr=0.2 relerr=6.151e-01,7.815e-01
+[     1.4s]   [src anchor 0.001 restart 0] step 71/100 E=-4.02220240,-3.76372413 lr=0.2 relerr=5.504e-01,5.735e-01
+[     1.4s]   [src anchor 0.001 restart 0] step 81/100 E=-5.30566197,-6.47954219 lr=0.2 relerr=4.069e-01,2.658e-01
+[     1.5s]   [src anchor 0.001 restart 0] step 91/100 E=-6.78783526,-8.06713202 lr=0.2 relerr=2.413e-01,8.593e-02
+[     1.5s]   [src anchor 0.001 restart 0] step 100/100 E=-7.81551028,-8.56768654 lr=0.2 relerr=1.264e-01,2.921e-02
+[     1.5s] source anchor 0.001: relerr=['1.26e-01', '2.92e-02'] |d|=1.539 wall=0.5s
+[     1.5s]   [src anchor 0.0001 restart 0] step 1/100 E=-1.90535849,1.61334478 lr=0.055 relerr=7.870e-01,1.183e+00
+[     1.6s]   [src anchor 0.0001 restart 0] step 11/100 E=-7.78366855,-6.92353790 lr=0.143 relerr=1.299e-01,2.155e-01
+[     1.6s]   [src anchor 0.0001 restart 0] step 21/100 E=-8.92951516,-8.82423932 lr=0.2 relerr=1.867e-03,1.399e-04
+[     1.6s]   [src anchor 0.0001 restart 0] step 31/100 E=-8.94469395,-8.82494791 lr=0.2 relerr=1.706e-04,5.962e-05
+[     1.7s]   [src anchor 0.0001 restart 0] step 41/100 E=-8.94619457,-8.82542788 lr=0.0403 relerr=2.860e-06,5.235e-06
+[     1.7s]   [src anchor 0.0001 restart 0] step 51/100 E=-8.94615832,-8.82546226 lr=0.0131 relerr=6.912e-06,1.339e-06
+[     1.8s]   [src anchor 0.0001 restart 0] step 61/100 E=-8.94619025,-8.82544706 lr=0.0339 relerr=3.344e-06,3.061e-06
+[     1.8s]   [src anchor 0.0001 restart 0] step 71/100 E=-8.94619047,-8.82544711 lr=0.022 relerr=3.319e-06,3.056e-06
+[     1.9s]   [src anchor 0.0001 restart 0] step 81/100 E=-8.94619112,-8.82544649 lr=0.0285 relerr=3.246e-06,3.126e-06
+[     1.9s]   [src anchor 0.0001 restart 0] step 91/100 E=-8.94619114,-8.82544656 lr=0.0369 relerr=3.244e-06,3.118e-06
+[     2.0s]   [src anchor 0.0001 restart 0] step 100/100 E=-8.94619135,-8.82544640 lr=0.0435 relerr=3.220e-06,3.136e-06
+[     2.0s] source anchor 0.0001: relerr=['3.22e-06', '3.14e-06'] |d|=1.158 wall=0.5s
+[     2.0s] source charged 1.4s; anchor 0.0001 ok=True identified frac=0.607
+[     2.2s] arm pa@0     : E=-6.74732727 eps=3.7942e-01 (raw 4.1530e-01, irrep weight 0.514) A/V=8.1187e-02 sign-agree=0.7462 Pd=1.6499e-02 fid=0.3411
+[     2.5s]   [pa] step 1/6 eps=3.42241e-01 lr=0.055
+[     2.7s]   [pa] step 2/6 eps=2.94882e-01 lr=0.0605
+[     2.8s] arm pa@2     : E=-8.09997253 eps=2.9488e-01 (raw 3.3863e-01, irrep weight 0.527) sign-agree=0.8036 Pd=1.5865e-02 fid=0.4435
+[     3.0s]   [pa] step 3/6 eps=2.32408e-01 lr=0.0666
+[     3.2s]   [pa] step 4/6 eps=1.65777e-01 lr=0.0732
+[     3.5s]   [pa] step 5/6 eps=9.81440e-02 lr=0.0805
+[     3.7s]   [pa] step 6/6 eps=4.91244e-02 lr=0.0886
+[     3.8s] arm pa@6     : E=-12.03209603 eps=4.9124e-02 (raw 2.2807e-01, irrep weight 0.353) A/V=1.4941e-03 sign-agree=0.9939 Pd=1.1315e-02 fid=0.8748
+[     3.8s] done (results_smoke/pa_s0.json); valid=False steps=6
+CPU 7.36+0.45 s wall 4.47 s

@@ -1,0 +1,32 @@
+{
+ "valid": true,
+ "rho_N4": 0.7045172565534206,
+ "verdict_N4": "CONFOUNDED",
+ "rho_N8": 0.7609238784623259,
+ "verdict_N8": "CONFOUNDED",
+ "exact_verdict": "CONFOUNDED",
+ "sampled": {
+  "che": {
+   "R_sampled": -42.392189210154974,
+   "R_exact": 0.5391510169766945,
+   "f": -78.62767179383329,
+   "eps": 0.1240183415507887,
+   "steps": 4,
+   "done": true,
+   "valid": true,
+   "check": {
+    "S": 2.4293538612215513e-16,
+    "H": 2.662158085946506e-16,
+    "E_samp": -7.799469924886262,
+    "E_exact": -7.805526273788163,
+    "se": 0.004666029093862727,
+    "z": 1.2979663821357617
+   }
+  }
+ },
+ "sampled_arms_required": [
+  "che",
+  "pcg"
+ ],
+ "sampled_verdict": "INCOMPLETE"
+}

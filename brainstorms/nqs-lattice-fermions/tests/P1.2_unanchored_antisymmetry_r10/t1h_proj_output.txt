@@ -1,0 +1,5 @@
+# NOTE: "lam(S) +0.0000" below is a placeholder (lam(S) not recomputed here; see t1h_curv2_output.txt). P_S free = psi^2-weighted projection of the free-phase direction onto span S; resid = the remainder.
+[02:17:11] size 1 seed 11: lam(S) +0.0000 | free: q/max|g|^2 -2.36e-04 PN 170 | P_S free: q/max|g|^2 -1.56e-05 PN 194 | resid: q/max|g|^2 -2.60e-05 PN 118 | CPU 8 s
+[02:17:18] size 1 seed 22: lam(S) +0.0000 | free: q/max|g|^2 -2.67e-04 PN 341 | P_S free: q/max|g|^2 -1.21e-05 PN 433 | resid: q/max|g|^2 -4.86e-05 PN 118 | CPU 15 s
+[02:17:28] size 2 seed 11: lam(S) +0.0000 | free: q/max|g|^2 -9.09e-04 PN 348 | P_S free: q/max|g|^2 +3.73e-05 PN 656 | resid: q/max|g|^2 -3.66e-05 PN 479 | CPU 24 s
+[02:17:37] size 2 seed 22: lam(S) +0.0000 | free: q/max|g|^2 -8.59e-04 PN 636 | P_S free: q/max|g|^2 +6.19e-05 PN 934 | resid: q/max|g|^2 -3.80e-05 PN 639 | CPU 34 s

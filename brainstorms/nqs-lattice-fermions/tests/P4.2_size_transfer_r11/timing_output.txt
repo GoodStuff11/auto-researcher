@@ -1,0 +1,20 @@
+[     0.2s] target basis 1681680 built in 0.2s, npar=122
+[     1.4s] chunk 50000: grad 0.86s value 0.30s -> per SR step (grad + ~1.3 value passes) ~42s at this thread count
+[     1.6s]   [timing src restart 0] step 1/40 E=-4.18974338,-0.15217102 lr=0.055 relerr=4.941e-01,9.785e-01
+[     1.6s]   [timing src restart 0] step 5/40 E=-4.30749401,-0.35326468 lr=0.0403 relerr=4.799e-01,9.501e-01
+[     1.7s]   [timing src restart 0] step 9/40 E=-4.44703460,-0.58484607 lr=0.0589 relerr=4.630e-01,9.174e-01
+[     1.8s]   [timing src restart 0] step 13/40 E=-4.51447731,-0.78938904 lr=0.0863 relerr=4.549e-01,8.885e-01
+[     1.9s]   [timing src restart 0] step 17/40 E=-4.67128724,-1.16476799 lr=0.0632 relerr=4.360e-01,8.355e-01
+[     1.9s]   [timing src restart 0] step 21/40 E=-4.83116888,-1.47914438 lr=0.0925 relerr=4.167e-01,7.911e-01
+[     2.0s]   [timing src restart 0] step 25/40 E=-4.92585424,-1.79063386 lr=0.0677 relerr=4.052e-01,7.471e-01
+[     2.1s]   [timing src restart 0] step 29/40 E=-5.02442983,-2.02062909 lr=0.0991 relerr=3.933e-01,7.146e-01
+[     2.2s]   [timing src restart 0] step 33/40 E=-5.08958078,-2.25181014 lr=0.145 relerr=3.855e-01,6.820e-01
+[     2.2s]   [timing src restart 0] step 37/40 E=-5.18501298,-2.60124704 lr=0.106 relerr=3.739e-01,6.326e-01
+[     2.3s]   [timing src restart 0] step 40/40 E=-5.28970799,-3.06428138 lr=0.0707 relerr=3.613e-01,5.672e-01
+[     2.3s] source ED 0.1s; anchored source SR 0.019s/step -> one rung (4 restarts x 800) ~62s, full ladder (3 rungs) ~185s
+	Command being timed: "timeout 400 /share/apps/software/anaconda3/bin/python3 torus_pa.py --timing --timing-steps 40"
+	User time (seconds): 3.57
+	System time (seconds): 0.33
+	Percent of CPU this job got: 138%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:02.82
+	Maximum resident set size (kbytes): 511284

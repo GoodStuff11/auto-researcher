@@ -1,0 +1,45 @@
+H6 LOW: n=400 E0=-2.95764609 gap=0.0414 pairs=23400 psi-zero dets=0 maxoff|h|=1.321e-01
+eps=1.00e-07 f=1.7964 SCREEN=7.13e-09 VPS1=2.36e-07 sum(|e|-e)=3.05e-08 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=2s
+eps=1.41e-07 f=1.7447 SCREEN=6.84e-09 VPS1=6.02e-07 sum(|e|-e)=9.20e-08 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=2s
+eps=2.00e-07 f=1.7126 SCREEN=1.09e-08 VPS1=9.28e-07 sum(|e|-e)=1.14e-07 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=2s
+eps=2.82e-07 f=1.6173 SCREEN=3.28e-08 VPS1=2.22e-06 sum(|e|-e)=1.86e-07 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=2s
+eps=3.98e-07 f=1.6027 SCREEN=3.05e-08 VPS1=2.49e-06 sum(|e|-e)=2.21e-07 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=2s
+eps=5.62e-07 f=1.5722 SCREEN=2.66e-08 VPS1=3.45e-06 sum(|e|-e)=3.45e-07 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=2s
+eps=7.94e-07 f=1.5086 SCREEN=3.12e-07 VPS1=5.87e-06 sum(|e|-e)=4.33e-07 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=2s
+eps=1.12e-06 f=1.4939 SCREEN=3.12e-07 VPS1=6.82e-06 sum(|e|-e)=4.75e-07 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=1.58e-06 f=1.4714 SCREEN=9.99e-07 VPS1=7.88e-06 sum(|e|-e)=4.92e-07 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=2.24e-06 f=1.3997 SCREEN=1.28e-06 VPS1=1.51e-05 sum(|e|-e)=9.83e-07 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=3.16e-06 f=1.3224 SCREEN=1.74e-07 VPS1=2.90e-05 sum(|e|-e)=3.70e-06 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=4.47e-06 f=1.1675 SCREEN=5.91e-06 VPS1=5.68e-05 sum(|e|-e)=9.04e-06 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=6.31e-06 f=1.0600 SCREEN=6.43e-06 VPS1=8.92e-05 sum(|e|-e)=1.69e-05 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=8.91e-06 f=1.0515 SCREEN=5.91e-06 VPS1=9.35e-05 sum(|e|-e)=1.79e-05 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=1.26e-05 f=1.0182 SCREEN=3.29e-06 VPS1=1.20e-04 sum(|e|-e)=2.34e-05 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=1.78e-05 f=1.0026 SCREEN=2.89e-06 VPS1=1.33e-04 sum(|e|-e)=2.52e-05 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=2.51e-05 f=0.8355 SCREEN=3.89e-05 VPS1=3.12e-04 sum(|e|-e)=5.57e-05 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=3.55e-05 f=0.6697 SCREEN=7.44e-06 VPS1=6.76e-04 sum(|e|-e)=1.81e-04 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=5.01e-05 f=0.6697 SCREEN=7.44e-06 VPS1=6.76e-04 sum(|e|-e)=1.81e-04 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=7.08e-05 f=0.6338 SCREEN=5.37e-05 VPS1=8.63e-04 sum(|e|-e)=2.78e-04 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=1.00e-04 f=0.6319 SCREEN=5.52e-05 VPS1=8.74e-04 sum(|e|-e)=2.81e-04 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=1.41e-04 f=0.5961 SCREEN=7.30e-05 VPS1=1.04e-03 sum(|e|-e)=2.81e-04 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=2.00e-04 f=0.4899 SCREEN=4.86e-04 VPS1=1.57e-03 sum(|e|-e)=2.81e-04 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=2.82e-04 f=0.4162 SCREEN=4.82e-04 VPS1=2.75e-03 sum(|e|-e)=9.36e-04 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=3.98e-04 f=0.4113 SCREEN=4.93e-04 VPS1=2.84e-03 sum(|e|-e)=9.44e-04 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=5.62e-04 f=0.3098 SCREEN=1.07e-04 VPS1=6.00e-03 sum(|e|-e)=2.20e-03 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=7.94e-04 f=0.3098 SCREEN=1.07e-04 VPS1=6.00e-03 sum(|e|-e)=2.20e-03 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=1.12e-03 f=0.3098 SCREEN=1.07e-04 VPS1=6.00e-03 sum(|e|-e)=2.20e-03 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=1.58e-03 f=0.3098 SCREEN=1.07e-04 VPS1=6.00e-03 sum(|e|-e)=2.20e-03 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=2.24e-03 f=0.3056 SCREEN=6.59e-05 VPS1=6.37e-03 sum(|e|-e)=2.26e-03 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=3.16e-03 f=0.2511 SCREEN=1.33e-03 VPS1=1.38e-02 sum(|e|-e)=2.45e-03 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=4.47e-03 f=0.1901 SCREEN=1.27e-02 VPS1=1.61e-02 sum(|e|-e)=2.45e-03 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=6.31e-03 f=0.1901 SCREEN=1.27e-02 VPS1=1.61e-02 sum(|e|-e)=2.45e-03 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=8.91e-03 f=0.1901 SCREEN=1.27e-02 VPS1=1.61e-02 sum(|e|-e)=2.45e-03 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=1.26e-02 f=0.1900 SCREEN=1.26e-02 VPS1=1.62e-02 sum(|e|-e)=2.57e-03 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=1.78e-02 f=0.1423 SCREEN=8.20e-03 VPS1=6.64e-02 sum(|e|-e)=2.27e-02 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=2.51e-02 f=0.1339 SCREEN=1.42e-02 VPS1=7.02e-02 sum(|e|-e)=2.37e-02 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=3.55e-02 f=0.1339 SCREEN=1.42e-02 VPS1=7.02e-02 sum(|e|-e)=2.37e-02 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=5.01e-02 f=0.1339 SCREEN=1.42e-02 VPS1=7.02e-02 sum(|e|-e)=2.37e-02 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=7.08e-02 f=0.1339 SCREEN=1.42e-02 VPS1=7.02e-02 sum(|e|-e)=2.37e-02 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+eps=1.00e-01 f=0.1339 SCREEN=1.42e-02 VPS1=7.02e-02 sum(|e|-e)=2.37e-02 OPT=0.00e+00 comps(kept graph)=1 in-SDP=0  cpu=3s
+BEST SCREEN: f=0.3056 eps*=2.24e-03 err=6.59e-05
+BEST VPS1: f=1.0026 eps*=1.78e-05 err=1.33e-04
+BEST OPT: f=0.1339 eps*=1.00e-01 err=0.00e+00

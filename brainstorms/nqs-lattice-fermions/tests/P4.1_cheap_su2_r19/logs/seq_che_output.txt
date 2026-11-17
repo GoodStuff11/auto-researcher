@@ -1,0 +1,8 @@
+[02:42:53] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[02:42:56] che: P 2637; E(theta0) -7.8055262738 stored -7.8055262738 (diff 1.8e-15); eps0 2.8581e-03; VALID True [0.1 CPU-min]
+[02:42:59] che resumes from Round 11 step 4: E -7.8175885704 vs recorded -7.8175885704 (diff 0.0e+00)
+[02:45:30] step 5: E -7.81789373 eps 1.2782e-03 R 0.5528 (predicted gain 0.0171); s 1.0; |z| 0.007; |dtheta| 0.357; rank 1743 [2.7 CPU-min, step 2.5, wall 159 s]
+[02:48:04] step 6: E -7.81810475 eps 1.2512e-03 R 0.5622 (predicted gain 0.0126); s 1.0; |z| 0.005; |dtheta| 0.305; rank 1740 [5.2 CPU-min, step 2.6, wall 313 s]
+[02:50:35] step 7: E -7.81825187 eps 1.2324e-03 R 0.5688 (predicted gain 0.0101); s 1.0; |z| 0.005; |dtheta| 0.298; rank 1747 [7.7 CPU-min, step 2.5, wall 464 s]
+[02:53:09] step 8: E -7.81837100 eps 1.2172e-03 R 0.5741 (predicted gain 0.0091); s 1.0; |z| 0.004; |dtheta| 0.286; rank 1747 [10.3 CPU-min, step 2.6, wall 618 s]
+[02:53:09] wrote seq_che.json (618 s, 10.3 CPU-min)

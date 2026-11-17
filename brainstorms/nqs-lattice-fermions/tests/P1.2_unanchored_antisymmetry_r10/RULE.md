@@ -36,3 +36,13 @@ captured by each span, ||P_S g||^2 / ||g||^2.
 * FAMILY-OPEN if lambda(S) < 0 and lambda(S) < lambda(rand) at both counted sizes. A <= 1 CPU-h t1c training job
   (a linear phase on S, warm-started along the lambda(S) eigenvector) would follow.
 * AMBIGUOUS otherwise.
+
+## Post-run (added after the verdict; does not change it)
+Verdict by the rule: FAMILY-OPEN (t1h_curv2_output.txt). Three context checks written after the verdict
+(t1h_global.py, t1h_conc.py, t1h_proj.py) show that near-node configurations dominate the lambda metric:
+* the unrestricted lambda_min is -2.5e4 to -6.5e5 and sits on a single configuration;
+* the lambda(S) eigenvector has participation 12 to 86 configurations, and its realisable gain q/max|g|^2 is about
+  1e-6, roughly 100x below the free phase (2e-4 to 9e-4);
+* the part of the free direction that S captures is ascending at 4x3 (q > 0).
+
+Recommendation: amend the screen (sup-normalised q, or q of the projected free direction) before the t1c job.

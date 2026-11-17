@@ -55,6 +55,7 @@ This library collects what the brainstorm `brainstorm-nqs-fermions.md` learned t
 * L49 (PROVISIONAL): Caps per array task do not bound what an array job spends; compute caps must be set on the total of a job.
 * L50 (PROVISIONAL): Before planning on, resuming or extending a job, check from stored data whether its pre-registered rule can still change the verdict.
 * L51 (PROVISIONAL): Removing the reason a route was killed, or rescuing it after the result, is not a new mechanism; a revival needs its own pre-registered test with a cost model measured on one instance at one size.
+* L52 (PROVISIONAL): A sampled optimisation step whose line search is scored on the same samples that built the step overfits their noise, and can raise the true energy while the in-sample estimate reports a drop.
 
 ## About the problem itself
 
@@ -359,6 +360,16 @@ This library collects what the brainstorm `brainstorm-nqs-fermions.md` learned t
 * **Counter-evidence and open questions**: A family whose tangent rank grows with width would escape it.
 * **How to use it**: Run a one-rung capacity pilot with a tangent-rank count before investing in transfer or speed-ups; stop if the rank does not grow.
 * **Sources**: P4.2 R5.1, R5.3, R9.4; P4.1 R7; jobs 452196, 604157, 659969, 704844.
+
+### L52. A sampled optimisation step whose line search is scored on the same samples that built the step overfits their noise, and can raise the true energy while the in-sample estimate reports a drop.
+* **Status**: PROVISIONAL
+* **Applies to**: sampled linear-method, natural-gradient (SR) and Newton-type steps for variational Monte Carlo, especially with few samples per parameter; any step-size selection by correlated reweighting of the samples that produced the step.
+* **The lesson**: A sampled step is fitted to one draw of configurations: its direction partly follows that draw's noise in the metric $S$ and the energy gradient. Scoring candidate step lengths by reweighting the same draw (correlated sampling) evaluates the energy along a direction chosen to look good on exactly those samples, so the estimate is biased downward, and the bias grows as the number of samples per parameter falls and as the step reaches into small-eigenvalue directions of $S$. The line search then accepts a step that the true energy rejects. The in-sample estimate cannot detect this, because the error it would need to see is the one it was fitted to.
+* **Evidence**: P4.1 rung-1 smoke test (2026-11-17; `tests/P4.1_cheap_su2_r19/logs/probe_sampled_che_1step_1thread.txt`): open $4\times3$ Hubbard strip, $5+5$, $U=8$, $t'=-0.25$, exact-$S=0$ `che` state with 2637 parameters, 8192 exact i.i.d. samples (about 3 per parameter), truncated-metric linear-method step (cutoff $10^{-5}$, $\lvert z\rvert\le0.05$). The validity check passed (sampled energy $-7.79947\pm0.0047$ against exact $-7.805526$, 1.3 standard errors). The in-sample line search accepted $s=\tfrac12$, reporting $-7.79947\to-7.93034$, a drop of 0.131; the exact energy rose to $-7.69576$, that is $R=-4.906$ (the step lost 4.9 times the state's gap to the ground energy). The same step with the exact metric and exact line search gave $R=+0.269$.
+* **Scope and limits**: One step, one seed, one sample size, one 12-site state; the size of the effect at more samples per parameter, or with a fresh-sample line search, is not measured. Rung 1 (job 731462) measures 4 sampled steps under a pre-registered rule.
+* **Counter-evidence and open questions**: Standard correlated-sampling line searches in quantum-chemistry VMC work with many more samples per parameter; where the crossover lies for NQS is open.
+* **How to use it**: Score a sampled step's length on fresh samples (or a held-out half), never only on the samples that built it; report the samples-per-parameter ratio; and check at least one step against an exact energy on a small instance before trusting a sampled optimiser at scale.
+* **Sources**: P4.1 rung-1 smoke test (Round "Rung 1 gated", 2026-11-17), R18''; related L29.
 
 ## About testing and measurement
 

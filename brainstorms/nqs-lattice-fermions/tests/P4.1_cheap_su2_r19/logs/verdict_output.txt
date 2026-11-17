@@ -1,0 +1,8 @@
+exact che N4: eps 1.3171e-03 (SR-trained 2.8581e-03; R 0.5392) after 4 accepted steps
+exact che N8: eps 1.2172e-03 (SR-trained 2.8581e-03; R 0.5741) after 8 accepted steps
+exact pcg N4: eps 9.2795e-04 (SR-trained 1.2842e-03; R 0.2774) after 4 accepted steps
+exact pcg N8: eps 9.2619e-04 (SR-trained 1.2842e-03; R 0.2788) after 8 accepted steps
+N4: rho_pol = eps_pcg / eps_che = 0.7045 -> CONFOUNDED  (the decision uses N8)
+N8: rho_pol = eps_pcg / eps_che = 0.7609 -> CONFOUNDED
+sampled che N=8192: R -42.3922 after 4 accepted steps (exact 4-step R 0.5392); f = -78.628; check {'S': 2.4293538612215513e-16, 'H': 2.662158085946506e-16, 'E_samp': -7.799469924886262, 'E_exact': -7.805526273788163, 'se': 0.004666029093862727, 'z': 1.2979663821357617}
+VALID True; EXACT VERDICT (N8): CONFOUNDED; SAMPLED VERDICT (arms ['che', 'pcg']): INCOMPLETE

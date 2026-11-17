@@ -1,3 +1,44 @@
 rung 1 on kim-compute-03.physics.cornell.edu, job 731462
 [02:13:42] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
 [02:13:57] pcg: P 2696; E(theta0) -7.8178466957 stored -7.8178466957 (diff 8.9e-16); eps0 1.2842e-03; VALID True [0.3 CPU-min]
+[02:17:36] step 1: E -7.82026204 eps 9.7561e-04 R 0.2403 (predicted gain 0.2586); s 1.0; |z| 0.022; |dtheta| 0.576; rank 1240 [3.9 CPU-min, step 3.6, wall 235 s]
+[02:21:15] step 2: E -7.82056310 eps 9.3715e-04 R 0.2702 (predicted gain 0.0308); s 1.0; |z| 0.007; |dtheta| 0.295; rank 1234 [7.6 CPU-min, step 3.6, wall 454 s]
+[02:24:55] step 3: E -7.82061481 eps 9.3055e-04 R 0.2754 (predicted gain 0.0055); s 1.0; |z| 0.003; |dtheta| 0.139; rank 1227 [11.2 CPU-min, step 3.6, wall 674 s]
+[02:28:37] step 4: E -7.82063513 eps 9.2795e-04 R 0.2774 (predicted gain 0.0024); s 1.0; |z| 0.002; |dtheta| 0.111; rank 1231 [14.9 CPU-min, step 3.7, wall 896 s]
+[02:32:13] step 5: E -7.82064192 eps 9.2708e-04 R 0.2781 (predicted gain 0.0009); s 1.0; |z| 0.001; |dtheta| 0.064; rank 1227 [18.5 CPU-min, step 3.6, wall 1113 s]
+[02:35:49] step 6: E -7.82064587 eps 9.2658e-04 R 0.2785 (predicted gain 0.0006); s 1.0; |z| 0.001; |dtheta| 0.055; rank 1229 [22.1 CPU-min, step 3.6, wall 1328 s]
+[02:39:21] step 7: E -7.82064769 eps 9.2635e-04 R 0.2786 (predicted gain 0.0003); s 1.0; |z| 0.001; |dtheta| 0.038; rank 1226 [25.6 CPU-min, step 3.5, wall 1540 s]
+[02:42:48] step 8: E -7.82064892 eps 9.2619e-04 R 0.2788 (predicted gain 0.0002); s 1.0; |z| 0.000; |dtheta| 0.034; rank 1228 [29.0 CPU-min, step 3.4, wall 1747 s]
+[02:42:48] wrote seq_pcg.json (1747 s, 29.0 CPU-min)
+[02:42:53] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[02:42:56] che: P 2637; E(theta0) -7.8055262738 stored -7.8055262738 (diff 1.8e-15); eps0 2.8581e-03; VALID True [0.1 CPU-min]
+[02:42:59] che resumes from Round 11 step 4: E -7.8175885704 vs recorded -7.8175885704 (diff 0.0e+00)
+[02:45:30] step 5: E -7.81789373 eps 1.2782e-03 R 0.5528 (predicted gain 0.0171); s 1.0; |z| 0.007; |dtheta| 0.357; rank 1743 [2.7 CPU-min, step 2.5, wall 159 s]
+[02:48:04] step 6: E -7.81810475 eps 1.2512e-03 R 0.5622 (predicted gain 0.0126); s 1.0; |z| 0.005; |dtheta| 0.305; rank 1740 [5.2 CPU-min, step 2.6, wall 313 s]
+[02:50:35] step 7: E -7.81825187 eps 1.2324e-03 R 0.5688 (predicted gain 0.0101); s 1.0; |z| 0.005; |dtheta| 0.298; rank 1747 [7.7 CPU-min, step 2.5, wall 464 s]
+[02:53:09] step 8: E -7.81837100 eps 1.2172e-03 R 0.5741 (predicted gain 0.0091); s 1.0; |z| 0.004; |dtheta| 0.286; rank 1747 [10.3 CPU-min, step 2.6, wall 618 s]
+[02:53:09] wrote seq_che.json (618 s, 10.3 CPU-min)
+exact che N4: eps 1.3171e-03 (SR-trained 2.8581e-03; R 0.5392) after 4 accepted steps
+exact che N8: eps 1.2172e-03 (SR-trained 2.8581e-03; R 0.5741) after 8 accepted steps
+exact pcg N4: eps 9.2795e-04 (SR-trained 1.2842e-03; R 0.2774) after 4 accepted steps
+exact pcg N8: eps 9.2619e-04 (SR-trained 1.2842e-03; R 0.2788) after 8 accepted steps
+N4: rho_pol = eps_pcg / eps_che = 0.7045 -> CONFOUNDED  (the decision uses N8)
+N8: rho_pol = eps_pcg / eps_che = 0.7609 -> CONFOUNDED
+VALID True; EXACT VERDICT (N8): CONFOUNDED; SAMPLED VERDICT (arms ['che', 'pcg']): INCOMPLETE
+[02:53:16] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[02:55:43] INVALID check: generic vs Round 11 S rel 2.4e-16, H rel 2.7e-16
+[02:55:46] INVALID check: sampled E -7.799470 +- 4.7e-03 vs exact -7.805526 (1.3 se)
+[02:55:56] step 1: exact E -7.69576374 R -4.9061; s 0.5; sampled E_old -7.799470 -> -7.930339; |z| 0.050; rank 1228 [2.7 CPU-min, step 2.6, wall 162 s]
+[02:57:45] step 2: exact E -7.49022763 R -14.0930; s 1.0; sampled E_old -7.673439 -> -8.024590; |z| 0.050; rank 1258 [4.5 CPU-min, step 1.8, wall 271 s]
+[02:59:38] step 3: exact E -7.26902276 R -23.9802; s 1.0; sampled E_old -7.484870 -> -7.700860; |z| 0.050; rank 1476 [6.4 CPU-min, step 1.9, wall 383 s]
+[03:01:30] step 4: exact E -6.85709598 R -42.3922; s 1.0; sampled E_old -7.295459 -> -7.430740; |z| 0.050; rank 1640 [8.3 CPU-min, step 1.9, wall 496 s]
+[03:01:30] wrote sampled_che_N8192.json (496 s, 8.3 CPU-min)
+exact verdict CONFOUNDED; sampled che f -78.62767179383329; sampled pcg NOT NEEDED
+exact che N4: eps 1.3171e-03 (SR-trained 2.8581e-03; R 0.5392) after 4 accepted steps
+exact che N8: eps 1.2172e-03 (SR-trained 2.8581e-03; R 0.5741) after 8 accepted steps
+exact pcg N4: eps 9.2795e-04 (SR-trained 1.2842e-03; R 0.2774) after 4 accepted steps
+exact pcg N8: eps 9.2619e-04 (SR-trained 1.2842e-03; R 0.2788) after 8 accepted steps
+N4: rho_pol = eps_pcg / eps_che = 0.7045 -> CONFOUNDED  (the decision uses N8)
+N8: rho_pol = eps_pcg / eps_che = 0.7609 -> CONFOUNDED
+sampled che N=8192: R -42.3922 after 4 accepted steps (exact 4-step R 0.5392); f = -78.628; check {'S': 2.4293538612215513e-16, 'H': 2.662158085946506e-16, 'E_samp': -7.799469924886262, 'E_exact': -7.805526273788163, 'se': 0.004666029093862727, 'z': 1.2979663821357617}
+VALID True; EXACT VERDICT (N8): CONFOUNDED; SAMPLED VERDICT (arms ['che', 'pcg']): INCOMPLETE
