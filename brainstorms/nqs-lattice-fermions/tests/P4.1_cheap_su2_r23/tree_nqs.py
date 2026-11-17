@@ -42,7 +42,7 @@ import time
 
 def parse_args():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", required=True, choices=["check", "time", "pretrain", "polish", "sign", "verdict"])
+    ap.add_argument("--mode", required=True, choices=["check", "time", "pretrain", "polish", "sign", "verdict", "verdict1"])
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--seeds", type=int, default=3)
     ap.add_argument("--nA", type=int, default=7000)
@@ -74,6 +74,7 @@ E0 = -7.827899034271753
 TAU, MIN_GAIN, STOP_FRAC = 0.05, 1e-7, 1e-3
 LADDER = [1e-5, 1e-6, 1e-7, 1e-8, 1e-9]
 PASS, KILL = 0.60, 1.00
+ONE_SEED_FACTOR = 2.5  # RULE_amend1.md
 EPS_R19 = 1.217e-3  # the card's polished-`che` value (r19)
 H_HID = 30
 RES = A.res or os.path.join(HERE, "results")
@@ -538,9 +539,33 @@ def verdict(_ctx=None):
     dump(os.path.join(RES, "verdict.json"), out)
 
 
+def verdict1(_ctx=None):
+    """RULE_amend1.md one-seed decision on --res (seed 0 only): KILL (G2) if the polished seed-0 eps, endpoint AND
+    guard-extrapolated, are >= ONE_SEED_FACTOR x eps_ref (endpoint and guard refs respectively); else RELEASE."""
+    ft = os.path.join(RES, "state_tree.json")
+    fc = os.path.join(TESTS, "P4.1_cheap_su2_r22/results/state_che.json")
+    out = {}
+    st, sc = json.load(open(ft)), json.load(open(fc))
+    if st["stop"] is None or sc["stop"] is None:
+        out["verdict1"] = "INCOMPLETE"
+    else:
+        et, eti, nt = endpoint(st)
+        ec, eci, _ = endpoint(sc)
+        er, eri = min(EPS_R19, ec), min(EPS_R19, eci)
+        kill = et >= ONE_SEED_FACTOR * er and eti >= ONE_SEED_FACTOR * eri
+        out.update(seed=st["seed"], eps_tree=et, eps_tree_inf=eti, steps=nt, stop=st["stop"], eps_ref=er,
+                   eps_ref_inf=eri, factor=ONE_SEED_FACTOR, rho=et / er, rho_inf=eti / eri if eri > 0 else None,
+                   verdict1="KILL (G2), one seed" if kill else "RELEASE seeds 1-2 (original 3-seed rule)")
+    for k, v in out.items():
+        print(f"{k}: {v}")
+    dump(os.path.join(RES, "verdict1.json"), out)
+
+
 if __name__ == "__main__":
     if A.mode == "verdict":
         verdict()
+    elif A.mode == "verdict1":
+        verdict1()
     else:
         ctx = Ctx()
         {"check": check, "time": time_mode, "pretrain": pretrain, "polish": polish, "sign": sign}[A.mode](ctx)

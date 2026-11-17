@@ -18,7 +18,10 @@ number), compute the orbit-weighted log-derivatives O_i(r) only on the drawn row
            (the training's absolute Tikhonov shift; RULE.md "Interpretation").
   ladder   (reported only) candidates at relative cutoffs 1e-4..1e-8, each at tau = 0.05; a fresh held-out set
            (N, seed 1000 + step) scores each by the correlated-sampling dE; take argmin if dE < 0, else skip.
-Every step is taken (trsr, shift) without any acceptance test; every step is scored by the exact energy only.
+RULE_amend1 (supersedes the fixed tau = 0.05 for trsr and shift): each step tries metric lengths {0.005, 0.01,
+0.02, 0.05}, scores them by the correlated-sampling dE on a held-out set (N, seed 1000 + step), takes the argmin
+if dE < 0, else skips the step.  The exact energy is logged per candidate (oracle) and never used to choose.
+Verdict on the best of trsr and shift.
 
 Modes
   exact0   free pre-run diagnostic: the infinite-sample (exact S, H from r11 results/S_H_theta0.npz) step 1 of the
@@ -51,8 +54,9 @@ import torch  # noqa: E402
 log = P.log
 E0 = P.E0
 CUT, TAU, SHIFT = 1e-4, 0.05, 1e-3
+TAUS = (0.005, 0.01, 0.02, 0.05)          # RULE_amend1: metric-length ladder for trsr and shift
 LADDER = (1e-4, 1e-5, 1e-6, 1e-7, 1e-8)
-R_VIABLE, MARGIN, R_DEAD, RISE_MAX = 0.20, 0.15, 0.08, 0.02
+R_VIABLE, R_DEAD, RISE_MAX = 0.20, 0.08, 0.02
 R11_SH = P.R11_SH
 RES = os.path.join(HERE, "results")
 
@@ -158,47 +162,52 @@ def run(a):
             log(f"INVALID check: sampled E {E_s:.6f} +- {se:.1e} vs exact {E:.6f} ({chk['z']:.1f} se)")
         w, U = np.linalg.eigh(ST)
         rec = dict(E=E, E_samp=E_s, se=se, wmax=float(w.max()), fnorm=float(np.linalg.norm(f)))
-        if a.arm == "trsr":
-            d, rank, gtn = d_trunc(w, U, f, CUT)
-            rec.update(rank=rank, gt=gtn)
-        elif a.arm == "shift":
-            d, ml = d_shift(w, U, f)
-            rec.update(metric_len_unscaled=ml)
-        else:
-            rv = draw(ctx, pr, a.nsamp, 1000 + n)
-            elv = (ctx.Hr @ pr)[rv] / pr[rv]
-            cands, best = [], None
-            for cut in LADDER:
-                dc, rank, gtn = d_trunc(w, U, f, cut)
-                Ex, prn, _ = ctx.energy(th + torch.tensor(dc))
-                wt = (prn[rv] / pr[rv]) ** 2
-                eln = (ctx.Hr @ prn)[rv] / prn[rv]
-                En = float(np.sum(wt * eln) / np.sum(wt))
-                x = (wt / wt.mean()) * (eln - En) - (elv - elv.mean())
-                cd = dict(cut=cut, rank=rank, gt=gtn, dE_val=En - float(elv.mean()),
-                          sig_val=float(x.std() / np.sqrt(len(x))), E_exact=Ex, R_oracle=(E00 - Ex) / gap,
-                          dth=float(np.linalg.norm(dc)))
+        rv = draw(ctx, pr, a.nsamp, 1000 + n)
+        elv = (ctx.Hr @ pr)[rv] / pr[rv]
+
+        def score(dc, **kw):
+            Ex, prn, _ = ctx.energy(th + torch.tensor(dc))
+            wt = (prn[rv] / pr[rv]) ** 2
+            eln = (ctx.Hr @ prn)[rv] / prn[rv]
+            En = float(np.sum(wt * eln) / np.sum(wt))
+            x = (wt / wt.mean()) * (eln - En) - (elv - elv.mean())
+            return dict(kw, dE_val=En - float(elv.mean()), sig_val=float(x.std() / np.sqrt(len(x))), E_exact=Ex,
+                        R_oracle=(E00 - Ex) / gap, dth=float(np.linalg.norm(dc)))
+
+        cands, best = [], None
+        if a.arm in ("trsr", "shift"):      # RULE_amend1: metric length chosen per step on the held-out set
+            key = "tau"
+            for tau in TAUS:
+                if a.arm == "trsr":
+                    dc, rank, gtn = d_trunc(w, U, f, CUT, tau)
+                    cd = score(dc, tau=tau, rank=rank)
+                else:
+                    dc = d_shift(w, U, f, tau)[0]
+                    cd = score(dc, tau=tau)
                 cands.append(cd)
                 if best is None or cd["dE_val"] < best[0]["dE_val"]:
                     best = (cd, dc)
-            take = best[0]["dE_val"] < 0.0
-            d = best[1] if take else np.zeros_like(best[1])
-            rec.update(cands=cands, taken=bool(take), cut_chosen=best[0]["cut"] if take else None,
-                       cut_oracle=min(cands, key=lambda c: c["E_exact"])["cut"])
+        else:                               # reported-only cutoff ladder at metric length 0.05
+            key = "cut"
+            for cut in LADDER:
+                dc, rank, gtn = d_trunc(w, U, f, cut)
+                cd = score(dc, cut=cut, rank=rank, gt=gtn)
+                cands.append(cd)
+                if best is None or cd["dE_val"] < best[0]["dE_val"]:
+                    best = (cd, dc)
+        take = best[0]["dE_val"] < 0.0
+        d = best[1] if take else np.zeros_like(best[1])
+        rec.update(cands=cands, taken=bool(take), chosen=best[0][key] if take else None,
+                   oracle=min(cands, key=lambda c: c["E_exact"])[key])
         th = th + torch.tensor(d)
-        E_new = ctx.energy(th)[0] if a.arm != "ladder" or not rec["taken"] else \
-            next(c["E_exact"] for c in rec["cands"] if c["cut"] == rec["cut_chosen"])
-        if a.arm == "ladder" and not rec["taken"]:
-            E_new = E
+        E_new = best[0]["E_exact"] if take else E
         rec.update(E_new=E_new, dth=float(np.linalg.norm(d)), R=(E00 - E_new) / gap,
                    dR=(E - E_new) / gap, eps=(E_new - E0) / abs(E0))
         hist.append(rec)
         per = P.cpu_min() - c0
-        extra = ""
-        if a.arm == "ladder":
-            extra = "\n    " + "; ".join(f"cut {c['cut']:.0e}: rank {c['rank']} val dE {c['dE_val']:+.2e}+-"
-                                         f"{c['sig_val']:.1e} exact R {c['R_oracle']:+.4f}" for c in rec["cands"])
-        log(f"{a.arm} step {n}: exact R {rec['R']:+.4f} (step dR {rec['dR']:+.4f}); |dtheta| {rec['dth']:.3f}; "
+        extra = "\n    " + "; ".join(f"{key} {c[key]:.0e}: val dE {c['dE_val']:+.2e}+-"
+                                     f"{c['sig_val']:.1e} exact R {c['R_oracle']:+.4f}" for c in rec["cands"])
+        log(f"{a.arm} step {n}: {key} {rec['chosen']}; exact R {rec['R']:+.4f} (step dR {rec['dR']:+.4f}); |dtheta| {rec['dth']:.3f}; "
             f"sampled E {E_s:.5f}+-{se:.1e}; w_max {rec['wmax']:.2e} [{P.cpu_min():.1f} CPU-min, step {per:.2f}, "
             f"wall {time.time() - t0:.0f} s]{extra}")
         np.save(fth, th.numpy())
@@ -228,16 +237,17 @@ def verdict(a):
         v = "INCOMPLETE"
     elif not (S["trsr"]["valid"] and S["shift"]["valid"]):
         v = "INVALID"
-    else:
-        t, c = S["trsr"], S["shift"]
-        if t["R"] >= R_VIABLE and t["R"] - c["R"] >= MARGIN and t["max_rise"] <= RISE_MAX:
+    else:                                   # RULE_amend1: best of the two main arms
+        if any(S[k]["R"] >= R_VIABLE and S[k]["max_rise"] <= RISE_MAX for k in ("trsr", "shift")):
             v = "VIABLE"
-        elif t["R"] < R_DEAD:
+        elif all(S[k]["R"] < R_DEAD for k in ("trsr", "shift")):
             v = "NOT-VIABLE"
         else:
             v = "MARGINAL"
-    print(f"VERDICT (trsr vs shift; ladder reported only): {v}")
-    P.dump(os.path.join(RES, "verdict.json"), dict(arms=S, verdict=v))
+    diff = S["trsr"]["R"] - S["shift"]["R"] if "trsr" in S and "shift" in S else None
+    print(f"reported only: R_trsr(15) - R_shift(15) = {diff}")
+    print(f"VERDICT (best of trsr, shift; RULE_amend1; ladder reported only): {v}")
+    P.dump(os.path.join(RES, "verdict.json"), dict(arms=S, verdict=v, trsr_minus_shift=diff))
 
 
 def main():

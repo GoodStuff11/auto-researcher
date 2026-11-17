@@ -1,0 +1,6 @@
+[13:32:52] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[13:33:01] INVALID check: sampled E -7.808657 +- 4.1e-03 vs exact -7.805526 (0.8 se)
+[13:33:13] trsr step 1: tau 0.02; exact R +0.0243 (step dR +0.0243); |dtheta| 0.226; sampled E -7.80866+-4.1e-03; w_max 8.02e+00 [0.4 CPU-min, step 0.30, wall 22 s]
+    tau 5e-03: val dE -7.11e-04+-3.0e-04 exact R +0.0246; tau 1e-02: val dE -1.21e-03+-5.9e-04 exact R +0.0370; tau 2e-02: val dE -1.53e-03+-1.2e-03 exact R +0.0243; tau 5e-02: val dE +3.80e-03+-3.4e-03 exact R -0.3647
+[13:33:13] wrote trsr.json (22 s, 0.4 CPU-min)
+wall 24.43 s user 22.11 sys 2.13 maxrss 2015232 KB

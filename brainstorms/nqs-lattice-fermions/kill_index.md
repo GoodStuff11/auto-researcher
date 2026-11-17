@@ -332,6 +332,14 @@ One row per KILLED or SHELVED route, grouped by leaf. **Code** is where the rout
 | R24 | P4.1 | spin-flip averaging plus a Löwdin filter for the residual spins | G1 | the filter needs about $N_s/4$ factors of cost $\mathcal O(N_s^2)$ each; truncated, it is R5.2 | [[leaves/P4.1/cards/R24]] | L56, L10 |
 | R25 | P4.1 | projected coupled cluster via an SU(2)-scalar bond Hubbard–Stratonovich decoupling (`pcc-hs`) | G1 | exact per field, but the field integral is exponential (sign problem) or a fixed-rank Gaussian sum | [[leaves/P4.1/cards/R25]] | L11 |
 | R26 | P4.1 | charge variables in a dimer-orbital basis (`bond-basis`) | G2 | the site Gutzwiller factor becomes non-diagonal, so the leading strong-coupling correlator is lost or exponential | [[leaves/P4.1/cards/R26]] | route-specific |
+| R27 | P4.1 | full-sum L-BFGS with exact gradients (`lbfgs`) | T1 | 0.13-0.17x the ladder LM's gain per CPU-min at the polished endpoints | [[leaves/P4.1/cards/R27]] | route-specific (proposed entry, round 22) |
+| R29 | P4.1 | truncated-Newton trust region with exact-gradient Hessian-vector products (`ncg`) | T1 | 0.05x the ladder LM's rate on `che` | [[leaves/P4.1/cards/R29]] | route-specific (as R27) |
+| R31 | P4.1 | Krylov-subspace or larger-block linear method (`krylov-lm`) | G2 | the build, not the solve, sets the step cost, and the model solved is the same | [[leaves/P4.1/cards/R31]] | route-specific |
+| R32 | P4.1 | two-stage blocked SR step (`bsr`) | T1 | metric-side: the exact metric does not help the sampled step; blocked Rbar -0.007 vs 0.016 | [[leaves/P4.1/cards/R32]] | proposed entry (force noise limits sampled SR) |
+| R33 | P4.1 | minSR / kernel-trick SR (`minsr`) | G2 | push-through identity: same samples, same step; only the solve cost changes | [[leaves/P4.1/cards/R33]] | route-specific |
+| R35 | P4.1 | RLS/Kalman running metric (`rls-S`) | T1 | a fourfold staleness-free metric average gave Rbar 0.003 vs 0.016 | [[leaves/P4.1/cards/R35]] | as R32 |
+| R36 | P4.1 | Ledoit-Wolf / NERCOME / factor-model metric (`shrink`) | T1 | no metric estimator can help when the exact metric does not | [[leaves/P4.1/cards/R36]] | as R32 |
+| R37 | P4.1 | Hamiltonian-symmetry control variate for the force (`cv`) | T1 | variance down 3.9-6.7x against a 32.6x cost; steps worse at equal samples | [[leaves/P4.1/cards/R37]] | as R32 |
 
 ### P4.2 — Size-transferable fermionic NQS
 

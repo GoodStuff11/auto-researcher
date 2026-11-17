@@ -1,0 +1,7 @@
+r23 tree arm seed 0 on kim-compute-03.physics.cornell.edu, job 748750
+[13:32:33] sector: dim 169884; (+,+) representatives 42756 (validate.json irrep dim 42756); Hr nnz 1864078; inputs 78; P 2672
+[13:32:35] seed 0 it 0: E 21.62334850 lr 3.00e-03 [0.05 CPU-min]
+[13:40:30] seed 0 it 500: E -6.49332996 lr 2.96e-03 [7.95 CPU-min]
+[13:48:34] seed 0 it 1000: E -6.86786012 lr 2.85e-03 [15.99 CPU-min]
+[13:56:36] seed 0 it 1500: E -6.66394453 lr 2.67e-03 [24.01 CPU-min]
+[14:04:56] seed 0 it 2000: E -6.86419672 lr 2.44e-03 [32.32 CPU-min]

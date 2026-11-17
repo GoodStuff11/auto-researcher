@@ -1,0 +1,17 @@
+[13:51:13] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+call 1 cpu 0.626 eps 4.230291e-04
+call 2 cpu 1.248 eps 1.584398e+00
+call 3 cpu 1.892 eps 4.210271e-04
+call 4 cpu 2.522 eps 4.191468e-04
+call 5 cpu 3.155 eps 4.187910e-04
+call 6 cpu 3.793 eps 4.183047e-04
+call 7 cpu 4.448 eps 4.178994e-04
+call 8 cpu 5.084 eps 4.175226e-04
+call 9 cpu 5.723 eps 4.172907e-04
+call 10 cpu 6.365 eps 4.170638e-04
+call 11 cpu 7.010 eps 4.168798e-04
+call 12 cpu 7.666 eps 4.167054e-04
+call 13 cpu 8.291 eps 4.165589e-04
+call 14 cpu 8.897 eps 4.164139e-04
+call 15 cpu 9.481 eps 4.162315e-04
+pcg lbfgs: eps 4.2303e-04 -> half 4.1790e-04 -> end 4.1623e-04 in 9.48 CPU-min, 15 calls; gamma/gLM 0.13, late 0.06; gLM 5.510e-06; VERDICT KILL

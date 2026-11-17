@@ -26,3 +26,14 @@
   verdict). VOI `voi.md`: prediction KILL (G2) p 0.75 / AMBIGUOUS 0.17 / PASS 0.08.
   `compute_gate.py check ... --pre-audit`: cap 8.0 CPU-h; leaf 3.7/300; GATE: PASS (digest 781b0d4b55e5). NOT submitted.
 * Summary and cards untouched this round (compactor rewriting them).
+
+## Restructure (coordinator request, same round): seed 0 first
+
+* `RULE_amend1.md` (written before any run): seed 0 alone; one-seed KILL (G2) if polished seed-0 eps (endpoint and
+  guard) is at least 2.5 eps_ref = 1.804e-3, else release seeds 1-2 and apply RULE.md's 3-seed rule.
+* Factor 2.5, not 2: on 12 multi-seed arms of this leaf (r3, r5, r6) worst/best seed eps is 1.08-1.81 (median 1.24;
+  max r3 `che` N8). Factor 2 is only 10% above that maximum, and a learned spin-sector sign can widen the spread.
+* `tree_nqs.py` gained `--mode verdict1` (smoke-tested on a fake state). `submit_tree.sbatch` now runs 1 CPU,
+  02:40:00, seed 0, with polish/sign/verdict1 in `results/oneseed/`.
+* VOI: P(one-seed KILL) 0.6, P(RELEASE) 0.4. Gate: cap 2.7 CPU-h; leaf 3.7/300; GATE: PASS (digest 0063f561e528).
+  NOT submitted.

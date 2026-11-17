@@ -21,7 +21,8 @@ Arms (--arm; required for check and arm)
   rank5   pcg with f0 = U_f D_f^T (U_f, D_f 12x5), started from the balanced SVD factors of pcg's N8 f0
           (R20 step 2; its energy must equal ../P4.1_cheap_su2_r21/results/truncate.json trunc[5].E).
 Options
-  --steps INT      step cap per arm (default 12, RULE.md)
+  --steps INT      step cap per arm (default 12, RULE.md; 30 under RULE_amend1.md, which also lets an arm that
+                   ended STOP-CAP below --steps resume)
   --threads INT    torch/BLAS threads (default 1, as r19/r21, so CPU times compare)
   --cpu-cap FLOAT  CPU-minutes; before each step, stop (state left resumable, stop = null) if the elapsed CPU time
                    plus the last step's CPU time would exceed it (default 74, under the 80-min sbatch limit)
@@ -72,6 +73,7 @@ import polish as P  # noqa: E402  (read only; imports r11 realise, r10 tangent, 
 
 R, T2, log = P.R, P.T2, P.log
 E0, TAU, MIN_GAIN, STOP_FRAC, K = P.E0, 0.05, 1e-7, 1e-3, 5
+HARD_CAP = 30  # RULE_amend1.md hard cap (total steps per arm)
 LADDER = [1e-5, 1e-6, 1e-7, 1e-8, 1e-9]
 KEEP, RETRACT = 0.60, 0.85
 RES = A.res or os.path.join(HERE, "results")
@@ -169,6 +171,11 @@ def run_arm(a):
     if os.path.exists(fn):
         old = json.load(open(fn))
         st.update(steps=old["steps"], stop=old["stop"], E_start=old["E_start"])
+        if st["stop"] == "STOP-CAP" and len(st["steps"]) < a.steps:
+            # RULE_amend1.md: the 12-step cap is replaced by a 30-step hard cap; a STOP-CAP arm below the new
+            # --steps is resumable (STOP-RULE / STOP-NOGAIN / INVALID stay final).
+            log(f"{a.arm}: reopening STOP-CAP at {len(st['steps'])} steps under --steps {a.steps} (RULE_amend1.md)")
+            st["stop"] = None
         if st["stop"]:
             log(f"{a.arm}: already finished ({st['stop']}); nothing to do")
             return
@@ -253,12 +260,43 @@ def endpoint(st):
     acc = [s for s in st["steps"] if s.get("accepted")]
     E = acc[-1]["E_new"] if acc else st["E_start"]
     eps = (E - E0) / abs(E0)
-    tail = 0.0
+    tail, fit = 0.0, None
     if st["stop"] == "STOP-CAP":
-        gains = [s["gain"] for s in acc]
-        r = gains[-1] / gains[-2] if len(gains) >= 2 and gains[-2] > 0 else np.inf
-        tail = gains[-1] * r / (1 - r) if r < 1 else np.inf
-    return eps, max(eps - tail / abs(E0), 0.0), len(acc)  # eps >= 0: an unbounded tail clips to 0
+        fit = tail_fit([s["gain"] for s in acc])
+        tail = fit["tail"]
+        fit["eps_inf_raw"] = eps - tail / abs(E0)
+        if not np.isfinite(fit["eps_inf_raw"]) or fit["eps_inf_raw"] <= 0:
+            fit["unsettled"] = True
+            fit["why"].append("eps_inf <= 0 (fitted tail exceeds the remaining eps)")
+    eps_inf = max(eps - tail / abs(E0), 0.0) if np.isfinite(tail) else 0.0
+    return eps, eps_inf, len(acc), fit
+
+
+FIT_N, FIT_RMS_MAX = 5, float(np.log(2.0))  # RULE_amend2.md
+
+
+def tail_fit(gains):
+    """RULE_amend2.md guard: log-linear least squares of the last FIT_N accepted gains vs step, ln d_k = a + b k.
+    r = exp(b); tail = sum of the fitted gains beyond the last step = d_hat_n r / (1 - r). UNSETTLED if fewer than
+    FIT_N gains, any gain <= 0, r >= 1, or RMS log-residual > ln 2."""
+    g = np.asarray(gains[-FIT_N:], float)
+    out = dict(n=len(g), r=None, rms=None, tail=np.inf, unsettled=False, why=[])
+    if len(g) < FIT_N or np.any(g <= 0):
+        out.update(unsettled=True, why=["fewer than 5 positive gains"])
+        return out
+    k = np.arange(len(g), dtype=float)
+    b, a = np.polyfit(k, np.log(g), 1)
+    rms = float(np.sqrt(np.mean((np.log(g) - (a + b * k)) ** 2)))
+    r = float(np.exp(b))
+    out.update(r=r, rms=rms)
+    if r >= 1:
+        out["why"].append(f"fitted ratio {r:.3f} >= 1")
+    else:
+        out["tail"] = float(np.exp(a + b * k[-1]) * r / (1 - r))
+    if rms > FIT_RMS_MAX:
+        out["why"].append(f"RMS log-residual {rms:.3f} > ln 2")
+    out["unsettled"] = bool(out["why"])
+    return out
 
 
 def cls(rho, names):
@@ -286,11 +324,13 @@ def verdict(a):
             S[arm] = json.load(open(f))
     out = dict(arms={})
     for arm, st in S.items():
-        eps, eps_inf, n = endpoint(st)
+        eps, eps_inf, n, fit = endpoint(st)
         out["arms"][arm] = dict(stop=st["stop"], steps=n, eps_start=(st["E_start"] - E0) / abs(E0), eps=eps,
-                                eps_inf=eps_inf, checks=st["checks"])
+                                eps_inf=eps_inf, tail_fit=fit, checks=st["checks"])
+        ftxt = "" if fit is None else (f"; fit r {fit['r']} rms {fit['rms']}" +
+                                       (f" UNSETTLED-ARM ({'; '.join(fit['why'])})" if fit["unsettled"] else ""))
         print(f"{arm:5s}: stop {st['stop']}; {n} accepted steps; eps {out['arms'][arm]['eps_start']:.5e} -> "
-              f"{eps:.5e} (tail-extrapolated {eps_inf:.5e}); checks valid {st['checks'].get('valid')}")
+              f"{eps:.5e} (tail-extrapolated {eps_inf:.5e}{ftxt}); checks valid {st['checks'].get('valid')}")
     stops = [S[k]["stop"] for k in S]
     if len(S) < 3 or any(s is None for s in stops):
         out["verdict"] = "INCOMPLETE"
@@ -307,12 +347,18 @@ def verdict(a):
             rho_inf = (num_i / den_i if den_i > 0 else float("inf")) if ok else float("nan")
             c1 = cls(rho, names)
             c2 = cls(rho_inf, names) if ok else None
-            res[key] = dict(rho=rho, rho_inf=rho_inf, cls=c1 if c1 == c2 else "UNSETTLED", cls_end=c1, cls_inf=c2)
+            # RULE_amend2.md: a ratio using an arm whose tail fit is UNSETTLED is UNSETTLED
+            bad = [k for k in ("pcg", den) if (A_[k]["tail_fit"] or {}).get("unsettled")]
+            res[key] = dict(rho=rho, rho_inf=rho_inf, cls=c1 if (c1 == c2 and not bad) else "UNSETTLED",
+                            cls_end=c1, cls_inf=c2, unsettled_arms=bad)
             print(f"{key} = eps_pcg/eps_{den} = {rho:.4f} (tail-extrapolated {rho_inf:.4f}) -> {res[key]['cls']}")
         out.update(res)
         jp, ja = res["rho_pol"]["cls"], res["rho_abl"]["cls"]
         out["verdict"] = f"{jp} / {ja}"
         out["action"] = JOINT.get((jp, ja), "UNSETTLED ratio: resume the cap-limited arm(s) (new gated job); no change")
+        if "UNSETTLED" in (jp, ja) and all(A_[k]["steps"] >= HARD_CAP for k in A_ if A_[k]["stop"] == "STOP-CAP"):
+            out["verdict"] = f"AMBIGUOUS ({jp} / {ja})"
+            out["action"] = "RULE_amend1.md: UNSETTLED at the 30-step hard cap -> AMBIGUOUS; no change, no further compute"
     print(f"VERDICT: {out['verdict']}" + (f"; ACTION: {out['action']}" if "action" in out else ""))
     dump(os.path.join(RES, "verdict.json"), out)
 
