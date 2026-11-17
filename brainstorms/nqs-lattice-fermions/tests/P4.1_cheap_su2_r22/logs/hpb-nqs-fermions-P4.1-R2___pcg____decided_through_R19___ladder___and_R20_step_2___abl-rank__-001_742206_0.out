@@ -1,3 +1,4 @@
 r22 ladder arm pcg on kim-cpu-02.physics.cornell.edu, job 742206_0
 [10:31:46] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
 [10:32:04] pcg: P 2696; checks {'start_vs_r19': 0.0, 'valid': True} [0.33 CPU-min]
+[10:41:48] step 1: cut 1e-06 s 0.5 eps 9.26189e-04 -> 8.05402e-04 (drop 13.04%); predicted gain 1.38e-01 g; rungs 1e-05:0.5 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:None [10.0 CPU-min, step 9.40, wall 604 s]

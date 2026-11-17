@@ -1,0 +1,22 @@
+[10:44:30] brute chain4+nnn         Ne 2 S 0.0: dim   10 (Fock    16); orth 2.2e-16; H maxdiff 2.2e-16 (|H|max 3.00)
+[10:44:30] brute chain4+nnn         Ne 3 S 0.5: dim   20 (Fock    24); orth 2.2e-16; H maxdiff 4.4e-16 (|H|max 3.00)
+[10:44:30] brute chain4+nnn         Ne 4 S 0.0: dim   20 (Fock    36); orth 4.4e-16; H maxdiff 4.4e-16 (|H|max 6.00)
+[10:44:30] brute chain4+nnn         Ne 4 S 1.0: dim   15 (Fock    16); orth 4.4e-16; H maxdiff 2.2e-16 (|H|max 3.00)
+[10:44:30] brute chain4+nnn         Ne 5 S 0.5: dim   20 (Fock    24); orth 2.2e-16; H maxdiff 4.4e-16 (|H|max 6.00)
+[10:44:30] brute chain4+nnn         Ne 6 S 0.0: dim   10 (Fock    16); orth 2.2e-16; H maxdiff 8.9e-16 (|H|max 9.00)
+[10:44:30] brute 2x2                Ne 2 S 0.0: dim   10 (Fock    16); orth 2.2e-16; H maxdiff 2.2e-16 (|H|max 8.00); U_g maxdiff 2.2e-16
+[10:44:30] brute 2x2                Ne 3 S 0.5: dim   20 (Fock    24); orth 2.2e-16; H maxdiff 4.4e-16 (|H|max 8.00); U_g maxdiff 2.2e-16
+[10:44:30] brute 2x2                Ne 4 S 0.0: dim   20 (Fock    36); orth 4.4e-16; H maxdiff 1.8e-15 (|H|max 16.00); U_g maxdiff 4.4e-16
+[10:44:30] brute 2x2                Ne 4 S 1.0: dim   15 (Fock    16); orth 4.4e-16; H maxdiff 2.2e-16 (|H|max 8.00); U_g maxdiff 4.4e-16
+[10:44:30] brute 2x3(half-tree)     Ne 4 S 0.0: dim  105 (Fock   225); orth 4.4e-16; H maxdiff 1.8e-15 (|H|max 16.00)
+[10:44:30] brute 2x3(half-tree)     Ne 5 S 0.5: dim  210 (Fock   300); orth 4.4e-16; H maxdiff 1.8e-15 (|H|max 16.00)
+[10:44:30] brute 2x3(half-tree)     Ne 6 S 0.0: dim  175 (Fock   400); orth 4.4e-16; H maxdiff 3.6e-15 (|H|max 24.00)
+[10:44:30] brute 4x2(mirror tree)   Ne 4 S 0.0: dim  336 (Fock   784); orth 4.4e-16; H maxdiff 1.8e-15 (|H|max 16.00); U_g maxdiff 4.4e-16
+[10:44:30] brute 4x2(mirror tree)   Ne 6 S 0.0: dim 1176 (Fock  3136); orth 6.7e-16; H maxdiff 3.6e-15 (|H|max 24.00); U_g maxdiff 6.7e-16
+[10:44:30] (b) brute force OK: True [0.30 CPU-min]
+[10:44:33] 12-site sector: dim 169884 (3 s)
+[10:45:38] H built: nnz 7520440, allowed T' 7353328, accidental zeros 0 (68 s)
+[10:46:29] (c) connected T' counts vs r21 tree_count.hop_count: 5225220 (state, hop) pairs, 0 mismatches; allowed T' 7353328, accidental zeros 0
+[10:46:31] irrep (1, 1): dim 42756, lowest S = 0 energy -7.827899034272
+[10:46:32] irrep (1, -1): dim 42336, lowest S = 0 energy -7.589353680896
+[10:46:33] irrep (-1, 1): dim 42456, lowest S = 0 energy -7.366426560796
