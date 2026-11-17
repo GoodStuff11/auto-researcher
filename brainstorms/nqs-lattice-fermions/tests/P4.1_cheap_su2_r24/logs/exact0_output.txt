@@ -1,0 +1,7 @@
+[13:29:03] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[13:29:11] exact step 1 trsr tau 0.05: R -0.5622; |dtheta| 0.877
+[13:29:14] exact step 1 shift tau 0.05: R -0.5325; |dtheta| 0.901
+[13:29:16] exact step 1 trsr tau 0.02: R +0.2274; |dtheta| 0.351
+[13:29:18] exact step 1 shift tau 0.02: R +0.2877; |dtheta| 0.360
+[13:29:18] S_T w_max 8.064e+00, w_min -1.0e-14, rank at cutoff 1018, eigenvalues below the 1e-3 shift: 1680 of 2637
+wall 19.05 s user 17.16 sys 1.05 maxrss 1623340 KB

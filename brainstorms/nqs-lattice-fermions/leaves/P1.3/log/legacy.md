@@ -1,0 +1,711 @@
+# Log: P1.3 (legacy rounds, migrated)
+
+### 2. Candidate Routes & Falsification Gates
+* **Route 1**: Lanczos-target sign refit. Every $K$ SR steps, form the one-step Lanczos state $\psi_L=\psi_\theta+\alpha H\psi_\theta$ with $\alpha$ chosen by $2\times2$ Rayleigh–Ritz (Sorella, DOI:10.1103/PhysRevB.64.024512). The ratio $\psi_L/\psi_\theta=1+\alpha E_{\mathrm{loc}}$ is free in VMC. Fit only the antisymmetric-layer parameters to $\psi_L$ by fidelity, and accept the result if the energy drops.
+  - Gate 0 (Novelty & Adoption): FAIL. Fitting a network to a finite projector step is SWO (arXiv:1811.12423) and the self-learning power method (DOI:10.22331/q-2023-08-29-1096). Holding the target fixed until the energy decreases is Ledinauskas & Anisimovas (arXiv:2307.15521). The remaining differences (Lanczos-optimal $\alpha$, restricting the fit to the determinant layer) do not fix the reason these methods have not displaced SR: the fit is still a gradient flow in the same parametrization, and a one-step target only flips signs locally, where $\alpha E_{\mathrm{loc}}(\mathbf{n})<-1$. Global node moves stay out of reach.
+  - Gate 1 (Conservation & Asymptotics): PASS. Conserves $N_\sigma$ and is polynomial per step.
+  - Gate 2 (Baseline Gameability): PASS. Not reached.
+  - Gate 3 (Hard-Core Shield): PASS. Not reached.
+  - *Verdict*: KILLED
+* **Route 2**: Orbital-swap basin hopping (OSBH) on a trained NQS. After a plain-SR warm-up, diagonalize the one-body hopping matrix $T$ inside the occupied span of $\Phi^\sigma_0$ and inside its orthogonal complement. Propose discrete swaps that replace one of the $w$ highest occupied one-body directions with one of the $w$ lowest virtual directions, for spin $\uparrow$, spin $\downarrow$, and both together ($3w^2$ proposals). Keep the trained Jastrow, amplitude and backflow parameters. Relax each proposal for $r$ SR steps and accept the lowest-energy one only if it beats the current state relaxed for the same $r$ steps. All proposal steps are charged to the same budget $T$ as plain SR. A swap changes the reference's occupied subspace, hence its total momentum and nodal structure, in one discrete move. This is the global node rearrangement that SR cannot make continuously. Point of departure: multi-start from hand-chosen references, and occupied/virtual swaps as in the maximum-overlap method of quantum chemistry (Gilbert, Besley & Gill, DOI:10.1021/jp801738f), used there for excited states, not for basin escape of a correlated ansatz.
+  - Gate 0 (Novelty & Adoption): PASS (conditional). Searches found no fermionic NQS work that makes discrete orbital-occupation moves mid-optimization on a trained correlator; the closest practice is full restarts from different references (arXiv:2507.02644, arXiv:2511.07566, arXiv:2604.21978). Multi-start is not routine because each restart costs a full NQS optimization and the references are picked by hand. OSBH targets that cost: each proposal costs $r\ll T$ steps because it reuses the trained correlator, and the move set is generated automatically from the one-body spectrum. If the test shows OSBH is no better than restarts at matched cost, the route is a relabeling and dies.
+  - Gate 1 (Conservation & Asymptotics): PASS. Swaps preserve $N_\uparrow,N_\downarrow$ and $S^z$. The move set is a structured restriction ($3w^2$ single-determinant occupation changes near the "Fermi level" of the current reference), so there is no claim of global optimality, consistent with the QMA-hardness boundary. Cost per cycle is $(3w^2+1)r$ SR steps, independent of $V$ apart from the per-step cost.
+  - Gate 2 (Baseline Gameability): PASS. The metric is defined relative to plain SR on the identical ansatz and budget, so a method that does nothing scores $M=0$. The foil (Jastrow–Slater with SR) is run as a separate arm with the same swaps. If foil-plus-OSBH matches NQS-plus-OSBH, the result says that basin escape is an optimizer effect, not an NQS advantage. That is reported, not hidden.
+  - Gate 3 (Hard-Core Shield): PASS. The test instance is doped ($\delta=1/6$), has $t'=-0.3$, is 2D with PBC, and has $U=8$. Swaps are relevant precisely because the doped shell structure differs from the interacting ground state's quantum numbers. Nothing relies on half filling, 1D, or $U=0$. Caveat: OSBH only reaches sign structures adjacent to *another* single-reference anchor. It fixes a *wrong* anchor, not the existence of an anchor (that is P1.2).
+  - *Verdict*: SURVIVED
+* **Route 3**: Sign-flip-aware Metropolis moves (proposals that cross nodal regions, e.g. pair hops or exchange moves biased toward sign changes).
+  - Gate 0 (Novelty & Adoption): PASS. Specialized moves exist, but not as a sign-basin remedy.
+  - Gate 1 (Conservation & Asymptotics): FAIL. On a discrete lattice, Metropolis on $\lvert\psi\rvert^2$ is not confined by nodes: a hop jumps between configurations and zero-amplitude intermediate configurations are not visited. In the infinite-sample limit the fixed points of the SR flow do not depend on the sampler at all, so a sampler change cannot change which basin is reached. Only the noise changes. (Exact-sum SR in the decisive test has no sampler, and a basin found there would persist under any sampler.)
+  - Gate 2 (Baseline Gameability): PASS. Not reached.
+  - Gate 3 (Hard-Core Shield): PASS. Not reached.
+  - *Verdict*: KILLED
+* **Route 4**: Hamiltonian continuation (anneal $U$ from 0, $t'$ from 0, or a sign-free to signful path, warm-starting each step).
+  - Gate 0 (Novelty & Adoption): FAIL. Starting from the $U=0$ Slater determinant *is* continuation from the non-interacting point and is already the default. Annealing in Hamiltonian parameters is common, and its known failure is that it follows the metastable branch through first-order level crossings. Nothing in the route fixes that.
+  - Gate 1 (Conservation & Asymptotics): PASS.
+  - Gate 2 (Baseline Gameability): PASS. Not reached.
+  - Gate 3 (Hard-Core Shield): FAIL. The path starts at the sign-trivial or non-interacting point, and the near-degenerate competing orders of the Hard Core are exactly the level crossings the path must pass, where adiabatic continuation keeps the wrong branch.
+  - *Verdict*: KILLED
+### 3. Top Surviving Route & Sharpest Gap
+* **Mechanism**: Orbital-swap basin hopping. Discrete occupied-to-virtual swaps of the determinant's reference orbitals are applied to an already-trained fermionic NQS, each followed by a short SR relaxation that reuses the trained correlator, with energy-gated acceptance under a step budget matched to plain SR. It turns the "which mean-field reference" choice, currently made by hand with full restarts, into an automatic, cheap move set that changes the global nodal structure in one step.
+* **Sharpest Gap**: It is unverified that fermionic NQS from a mean-field start actually land in wrong-sign basins on ED-sized doped clusters, i.e. that $G=\varepsilon_s^{\mathrm{SR}}-\varepsilon_s^{\mathrm{best}}>0$ by a margin. If the gap exists, it is unverified that it is "anchor-type" (reachable by a few one-body swaps plus $r\ll T$ relaxation steps) rather than requiring a change the single-reference backflow cannot make. A second unverified assumption is that the energy after $r$ relaxation steps ranks the basins correctly, given that the basins' energies differ by of order $10^{-3}t$ per site.
+### 4. 24-Hour Decisive Test & Compute Execution
+* **Minimal Instance**: $4\times3$ Hubbard cluster, periodic in both directions (the length-3 direction is non-bipartite), $N_\uparrow=N_\downarrow=5$ (hole doping $\delta=1/6$), $t=1$, $t'=-0.3$, $U=8$. Hilbert dimension $627264$, so ED, fixed-node ED and exact-sum SR (no Monte Carlo noise) are all feasible. NQS arm: distance-class Jastrow, $H_a=4$ amplitude units, $H_b=1$ backflow unit, $378$ parameters. Foil arm: the Jastrow–Slater with $H_a=H_b=0$. Starts: 3 free-fermion ("mf") seeds and 3 random-orbital seeds, each run with plain SR and with OSBH ($T=800$ SR steps, warm-up 300, $r=15$, $w=2$).
+* **Scalar Metric $M$**: With $\varepsilon_s$ as defined in §1, let $\varepsilon_{\mathrm{SR}}$ be the median over mf seeds of $\varepsilon_s$ after plain SR, $\varepsilon_{\mathrm{OS}}$ the median over mf seeds after OSBH, and $\varepsilon_{\mathrm{best}}$ the minimum of $\varepsilon_s$ over all runs (all starts, both optimizers). The basin gap is $G=\varepsilon_{\mathrm{SR}}-\varepsilon_{\mathrm{best}}$ and
+$$M=\frac{\varepsilon_{\mathrm{SR}}-\varepsilon_{\mathrm{OS}}}{G},$$
+the fraction of the basin gap closed by OSBH at equal SR-step budget. Also reported: variational energy, overlap $\lvert\langle\psi_0\vert\psi_\theta\rangle\rvert$, weighted sign agreement $\lvert\sum_\mathbf{n}\psi_0(\mathbf{n})^2\,s_\theta(\mathbf{n})\,\mathrm{sgn}\,\psi_0(\mathbf{n})\rvert$, and $E_{\mathrm{sign}}=\langle g\rvert H\lvert g\rangle$.
+* **Execution Plan**: Code: `/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins/micro_test.py`. Slurm script: `/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins/submit_test.sbatch` (partition `kim`, 24 CPUs, 64 GB, 23 h; NQS and foil arms run in parallel; logs and `results_*.json` are written next to the script). Command (not run): `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins/submit_test.sbatch`. Estimated cost, extrapolated from $3\times3$ timing ($0.12$ s per step at dimension $15876$ with 4 threads): about 3 to 6 s per NQS step with 16 threads, 9600 steps, roughly 8 to 16 h.
+* **Thresholds** (applied to the NQS arm, and repeated for the foil arm):
+    * PASS: $G>0.25\,\varepsilon_{\mathrm{SR}}$ (a basin exists), $M\ge0.5$, and the median OSBH variational energy is no higher than the median plain-SR energy.
+    * FAIL: either $G>0.25\,\varepsilon_{\mathrm{SR}}$ and $M<0.2$ (a basin exists and OSBH does not escape it), or $G\le0.10\,\varepsilon_{\mathrm{SR}}$ (no basin: the mean-field start already reaches the best sign at this size, so P1.3's premise is false here and the question goes back to P1.1).
+    * AMBIGUOUS: everything else. Pre-committed action: rerun once with $t'=+0.3$ and doubled seeds (`--tp 0.3 --n-mf 6 --n-rand 6`). If that run is not PASS, kill the route.
+* **Smoke-test evidence**: Self-checks (two-site Hubbard vs. closed form, $U=0$ Slater vs. ED, fixed-node energy with the exact sign equal to $E_0$, finite-difference check of the log-derivatives):
+
+```
+$ python3 micro_test.py --check --lx 3 --ly 2 --nup 2 --ndn 2
+[check] two-site Hubbard U=4: ED=-0.8284271247 exact=-0.8284271247
+[check] U=0 3x2 pbc 2+2: ED=-8.0000000000 free=-8.0000000000 Slater=-8.0000000000
+[check] U=8.0: E0=-5.6264958255  E_FN[exact sign]=-5.6264958255  E_FN[U=0 Slater sign]=-5.4552434358
+[check] max |O - finite difference| over 25 params = 4.26e-08
+[check] ALL OK
+$ python3 micro_test.py --check --lx 4 --ly 2 --nup 3 --ndn 3 --tp -0.3
+[check] two-site Hubbard U=4: ED=-0.8284271247 exact=-0.8284271247
+[check] U=0 4x2 pbc 3+3: ED=-10.0000000000 free=-10.0000000000 Slater=-10.0000000000
+[check] U=8.0: E0=-6.4497572383  E_FN[exact sign]=-6.4497572383  E_FN[U=0 Slater sign]=-5.8234247974
+[check] max |O - finite difference| over 25 params = 2.81e-08
+[check] ALL OK
+```
+
+  Pipeline smoke run (tiny $3\times2$, not decisive):
+
+```
+$ python3 micro_test.py --lx 3 --ly 2 --nup 2 --ndn 2 --steps 200 --steps-pre 80 --relax-steps 8 --window 1 --n-mf 2 --n-rand 2 --out /tmp/p13_smoke.json
+instance 3x2 pbc N=(2,2) t'=-0.3 U=8.0: dim=225 E0=-5.62649583 npar=122 ansatz=nqs
+  mf0 sr   : E=-5.568733 relE=1.027e-02 ov=0.9938 signagree=0.9860 eps_s=1.657e-02 swaps=0 (0s)
+    osbh cycle: used=112 E=-5.563424 move=stay
+    osbh cycle: used=144 E=-5.564676 move=stay
+    osbh cycle: used=176 E=-5.565627 move=stay
+  mf0 osbh : E=-5.567151 relE=1.055e-02 ov=0.9936 signagree=0.9847 eps_s=1.698e-02 swaps=0 (0s)
+  mf1 sr   : E=-5.552429 relE=1.316e-02 ov=0.9921 signagree=0.9899 eps_s=1.333e-02 swaps=0 (0s)
+  ...
+SUMMARY {"eps_SR": 0.014950939244020803, "eps_OS": 0.015335138917008016, "eps_best": 0.013328819923552294, ... "G": 0.0016221193204685094, "M": -0.23685043889141655, "verdict": "AMBIGUOUS (rerun with --tp +0.3 and doubled seeds; kill if not PASS)"}
+```
+
+  On this 6-site toy no swap was accepted, and the gap $G$ comes from seed-to-seed spread, not a basin. The toy is too small to be informative and only verifies the pipeline.
+### 5. Local Autopsy Log
+* **Route 1 (Lanczos-target sign refit)**: killed at Gate 0. It is SWO, the self-learning power method and energy-gated one-step ITE under a new step choice (arXiv:1811.12423; DOI:10.22331/q-2023-08-29-1096; arXiv:2307.15521). The fit remains a gradient flow in the same parametrization, and a one-step projector flips signs only locally, where $\alpha E_{\mathrm{loc}}(\mathbf{n})<-1$, so the global nodal rearrangements that define fermionic basins stay out of reach.
+* **Route 3 (sign-flip-aware Metropolis)**: killed at Gate 1. On a discrete lattice, sampling is not confined by nodes, and the SR fixed points do not depend on the sampler in the exact-expectation limit. A sampler change cannot change which basin is reached.
+* **Route 4 (Hamiltonian continuation in $U$, $t'$, or sign-free to signful)**: killed at Gates 0 and 3. The mean-field start is already the $U=0$ continuation; annealing is standard; and the path must cross the near-degenerate level crossings of the Hard Core, where it keeps the metastable branch. It starts from the sign-trivial or non-interacting limit.
+
+### Round 2 — Mutation & Replenishment (2026-11-11)
+**Inputs that changed the problem.** The critic objections against Route 2 (OSBH) are binding: (i) $G$ and $M$ could come from seed order statistics, with no matched-restart null arm; (ii) acceptance by the variational energy after $r=15$ SR steps cannot rank basins whose energies differ by about $10^{-3}t$ per site, below the variational error, and the old "NQS" arm (one backflow unit, 378 parameters) was effectively Jastrow–Slater; (iii) occupied/virtual swaps with re-relaxation are SCF metadynamics / maximum-overlap-method practice and routine shell-occupation scans; (iv) the sign metric must be P1.1's $E_{\mathrm{sign}}=\min_{a\ge0}a^{\mathsf T}SHSa/a^{\mathsf T}a$, where $H$ is the Hamiltonian matrix in the occupation basis, $S=\mathrm{diag}(\mathrm{sgn}\,\psi_\theta)$ and $a$ a non-negative amplitude vector, reported with the ten Haaf fixed-node energy $E_{\mathrm{FN}}$.
+**What the P1.1 data say about where the NNBF sign error sits.** From the result JSONs of job 329057 (`tests/P1.1_sign_vs_amplitude/results/`), with $w=\sum_{\mathbf{n}:\,s_\theta(\mathbf{n})s_0(\mathbf{n})<0}\psi_0(\mathbf{n})^2$ the ground-state weight on sign-mismatched configurations ($s_0=\mathrm{sgn}\,\psi_0$), and $E_{\mathrm{hyb}}=\langle H\rangle$ of the hybrid state $s_\theta\lvert\psi_0\rvert$ (exact amplitudes, trained signs):
+* **$N_\uparrow=N_\downarrow=4$, $U=8$ (the instance P1.1 flagged for a low first excited level).** The error is at *high* weight: $w=0.322$ (UHF), $0.262$ (Slater–Jastrow), $0.210$, $0.205$, $0.197$ (NNBF widths 8, 32, 128). The hybrid energy is $E_{\mathrm{hyb}}=-7.82$ against $E_0=-12.043$, so the trained signs are wrong on configurations that carry real weight, not only next to nodes. $w$ is almost independent of width and is inherited from the UHF reference that initialises NNBF. The width-128 sign has $E_{\mathrm{sign}}=-11.966$, which lies between $E_0$ and the first excited level $E_1=-11.957$.
+* **$N_\uparrow=N_\downarrow=5$ instances.** The error is at *low* weight: $w=0.029$ ($U=8$) and $w=0.006$ ($U=4$) at width 128, so these are node-resolution errors, not basin errors.
+* **Symmetry content (new diagnostic, `diag_sectors.py`, output in the test folder).** On the $4\times3$ PBC $4+4$ cluster the ground state is fully symmetric ($k=(0,0)$, mirror parities $M_x=M_y=+1$). $E_1$ has $\langle T_x\rangle=-1$, $\langle T_y\rangle=-1/2$, i.e. $k=(\pi,\pm2\pi/3)$; $E_2=-11.942$ is $k=0$ with $M_y=-1$. The UHF reference that seeds NNBF breaks translations ($\langle T_x\rangle=0.002$) and $M_y$ ($\langle M_y\rangle=-0.022$), and has weight $0.036$ on $E_0$, $0.007$ on $E_1$, $0.013$ on $E_2$. So on this cluster the low levels sit in other lattice-symmetry sectors, and a symmetry-broken reference mixes all of them. **Correction (coordinator, 2026-11-11):** $E_1$ ($0.086t$ above $E_0$; $\Delta_1/V=0.007t$ was per site) is a spin triplet ($\langle\hat S^2\rangle=2$) at $k=(\pi,\pm2\pi/3)$. Inside the ground-state sector ($K=0$, both mirrors even, $S=0$) the next level is $0.515t$ up. This instance therefore has **no same-sector near-degenerate competitor** and tests the sign half only. A genuine same-sector avoided crossing exists on the same cluster at $t'\approx-0.32$ (minimum in-sector gap $0.273t$ between $t'=-0.33$ and $-0.31$, where a $d$-wave/short-range-AF state and a period-4 stripe exchange character; ED evidence in `tests/P3.2_biased_ensemble_r2/ed_precheck_output.txt`).
+* **Projection pre-diagnostics.** Projecting the bare UHF state on the $A_1$ irrep (the irrep of $\psi_0$) lowers $E_{\mathrm{sign}}-E_0$ from $0.212$ to $0.111$; both the projected variational energy and the guided fixed-node score pick the correct irrep (`prediag_uhf_scan.txt`). A 400-step plain-SR run of NNBF width 32 from the P1.1 start (`results_prediag_S400.log`, same code as the decisive test) ends at $E_{\mathrm{var}}=-11.909$, $E_{\mathrm{sign}}-E_0=0.0841$ (P1.1 width 32 after 1500 steps: $0.082$), $w=0.207$, $\lvert\langle E_0\vert\psi_\theta\rangle\rvert^2=0.27$, $\langle T_x\rangle=0.25$, $\langle M_y\rangle=0.23$. Projecting this state on $\psi_0$'s irrep lowers $E_{\mathrm{sign}}-E_0$ to $0.0193$, a 77% cut. **On this instance most of the NNBF sign error is symmetry contamination inherited from the broken-symmetry UHF reference.** This qualifies P1.1's sign fraction for the $4+4$ instance (P1.1's NNBF is unprojected), and it makes standard quantum-number projection the baseline every route here must beat. The test therefore relabels any route PASS whose median $E_{\mathrm{sign}}$ is not below that of the projected S state as "dominated by projection", leaving only a cost claim (no $\lvert G\rvert=48$ amplitude overhead).
+* **Why width-128 NNBF keeps the wrong sign under SR.** Three facts point at the optimizer and the start, not the capacity: the mismatch weight is set by the reference and barely moves with width; P1.1's SR never converged ($\lvert f\rvert=0.03$ to $0.09$ and energy fluctuations of $10^{-2}$ after 1500 steps at widths 32 and 128, step $0.05$, 2000-sample metric); and the sign error is symmetry-sector-like on the competitor instance. Whether a better-sign basin exists in the same NNBF family, and is kept by SR once reached, is still not shown: the redesigned test measures it directly with an oracle witness arm.
+* **Generation Batch 2**:
+  - **Route 2.0 (Route 1.2 as submitted: energy-gated OSBH)**: discrete reference swaps, acceptance by $E_{\mathrm{var}}$ after $r$ relaxation steps.
+    - Gate 0 (Novelty & Adoption): FAIL as a novelty claim. The move set is SCF metadynamics / MOM / shell-occupation scanning (Thom & Head-Gordon, PRL 101, 193001, 2008; Gilbert, Besley & Gill, DOI:10.1021/jp801738f).
+    - Gate 1 (Conservation & Asymptotics): PASS.
+    - Gate 2 (Baseline Gameability): FAIL. With no matched-restart null, "escape" cannot be told from "extra restarts".
+    - Gate 3 (Hard-Core Shield): FAIL. $E_{\mathrm{var}}$ after $r$ steps carries the amplitude error, which after a short relaxation is of order $0.1t$ to $1t$ (P1.1: $\Delta E_{\mathrm{amp}}=0.023$ even after 1500 steps at width 128, and the smoke run shows re-anchored candidates $2t$ above the incumbent before relaxation), larger than the in-sector gap at the avoided crossing ($0.273t$ total, about $0.023t$ per site) and far larger than the $10^{-3}t$ per site of the Hard Core, so it cannot rank basins.
+    - *Verdict*: KILLED. Kept as the ablation arm AE of the new test, to measure whether the acceptance rule matters.
+  - **Route 2.1 (Mutated from Route 2.0 via Operation A.3: retarget the acceptance to a sign-only witness; move set regenerated from the trained state)**: *symmetrized-natural-orbital re-anchoring with fixed-node-gated acceptance (SNO-FN).*
+    - **Move generator.** After a warm-up, compute the one-body density matrix $\rho^\sigma_{ij}=\langle c^\dagger_{i\sigma}c_{j\sigma}\rangle$ of the trained state for each spin $\sigma$ (a VMC estimator), average it over the space group $G$ of the cluster, $\bar\rho^\sigma=\lvert G\rvert^{-1}\sum_{g\in G}P_g\rho^\sigma P_g^{\mathsf T}$ with $P_g$ the site permutation of $g$, and diagonalise it. Degenerate shells are split by an infinitesimal mirror-parity term, so every natural orbital (NO) carries definite parities. Candidates replace the reference orbitals $\Phi^\sigma_0$ of NNBF by the top-$N_\sigma$ NOs ("sno"), or by the same set with the last occupied and first empty NO exchanged for $\uparrow$, $\downarrow$, or both. All backflow weights are kept.
+    - **Acceptance.** The incumbent and each candidate are relaxed $r$ SR steps and scored by the guided fixed-node energy $E_{\mathrm{FN}}[\lvert\psi\rvert]$: the lowest eigenvalue of the ten Haaf effective Hamiltonian built from the candidate's signs with guide $\lvert\psi_{\mathrm{cand}}\rvert$. This is the quantity lattice fixed-node GFMC estimates (ten Haaf et al., DOI:10.1103/PhysRevB.51.13039), so at scale it is a sign-problem-free projector-MC number with polynomial cost per candidate. The score replaces the candidate's amplitudes by the optimal stoquastic amplitudes for its sign, so the amplitude error left by a short relaxation (the quantity that defeated Route 2.0) drops out. P1.1 measured $E_{\mathrm{FN}}-E_{\mathrm{sign}}=0.005$ to $0.016$ for NNBF, against $\Delta E_{\mathrm{amp}}=0.02$ to $0.07$ and basin-scale sign differences of order $0.05$ to $0.1$ on the $4+4$ cluster.
+    - Gate 0 (Novelty & Adoption): PASS (conditional, narrowed). Natural orbitals from QMC density matrices exist (Kent et al., arXiv:cond-mat/9804010) and iterative reference updates of Jastrow–Slater states are old (Fahy & Filippi, arXiv:cond-mat/9906305). Choosing nodal surfaces by DMC energy is self-healing DMC (Reboredo, Hood & Kent, PRB 79, 195117, 2009). The move set alone is a shell-occupation scan, as the critic says. Why re-anchoring is not standard for NQS: each re-anchor discards or disturbs the trained correlator, and the variational energy after a short relaxation cannot tell which anchor is better at the Hard Core, so practitioners pick references by hand and pay for full restarts. The claimed mechanism is only the combination that removes that wall: anchors generated automatically from the symmetrized 1-RDM of the *trained* state, judged by a sign-only score that is blind to the relaxation-limited amplitude error, inside one optimization budget. If the ablation arm AE does as well, the FN gate adds nothing and the route dies.
+    - Gate 1 (Conservation & Asymptotics): PASS. $N_\uparrow$, $N_\downarrow$, $S^z$ conserved. The 1-RDM costs one VMC run; the group average costs $\mathcal{O}(\lvert G\rvert V^2)$; one FN-GFMC score per candidate. No global-optimality claim.
+    - Gate 2 (Baseline Gameability): PASS. The test pairs it per seed against plain SR and against a matched-budget best-of-$K$ restart null scored by the same FN criterion.
+    - Gate 3 (Hard-Core Shield): PASS. The score is designed for the regime where basin differences are below the variational error. The decisive test runs it both on the sign-half instance and on the same cluster at the same-sector avoided crossing ($t'=-0.32$).
+    - *Verdict*: SURVIVED.
+  - **Route 2.2 (Orthogonal replenishment via Operation B.3, cross-field translation from SCF metadynamics and deflation)**: *fidelity-capped deflation excursions (FCD).*
+    - **Mechanism.** From the incumbent $\psi_{\mathrm{ref}}$, run $X$ SR steps on the penalized objective $L(\theta)=E(\theta)+\lambda\max(0,F(\theta)-c)^2$, with fidelity $F=\lvert\langle\psi_{\mathrm{ref}}\vert\psi_\theta\rangle\rvert^2/(\langle\psi_{\mathrm{ref}}\vert\psi_{\mathrm{ref}}\rangle\langle\psi_\theta\vert\psi_\theta\rangle)$, cap $c\in(0,1)$ and strength $\lambda$ (units of $t$). Then release ($r$ plain SR steps), score by $E_{\mathrm{FN}}[\lvert\psi\rvert]$ against the relaxed incumbent, keep the best. The gradient of $F$ is a VMC estimator (ratio $\psi_{\mathrm{ref}}/\psi_\theta$ on samples of $\lvert\psi_\theta\rvert^2$). Unlike Route 2.1 it moves no reference: the network itself is pushed a fixed Fubini–Study distance away from its basin, which is exactly the "optimizer, not capacity" direction suggested by P1.1.
+    - Gate 0 (Novelty & Adoption): PASS (conditional). Sources: SCF metadynamics (Thom & Head-Gordon 2008) biases away from found SCF solutions; deflation (Farrell, Birkisson & Funke, arXiv:1410.5620) removes known solutions of nonlinear PDEs; overlap penalties give NQS excited states (Choo et al., arXiv:1807.03325; Pfau et al., arXiv:2308.16848). Why none of this is used to escape ground-state NQS basins: full deflation or orthogonality drives the state to an *excited* state, because the true ground state is not orthogonal to a wrong-basin state with sizeable overlap; and the solutions found are again compared by energy, which fails at the Hard Core. The mechanism that bypasses both is the cap (move a bounded distance, not to orthogonality, then release) plus the FN score.
+    - Gate 1 (Conservation & Asymptotics): PASS. Same symmetries as SR; cost per excursion step is about one extra gradient evaluation.
+    - Gate 2 (Baseline Gameability): PASS. Same paired arms and null as Route 2.1.
+    - Gate 3 (Hard-Core Shield): PASS. Same instance and score.
+    - *Verdict*: SURVIVED.
+  - **Route 2.3 (Operation B.1, frame transformation into the irrep frame of the space group)**: *irrep scan with FN-ranked selection (P).* Project the trained NNBF on every real one-dimensional irrep $\chi$ of $G$, score each projection by $E_{\mathrm{FN}}$, keep the best.
+    - Gate 0 (Novelty & Adoption): FAIL unless the FN ranking beats energy ranking. Quantum-number projection of backflow states is standard (Romero, Nys & Carleo, arXiv:2406.09077; Loehr & Clark, arXiv:2510.26906; Viteritti et al., arXiv:2604.21978), and choosing the sector by energy is standard (Choo et al. 2018).
+    - Gate 1 (Conservation & Asymptotics): PASS. Cost $\lvert G\rvert$ amplitudes per configuration.
+    - Gate 2 (Baseline Gameability): PASS. Compared with energy-ranked projection on the same states.
+    - Gate 3 (Hard-Core Shield): FAIL as a general route. It separates competitors only when they sit in different irreps, which is the killed sector-resolved route (P3.2: stripe competitors share a sector after projection on large clusters).
+    - *Verdict*: KILLED as a route. Kept as a **diagnostic** on arm S of the new test: it measures how much of the plain-SR sign error is symmetry contamination, and whether FN ranking picks $\psi_0$'s irrep where energy ranking does not. A route verdict for P is still printed, with an explicit FAIL when energy ranking does as well.
+  - **Route 2.4 (Operation A.1 on the optimizer: replace sampled-metric SR by an exact-metric or MinSR/SPRING step with a smaller rate)**:
+    - Gate 0 (Novelty & Adoption): FAIL. MinSR and SPRING exist (Chen & Heyl, Nat. Phys. 20, 1476, 2024; Goldshlager, Abrahamsen & Lin). A better local optimizer converges faster into the basin it starts in; it does not change which basin.
+    - Gate 1 (Conservation & Asymptotics): PASS.
+    - Gate 2 (Baseline Gameability): PASS. Not reached.
+    - Gate 3 (Hard-Core Shield): PASS. Not reached.
+    - *Verdict*: KILLED.
+  - **Diagnostic witness (oracle, not a route)**: pre-train NNBF for 300 natural-gradient steps on $-\log F(\psi_0,\psi_\theta)$, then run plain SR for the full budget. If its final $E_{\mathrm{sign}}$ stays well below plain SR's, a better-sign basin exists in the same family and SR keeps it once there: a wrong-sign basin in the trapping sense. If it drifts back up, the sign error is an energy/capacity trade-off, not trapping, and P1.3's premise is false on this instance.
+### Top Surviving Route & Sharpest Gap (Round 2)
+* **Survivors**: Route 2.1 (SNO-FN, discrete re-anchoring of the trained NNBF reference to symmetry-adapted natural orbitals, FN-gated) and Route 2.2 (FCD, continuous capped-fidelity excursions of the whole network, FN-gated). They share the acceptance score and differ in the move: discrete reference change versus continuous network excursion.
+* **Top route**: Route 2.1 (SNO-FN). It is the direct mutation of the round-1 survivor, and its move targets what the data point at: on the $4+4$ instance the NNBF sign error is inherited from a symmetry-broken reference.
+* **Sharpest gap**: two assumptions are unverified. (a) A re-anchored reference with the old backflow weights recovers within $r=40$ SR steps; the smoke run shows the energy of a re-anchored candidate jumps by about $2t$ before relaxation, so the FN score must judge the sign before the amplitudes recover. (b) The guided score $E_{\mathrm{FN}}[\lvert\psi\rvert]$ ranks candidates in the same order as $E_{\mathrm{sign}}$; its slack $E_{\mathrm{FN}}-E_{\mathrm{sign}}$ depends on the guide amplitudes on sign-violating pairs, which are worst exactly after a short relaxation. For Route 2.2 the sharpest gap is whether any cap $c$ moves the sign at all before the energy term pulls the state back into the same basin.
+### 24-Hour Decisive Test (Round 2)
+* **Instances** (same cluster, same $D$):
+    * **main (sign half only)**: P1.1 instance 1, the $4\times3$ PBC Hubbard cluster with $N_\uparrow=N_\downarrow=4$ (doping $1/3$), $t=1$, $t'=-0.25$, $U=8$; Hilbert dimension $D=245025$. Non-stoquastic (doped, $t'\ne0$, 2D), and the instance on which P1.1 found the high-weight sign error. It has **no same-sector near-degenerate competitor** (in-sector gap $0.515t$; the $0.086t$ level is a triplet at $k=(\pi,\pm2\pi/3)$), so it tests the sign half only. Its verdict is the route verdict.
+    * **comp (competitor half)**: the same cluster at $t'=-0.32$, inside the same-sector avoided crossing (minimum in-sector gap $0.273t$ between $t'=-0.33$ and $-0.31$, $d$-wave/short-range-AF against period-4 stripe). The same arms, seeds and rules are run there. A route that passes on main but not on comp is reported as "PASS (sign half only)". Even here the in-sector gap per site ($0.023t$) is above the $10^{-3}t$ of the Hard Core; that is a limit of ED sizes, stated rather than hidden.
+* **Ansatz**: NNBF of P1.1 (Luo & Clark), hidden width $32$ (4064 parameters), UHF reference, exact-force SR with a 2000-sample metric, step 0.05, shift $10^{-3}$, exactly as in P1.1.
+* **Arms (paired, same seed-dependent start)**, each exactly $T=1200$ SR steps; final state = lowest-energy iterate of the last 100 steps for every arm:
+    * **S**: plain SR.
+    * **N (null, matched restarts)**: $K=3$ cold starts (start 0 is the shared start), each trained $\lfloor700/3\rfloor=233$ steps (700 = the warm-up plus proposal steps of arm A), scored by the same $E_{\mathrm{FN}}[\lvert\psi\rvert]$, winner continued for the rest of the budget.
+    * **A (Route 2.1)**: warm-up 300, 2 cycles of 4 candidates plus incumbent at $r=40$, FN-gated; rest plain SR.
+    * **AE (ablation)**: A with acceptance by $E_{\mathrm{var}}$ (the round-1 rule).
+    * **B (Route 2.2)**: warm-up 300, 2 cycles with caps $c\in\{0.8,0.5\}$, $X=60$, $\lambda=2t$, $r=40$; rest plain SR.
+    * **W (witness, oracle)**: 300 fidelity pre-training steps on $\psi_0$, then $T$ SR steps.
+    * **P (diagnostic on S)**: irrep scan of the final S state, plus $E_{\mathrm{sign}}$ of its $\psi_0$-irrep projection.
+* **Seeds**: 8 paired seeds $s=1234+i$, $i=0,\dots,7$ per instance (seed 1234 on main reproduces the P1.1 start), one Slurm array task each (tasks 0–7 main, 8–15 comp).
+* **Scalar metric (primary, sign only)**: with $e_X(i)=E_{\mathrm{sign}}(X_i)-E_0$ and baseline $b(i)=\min(e_S(i),e_N(i))$,
+$$\rho_R(i)=\frac{b(i)-e_R(i)}{b(i)},\qquad R\in\{A,B\},$$
+the fraction of the better control's sign error that route $R$ removes on seed $i$. $E_{\mathrm{FN}}$ (P1.1 self-consistent ten Haaf, 4 iterations), $E_{\mathrm{var}}$, $w$, overlaps with the four lowest ED states, and $\langle T_x\rangle,\langle T_y\rangle,\langle M_x\rangle,\langle M_y\rangle$ are reported for every arm.
+* **Thresholds (pre-committed, coded in `--aggregate`, applied per instance)**, with $n=8$ seeds:
+    * **PASS($R$)**: median $\rho_R\ge0.25$, $\rho_R>0$ on at least 7 of 8 seeds (one-sided sign test $p=9/256\approx0.035$), and median $E_{\mathrm{var}}(R)-\min(E_{\mathrm{var}}(S),E_{\mathrm{var}}(N))\le0.01t$.
+    * **FAIL($R$)**: median $\rho_R<0.10$, or $\rho_R>0$ on at most 4 of 8 seeds.
+    * **AMBIGUOUS($R$)**: otherwise. Action: add 16 more seeds per instance; kill $R$ unless the 24-seed set passes.
+    * **Premise (witness)**: with $g_W(i)=(e_S(i)-e_W(i))/e_S(i)$, BASIN if median $g_W\ge0.30$ and $g_W>0$ on at least 7 of 8; NO-BASIN if median $g_W<0.10$. A route PASS under NO-BASIN is reported as an optimizer speed-up, not as basin escape.
+    * **Route P diagnostic**: PASS only if FN ranking picks $\psi_0$'s irrep on at least 7 of 8 seeds, energy ranking on at least 2 fewer, and median $\rho_P\ge0.25$; FAIL if FN is right on at most 5 of 8, or energy ranking is right at least as often (then it is plain projection, already standard).
+    * **Projection bar**: a route PASS whose median $e_R$ is not below the median $E_{\mathrm{sign}}-E_0$ of the $\psi_0$-irrep projection of the S state is relabelled "PASS but dominated by projection".
+    * **Ablation**: median $\rho_A-\rho_{AE}$ is printed. If Route 2.1 passes but AE does as well, the novelty claim (the FN gate) is withdrawn.
+* **Execution**: code `tests/P1.3_wrong_sign_basins_r2/micro_test.py` (imports `p11_core.py`, a verbatim copy of the P1.1 test, and `diag_sectors.py`); Slurm script `tests/P1.3_wrong_sign_basins_r2/submit_test.sbatch` (partition `kim`, array 0–15, 16 CPUs, 32 GB, 12 h per task). Command (not run): `cd /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r2 && sbatch submit_test.sbatch`. Verdict afterwards: `python3 micro_test.py --aggregate results`. Cost: one NNBF-32 SR step on $D=245025$ measured at 1.37 s with 16 threads; about 7500 step-equivalents per task plus evaluations, measured end to end on the 400-step pre-diagnostic (842 s including the final evaluation and projection, 16 threads on a shared node), giving about 4 h per task; the 12 h limit leaves a 3x margin, and the 16 tasks run in parallel.
+* **Smoke test** (3x3 PBC, 3+3, width 8, 60-step budget; checks plus every arm; 23 s on 8 threads; uninformative by design):
+
+```
+$ python3 micro_test.py --instance smoke --width 8 --budget 60 --warmup 10 --cycles 1 --relax 4 --excursion 4 --null-k 2 --pretrain 10 --final-window 5 --sr-samples 200 --lbfgs-iters 500 --fn-iters 2 --out results_smoke/seed1234_smoke.json --overwrite 1
+$ python3 micro_test.py --aggregate results_smoke
+[10:58:37] check two-site U=0.0: ED -2.000000000000  analytic -2.000000000000
+[10:58:37] check two-site U=4.0: ED -0.828427124746  analytic -0.828427124746
+[10:58:37] check two-site U=8.0: ED -0.472135955000  analytic -0.472135955000
+[10:58:37] check U=0 2x3 pbc/obc N=(2,1) t'=-0.25: sum eps -7.414213562373 Slater -7.414213562373 ED -7.414213562373
+[10:58:37] check U=0 3x2 obc/pbc N=(2,2) t'=0.3: sum eps -12.525483399594 Slater -12.525483399594 ED -12.525483399594
+[10:58:37] check gradient: analytic 3.2455640501e-01  finite-diff 3.2455640531e-01
+[10:58:37] ALL CHECKS PASSED
+[10:58:37] check FN(exact sign, guide |psi0|) - E0 = -2.56e-10
+[10:58:37] check tr rho_u=2.0000000000 (N_up=2) tr rho_d=2.0000000000
+[10:58:37] check U=0 NO Slater E=-8.0000000000 ED=-8.0000000000
+[10:58:37] check max ||[H,g]v|| over 36 group elements = 2.7e-13
+[10:58:37] check irrep projection of psi0 overlap = 1.000000000000
+[10:58:38] check fidelity grad: analytic 5.30765866e-03 fd 5.30765873e-03
+[10:58:38] P1.3 r2 CHECKS PASSED
+[10:58:38] instance smoke D=7056 ED [-9.461243604601348, -9.08969560634211, -9.016794915118547, -9.016794915118517] deg=1 setup 0.5s
+[10:58:44] ARM S: E=-8.800136 E_sign-E0=0.31550 E_FN-E0=0.38709 w_sign=0.198 ov=[0.26, 0.183, 0.013, 0.411] sym={'Ty': 0.192, 'Tx': 0.193, 'My': -0.076, 'Mx': -0.08} proj: E_sign-E0=0.00045 scan: fn_correct=True var_correct=True sel E_sign-E0=0.00045 [++++ wt=0.184 Ev=-9.0419 FN=-9.0687] [+++- wt=0.002 Ev=-4.4173 FN=-5.7019] [++-+ wt=0.002 Ev=-4.8731 FN=-6.1752] [++-- wt=0.263 Ev=-9.3945 FN=-9.4387] (6s)
+[10:58:48] ARM N: E=-8.688251 E_sign-E0=0.33858 E_FN-E0=0.41728 w_sign=0.226 ov=[0.243, 0.163, 0.012, 0.411] sym={'Ty': 0.148, 'Tx': 0.146, 'My': -0.082, 'Mx': -0.077} (3s)
+[10:58:51] A cycle 0: stay=-8.85954 sno=-6.81588 swap_u=-7.27513 swap_d=-7.23770 swap_ud=-7.50538 -> stay
+[10:58:52] ARM A: E=-8.739146 E_sign-E0=0.33046 E_FN-E0=0.40330 w_sign=0.209 ov=[0.253, 0.18, 0.023, 0.39] sym={'Ty': 0.183, 'Tx': 0.19, 'My': -0.07, 'Mx': -0.08} (5s)
+[10:58:53] AE cycle 0: stay=-8.19933 sno=-4.91263 swap_u=-5.40764 swap_d=-5.66617 swap_ud=-5.28748 -> stay
+[10:58:54] ARM AE: E=-8.616100 E_sign-E0=0.32480 E_FN-E0=0.40791 w_sign=0.205 ov=[0.261, 0.174, 0.017, 0.378] sym={'Ty': 0.198, 'Tx': 0.197, 'My': -0.121, 'Mx': -0.076} (2s)
+[10:58:56] B cycle 0: stay=-8.86057 cap0.8=-8.92137 cap0.5=-8.90570 -> cap0.8
+[10:58:57] ARM B: E=-8.698651 E_sign-E0=0.32763 E_FN-E0=0.40041 w_sign=0.211 ov=[0.251, 0.172, 0.015, 0.395] sym={'Ty': 0.175, 'Tx': 0.184, 'My': -0.082, 'Mx': -0.058} (3s)
+[10:59:00] ARM W: E=-8.701092 E_sign-E0=0.33768 E_FN-E0=0.41788 w_sign=0.211 ov=[0.252, 0.155, 0.02, 0.387] sym={'Ty': 0.157, 'Tx': 0.158, 'My': -0.121, 'Mx': -0.114} (3s)
+[10:59:00] wrote results_smoke/seed1234_smoke.json total 23s
+
+real	0m23.417s
+user	1m49.769s
+sys	0m8.378s
+===== instance smoke =====
+1 complete seed file(s)
+seed 1234: S: Esgn-E0=0.3155 Ev=-8.8001  N: Esgn-E0=0.3386 Ev=-8.6883  A: Esgn-E0=0.3305 Ev=-8.7391  AE: Esgn-E0=0.3248 Ev=-8.6161  B: Esgn-E0=0.3276 Ev=-8.6987  W: Esgn-E0=0.3377 Ev=-8.7011
+route A: median rho=-0.047  rho>0 on 0/1 (need 1)  median dEvar=+0.0610 -> FAIL
+route B: median rho=-0.038  rho>0 on 0/1 (need 1)  median dEvar=+0.1015 -> FAIL
+route AE: median rho=-0.029  rho>0 on 0/1 (need 1)  median dEvar=+0.1840 -> FAIL
+route P (irrep scan, FN-ranked): FN picks psi0 irrep 1/1, E_var picks it 1/1, median rho_P=0.999 -> FAIL (FN gate adds nothing over energy ranking: standard projection)
+premise (witness): median gW=-0.070  gW>0 on 0/1 -> NO-BASIN
+ablation: median rho_A - median rho_AE = -0.018
+NOTE: fewer than 8 seeds; the verdict above is not decisive.
+```
+
+  On this toy the plain-SR sign error is almost entirely symmetry contamination: projecting the S state on $\psi_0$'s irrep lowers $E_{\mathrm{sign}}-E_0$ from $0.316$ to $0.0005$, and both rankings pick the right irrep. No route beats S at this budget; the verdict lines only exercise the aggregation code.
+### Local Autopsy Log (Round 2 additions)
+* **Route 2.0 (energy-gated OSBH, round-1 survivor)**: killed at Gates 0, 2 and 3 by the critic. The move set is SCF metadynamics / MOM / shell scanning; there was no matched-restart null; and $E_{\mathrm{var}}$ after a short relaxation carries an amplitude error larger than the competitor gap. Mutation fuel: keep the move, replace the acceptance by a sign-only score (Route 2.1), and add the null and ablation arms.
+* **Route 2.3 (irrep scan)**: killed at Gate 3 as a route (it separates only competitors in different irreps, the killed sector-resolved pattern) and at Gate 0 unless FN ranking beats energy ranking. Kept as a diagnostic.
+* **Route 2.4 (better local optimizer)**: killed at Gate 0. MinSR/SPRING exist, and a better local step does not change the basin.
+* **Round-1 test**: unfit, superseded. Its $G$ and $M$ were order statistics of 3 to 12 runs, and its "NQS" arm had 378 parameters.
+
+### Round 3 — Mutation & Replenishment (2026-11-11)
+**Binding inputs.** The round-3 brief (projected control, at least 3 seeds, honest Hard-Core coverage, sampled estimators, code equal to claims) and six critic objections against round 2. Each objection is answered in the autopsy below.
+**Premise check first: is there a basin once the NQS is trained with projection?** P1.1-P (job 407525) is still running, but its finished $4+4$ results (`tests/P1.1P_projected/results/`, read 2026-11-11 13:40) already answer this for the P1.1 clusters. Here $\Delta E_{\mathrm{tot}}=E_{\mathrm{var}}-E_0$ and $\Delta E_{\mathrm{sign}}=E_{\mathrm{sign}}-E_0$ as in P1.1, and $\mathrm{ov}_0=\lvert\langle\psi_0\vert\psi\rangle\rvert^2$:
+
+| $4\times3$, $4+4$, $U=8$, $t'=-0.25$ | width | seeds | $\Delta E_{\mathrm{tot}}$ | $\Delta E_{\mathrm{sign}}$ | $\mathrm{ov}_0$ |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| unprojected SR (arm U) | 32 | 3 | $0.118$–$0.120$ | $0.082$ | $0.28$ |
+| U, projected post hoc | 32 | 3 | $0.072$–$0.073$ | $0.016$ | $0.91$ |
+| projected SR (arm P) | 8 | 3 | $8.0\times10^{-4}$–$9.3\times10^{-4}$ | $5\times10^{-6}$–$8\times10^{-6}$ | $0.99994$ |
+| projected SR (arm P) | 32 | 1 | $3.3\times10^{-5}$ | $6.7\times10^{-8}$ | $0.999998$ |
+
+* Projected SR started from the same broken-symmetry UHF reaches $\psi_0$. Its sign error is $10^{4}$ times smaller than that of unprojected SR, and it is already at width 8.
+* The training logs of the $5+5$ instances point the same way. At width 8 the projected-SR energy is within $2\times10^{-3}$ ($U=8$) and $3\times10^{-4}$ ($U=4$) of $E_0$, against $\Delta E_{\mathrm{tot}}=0.39$ for unprojected SR. Their budgets are still pending.
+* **Verdict on the premise for the P1.1 instances: falsified.** Once training is projected, no wrong-sign basin is left. Starting from a symmetry-broken reference does not trap projected SR. The "basin" seen in rounds 1 and 2 was symmetry contamination. An oracle-witness arm (W) on these instances is redundant, because the control itself reaches $\mathrm{ov}_0=0.99994$.
+* **What the projected residual sign error is**: about $10^{-5}t$, i.e. $f_E\le0.01$, on $4+4$. Nothing is left there for a sign route to fix.
+* **Stage 3.3 pivot.** A trained state $P\psi_\theta$ lies in $\psi_0$'s sector by construction, where $P=P_SP_\chi$ projects onto $\psi_0$'s space-group irrep $\chi$ and total spin $S$. So the only attractor that can survive projection is a **same-sector competitor**: an in-sector state that projected SR converges to instead of $\psi_0$. The leaf's question therefore becomes: on clusters with the smallest same-sector gap, does projected SR converge to the competitor, and if so, can it be made to leave? This also puts the competitor half of the Hard Core inside the leaf's own premise, rather than as an add-on.
+
+**Same-sector instance search** (`sector_scan.py`, output in `sector_scan_n{3,4,5}.txt`). For each point the scan does the following:
+* compute $\psi_0$ by Lanczos;
+* read its irrep $\chi$ and spin $S$;
+* compute the next in-sector levels by Lanczos on $HP$;
+* recompute $\langle T_x\rangle,\langle T_y\rangle,\langle M_x\rangle,\langle M_y\rangle$ and $\langle\hat S^2\rangle$ from the competitor's vector, and require them to equal $\chi$ and $S(S+1)$. This is the in-code same-sector confirmation.
+
+The in-sector gap is $\Delta_{\mathrm{in}}=E_1^{\mathrm{sec}}-E_0$. The smallest values found:
+
+| Filling on $4\times3$ PBC | grid | smallest $\Delta_{\mathrm{in}}$ | per site | at |
+| :--- | :--- | :--- | :--- | :--- |
+| $3+3$ ($D=48400$) | $t'\in[-0.5,0.5]$ step $0.05$, $U\in\{4,6,8,10,12\}$ | $0.931t$ | $0.078t$ | $U=4$, $t'=-0.30$ |
+| $4+4$ ($D=245025$) | $t'\in[-0.40,-0.28]$, $U\in\{6,8,10,12\}$ | $0.234t$ | $0.0195t$ | $U=6$, $t'=-0.37$ |
+| $5+5$ ($D=627264$) | $t'\in\{-0.40,-0.32,-0.25,+0.25\}$, $U=8$ | $0.405t$ | $0.034t$ | $U=8$, $t'=-0.32$ |
+
+The smallest same-sector gap reachable at these sizes is $0.0195t$ per site, about $20\times$ the Hard-Core scale of $10^{-3}t$ per site. **The test covers the competitor half only at $20\times$ the Hard-Core scale.** It does not reach the Hard-Core scale itself; this is a limit of ED-sized 12-site clusters. No result here may be read as a $10^{-3}t$-per-site claim.
+* **Generation Batch 3** (every arm projected; the projected-SR control is the bar):
+  - **Route 3.0 (SNO-FN, the round-2 survivor, re-audited)**: re-anchoring accepted by the guided fixed-node energy.
+    - Gate 0 (Novelty & Adoption): FAIL. In production the acceptance is lattice FN-GFMC guided by the NQS, which P1.1 already killed at Gate 0 (Loehr & Clark 2510.26906; its energy depends on the guide). The test computed it as a noise-free ten Haaf eigenvalue, so it could not fail on noisy ranking or on population-control bias. Its roughly 10 FN solves per cycle were also outside the matched budget.
+    - Gate 1 (Conservation & Asymptotics): PASS.
+    - Gate 2 (Baseline Gameability): FAIL. Its null restarted from the same broken-symmetry UHF, so the null had less information than the route.
+    - Gate 3 (Hard-Core Shield): FAIL. On the instance it targeted ($4+4$, $t'=-0.25$), projected SR already reaches $\Delta E_{\mathrm{sign}}\approx10^{-5}$, so a symmetry-restoring move beats the unprojected null by construction.
+    - *Verdict*: KILLED. Mutation fuel: keep the re-anchoring move, but replace the acceptance with a sampled one, project every arm, and use a null with symmetric references.
+  - **Route 3.1 (Mutated from 3.0 via Operation A.1 on the acceptance and A.3 on the baseline): SNO-PE**, symmetric-natural-orbital re-anchoring of a *projected* NNBF with sampled-energy acceptance.
+    - **Mechanism**: after a warm-up of projected SR, three steps are repeated each cycle.
+      1. The 1-RDM of $\psi_P=P_SP_\chi\psi_\theta$ is estimated from $N_{\mathrm{acc}}=2000$ samples of $\lvert\psi_P\rvert^2$, with the local estimator $(\hat c^\dagger_i\hat c_j\psi_P)(\mathbf n)/\psi_P(\mathbf n)$. It is averaged over $G$ and diagonalized.
+      2. Four candidates replace NNBF's reference orbitals, keeping the backflow weights: the top-$N_\sigma$ natural orbitals, and the frontier swaps for $\uparrow$, $\downarrow$, and both.
+      3. The incumbent and each candidate are relaxed for $r=40$ projected-SR steps. The candidate with the lowest sampled mean energy $\bar E_c$ replaces the incumbent only if $\bar E_c+2\sqrt{\sigma_c^2+\sigma_{\mathrm{inc}}^2}<\bar E_{\mathrm{inc}}$, where $\sigma$ is the standard error of the sampled local-energy mean.
+
+      Every relaxation step, every sampling pass and every acceptance evaluation is charged to the budget $T$.
+    - Gate 0 (Novelty & Adoption): PASS (conditional, narrow). Natural orbitals from QMC density matrices (Kent et al., arXiv:cond-mat/9804010) and iterative reference updates (Fahy & Filippi, arXiv:cond-mat/9906305) exist, and the move set is a shell-occupation scan. Re-anchoring is not standard for NQS because it disturbs the trained correlator, and an energy compared after a short relaxation is unreliable. The only claimed mechanism is the 1-RDM feedback from the trained projected state, which proposes references inside one budget. The null N runs the identical loop with symmetry-adapted references and **no** 1-RDM feedback, so it isolates exactly that claim. If A does not beat N, the claim dies.
+    - Gate 1 (Conservation & Asymptotics): PASS. $N_\uparrow$, $N_\downarrow$, $\chi$ and $S$ are exact. The cost is $\mathcal{O}(V^2)$ sampled one-body estimators per cycle. No global-optimality claim is made.
+    - Gate 2 (Baseline Gameability): PASS. It is paired per seed against the projected-SR control PSaf and against the null N. It must beat both on the sign error and on the number of trapped seeds.
+    - Gate 3 (Hard-Core Shield): PASS as stated. It runs only on same-sector competitor instances, at $20\times$ the Hard-Core scale, and says so.
+    - *Verdict*: SURVIVED (conditional on the premise test finding a basin).
+  - **Route 3.2 (Operation B.2, active probing): OCP**, an in-sector orthogonal-complement probe.
+    - **Mechanism**: after $T_a=600$ projected-SR steps the incumbent is $\psi_a$. A probe NNBF $\psi_b$ on a Fermi-sea reference is trained for $X=300$ projected-SR steps on $E[\psi_b]+\lambda F(\psi_a,\psi_b)$, with fidelity $F=\langle\psi_a\vert\psi_b\rangle^2/(\langle\psi_a\vert\psi_a\rangle\langle\psi_b\vert\psi_b\rangle)$ and $\lambda=2t$, chosen above every $\Delta_{\mathrm{in}}$ in the scan. Both states are then relaxed for $r$ steps and compared by the sampled acceptance, and the winner continues. Because both states are in $\psi_0$'s sector, the probe can only end in one of two places: a lower state of the same sector, which is an escape, or the same-sector competitor, which certifies the incumbent.
+    - Gate 0 (Novelty & Adoption): PASS (conditional, narrow). Prior art:
+      - overlap-penalty excited states in VMC (Pathak et al., J. Chem. Phys. 154, 034101, 2021; Wheeler, Kleiner & Wagner, arXiv:2312.00693) and in NQS (Choo et al., arXiv:1807.03325);
+      - symmetry projection combined with an orthogonality penalty, used for same-quantum-number excited states (arXiv:2605.30944, $A=4$ nuclei);
+      - the critical penalty strength and gradient-bias issues (Pfau et al., arXiv:2308.16848).
+
+      All of these compute excited states *assuming the ground state is right*. Nothing found uses the probe as a ground-state basin escape inside a matched budget. That use is not standard for a concrete reason: without projection, the lowest state orthogonal to $\psi_a$ lies in another sector. On P1.1's $4+4$ instance this is the triplet at $k=(\pi,\pm2\pi/3)$, $0.086t$ up. Such a probe says nothing about whether $\psi_a$ is the ground state of its sector, so its cost is wasted. Projection removes exactly that failure. The ablation O0 ($\lambda=0$, otherwise identical) tests whether the penalty is the active ingredient.
+    - Gate 1 (Conservation & Asymptotics): PASS. The cost is one extra network for $X$ steps, charged to $T$.
+    - Gate 2 (Baseline Gameability): PASS. It is compared with PSaf, N and the ablation O0. The fidelity is a cross-overlap, heavy-tailed under sampling (round-3 rule 4). A sampled side channel records the two-sample estimator $\hat F=\langle\psi_a/\psi_b\rangle_{\lvert\psi_b\rvert^2}\langle\psi_b/\psi_a\rangle_{\lvert\psi_a\rvert^2}$, its standard error and the exact $F$ every 25 probe steps, and the verdict is gated on it.
+    - Gate 3 (Hard-Core Shield): PASS as stated (same instances as Route 3.1). Its sharpest exposure: at the Hard-Core scale the sampled energy comparison between $\psi_a$ and $\psi_b$ must resolve $10^{-3}t$ per site, the same ranking problem as P3.2.
+    - *Verdict*: SURVIVED (conditional on the premise test finding a basin).
+  - **Route 3.3 (Operation A.4 on Route 4: $\lambda$-continuation in $t'$ across the avoided crossing from both sides, "diabatic branch transport")**: tracks both diabatic branches instead of the lowest root, which is the exception the global boundary condition allows.
+    - Gate 0 (Novelty & Adoption): FAIL. Forward and backward parameter sweeps that look for hysteresis are standard for first-order transitions. Comparing independently continued branches by energy is P3.2's killed calibrated independent-branch rule.
+    - Gate 1 (Conservation & Asymptotics): PASS.
+    - Gate 2 (Baseline Gameability): PASS. Not reached.
+    - Gate 3 (Hard-Core Shield): PASS. Not reached.
+    - *Verdict*: KILLED.
+  - **Route 3.4 (Operation A.2: projector annealing)**: train with $(1-\alpha)\psi_\theta+\alpha P\psi_\theta$ and anneal $\alpha$ from 1 to 0, so that the final state is unprojected and costs 1 instead of $\lvert G\rvert$ amplitudes.
+    - Gate 0 (Novelty & Adoption): PASS. No prior art found in a quick search; not audited further.
+    - Gate 1 (Conservation & Asymptotics): PASS.
+    - Gate 2 (Baseline Gameability): FAIL. An unprojected final state cannot beat the projected control on accuracy, so its only claim is cost. An exact-sum test cannot measure that cost honestly (rule 5): exact sums give projection away for free.
+    - Gate 3 (Hard-Core Shield): PASS.
+    - *Verdict*: KILLED for this leaf. It is recorded as a size-transfer/cost idea for P4, not as a basin route.
+  - **Route 2.2 (FCD)**: killed by the critic as SCF metadynamics with a cap, with no independent mechanism. Not revived.
+### Top Surviving Route & Sharpest Gap (Round 3)
+* **Survivors**:
+    * Route 3.1 SNO-PE moves the reference.
+    * Route 3.2 OCP probes the in-sector complement with a second network.
+
+  Both survive only conditionally. On the P1.1 instances the premise is already falsified, and on the same-sector instances it is untested.
+* **Top route**: Route 3.2 OCP. Its mechanism depends on projection, which is the one ingredient the round-2 critic said was missing. Its null is not a weaker version of itself, and its estimator risk is measured by sampling.
+* **Sharpest gap**: **whether a same-sector basin exists at all.** Projected SR from a broken UHF reaches $\psi_0$ on the three P1.1 clusters. If it also reaches $\psi_0$ from every cold start on the avoided-crossing clusters, the leaf's premise is falsified at ED sizes, and P1.3 hands its question to the size-transfer leaf (P4.2). For OCP specifically, the gap is whether the sampled energy comparison at the end of the probe ranks $\psi_a$ against $\psi_b$ correctly once the in-sector gap is near the Hard-Core scale.
+### 24-Hour Decisive Test (Round 3)
+* **Instances** (the competitor half at $20\times$ the Hard-Core scale; see the scan). Both have $\psi_0$ in the trivial irrep with $S=0$, and the competitor is confirmed in the same sector in code at run time.
+    * **c1**: $4\times3$ PBC, $4+4$, $U=6$, $t'=-0.37$, $D=245025$, $\Delta_{\mathrm{in}}=0.234t$, the smallest same-sector gap found.
+    * **c2**: $4\times3$ PBC, $4+4$, $U=8$, $t'=-0.34$, $\Delta_{\mathrm{in}}=0.273t$, P3.2's avoided crossing.
+
+  The sign-half instances of P1.1 are not re-run. P1.1-P already measures them with the projected control.
+* **Ansatz and optimizer**:
+    * NNBF of width 32 (P1.1 code);
+    * the variational state is $\psi_P=P_SP_\chi\psi_\theta$ in every arm except U;
+    * exact energy and force;
+    * the SR metric is the sampled Fubini–Study metric of $P_\chi\psi_\theta$, from 2000 samples (P1.1-P's metric). This is exact for the $P_\chi$ factor and only a preconditioner for the $P_S$ factor. Stationary points are exact because the force is exact.
+* **Arms and budget**: each arm gets $T=1500$ SR-step equivalents, plus 300 fidelity steps for the two oracle arms. A sampled acceptance costs one step-equivalent per scored state.
+
+| Arm | Role | Start |
+| :--- | :--- | :--- |
+| U | unprojected SR, also reported after post-hoc projection (context only) | AF-UHF |
+| PSaf | **projected-SR control** (rule 1) and cold run | AF-UHF |
+| PSfs | cold run | Fermi sea |
+| PScdw | cold run | charge-modulated UHF |
+| PW0 | oracle floor: 300 projected fidelity steps toward $\psi_0$, then $T$ | AF-UHF |
+| PW1 | oracle trap test: 300 steps toward the in-sector competitor $\psi_1$, then $T$ | AF-UHF |
+| N | null: 3 projected restarts from Fermi seas with different tie-breaks and seeds, sampled acceptance, no 1-RDM feedback | Fermi sea |
+| A | Route 3.1 SNO-PE: warm-up 300, 2 cycles of 4 candidates plus the incumbent, $r=40$ | AF-UHF |
+| O | Route 3.2 OCP: $T_a=600$, probe $X=300$, $\lambda=2t$, $r=40$ | AF-UHF |
+| O0 | ablation of O with $\lambda=0$ | AF-UHF |
+
+* **Seeds**: 6 per instance (1234 to 1239), at least 5 needed. All arms of a seed share the seed. One Slurm task per (instance, seed, arm), 120 tasks in total.
+* **Evaluation of every final state**:
+    * $e_{\mathrm{var}}=E_{\mathrm{var}}-E_0$;
+    * $e_{\mathrm{sign}}=E_{\mathrm{sign}}-E_0$ (P1.1 definition);
+    * $E_{\mathrm{FN}}$ and the mismatch weight $w$;
+    * $\mathrm{ov}_k$ with the three lowest in-sector states;
+    * $\langle\hat S^2\rangle$ and the generator expectations.
+
+  A run is **trapped** if $e_{\mathrm{var}}\ge0.5\,\Delta_{\mathrm{in}}$ and $\mathrm{ov}_1>\mathrm{ov}_0$.
+* **Pre-committed rule (coded in `--aggregate`, per instance, with $n$ the number of complete seeds)**:
+    * **Premise**. The trap test is valid if the median fidelity of PW1 to $\psi_1$ after pre-training is at least $0.5$.
+        * TRAP: the trap test is valid and PW1 is trapped on at least $\lceil2n/3\rceil$ seeds.
+        * capture: the number of trapped runs among the $3n$ cold runs (PSaf, PSfs, PScdw).
+        * depth $\mathcal D$: the median over seeds of $e_{\mathrm{var}}(\mathrm{PSaf})-e_{\mathrm{var}}(\mathrm{PW0})$.
+        * **BASIN** if TRAP and capture $\ge\max(2,\lceil n/2\rceil)$.
+        * **NO-BASIN** if capture $=0$ and $\mathcal D\le0.05\,\Delta_{\mathrm{in}}$.
+        * UNCLEAR otherwise.
+    * **Route metric**. With $b(i)=\min(e_{\mathrm{sign}}(\mathrm{PSaf},i),e_{\mathrm{sign}}(\mathrm N,i))$, define $\rho_R(i)=(b(i)-e_{\mathrm{sign}}(R,i))/b(i)$. Routes are evaluated only under BASIN. Under NO-BASIN their verdict is "N/A (premise falsified)", and under UNCLEAR it is "UNTESTED".
+    * **Gates**. Each violated gate is a FAIL:
+        * budget: every non-oracle arm used exactly $T$;
+        * control: the number of trapped seeds of $R$ is strictly below $\min(\text{trapped PSaf},\text{trapped N})$, so losing to the projected control fails;
+        * ablation for O: the median of $\rho_O-\rho_{O0}$ is at least $0.10$, with $\rho_O>\rho_{O0}$ on at least $n-1$ seeds. A's ablation is N itself, which is inside $b$;
+        * sampled estimator:
+            * A's sampled decision must agree with the exact decision in at least 80% of its cycles;
+            * O's estimate $\hat F$ must be within $\max(0.02,3\,\mathrm{se})$ of $F$, with $\mathrm{se}\le0.05$, at 90% or more of its checkpoints.
+    * **PASS($R$)**: all gates hold, the median $\rho_R\ge0.25$, $\rho_R>0$ on at least $n-1$ seeds, and the median $e_{\mathrm{var}}(R)-\min(e_{\mathrm{var}}(\mathrm{PSaf}),e_{\mathrm{var}}(\mathrm N))\le0.01$.
+    * **FAIL($R$)**: a gate is violated, or the median $\rho_R<0.10$, or $\rho_R>0$ on at most $n/2$ seeds.
+    * **AMBIGUOUS($R$)** otherwise. Pre-committed action: add 6 seeds, and kill $R$ unless the 12-seed set passes.
+    * **Global**:
+        * the premise is FALSIFIED if NO-BASIN holds on both instances and CONFIRMED if BASIN holds on both;
+        * a route PASSes only if it PASSes on both instances, and FAILs if it FAILs on any BASIN instance.
+    * **Pre-committed consequence of FALSIFIED**: P1.3's premise is dead at ED sizes for projected NNBF. The leaf closes its route search here, and its question moves to size transfer (P4.2). Do symmetry-broken references at $8\times8$, where projection costs $\lvert G\rvert=512$ amplitudes, recreate basins that cheap partial projection does not remove?
+* **Execution**:
+    * code: `tests/P1.3_wrong_sign_basins_r3/micro_test.py`, with `symm.py` copied verbatim from P1.1-P's projector and projected-SR code, and `p11_core.py` a verbatim copy of P1.1;
+    * scan: `sector_scan.py`;
+    * Slurm script: `submit_test.sbatch` (partition `kim`, array 0–119 with at most 30 tasks at once, 16 CPUs, 8 GB, 6 h).
+* **Cost**: P1.1-P measured projected SR of width-32 NNBF on $D=245025$ at 1.64 s per step (16 CPUs, `P1.1P_proj_407525_7.out`). The $P_S$ factor adds 0.02 s (`timing_output.txt`; the interactive node was overloaded at load 90, so its absolute step times are not representative). A task is about 1800 steps, roughly 55 min, plus about 6 min of ED and $E_{\mathrm{sign}}$ evaluation, so at most about 1.2 h. The 6 h limit gives a 5× margin.
+* **Smoke test** (4×3 PBC $2+2$, $U=8$, $t'=-0.3$, $D=4356$, $\Delta_{\mathrm{in}}=2.16t$; width 8, 60-step budget, all arms, 2 seeds; uninformative by design):
+
+```text
+$ python3 micro_test.py --checks-only 1
+[13:50:26] check smoke instance: E0=-8.9361601979 sector levels [-8.93616, -6.774781, -5.923371] chi={'Ty': 1, 'Tx': -1, 'My': 1, 'Mx': -1} S=0 same_sector=[True, True, True]
+[13:50:26] check P_S P_chi: idempotent 5.4e-16 symmetric 2.5e-19 [P,H] 4.3e-17
+[13:50:26] check P_S P_chi energy gradient: analytic 3.3139912112e-02 fd 3.3139913036e-02
+[13:50:26] check projected fidelity gradient: analytic -1.2876031273e-02 fd -1.2876031304e-02
+[13:50:26] check sampled energy -8.562766 +- 0.026046 vs exact -8.570935
+[13:50:26] check sampled fidelity 0.23556 +- 0.00975 vs exact 0.24812
+[13:50:26] check sampled 1-RDM: tr up 2.000000 (N_up=2) max dev from exact 6.485e-03
+[13:50:26] P1.3 r3 CHECKS PASSED
+$ python3 micro_test.py --instance smoke --arm all --seed 1234 --width 8 --budget 60 --warmup 10 --cycles 1 --relax 4 --probe-at 20 --probe 10 --pretrain 10 --final-window 5 --sr-samples 200 --acc-samples 500 --lbfgs-iters 500 --fn-iters 2 --out results_smoke/smoke_s1234.json --overwrite 1
+(same command with --seed 1235 and the matching --out)
+[13:50:39] ARM U: steps=60 e_var=0.26657 e_sign=0.04404 ov=[0.4928, 0.0017, 0.0004] trapped=False S2=9.93e-01 (5s)
+[13:50:39] ARM U->P: e_var=0.02563 e_sign=0.00003 ov=[0.9931, 0.0034, 0.0008]
+[13:50:45] ARM PSaf: steps=60 e_var=0.02718 e_sign=0.00238 ov=[0.9968, 0.0, 0.0001] trapped=False S2=3.31e-32 (6s)
+[13:51:20]   accept: stay=-8.39589+-0.11690(ex -8.40340) sno=-5.28885+-0.29511(ex -5.32816) swap_u=-5.61659+-0.25569(ex -5.65313) swap_d=-4.80847+-0.31377(ex -5.14559) swap_ud=-4.62745+-0.24864(ex -4.81888) -> stay (exact: stay)
+[13:51:23]   accept: a=-8.66597+-0.09534(ex -8.78264) b=-8.40260+-0.09270(ex -8.36397) -> a (exact: a)
+$ python3 micro_test.py --aggregate results_smoke --min-seeds 2
+===== instance smoke: E0=-8.936160 gap_in=2.16138 (0.18011 per site) chi={'Ty': 1, 'Tx': -1, 'My': 1, 'Mx': -1} S=0.0 same_sector=[True, True, True]
+  seed 1234 (e_sign/e_var, T=trapped): U:0.0440/0.2666 PSaf:0.0024/0.0272 PSfs:0.0035/0.0389 PScdw:0.0029/0.0595 PW0:0.0023/0.0614 PW1:0.0048/0.0723 N:0.0000/0.1283 A:0.0163/0.1414 O:0.0022/0.0986 O0:0.0022/0.0986 U->P:0.0000/0.0256
+  seed 1235 (e_sign/e_var, T=trapped): U:0.0428/0.2845 PSaf:0.0033/0.2183 PSfs:0.0043/0.1359 PScdw:0.0000/0.2495 PW0:0.0000/0.0535 PW1:0.0000/0.1405 N:0.0054/0.3412 A:0.0009/0.3877 O:0.0071/0.4127 O0:0.0071/0.4127 U->P:0.0000/0.0195
+  trap test valid (median fidelity of PW1 to psi_1 after pre-training 0.860 >= 0.5): True
+  premise: PW1 trapped 0/2 (TRAP=False); cold runs trapped 0/6; median depth e_var(PSaf)-e_var(PW0) = 0.06530 (0.05 gap = 0.10807) -> NO-BASIN
+  spread: PSaf e_sign range over seeds [2.38e-03, 3.28e-03]; median e_sign PSaf 2.83e-03, PW0 1.16e-03, U 4.34e-02, U->P 2.54e-05
+  A sampled-vs-exact acceptance agreement 1.00 over 2 cycles
+  route A: median rho=-310.616 rho>0 on 1/2 dEvar=+0.1418 trapped 0 vs control 0  gates: G-ctrl trapped 0 not < control 0
+  -> route A: N/A (premise falsified: no basin after projection)
+  O ablation: median rho_O - rho_O0 = 0.000, better on 0/2
+  O sampled fidelity estimator OK at 4/4 checkpoints (max se 0.028)
+  route O: median rho=-42.109 rho>0 on 0/2 dEvar=+0.1329 trapped 0 vs control 0  gates: G-ctrl trapped 0 not < control 0; G-ablation penalty adds nothing (median 0.000, 0/2)
+  -> route O: N/A (premise falsified: no basin after projection)
+only smoke results; no global verdict
+```
+
+  On the toy, PW1 reaches fidelity $0.86$ with the competitor after 10 steps, yet projected SR leaves it within 60 steps. The premise logic, the gates and the sampled channels all execute, and their outputs agree with the exact decisions. Full logs are in `results_smoke_s1234.log`, `results_smoke_s1235.log` and `checks_output.txt`.
+* **Submission (not run)**:
+
+```bash
+cd /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r3 && sbatch submit_test.sbatch
+```
+
+### Local Autopsy Log (Round 3 additions)
+* **Critic objections, round 2**:
+    * [Major] *The null got less information.* Accepted. N now restarts from Fermi-sea references, symmetry-adapted up to a $10^{-3}$ tie-break and then projected, with no 1-RDM feedback, under the same sampled acceptance. A symmetrized UHF density is uniform on the torus, so it gives the same Fermi sea. Every arm, the null included, is projected, so a symmetry-restoring move can no longer win by construction.
+    * [Major] *The projection bar only relabelled a PASS.* Accepted. PSaf (projected SR, P1.1-P's method plus $P_S$) is inside the baseline $b$, and losing to it is a FAIL through the control gate. The "dominated" label is gone.
+    * [Major] *The competitor half did not gate the verdict.* Accepted. Both instances are same-sector competitor instances, and a route must PASS on both. The sign-half instances are left to P1.1-P, where projection already removes the error.
+    * [Major] *FN acceptance reused the killed FN-GFMC and was noise-free and unbudgeted.* Accepted. Route 3.0 is killed at Gate 0. Every acceptance is now a sampled local-energy mean with a $2\sigma$ margin, its decision is logged against the exact one and gated (Route 3.1), and its cost is charged to $T$.
+    * [Minor] *The ablation and the premise were printed but never gated the verdict.* Accepted. The premise now decides whether routes are evaluated at all. O's penalty ablation and A's null ablation are FAIL gates.
+    * [Minor] *FCD has no independent mechanism.* Accepted. Killed and not revived.
+* **Premise, round 3**: falsified for projected NNBF on the three P1.1 instances (P1.1-P partial). The round-1 and round-2 "wrong-sign basin" was symmetry contamination from the UHF start. Mutation fuel: only same-sector competitors can be basins after projection.
+* **Route 3.3 (diabatic branch transport)**: killed at Gate 0 (hysteresis sweeps; P3.2's independent-branch kill).
+* **Route 3.4 (projector annealing)**: killed at Gate 2 for this leaf, because it cannot beat the projected control on accuracy and its cost claim cannot be measured with exact sums. It is handed to P4 as an idea.
+### Round 5 (2026-11-12)
+**Binding inputs.** The round-5 brief and the pilot read-out.
+* Job 410199 falsified the premise at ED size on the $4\times3$ crossing instance: all 9 projected cold runs reached $\psi_0$ ($e_{\mathrm{var}}\le2.7\times10^{-5}$). The route search on those sizes is closed.
+* The 4×4 OBC $t$–$t'$–$J$ instance ($6+6$, $t'=-0.25$, $J=0.4$, $D=1681680$, $\dim\mathrm{range}(P_SP_\chi)=30220$) is the first one where a projected NNBF keeps a nodal error. At width 6 and seed 11 it has $\Delta E_{\mathrm{sign}}=0.0125t$ and overlap 0.936. Job 451706 is confirming this with more seeds.
+* Critic verdicts carried over: OCP is killed (deflation / SCF metadynamics), and SNO-FN is killed (FN acceptance).
+
+**Question.** On this instance, is the residual projected sign error a **basin** or a **capacity limit**?
+* **Basin**: at the same width a better-signed state exists, projected SR keeps it once it is reached, and cold starts do not find it.
+* **Capacity limit**: no such state exists at this width.
+
+Only a basin gives P1.3 a target.
+
+**Stage 3.3 status.**
+* No escape route is carried forward this round. The brief allows one only if BASIN is plausible, and BASIN is untested until the premise test below runs.
+* SNO-PE, the round-3 mutant with sampled acceptance, stays dormant. It is the first candidate to re-audit if the verdict is BASIN, at the BASIN widths, against the three cold arms.
+* If the verdict is CAPACITY, the leaf reduces to a capacity question. It is handed to P2.1 (sign and amplitude capacity at a fixed per-sample cost) and to P1.2 (capacity of a sign layer). P1.3 then closes.
+### Top Surviving Route & Sharpest Gap (Round 5)
+* **Survivor**: none as a route. What survives is the premise test itself, a basin-versus-capacity discriminator built from oracle pre-training followed by release.
+* **Sharpest gap**: whether a state with lower $E_{\mathrm{sign}}$ than every cold start exists at a fixed NNBF width and is stable under projected SR. It may exist and be stable (BASIN). Or the oracle-trained state may relax back to the cold level, or reach a lower $E_{\mathrm{sign}}$ only by paying in $E_{\mathrm{var}}$ (CAPACITY). A lower $E_{\mathrm{sign}}$ at equal $E_{\mathrm{var}}$ is SIGN-DEGENERATE, and an oracle state that is no better is UNCLEAR-ORACLE.
+### 24-Hour Decisive Test (Round 5)
+* **Instance**: index 0 of P2.1 r3, the shared target. $\psi_0$ is a non-degenerate singlet with $M_x=M_y=+1$ and $D=-1$, and $\lvert G\rvert=8$. **This test covers the sign half of the Hard Core only.** The four ED levels are labelled by sector in code, but no same-sector competitor is claimed.
+* **Ansatz and optimizer**: P2.1's `nnbf` arm, reused verbatim through `tj_core.py` and `p11_core.py`.
+    * NNBF with $K=1$ and no Jastrow.
+    * Trained state $\psi_P=P_\chi\psi_\theta$.
+    * Projected SR with the exact force and a metric sampled from 2000 configurations; step 0.05, shift $10^{-3}$.
+    * The best iterate is kept.
+* **Arms**: four arms per (width, seed). Every arm takes the same 900 energy SR steps. W's fidelity phase comes on top and is not charged to that budget.
+
+| Arm | Reference | Schedule |
+| :--- | :--- | :--- |
+| Cuhf (projected control) | UHF, as in P2.1 | 900 energy steps |
+| Cfs | Fermi sea of $-T$ | 900 energy steps |
+| Ccdw | UHF from a charge-stripe density | 900 energy steps |
+| W (oracle) | same reference, init and SR seed as Cuhf | fidelity SR on $-\log F$ until $F\ge\mathrm{ov}_0(\mathrm{Cuhf})+0.02$ (cap 600 steps), keep the best-fidelity iterate W0, then release to 900 energy steps |
+
+  Here $F=\langle\psi_0\vert\psi_P\rangle^2/\langle\psi_P\vert\psi_P\rangle$, with half-gradient coefficient $\psi_P/\langle\psi_P\vert\psi_P\rangle-\psi_0/\langle\psi_0\vert\psi_P\rangle$, checked against finite differences.
+    * **Fidelity target.** The Cuhf overlap is taken from Cuhf's result at the same width and seed if it exists. Otherwise it comes from Cuhf at another width, then from P2.1's control of the same seed, then from 0.936. In the pilot all twelve tasks run at once, so W uses P2.1's value. The aggregate records whether each W reached its target.
+    * **The pairing of W with Cuhf is nominal only.** They share the reference, the network initialisation and the SR seed. After the fidelity phase, however, the parameters and the SR sample stream differ, so W and Cuhf are not a step-for-step paired comparison.
+* **Width ladder**: widths 6, 4 and 10 (1734, 1284 and 2634 parameters, measured). **Seeds**: 11, 22 and 33. That is 36 tasks.
+* **Metric**: $\Delta E_{\mathrm{sign}}=E_{\mathrm{sign}}-E_0$, the P1.1 budget on state P. The test also reports $\Delta E_{\mathrm{tot}}$, the overlap $\mathrm{ov}_0$, overlaps with ED levels 1–3, and a post-hoc $P_S$ budget.
+    * Snapshots, counted in energy steps: W0 at release (W only), mid at step 450, and end at step 900.
+    * Convergence, for every arm including W after release: the least-squares slope of the energy over the last 200 energy steps gives a drop of at most $3\times10^{-4}t$ per 100 steps.
+* **Pre-committed rule** (implemented in `width_verdict`, `global_verdict` and `pilot_decision`). Per width $w$, with $n=3$ seeds:
+    * Definitions:
+        * $c_a$ is the median end $\Delta E_{\mathrm{sign}}$ of cold arm $a$, and $C_{\mathrm{best}}=\min_ac_a$;
+        * $\sigma_c$ is the median over cold arms of the seed range of $\Delta E_{\mathrm{sign}}$, and $\sigma_E$ is the same for $\Delta E_{\mathrm{tot}}$;
+        * $W_r$, $W_m$ and $W_0$ are W's median $\Delta E_{\mathrm{sign}}$ at end, mid and W0, and $W_E$ is W's median end $\Delta E_{\mathrm{tot}}$;
+        * $E_c=\min_a$ (median end $\Delta E_{\mathrm{tot}}$ of cold arm $a$), $\tau_E=\max(2\sigma_E,10^{-3})$, and the margin is $\mu=\max(0.25C_{\mathrm{best}},2\sigma_c)$.
+    * **Gates**, applied in this order before any verdict:
+        * NO-TARGET($w$): if $C_{\mathrm{best}}(w)<0.005t$, the width has no target and is left out of every count;
+        * Bm (measurement): on every mid and end snapshot, the absolute multi-start spread (spread $\times\,\Delta E_{\mathrm{tot}}$) is at most $0.2\mu$, and every task has $\lvert\mathrm{calib}\rvert\le10^{-4}$. Failing gives UNCLEAR-MEAS;
+        * Bc (convergence): every task converged, all three cold arms and W, on every seed. Every cold (arm, seed) also has $\lvert\Delta E_{\mathrm{sign}}(\mathrm{end})-\Delta E_{\mathrm{sign}}(\mathrm{mid})\rvert\le0.1\mu$. Failing gives UNCLEAR-CONV.
+    * **BASIN($w$)** requires all of the following:
+        * B1: $W_r\le C_{\mathrm{best}}-\mu$;
+        * B2: on at least 2 of 3 seeds, W's end value is below every cold arm of the same seed;
+        * B3: the median rise from mid to end is at most $0.25(C_{\mathrm{best}}-W_r)$;
+        * B4: W is strictly lower in energy, $W_E\le E_c-\tau_E$.
+    * **SIGN-DEGENERATE($w$)**: B1, B2 and B3 hold, and $\lvert W_E-E_c\rvert<\tau_E$. A lower $E_{\mathrm{sign}}$ at equal $E_{\mathrm{tot}}$ gives SR nothing to prefer, so it is not a basin. It counts as no target for P1.3.
+    * **CAPACITY($w$)** comes only from K2 or K3:
+        * K2: $W_0\le C_{\mathrm{best}}-\mu$ and $W_r\ge C_{\mathrm{best}}-\max(0.10C_{\mathrm{best}},\sigma_c)$, so W started better and relaxed back;
+        * K3: B1 and B2 hold, and $W_E>E_c+\tau_E$, so W's sign gain is a trade against amplitude.
+    * **UNCLEAR-ORACLE($w$)**: K1 ($W_0\ge0.75C_{\mathrm{best}}$, the oracle state is no better) holds without K2 or K3, or some W missed its fidelity target. K1 alone is no longer evidence of capacity, because the fidelity phase itself may be trapped.
+    * **UNCLEAR-NOISE($w$)** otherwise.
+    * **Default action for each UNCLEAR label**:
+        * UNCLEAR-CONV: resume every run of that width with `--init-from <json> --rel 600`;
+        * UNCLEAR-ORACLE: rerun W with a longer fidelity cap, `--pre 1200`;
+        * UNCLEAR-MEAS: re-budget the end states with `--init-from <json> --rel 0 --lbfgs-iters 8000`;
+        * UNCLEAR-NOISE: add seeds 44, 55 and 66. Only this label adds seeds.
+    * **Global verdict**. Widths that are NO-TARGET($w$) are excluded, and $k=\min(2,\#\text{eligible widths})$:
+        * **Premise gate**: the median $\Delta E_{\mathrm{sign}}$(Cuhf, $w=6$) must be at least $0.005t$, otherwise the verdict is NO-TARGET. It is also NO-TARGET if no width is eligible;
+        * **BASIN** if BASIN($w$) holds at $k$ or more widths, including width 6 or width 10;
+        * **CAPACITY** if no width is BASIN and CAPACITY($w$) holds at $k$ or more widths;
+        * **SIGN-DEGENERATE** (no target) if no width is BASIN, at least one is SIGN-DEGENERATE, and CAPACITY plus SIGN-DEGENERATE widths number at least $k$;
+        * otherwise UNCLEAR. The per-label actions above are applied and the rule is re-run. If the verdict is still UNCLEAR, the width trend breaks the tie: if the error is width-limited ($C_{\mathrm{best}}(10)\le0.5\,C_{\mathrm{best}}(4)$) the verdict is CAPACITY, otherwise NO-TARGET.
+    * Reported but not gated: $C_{\mathrm{best}}$ and $W_0$ versus width, the $P_S$ budgets, and P2.1's own seeds of the same control.
+* **Width-6 pilot** (tasks 0–11; `--mode aggregate --pilot w6`). The task mapping was checked in code: tasks 0–2 are Cuhf, 3–5 Cfs, 6–8 Ccdw and 9–11 W, all at width 6 with seeds 11/22/33 in each block.
+    * If width 6 is NO-TARGET(6), or the premise gate fails, P1.3 closes as NO-TARGET.
+    * If width 6 gives CAPACITY through K2 or K3, P1.3 closes as CAPACITY. This verdict already implies $C_{\mathrm{best}}(6)\ge0.005t$.
+    * If width 6 gives SIGN-DEGENERATE, P1.3 closes as no target.
+    * If width 6 gives BASIN or any UNCLEAR label, tasks 12–35 are submitted, together with the width-6 action for that UNCLEAR label.
+* **Resume** (`--init-from <result json>`). A resumed run continues from the saved final parameters and the saved SR and budget RNG states, so nothing is replayed. It carries forward the W0 snapshot, the traces, the fidelity record and the energy-step offset, and writes an `_ext` JSON, which the aggregate uses in place of the base JSON.
+* **Measured cost**: one SR step at 8 threads (`timing_output.txt`) takes 12.1–12.2 s at width 4, 12.2–13.2 s at width 6 and 14.6–14.9 s at width 10. P2.1's job 410988 measured 12.7 s per step at width 6 over 1200 steps. The sbatch now requests the measured 8 CPUs.
+    * A cold task takes at most $900\times14.9$ s $\approx3.7$ h, plus three budgets of about 6 min each and about 5 min of ED and calibration, so about 4.1 h.
+    * The worst case is W at width 10: $(600+900)\times14.9$ s $\approx6.2$ h, plus four budgets, so about 6.8 h.
+    * The 14 h limit leaves about twice that.
+* **Smoke test** (instance 8: $3\times3$ OBC, $3+3$, $D=1680$; fidelity cap 30 and 60 energy steps; all 36 tasks in array order, then one resume; uninformative by design, because its sector is far smaller than the network):
+
+```text
+$ python3 micro_test.py --mode smoke   (smoke_output.txt; 56 s)
+check [W] ref orthonormal 1.4e-15; grad E analytic -2.4727108127e-01 fd -2.4727108128e-01; grad -logF analytic 8.4450091066e-01 fd 8.4450091054e-01; init F=0.0018
+ALL CHECKS PASSED
+W-w6-s22: fidelity phase until F >= 0.9853 (ov0_ref 0.9653 from Cuhf w6 s22) or 30 steps
+W-w6-s22: fidelity target 0.9853 reached at it 28 (F = 0.987651)
+resume check: base 90 steps (60 energy, n_fid 30) -> ext 110 steps (80 energy); traces/W0/offset carried: True
+$ python3 micro_test.py --mode aggregate --instance 8 --results results_smoke [--pilot w6]   (aggregate_smoke_output.txt)
+  Bm True Bc False | B1 False B2 True B3 True B4 False SD False | K1 True K2 False K3 False  -> NO-TARGET   (each width)
+PILOT VERDICT (width 6): NO-TARGET
+  PILOT DECISION: CLOSE P1.3: NO-TARGET (no residual sign error at width 6)
+GLOBAL VERDICT: NO-TARGET  (premise gate failed)
+$ python3 verdict_logic_check.py   (verdict_logic_output.txt; synthetic inputs, decision logic only)
+BASIN, SIGN-DEGENERATE (x2), CAPACITY (K3, K2), UNCLEAR-ORACLE (K1 alone, target missed), UNCLEAR-NOISE,
+UNCLEAR-CONV (cold, W, cold mid->end drift), UNCLEAR-MEAS (spread, calib), NO-TARGET(w), INCOMPLETE;
+global: NO-TARGET(w) excluded, width-trend tie-break; pilot: all 9 cases
+ALL LOGIC CHECKS PASSED
+```
+
+* **Submission (not run)**. Submit the width-6 pilot only after job 451706 confirms that the control's median $\Delta E_{\mathrm{sign}}\ge0.005t$. Then read the pilot decision with `python3 micro_test.py --mode aggregate --instance 0 --pilot w6`. Tasks 12–35 (`sbatch --array=12-35%12 submit_test.sbatch`) are submitted only if that decision says so.
+
+```bash
+cd /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.3_wrong_sign_basins_r5 && sbatch --array=0-11 submit_test.sbatch
+```
+
+### Local Autopsy Log (Round 5 additions)
+* **Pilot 410199**: the premise is falsified at $4\times3$, and the route search is closed there.
+* **OCP**: stays killed (critic: deflation / SCF metadynamics). It is not revived.
+* **SNO-FN**: stays killed (FN acceptance).
+* **SNO-PE**: dormant. It is re-audited only on a BASIN verdict.
+* **Design choices**:
+    * W shares Cuhf's reference, initialisation and SR seed, but only nominally. After the fidelity phase the two runs differ in parameters and in their SR sample streams.
+    * Every arm gets the same 900 energy steps, so "W ends lower" cannot be explained by extra energy steps. W's fidelity phase is not charged to that budget.
+    * B4 requires W to be strictly lower in energy. If W has a better sign but a worse energy (K3), SR at that width prefers the worse sign, and no optimiser fix exists. If the energy is equal within noise (SIGN-DEGENERATE), SR has nothing to prefer, and P1.3 has no target either.
+    * K1 alone gives UNCLEAR-ORACLE rather than CAPACITY, because a fidelity optimisation that is itself trapped would look the same.
+* **Critic fixes applied (2026-11-12)**:
+    * B4 is now strict, and SIGN-DEGENERATE is a new label;
+    * CAPACITY comes only from K2 or K3, and K2 also requires that W0 started below the cold level;
+    * convergence is gated on every task including W, uses a 200-step regression slope with $3	imes10^{-4}t$ per 100 steps, and adds a mid-to-end stability check for the cold arms;
+    * the gates now cover measurement noise and calibration, and each UNCLEAR label has its own default action;
+    * NO-TARGET($w$) is applied per width, and the width trend breaks ties for UNCLEAR;
+    * `--init-from` was repaired;
+    * W's fidelity phase now runs to a target fidelity with a cap and gets the same 900 energy steps as the cold arms;
+    * the parameter counts and the sbatch header now match the measured values;
+    * a width-6 pilot rule was added.
+
+### Widths 4 and 10 Result (job 507179, 2026-11-14)
+
+**Global verdict (pre-committed aggregate, `tests/P1.3_wrong_sign_basins_r5/aggregate_507179_output.txt`): UNCLEAR.** Every width is UNCLEAR-CONV: most runs miss the convergence criterion, but no width shows a basin.
+
+| width | params | cold $C_{\mathrm{best}}$ ($\Delta E_{\mathrm{sign}}/t$) | W end | W$_0$ (oracle start) | margin | label |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 4 | 1284 | 0.0194 | 0.0196 | 0.0213 | 0.0048 | UNCLEAR-CONV |
+| 6 | 1734 | 0.0117 | 0.0115 | 0.0195 | 0.0029 | UNCLEAR-CONV (already resumed) |
+| 10 | 2634 | 0.0075 | 0.0072 | 0.0138 | 0.0030 | UNCLEAR-CONV |
+
+* **No wrong-sign basin at any width.** The warm-started arm W (fidelity-trained towards the exact signs first) ends within the margin of the best cold start at every width, with paired wins 2/3 each time. The exact signs are therefore reachable from cold starts.
+* **The residual sign error is width-limited.** $C_{\mathrm{best}}$ falls 0.0194, 0.0117 and 0.0075 as the parameter count grows 1284, 1734 and 2634, so $C_{\mathrm{best}}(10)\le0.5\,C_{\mathrm{best}}(4)$ holds (0.0075 against 0.0097). The premise gate passes (median Cuhf $\Delta E_{\mathrm{sign}}$ at width 6 is 0.0126).
+* **Pre-committed action (applied).** Widths 4 and 10 are resumed for 600 more energy steps (job 625182, `submit_resume_w4w10.sbatch`, 24 tasks, about 2–2.5 h each). Width 6 was already resumed. The rule is then re-run. **If it is still UNCLEAR, the pre-committed width-trend tie-break returns CAPACITY**, which the current numbers already satisfy.
+
+### Final Verdict after the Resume Actions (job 625182, 2026-11-15): CAPACITY
+
+**The re-run rule (`tests/P1.3_wrong_sign_basins_r5/aggregate_625182_output.txt`) is still UNCLEAR.** All three widths remain UNCLEAR-CONV, and each width has now had its pre-committed resume of 600 more energy steps. **The pre-committed width-trend tie-break therefore applies: CAPACITY.**
+
+| width | params | cold $C_{\mathrm{best}}$ | W end | paired wins (W vs best cold) | label |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 4 | 1284 | 0.0192 | 0.0189 | 2 of 3 | UNCLEAR-CONV |
+| 6 | 1734 | 0.0117 | 0.0115 | 2 of 3 | UNCLEAR-CONV |
+| 10 | 2634 | 0.0070 | 0.0070 | 0 of 3 | UNCLEAR-CONV |
+
+* **Tie-break:** $C_{\mathrm{best}}(10)=0.0070\le0.5\,C_{\mathrm{best}}(4)=0.0096$, so the error is width-limited.
+* **Conclusion.** On the 4×4 OBC $t$–$t'$–$J$ instance, the residual sign error of projected NNBF is **capacity-limited, not basin-limited**. A run started near the exact signs (W) ends at the cold-start level at every width. The sign error falls roughly in inverse proportion to the parameter count (0.019, 0.012, 0.007 for 1284, 1734, 2634 parameters). The extra 600 steps moved every number by less than the margin.
+* **Leaf closes.** No optimisation fix for wrong-sign basins is needed at this size. The lever is expressivity, which P2.1 (sub-cubic amplitudes) and P4.1 (exact-$S$ mixtures) address. This agrees with the cross-leaf finding that the post-projection error is amplitude-borne at small sizes.
+
+### Closed-leaf falsifier (2026-11-16)
+Scope: the idle-time queue item "falsifiers of closed leaves" (SKILL.md Stage 3.5.3 step 3). The cross-node critic noted that the basin was never directly probed: W's oracle start had a worse sign error than the cold runs at every width. This is the cheapest direct probe. Code: `tests/P1.3_wrong_sign_basins_r6/t1_basin_probe.py`, with the rule in its docstring, written before any run. Outputs: `checks_output.txt`, `run_output.txt`, `verdict_output.txt`, and `results/R_2_w3_<seed>.json` (fidelity traces included). No job was submitted.
+* **Design.**
+    * The toy is projected and gapped: $t$–$J$ on an open 4×3 cluster with $5+5$ electrons ($D=16632$, gap $0.085t$), trained as $\psi_P=P_\chi\psi_\theta$ with $\lvert G\rvert=4$.
+    * The ansatz is NNBF with exact-sum projected SR (lr 0.05, shift $10^{-3}$, 600 metric samples), seeds 11, 22 and 33.
+    * The cold start S is 300 projected energy steps from UHF.
+    * Arm C is the cold continuation: 300 more energy steps.
+    * Arm O is the oracle. It runs fidelity SR towards the **sign-oracle target** $t=\mathrm{sgn}(\psi_0)\lvert\psi_P(S)\rvert$, which keeps S's own amplitudes and puts in the exact signs. The phase stops at $\Delta E_{\mathrm{sign}}\le0.5\,\Delta E_{\mathrm{sign}}(S)$, with a cap of 300 steps, and keeps the best-sign checkpoint as O0. O0 is then released for the same 300 energy steps as C.
+    * Unlike W, O starts from the cold state, so the oracle and the control are paired step for step.
+* **Rule** (medians over the seeds).
+    * NO-TARGET if the cold start's $\Delta E_{\mathrm{sign}}<0.005$.
+    * ORACLE-MISS if O0 is above half of the cold start's sign error. In that case no better-sign state is reachable at this width, and the leaf stays closed.
+    * BASIN reopens the leaf. It needs O at least 25% below C after release on at least 2 of 3 seeds, an energy at least $10^{-3}$ lower, and a drift of at most a quarter of the gap.
+    * SIGN-DEGENERATE, TRADE, RELAX and UNCLEAR all keep the leaf closed.
+* **Checks** (pass). The fidelity force matches finite differences of $-\tfrac12\log F$ to $2.9\times10^{-8}$. The target lies in the $\chi$ sector to $4\times10^{-17}$. The verdict logic returns the intended label on synthetic inputs for all seven labels.
+* **Instance fallback, as pre-registered.** At width 6, P1.2's projected foils (the same model, recipe and seeds 11 and 22) give cold $\Delta E_{\mathrm{sign}}$ 0.0041 and 0.0049 at 4×3, and 0.0011 and 0.0022 at 6×2. A three-seed median below 0.005 is therefore already fixed at both sizes, and both are NO-TARGET. The probe ran at the third fallback, 4×3 at width 3: 675 parameters, $P/d_\chi=0.16$ with $d_\chi=4152$, and $P/d_{S\chi}=0.93$ with $d_{S\chi}=724$ (the state is not spin-projected).
+
+| seed | S | C after 300 | O0 (fidelity steps) | O after 100 | O after 300 | $\Delta E_{\mathrm{tot}}$ O, C after 300 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 11 | 0.01098 | 0.01039 | 0.00950 (250) | 0.00988 | 0.00924 | 0.05075, 0.05113 |
+| 22 | 0.00930 | 0.00805 | 0.00793 (25) | 0.00830 | 0.00809 | 0.04232, 0.04245 |
+| 33 | 0.01090 | 0.01125 | 0.00916 (250) | 0.01072 | 0.01081 | 0.04732, 0.04823 |
+
+* **Verdict: ORACLE-MISS.** The medians are $\Delta E_{\mathrm{sign}}(S)=0.0109$ and O0 $=0.0092$, against a threshold of 0.0055. The sign-targeted fidelity plateaus within about 100 steps ($F$ goes from 0.9909 to 0.9913–0.9917 by step 300), and the best checkpoint is only 13–16% below S. At this width, no state with markedly better signs is reachable, even when the objective asks for exactly the exact signs at S's own amplitudes. That is the capacity reading, now probed directly, although the probe cannot test the release of a markedly better state.
+* **Release** (reported, not gated). O ends slightly below C on seeds 11 and 33 (by 11% and 4%) and level on seed 22. Its energy is lower by $0.4$, $0.1$ and $0.9\times10^{-3}$, all within the $10^{-3}$ margin. Nothing here resembles a basin; a basin would need a markedly better sign at a clearly lower energy.
+* **Scope.** One projected 4×3 toy at width 3 (near the sector-fitting edge by $P/d_{S\chi}$), 300 fidelity steps and 300 release steps. It is not the 4×4 instance of the CAPACITY verdict. On the 4×4 instance, a direct probe would need the same sign-oracle target at widths 4 to 10, which is a T2 job and is not prepared here.
+* **Budget.** The leaf ledger is 593 CPU-s (9.9 CPU-minutes) out of 1800. Each seed was its own invocation, at most 204 CPU-s, with one thread each. All three ran concurrently, so at most 3 threads were in use.
+* **Leaf status: stays CLOSED (CAPACITY)**, with the scope note added to the status line. The probe found no basin and could not build a better-sign state at this width.
+
+### Reopening review (2026-11-16)
+Trigger: the user asked whether "closed" means solved or proven unsolvable. It means neither. P1.3 closed on a pre-committed tie-break (CAPACITY), not on a proof. This review turns the closure's missing ingredients and untried regimes into routes, gates them, and tests the survivors at T1 only. Code: `tests/P1.3_wrong_sign_basins_r7/t1_reopen.py`. Every rule is in its docstring and was written before the first run. Outputs: `spectrum_output.txt`, `lmfit_s11_output.txt`, `lmfit_s22s33_output.txt`, `verdict_r71_output.txt`, `capture_output.txt` and `results/`. No Slurm job was submitted or cancelled.
+#### 1. Missing ingredients and untried regimes named by the closure
+* **I1.** The basin was never probed directly on the 4×4 OBC instance, because W$_0$ started worse than the cold runs at widths 4, 6 and 10.
+* **I2.** The r6 ORACLE-MISS may be an artefact of the fit. The sign-oracle fit used first-order SR with a 600-sample metric, and K1's caveat says "the fidelity phase itself may be trapped".
+* **I3.** Every width stayed UNCLEAR-CONV. CAPACITY came from the width-trend tie-break, so slow SR convergence was never separated from capacity.
+* **I4.** The r6 toy sits at the sector-fitting edge ($P/d_{S\chi}=0.93$ at width 3). Wider toys have no target.
+* **I5.** Spin projection was not used in training. Post-hoc $P_S$ cut the 4×4 error from 0.0125 to 0.0071.
+* **I6.** Same-sector competitors were tested only at $\Delta_{\mathrm{in}}=0.234t$ (410199), 20 times the Hard-Core scale. The 4×4 instance covers the sign half only.
+* **I7.** Larger sizes were never tested. There, full projection costs $\lvert G\rvert$ (512 at 8×8) and practice uses partial or no projection. This regime was handed to P4.2, which is closed.
+#### 2. Candidate routes and gates
+* **R7.1 (Operation A on I2, with I1 and I3): second-order sign-oracle reachability probe.**
+    * Mechanism: Levenberg–Marquardt fits the r6 sign-oracle target $t=\mathrm{sgn}(\psi_0)\lvert\psi_P(S)\rvert$, using the exact Jacobian $\partial\psi_P/\partial\theta$ over the whole basis, so the fit no longer depends on first-order SR. If the fit reaches half the cold sign error, the release under energy SR decides BASIN.
+    * Role: this is a premise probe, not an optimizer route. A hit would reopen the leaf, with the LM oracle as the direct probe and SNO-PE as the first route to re-audit.
+    * Gate 0 (Novelty & Adoption): PASS as a diagnostic, with no novelty claim. Supervised fitting of NQS to exact states is known, and the sign is its hard part (Westerhout et al., Nat. Commun. 11, 1593, 2020, arXiv:1907.08186; arXiv:2508.09870). The probe uses the fit only to bound what the family can reach.
+    * Gate 1 (Conservation & Asymptotics): PASS. $N_\sigma$ and $\chi$ are exact. No optimality is claimed (LM is still local).
+    * Gate 2 (Baseline Gameability): PASS. It is paired step for step with r6's cold continuation C and r6's SR oracle, from the same S.
+    * Gate 3 (Hard-Core Shield): PASS for the sign half (doped, $t'\ne0$, 2D, projected), as in r6. The competitor half is not covered.
+    * Gate 4 (Scaling & Relevance): PASS as a T1 diagnostic only. The exact Jacobian costs $\mathcal{O}(D\,\lvert G\rvert\,P)$, which is exponential, so the probe makes no scaling claim. A route it unlocked would need its own Gate 4.
+    * *Verdict*: SURVIVED to T1.
+* **R7.2 (Operation A on I3): replace SR by a second-order energy optimizer (LM or SPRING) to test "slow convergence, not capacity".** This is close to Route 2.4, which was killed at Gate 0: MinSR, SPRING and LM exist, and a better local optimizer converges faster into the basin it starts in.
+    * T0 kill (dominance): R7.1 asks the stronger question. Suppose an LM fit aimed directly at the exact signs cannot reach half the sign error at fixed width. Then an LM energy optimizer cannot reach it either, because the energy objective does not target the sign. R7.2 is therefore decided by R7.1, and an LM-MISS kills it.
+    * *Verdict*: KILLED at Gate 0 (Route 2.4), and subsumed at T0 by R7.1.
+* **R7.3 (Operation A on I6, the Gate-3 direction): same-sector competitor capture on a counted toy with a small in-sector gap.**
+    * Rationale: after projection, the only basin that can survive is a same-sector competitor (the round-3 pivot).
+    * Instance: a counted toy with $0.02\le\Delta_{\mathrm{in}}\le0.15t$, which is 0.0017 to 0.0125$t$ per site. That is closer to the Hard Core than 410199's 0.0195$t$.
+    * Capture test: projected cold SR runs from three references (UHF seeds 11 and 22, and the Fermi sea). A run counts as captured by the competitor if $\Delta E_{\mathrm{tot}}\ge0.5\Delta_{\mathrm{in}}$ and $\mathrm{ov}_1>\mathrm{ov}_0$.
+    * Oracle arm: a $\psi_0$-oracle arm is released under energy SR to see whether it escapes.
+    * Gate 0 (Novelty & Adoption): PASS as a premise probe. Symmetry-restricted NQS for eigenstates and overlap penalties are known (Choo et al., arXiv:1807.03325; arXiv:2407.20065; arXiv:2406.01222). No source found tests capture by a same-sector competitor as an optimization basin.
+    * Gate 1 (Conservation & Asymptotics): PASS.
+    * Gate 2 (Baseline Gameability): PASS. Three cold references and an oracle arm get the same 300 energy steps.
+    * Gate 3 (Hard-Core Shield): PASS. It targets the competitor half at the smallest in-sector gap a counted toy offers.
+    * Gate 4 (Scaling & Relevance): PASS as a premise probe. Same-sector gaps shrink with $V$, so captures can only become more likely at larger sizes. A NO-BASIN result therefore bounds only the toy.
+    * *Verdict*: SURVIVED to T1.
+* **R7.4 (Operation B.2 on I7, active probing): projection escalation on demand.** Train with a cheap subgroup projection, measure the expectation values of the missing generators, and add a generator to the projector only when its expectation value departs from $\chi$.
+    * Gate 0 (Novelty & Adoption): PASS (conditional). No direct prior art was found in a quick search.
+    * Gate 1 (Conservation & Asymptotics): PASS.
+    * Gate 2 (Baseline Gameability): FAIL, as for Route 3.4 (projector annealing). A final state that is less than fully projected cannot beat the fully projected control on accuracy, so its only claim is cost. Exact sums give projection away for free, so a T1 cannot measure that cost (round-3 rule 5).
+    * Gate 3 (Hard-Core Shield): PASS.
+    * Gate 4 (Scaling & Relevance): not reached.
+    * *Verdict*: KILLED for this leaf, and handed to P4 as a cost idea, like Route 3.4.
+* **R7.5 (Operation B.3, cross-field): replica-exchange SR.** Several SR replicas run at different noise or driver "temperatures" and periodically swap parameters, as in parallel tempering.
+    * Gate 0 (Novelty & Adoption): FAIL. This is quantum-inspired tempering for NQS (Smith, Campbell, Baczewski, Albash et al., arXiv:2210.11405; adaptive temperatures in arXiv:2410.23018). It is not standard because each replica is a full optimization, and its gains are shown only at exact sizes. Nothing in this route removes that cost.
+    * T0 kill (dominance): tempering helps only when a better basin exists. No probed instance has one (410199; 507179 and 625182; r6; R7.1 and R7.3 below). On the toy, even an oracle fit cannot build a markedly better-signed state.
+    * Gate 1 (Conservation & Asymptotics): PASS.
+    * Gates 2–4: not reached.
+    * *Verdict*: KILLED at Gate 0, and at T0 by dominance.
+* **R7.6 (Operation A on I5): spin-projected training as a basin remedy.**
+    * Gate 0 (Novelty & Adoption): FAIL for this leaf. Spin projection is standard (mVMC; P4.1's exact-$S$ forms), and it removes a symmetry component rather than escaping a basin. The premise question "does $P_S$ training remove the target?" belongs to P4.1.
+    * Gates 1–4: not reached.
+    * *Verdict*: KILLED (Gate 0), and routed to P4.1.
+#### 3. T0 and T1 results
+**Toy and caps.**
+* Toy: the r6 toy, $t$–$J$ on an open 4×3 cluster with $5+5$ electrons ($D=16632$, $E_1-E_0=0.0847t\ge0.02t$, asserted). The ansatz is NNBF at width 3 (675 parameters), projected on $\{1,M_x,M_y,M_xM_y\}$.
+* Caps: 1 thread, RLIMIT_CPU of 580 s per invocation, and 1800 CPU-s for the whole review. Each invocation projected its own cost from a timed Jacobian and SR step before the heavy part.
+* Spend: the review used **489 CPU-s (8.2 CPU-minutes)**.
+
+**In-sector spectrum** (`spectrum_output.txt`).
+* $\psi_0$ has $M_x=M_y=+1$ at every $t'$ scanned from $-0.45$ to $+0.35$.
+* The smallest in-sector gap is $\Delta_{\mathrm{in}}=0.1217t$ at $t'=-0.15$, with a singlet competitor, so R7.3's gate opened there.
+* At the r6 point ($t'=-0.25$, $\Delta_{\mathrm{in}}=0.1558t$, singlet competitor), the three r6 cold starts S have $\mathrm{ov}_0=0.921$–$0.930$ and $\mathrm{ov}_1=0.041$–$0.046$. Part of their residual error is an admixture of the in-sector singlet competitor, but no start is captured.
+
+**R7.1, LM sign-oracle fit.** Each seed got 30 accepted LM iterations, then 100 + 200 released SR steps:
+
+| seed | S | SR oracle O0 (r6) | best SR $F$ | LM L0 | LM best $F$ | released O300 ($\Delta E_{\mathrm{tot}}$) | C300 ($\Delta E_{\mathrm{tot}}$) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 11 | 0.01098 | 0.00950 | 0.99133 | 0.00905 | 0.99202 | 0.01054 (0.05233) | 0.01039 (0.05113) |
+| 22 | 0.00930 | 0.00793 | 0.99136 | 0.00776 | 0.99189 | 0.00852 (0.04319) | 0.00805 (0.04245) |
+| 33 | 0.01090 | 0.00916 | 0.99166 | 0.00854 | 0.99212 | 0.01072 (0.04921) | 0.01125 (0.04823) |
+
+* **Verdict: LM-MISS. R7.1 is KILLED at T1, and R7.2 with it.**
+    * The fit is valid: LM beats SR on fidelity on 3 of 3 seeds.
+    * It still misses: the median L0 is 0.00854, only 22% below $c_0=0.01090$. The threshold was 0.00545.
+    * The plateau belongs to the family: the LM step had shrunk to pure Gauss–Newton ($\mu\to10^{-10}$ to $10^{-15}$) while $F$ moved only in the fourth decimal. The width-3 family itself stops there, not first-order SR. ORACLE-MISS is therefore not a fitting artefact.
+* Reported, not gated: the released state returns to the cold level, and its energy is $0.7$ to $1.2\times10^{-3}t$ above C on every seed. A sign gain this small that also costs energy is the TRADE or RELAX pattern of the capacity reading, not a basin.
+
+**R7.3, competitor capture** at $t'=-0.15$ with $\Delta_{\mathrm{in}}=0.1217t$. A run counts as captured if $\Delta E_{\mathrm{tot}}\ge0.061t$ and $\mathrm{ov}_1>\mathrm{ov}_0$:
+
+| arm | $\Delta E_{\mathrm{tot}}$ | $\Delta E_{\mathrm{sign}}$ | $\mathrm{ov}_0$ | $\mathrm{ov}_1$ | captured |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| cold UHF-11 | 0.0635 | 0.0094 | 0.925 | 0.042 | no |
+| cold UHF-22 | 0.0688 | 0.0158 | 0.842 | 0.127 | no |
+| cold Fermi sea | 0.0438 | 0.0084 | 0.880 | 0.103 | no |
+| oracle W0 (15 LM steps to $\psi_0$) | 0.1159 | 0.0058 | 0.969 | 0.00004 | no |
+| oracle after 300 SR steps | 0.0616 | 0.0052 | 0.963 | 0.0023 | no |
+
+* **Verdict: NO-BASIN (0 of 3 cold runs captured). R7.3 is KILLED at T1.**
+* Reported, not gated (one seed):
+    * The released oracle keeps a lower sign error than the cold runs (0.0052 against 0.0084–0.0158) and almost no competitor weight.
+    * Its energy is 0.018$t$ above the best cold run (Fermi sea) and level with the UHF runs. The better sign is not preferred in energy over the best cold start. This is again the TRADE pattern of capacity, not a basin.
+    * The cold runs' errors lie mostly along the in-sector competitor ($\mathrm{ov}_1$ 4–13%).
+
+#### 4. Value-of-information notes and T2 design
+No route passed T1, so no T2 is designed. One untested regime remains: **I1**, the direct probe on the 4×4 instance, which would be a T2 at widths 4 to 10. Its Stage 3.5.6 prediction line, written without submitting anything:
+* **Prediction**: ORACLE-MISS or RELAX, with probability at least 0.8.
+* **Why**: on the toy, the second-order fit cannot halve the error; on the 4×4 instance, the r5 W arm never started below the cold level at any width; and the error falls with width.
+* **Consequence**: both outcomes leave the leaf closed, so the job is not run.
+* **Cheap evidence that would overturn the prediction**: either of two findings.
+    * An LM sign-oracle fit halves the error on a counted toy, at any width with $C_{\mathrm{best}}\ge0.005$.
+    * A cold projected run on a counted toy is captured by a same-sector competitor.
+
+#### 5. Recommendation: STAY-CLOSED. Status: EXHAUSTED at ED scale, not proven impossible
+New evidence for the diagnostic:
+* The capacity reading no longer rests on the tie-break alone. A second-order fit aimed at the exact signs also plateaus, at a 22% gain on the toy. ORACLE-MISS is therefore a property of the width-3 family, not of first-order SR. This closes I2 and I3.
+* The competitor half was tested at $\Delta_{\mathrm{in}}=0.12t$, below 410199's $0.234t$, and no cold run was captured. This closes I6 at toy size.
+* At fixed width, part of the residual projected error is an admixture of the in-sector singlet competitor ($\mathrm{ov}_1$ 4–13%). States with better signs, reached through an oracle, are never energetically preferred over the best cold start. The lever is width or expressivity (P2.1, P4.1), not the optimizer.
+
+Status of the ingredients:
+* I5 is routed to P4.1 and I7 to P4.
+* I1 has a prediction on record and is not run.
+* Every other ingredient has a route killed at T0 or T1.
+
+The leaf is therefore **EXHAUSTED at ED scale**. Basins beyond ED size (I7) remain untested and are not ruled out.
+
+Written 2026-11-17 from the rounds above; one card per route ever generated in this leaf. Route ids follow the leaf's own labels: R1 to R4 are round-1 Routes 1 to 4, R2.0 to R2.4 and R3.0 to R3.4 are the round-2 and round-3 routes, and R7.1 to R7.6 are the reopening-review routes. R7.7 is assigned here to the direct basin probe on the 4×4 instance that the body calls ledger item I1. Recurring terms: a neural quantum state (NQS) is a neural network that returns the wave-function amplitude $\psi_\theta(\mathbf n)$ of each occupation configuration $\mathbf n$; neural-network backflow (NNBF) is an NQS whose Slater-determinant orbitals depend on the whole configuration through a small network; stochastic reconfiguration (SR) is the natural-gradient optimiser used to train it; exact diagonalization (ED) gives the exact ground state $\psi_0$ and energy $E_0$; unrestricted Hartree–Fock (UHF) is the mean-field state that seeds the determinant; and the sign error is $\Delta E_{\mathrm{sign}}=E_{\mathrm{sign}}-E_0$, where $E_{\mathrm{sign}}$ is the lowest energy reachable with the trained signs held fixed and the best non-negative amplitudes (zero only for the exact signs, and blind to amplitude error). Energies are in units of the hopping $t$.
+

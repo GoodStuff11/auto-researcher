@@ -1,0 +1,5 @@
+[13:29:28] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[13:29:37] INVALID check: sampled E -7.808657 +- 4.1e-03 vs exact -7.805526 (0.8 se)
+[13:29:42] trsr step 1: exact R -0.3647 (step dR -0.3647); |dtheta| 0.565; sampled E -7.80866+-4.1e-03; w_max 8.02e+00 [0.3 CPU-min, step 0.18, wall 15 s]
+[13:29:42] wrote trsr.json (15 s, 0.3 CPU-min)
+wall 17.41 s user 15.29 sys 2.02 maxrss 2026056 KB

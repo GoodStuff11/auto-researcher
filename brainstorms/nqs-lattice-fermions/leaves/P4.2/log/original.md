@@ -1,0 +1,1482 @@
+# Subproblem: P4.2 Size-transferable fermionic NQS
+**Parent Chain**: P4 -> P4.2  **Status**: EXHAUSTED at this budget (2026-11-17; the optimiser falsifier U3 holds, marginally, after job 731382 and a post-hoc cutoff-ladder polish, 1.028% against the 1.02% line; the torus transfer (U2), U3's two remaining arms and a 4x4 ladder polish were refused by the compute gate's G2 rule; per-leaf critic SIGN-OFF-WITH-CHANGES 2026-11-17, applied; see Leaf Status Summary)
+### 1. Mathematical Abstraction & Barriers
+* **Formulation**: Let $\Lambda_L$ be a lattice of linear size $L$ (here the $2\times L$ ladder, $V_L=2L$ sites) with Hamiltonian $\hat H_L$ (same couplings $t,t',J$ at every size), boundary phase $\phi=\pm1$, and electron number $N_e(L)=(1-\delta)V_L$ at fixed hole doping $\delta$. An ansatz family is a set of parameter spaces $\Theta_L$ and amplitudes $\psi^{(L)}_\theta:\{0,1\}^{2V_L}\to\mathbb{R}$, together with a **size map** $T_{L\to L'}:\Theta_L\to\Theta_{L'}$ (here $L'=2L$). Define the energy $E_{L'}(\theta)=\langle\psi_\theta\rvert\hat H_{L'}\lvert\psi_\theta\rangle/\langle\psi_\theta\vert\psi_\theta\rangle$, the converged energy $E^{\star}_{L'}=\min_{\theta\in\Theta_{L'}}E_{L'}(\theta)$ (in practice the best of long optimizations), the source optimum $\theta^\star_L$, and the zero-shot excess per site
+$$e_{\rm tr}=\frac{E_{L'}\big(T_{L\to L'}\theta^\star_L\big)-E^\star_{L'}}{V_{L'}} .$$
+The Minimal Contrast Foil transferred to $L'$ is the transferred correlator $J$ times a *fresh* mean-field geminal on $\Lambda_{L'}$, with excess $e_{\rm foil}$ defined the same way. **Solved** means: (a) $e_{\rm tr}<\tfrac12 e_{\rm foil}$ and $e_{\rm tr}$ small in absolute terms; (b) the deciding observable (long-range pair correlation $P(d)=\langle\hat\Delta_0^\dagger\hat\Delta_d\rangle$) of the transferred state is no worse than the foil's; (c) the number of optimization steps from $T\theta^\star_L$ to $E^\star_{L'}$ is a fraction of the cost from the foil or from scratch; (d) all of this on an instance retaining the Hard Core (doped, $t'\neq0$, non-trivial fermion sign).
+* **The Node Barrier**: The bosonic parts (translation-equivariant CNN/transformer correlators, Jastrow $v(r)$) have size-independent parameters, so $T$ is the identity on them. The antisymmetric layer has no such map:
+    * *Determinant layer.* A translation-invariant Slater determinant has orbitals fixed by Bloch's theorem to $e^{ik\cdot r}u_k$; its only content is the occupied set $K_{\rm occ}(L,N_e,\phi)$, which jumps discontinuously with $L$ (shell structure, open-shell degeneracies). Backflow orbitals are $N_e\times M$ matrices whose shape changes with $N_e$ and $M$.
+    * *Pair-function layer (fundamental).* For any translation-invariant geminal $F_L(r)$ on a ring of length $L$, Poisson summation gives $F_L(x)=\sum_m\phi^m F_\infty(x+mL)=\tfrac1L\sum_{k\in\mathcal K_L}F_k e^{ikx}$, where $\mathcal K_L$ is the $L$-point momentum grid and $F_\infty$ the infinite-lattice pair function. The source cluster therefore determines only the **aliased** values of $F_\infty$; its range beyond $L/2$ is not identifiable from $L$ (a Nyquist-type barrier). If $F_\infty$ has algebraic tails (Fermi surface, $d$-wave nodes in 2D), no finite source fixes it.
+    * *Identifiability at ED-sized sources (fundamental in practice).* With a few hundred configurations and tens of parameters the source optimum is highly degenerate, so the optimizer has no reason to select the size-intrinsic parameters; the mean-field part and any learned correction co-adapt.
+    * *Practical barriers.* $\delta V_L$ must be an integer, the stripe wavelength $\lambda$ must divide $L$, closed shells are needed for a non-degenerate Slater reference (avoidable with a BCS geminal or twists), and the correlator's receptive field must be much smaller than $L_{\rm src}$ (otherwise it learns cluster-global features; observed in our smoke tests, where a 3-rung window on a 4-rung ring transferred badly).
+    * *Where existing approaches stop.* Zen et al. (PRE 101, 053301, 2020; arXiv:1908.09883) transfer RBM parameters for spin and bosonic models; there is no antisymmetric layer. Staged $6\times6\to36\times36$ CNN transfer for spins (arXiv:2204.07816) has the same limitation. Gerard, Scherbela, Sutterud, Foulkes & Grohs (arXiv:2405.07599) transfer *continuum* neural wavefunctions for solids by mapping the new supercell's Hartree–Fock orbitals through a network optimized jointly over twists, lattice constants and supercell sizes. They report convergence to local minima and the difficulty of splitting compute across geometries; the route relies on multi-system training. Foundation NQS (Rende et al., arXiv:2502.09488) train one transformer over many Hamiltonians, in spin models, which is the excluded massive-compute route. The hidden-fermion Pfaffian (Chen et al., arXiv:2507.10705) keeps translation equivariance when it reshapes network outputs into the pairing matrix, but nobody has transferred it across sizes. mVMC (Misawa et al., arXiv:1711.11418) reduces $f_{ij}$ to $\mathcal O(N_s)$ parameters with sublattice symmetry, but refits every size. Kim et al. (Commun. Phys. 2024, doi:10.1038/s42005-024-01613-w) use size-independent pairing-orbital parameters for continuum cold Fermi gases. Our searches found no published lattice-fermion NQS transferred from $L$ to $2L$.
+    * *Anti-Solution Space.* (i) Multi-size or multi-Hamiltonian pretraining (foundation models): excluded by the compute budget. (ii) Transferring only the bosonic part with a fresh determinant: this *is* the foil. (iii) Validating on a 1D open chain, at half filling with $t'=0$, or in the non-interacting limit. (iv) Claiming transfer from energy alone without checking $P(d)$. (v) "Transferring" a determinant by zero-padding or interpolating orbitals in $k$, which reintroduces the shell jump. (vi) A route whose $L$-cluster training needs all particle-number sectors.
+### 1b. Analogy Map
+Written 2026-11-17, after the rounds below, as T0 work: it re-reads the leaf's barriers in field-neutral terms and marks which cross-field ideas the leaf already tried. Status tags: *untried*, *tried (R<id>)* (the route card in the Route Register), *repaired (R<id>)* (the first port failed and was translated again).
+* **B1. Extrapolate a local rule to a larger domain that contains local patterns never seen in training.** Field-neutral: learn a size-independent rule on small domains whose output on a larger domain stays accurate, although the larger domain has local configurations (here: 3- and 4-hole environments, bulk sites far from any edge) that no small domain contains.
+    * *Graph-network size generalisation* (Yehudai, Fetaya, Meirom, Chechik & Maron, ICML 2021, arXiv:2010.08853).
+        * Correspondence: graph $\leftrightarrow$ lattice cluster; a node's $d$-hop neighbourhood pattern $\leftrightarrow$ a site's hole environment; small training graphs $\leftrightarrow$ the 8-site sources; large test graphs $\leftrightarrow$ the $4\times4$ target.
+        * Technique and why it worked: they prove that when local patterns differ between sizes, small-graph optima can be "bad global minima" on large graphs, and they fix it with a self-supervised task on the large graphs' local patterns. It works because classification labels do not depend on the unseen patterns once the encoder represents them.
+        * Translation gap: here the only supervision at the target is the target energy, i.e. the expensive optimisation the transfer was meant to avoid. Showing the target's environments to the source is the environment library.
+        * Status: *tried (R5.2, R9.4)*; both died (Gate 0, and dominated by scratch training at the target).
+    * *Length generalisation of transformers* (Anil et al., NeurIPS 2022, arXiv:2207.04901).
+        * Correspondence: sequence length $\leftrightarrow$ $L$; fine-tuned model $\leftrightarrow$ copied NQS; scratchpad $\leftrightarrow$ an explicit iterative growth procedure.
+        * Technique and why it worked: plain fine-tuning does not length-generalise at any scale; making the model execute a repeated local step with visible intermediate states does, because the step itself is length independent.
+        * Translation gap: a wavefunction amplitude has no supervised intermediate states. The closest analogue is growing the system step by step (gluing, ring surgery), which hits a conservation law or the metastable-branch anti-pattern.
+        * Status: *tried (R3, R2.1)* in its growth form; the scratchpad form is *untried* and has no lattice-fermion translation we could write.
+    * *Equivariant CNN and graph-network NQS for spins* (Kochkov et al., arXiv:2110.06390; Liang et al., arXiv:2204.07816).
+        * Correspondence: shared convolution weights $\leftrightarrow$ size-independent parameters; spin amplitude $\leftrightarrow$ fermion amplitude.
+        * Technique and why it worked: copying the weights to a larger lattice gives a good warm start because spin amplitudes are positive (or Marshall-signed) and their correlations are local.
+        * Translation gap: the fermion antisymmetric layer has no size map, and a receptive field that grows with $L$ is the published transformer or CNN backflow route.
+        * Status: *tried (R2.2, R5.6, R9.3)*.
+* **B2. Recover a translation-invariant kernel's long-range tail from a periodic domain shorter than the tail (aliasing).** Field-neutral: a function sampled on a coarse grid of a fixed domain must be evaluated on a finer grid, and the source fixes only its aliased values.
+    * *Wannier interpolation in band theory* (Marzari, Mostofi, Yates, Souza & Vanderbilt, Rev. Mod. Phys. 84, 1419, 2012).
+        * Correspondence: coarse $\mathbf k$-mesh $\leftrightarrow$ source momentum grid; maximally localised Wannier function $\leftrightarrow$ pair kernel $\kappa(\mathbf r)$; fine mesh $\leftrightarrow$ target grid.
+        * Technique and why it worked: a short-range real-space object fixes its Fourier series from a coarse mesh. It works because Wannier functions of insulators decay exponentially.
+        * Translation gap: nodal $d$-wave or Fermi-surface pair kernels decay algebraically, and at ED sizes the whole kernel is inside the aliasing range.
+        * Status: *tried (R2.2, R3.1)*: the momentum-field kernel and the grid-complete source.
+    * *Neural operators* (Li et al., Fourier neural operator, arXiv:2010.08895).
+        * Correspondence: fixed physical domain refined in resolution $\leftrightarrow$ fixed Brillouin zone refined when $L$ doubles.
+        * Technique and why it worked: a network on a fixed domain is invariant to grid refinement, because the target function is smooth on that domain.
+        * Translation gap: the first port (real-space modes $2\pi j/L$) changes physical momentum when $L$ doubles; the repair puts the neural field on the Brillouin zone.
+        * Status: *repaired (R2.2)*; the real-space reading is *tried (R2.4)*.
+    * *Analytic finite-size corrections in quantum Monte Carlo* (Chiesa, Ceperley, Martin & Holzmann, PRL 97, 076404, 2006).
+        * Correspondence: missing long-wavelength part of the structure factor $\leftrightarrow$ missing long-range part of the pair function; random-phase approximation at small $k$ $\leftrightarrow$ the mean-field BCS kernel regenerated at the target.
+        * Technique and why it worked: the long-wavelength physics is universal (plasmons), so the part the supercell cannot hold is computed analytically from one simulation.
+        * Translation gap: the pairing tail is not fixed by a universal small-$k$ law; the mean-field regeneration covers only the one-body part.
+        * Status: *tried (R1)*, whose mean-field part is exactly this idea.
+    * *Multigrid prolongation* (Briggs, Henson & McCormick, A Multigrid Tutorial, SIAM 2000).
+        * Correspondence: coarse grid $\leftrightarrow$ source; prolongation operator $\leftrightarrow$ size map.
+        * Technique and why it worked: smooth error components are represented on the coarse grid and interpolated.
+        * Translation gap: rescaling real space changes the Fermi wavevector, i.e. the density.
+        * Status: *tried (R2.4)*.
+* **B3. Pick, from a large manifold of exact fits to a small data set, the one whose extrapolation is right (identifiability).** Field-neutral: the training loss is flat along most parameter directions, and those directions decide the prediction off the training set.
+    * *L2-SP transfer regularisation* (Li, Grandvalet & Davoine, ICML 2018, arXiv:1802.01483).
+        * Correspondence: pre-trained weights $\leftrightarrow$ mean-field prior; fine-tuning $\leftrightarrow$ source fit; target task $\leftrightarrow$ $4\times4$ target.
+        * Technique and why it worked: an explicit penalty toward a reference point keeps the fit near a solution known to be reasonable, because pre-trained features are already close to the target task.
+        * Translation gap: the anchor fixes the null directions, but the family's capacity at the target (5.7% error) makes a faster route to it worthless.
+        * Status: *tried (R5.1)*.
+    * *Minimum-norm (Tikhonov) selection in inverse problems* (Tikhonov & Arsenin, Solutions of Ill-Posed Problems, 1977).
+        * Correspondence: the null space of the forward map $\leftrightarrow$ the source-null directions of the SR metric.
+        * Technique and why it worked: in a linear problem the minimum-norm solution is unique and independent of the starting point.
+        * Translation gap: in a nonlinear network the norm is not reparameterisation invariant; measured seeds were further apart with the penalty (1.30 to 2.00) than without (1.05 to 1.75).
+        * Status: *tried (R3.1)*; its linearised repair is *tried (R5.b)*.
+    * *Query-by-committee active learning* (Seung, Opper & Sompolinsky, COLT 1992).
+        * Correspondence: committee members $\leftrightarrow$ source seeds; disagreement region $\leftrightarrow$ configurations whose transferred sign differs between seeds.
+        * Technique and why it worked: disagreement locates informative inputs when the hypothesis class contains the truth.
+        * Translation gap: measured recall of the sign error in the disagreement set was 0.345 at a cost of 0.394 of the weight (premise rule: at least 0.5 at most 0.25).
+        * Status: *tried (R2.3)*.
+    * *Domain randomisation and multi-geometry training* (Tobin et al., arXiv:1703.06907; Gerard et al., arXiv:2405.07599).
+        * Correspondence: randomised simulators $\leftrightarrow$ several source clusters and twists.
+        * Technique and why it worked: many sources pin the shared parameters, because the target is inside the training distribution.
+        * Translation gap: on lattices the sources are a handful of 8-site clusters, and the method is the published one.
+        * Status: *tried (R3.3, R3.1)*.
+* **B4. A parameterisation tied across positions (so it transfers) must still represent position-dependent structure near edges.** Field-neutral: a weight-shared model has the capacity of a few lookup tables, while the target's error sits in position-specific structure.
+    * *Boundary layers and matched asymptotic expansions* (Van Dyke, Perturbation Methods in Fluid Mechanics, 1975), and boundary-layer meshes in finite elements.
+        * Correspondence: inner solution near a wall $\leftrightarrow$ edge sites; outer solution $\leftrightarrow$ the bulk kernel; layer width $\leftrightarrow$ the depth cut-off $c$.
+        * Technique and why it worked: the layer has a fixed width in scaled variables, so one inner rule serves every domain size.
+        * Translation gap: on ED-sized open clusters every site is within depth 1 of an edge, so there is no bulk to separate from.
+        * Status: *tried (R5.5, R9.1)*.
+    * *Spectral graph filters and their transferability* (Defferrard, Bresson & Vandergheynst, arXiv:1606.09375; Levie, Huang, Bucci, Bronstein & Kutyniok, JMLR 2021, arXiv:1907.12972).
+        * Correspondence: graph Laplacian $\leftrightarrow$ the cluster's hopping matrix; filter coefficients $\leftrightarrow$ size-independent pair-kernel parameters.
+        * Technique and why it worked: a polynomial filter of the graph operator transfers between graphs that sample the same continuum; boundary resolution comes from the operator itself.
+        * Translation gap: transfer works by construction, but a 14-coefficient channel adds no capacity (gain 1.02 times at step 300).
+        * Status: *tried (R9.2)*.
+    * *Symmetry restoration by projection in nuclear structure* (projected Hartree–Fock–Bogoliubov; Ring & Schuck, The Nuclear Many-Body Problem, 1980).
+        * Correspondence: a symmetry-broken intrinsic state $\leftrightarrow$ the mirror-breaking free pair matrix; angular-momentum projection $\leftrightarrow$ the irrep projector.
+        * Technique and why it worked: a broken-symmetry mean field captures correlations cheaply, and projection restores the quantum numbers.
+        * Translation gap: the gain from projection is a finite-size gain, and the broken pattern needs a size map (a fixed period that is not a known order at $\delta=1/4$).
+        * Status: *tried (R9.7)*.
+    * *Real-space renormalisation and MERA* (Corboz & Vidal, PRB 80, 165129, 2009; Li & Wang, PRL 121, 260601, 2018).
+        * Correspondence: blocking $\leftrightarrow$ the size map run backwards.
+        * Technique and why it worked: at a fixed point, coarse-graining is scale-free.
+        * Translation gap: a doped $t$–$J$ ground state is not a fixed point, and blocked sites have a 9-dimensional local space.
+        * Status: *tried (R2.5)*.
+* **B5. Follow the lowest state through a change of the problem when the lowest branch crosses or avoids others.** Field-neutral: a local optimiser warm-started from a related problem's solution stays on that solution's branch.
+    * *Homotopy continuation* (Allgower & Georg, Numerical Continuation Methods, 1990).
+        * Correspondence: homotopy parameter $\leftrightarrow$ seam coupling $\lambda$; path tracking $\leftrightarrow$ warm-started SR.
+        * Technique and why it worked: isolated roots are tracked with predictor–corrector steps, and all roots are tracked, so none is lost.
+        * Translation gap: VMC tracks one root, and avoided crossings with tiny gaps are crossed diabatically.
+        * Status: *tried (R2.1)*.
+    * *Variation after projection* (Ring & Schuck, 1980).
+        * Correspondence: comparing projected energies in each quantum-number sector $\leftrightarrow$ the zero-shot sector rule.
+        * Technique and why it worked: the sector is chosen by an energy comparison, not by following a branch.
+        * Translation gap: the comparison is only as good as the copied state; the rule picked the right irrep in 2 of 3 seeds.
+        * Status: *tried (R3.1)*.
+    * *Replica exchange* (Swendsen & Wang, PRL 57, 2607, 1986; Hukushima & Nemoto, J. Phys. Soc. Jpn. 65, 1604, 1996).
+        * Correspondence: replicas at several temperatures $\leftrightarrow$ several copied states or seeds; exchange moves $\leftrightarrow$ swapping parameters between runs.
+        * Technique and why it worked: hot replicas cross barriers and feed cold ones, because the landscape is a Boltzmann weight.
+        * Translation gap: a VMC energy surface has no temperature, and $K$ replicas cost $K$ times the target optimisation the transfer was meant to save.
+        * Status: *untried*.
+### 2. Candidate Routes & Falsification Gates
+* **Route 1 — Residual-geminal transfer.** The amplitude is $\psi(\mathbf n)=e^{C_W(\mathbf n)}\det_{a,b}F_{u_a d_b}(\mathbf n)$. Here $u_a$ ($d_b$) are the up (down) electron sites, ordered ascending, and $C_W$ is a translation-equivariant one-hidden-layer network on a local window. The pair function is
+$$F_{ij}(\mathbf n)=F^{\rm MF}_{ij}(\theta_{\rm MF};\Lambda_{L'})+\sum_{m}\phi^{\lvert m\rvert}\,\Delta f\big(\lvert x_i-x_j+mL'\rvert,y_i\oplus y_j\big)\,e^{g(\cdot)(h_i+h_j)} ,$$
+where $F^{\rm MF}$ is the Fourier transform of $v_k/u_k=\Delta_k/(\xi_k+E_k)$ of a $d$-wave-like BCS state ($\xi_k$ the band energy minus chemical potential $\mu$, $\Delta_k=2\Delta_{\rm leg}\cos k_x+\Delta_{\rm rung}\cos k_y$, $E_k=\sqrt{\xi_k^2+\Delta_k^2+\eta^2}$). It is recomputed on the **target** momentum grid from 4 transferred parameters $\theta_{\rm MF}=(\mu,\Delta_{\rm leg},\Delta_{\rm rung},t'_{\rm eff})$. $\Delta f$ is a learned short-range correction of range $R<L/2$, $g$ is a local hole-count backflow, and $h_i$ is the number of holes adjacent to site $i$. Point of departure: Poisson summation says the size-, filling-, shell- and boundary-dependent part of a geminal is exactly the image sum of a smooth one-body object. That part can be regenerated analytically at $L'$, and only the short-range many-body residual needs to be learned and transferred. The fixed-$N_e$ geminal is defined for every even $N_e$, so no closed shell is needed.
+  - Gate 0 (Novelty & Adoption): **PASS**. The closest prior art is Gerard et al. (arXiv:2405.07599): they also regenerate a mean-field object at the new size and transfer a learned map. Their adoption barriers are joint optimization over many geometries (compute) and local minima; their method is continuum and orbital-based, so it needs a non-degenerate orbital set at each size. Route 1 trains on **one** source size, uses no multi-system optimization, and sidesteps the closed-shell requirement with a fixed-$N$ geminal. Spin-model transfer (arXiv:1908.09883; arXiv:2204.07816) has no antisymmetric layer, and foundation NQS (arXiv:2502.09488) is excluded by the compute budget. We found no lattice-fermion NQS size transfer in Gu et al. (arXiv:2507.02644), Chen et al. (arXiv:2507.10705) or Roth et al. (arXiv:2511.07566). Caveat: reusing pairing parameters across sizes may be informal practice in mVMC-type VMC; we found no published record of it.
+  - Gate 1 (Conservation & Asymptotics): **PASS**. $N_e$ and $S^z=0$ are exact (fixed-$N$ singlet geminal, symmetric $F_{ij}=F_{ji}$). Translation and leg-reflection are exact. The boundary phase enters through $\phi^{\lvert m\rvert}$, consistently in both $F^{\rm MF}$ and $\Delta f$. As $L'\to\infty$ with $R$ fixed, $F\to F_\infty+\Delta f$, so $E/V$ has a limit. SU(2) is reduced to U(1) by the $S^z$ features of $C_W$ (this links to P4.1).
+  - Gate 2 (Baseline Gameability): **PASS (analytic), decided numerically by Stage 4**. The foil is the strict subfamily $\Delta f=g=0$ with the same transferred $C_W$, and also with a cheap re-fit of $\theta_{\rm MF}$ at $L'$. Any zero-shot gain must therefore come from the transferred residual, which the foil lacks by construction. Whether that gain is non-zero is exactly the decisive test. **Warning:** smoke runs at $\delta=1/2$ ($2\times4\to2\times6$) give $M=1.30$, i.e. *gamed* on that instance. That instance has a weak Hard Core (foil–ED sign agreement $0.990$) and a source on which the foil is already near-exact.
+  - Gate 3 (Hard-Core Shield): **PASS**. The test geometry is a doped ($\delta=1/4$) 2-leg ladder with inter-leg exchange and diagonal $t'=-0.25$, so holes encircle plaquettes and the fermion sign is non-trivial. It is interacting and not at half filling. The script measures the sign agreement of ED with the projected-BCS foil sign, and a PASS on an instance where it exceeds $0.99$ is downgraded to AMBIGUOUS. Caveat: the doped ladder is a spin-gapped Luther–Emery liquid, the *favourable* case for short-range $\Delta f$. Extending to 2D with nodal $d$-wave is the sharpest gap.
+  - *Verdict*: **SURVIVED**
+* **Route 2 — Momentum-labelled equivariant orbital generator.** A network $\varphi_\theta(r,k)$ outputs orbitals as a function of site and momentum label, so the Slater determinant can be built on any $k$-grid. Departure: "the orbitals define themselves at any $L$".
+  - Gate 0 (Novelty & Adoption): PASS (no lattice instance found; the continuum analogue is arXiv:2405.07599).
+  - Gate 1 (Conservation & Asymptotics): PASS.
+  - Gate 2 (Baseline Gameability): **FAIL**. For a translation-invariant single determinant, Bloch's theorem forces $\varphi(r,k)=e^{ik_x x}u_k(y)$. On the leg-reflection-symmetric ladder $u_k$ is exactly bonding or antibonding (and on the one-orbital square lattice exactly $1$), so the network has **no** freedom left except the occupied set $K_{\rm occ}$, which is the same choice the fresh mean-field foil makes. The zero-shot state is identical to the foil's. Making the orbitals configuration-dependent (backflow) turns the route into Route 1 or into a lattice relabel of arXiv:2405.07599.
+  - Gate 3 (Hard-Core Shield): not reached.
+  - *Verdict*: **KILLED**
+* **Route 3 — Unit-cell gluing (iDMRG-like or tiling warm start).** $\psi_{2L}(\mathbf n)=\mathcal A\big[\psi_L(\mathbf n_A)\,\psi_L(\mathbf n_B)\big]$, where $\mathcal A$ antisymmetrizes the two halves $A,B$ (each of length $L$), each trained at $L$ with $N_e/2$ electrons.
+  - Gate 0 (Novelty & Adoption): PASS (not found for fermionic NQS).
+  - Gate 1 (Conservation & Asymptotics): **FAIL**. $N_A$ and $N_B$ are separately conserved, so $\langle\hat\Delta_i^\dagger\hat\Delta_j\rangle=0$ *identically* for $i\in A$, $j\in B$: moving a pair changes $N_A$ by $2$. The long-range pairing correlation at distances $\gtrsim L$ is therefore exactly zero, which is the first item of the Unacceptable Outcome. Translation is also broken down to $\mathbb Z_2$. The repair, summing over splits $N_A=N_e/2\pm k$, needs $\psi_L$ trained in $\mathcal O(\sqrt{V})$ particle-number sectors, which costs more than retraining at $2L$.
+  - Gate 2 / Gate 3: not reached.
+  - *Verdict*: **KILLED**
+* **Route 4 — Twist-folded transfer.** The $2L$ momentum grid is exactly the union of the $L$ grids at twists $0$ and $\pi$. Train a twist-conditioned network at $L$ on both twists, then evaluate it at $2L$ on the folded grid.
+  - Gate 0 (Novelty & Adoption): **FAIL**. Joint optimization over twists *and* supercell sizes is the mechanism of Gerard et al. (arXiv:2405.07599), and $k$-point folding is textbook band theory. The route offers nothing against that method's stated adoption barriers (local minima; splitting compute across geometries). It is a relabel. In addition, folding is exact only for the one-body part: the interacting $2L$ state is not a function of the twisted $L$ states, and the one-body folding is exactly what the foil's fresh mean-field already captures (so it would also fail Gate 2).
+  - Gate 1–3: not reached.
+  - *Verdict*: **KILLED**
+### 3. Top Surviving Route & Sharpest Gap
+* **Mechanism**: Route 1. Use Poisson summation to split the geminal into (i) a size-, filling-, shell- and boundary-dependent part that is the image sum of a smooth one-body object, regenerated analytically at $L'$ from 4 parameters, and (ii) a short-range many-body residual $\Delta f$ (range $R<L/2$, with local backflow $g$) that is learned once at $L$ and transferred together with a translation-equivariant local correlator $C_W$. At $L'$ only the 4 mean-field parameters are optionally refitted, at the same cost as the foil's refit. If the residual is size-intrinsic, the $2L$ run starts near its converged energy, and finite-size scaling costs one source training plus short fine-tunes.
+* **Sharpest Gap**: the **residual-locality lemma** is unproven. It states that the variationally optimal residual $\Delta f^\star_L=F^{\rm opt}_L-F^{\rm MF}_L(\theta^\star_{\rm MF})$ (a) has range much smaller than $L/2$ and (b) converges in $L$, i.e. $\lVert\Delta f^\star_L-\Delta f^\star_{2L}\rVert\to0$ faster than the foil's own finite-size error. Two things threaten it:
+    * *Identifiability at ED-sized sources.* With $R=L/2$ the residual alone spans all pair functions on the source, so the split is arbitrary; we hit this in development, where zero-shot energies were worse than the foil's, and fixed it with $R_{\rm corr}=1$. Even at $R=1$, smoke runs show the mean-field part and the residual co-adapting ($M=1.30$ at $\delta=1/2$).
+    * *Physics.* In 2D with nodal $d$-wave or a Fermi surface, the true residual inherits algebraic tails.
+
+  The ladder test checks (b) on the most favourable gapped case. A FAIL there kills the route; a PASS leaves the 2D tail question open.
+### 4. 24-Hour Decisive Test & Compute Execution
+* **Minimal Instance**: $t$–$J$ 2-leg ladder, $\hat H=-\sum_{\langle ij\rangle\sigma}t_{ij}(\tilde c^\dagger_{i\sigma}\tilde c_{j\sigma}+{\rm h.c.})+J\sum_{\langle ij\rangle}(\hat{\mathbf S}_i\cdot\hat{\mathbf S}_j-\hat n_i\hat n_j/4)$. Here $\tilde c$ are projected (no double occupancy) operators. Legs and rungs carry $t=t_\perp=1$ and $J=0.5$; both plaquette diagonals carry $t'=-0.25$. The legs are periodic, and the doping is $\delta=1/4$. Source $2\times4$ ($N_e=6$, dimension $560$); target $2\times8$ ($N_e=12$, $S^z=0$, dimension $1{,}681{,}680$). Everything is computed by exact sums over the projected Hilbert space (no Monte Carlo noise), with ED from `scipy.sparse.linalg.eigsh`. The fermion signs, including the boundary Jordan–Wigner string, are verified against analytic band sums.
+* **Scalar Metric $M$**: Let $E_0$ be the ED energy and $E_{\rm opt}$ the best energy of the route ansatz optimized at $2\times8$ (range $R=4$; 250 SR steps each from the transferred and from the foil initialization; minimum of the two). $E_{\rm tr}$ is the route's zero-shot energy: the minimum of (i) pure transfer, (ii) transfer plus a refit of the 4 mean-field parameters ($60$ SR steps), and (iii) the best foil plus the transferred $\Delta f,g$. $E_{\rm foil}$ is the minimum over foil variants: (A) route network with foil mean-field parameters, (B) foil network with foil mean-field parameters, (C) the better of A and B with the 4 mean-field parameters refitted at $2\times8$ ($60$ SR steps). With $V=16$:
+$$M=\frac{e_{\rm tr}}{e_{\rm foil}},\qquad e_{\rm tr}=\frac{E_{\rm tr}-E_{\rm opt}}{V},\quad e_{\rm foil}=\frac{E_{\rm foil}-E_{\rm opt}}{V}.$$
+Guard: $\lvert P_{\rm tr}(D)-P_{\rm ED}(D)\rvert\le\lvert P_{\rm foil}(D)-P_{\rm ED}(D)\rvert+10^{-5}$ at $D=4$, with rung-singlet operator $\hat\Delta_x=(\tilde c_{x0\downarrow}\tilde c_{x1\uparrow}-\tilde c_{x0\uparrow}\tilde c_{x1\downarrow})/\sqrt2$.
+* **Execution Plan**: Code: `/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer/micro_test.py`; Slurm script: `/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer/submit_test.sbatch` (partition `kim`, 8 CPUs, 48 GB, 23 h limit; expected wall time 1–4 h). The script runs the self-test, then the default protocol, and the pre-committed follow-ups only if the result is AMBIGUOUS. Results go to `results_*.json` and logs to `slurm_*` in the same folder. Command (**not run**):
+`sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer/submit_test.sbatch`
+* **Thresholds**:
+    * VOID if $(E_{\rm opt}-E_0)/\lvert E_0\rvert>0.05$. The ansatz is then too weak for the comparison to mean anything; rerun once with `--hidden 8`.
+    * **PASS** if $M<0.5$, $e_{\rm tr}<0.01\,t$, and the guard holds.
+    * **FAIL** if $M>0.9$, or $e_{\rm foil}\le0$, or the guard fails.
+    * **AMBIGUOUS** otherwise, and also for a PASS on an instance whose ED sign agrees with the projected-BCS sign above $0.99$. Pre-committed action: rerun with `--bc antiperiodic` and with `--window 0`. Count it as PASS only if both reruns satisfy the PASS rule; otherwise count it as FAIL and kill Route 1.
+* **Smoke-test evidence** (login node, seconds):
+`python micro_test.py --selftest`
+
+```
+[     0.0s] selftest bc=periodic N_f=2: E_ED=-4.0000000000 band-sum=-4.0000000000 herm=0.0e+00 OK
+[     0.0s] selftest bc=periodic N_f=3: E_ED=-5.0000000000 band-sum=-5.0000000000 herm=0.0e+00 OK
+[     0.0s] selftest bc=antiperiodic N_f=2: E_ED=-4.1213203436 band-sum=-4.1213203436 herm=0.0e+00 OK
+[     0.0s] selftest bc=antiperiodic N_f=3: E_ED=-4.8890872965 band-sum=-4.8890872965 herm=0.0e+00 OK
+[     0.1s] selftest t-J 2x4 (2 holes) dim=560 herm=0.0e+00 E0=-6.30990633
+[     0.1s] SELFTEST PASSED
+```
+
+Two ad hoc checks were also run. At half filling, the $2\times3$ $t$–$J$ ED gives $-2.6513878189$, equal to an independent Heisenberg ED ($-2.6513878189$). An explicitly second-quantized AGP agrees with the determinant amplitudes up to the constant $-n!$ (ratio range $[-2.0000,-2.0000]$ for $n=2$).
+`python micro_test.py --doping 0.5 --L-tgt 6 --steps-src 300 --steps-tgt 40 --steps-foil 20` (smoke instance $2\times4\to2\times6$ at $\delta=1/2$; not the decisive instance)
+
+```
+[     0.1s] source 2x4, N_e=4, dim=420: E0=-6.57857520 gap=4.1354e-01 deg=1
+[     1.7s] source: E0=-6.578575 route=-6.576247 foil=-6.574603
+[     1.9s] target 2x6, N_e=6: E0=-9.80730260 gap=2.9995e-01 deg=1
+[     2.3s] foil A=-8.71697963 B=-5.97565781; re-optimising MF params (variant C)
+[     8.2s] route zero-shot=-8.63746563  route+MF-refit=-9.00959445  best-foil+transferred-df=-8.94152436
+[    19.2s] ================ RESULT ================
+[    19.2s] E0=-9.807303  E_tr=-9.009594  E_foil=-9.170817 (C)  E_opt=-9.700116
+[    19.2s] e_tr=0.05754  e_foil=0.04411  M=1.3046  relerr_opt=1.093e-02
+[    19.2s] P(D=3): ED=0.01547 tr=0.01196 foil=0.03355 opt=0.02301 guard=True
+[    19.2s] sign agreement with ED: tr=0.9880 foil=0.9902 opt=0.9927
+[    19.2s] steps to conv (tol 0.001/site): from tr=18 from foil=17
+[    19.2s] VERDICT: FAIL   (results in /tmp/p42_smoke.json)
+```
+
+The pipeline runs end to end. On this smoke instance the transferred residual does **not** beat the foil ($M=1.30$). With `--window 0` the result is $M=1.10$ and the guard fails. The foil–ED sign agreement there is $0.990$, so the Hard Core is weak at $\delta=1/2$. This is a prior toward FAIL for the decisive $\delta=1/4$, $2\times4\to2\times8$ run, not a verdict on it.
+### 5. Local Autopsy Log
+* **Route 2 (momentum-labelled orbital generator)**: killed at Gate 2. Bloch's theorem fixes translation-invariant determinant orbitals to $e^{ik_xx}u_k(y)$ with $u_k$ set by symmetry, so the only transferable content is $K_{\rm occ}$, the same choice as the fresh mean-field foil. The zero-shot state equals the foil.
+* **Route 3 (unit-cell gluing)**: killed at Gate 1. Separately conserved $N_A,N_B$ make $\langle\hat\Delta_i^\dagger\hat\Delta_j\rangle\equiv0$ across the cut, so the long-range pairing correlation vanishes exactly (Unacceptable Outcome). The repair needs $\mathcal O(\sqrt V)$ trained particle-number sectors.
+* **Route 4 (twist-folded transfer)**: killed at Gate 0. Joint twist-and-size training is Gerard et al. (arXiv:2405.07599), with no mechanism against its adoption barriers. Folding is exact only for the one-body part, which the foil already has.
+* **Development dead end within Route 1 (not a separate route)**: the first version let the residual range equal $L_{\rm src}/2$. Zero-shot energies were then far worse than the foil's (e.g. $E_{\rm tr}=-3.12$ against $E_{\rm foil}=-7.93$ in a $2\times4\to2\times6$ smoke), because the residual spans every source pair function and the mean-field/residual split is arbitrary. The same runs showed that a 3-rung correlator window on a 4-rung source learns cluster-global features that do not transfer. Both are now explicit options (`--R-corr`, `--window`) with the pre-committed defaults recorded above.
+
+### Round 2 — Mutation & Replenishment (2026-11-11)
+* **Boundary conditions carried into this round** (binding):
+    * *Critic, Major*: the round-1 test ($2\times4\to2\times8$ $t$–$J$ ladder) is a spin-gapped Luther–Emery liquid with one dominant order, so it removes the 2D nodal half of the Hard Core. The transferred residual $\Delta f,g$ at $R_{\rm corr}=1$ is a handful of Jastrow-like scalars, i.e. the foil's own Jastrow-transfer practice. The $S^z$ features break SU(2).
+    * *Critic, Minor*: re-using size-independent pairing parameters ($\mu$, $\Delta$, $t'_{\rm eff}$) is routine in VMC/mVMC, and Gerard et al. (arXiv:2405.07599) already regenerate the mean-field part per size.
+    * *P1.1 (job 329057)*: for NNBF the sign is the binding error ($f_E=0.61$–$0.77$ at width 128) and width fixes amplitudes, not signs. A transfer that carries only amplitude content cannot touch the binding error.
+    * *Round-1 kills*: Bloch-orbital generator (only $K_{\rm occ}$ transfers), unit-cell gluing (zero pair correlation across the cut), twist folding (Gerard et al.).
+* **Design rules for this round**, derived from the above:
+    * (R1) The transferred object must be configuration dependent and able to change the sign of $\psi$. The decisive metric is the sign-limited excess $A_X=E_{\rm sign}(\mathrm{sgn}\,\psi_X)-E_0$ of P1.1, not the energy.
+    * (R2) The target must be 2D and doped with $t'\ne0$. The test reports the same-sector gap and says explicitly when it tests only the sign half.
+    * (R3) Exact SU(2): only charge-configuration features, per the P4.1 charge-only lemma.
+    * (R4) The foil arm gets the *same* transfer rule for its pair function, so a gain can only come from the configuration-dependent part.
+* **Generation Batch 2**:
+  - **Route 2.1 (Mutated from Route 1 via Operation A.4): $\lambda$ ring-surgery continuation.** Take the target torus $\Lambda_{2L}$ and the two seams $x=L-\tfrac12$ and $x=2L-\tfrac12$. Let $\hat H(\lambda)=\hat H_{\rm in}+\lambda\hat H_{\rm seam}+(1-\lambda)\hat H_{\rm rewired}$ with $\lambda\in[0,1]$. Here $\hat H_{\rm in}$ contains all bonds not crossing a seam, $\hat H_{\rm seam}$ the original seam bonds, and $\hat H_{\rm rewired}$ the same bonds reconnected so that each half closes on itself. At $\lambda=0$ the system is two decoupled copies of the source torus (the tractable regime, where the source network is exact up to its source error). At $\lambda=1$ it is the 2D target (the Hard Core).
+    * *Point of departure*: a geminal with block-diagonal $F=F_L\oplus F_L$ is the AGP $(\hat P^\dagger_A+\hat P^\dagger_B)^{N_e/2}\lvert0\rangle$, with $\hat P^\dagger_{A}$ the pair creator of half $A$. It sums over all pair-number splits, so $\langle\hat\Delta^\dagger_i\hat\Delta_j\rangle\ne0$ for $i\in A$, $j\in B$. The round-1 Gate-1 kill of unit-cell gluing (zero cross-cut pair correlation) therefore does not apply to geminal gluing.
+    * *Why it need not inherit the global anti-pattern* ("continuation from the mean-field limit tracks the metastable branch"):
+        * The $\lambda=0$ end is fully interacting, not mean-field.
+        * In its strongest form the continuation tracks the *Perron root* of the fixed-node Hamiltonian $\hat H_{\rm FN}(s;\lambda)$, where $s$ is the sign of the transferred network, not the lowest variational root. For connected stoquastic $\hat H_{\rm FN}$ that root is non-degenerate (Perron–Frobenius), so the amplitude path has no level crossings.
+        * The competing-order crossings that make up the Hard Core then appear as discrete changes of $s$, decided by comparing $E_{\rm FN}$, not as a branch that is followed continuously.
+    * Gate 0 (Novelty & Adoption): **FAIL**.
+        * The Perron-tracking form needs a fixed-node projection at the target size. That is lattice GFMC with an NQS guide, killed in P1.1 (Loehr & Clark, arXiv:2510.26906).
+        * The VMC form (short SR at each $\lambda$, warm-started) is Hamiltonian-parameter warm starting, already standard. Examples are coupling-scan warm starts (arXiv:2405.14830) and curriculum transfer across Hubbard parameters with a pairing network (Yamazaki, Konishi & Kawahara, arXiv:2505.00233). That form also tracks the lowest variational root, so it *does* inherit the anti-pattern: for $0<\lambda<1$ translation is broken to period $L$, crossings become avoided crossings with tiny gaps, and finite-step SR crosses them diabatically. The login smoke below shows this failure even without $\lambda$: the converged target optimization landed on $E_1$, not $E_0$.
+    * Gates 1–3: not reached.
+    * *Verdict*: **KILLED** (Gate 0). By-product kept: the AGP-gluing lemma (block-diagonal geminals carry cross-block pair coherence), recorded in the autopsy as a repair of the round-1 Route 3 kill.
+  - **Route 2.2 (Operation B.1 duality, combined with B.3 cross-field translation from neural operators): momentum-field neural geminal (MFNG).** Every symbol below is defined on an $L_x\times L_y$ torus with $V=L_xL_y$ sites and momentum grid $\mathcal K=\{(2\pi m/L_x,2\pi n/L_y)\}$. The amplitude is
+$$\psi(\mathbf n)=\exp\Big(\sum_s\sum_h\alpha_h\log\cosh(\mathbf U_h\!\cdot\!\mathbf v_s+\beta_h)\Big)\det_{a,b}\Big[\kappa_0(\mathbf r_{u_a}-\mathbf r_{d_b})+\sum_{m=1}^{C}\phi_m(u_a)\,\kappa_m(\mathbf r_{u_a}-\mathbf r_{d_b})\,\phi_m(d_b)\Big],$$
+with the following ingredients:
+    * $u_a$ ($d_b$) are the up (down) electron sites in ascending order.
+    * $\mathbf v_s=(h_s,\tfrac14\sum_{\rm nn}h,\tfrac14\sum_{\rm nnn}h)$ are charge-only shell features of site $s$, where $h_s=1$ if $s$ is empty.
+    * $\phi_m(s)=\sum_h a_{mh}\tanh(\mathbf W_h\!\cdot\!\mathbf v_s+b_h)$ is a local backflow.
+    * The pair kernels are $\kappa_m(\mathbf r)=V^{-1}\sum_{\mathbf k\in\mathcal K}\cos(\mathbf k\!\cdot\!\mathbf r)f_m(\mathbf k)$, with $f_m$ a **neural field over the Brillouin zone (BZ)**:
+$$f_m(\mathbf k)=o_{2m}(\mathbf z_{\mathbf k})+\gamma_{\mathbf k}\,o_{2m+1}(\mathbf z_{\mathbf k}),\qquad \mathbf o=W_2\tanh(W_1\mathbf z_{\mathbf k}+\mathbf b_1)+\mathbf b_2 ,$$
+      where $\mathbf z_{\mathbf k}=\big(\tfrac12(\cos k_x+\cos k_y),\cos k_x\cos k_y\big)$ are $C_{4v}$-invariant inputs and $\gamma_{\mathbf k}=\cos k_x-\cos k_y$ is the $d$-wave form factor.
+    * Every parameter is size independent, so transfer is a copy of the parameter vector.
+    * *Mechanism, part (a), duality lemma*: by Poisson summation, a translation-invariant kernel on the $L$-torus satisfies $\hat\kappa_L(\mathbf k)=\hat\kappa_\infty(\mathbf k)$ for every $\mathbf k\in\mathcal K_L$, and $\mathcal K_L\subset\mathcal K_{2L}$. Real-space *domain extension* is therefore momentum-space *grid refinement* at a fixed BZ. The round-1 Nyquist barrier (range beyond $L/2$ not identifiable) becomes an interpolation problem on the new momenta only, and the source fixes the kernels exactly on the shared momenta.
+    * *Part (b), cross-field port*: neural operators (Fourier neural operators) are invariant under grid refinement of a *fixed* domain. On a lattice that domain is the BZ, not real space. A real-space FNO is the wrong port: its retained modes $2\pi j/L$ change physical momentum when $L$ doubles. The correct port is a neural field on the BZ. This is the device that arXiv:2511.07367 uses (SIREN interpolation of reduced density matrices from a $6\times6$ to an $18\times18$ momentum mesh), applied here to the wavefunction's pair kernels instead of to measured RDMs.
+    * *Part (c), symmetry bookkeeping*: with $C_{4v}$-covariant fields, the $4\times2\to4\times4$ transfer has exactly **one** new symmetry orbit, $\mathbf k=(\pm\pi/2,\pm\pi/2)$. This is printed by self-test (e) below. It is the $d$-wave node, where $\gamma_{\mathbf k}=0$, so only the $s$-part of each field is interpolated there; the 12 other target momenta lie on source orbits.
+    * *Part (d), sign-carrying content*: $\phi_m$ makes the pair matrix depend on the hole configuration, so $\mathrm{sgn}\det$ changes with configuration beyond what any fixed geminal can do. A fixed geminal is the foil, which here gets the same transferred $\kappa_0$. Because the backflow and Jastrow depend only on charge and the geminal is a symmetric singlet, $S=0$ holds exactly (rule R3).
+    * *Against the round-1 kills*:
+        * Bloch: Bloch's theorem leaves a configuration-independent determinant only $K_{\rm occ}$. Here the $\mathbf k$-space objects are pair functions (the full $f(\mathbf k)$ on the grid, not an occupied set) and configuration-dependent channels.
+        * Critic objection on "a handful of scalars": the transferred object is the whole network (218 parameters, with a nonlinear backflow). The foil receives the same momentum-field transfer of its own learned kernel (rule R4), and the metric is the sign-limited excess (rule R1).
+    * Gate 0 (Novelty & Adoption): **PASS**.
+        * *Prior art, spins and non-lattice*: zero-shot size transfer exists for spins with graph networks (Kochkov et al., arXiv:2110.06390) and for RBMs (Zen et al., arXiv:1908.09883), neither with an antisymmetric layer.
+        * *Prior art, fermion NQS without size transfer*: translation-equivariant fermionic layers exist without any size-transfer test, namely the hidden-fermion Pfaffian (Chen et al., arXiv:2507.10705) and symmetry-aware CNN backflow for $t$–$V$ (arXiv:2406.09077). Curriculum transfer for Hubbard NQS is across Hamiltonian parameters, not sizes (arXiv:2505.00233).
+        * *Prior art, operators and momentum interpolation*: FNO-based NQS exist for dynamics, with discretization invariance in time (Qi, Earls & Peng, arXiv:2603.25066). Momentum-space interpolation exists for RDMs (arXiv:2511.07367). The continuum route regenerates Hartree–Fock orbitals per geometry under multi-system training (arXiv:2405.07599).
+        * *Searches*: no source found transfers a lattice-fermion NQS zero-shot, or places its antisymmetric kernels on a BZ neural field.
+        * *Adoption barrier fixed*: the antisymmetric layer has no size map, because orbital matrices change shape with $N_e$ and $V$ (round-1 Node Barrier). MFNG removes it, since all antisymmetric content lives in grid-agnostic fields plus local charge networks.
+        * *Relabel anti-pattern* ("neural replacement of a hand-crafted component"): the charge-only backflow on a projected singlet resembles Tocchio et al. (PRB 78, 041101) with an MLP, but the claim here is the size map, not the backflow. To keep this honest the test carries a diagnostic arm `tr_mf0`, a Tocchio-style transfer: backflow carried over, mean-field kernel regenerated at the target. If `tr_mf0` matches `tr`, the momentum-field part adds nothing, and that is reported.
+    * Gate 1 (Conservation & Asymptotics): **PASS**.
+        * $N_\uparrow,N_\downarrow$ and $S=0$ are exact.
+        * Translation is exact: self-test (c) gives $\langle\psi\rvert\hat T_x\lvert\psi\rangle=\langle\psi\rvert\hat T_y\lvert\psi\rangle=1$ to $10^{-12}$ and $\lVert U^{\mathsf T}\psi\rVert^2=1$.
+        * The fields are $C_{4v}$-covariant by construction.
+        * As $V\to\infty$ the kernels converge to BZ integrals of $f_m$. The per-amplitude cost is the foil's $\mathcal O(N_e^3)$ plus $\mathcal O(V)$ network work.
+        * No claim of poly-time convergence is made.
+    * Gate 2 (Baseline Gameability): **PASS (analytic), decided numerically by Stage 4**.
+        * The foil is the strict subfamily $C=0$ with the same transferred $\kappa_0$ and the same Jastrow. The test also has a train-from-scratch-at-the-same-budget arm. The metric is the sign excess, which the foil's Jastrow cannot reduce.
+        * Source pre-check ($4\times2$, 2 holes, 300 SR steps; literal output below): the route is exact at the source ($A/V=4\times10^{-16}$), while the foil has $\Delta E/V=7.9\times10^{-2}$ of which a fraction $0.69$ is sign. At the source the backflow therefore carries real sign content beyond the foil. Whether that content transfers is the decisive question.
+        * The test can fail: on the (trivial-source) smoke instance it returns $M_0=1.14$ (FAIL).
+    * Gate 3 (Hard-Core Shield): **PASS**.
+        * *Sign half*: the target is the $4\times4$ $t$–$t'$–$J$ torus ($t'=-0.25$, $J=0.4$, 4 holes, $\delta=1/4$, $1{,}681{,}680$ states). It is 2D and doped with diagonal hopping, so it is non-stoquastic. The foil's own sign excess $A_{\rm foil}/V$ and its ED sign agreement are reported.
+        * *Competitor half*: whether a same-sector competitor exists is not known until the run. The script reports $\Delta_1/V$ in the momentum-zero $S^z=0$ sector and flags it if below $0.02t$. **If no flag is raised, the run tests only the sign half, and the result will be stated that way.**
+        * The momentum-zero restriction is forced by the ansatz. If the unrestricted ground state lies elsewhere, its momentum-zero weight is printed, and the test is the variational problem in that sector.
+    * *Verdict*: **SURVIVED** (top route).
+  - **Route 2.3 (Operation B.2 active probing): ensemble-disagreement probing of the transferred sign.**
+    * *Mechanism*: at ED-sized sources the network is under-determined (218 parameters against 70 momentum-zero orbits at $4\times2$). The source optimum is therefore a manifold, which was round 1's identifiability barrier. Route 2.3 turns this into a probe:
+        * Train $K$ seeds at the source and transfer all of them.
+        * Define the disagreement set $\mathcal D=\{\mathbf n:\exists\,i,j\ \mathrm{sgn}\,\psi_i(\mathbf n)\ne\mathrm{sgn}\,\psi_j(\mathbf n)\}$, after global sign alignment. These are the configurations whose sign the source does not determine.
+        * Spend the target budget only there. Sample from the mixture $p(\mathbf n)\propto\lvert\psi_{\rm tr}(\mathbf n)\rvert^2\big(1+\beta\,\mathbb 1_{\mathcal D}(\mathbf n)\big)$ with importance weights $\lvert\psi_{\rm tr}\rvert^2/p$, so the SR force stays unbiased, and fine-tune only on the resulting sample set.
+    * Gate 0 (Novelty & Adoption): **PASS**.
+        * Configuration selection in NQS is by probability, not uncertainty (selected-configuration NQS, arXiv:2602.12993). Ensembles in NQS are used to represent degenerate states (arXiv:2509.02658).
+        * Ensemble active learning is standard for interatomic potentials but was not found for VMC sampling of transferred states.
+        * The adoption barrier is that a transferred state needs full re-training. The mechanism concentrates the re-training on the sign-uncertain set.
+    * Gate 1 (Conservation & Asymptotics): **PASS**. The mixture proposal with reweighting is unbiased. It is a two-component proposal, so the single-proposal variance-floor anti-pattern does not apply. Its weights are bounded by $1+\beta$.
+    * Gate 2 (Baseline Gameability): **PASS (analytic)**. The control arm is the same transferred state fine-tuned with plain $\lvert\psi\rvert^2$ sampling at an equal sample budget. The premise is directly measurable and can fail.
+        * $\mathrm{recall}=\sum_{\mathbf n\in\mathcal D,\,s_{\rm tr}\ne s_0}\psi_0^2\big/\sum_{s_{\rm tr}\ne s_0}\psi_0^2$, where $s_{\rm tr}$ and $s_0$ are the signs of the transferred state and of the exact ground state $\psi_0$.
+        * $\mathrm{cost}=\sum_{\mathbf n\in\mathcal D}\psi_{\rm tr}^2$.
+        * On the smoke instance the result is $\mathrm{recall}=0.345$ and $\mathrm{cost}=0.394$, i.e. premise FAIL. This is reported, not decisive.
+    * Gate 3 (Hard-Core Shield): **PASS**. It acts on the sign error of the 2D doped target directly.
+    * *Verdict*: **SURVIVED** (second route; its premise is measured as a by-product of the Route 2.2 decisive run, with pre-committed thresholds $\mathrm{recall}\ge0.5$ and $\mathrm{cost}\le0.25$).
+  - **Route 2.4 (Operation B.3 cross-field: multigrid / RG prolongation of NQS parameters).** A prolongation operator $\mathcal P:\theta_L\to\theta_{2L}$, as in multigrid, interpolates each real-space kernel to the finer level.
+    * Gate 1 (Conservation & Asymptotics): **FAIL**, in one of two readings.
+        * *Rescaling reading* ($\kappa_{2L}(\mathbf r)=\kappa_L(\mathbf r/2)$, the RG reading): the lattice constant and the Fermi wavevector $k_F$ (fixed by the density) set physical length scales. Rescaling halves $k_F$, so the state has the wrong density and the wrong Fermi surface. Coarse-graining is only consistent at a fixed point, and a doped $t$–$J$ ground state is not one.
+        * *Interpolation reading* (interpolate in $\mathbf k$ at fixed lattice spacing): this is Route 2.2, merged there.
+    * *Verdict*: **KILLED** (Gate 1) / merged.
+  - **Route 2.5 (Operation B.3 cross-field: MERA-style block-and-refine).** $\psi_{2L}(\mathbf n)=\psi_L(B(\mathbf n))\,\psi_{\rm ref}(\mathbf n\mid B(\mathbf n))$, where $B$ blocks pairs of sites into one coarse site.
+    * Gate 1 (Conservation & Asymptotics): **FAIL**.
+        * A blocked $t$–$J$ site has a 9-dimensional local space, but $\psi_L$ is defined on the 3-dimensional one. Feeding $B(\mathbf n)$ to $\psi_L$ needs a truncation to 3 block states (a contractor-renormalization-type effective model). That discards every block holding two electrons, which is most of the weight at $\delta=1/4$.
+        * $\psi_{\rm ref}$ must then restore all of this, so it is a full NQS and nothing transfers.
+    * Gate 0 (Novelty & Adoption): also weak. Fermionic MERA exists as a tensor network (Corboz & Vidal, PRB 80, 165129, 2009), and neural-network RG exists for statistical field theory (Li & Wang, PRL 121, 260601, 2018).
+    * *Verdict*: **KILLED** (Gate 1).
+### Top Surviving Route & Sharpest Gap (Round 2)
+* **Mechanism (Route 2.2, MFNG)**: put every antisymmetric (pair-kernel) degree of freedom on a $C_{4v}$-covariant neural field over the Brillouin zone, and every configuration-dependent degree of freedom in local, charge-only, translation-equivariant networks. The parameter vector is then size independent, and doubling the lattice refines the BZ grid. By Poisson summation the source pins the kernels exactly on the shared momenta. For $4\times2\to4\times4$ only the nodal orbit $(\pm\pi/2,\pm\pi/2)$ is interpolated, and only its $s$-part. The sign-carrying content is the hole-dependent backflow of the pair matrix. Exact $S=0$, $N_\uparrow,N_\downarrow$ and translation symmetry hold.
+* **Sharpest Gap**: **source identifiability of the sign-carrying part**.
+    * At the $4\times2$ source the route is exact ($A/V=4\times10^{-16}$) with 218 parameters against 70 momentum-zero orbits. The set of exact source solutions is a manifold, and the transferred sign depends on which point the optimizer selects.
+    * Nothing in the source loss prefers the solution whose backflow is "physical", i.e. size-intrinsic. The unproven lemma is that the minimum-norm (or SR-selected) source solution has a backflow whose sign action on hole configurations absent at the source is correct at the target.
+    * The three-seed ensemble measures how much the selection matters: the spread of the members' target $E$ and $A$, and the size of the disagreement set. This is also exactly Route 2.3's premise.
+* **Second survivor (Route 2.3)**: sharpest gap is whether disagreement *locates* the sign error ($\mathrm{recall}\ge0.5$ at $\mathrm{cost}\le0.25$). On the trivial smoke instance it does not (0.345, 0.394).
+### 24-Hour Decisive Test (Round 2)
+* **Minimal Instance**: $t$–$t'$–$J$ model, $\hat H=-\sum_{\langle ij\rangle\sigma}t_{ij}(\tilde c^\dagger_{i\sigma}\tilde c_{j\sigma}+{\rm h.c.})+J\sum_{\langle ij\rangle_{\rm nn}}(\hat{\mathbf S}_i\!\cdot\!\hat{\mathbf S}_j-\tfrac14\hat n_i\hat n_j)$, where $\tilde c$ are projected operators, $t=1$ on nearest-neighbour bonds, $t'=-0.25$ on diagonals, $J=0.4$, periodic in both directions.
+    * Source: $4\times2$ torus with 2 holes ($560$ states, 70 momentum-zero orbits). The bonds are doubled in $y$, which is exactly the folding of the $4\times4$ torus.
+    * Target: $4\times4$ torus with 4 holes ($\delta=1/4$ on both, $1{,}681{,}680$ states).
+    * Everything is computed by exact sums. ED and $E_{\rm sign}$ run in the momentum-zero orbit block $H_0=U^{\mathsf T}HU$.
+* **Arms** (all at the target):
+    * `tr`: the selected MFNG copied over, zero shot.
+    * `foil_tr`: the transferred foil, $C=0$, with the same momentum-field $\kappa_0$ and Jastrow.
+    * `tr_mf0`: diagnostic, the Tocchio-style transfer described under Gate 0.
+    * `scratch_B`: MFNG from the mean-field init after $B=20$ SR steps.
+    * `tr_B`, `foil_B`: the two transferred states after $B$ SR steps.
+    * `opt`: the best of 150 SR steps from `tr_B` and from `scratch_B`.
+    * The source seed is chosen by source energy only, separately for MFNG and the foil, from 3 seeds each.
+* **Scalar Metric**: with $A_X=E_{\rm sign}^{\rm up}(\mathrm{sgn}\,\psi_X)-E_0$ (upper bracket from the ten Haaf fixed node and L-BFGS-B, translation-symmetric starts),
+$$M_0=\frac{A_{\rm tr}}{\min(A_{\rm foil\_tr},A_{\rm scratch\_B})},\qquad M_B=\frac{A_{\rm tr\_B}}{\min(A_{\rm foil\_B},A_{\rm scratch\_B})},$$
+  with the guard $\lvert P_d^{\rm tr}-P_d^{0}\rvert\le\lvert P_d^{\rm foil\_tr}-P_d^{0}\rvert+10^{-4}$. Here $P_d$ is the $d$-wave bond-pair correlation averaged over bonds at distance at least $2$.
+* **Thresholds** (pre-committed):
+    * **VOID** if $(E_{\rm opt}-E_0)/\lvert E_0\rvert>0.05$.
+    * **AMBIGUOUS (calibration)** if the exact-sign calibration error exceeds $10^{-3}\min_XA_X$.
+    * **PASS** if $M_0\le0.5$, $M_B\le0.8$, $E_{\rm tr}\le E_{\rm foil\_tr}$ and the guard holds.
+    * **FAIL** if $M_0\ge0.9$, or $M_B\ge1$, or the guard fails.
+    * **AMBIGUOUS** otherwise. Seeds 1 and 2 run in parallel; the route passes only if both PASS, otherwise it fails.
+    * Route 2.3 premise (reported only): PASS if $\mathrm{recall}\ge0.5$ and $\mathrm{cost}\le0.25$.
+* **Execution Plan**:
+    * Code: `tests/P4.2_size_transfer_r2/micro_test.py`. The ED, fixed-node and L-BFGS-B pieces are reused from P1.1 and round 1. The momentum-zero orbit basis and MFNG are new.
+    * Slurm: `tests/P4.2_size_transfer_r2/submit_test.sbatch` (partition `kim`, array 0–2 = seeds, 8 CPUs, 32 GB, 24 h).
+    * Measured cost: one forward plus gradient pass over the $4\times4$ basis takes about 44 s, so about 60 s per SR step and about 7–8 h per task.
+    * Command (**not run**): `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r2/submit_test.sbatch`
+    * Global verdict afterwards: `python3 micro_test.py --aggregate results`.
+* **Smoke-test evidence** (login node). Self-tests and timing:
+`python micro_test.py --selftest` (tail) and `python micro_test.py --timing`
+
+```
+[     5.6s] selftest(c) <psi|T_x psi>=1.000000000000 <psi|T_y psi>=1.000000000000 |U^T psi|^2=1.000000000000; k=0 block (70 orbits) spectrum inside full spectrum: True OK
+[     5.8s] selftest(d) log-derivative max rel err over 218 params = 1.45e-08 OK
+[     5.8s] selftest(e) 2x2 -> 4x2: 8 target momenta, 4 on source C4v orbits, new (units of pi): [(0.5, 0.0), (1.5, 0.0), (0.5, 1.0), (1.5, 1.0)]
+[     5.8s] SELFTEST PASSED
+[     0.2s] target 4x4 dim=1681680
+[     1.5s] chunk=50000: grad pass 0.97s, value pass 0.33s; full grad+value ~44s per SR step (npar=218)
+```
+
+  With the default `--src 4x2 --tgt 4x4`, self-test (e) prints `4x2 -> 4x4: 16 target momenta, 12 on source C4v orbits, new (units of pi): [(0.5, 0.5), (1.5, 0.5), (0.5, 1.5), (1.5, 1.5)]`. Self-test (a), spinless band sums on $4\times4$, $4\times2$ and $2\times2$, is OK to $10^{-10}$.
+  Source pre-check, `python precheck_source.py 300` (decisive source, 300 SR steps):
+
+```
+[     0.0s] 4x2 source: dim=560 orbits=70 E0(k=0)=-8.28182066 E1=-8.07772208
+[    14.7s] route: npar=218 dE/V=1.0058e-07 A_sign/V=4.4409e-16 f_sign=0.000
+[    19.0s] foil: npar=102 dE/V=7.8695e-02 A_sign/V=5.4470e-02 f_sign=0.692
+```
+
+  End-to-end smoke on a trivial pair (not the decisive instance; the $2\times2$ source has 2 electrons): `python micro_test.py --src 2x2 --tgt 4x2 --holes-src 2 --holes-tgt 4 --steps-src 150 --budget 5 --steps-tgt 40 --lbfgs-iters 500`
+
+```
+[    13.4s] target ED: E0(k=0)=-8.72761425 E1(k=0)=-8.42131607 gap/V=3.8287e-02 no same-sector competitor below 0.02t/site
+[    13.4s] target ED unrestricted: E0=-9.03447367 (k=0 weight 0.000); Pd(E0)=-1.7817e-03 Pd(E1)=6.0749e-05
+[    13.4s] calibration: E_sign(exact signs) - E0 = 3.553e-15
+[    18.1s] probe: sign-error weight of tr=0.6993, recall in disagreement set=0.345, cost=0.394 -> premise FAIL
+[    18.1s] ================ RESULT ================
+[    18.1s] tr        dE/V=7.6302e-01  A/V=5.9531e-02  f_sign=0.078  Pd=2.4197e-02
+[    18.1s] foil_tr   dE/V=9.1698e-01  A/V=2.9457e-01  f_sign=0.321  Pd=6.5506e-03
+[    18.1s] tr_mf0    dE/V=3.6675e-01  A/V=5.2292e-02  f_sign=0.143  Pd=3.0422e-02
+[    18.1s] scratch_B dE/V=2.6230e-01  A/V=5.2292e-02  f_sign=0.199  Pd=2.7023e-02
+[    18.1s] tr_B      dE/V=1.4367e-01  A/V=9.0434e-02  f_sign=0.629  Pd=4.3346e-02
+[    18.1s] foil_B    dE/V=7.1355e-02  A/V=3.7626e-02  f_sign=0.527  Pd=5.5113e-03
+[    18.1s] opt       dE/V=3.8287e-02  A/V=3.8287e-02  f_sign=1.000  Pd=6.9494e-05
+[    18.1s] Pd(ED)=-1.7817e-03; M0=1.1384  MB=2.4035  guard=False  calib_err=3.55e-15
+[    18.1s] VERDICT: FAIL   (results in /tmp/p42r2_smoke.json)
+```
+
+  Reading the smoke output:
+    * The pipeline runs end to end and the calibration is exact ($4\times10^{-15}$).
+    * On this trivial pair the transfer FAILS ($M_0=1.14$). The source has two electrons, so it carries no many-body sign information; this is a code check, not a prior.
+    * The `opt` arm converged to $E_1(k{=}0)=-8.42132$ rather than $E_0=-8.72761$. Its error is then entirely sign ($f_{\rm sign}=1$). This is the metastable-branch failure of the Hard Core, visible even at 420 states.
+    * The unrestricted ground state of this smoke target lies outside momentum zero (weight $0.000$). The decisive run prints the same diagnostic for $4\times4$.
+* **Verification of the bookkeeping**:
+    * Self-test (c) checks that the momentum-zero block spectrum is contained in the full spectrum.
+    * The exact-sign calibration returns $E_0$ to $10^{-15}$.
+    * Analytic log-derivatives match finite differences to $1.5\times10^{-8}$. Configurations within $e^{-8}$ of a node are excluded, because finite differences cross the node there.
+### Local Autopsy Log (Round 2 update)
+* **Route 1 (residual-geminal transfer), round-1 survivor**: killed after the critic at Gate 3. The ladder test removed the 2D nodal half of the Hard Core, the transferred residual at $R_{\rm corr}=1$ was Jastrow-like scalars, and the pre-check gave $M=1.30$.
+    * Mutation fuel: (i) the transferred object must carry sign, so the metric becomes $E_{\rm sign}$; (ii) the foil must receive the same transfer rule; (iii) features must be charge-only.
+    * All three are built into Route 2.2.
+* **Route 2.1 ($\lambda$ ring surgery)**: killed at Gate 0. The VMC form is Hamiltonian warm-starting (arXiv:2405.14830, arXiv:2505.00233) and inherits the metastable-branch anti-pattern. The Perron-tracking form escapes it but needs fixed-node projection at the target, which is the killed GFMC-with-NQS-guide route of P1.1.
+    * By-product: a block-diagonal AGP has non-zero cross-block pair correlation. This repairs the round-1 Route 3 (gluing) Gate-1 kill in principle, though not its translation breaking.
+* **Route 2.4 (RG / multigrid prolongation)**: killed at Gate 1. Real-space rescaling changes $k_F$, i.e. the density. The interpolation reading is Route 2.2.
+* **Route 2.5 (MERA block-and-refine)**: killed at Gate 1. The local-space mismatch (9 block states against 3) forces truncation of most of the weight at $\delta=1/4$, so the refining network has to be a full NQS.
+* **Development notes for Route 2.2**:
+    * The first $E_{\rm sign}$ implementation worked in the full Fock space, and its exact-sign calibration returned $E_{\rm sign}-E_0=-2.8\times10^{-2}<0$. Configurations where $\psi=0$ by symmetry broke the translation covariance of $\mathrm{sgn}\,\psi$, so the minimization left the momentum-zero sector.
+    * Fixed by working in the momentum-zero orbit basis, where forbidden orbits are dropped. The calibration is now $4\times10^{-15}$.
+
+### Round 3 — Mutation & Replenishment (2026-11-11)
+* **Binding inputs to this round**:
+    * *Round-2 critic, Major*:
+        * (i) The source is fitted exactly (218 parameters against 70 orbits), so the transferred state is an arbitrary point of a solution manifold, and the round-2 code let seed 0 decide alone.
+        * (ii) The "duality lemma" is a representation identity, not a transfer guarantee.
+        * (iii) The source is an anisotropic $L_y=2$ torus, and 4-hole target configurations are pure extrapolation.
+        * (iv) The Minimal Contrast Foil optimized *at the target* is missing, and no criterion compares the transferred energy with it or with the converged energy.
+        * (v) The Gate 0 prior art (arXiv:2505.00233, arXiv:2405.07599) may be misstated.
+        * (vi) Route 2.3 has no decisive test, and its premise already fails.
+    * *Round-2 critic, Minor*: the target was restricted to momentum zero, although the smoke target's ground state had zero weight there.
+    * *Round-3 brief*: projected control arm (rule 1), at least 3 seeds with medians (rule 2), honest Hard-Core coverage (rule 3), and code that implements the claimed decision (rule 5).
+    * *Orchestrator broadcasts (P1.1-P interim)*:
+        * Projected NNBF reaches $\psi_0$ almost exactly on $4\times3$ Hubbard clusters, where the ratio of projected-sector dimension to parameter count is 0.4 to 2.9. The residual sign error after projection is about $10^{-5}$.
+        * Size transfer therefore needs a target on which projected from-scratch training is *not* converged within the budget, and a premise gate that makes this explicit.
+        * The lever is the projected-sector dimension relative to the parameter count, which must be computed in code.
+### Prior-art settlement (Gate 0 input, verified from full texts)
+* **Yamazaki, Konishi & Kawahara, arXiv:2505.00233** (Pairing-Net curriculum learning; Hubbard $2\times2$, $4\times4$, $6\times6$): **no size transfer.**
+    * The full text states "We assume here that the lattice size is fixed".
+    * Every transfer is across $U$ and electron number *at fixed lattice size*. This includes the $6\times6$ appendix: "we investigate the effectiveness of transfer learning with Pairing-Net using several pre-trained NQS with different $\tilde U$ and $\tilde N$ values".
+    * The phrase "generalization to large-scale systems" does not appear. The closest sentence is "our method, employing transfer learning for electron density, is more effective for large-scale systems", where "large-scale" means larger fixed lattices.
+    * The critic's snippet ("4×4 and then 6×6") reads two separate fixed-size studies as one transfer.
+* **Gerard, Scherbela, Sutterud, Foulkes & Grohs, arXiv:2405.07599** (LiH and hydrogen chains, continuum): **accepted as the method to beat.** The critic is right that "continuum, not lattice" is not an adoption barrier.
+    * The network is pre-trained on $2\times2\times2$ supercells over several twists and lattice constants, then moved to $3\times3\times3$ and fine-tuned for "only 8,000 additional optimization steps shared across ten different twists". That is about 2% of DeepSolid's compute; on hydrogen chains the saving is a factor of about 50.
+    * The orbital features are Hartree–Fock coefficients, computed *per geometry*. No zero-shot energy is reported.
+    * Stated difficulties: local minima that depend on the walker initialization (antiferromagnetic starts trap the optimizer), and accuracy that is uneven across twists.
+* **Liang et al., arXiv:2204.07816** (Sunway, CNN).
+    * Staged size transfer $6\times6\to10\times10\to\dots\to36\times36$ is documented for the $J_1$–$J_2$ spin model only.
+    * For the $t$–$J$ model (Jordan–Wigner, determinant-free CNN) the paper reports only "initial-state selection" at $12\times12$. There is no size transfer and no comparison of fresh against transferred states.
+* **SCALE / ACE, arXiv:2604.25775** (PRX Intelligence 2026), and **Gu et al., arXiv:2507.02644**: both carry a pinning-field pattern from a simple backflow network into SCALE or a transformer *on the same lattice*. No size transfer.
+* **Zen et al., arXiv:1908.09883**, and RNN iterative retraining (arXiv:2502.17144): spins only, with no antisymmetric layer.
+* **Verdict**: no published lattice-fermion NQS is transferred across lattice sizes. The closest method is Gerard et al. On a doped Hubbard or $t$–$J$ lattice its adoption barrier has two parts, and that barrier is the target of round 3.
+    1. **Sector and branch selection at the target.**
+        * Small doped tori have ground states in irreps (momentum $K$, point-group parity, spin) that change with size and filling.
+        * On the $4\times2$, 4-hole smoke target, the ground state has $T_x=-1$ for all five tested $(t',J)$ (smoke scan log).
+        * A Gerard-style warm start is a state in *some* sector, and SR fine-tuning cannot leave a symmetric sector. This is the metastable-branch anti-pattern in transfer form.
+        * Gerard et al.'s own fix, starting half the walkers ferromagnetic, is ad hoc.
+    2. **Under-determination at the source.** With source clusters of a few hundred states, the source data do not fix the transferred object (the critic's seed-manifold objection). Gerard et al. buy identifiability with many geometries and twists. That costs compute and still yields only a warm start.
+### Generation Batch 3
+  - **Route 3.0 (round-2 MFNG as submitted: single $4\times2$ source, seed picked by source energy)**: **KILLED**. This is the critic's objection, now confirmed by measurement.
+    * In the pre-check below, 3 seeds of the round-2-style source (4x2 only, no penalty) all fit it essentially exactly: relative error $2\times10^{-14}$ to $4\times10^{-9}$.
+    * Their parameter vectors are still a relative distance 1.05 to 1.75 apart. 107 of 122 directions of the SR metric $S$ lie below $10^{-8}\max\operatorname{spec}S$.
+    * The transferred state is therefore chosen by the seed. Route 3.0 is kept as the ablation arm `tr0_r2`.
+  - **Route 2.3 (active probing on the seed-disagreement set)**: **KILLED** by its own premise measurement: recall $0.345<0.5$ at cost $0.394>0.25$. It also has no decisive test. Its one useful idea, measuring the seed spread, is now the explicit gate (I) of the decisive test.
+  - **Route 3.1a (Operation A on the source component of Route 3.0: twist-complete source, $4\times2$ with $y$-phase $0$ and $\pi$)**: **KILLED at Gate 1**, found while building the test.
+    * With $L_y=2$ and phase $\pi$, the doubled $y$-hops cancel. The band at $k_y=\pm\pi/2$ has no $y$ dispersion (checked by self-test (a)), so each leg's hole number is conserved.
+    * A pair field that is even under $y\to-y$ then has $F(\Delta x,\pm1)=0$ identically, from mirror symmetry plus antiperiodicity. The geminal cannot place an odd number of electrons on a leg.
+    * Every configuration with an odd count per leg therefore has zero amplitude. Measured: 1.4% of configurations are exactly zero, and the median amplitude is $e^{-35}$ below the maximum.
+  - **Route 3.1 (Operation A on the source and sector components of Route 3.0, with cross-pollination from P1.1-P): grid-complete, minimum-norm, irrep-projected (TCMN) transfer.**
+    * *Mechanism*:
+        1. **Grid-complete multi-cluster source.**
+            * MFNG is trained jointly on small periodic clusters at the target doping whose momentum grids together contain *every* $C_{4v}$ orbit of the target grid.
+            * For $4\times4$ these are the $4\times2$ torus and the 8-site tilted cluster $\mathbf a_1=(2,2)$, $\mathbf a_2=(2,-2)$, whose grid is $\{(0,0),(\pi,0),(0,\pi),(\pi,\pi),(\pm\pi/2,\pm\pi/2)\}$.
+            * Together they place 16 of 16 target momenta on source orbits; the $4\times2$ alone covers 12 of 16 (self-test (h)).
+            * The nodal orbit $(\pm\pi/2,\pm\pi/2)$, which round 2 interpolated, is now pinned by a genuinely 2D, $C_{4v}$-symmetric source. This answers objection (iii) for the source geometry.
+        2. **Minimum-norm, restart-selected source optimum.**
+            * The source loss is $\mathcal L(\theta)=\sum_cE_c(\theta)/V_c+\lambda\lVert\theta_{\rm AS}\rVert^2$. Here $c$ runs over the source clusters, $E_c$ and $V_c$ are the energy and site count of cluster $c$, $\theta_{\rm AS}$ are the antisymmetric (field and backflow) parameters, and $\lambda=10^{-3}$.
+            * The Jastrow is not penalized, because $\theta=0$ is a critical point of the log-cosh Jastrow (measured in development; see the notes below).
+            * The run keeps the best of $K=4$ restarts by $\mathcal L$. This choice uses no target information.
+        3. **Irrep-projected target with a zero-shot sector rule.**
+            * At the target, the copied state is projected onto a real 1-D irrep of $G=$ translations $\times\{1,M_x\}\times\{1,M_y\}\times\{1,D\}$ ($\lvert G\rvert=128$ on $4\times4$). The singlet $S=0$ is exact by construction.
+            * The irrep is chosen *by the transferred state*: the momentum-zero 1-D irrep with the lowest projected energy.
+            * Choosing the sector by Ritz comparison of projected copies, instead of following one branch, is the mechanism against barrier 1.
+    * *Gate 0 (Novelty & Adoption)*: **PASS, narrowly.**
+        * Joint multi-geometry training is Gerard et al.'s mechanism and is not claimed here.
+        * The new parts target the two named barriers:
+            * (a) The source set is chosen to cover every momentum orbit of the target exactly, so no Fourier component of the pair kernels is extrapolated. Gerard et al. sample twists for twist averaging, not for grid completeness.
+            * (b) The sector is selected zero-shot by a projected Ritz comparison. A warm start cannot do this.
+            * (c) The decision rule scores the zero-shot and few-step states against the target-optimized foil and against a projected from-scratch control, rather than counting steps saved.
+        * Searches found no lattice-fermion instance of any of the three.
+    * *Gate 1 (Conservation & Asymptotics)*: **PASS.**
+        * $N_\uparrow$, $N_\downarrow$ and $S=0$ are exact; the irrep is exact by projection.
+        * The per-amplitude cost is $\lvert G\rvert$ MFNG amplitudes, each $\mathcal O(N_e^3)+\mathcal O(V)$.
+        * The test computes exact sums through the irrep isometry $U$, which is algebraically the same projected SR. Rule 5 holds because no cost beyond this is claimed.
+        * Grid completeness for $L\to2L$ needs a fixed number of clusters (here two).
+    * *Gate 2 (Baseline Gameability)*: **PASS, decided numerically.**
+        * The zero-shot state must beat the Minimal Contrast Foil *optimized at the target*.
+        * The $B$-step state must beat a projected from-scratch NQS at matched budget by a factor of 2.
+        * A cheap baseline meets neither condition without the transferred content.
+    * *Gate 3 (Hard-Core Shield)*: **PASS, sign half only unless a competitor is flagged.**
+        * The target is the 2D doped $t$–$t'$–$J$ $4\times4$ torus, which is non-stoquastic.
+        * The code reports the in-irrep gap $\Delta_1/V$ and flags a competitor only below $0.005t$ per site. Otherwise the result is stated as sign half only.
+        * No "$\Delta_1/V=0.007t$" claim is used.
+    * *Verdict*: **SURVIVED**. Identifiability is not guaranteed; see the sharpest gap.
+  - **Route 3.2 (Operation B.3, cross-field translation of P1.1's sign/amplitude split into transfer): frozen-sign transfer (FST).**
+    * *Mechanism*:
+        * P1.1 found that network capacity fixes amplitudes but not signs, so the scarce object is the sign structure. FST transfers exactly that and refits only what is cheap.
+        * The projected determinant part of the TCMN state (fields and backflow) is frozen. Only the charge Jastrow (20 parameters) is optimized at the target, by projected SR.
+        * The Jastrow is positive and invariant under all of $G$, so $J(g\mathbf n)=J(\mathbf n)$. Then $\psi_P(\mathbf n)=J(\mathbf n)\sum_g\chi(g)\,s_g\,\det(g\mathbf n)$, where $\psi_P$ is the projected amplitude, $\chi$ the irrep character and $s_g$ the fermion reordering sign. The refit cannot move a node: the target optimization changes amplitudes only, at fixed sign.
+        * This reverses the foil practice, which transfers the Jastrow and regenerates the determinant.
+    * *Gate 0 (Novelty & Adoption)*: **PASS.**
+        * Sign/amplitude-split NQS exist (separate sign and amplitude networks, Szabó & Castelnovo 2020). None freezes a *transferred* sign and refits amplitudes across sizes.
+        * The barrier addressed is the cost and basin risk of re-learning the sign at every size. Gerard et al. fine-tune everything.
+    * *Gate 1 (Conservation & Asymptotics)*: **PASS.** Same symmetries as Route 3.1. The target optimization uses 20 parameters, independent of $V$.
+    * *Gate 2 (Baseline Gameability)*: **PASS, decided numerically.** FST trains fewer target parameters (20) than the target-optimized foil (62). To pass, it must match the foil's energy *and* halve its fixed-sign excess $A=E_{\rm sign}-E_0$.
+    * *Gate 3 (Hard-Core Shield)*: **PASS, with an explicit premise.**
+        * The route acts on the sign, which is the Hard Core.
+        * Following the orchestrator's warning, premise (P2) declares Route 3.2 UNINFORMATIVE if the target-optimized foil already has a small sign error ($A/V<10^{-3}t$).
+    * *Verdict*: **SURVIVED** as the second survivor. It differs from Route 3.1 in what is optimized at the target. It shares Route 3.1's source object, so the two are correlated through identifiability.
+  - **Route 3.3 (direct lattice port of Gerard et al.: multi-size, multi-twist pretraining, per-size Hartree–Fock reference, full fine-tune)**: **KILLED at Gate 0** as a relabel. It does nothing against barrier 1, and its merit is counted in steps saved. It is the `trB` arm of the test without the sector rule.
+  - **Route 3.4 (averaging parameters over source seeds to cancel the manifold)**: **KILLED at Gate 1**.
+    * The seed optima are a relative distance 1.3 to 2.0 apart, in different basins of a non-convex network (pre-check), so averaging the parameters does not give a solution.
+    * Averaging the *wavefunctions* instead gives an ensemble, not an NQS. It needs $K$ amplitude evaluations per sample, with cross terms (rule 4).
+### Top Surviving Route & Sharpest Gap (Round 3)
+* **Route 3.1 (TCMN)**: grid-complete multi-cluster source, minimum norm plus restart selection, irrep projection, and a zero-shot sector rule. The leaf goal is tested directly, by three conditions:
+    * the zero-shot state is at or below the target-optimized Jastrow–BCS foil;
+    * after $B=20$ projected-SR steps, its excess is at most half that of a projected from-scratch MFNG;
+    * after the same $B$ steps, it is within half of the foil's gap to the converged energy.
+* **Route 3.2 (FST)**: freeze the transferred sign-carrying part, and refit only the 20-parameter charge Jastrow at the target.
+* **Sharpest gap: function-space identifiability of the source.**
+    * The source pre-check (literal output below) shows that restarts remove the bad basins. At 400 steps the joint fit reaches $4\times10^{-5}$ to $7.5\times10^{-3}$ relative error on $4\times2$ and $10^{-6}$ to $10^{-8}$ on the tilted cluster; the decisive run uses 800 steps.
+    * *Parameter-space* identifiability still fails. The seed optima are a relative distance 1.3 to 2.0 apart, and 106 to 112 of 122 SR-metric directions lie below $10^{-8}$ of the largest. The minimum-norm penalty did not make the optimum unique.
+    * The open question is whether the *function* these optima define on the $4\times4$ target is the same, i.e. whether the null directions are also null at the target. Gate (I) measures this: the zero-shot spread over 3 seeds must be at most half its median.
+    * The pre-check is a prior toward FAIL on (I).
+* **Secondary gaps**:
+    * whether the $4\times4$, 4-hole ground state is a non-degenerate momentum-zero singlet in a 1-D irrep (a pre-committed scan, otherwise VOID-SECTOR);
+    * extrapolation of the hole environment: the 2-hole sources never show the 3- and 4-hole local environments of the target.
+### 24-Hour Decisive Test (Round 3)
+* **Instance**:
+    * $t$–$t'$–$J$ model on the $4\times4$ torus, 4 holes ($\delta=1/4$, $1{,}681{,}680$ states), $t=1$.
+    * $(t',J)$ is the first entry of the pre-committed list $(-0.25,0.4)$, $(-0.25,0.6)$, $(0.25,0.4)$, $(-0.1,0.4)$, $(0,0.4)$ whose ground state is a non-degenerate momentum-zero singlet in a real 1-D irrep of $G$. The code checks this with full ED: generator expectations equal to $\pm1$, $\langle\hat S^2\rangle$, and the gap.
+    * Sources: the $4\times2$ torus and the 8-site tilted cluster, 2 holes each, 560 states each.
+    * The projected-sector dimension is computed and logged. With $\lvert G\rvert=128$ it is about $1.3\times10^4$, roughly $100$ times the 122 route parameters, far from the P1.1-P ratios of 0.4 to 2.9.
+* **Arms**: every target arm is trained and evaluated in the ground-state irrep by projected exact-sum SR, and its unprojected energy is reported too. Each arm runs with 3 seeds.
+
+| Arm | What it is | Target steps |
+| :--- | :--- | :--- |
+| `tr0` | TCMN-transferred MFNG, projected (Route 3.1 zero shot) | 0 |
+| `tr0_r2` | ablation: round-2-style source ($4\times2$ only, $\lambda=0$, same restarts) | 0 |
+| `foil_tr` | Jastrow–BCS foil transferred by the same TCMN rule (diagnostic) | 0 |
+| `trB` | `tr0` plus projected SR on all parameters | $B=20$ |
+| `fstB` | `tr0` plus projected SR on the Jastrow only (Route 3.2) | $B=20$ |
+| `scrB` | projected-SR MFNG from mean-field init (matched-budget control) | $B=20$ |
+| `trL`, `scrL` | long runs from transfer and from scratch; $E_{\rm opt}$ is their minimum | 200 |
+| `foil_opt` | Jastrow–BCS foil (62 parameters) optimized at the target by projected SR (Minimal Contrast Foil) | 200 |
+
+* **Metric**:
+    * Definitions:
+        * $\epsilon_X=(E_X-E_0)/V$, with $E_0$ from ED in the irrep and $V=16$.
+        * $A_X=E_{\rm sign}^{\rm up}(\mathrm{sgn}\,b_X)-E_0$ is the P1.1 fixed-sign excess, computed in the irrep basis from $b_X=U^{\mathsf T}\psi_X$, where $\psi_X$ is the arm's state vector.
+        * $m(\cdot)$ is the median over seeds, and the spread is max minus min.
+    * *VOID* if $(E_{\rm opt}-E_0)/\lvert E_0\rvert>0.05$.
+    * *Premises*:
+        * (P1): $m(\epsilon_{\rm scrB})-\epsilon_{\rm opt}\ge10^{-3}t$. If it fails, both routes are UNINFORMATIVE, because projected scratch has already converged.
+        * (P2), Route 3.2 only: $m(A_{\rm foil\_opt})/V\ge10^{-3}t$.
+        * (I): $\mathrm{spread}(\epsilon_{\rm tr0})\le\tfrac12m(\epsilon_{\rm tr0})$.
+        * (S): the zero-shot sector rule picks the ED irrep in at least 2 of 3 seeds.
+    * *Also reported*: the steps `scrL` and `trL` need to come within $10^{-3}t$ per site of $\epsilon_{\rm opt}$ (for `trL`, counting the $B$ steps), and the sign share $A/(E-E_0)$ of the `scrB` error.
+* **Thresholds** (pre-committed; this is the `--aggregate` logic):
+    * **Route 3.1 PASS** if all of the following hold, together with (I) and (S):
+        * (a) $m(\epsilon_{\rm tr0})\le m(\epsilon_{\rm foil\_opt})$;
+        * (b) $m(\epsilon_{\rm trB})\le\tfrac12m(\epsilon_{\rm scrB})$;
+        * (c) $m(\epsilon_{\rm trB})-\epsilon_{\rm opt}\le\tfrac12\big(m(\epsilon_{\rm foil\_opt})-\epsilon_{\rm opt}\big)$;
+        * (d) the median $\lvert P_d-P_d^0\rvert$ of `trB` is at most that of `foil_opt` plus $10^{-4}$, where $P_d$ is the $d$-wave bond-pair correlation of the arm and $P_d^0$ that of the ED ground state;
+        * (e) $m(\epsilon_{\rm tr0})<m(\epsilon_{\rm tr0\_r2})$.
+    * **Route 3.1 FAIL** if any of the following holds:
+        * $m(\epsilon_{\rm tr0})\ge2m(\epsilon_{\rm foil\_opt})$;
+        * $m(\epsilon_{\rm trB})\ge0.9m(\epsilon_{\rm scrB})$;
+        * $\mathrm{spread}(\epsilon_{\rm tr0})>m(\epsilon_{\rm tr0})$;
+        * (d) or (S) fails.
+
+      Otherwise AMBIGUOUS; the route is then not promoted.
+    * **Route 3.2 PASS** if all of the following hold:
+        * $m(\epsilon_{\rm fstB})\le m(\epsilon_{\rm foil\_opt})$;
+        * $m(A_{\rm tr0})\le\tfrac12m(A_{\rm foil\_opt})$;
+        * $\mathrm{spread}(A_{\rm tr0})\le\tfrac12m(A_{\rm tr0})$;
+        * (S) holds, and the calibration holds: the exact signs return $E_0$ to within $10^{-3}\min A$.
+    * **Route 3.2 FAIL** if any of the following holds:
+        * $m(A_{\rm tr0})\ge0.9m(A_{\rm foil\_opt})$;
+        * $m(\epsilon_{\rm fstB})\ge1.5m(\epsilon_{\rm foil\_opt})$;
+        * (S) fails.
+
+      Otherwise AMBIGUOUS; the route is then not promoted.
+* **Execution**:
+    * Code: `tests/P4.2_size_transfer_r3/micro_test.py`, with a full docstring.
+        * The ED, fixed-node and L-BFGS-B pieces are copied from round 2 and P1.1.
+        * The irrep isometry re-implements the P1.1-P group (translations $\times$ mirrors), plus the diagonal mirror, on the no-double-occupancy basis. P1.1-P's product-basis code does not apply to $t$–$J$.
+        * The isometry is verified by the P1.1-P checks: $[H,P_g]=0$, $U^{\mathsf T}U=I$, irrep spectra inside the full spectrum, and the ED ground state inside its irrep.
+    * Slurm: `tests/P4.2_size_transfer_r3/submit_test.sbatch`. Partition `kim`, array 0–8 (0–2 transfer, 3–5 foil, 6–8 scratch; seed $=$ task mod 3), 8 CPUs, 32 GB, 24 h.
+    * Measured cost (`--timing`, 8 threads): a gradient pass takes 52 s and a value pass 14 s over the $4\times4$ basis, about 70 s per projected SR step. A transfer task takes at most about 7 h (240 steps plus the instance scan); a foil or scratch task about 4 h.
+    * Command (**not run**): `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r3/submit_test.sbatch`
+    * Verdict: `python3 micro_test.py --aggregate results`.
+* **Smoke evidence** (login node). Self-tests, from `python micro_test.py --selftest`. Tail only; the band sums on four tori are omitted here, and all are OK:
+
+```
+[     0.1s] selftest(a) spinless t8 N_f=3: E_ED=-5.0000000000 band=-5.0000000000 grid (units of pi) [(0.0, 0.0), (0.0, 1.0), (0.5, 0.5), (0.5, 1.5), (1.0, 0.0), (1.0, 1.0), (1.5, 0.5), (1.5, 1.5)] OK
+[     0.2s] selftest(c) 4x2 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=3.6e-15 OK
+[     0.3s] selftest(d) 4x2 log-derivative max rel err over 122 params = 1.63e-09 OK
+[     0.3s] selftest(c) t8 <psi|T~x psi>=1.000000000000 <psi|T~y psi>=1.000000000000 max|[H,T~]v|=4.4e-15 OK
+[     0.5s] selftest(d) t8 log-derivative max rel err over 122 params = 4.32e-09 OK
+[     0.5s] selftest(e) 4x4 N_e=2: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 9 of 240), GS gens={'Tx': 1.0, 'Ty': 1.0, 'Mx': 1.0, 'My': 1.0, 'D': 1.0}, GS weight in its irrep=1.000000000000 OK
+[     0.6s] selftest(e) 4x2 N_e=4: max|[H,P_g]v|=2.7e-15, U^T U = I, irrep spectra inside full (K=0 1-D irrep dims sum 57 of 420), GS gens={'Tx': -1.0, 'Ty': 1.0, 'Mx': -1.0, 'My': 1.0}, GS weight in its irrep=nan OK
+[     0.6s] selftest(f) S^2 on 2x2 N_e=4: symmetric, spectrum [-0.0, 2.0, 6.0] OK
+[     0.7s] selftest(g) projected-energy gradient vs finite differences max rel err 2.79e-10; metric PSD OK
+[     0.7s] selftest(h) [report] complete coverage: sources ['4x2', 't8'] cover 16 of 16 4x4 momenta on C4v orbits (first source alone: 12 of 16)
+[     0.7s] SELFTEST PASSED
+```
+
+* **Decisive-source pre-check**: `python precheck_source.py 400`, 400 steps and 4 restarts. Literal output:
+
+```
+[     0.3s] source clusters: 4x2 dim=560 E0=-8.28182066, t8 dim=560 E0=-7.08027574
+[    27.9s] source TCMN seed 0: E=['-8.28147539', '-7.08027528'] relerr=['4.17e-05', '6.62e-08'] npar=122 null-dim(S)=106 |theta|=3.019
+[    56.2s] source TCMN seed 1: E=['-8.27386098', '-7.08027529'] relerr=['9.61e-04', '6.41e-08'] npar=122 null-dim(S)=109 |theta|=5.226
+[    85.7s] source TCMN seed 2: E=['-8.21961874', '-7.08026162'] relerr=['7.51e-03', '1.99e-06'] npar=122 null-dim(S)=112 |theta|=4.824
+[    85.7s] TCMN: relative parameter distance between seeds ['2.002', '1.840', '1.300']
+[   100.9s] source r2-style seed 0: E=['-8.28182066'] relerr=['5.43e-14'] npar=122 null-dim(S)=107 |theta|=8.303
+[   115.7s] source r2-style seed 1: E=['-8.28182062'] relerr=['4.37e-09'] npar=122 null-dim(S)=107 |theta|=6.915
+[   129.9s] source r2-style seed 2: E=['-8.28182066'] relerr=['2.25e-14'] npar=122 null-dim(S)=107 |theta|=7.802
+[   129.9s] r2-style: relative parameter distance between seeds ['1.517', '1.051', '1.745']
+```
+
+* **End-to-end smoke**: all nine tasks, then the aggregate.
+    * The smoke instance is deliberately trivial: a $4\times4$ target with 4 electrons (12 holes), whose 2-electron sources carry no many-body sign. Its projected sector has 105 states against 122 parameters.
+    * It checks the code, not the verdict.
+    * Command, for each task in 0..8: `python micro_test.py --tgt 4x4 --holes-tgt 12 --instances=0.25:0.4 --steps-src 100 --src-restarts 2 --budget 5 --steps-long 20 --lbfgs-iters 500 --task-id $task --out results_smoke/task$task.json`; then `python micro_test.py --aggregate results_smoke`:
+
+```
+target t'=0.25 J=0.4 irrep={'Tx': 1, 'Ty': 1, 'Mx': 1, 'My': 1, 'D': -1} E0=-12.81808701 gap/V=2.3863e-01 competitor=False calib=3.55e-15 sector dim 105 / params 122 = 0.9
+  tr0       eps median=4.4387e-01 seeds=['4.4387e-01', '3.4239e-01', '6.9225e-01']  A median=9.1524e-01
+  tr0_r2    eps median=2.4780e-01 seeds=['3.0048e-01', '1.9024e-01', '2.4780e-01']
+  foil_tr   eps median=4.1542e-01 seeds=['4.1542e-01', '4.7752e-01', '3.7551e-01']  A median=9.9784e-01
+  trB       eps median=5.2877e-03 seeds=['2.7334e-01', '2.1879e-03', '5.2877e-03']  A median=7.9953e-04
+  fstB      eps median=4.2281e-01 seeds=['4.2281e-01', '2.9046e-01', '6.8460e-01']  A median=9.1524e-01
+  scrB      eps median=9.8614e-02 seeds=['9.8614e-02', '2.3806e-01', '3.9591e-02']  A median=2.7295e-01
+  trL       eps median=1.1449e-03 seeds=['9.0353e-04', '1.8135e-03', '1.1449e-03']
+  foil_opt  eps median=7.0538e-04 seeds=['7.1069e-04', '7.0538e-04', '6.9604e-04']  A median=9.7581e-05
+  scrL      eps median=1.1855e-04 seeds=['1.8802e-05', '2.3673e-04', '1.1855e-04']
+  eps_opt=1.8802e-05 relerr_opt=2.347e-05 spread(eps_tr0)=3.499e-01 spread(A_tr0)=4.441e+00 |dPd| trB=4.363e-04 foil_opt=9.619e-05
+  Route 3.1 criteria: {'a': False, 'b': True, 'c': False, 'd': False, 'e': False, 'I': False, 'S': True}
+  premises: P1 scratch-not-converged=True P2 sign-room=False; steps to within 0.001 t/site of converged: scratch [12, 11, 8], transfer [16, None, None]; sign share of scrB error ['0.173', '0.293', '0.007']
+GLOBAL Route 3.1 (TCMN transfer): FAIL
+GLOBAL Route 3.2 (frozen-sign transfer): UNINFORMATIVE (premise P2: target-optimised foil sign excess below 0.001 t/site)
+```
+
+* **Reading the smoke**:
+    * Every arm, gate and premise is computed, and the aggregate applies the pre-committed logic, including the UNINFORMATIVE branch of (P2).
+    * The calibration is exact ($4\times10^{-15}$). The zero-shot sector rule picked the ED irrep ($D=-1$) in all three seeds.
+    * On this trivial instance the transfer FAILS on (a), (c), (e) and (I), with a zero-shot spread of 0.35 per site. This matches the identifiability prior but is no evidence about the decisive instance, because a 2-electron source carries no many-body sign.
+* **Timing**: `python micro_test.py --timing`, 8 threads:
+
+```
+[     0.2s] target 4x4 dim=1681680 (H, sector isometry and ED are not timed here)
+[     1.8s] chunk=50000: grad pass 1.13s, value pass 0.41s; full grad+value ~52s, value-only ~14s per pass (npar=122, foil 62)
+```
+
+### Local Autopsy Log (Round 3 update)
+* **How each critic objection was handled**:
+
+| Objection | Action |
+| :--- | :--- |
+| Seed noise by construction; seed 0 decides | The verdict now uses medians over 3 seeds, with an explicit identifiability gate (I) on the zero-shot spread. The source state is picked by best-of-4 restarts on the source loss. The pre-check measures parameter-space non-uniqueness (relative distance 1.3 to 2.0), reported as the sharpest gap. |
+| The duality lemma is no transfer guarantee | Accepted. The lemma is now used only for bookkeeping: the source set is chosen so that every target momentum orbit is covered and no kernel component is extrapolated. Whether the *function* transfers is what gates (I), (a) and (b) test. |
+| Anisotropic $L_y=2$ source; 4-hole configurations extrapolated | Added a genuinely 2D $C_{4v}$ source, the 8-site tilted cluster. Hole-environment extrapolation remains and is listed as a secondary gap. |
+| Missing target-optimized foil; leaf goal untested | Added `foil_opt` (62 parameters, projected SR, 200 steps). Criteria (a) and (c) compare against it and against $E_{\rm opt}$; $E_0$ is exact. |
+| Gate 0 prior art misstated | Settled from the full texts: 2505.00233 is fixed-size only. Gerard et al. is accepted as the method to beat, with its lattice barrier named. |
+| Route 2.3 untested, premise fails | Killed. |
+| Target restricted to momentum zero | The ground-state sector is now determined by ED. A ground state at nonzero momentum, degenerate, or non-singlet moves the run to the next pre-committed $(t',J)$, and VOID-SECTOR if none qualifies. The route's scope is stated as momentum-zero 1-D irreps. |
+| Projected control (rule 1); P1.1-P broadcasts | Every target arm is trained with projection. Premise (P1) gates on projected scratch not having converged after $B$ steps. The sector-dimension-to-parameter ratio is logged, and the steps to convergence are reported. |
+
+* **Development notes**:
+    * A pure $d$-wave geminal of $N_e/2$ pairs lies only in the irrep $B_1^{N_e/2}$. A pure $d$-wave initialization therefore had zero weight in the smoke target's ground-state irrep, and the foil arm could not start. Fix: a small random $s$-wave admixture at initialization.
+    * An $L_2$ penalty on the Jastrow drove it to the critical point $\theta=0$, where all Jastrow gradients vanish, so `fstB` could not move. Fix: penalize only the antisymmetric parameters.
+    * Added an SR trust region, $\lVert\mathrm{lr}\,d\rVert\le0.5$ with $d$ the SR update direction, plus a gradient fallback when $d$ is not a descent direction.
+    * The P3.2 same-irrep conical intersections ($4\times3$ tori with anisotropic $t_y$) were considered for the target and not adopted. A $4\times3$ torus with $t_y\ne t$ has no $C_{4v}$ symmetry, so the momentum-field kernels lose their covariance. Its 3-site direction also admits no grid-complete pair of smaller periodic clusters at the same doping. The decisive test therefore covers the sign half only, unless the in-irrep gap flag fires.
+
+### Round 5 (2026-11-12)
+* **Binding inputs to this round**:
+    * *Pilot 410960 read-out*: $\epsilon_{\rm tr0}=0.663/0.759/0.615$ t/site (spread 0.143, at most half the median), sector rule correct in 2 of 3 seeds. The pre-committed kill rule therefore did not fire.
+    * *Round-3 critic fixes to apply*: score the excess over $\epsilon_{\rm opt}$; tighten VOID; gate on steps-to-$\epsilon$ at several $B$ with a plateau check; merge Route 3.2 into 3.1 as a diagnostic; COMP_TOL $=10^{-3}$. Cite and distinguish arXiv:2606.17045 and arXiv:2512.11962.
+    * *Round-5 brief*: the shared target is the $4\times4$ OBC $t$–$t'$–$J$ cluster, $6+6$ electrons. The test counts only if the projected control's median $\Delta E_{\rm sign}\ge0.005t$ (seed confirmation running as job 451706).
+* **Correction to the pilot read-out.** The pilot ran with `--budget 0`, so its `scrB` arm is the *untrained* mean-field (MF) initialisation, not 20 steps of scratch. Its values are $\epsilon=0.318/0.130/0.285$ (median 0.285) and fidelity 0.04–0.40.
+    * The zero-shot transferred state (median 0.663, fidelity 0.003) is therefore **2.1–5.8 times worse than doing nothing**.
+    * The same holds for the sign. The P1.1 fixed-sign excess is $A_{\rm tr0}=2.36/1.55/2.62$ (median 2.36), against $A=1.96/0.23/0.53$ (median 0.53) for the MF init.
+* **Two pilot facts decide most of the verdict before any new run**:
+    * Criterion (e), $m(\epsilon_{\rm tr0})<m(\epsilon_{\rm tr0\_r2})$, fails, and in every seed: 0.663 against 0.454 for the medians. The grid-complete source makes the zero-shot state *worse* than the round-2 source, so Route 3.1 cannot PASS whatever the fine-tune does.
+    * Projected SR with backtracking never raises the energy, so $\epsilon_{\rm scr}(20)\le\epsilon_{\rm scr}(0)$. Criterion (b) needs $m\,\epsilon_{\rm tr}(20)\le\tfrac12m\,\epsilon_{\rm scr}(20)\le0.14$. The transferred state would have to fall by more than 0.5 t/site in 20 trust-region steps while scratch stays put. A warm start this far below the MF init is very unlikely to do that.
+### Route 3.1 closed under the critic-fixed rule (job 451914)
+* **What one small job can settle.** PROMOTE is already excluded by (e). The open question is whether the route closes as FAIL or as NOT-PROMOTED, and how much a warm start recovers. One 3-task job (partition kim, 8 CPUs per task, 4 h) answers this, because it continues the pilot's own transferred parameters and MF inits; no source is retrained.
+* **Submitted**: job **451914** (array 0–2, `submit_close31.sbatch`, results in `results_close31/`). Code: `tests/P4.2_size_transfer_r5/close31.py`.
+    * Per seed: `tr`, the pilot tr0 plus 50 projected-SR steps.
+    * `scr`, the pilot's MF init plus 50 steps.
+    * `foil`, the Jastrow–BCS foil from its MF init plus 10 steps. Because SR never raises the energy, its energy is an upper bound on $\epsilon_{\rm foil\_opt}$.
+    * `nfp`, a diagnostic for the mutation below.
+    * The job checks that it reproduces the pilot: $\epsilon_{\rm tr}(0)$ and $\epsilon_{\rm scr}(0)$ against the pilot JSON to $10^{-8}$, and the source null count.
+* **Fixed rule** (pre-committed; `close31.py --aggregate results_close31`):
+    * *Excess over $\epsilon_{\rm opt}$*: $\epsilon_{\rm opt}$ is bracketed in $[0,\epsilon_{\rm best}]$, where $\epsilon_{\rm best}$ is the lowest energy seen by any arm, step or seed. Every ratio is required at both ends of the bracket ("robust").
+    * *VOID*: tightened to 0.01. Non-VOID is certified only if $\epsilon_{\rm best}V/\lvert E_0\rvert\le0.01$.
+    * *Steps-to-$\epsilon$*: at $B\in\{10,20,50\}$, with level $\ell_B=m\,\epsilon_{\rm scr}(B)$ and speed-up $S(B)=B/m\,n_{\rm tr}(\ell_B)$.
+    * *Counting a $B$*: it counts only if scratch is not converged ($m\,\epsilon_{\rm scr}(B)-\epsilon_{\rm best}\ge10^{-3}$) and still moving (plateau check: the drop over the last 5 steps is at least 2% of the remaining excess).
+    * *Competitor flag*: COMP_TOL $=10^{-3}$ t/site. The in-irrep gap is $0.0139$ t/site, so this is the sign half only.
+    * *Route 3.2*: reported as a diagnostic only, through $A$ at 0, 20 and 50 steps for `tr` and `scr`.
+
+| Outcome | Condition |
+| :--- | :--- |
+| CLOSED-FAIL | F1: robust $m\,\epsilon_{\rm tr}(20)-x\ge0.9(m\,\epsilon_{\rm scr}(20)-x)$ at a counted $B=20$; F2: $m\,\epsilon_{\rm tr0}\ge2m\,\epsilon_{\rm foil}(10)\ge2m\,\epsilon_{\rm foil\_opt}$; F3: $S(B)<1$ at every counted $B$; F4: spread above the median; F5: sector rule wrong in 2 of 3 seeds |
+| PROMOTE | (I), (S), (e), robust $b$-PASS at $B=20$, $S\ge2$ at 2 or more counted $B$, and non-VOID certified. Already impossible because (e) fails |
+| CLOSED-NOT-PROMOTED | otherwise |
+
+* **Expected verdict: CLOSED-FAIL**, through F2 (the foil's MF init is near the MF init's 0.13–0.32, half of 0.663) or F1. Either way **Route 3.1 is closed**. The job only records the reason and the recovery curve.
+* **Smoke** (login node, on the r3 smoke JSONs, a trivial 4-electron target; `smoke_close31_aggregate.txt`): every arm runs, the consistency checks pass, and the aggregate gives `CLOSED-NOT-PROMOTED (I, e, b20, speed not met)`. The smoke also exposed the defect that kills the linear null filter below.
+### Generation Batch 5 (Operation A on the failed component: what is transferred)
+* **Failed component.** The transferred object is a 122-parameter MFNG fitted *exactly* on 8-site sources. Of its 122 directions, 107–112 are source-null. The copy is therefore an arbitrary point of the source solution manifold, and on 16 sites it lands below the MF prior it started from.
+  - **M5.a (transfer only one- or two-body kernels pinned by the source: renormalised one-body $h_{\rm eff}$, pair kernel $F(\mathbf r)$, Jastrow $v(\mathbf r)$)**: **KILLED at Gate 2** by an identifiability dilemma.
+    * The components the source identifies are few: of order 10 kernel values per channel. Refitting them at the target is a handful of steps, which is exactly the Minimal Contrast Foil.
+    * The components that are expensive to learn at the target (the backflow) are the ones the source leaves null.
+    * A few-parameter transfer cannot beat "fit those parameters at the target", so it does not pass Gate 2.
+  - **M5.b (linear source-null filter: $\theta=\theta_{\rm src}-P_{\rm null}(\theta_{\rm src}-\theta_{\rm init})$, `r5_common.null_filter`)**: **KILLED at Gate 1** (measured).
+    * Null directions of the source SR metric are null only to first order. Resetting 95% of the parameter shift along them takes the source energies from $-8.946/-8.825$ to $+0.138/+1.645$ (close31 smoke, seed 0).
+    * The zero-shot target error rises to 0.79–0.98, against 0.44–0.61 for the MF init.
+    * Job 451914 logs the same diagnostic on the real instance (`nfp_info`).
+  - **M5.c (copy the projected NNBF of P2.1 through a site embedding)**: **KILLED at Gate 1**. Every NNBF tensor is site-indexed ($\Phi_0\in\mathbb R^{V\times N}$, inputs $2V$, outputs $VN$), so no size map exists without a new architecture.
+  - **Route R5.1 (PA: prior-anchored transfer, nonlinear repair of M5.b) on the $4\times4$ OBC target.**
+    * *Mechanism*:
+        * The sources ($4\times2$ and $2\times4$ OBC, $3+3$, $\delta=1/4$) are fitted with an L2-SP anchor $\lambda\lVert\theta-\theta_{\rm init}\rVert^2$ toward the source run's own MF init. The full nonlinear fit, not a linearisation, decides which directions move.
+        * $\lambda$ is set by a pre-committed ladder: the largest of $10^{-2},10^{-3},10^{-4}$ whose source fit has a maximum relative error of at most $10^{-2}$.
+        * The size-independent MFNG-O is copied unchanged and fine-tuned at the target by projected SR.
+        * MFNG-O uses a fixed $8\times8$ quadrature for the pair kernels, so $\kappa_m(\mathbf r)$ is the same function on every cluster (self-test (d)). Missing neighbours count as holes. It has 426 parameters.
+    * *Gate 0 (Novelty & Adoption)*: **PASS, narrowly.** L2-SP is standard in machine-learning transfer and is not claimed. The new element is its use as the identifiability fix for lattice-fermion size transfer, scored by steps-to-$\epsilon$ against a projected scratch control, on an instance where the projected NNBF keeps a nodal error. The closest papers:
+        * arXiv:2606.17045 (Wu et al.) transfers a *local rule* zero-shot for quasi-1D valence-bond states with one hole, at an exactly solvable point. It has no doped 2D spinful target, no fine-tune, and no comparison with scratch.
+        * arXiv:2512.11962 (Zaklama, Guerci & Fu) is an attention foundation model for the spinless $t$–$V$ model, conditioned on $(V/t,N)$. It claims cross-size use but gives no projected steps-to-$\epsilon$ test and no doped $t$–$J$ sign problem.
+        * Gerard et al. (arXiv:2405.07599) remains the method to beat. It works in the continuum, has no anchor, and counts steps saved without a projected control.
+    * *Gate 1 (Conservation & Asymptotics)*: **PASS.**
+        * $N_\uparrow$, $N_\downarrow$ and $S=0$ are exact.
+        * The point-group irrep is exact by projection: $\lvert G\rvert=8$, $[H,P_g]=0$ and $U^{\mathsf T}U=I$ (self-test (b)).
+        * The parameter count is independent of size, and the copy is exact.
+    * *Gate 2 (Baseline Gameability)*: **PASS, decided numerically.** After the critic fixes, the route must beat `scr+` by at least $2\times$ in offset-free wall time with the source cost charged, and must beat the unanchored copy CP in energy at $B=50$. `scr+` is scratch from the target's MF init followed by 20 charged steps on the kernel and Jastrow parameters only.
+    * *Gate 3 (Hard-Core Shield)*: **PASS, sign half.** The target's projected NNBF keeps $\Delta E_{\rm sign}=0.0125t$ (P2.1, seed 11). The competitor flag fires only for an in-irrep gap below $10^{-3}$ t/site.
+    * *Verdict*: **SURVIVED.**
+  - **Route R5.2 (ELT: environment-library local transfer).** Operation A on *where* the transferred content comes from, answering the round-3 secondary gap that the 2-hole sources never show the target's 3- and 4-hole environments.
+    * *Mechanism*:
+        * Only the local parts (backflow $\phi_m$ and charge Jastrow, both functions of the site's hole environment) are transferred.
+        * The pair-kernel fields are rebuilt from the target MF. This is the cheap, identified part: M5.a's dilemma used in the right direction.
+        * The library adds $4\times3$ and $3\times4$ OBC clusters with $4+4$ electrons (4 holes, 34650 states each).
+        * Premise: the library must cover at least 95% of the target ground state's site-environment weight. Measured on the smoke instance: library 1.0000, $\delta=1/4$ sources alone 0.7999.
+    * *Gate 0 (Novelty & Adoption)*: **FAIL (per-leaf critic, accepted).**
+        * Fitting a library of small clusters and warm-starting a VMC run from it is routine VMC practice.
+        * ELT would be new only as an amortised claim: one library serving at least 2 targets, with the library cost divided among them. We do not make that claim, because a second target would double the decisive cost.
+        * The coverage premise (library 1.0000 against 0.7999 for the sources alone) stays recorded as a fact. ELT has no arm, so the ELT-without-library ablation is not needed.
+    * *Verdict*: **KILLED at Gate 0.**
+### Top Surviving Routes & Sharpest Gap (Round 5)
+* **Survivor: R5.1 PA only.** ELT was killed at Gate 0 (see Generation Batch 5). PA is scored by offset-free wall-time speed-up against `scr+`, with its source cost charged.
+* **Sharpest gap: capacity of the size-independent family.**
+    * The 426-parameter MFNG-O has to come close to $E_0$ on a 30220-dimensional singlet sector.
+    * The 1734-parameter projected NNBF reaches $\epsilon=0.00350$ t/site (relative error 0.49%) at step 600 (seed 11, job 410988).
+    * If MFNG-O plateaus far above that, speeding up its training does not matter. The capacity pilot below settles this before any array runs.
+* **Secondary gap**: whether the anchor rung that keeps the source fit within 1% also keeps the transferred shift inside the source-identified subspace. The fraction of $\lVert\theta-\theta_{\rm init}\rVert$ in that subspace is now recorded per seed. In the smoke it was 0.56–0.85.
+### Capacity Pilot (Round 5 critic fix 1; job 452196, submitted)
+* **What runs**: the `scr` arm only, seed 0, 600 projected-SR steps of MFNG-O on the $4\times4$ OBC $6+6$ target.
+    * Records at steps 10, 20, 50, 100, 150, 300, 450 and 600, with the sign budget at each.
+    * The JSON is rewritten every 10 steps, so a time-out still leaves a usable trajectory.
+    * Slurm: `submit_capacity.sbatch`, partition kim, 8 CPUs, 32 GB, 30 h limit (`--wall-hours 28`). At the measured 110–140 s per step, 600 steps take 18–23 h.
+    * Output: `results_capacity/`.
+* **Plateau estimate $\epsilon_{\rm scr}^\infty$** (pre-committed; `obc_transfer.py --capacity results_capacity`):
+    * Let $n^\star$ be the last step reached and $w=100$.
+    * Set $d_1=\epsilon(n^\star-2w)-\epsilon(n^\star-w)$, $d_2=\epsilon(n^\star-w)-\epsilon(n^\star)$ and $r=d_2/d_1$.
+    * If $0<r<1$, then $\epsilon_{\rm scr}^\infty=\max\big(0,\epsilon(n^\star)-d_2r/(1-r)\big)$, a geometric extrapolation. Otherwise $\epsilon_{\rm scr}^\infty=\epsilon(n^\star)$.
+    * $\epsilon_{\rm scr}^\infty$ replaces the old bracket $[0,\epsilon_{\rm best}]$ in every criterion of the decisive test.
+* **Pre-committed rule** (written before the pilot runs):
+
+| Pilot result | Action |
+| :--- | :--- |
+| $\epsilon_{\rm scr}^\infty V/\lvert E_0\rvert>0.03$ | **MUTATE.** Do not run the array. Enlarge the size-independent family (`--channels 8 --bf-hidden 32` first) and re-pilot |
+| $\epsilon_{\rm scr}^\infty V/\lvert E_0\rvert\le0.03$ | **RUN** the fixed array (`submit_obc.sbatch`) |
+
+* **Also read out by the pilot**:
+    * the moot comparison of fix 2: $\epsilon_{\rm scr}^\infty$ against the NNBF's $\epsilon$ at step $n^\star$ (0.00350 t/site at step 600 for seed 11; seeds 22 and 33 are still running in job 451706);
+    * the sign share of `scr` at step 150 (fix 5).
+### 24-Hour Decisive Test (Round 5)
+* **Instance**: $4\times4$ OBC, $6+6$, $t'=-0.25$, $J=0.4$, irrep $M_x=M_y=+1$, $D=-1$.
+    * $E_0=-11.388010886$, asserted equal to P2.1's ED to $10^{-8}$.
+    * Sector $\dim P_\chi=210430$; MFNG-O is an exact singlet, so the effective sector is 30220.
+    * Sign half only, unless the in-irrep gap is below $10^{-3}$ t/site.
+* **Arms** (3 seeds each; projected exact-sum SR in the ED irrep; 150 steps; records with the sign budget at 0, 10, 20, 50, 100 and 150):
+
+| Arm | What it is |
+| :--- | :--- |
+| `scr` | MFNG-O from the target MF init (capacity reference) |
+| `scr+` | Same init. Steps 1–20 move only the kernel (field network) and Jastrow parameters, then all parameters. The 20 cheap steps are charged. This is the control PA must beat |
+| `cp` | Unanchored copy from the $\delta=1/4$ OBC sources (ablation) |
+| `pa` | R5.1: anchored copy. Every anchor rung tried is charged |
+| P2.1 `nnbf` | Moot reference only: its $\epsilon$ at the pilot's step count, parsed from the P2.1 logs |
+
+* **Metric** (pre-committed; `obc_transfer.py --aggregate results --capacity-dir results_capacity`). Here $m$ is the median over seeds, $x=\epsilon_{\rm scr}^\infty$, $C=$ `scr+` and $b=50$.
+    * *Counted $B\in\{20,50,100,150\}$*: $m\,\epsilon_C(B)-x\ge10^{-3}$ t/site, and the plateau check holds: the drop over the last 5 steps is at least 2% of $m\,\epsilon_C(B)-x$.
+    * *Offset-free speed-up (fixes 3 and 4)*:
+        * Common start level $\ell_0=\min\big(m\,\epsilon_C(0),m\,\epsilon_X(0)\big)$; target level $\ell_B=m\,\epsilon_C(B)$.
+        * Each seed's clock starts at its first step at or below $\ell_0$. A route that starts above `scr+` is therefore counted from the step at which it first matches `scr+`'s step-0 energy. A route that only starts lower on `scr+`'s own curve gets $S=1$.
+        * $S_X(B)=m\big[T_C(\ell_B)-T_C(\ell_0)\big]\,/\,m\big[T_X(\ell_B)-T_X(\ell_0)+t_{\rm src}\big]$.
+        * $T$ is the SR wall clock. Checkpoint records and the shared target setup are excluded. $t_{\rm src}$ covers source ED, every restart and the whole anchor ladder.
+        * $S=0$ if $X$ misses $\ell_B$ in 2 or more seeds. A step-count version, with $t_{\rm src}$ converted to target-step equivalents, is printed alongside.
+    * *Verdicts for PA*, checked in this order:
+
+| Verdict | Condition |
+| :--- | :--- |
+| INVALID | `anchor_ok=False` in any `pa` seed (fix 6) |
+| FAIL | $S_{\rm pa}(B)<1.25$ at every counted $B$ with a defined $S$, or $m\,\epsilon_{\rm pa}(b)-x\ge0.9\,(m\,\epsilon_C(b)-x)$. Always printed |
+| PASS | $S_{\rm pa}(B)\ge2$ at 2 or more counted $B$, and $m\,\epsilon_{\rm pa}(b)-x\le\tfrac12(m\,\epsilon_C(b)-x)$, and $m\,\epsilon_{\rm pa}(b)<m\,\epsilon_{\rm cp}(b)$ |
+| VOID (moot) | Replaces PASS only: $\epsilon_{\rm scr}^\infty$ exceeds the NNBF's median $\epsilon$ at the pilot's step count $n^\star$, or that value is unavailable (fix 2) |
+| AMBIGUOUS | Otherwise, including no counted $B$. Always printed |
+
+* **Flags and claims reported beside the verdict**:
+    * *Absolute 1% flag*: whether $\epsilon_{\rm best}V/\lvert E_0\rvert\le0.01$. This is a flag only and no longer a gate.
+    * *Identified fraction*: for the selected anchor rung, the fraction of $\lVert\theta-\theta_{\rm init}\rVert$ in the source-identified subspace (joint source SR metric, eigenvalues at least $10^{-6}$ times the largest).
+    * *Sign claim (fix 5)*: no 451706 premise gate remains. A sign claim is made only if `scr`'s own sign share at step 150, $m\,A_{\rm scr}/(V\,m\,\epsilon_{\rm scr})$, is at least 0.10. If made, it requires $S^A_{\rm pa}\ge2$ at 2 or more counted $B$.
+    * *Steps-to-$\epsilon$ by part*: always reported separately for the sign part $A$ and the amplitude part $E-E_0-A$, offset-free at checkpoint resolution with the source cost charged in steps.
+* **Execution**:
+    * Code: `tests/P4.2_size_transfer_r5/obc_transfer.py` and `r5_common.py`. The `r5_common` additions (`mask_steps`, `clock`, `on_step`, `identified_fraction`) default to the old behaviour, so the pending tasks of job 451914 are unaffected.
+    * Slurm: `submit_obc.sbatch`, array 0–11 (`scr` 0–2, `scr+` 3–5, `cp` 6–8, `pa` 9–11), partition kim, 8 CPUs, 32 GB, 24 h.
+    * Command (**not run**; only if the capacity rule says RUN): `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_size_transfer_r5/submit_obc.sbatch`
+* **Self-tests** (`python3 obc_transfer.py --selftest`, unchanged and re-run; `selftest_output.txt`): all six checks OK (OBC conventions against P2.1, $[H,P_g]=0$, $U^{\mathsf T}U=I$, log-derivatives to $5\times10^{-7}$, kernel identical across sizes, anchored-wrapper identity).
+* **Logic check** (`python3 obc_transfer.py --logiccheck`, synthetic trajectories; literal output in `logiccheck_output.txt`):
+
+```
+[     0.0s] logiccheck (context) old rule S = B / n_X(l_B) for a 60-step static head start at B=100: 2.50 (>= 2 would PASS)
+[     0.0s] logiccheck static better start, no source cost: PA -> FAIL (slow) | SIGN CLAIM (scr sign share (expect ('FAIL',)) OK
+[     0.0s] logiccheck 3x faster descent, not moot: PA -> PASS | SIGN CLAIM (scr sign share (expect ('PASS',)) OK
+[     0.0s] logiccheck 3x faster descent, moot: PA -> VOID (PASS conditions met, but moot: eps_inf above the NNBF at the same step count) | SIGN CLAIM (scr sign share (expect ('VOID',)) OK
+[     0.0s] logiccheck static better start, moot (FAIL still prints): PA -> FAIL (slow) | SIGN CLAIM (scr sign share (expect ('FAIL',)) OK
+[     0.0s] logiccheck 3x faster but source costs 100 target steps: PA -> FAIL (slow) | SIGN CLAIM (scr sign share (expect ('FAIL',)) OK
+[     0.0s] logiccheck 3x faster, anchor_ok False in one seed: PA -> INVALID (anchor_ok=[False, True, True]) | SIGN CLAIM (scr sign share (expect ('INVALID',)) OK
+[     0.1s] logiccheck sign share 0.3: claim made: PA -> PASS | SIGN CLAIM (scr sign share (expect ('PASS', 'SIGN CLAIM (scr')) OK
+[     0.1s] logiccheck sign share 0.05: claim not made: PA -> PASS | SIGN CLAIM NOT MADE (scr s (expect ('PASS', 'SIGN CLAIM NOT MADE')) OK
+[     0.1s] logiccheck pa no better than cp at b (ablation): PA -> AMBIGUOUS (ablation not met) | SIGN CLAIM (scr sign share (expect ('AMBIGUOUS',)) OK
+[     0.1s] LOGICCHECK PASSED
+```
+
+* **End-to-end smoke** (login node). The target is deliberately trivial ($4\times4$ OBC, $2+2$, $J=2$; sector 1395 against 426 parameters), so it checks the code, not the verdict. Its NNBF comparison is a parser check only, because the P2.1 logs belong to the $6+6$ instance.
+    * Tasks: `python3 obc_transfer.py --task-id $t --tgt 4x4:2 --J 2.0 --src-a 4x2:1,2x4:1 --steps-src 60 --src-restarts 2 --steps 24 --ckpts 4,8,12,24 --scrp-k 4 --lbfgs-iters 300 --out results_smoke/task$t.json` for $t=0..11$.
+    * Capacity smoke: `--arm scr --seed 0 --tgt 4x4:2 --J 2.0 --steps 40 --ckpts 12,40 --lbfgs-iters 300 --out results_smoke_capacity/scr_s0.json`.
+    * Read-outs: `--capacity results_smoke_capacity --plateau-window 10 --sign-share-step 12`, then `--aggregate results_smoke --capacity-dir results_smoke_capacity --plateau-window 10 --ckpts-rule 8,12,24 --b-step 12 --sign-share-step 12`. Literal output (`smoke_obc_aggregate.txt`):
+
+```
+target 4x4:2 OBC t'=-0.25 J=2.0 E0=-9.6675110278 n_irrep=1395 npar=426
+  scr seed 0: n*=40 done=True eps(n*)=3.40130e-03 eps_inf=3.37578e-03 (geometric extrapolation, r=0.220, drop over last 10 steps = 0.027 of eps(n*))
+  eps_inf=3.37578e-03  relerr_inf=0.0056  (capacity rule threshold 0.03)
+  scr sign share at step 12: 0.1165 (sign claim allowed only if >= 0.1)
+  P2.1 projected NNBF eps at n*=40: {11: 0.004897322361997247, 22: 0.005038176111997306, 33: 0.004792317361997256} median 4.89732e-03 -> not moot
+  FLAG abs 1%: relerr_inf <= 0.01 (flag only)
+CAPACITY DECISION: RUN ARRAY (relerr_inf 0.0056 <= 0.03)
+--- aggregate
+  P2.1 NNBF eps at n*=40 per seed: {11: 0.004897322361997247, 22: 0.005038176111997306, 33: 0.004792317361997256}
+target 4x4:2 OBC t'=-0.25 J=2.0 irrep={'Mx': 1, 'My': 1, 'D': -1} E0=-9.6675110278 n_irrep=1395 npar=426 gap/V=5.4039e-02 -> sign half only
+  capacity: x = eps_inf = 3.3758e-03 (relerr 0.0056, n* = 40); NNBF eps at n*: 4.8973e-03 -> not moot
+  FLAG abs 1%: eps_best=3.2889e-03 relerr=5.443e-03 (within 1% of E0; flag only)
+  charged source wall s (median): {'scr': 0.0, 'scrp': 0.0, 'cp': 1.5528161525726318, 'pa': 3.442596197128296}
+  B=   8: m_scrp=0.01535 counted=True S_scr=1.04 Sstep_scr=1 S_cp=0.4784 Sstep_cp=0.4319 S_pa=0.3328 Sstep_pa=0.3387
+  B=  12: m_scrp=0.006646 counted=True S_scr=0.9556 Sstep_scr=0.9231 S_cp=0 Sstep_cp=0 S_pa=0.4313 Sstep_pa=0.4457
+  B=  24: m_scrp=0.003752 counted=False S_scr=1.069 Sstep_scr=1.043 S_cp=0 Sstep_cp=0 S_pa=0 Sstep_pa=0
+  m eps(12)={'scr': 0.007, 'scr+': 0.00665, 'cp': 0.05543, 'pa': 0.01031}
+  pa anchors [0.0001, 0.001, 0.001] anchor_ok [True, True, True] frac of |theta - theta_init| in the source-identified subspace [0.5621, 0.6994, 0.8475]
+GLOBAL R5.1 PA: FAIL (slow, b-fail)  {'counted': True, 'speed': False, 'b': False, 'ablation': True}
+  steps-to-eps by part (pa vs scr+, offset-free, checkpoint resolution, source charged in steps): sign A {8: 0.3732190734394003, 12: 0.5598286101591005}  amplitude E-E0-A {8: 0.20288014425278214, 12: 0.471788396127936}
+SIGN CLAIM (scr sign share at 12 = 0.116 >= 0.1): NOT MET
+```
+
+* **Reading the smoke**:
+    * Every arm, the capacity read-out, the NNBF log parser, the offset-free clock, the source charge, the identified fraction, the INVALID check and the sign gate all run.
+    * `scr` against `scr+` gives $S\approx1$ (0.96–1.07), as it should for two scratch runs of equal speed.
+    * On this trivial target scratch converges in about 12 steps and PA FAILs. This is no evidence about the decisive instance.
+    * On the real instance, P2.1's logs give the NNBF $\epsilon$ = 0.00350 (step 600, seed 11) and 0.00490/0.00590/0.00492 (step 150, seeds 11/22/33) (`nnbf_parser_check.txt`).
+### Local Autopsy Log (Round 5 update)
+* **Route 3.1 (TCMN)**: closed. The zero-shot transferred state is worse than the untrained MF init, in energy (2.1–5.8 times) and in sign ($A$ 2.36 against 0.53). It is also worse than the round-2 source, so (e) fails in all seeds. Job 451914 fixes the reason (FAIL or NOT-PROMOTED).
+* **Route 3.2 (FST)**: merged as a diagnostic and falsified at its premise. The transferred sign structure is worse than the MF sign, so freezing it cannot help.
+* **New anti-pattern**: *transferring an exactly-fitted, under-identified network across sizes*. On these sizes the source-null directions carry noise that lands below the prior. A linear null filter does not repair this, because the null directions are only first-order null. The repair has to be nonlinear (anchored fit), or the transfer must be restricted to identified *and* expensive components.
+* **Critic objections from round 3, handled**:
+
+| Objection | Action |
+| :--- | :--- |
+| Prior art 2606.17045, 2512.11962 | Cited and distinguished at Gate 0 of R5.1 |
+| Route 3.2 is a relabel | Merged into 3.1 as a diagnostic; its premise is falsified by the pilot $A$ values |
+| Minimum norm is not reparameterisation-invariant | Dropped. Replaced by an anchor to the MF prior chosen by a pre-committed ladder (R5.1); the linear null filter was tested and killed (M5.b) |
+| Capacity dominates; tighten VOID | Excess over a bracketed $\epsilon_{\rm opt}$; VOID at 0.01, certified only from measured $\epsilon_{\rm best}$ |
+| P1 premise passes almost automatically | Gate on steps-to-$\epsilon$ at $B\in\{10,20,50\}$ with P1 and a plateau check per $B$ |
+| COMP_TOL | $10^{-3}$ t/site in both scripts |
+
+* **Round-5 per-leaf critic, applied**:
+
+| Objection | Action |
+| :--- | :--- |
+| Capacity, not speed, decides | Capacity pilot 452196 runs first. Its $\epsilon_{\rm scr}^\infty$ replaces $[0,\epsilon_{\rm best}]$. The 3% MUTATE/RUN rule was written before the pilot ran |
+| VOID hid FAIL | VOID now replaces PASS only, and FAIL/AMBIGUOUS always print. The 1% threshold is a flag. Moot means $\epsilon_{\rm scr}^\infty$ above the NNBF's $\epsilon$ at the same step count |
+| Weak control; a better start passes | `scr+` arm (20 charged kernel+Jastrow steps). $S$ is offset-free, so a static head start gives $S=1$ (logic check: FAIL, where the old rule gave 2.50) |
+| Source and library compute uncharged | $S$ is in wall time with source ED, restarts and the anchor ladder charged. ELT killed at Gate 0 as routine VMC warm-starting; only PA carried |
+| 451706 gate couples the leaf to another job | Removed. A sign claim is gated on MFNG-O's own `scr` sign share at step 150 (at least 0.10). Steps-to-$\epsilon$ reported separately for $A$ and $E-E_0-A$ |
+| `anchor_ok=False` only logged | Now INVALID in the aggregate. The identified-subspace fraction of the shift is reported for the selected rung |
+
+### Enlarged-Capacity Re-pilot (job 604157, 2026-11-15)
+
+**Pre-committed decision (`obc_transfer.py --capacity results_capacity_c8h32`, saved as `tests/P4.2_size_transfer_r5/capacity_c8h32_604157_output.txt`): MUTATE.** The plateau estimate is $\epsilon_{\rm scr}^\infty V/\lvert E_0\rvert=0.0571>0.03$. The array is not run.
+
+| family | `--channels` | `--bf-hidden` | params | $\epsilon(600)$ (t/site) | $\epsilon_{\rm scr}^\infty$ (t/site) | relative error at plateau | job |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| base | 4 | 16 | 426 | 0.04353 | 0.04247 | 0.0597 | 452196 |
+| enlarged | 8 | 32 | 818 | 0.04125 | 0.04061 | 0.0571 | 604157 |
+| projected NNBF (P2.1, width 6, reference) | — | — | 1734 | 0.0040 (median) | — | 0.0056 | 410988 / 451706 |
+
+* **The "enlarge" lever is exhausted (measured).** Doubling the parameters lowers the plateau error by 4.4% relative: an apparent exponent $\alpha=\ln(0.0597/0.0571)/\ln(818/426)\approx0.07$ in $\epsilon\propto P^{-\alpha}$. Reaching 0.03 at that exponent needs about $10^7$ parameters. A further enlargement (`--channels 16 --bf-hidden 64`, roughly 3–4 days per 600 steps at the measured 157 s per step for 818 parameters, scaled up) has a predictable outcome and is not run.
+* **The limit is the architecture class, not the parameter count.** The projected NNBF reaches 0.56% with 1734 parameters on the same instance, about 10× lower than the size-independent family at half that count. The size-independence constraint (a kernel of shared displacements that transfers across cluster sizes) is what costs the accuracy.
+* Sign share of `scr` at step 150: 0.16, so the sign claim is allowed. Irrep weight of the raw state falls to 0.08 by step 600.
+* **Next:** a per-leaf critic decides between a structural mutation of the size-independent family (Operation A on the failed component) and closing P4.2 with a Saturation Diagnostic.
+
+### Round 5 per-leaf critic: capacity saturation (2026-11-15)
+**Verdict: close P4.2 with a Saturation Diagnostic (option b). No structural mutation passes, and no further enlargement round is run (cap 0).** Code: `tests/P4.2_size_transfer_r5/critic_capacity.py` (selftest `selftest_critic_output.txt`: every added component's log-derivative matches finite differences to $10^{-8}$, and with the extras set to zero every variant reproduces the base MFNG-O exactly). Results are in `results_critic/`. Job **659969** ran tasks 0–1 (the LM checks). Task 2 was cancelled while still pending, and its 9 small-cluster variants ran on the login node instead, about 10–16 min each.
+#### 1. Is the 4x4 plateau an optimisation artefact? No (measured)
+* **Tail shape.** Every step is accepted at the end of both runs, and the adaptive step sits at its cap $4\,\mathrm{lr}_0=0.2$. A power-law tail fitted from step 200 gives the following plateau relative errors. Every reading is above 3%:
+
+| family | geometric (pre-committed) | $\epsilon\propto n^{-1}$ | $\epsilon\propto n^{-1/2}$ |
+| :--- | :--- | :--- | :--- |
+| 426 parameters | 0.0597 | 0.0598 | 0.0570 |
+| 818 parameters | 0.0571 | 0.0560 | 0.0527 |
+
+* **Linear-method stationarity check (job 659969, `results_critic/lm_4x4_summary.txt`).** At $\theta(600)$, $E_{\rm LM}$ is the lowest projected energy of *any* state in $\mathrm{span}\{b,\ \partial_k b\}$. It bounds what one first-order move can reach, whatever the step size, SR shift or preconditioner. The gain is $g=(E-E_{\rm LM})/(E-E_0)$. The pre-registered rule was $g<0.10$ at overlap cut $10^{-8}$, a cut fixed after a smoke run on a trivial target and before any 4x4 result.
+
+| family | relerr | $g$ (cut $10^{-6}$) | $g$ (cut $10^{-8}$) | $g$ (cut $10^{-10}$) | effective tangent rank at $10^{-8}$ |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 426 parameters | 6.12% | 0.0000 | 0.0017 | 0.051 | 34 of 426 |
+| 818 parameters | 5.80% | 0.0000 | 0.0013 | 0.030 | 48 of 818 |
+
+* **Reading.** Both plateaus are tangent-space stationary points. The best first-order improvement is at most 5% of the remaining error (note added 2026-11-17 after the per-leaf critic: this is at most 5% at the loosest cut tested ($10^{-10}$), with the gain still rising with the cut, not converged (L29); 659969 used the same relative cutoff as `critic_capacity.py` line 390, and the gain went 0 → 0.0013 → 0.0298 for 818 parameters (kept rank 96 of 818 at $10^{-10}$) and 0 → 0.0017 → 0.051 for 426, so the 659969 gain is cutoff-unconverged), so lr, SR shift and step count are excluded as the cause. The tangent-space rank explains why "enlarge" failed. Doubling the parameters adds only 14 effective directions, because the backflow multipliers $\phi_m(s)$ and the one-body Jastrow are functions of a site feature $v_s$ with a few dozen discrete values (hole on site, number of nn holes, number of nnn holes). Each kernel $\kappa_m(\mathbf r)$ has about 10 independent values on $4\times4$. Hidden width therefore adds no new functions; it only reparameterises the same lookup tables.
+* **Projected-vs-raw objective.** The raw irrep weight falling to 0.08 is not pathological. Projection is exact and the projected energy is variational. The optimiser is spending the 8-term symmetry superposition as extra variational freedom, which is itself a capacity symptom. The P2.1 NNBF was also trained projected.
+* **Comparison with NNBF training.** P2.1 used the same $\mathrm{lr}=0.05$, but with an exact force, a sampled metric, an absolute shift $10^{-3}$ and trust region 1. Its starting energy was $-9.59$ against MFNG-O's $-6.96$. The milder relative shift $10^{-3}$ is *worse* for MFNG-O: on 4x3, 6.26% against 1.54% (table below). Over-regularisation is therefore not why MFNG-O lags.
+* **Sign/amplitude split at the plateau.** The fixed-sign excess $A$ is 16.5% (426 parameters) and 17.3% (818 parameters) of $E-E_0$ at step 600. The plateau is about 83% *amplitude* error, not sign error.
+* **Caveat (basin dependence).** On 4x3, strict supersets of the base family finish *worse* than the base after 600 steps: c8h32 2.02%, bnd 3.13%, against 1.54%. A single-seed plateau is therefore an upper bound on the family's capacity, not the capacity itself. This does not rescue the route, because even the oracle in §2 needs non-transferable structure.
+#### 2. Which component is the bottleneck (Operation A, 4x3 OBC 5+5, 600 steps, `results_critic/ablation_4x3_summary.txt`)
+Instance: dimension 16632, irrep 4152, $E_0=-7.2330$. The base family's error here (1.54%) is smaller than on $4\times4$, but its plateau shape is the same.
+
+| variant | size-independent | params | relerr(600) | gain vs base | irrep weight |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| base (c4h16) | yes | 426 | 1.54% | 1.00 | 1.000 |
+| c8h32 (enlarge) | yes | 818 | 2.02% | 0.76 | 1.000 |
+| shift $10^{-3}$ | yes | 426 | 6.26% | 0.25 | 1.000 |
+| two-body density Jastrow `jas2 c` | yes | 434 | 1.76% | 0.87 | 1.000 |
+| density + $S^z S^z$ Jastrow `jas2 cs` | yes | 442 | 1.49% | 1.03 | 1.000 |
+| spin features in backflow and Jastrow | yes | 522 | 1.40% | 1.10 | 1.000 |
+| spin features + `jas2 cs` | yes | 538 | 1.41% | 1.09 | 1.000 |
+| free site-resolved pair matrix $F_{ij}$ (oracle) | **no** | 504 | 1.02% | 1.51 | 0.443 |
+| all three (oracle) | **no** | 616 | 0.64% | 2.41 | 0.262 |
+| boundary-class kernel `bnd-f 3` | yes | 445 | 3.13% | 0.49 | 1.000 |
+| `bnd-f 3` + spin features + `jas2 cs` | yes | 557 | 4.41% | 0.35 | 1.000 |
+
+* **Pre-registered single-component rule** (`submit_critic.sbatch`): a component counts as the bottleneck if it alone gives at least a 2x gain while enlargement and the shift change each give under 25%. No single component meets it. Spin structure (features and Jastrow) gives at most 1.10x. The only large lever is the **site-resolved pairing**: 1.51x alone and 2.41x combined with the spin terms. It breaks the mirror symmetry of the raw state (irrep weight 0.44 and 0.26) and is not size-independent.
+* **Size-independent substitute, pre-registered** (`results_critic/PREREG_bnd.txt`, written before the run). Replace $F_{ij}$ by a finite-range kernel $G[b_i,b_j,d_{ij}]$, where $b$ is a boundary class (bulk, edge or corner) and $d$ a C4v displacement class. The rule: a 4x4 re-pilot only if `bnd-f 3` + spin features + `jas2 cs` reaches $\le0.85\%$. Measured: **4.41%, so the rule fails.** The coarse boundary kernel also drives the optimiser into a sign-dominated basin (sign share 0.54).
+* **Failed component, therefore**: the transfer constraint itself, written as "pairing $=\kappa(\mathbf r_i-\mathbf r_j)$ × local hole-count dressing". What helps needs position resolution finer than any size-independent class map and, from the NNBF comparison, dependence on the whole configuration. A size-independent kernel family cannot carry either.
+#### 3. Gate 0 on the candidate mutations
+* Spin-dependent backflow, long-range spin and density Jastrows, and configuration-dependent orbitals for the $t$–$J$ model are standard VMC practice. Examples: Tocchio–Becca–Gros backflow; Gutzwiller-projected hidden-fermion determinant states for $t$–$J$ on open, cylindrical and periodic clusters (Lange et al., arXiv:2411.10430); spinful neural backflow for Hubbard (arXiv:2308.11823). None of them is new, and §2 shows none of them is the lever.
+* Size transfer of a high-capacity NQS by weight sharing (CNN or attention orbital generators, transformer NQS on Hubbard up to $16\times16$, curriculum transfer learning for NQS, arXiv:2505.00233) is published practice. Its adoption barrier is per-step cost, not transfer. A P4.2 route that adopted such a generator would no longer contain a novel transfer mechanism, so it fails Gate 0.
+#### 4. Saturation Diagnostic (P4.2 closes at ED size)
+* **What is shown.**
+    * At $4\times4$, every size-independent MFNG-O variant tried plateaus at a tangent-space stationary point, at 5.3–6.0% relative error under any tail model.
+    * Its effective tangent dimension is about 30–50 and barely grows with width.
+    * On 4x3, no size-independent component (enlargement, spin features, two-body Jastrows, a boundary-class kernel) gives even 1.1x. The 2.4x gain needs a site-resolved, symmetry-breaking pair matrix.
+* **Minimal extra structure needed.** A pair or orbital generator whose entries depend on (i) absolute position relative to the boundary at full site resolution and (ii) the global configuration, with a receptive field that covers the cluster. A size-independent parameter count can survive this only through weight sharing in a deep equivariant network, whose receptive field must grow with $L$. That is the published CNN/transformer route.
+* **Minimal extra information needed.** The 8-site sources contain neither the target's 3- and 4-hole environments (coverage 0.80, round 5) nor its boundary-to-bulk crossover. A transferred object can be no better than the identified content of its sources.
+* **Recommended practice** (the leaf's lasting output): before any size-transfer claim, run the LM stationarity check and the effective-tangent-rank count on the target. If the rank does not grow with width, enlargement is futile and the capacity pilot can stop after one rung.
+* **Enlargement rounds remaining: 0.** `submit_obc.sbatch` is not run.
+
+### Closed-leaf falsifier (2026-11-16)
+Idle-time thinking-queue item (SKILL Stage 3.5.3, step 3): the cheapest falsifier of the Saturation Diagnostic. A falsified diagnostic reopens P4.2 with that route only. Script: `tests/P4.2_closed_falsifier/lm_retrain.py` (CLI docstring); it reuses `critic_capacity.py` (ansatz, target, initial state) unchanged. Caps: at most 10 CPU-minutes per run and 30 for the leaf, single-threaded.
+#### Pre-registration (written before any run)
+* **Claim under test.** On 4x3 OBC 5+5 no size-independent component gives even 1.1x over the SR-600 base (1.536%), and a 2x or larger gain needs a site-resolved pair matrix. The critic's own caveat: strict supersets of the base ended *worse* (c8h32 2.02%), so single-seed SR results are upper bounds on capacity (basin dependence). The 4x4 LM stationarity check excludes first-order improvement at the 4x4 plateau, but it says nothing about a different basin reached from the start.
+* **Note found while reading the data.** The 4x3 SR-600 base is not on a plateau: $\epsilon$ is 0.0115 t/site at step 300 and 0.0093 at step 600 (`results_critic/train_base.json`). So the 4x3 ablation compares families at a fixed step count, which is exactly where a better optimiser could change the ordering.
+* **Design.** Retrain three size-independent families from the critic's initial state (init rng 2000) with the exact-sum linear method on the projected energy: base (426 parameters), spin features with `jas2 cs` (538), and c8h32 (818). Each iteration scans the LM stabilisation shift over 1, 0.1, 0.01 and 0.001, keeps the step only if the exact projected energy falls, and otherwise falls back to one backtracked SR step. Each run has a wall limit of 480 s on one thread.
+* **Rule.** $r^*$ is the lowest final relative error over the three LM runs.
+    * INCONCLUSIVE if LM base does not end at or below the SR-600 base (1.536%): the optimiser is not better, so the test says nothing.
+    * FALSIFIED if $r^*\le0.77\%$, a 2x gain over SR base and the critic's bottleneck threshold. This reopens P4.2 with the single route "the size-independent plateau is optimiser-limited".
+    * CONFIRMED if $r^*>1.02\%$: no size-independent run reaches even the SR-600 value of the free-$F$ oracle.
+    * AMBIGUOUS otherwise. A T2 LM retrain on 4x4 is then prepared, not run.
+    * Reported beside the verdict: whether the LM supersets end below LM base, which tests the basin caveat.
+#### Result (2026-11-16; `tests/P4.2_closed_falsifier/aggregate_output.txt`, logs `log_*.txt`)
+**Verdict: INCONCLUSIVE under the pre-registered rule.** LM base ended at 1.786%, above the SR-600 base (1.536%), so within the cap the optimiser was not better in wall time. P4.2 stays closed. About 24 CPU-minutes (three single-thread runs of 480 s).
+
+| family | params | LM iterations in 480 s | LM final relerr | SR relerr at a similar step count | SR-600 relerr |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| base | 426 | 369 | 1.786% | 1.909% (step 300) | 1.536% |
+| c8h32 | 818 | 199 | 1.665% | 2.610% (step 200) | 2.022% |
+| spin + `jas2 cs` | 538 | 208 (147 SR fallbacks) | 4.129% | 1.535% (step 200) | 1.412% |
+
+* **Per iteration, LM beats SR on base and c8h32**, but an LM iteration costs 1.3–2.4 s against about 0.9 s for an SR step, so 480 s buys fewer than 600 SR-equivalent steps. The rule's wall-time premise therefore fails.
+* **The basin caveat is partly an optimisation effect.** Under LM the enlarged family c8h32 ends *below* LM base (1.665% against 1.786%) and below its own SR-600 value (2.022%). So "strict supersets ended worse" was at least partly an SR artefact on 4x3. The spin + `jas2 cs` family went the other way: the LM step stalled after 61 accepted steps, and the SR fallback sat in a 4.1% basin.
+* **Nothing approaches the falsification threshold.** The lowest error over all runs is 1.665%, against 0.77% to falsify and 1.02% to confirm. In the last 100 iterations the errors fell by about 0.05 points (base) and 0.06 points (c8h32). That is descriptive only and not a verdict.
+* **T2 prepared, not submitted:** `tests/P4.2_closed_falsifier/submit_t2.sbatch`, array 0–5, 1 CPU each, under 4 h per task. Tasks 0–2 run LM for 7000 s and tasks 3–5 run SR for 3000 steps, on the same three families. The rule is unchanged, with $r^*$ taken over all six runs. Command: `cd /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_closed_falsifier && sbatch submit_t2.sbatch`. Read it with `python3 lm_retrain.py --aggregate results_t2` and `grep -h RESULT results_t2/sr_*.log`.
+* **The Saturation Diagnostic stands as written**, with one wording change to the critic's caveat: "larger families ended worse" holds for SR at 600 steps. Under LM, c8h32 ends better than base.
+
+* **Orchestrator (2026-11-16):** the convergence run of this falsifier was submitted as job 704844 (`tests/P4.2_closed_falsifier/submit_t2.sbatch`, 6 single-CPU tasks of at most 4 hours each). The pre-registered rule is unchanged.
+
+### Reopening review (2026-11-16)
+Trigger: the user's question "are these subproblems unsolvable or already solved?". P4.2 is neither. It was closed with a Saturation Diagnostic, which says that one family (size-independent MFNG-O) is exhausted at ED size, not that size transfer is impossible. This review turns the diagnostic's named gaps into new routes and tests them at T0 and T1 only. Code: `tests/P4.2_reopen_r9/reopen_t1.py` (CLI docstring; it imports `critic_capacity.py` read-only). Job 704844 (the LM convergence falsifier) is in flight and is not touched or duplicated.
+#### 1. Named missing ingredients and untried regimes
+* **Missing ingredients** (from §4 of the Saturation Diagnostic):
+    * (I1) site-resolved pairing: a pair matrix whose entries depend on absolute position relative to the boundary;
+    * (I2) a global configuration view: a receptive field that covers the cluster;
+    * (I3) source information: 3- and 4-hole environments (coverage 0.80) and the boundary-to-bulk crossover.
+* **Untried regimes** (read from the leaf, not named in the diagnostic):
+    * (U1) symmetry of the I1 oracle. The free-$F$ oracle broke the mirror symmetry of the raw state (irrep weight 0.44). Its gain was never split into "site resolution" and "symmetry breaking under projection".
+    * (U2) periodic targets. Every capacity number (452196, 604157, the 4x3 ablation) is on OBC clusters, where 10 of 12 (4x3) and 12 of 16 (4x4) sites touch the boundary. On a torus I1 is absent by translation symmetry, because MFNG-O's kernel $\kappa(\mathbf r)$ already spans every translation-invariant pair function.
+    * (U3) optimiser convergence. This is covered by job 704844 and is excluded here.
+    * (U4) transfer into a higher-capacity, site-indexed target family (for example the P2.1 projected NNBF), used only as an initial state.
+#### 2. New candidate routes and gates
+* **R9.1 (Operation A on I1): boundary-layer kernel.** $F_{ij}=G[\tau(i),\tau(j),\mathbf r_j-\mathbf r_i]$, where $\tau(i)$ is the vector of distances from site $i$ to the edges, truncated at a fixed depth $c$, and the displacement is oriented in the local frame of the nearest edge. Parameters are independent of $L$ for fixed $c$ and range.
+    * Gate 0: **PASS, narrowly.** Closest kill: the boundary-class kernel `bnd-f 3` (measured 3.13% and 4.41%, §2 of the round-5 critic). That kernel lumped x-edges and y-edges and used unoriented C4v displacement classes; R9.1 keeps orientation and depth. Fitting boundary-dependent pair parameters per cluster is routine mVMC practice; the claim is only the fixed-depth size map.
+    * Gate 1: **PASS.** It commutes with $G$, so the singlet and irrep are exact.
+    * Gate 2: **decided by T1.** On every ED-sized OBC cluster the depth is at most 1, so R9.1 with $c=1$ equals the $G$-symmetric site-resolved pair matrix `fsym` on 4x3. Its premise is therefore exactly "`fsym` reproduces most of the free-$F$ gain".
+    * Gate 3: **PASS** (same doped 2D non-stoquastic instance).
+    * Gate 4: **PASS with scope.** Cost per amplitude $\mathcal O(N_e^3)$ as before; constant parameter count. The gain is a *surface* term: the boundary layer holds $\mathcal O(L)$ of the $L^2$ sites, so the per-site gain falls as $1/L$. R9.1 serves OBC-to-OBC transfer only. It does not touch the bulk error.
+* **R9.2 (Operation B.3, cross-field port from spectral graph filters): graph-filter pair kernel.** $F=\sum_{p=0}^{P}c_pT_p(\tilde h)+\sum_{p=0}^{P}d_p\tfrac12\{T_p(\tilde h),D\}$, where $\tilde h=h/\lVert h\rVert_2$ is the open cluster's own hopping matrix ($t$ and $t'$), $T_p$ are Chebyshev polynomials and $D$ is the $d$-wave bond matrix ($+1$ on x bonds, $-1$ on y bonds). The coefficients $c_p$ and $d_p$ ($2(P+1)=14$ at $P=6$) are size independent. Boundary resolution then comes from the missing bonds of $h$, not from class labels. On a torus $F$ reduces to $g(\varepsilon_{\mathbf k})$ plus a $d$-wave term, which MFNG-O's $\kappa$ already contains.
+    * Gate 0: **PASS, narrowly.** A quick search ("pairing function polynomial of hopping matrix Chebyshev VMC"; "graph neural network spectral filter fermionic wavefunction transfer system size") found no NQS that builds its pair matrix as a learned matrix function of the cluster's hopping matrix. Spectral GNN filters are known to transfer between graphs; transferable molecular ansätze exist (Nat. Commun. 2024, PMC10762074); Gu et al. (arXiv:2507.02644) run OBC Hubbard without a size map. Caveat: a projected BCS state whose $f_{ij}$ comes from a BdG solution on the open cluster is foil practice. The new element is that the filter coefficients are learned and transferred.
+    * Gate 1: **PASS.** $\tilde h$ and $D$ commute with every element of $G$; the selftest gives a deviation of $6\times10^{-16}$.
+    * Gate 2: **decided by T1.** It is a 14-parameter channel bounded above by `fsym`.
+    * Gate 3: **PASS.**
+    * Gate 4: **PASS with the same surface scope as R9.1.** The $T_p(\tilde h)$ are computed once per step at $\mathcal O(PN^3)$, not per configuration.
+* **R9.3 (Operation A on I2): global view at constant parameter count.** **KILLED at T0.**
+    * Attention or a growing-receptive-field equivariant network is the published transformer or CNN backflow (Gu et al. arXiv:2507.02644; the diagnostic's §3). Gate 0 FAIL.
+    * Pooled global descriptors (cluster-averaged hole structure factor fed to the backflow) are intensive. Their configuration-to-configuration fluctuation falls as $V^{-1/2}$, so the information they add per site vanishes. Gate 4 FAIL.
+* **R9.4 (Operation A on I3): environment-complete sources** (3–4-hole clusters, or the same 8-site clusters at higher doping). **KILLED at T0 (dominated).**
+    * Scratch training *at the target* sees every target environment and still plateaus at 5.7% (452196, 604157). A transferred object cannot be better than the target-trained optimum of its own family, so source information can only shorten the time to reach that plateau.
+    * That speed claim is the ELT kill (Gate 0, routine VMC warm start) together with the offset-free rule, under which a static head start scores $S=1$.
+* **R9.5 (Operation B.1, frame change to periodic targets, U2): bulk-only transfer on tori.** **SURVIVES the gates. No T1 instance is possible.**
+    * Gates 0–3: the transfer mechanism would be R5.1 (PA anchor), unchanged, so Gate 0 inherits its narrow PASS. The new element is only the frame change.
+    * Gate 4: **PASS.** A torus has no surface term, so the claim is per site.
+    * T1 feasibility: **none under the caps.**
+        * The smallest $C_{4v}$ torus at $\delta=1/4$ with an even singlet sector is $4\times4$ (projected-sector dimension about $1.3\times10^4$ at $\lvert G\rvert=128$; about 70 s per projected SR step at 8 threads, measured in round 3). 300 steps cost about 47 CPU-hours, which is tier T2.
+        * A $4\times3$ torus has a singlet irrep sector of order $10^2$ against 426 parameters, which puts it in the sector-fitting regime (cross-node anti-pattern). Its result would carry no capacity information.
+* **R9.6 (U4): transferred size-independent state used to initialise the site-indexed P2.1 NNBF.** **KILLED at T0 (Gate 2).** The best the transfer can deliver is a static head start at the MFNG-O level ($\approx5.7\%$). The NNBF passes that level within its first tens of steps: its median $\epsilon$ at step 150 is 0.0049 t/site, about 0.7% (`nnbf_parser_check.txt`), against 600 or more steps for the whole run. Under the offset-free rule the head start is worth $S\approx1$. This is also Gerard-style warm-starting (round-3 kill of Route 3.3).
+* **Not a new route: projected period-2 patterned kernel.** If the free-$F$ gain is symmetry breaking under projection, then a size-independent carrier would be a fixed-period broken pattern restored by projection. Symmetry restoration by projection is a finite-size gain (Gate 4), and a period-2 charge pattern is not a known order at $\delta=1/4$. It is killed at T0. Its premise is still measured as a by-product of the `fsym` run.
+#### 3. T1 pre-registration (written before any run)
+* **Instance.** 4x3 OBC 5+5, $t'=-0.25$, $J=0.4$, irrep $M_x=M_y=+1$ (critic instance; dimension 16632, irrep 4152, $P/d_{S\chi}\approx0.1$). The in-irrep gap $E_1-E_0=0.156t$ is asserted at least $0.02t$ in code. Same init (rng 2000), same SR (lr 0.05, relative shift 0.01), 300 steps, single seed. Each variant adds one zero-initialised channel to the base MFNG-O, so it starts from exactly the critic's base state.
+* **References at step 300** (critic JSONs): base 1.909%; free-$F$ oracle 1.170% (gain 1.63x).
+* **Arms.** `fsym` (the R9.1 premise and the U1 split; 26 orbit parameters); `gf` (R9.2, $P=6$, 14 parameters).
+* **Rules** ($r_X$ is relerr at step 300; T1 can only kill, because matched short step counts never promote):
+    * K1, R9.1: KILLED if $r_{\rm fsym}>0.8\,r_{\rm base}=1.527\%$, i.e. the symmetric site-resolved channel gains less than 1.25x.
+    * K2, R9.2: KILLED if $r_{\rm gf}>1.527\%$, or if it recovers less than half of `fsym`'s gain, i.e. $r_{\rm base}-r_{\rm gf}<\tfrac12(r_{\rm base}-r_{\rm fsym})$.
+    * K3, diagnostic reading of U1: if $r_{\rm base}-r_{\rm fsym}\ge\tfrac12(r_{\rm base}-r_{\rm freeF})$, the oracle's lever is boundary site resolution (a surface term). Otherwise it is mainly symmetry breaking under projection, a finite-size gain, and the diagnostic's ingredient I1 is re-worded as such.
+    * A surviving route gets a value-of-information note and a T2 design here. It is not submitted.
+* **Caps (in code before the heavy part).** One thread; at most 600 CPU-s per run, turned into an SR deadline after the setup is measured; a ledger (`tests/P4.2_reopen_r9/ledger.json`) refuses any run that would take the total above 1800 CPU-s.
+#### 4. T1 results (`tests/P4.2_reopen_r9/`; logs `log_fsym.txt`, `log_gf.txt`; selftest `selftest_output.txt`; start check `start_check.txt`)
+Selftest: both channels' log-derivatives match finite differences to $7\times10^{-9}$, zero-initialised channels reproduce the base MFNG-O, and the `gf` matrices are $G$-invariant to $6\times10^{-16}$. All four arms start at exactly 34.8007% (`start_check.txt`). Cost: 292 + 304 = 596 CPU-s, single thread (ledger), under the 1800 CPU-s cap.
+
+| arm | extra params | size independent | relerr step 50 | step 150 | step 300 | irrep weight |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| base (critic) | 0 | yes | 2.398% | 2.058% | 1.909% | 1.000 |
+| free-$F$ oracle (critic) | 78 | no | 2.755% | 1.658% | 1.170% | 0.443 |
+| `fsym` (this review) | 26 | no | 4.902% | 3.791% | 3.622% | 1.000 |
+| `gf`, R9.2 (this review) | 14 | yes | 2.406% | 1.966% | 1.871% | 1.000 |
+| `bnd-f 3` (critic, for comparison) | 19 | yes | 5.150% | 3.776% | 3.509% | 1.000 |
+
+* **K1, R9.1: KILLED.** $r_{\rm fsym}=3.622\%>1.527\%$. The symmetric site-resolved channel is 1.9x *worse* than base at step 300, although it is a strict superset that starts from the same state.
+* **K2, R9.2: KILLED.** $r_{\rm gf}=1.871\%>1.527\%$, a gain of 1.02x. The graph filter is the fastest arm over the first 20 steps (4.49% against 6.74% for base at step 20) and then merges into base's curve.
+* **K3, reading of U1: not boundary site resolution.** $r_{\rm base}-r_{\rm fsym}=-1.71$ points, against half the oracle's gain, $+0.37$ points. Restricted to the mirror-symmetric subspace, site resolution does not reproduce the oracle under SR. Caveat: a strict superset ending worse is the same basin pattern the critic and the closed-leaf falsifier saw. The test therefore cannot separate "the oracle's lever is symmetry breaking" from "symmetric site-resolved channels steer SR into a worse basin". Both readings agree on one point: no mirror-symmetric pair channel tried so far (`bnd-f 3`, `fsym`, `gf`) captures the oracle's gain.
+* **No route passed T1**, so no value-of-information note or T2 design is written for R9.1 or R9.2.
+#### 5. Recommendation: STAY-CLOSED
+* **Route tally.** Six candidates were generated. R9.3, R9.4 and R9.6 were killed at T0 (Gate 0 or 4, dominated, and Gate 2). R9.1 and R9.2 were killed at T1. R9.5 survives the gates but has no T1-sized instance.
+* **What the new evidence adds to the Saturation Diagnostic.**
+    * Ingredient I1 is narrowed. The large lever on 4x3 is *not* "site-resolved pairing" in general. Three mirror-symmetric versions fail under SR: boundary classes, full symmetric site resolution, and a size-independent graph filter of the cluster's hopping matrix. Only the symmetry-breaking free $F$ (irrep weight 0.44) helps. Suggested wording for §4: "the only measured lever is a mirror-breaking, site-resolved pair matrix whose symmetry is restored by projection. A symmetric site-resolved channel of the same kind is 1.9x worse under SR." Gains from symmetry restoration by projection are finite-size gains (Gate 4). So I1, as measured, is not evidence that bulk transfer needs non-transferable structure.
+    * Ingredients I2 and I3 are confirmed as dead ends for a novel route. I2 is either published transformer or CNN practice, or non-extensive. I3 is dominated by scratch training at the target.
+    * **The diagnostic's one untested regime is periodic targets (R9.5).** Every capacity number is on OBC clusters, where nearly every site is a boundary site. On a torus, I1 is absent by symmetry. This is the precise falsifier the diagnostic still lacks.
+* **Why not REOPEN with R9.5.** It has no T1. Its first test is the MFNG-O capacity pilot on the $4\times4$ torus at $\delta=1/4$: 300 projected SR steps, about 47 CPU-hours on one task, cost tier 10–100. That tier needs a value-of-information note and a per-leaf critic's written agreement (Stage 3.5.6).
+    * Prediction: the round-3 smoke and pilot data say nothing about torus capacity, so the outcome is not predicted at probability 0.8 or above.
+    * Decision value: if the torus plateau is at or below 3%, R5.1 (PA) becomes runnable on tori, and the OBC result is re-read as a surface effect. If it is above 3%, the diagnostic extends to periodic clusters and P4.2 closes for good.
+    * The decision to spend those 47 CPU-hours belongs to the orchestrator and its critic, not to this review. It is recorded as the leaf's single open falsifier.
+* **Job 704844** is unaffected. Its rule tests U3, which is independent of this review.
+
+
+#### Closed-Leaf Falsifier Convergence Run (job 704844, 2026-11-16): INCONCLUSIVE
+
+Aggregate: `python3 lm_retrain.py --aggregate results_t2` (saved as `tests/P4.2_closed_falsifier/aggregate_704844_output.txt`). Pre-registered rule: falsified at a relative error of at most 0.77%, confirmed above 1.02%, INCONCLUSIVE if the linear-method base run does not beat the 600-step SR base (1.536%).
+
+| family | parameters | linear method (about 7000 s) | long SR | earlier 600-step SR |
+| :--- | :--- | :--- | :--- | :--- |
+| base | 426 | 1.778% | 1.294% | 1.536% |
+| c8h32 | 818 | 1.658% | 1.057% | — |
+| spin + Jastrow (jas2cs) | 538 | 1.952% | 1.268% | — |
+
+* **Verdict by rule: INCONCLUSIVE** (the linear-method base, 1.778%, is not below the SR-600 base).
+* **Reading of the long SR runs.** Every family improves with longer SR training, so part of the earlier 600-step plateau was undertraining. All three still sit above the rule's 1.02% confirmation line and far from the 0.77% falsification line, so the diagnostic (a size-independent family plateaus well above NNBF's 0.56%) leans confirmed. This is not a pre-registered verdict.
+
+### Round 10 (2026-11-17): optimiser falsifier re-gated; R9.5 pilot under check
+* **Wrong premise corrected.** The reopening ledger and the Next step assumed "the saved 3000-step SR states of 704844". Those states were never saved: `critic_capacity.py train` writes only the options, energies and history to `results_t2/sr_*.json`, never the parameters, and no checkpoint exists (`tests/P4.2_size_transfer_r10/results.md`). Only the LM-7000 s runs carry parameters. A polish of the saved LM base state (1.778%) gave zero gain at every tested cutoff, so that state is already LM-stationary; it does not answer U3, which is about the SR states.
+* **Rule** (`tests/P4.2_size_transfer_r10/RULE.md`, written before any polish run): polish each regenerated SR-3000 state with up to 8 exact-sum truncated-metric linear-method (LM) steps (P4.1's recipe); $r^*$ is the lowest polished relative error. DIAGNOSTIC-FALSIFIED (reopens P4.2 on U3) if $r^*\le0.77\%$; DIAGNOSTIC-HOLDS if every polished arm stays above 1.02%; AMBIGUOUS otherwise.
+* **Job in flight: 731382** (T2, cap 3.0 CPU-h; `regen_polish_c8h32.sbatch`, `voi_c8h32.md`). It first regenerates the c8h32 SR-3000 run deterministically (same code path, init rng 2000, energy checked against 704844's 1.057%), saving its parameters, and then polishes it. c8h32 goes first because it is the lowest-error arm and a KILL needs any single arm. Prediction AMBIGUOUS ($p=0.45$). AMBIGUOUS releases the base arm next (about 0.95 CPU-h); above 1.02% releases base and spin_jas2cs, because HOLDS needs every arm.
+* **R9.5 pilot under check (interactive, no compute).** Job 451914 (route R3.1) already trained a 122-parameter MFNG from scratch on the $4\times4$ torus, $6+6$, to $\varepsilon=0.0183t$ per site at 50 SR steps, a relative error of 2.1% against $E_0=-13.934t$ (job 410960). That is below the R9.5 pilot's 3% line. If the MFNG-O torus family contains the R3.1 family, the 47 CPU-h pilot is unnecessary and the next decision is the anchored copy R5.1 on the torus (predicted FAIL, $p\approx0.7$; one seed, anchored arm only, reusing 451914's from-scratch arm as the foil; 5–15 CPU-h, measured first, the auditor above 10 CPU-h).
+
+### Round 10b (2026-11-17): R9.5 torus check and gate refusal
+* **Verification** (`tests/P4.2_size_transfer_r11/verification.md`, about 1 CPU-min, no Slurm). Job 451914's numbers are confirmed: $4\times4$ torus, $6+6$, $t'=-0.25$, $J=0.4$, irrep $T_x=T_y=M_x=M_y=+1$, $D=-1$ (13,070 states), $E_0=-13.93410177t$ (identical in 410960 and 451914). The from-scratch arm (mean-field start plus 50 projected SR steps, 122-parameter MFNG) reached $\varepsilon(50)=0.01858$, 0.01707, 0.01828 $t$ per site, that is 2.13%, 1.96%, 2.10% relative error (irrep-projected energies). Two of three seeds were still falling (last-10-step drops $1.2\times10^{-3}$ and $3.5\times10^{-4}$ $t$/site), and projected SR with backtracking never raises the energy, so these are upper bounds: the MFNG torus plateau is at most 1.96%.
+* **But the family differs.** R3.1 used MFNG (2 channels, field 8, backflow 4, Jastrow 4; kernels summed over the cluster's own momentum grid). R9.5 names MFNG-O (426 parameters, fixed $8\times8$ quadrature kernel, coded for open clusters only). MFNG is not a parameter subfamily of MFNG-O, and even a strict superset's SR plateau is not bounded by its subset's (R9.1's `fsym` ended 1.9 times worse than its base). So 451914 bounds the torus capacity of MFNG, not of MFNG-O.
+* **Consequence for the plan.** The 47 CPU-h MFNG-O torus pilot is superseded: the direct test is the anchored copy R5.1 on the torus with the MFNG family itself, on R3.1's grid-complete periodic sources. A job was drafted and passed `compute_gate.py` (9.6 CPU-h, digest 4d6cd30c2610), with rule adaptations (MFNG family; plateau frozen at 0.017071; speed-up counted in SR steps against scratch rather than in wall time against a polished scratch arm, a weaker test). Predicted verdicts: FAIL 0.55, AMBIGUOUS 0.30, PASS 0.15.
+* **Orchestrator decision: GATE-REFUSED(G2), not submitted.** FAIL and AMBIGUOUS both close R9.5, so the same action follows with $p=0.85$; the job buys only a 15% chance of a PASS at 9.6 CPU-h, and a PASS under the weakened step-count rule would itself need the wall-clock comparison against a polished scratch arm before the leaf could reopen. Recorded prediction: "R9.5 closes (FAIL or AMBIGUOUS), $p=0.85$". R9.5 is SHELVED; the U2 row of the reopening ledger is GATE-REFUSED(G2). It is re-asked if job 731382 (U3) shows that the plateau is optimiser-limited, in which case the torus transfer is re-run with polished arms.
+
+### Round 10c (2026-11-17): U3 result (job 731382), zero-step check, and closure
+* **Job 731382** (T2, 2.37 CPU-h of a 3.0 CPU-h cap; rule `tests/P4.2_size_transfer_r10/RULE.md`, quoted in Round 10). The c8h32 SR-3000 state was regenerated exactly ($E=-7.1565516715$, difference 0 against 704844), then polished at cutoff $10^{-5}$: 8 steps, kept metric rank 37 of 818, logged $\lvert z\rvert=0$, relative error 1.0572% → 1.0572%. $r^*(\text{c8h32})=1.057\%>1.02\%$: c8h32 HOLDS as logged. The VOI predicted AMBIGUOUS with $p=0.45$: MISS.
+* **Zero-step validity check** (`CHECK.md`, rule written before the check, about 4.7 CPU-min interactive). Rule: ARTEFACT if any method lowers the relative error below 1.02%; GENUINE if no method lowers it by more than 0.02 percentage points; UNCLEAR otherwise. Gradient norm $\lvert g\rvert=0.338$; metric top eigenvalue $1.24\times10^6$; at cutoff $10^{-5}$ 98.2% of $\lvert g\rvert^2$ lies inside the kept rank-37 space, but its natural-gradient content $g^{\mathsf T}S^{-1}g$ there is only $1.5\times10^{-5}$ ($2.6\times10^{-2}$ at $10^{-8}$, rank 103). Single LM steps: $\lvert z\rvert=3.3\times10^{-4}$ at $10^{-5}$ (logged as 0.000), $-0.0002$ pp at $10^{-6}$, $-0.0022$ pp at $10^{-7}$; iterated capped LM at $10^{-8}$: 1.0572% → 1.0281%, plateau after about 10 steps; at $10^{-9}$ the first step does not lower $E$. Gradient descent (15 steps): no change; SR as trained (40 steps): 1.05722% → 1.05543%. A cutoff ladder (`polish_v2.py`, $10^{-5}$ to $10^{-9}$ per step, accepting only drops above $10^{-7}$): 1.0572% → 1.0279% in 16 steps. **Verdict under its rule: UNCLEAR** (a 0.029 pp drop exceeds the 0.02 pp GENUINE limit, but the best value stays above 1.02%). No code bug: the zero step was a conditioning artefact of a relative cutoff against a top eigenvalue of $1.2\times10^6$, and the v1 log overstated progress (8 accepted steps of about $10^{-9}$).
+* **Orchestrator decision.** c8h32 HOLDS at 1.028% after the proper polish (margin 0.008 pp above the 1.02% line). The remaining arms, base (1.294%) and spin_jas2cs (1.268%), would need about a 20% drop in relative error just to fall below 1.02% (AMBIGUOUS), and 40% to reach the 0.77% falsification line; c8h32 lost 2.8% of its error under the proper polish, so HOLDS is predicted for both with $p\approx0.95$ (still plausible) (reason corrected by the per-leaf critic, 2026-11-17). Regenerating and polishing them (about 1.9 CPU-h) changes no decision: **GATE-REFUSED(G2)**, prediction recorded. **U3 → DIAGNOSTIC-HOLDS (marginal)**: c8h32 1.028%, 0.008 pp above the line; CHECK rule UNCLEAR; post-hoc 16-step ladder versus the registered 8-step cap; one arm; two arms predicted. Every reopening-ledger row is now closed, two with a GATE-REFUSED step (U2 torus transfer; the U3 remaining arms), so section 3b exit 3 applies: EXHAUSTED at this budget.
+
+## Route Register
+Written 2026-11-17 from the rounds above; one card per route ever generated in this leaf. Ids follow the leaf's own labels (Route 1 is R1, Route 2.3 is R2.3, mutation M5.a is R5.a). Common terms: NQS (neural quantum state), SR (stochastic reconfiguration, the natural-gradient optimiser used throughout), LM (the linear method, which minimises the energy exactly over the span of the state and its parameter derivatives), ED (exact diagonalisation), MF (mean field), foil (the Minimal Contrast Foil: a Jastrow factor times a projected BCS geminal, refitted at the target), OBC (open boundary conditions), relerr (relative energy error $(E-E_0)/\lvert E_0\rvert$), $\epsilon$ (energy error per site in units of $t$). MFNG and MFNG-O are the size-independent momentum-field neural geminal of R2.2 and its open-boundary version (426 parameters at base size).
+### R1 — Residual-geminal transfer (Route 1) (KILLED)
+* **The idea**: Split the pair function of a geminal into a mean-field BCS part, rebuilt analytically on the target's momentum grid from four transferred parameters, and a short-range learned residual $\Delta f$ with a local hole-count backflow, which is copied from the source size. Poisson summation says the size-, filling- and boundary-dependent part of a geminal is the image sum of a smooth one-body object, so only the residual needs to transfer.
+* **Lineage**: initial batch (round 1). Its mechanism (rebuild the identified part per size, transfer the rest) became the momentum-field geminal R2.2 after this kill. A development dead end inside it (residual range $L/2$) is recorded under the Evidence below.
+* **Outcome**: KILLED at G3 (round-1 cross-node critic, items 21 and 22, 2026-11-11).
+* **Kill rule**: Gate 3: does the route keep both halves of the Hard Core (non-stoquastic sign and near-degenerate competing orders), and is its gain more than foil practice?
+* **Evidence**: The decisive instance was a spin-gapped $2\times4\to2\times8$ $t$–$J$ ladder with one dominant order, which removes the 2D nodal half of the Hard Core. At the pre-committed residual range $R_{\rm corr}=1$ the transferred residual is a handful of Jastrow-like scalars, i.e. what the foil already transfers. The smoke pre-check ($2\times4\to2\times6$, $\delta=1/2$) gave $M=e_{\rm tr}/e_{\rm foil}=1.30$ (0.0575 against 0.0441 per site), and 1.10 with no correlator window, against a PASS line of 0.5. With residual range $L/2$ the zero-shot energy was $-3.12$ against the foil's $-7.93$, because the residual spans every source pair function.
+* **Why this kills it**: A test on a gapped ladder cannot show transfer of the nodal structure that makes the problem hard, and the only transferable part that survives identifiability ($R_{\rm corr}=1$) is foil practice. The one measurement available already favoured the foil.
+* **What the kill does not rule out**: the decisive $\delta=1/4$ ladder was never run, so the route is not refuted on its own instance; a residual with a longer, identified range on a source large enough to pin it.
+* **Strongest case against the kill**: the smoke instance had a weak Hard Core (foil–ED sign agreement 0.990), so $M=1.30$ is a prior, not a verdict. Answered by the critic: even a PASS would have tested the favourable gapped case only.
+* **Checked by**: round-1 cross-node critic (master, items 21 and 22), 2026-11-11.
+* **Lesson**: route-specific — the kill rests on the choice of test geometry and on the residual collapsing to Jastrow scalars, not on a mechanism that recurs.
+### R2 — Momentum-labelled equivariant orbital generator (Route 2) (KILLED)
+* **The idea**: A network $\varphi_\theta(r,k)$ outputs single-particle orbitals as a function of site and momentum label, so a Slater determinant can be built on any momentum grid and the antisymmetric layer gets a size map. The orbitals would "define themselves" at every $L$.
+* **Lineage**: initial batch (round 1); its backflow extension would have become R1 or Gerard et al.
+* **Outcome**: KILLED at G2 (round 1, 2026-11-10).
+* **Kill rule**: Gate 2: does a cheap baseline or the foil reach the same state?
+* **Evidence**: Bloch's theorem forces a translation-invariant determinant's orbitals to be $e^{ik_xx}u_k(y)$. On the leg-symmetric ladder $u_k$ is exactly bonding or antibonding, and on the one-orbital square lattice it is 1. The network's only remaining freedom is the occupied momentum set, which the fresh mean-field foil also chooses.
+* **Why this kills it**: the zero-shot transferred determinant is identical to the foil's, so no gain is possible.
+* **What the kill does not rule out**: configuration-dependent (backflow) orbitals, multi-orbital unit cells where $u_k$ is not fixed by symmetry.
+* **Strongest case against the kill**: none found; the argument is a theorem for single-band translation-invariant determinants.
+* **Checked by**: round-1 per-leaf worker; not contested by the round-1 cross-node critic (2026-11-11).
+* **Lesson**: route-specific — follows from Bloch's theorem for one-band models.
+### R3 — Unit-cell gluing (Route 3) (KILLED)
+* **The idea**: Build the $2L$ state as the antisymmetrised product of two copies of the trained $L$ state, each holding half the electrons, like an iDMRG growth step or a tiling warm start. Each half is already near its converged energy, so the product should start close to the $2L$ ground state.
+* **Lineage**: initial batch (round 1). Round 2 found a partial repair (the AGP-gluing lemma under R2.1).
+* **Outcome**: KILLED at G1 (round 1, 2026-11-10).
+* **Kill rule**: Gate 1: does the route respect conservation laws and the deciding observable?
+* **Evidence**: With $N_A$ and $N_B$ separately conserved, $\langle\hat\Delta_i^\dagger\hat\Delta_j\rangle=0$ identically for $i$ in half $A$ and $j$ in half $B$, because moving a pair changes $N_A$ by 2. Translation is also broken down to $\mathbb Z_2$. The repair (sum over splits $N_A=N_e/2\pm k$) needs $\mathcal O(\sqrt V)$ particle-number sectors trained at $L$.
+* **Why this kills it**: the long-range pair correlation, the deciding observable, is exactly zero across the cut (Unacceptable Outcome), and the repair costs more than retraining at $2L$.
+* **What the kill does not rule out**: gluing pair functions instead of states. A block-diagonal geminal $F_L\oplus F_L$ is the AGP $(\hat P_A^\dagger+\hat P_B^\dagger)^{N_e/2}\lvert0\rangle$, which sums over pair-number splits and has cross-cut pair correlation (R2.1 by-product).
+* **Strongest case against the kill**: the AGP-gluing lemma removes the conservation argument for geminals. Answered only in part: translation breaking remains, and the geminal version is a warm start of the kind killed in R2.1 and R3.3.
+* **Checked by**: round-1 cross-node critic (master per-leaf kills), 2026-11-11.
+* **Lesson**: route-specific — the conservation argument applies to product states and is lifted for geminals.
+### R4 — Twist-folded transfer (Route 4) (KILLED)
+* **The idea**: The $2L$ momentum grid is the union of the $L$ grids at twists 0 and $\pi$. Train a twist-conditioned network at $L$ on both twists, then evaluate it at $2L$ on the folded grid, so every target momentum has been seen at the source.
+* **Lineage**: initial batch (round 1); its grid-completeness idea returned, without twists, in R3.1.
+* **Outcome**: KILLED at G0 (round 1, 2026-11-10).
+* **Kill rule**: Gate 0: is it known, and does it fix the reason the known method is not standard?
+* **Evidence**: joint training over twists and supercell sizes is Gerard, Scherbela, Sutterud, Foulkes & Grohs (arXiv:2405.07599), whose stated barriers are local minima and the cost of splitting compute over geometries. Folding is exact only for the one-body part, which the foil's fresh mean field already captures.
+* **Why this kills it**: it is a relabel with no mechanism against the published method's barriers, and its exact part is foil content.
+* **What the kill does not rule out**: a twist-complete source used only to pin momentum components (R3.1a tried this and died at Gate 1).
+* **Strongest case against the kill**: Gerard et al. is continuum and orbital based, so a lattice version could be new. Answered in round 3: "continuum, not lattice" is not an adoption barrier.
+* **Checked by**: round-1 cross-node critic, 2026-11-11; round-3 per-leaf critic re-confirmed Gerard et al. as the method to beat.
+* **Lesson**: route-specific — a prior-art kill.
+### R2.1 — Ring-surgery continuation in a seam coupling λ (Route 2.1) (KILLED)
+* **The idea**: Interpolate the target Hamiltonian from two decoupled copies of the source torus ($\lambda=0$, where the source network is exact) to the $2L$ torus ($\lambda=1$) by reconnecting the seam bonds, and follow the ground state along $\lambda$. In its strong form the path follows the Perron root of a fixed-node Hamiltonian, which has no level crossings.
+* **Lineage**: Operation A on R1 (round 2). By-product: the AGP-gluing lemma that partly repairs R3.
+* **Outcome**: KILLED at G0 (round 2, 2026-11-11).
+* **Kill rule**: Gate 0: is it known, and does it fix the reason the known method is not standard?
+* **Evidence**: The Perron-tracking form needs fixed-node projection at the target, which is lattice GFMC with an NQS guide (Loehr & Clark, arXiv:2510.26906; killed in P1.1). The VMC form is Hamiltonian-parameter warm starting (arXiv:2405.14830; Yamazaki, Konishi & Kawahara, arXiv:2505.00233). It tracks the lowest variational root, and for $0<\lambda<1$ translation is broken to period $L$, so crossings become avoided crossings with tiny gaps that finite-step SR crosses diabatically. A login smoke landed on $E_1$, not $E_0$, even without $\lambda$.
+* **Why this kills it**: one form is a killed route of another leaf, the other is published and inherits the global metastable-branch anti-pattern.
+* **What the kill does not rule out**: an exact or projective continuation on instances where fixed-node projection is cheap.
+* **Strongest case against the kill**: the $\lambda=0$ end is fully interacting, not mean field, so the global anti-pattern ("continuation from the mean-field limit") may not apply. Unresolved for the Perron form; the VMC form was observed to fail on the smoke.
+* **Checked by**: round-2 per-leaf critic, 2026-11-11.
+* **Lesson**: L18 (`library.md`)
+### R2.2 — Momentum-field neural geminal, MFNG (Route 2.2) (MERGED)
+* **The idea**: Put every antisymmetric degree of freedom in pair kernels $\kappa_m(\mathbf r)$ generated by a $C_{4v}$-covariant neural field over the Brillouin zone, and every configuration-dependent degree of freedom in local, charge-only backflow and Jastrow networks. All parameters are then size independent, transfer is an exact copy, and doubling the lattice only refines the Brillouin-zone grid, where Poisson summation says the source pins the kernels on the shared momenta.
+* **Lineage**: Operation B.1 duality combined with a cross-field port from neural operators (round 2). Submitted as R3.0, carried as the transferred family of R3.1, and in open-boundary form (MFNG-O) the family of R5.1, R5.3 to R5.5 and R9.1 to R9.7.
+* **Source analogy**: Fourier neural operators (Li et al., arXiv:2010.08895) are invariant under grid refinement of a fixed domain because the learned function is smooth on that domain. Correspondence: fixed domain $\leftrightarrow$ Brillouin zone; refinement $\leftrightarrow$ $L\to2L$. Translation gap: a real-space port changes the physical momentum of each mode when $L$ doubles, so the field is placed on the Brillouin zone; the momentum-space interpolation of reduced density matrices in arXiv:2511.07367 is the nearest physics use.
+* **Outcome**: MERGED into R3.0 (as submitted) and R3.1 (its repaired source and sector rule), 2026-11-11.
+### R2.3 — Ensemble-disagreement probing of the transferred sign (Route 2.3) (KILLED)
+* **The idea**: Train several source seeds, transfer them all, and find the configurations where their signs disagree. Those are the configurations whose sign the source does not determine, so the target fine-tune samples them preferentially (with importance weights), spending its budget where the transferred sign is uncertain.
+* **Lineage**: Operation B.2, active probing (round 2); cross-field translation from ensemble active learning. Its seed-spread measurement became gate (I) of R3.1.
+* **Source analogy**: query-by-committee active learning (Seung, Opper & Sompolinsky, COLT 1992): committee disagreement locates informative inputs when the hypothesis class contains the truth. Correspondence: committee $\leftrightarrow$ source seeds; disagreement region $\leftrightarrow$ sign-disagreement set. Translation gap: the seeds may agree on a wrong sign, so disagreement need not cover the sign error.
+* **Outcome**: KILLED at T1 (round 3, 2026-11-11).
+* **Kill rule**: pre-committed premise: recall of the sign-error weight inside the disagreement set at least 0.5, at a cost (weight of the set) of at most 0.25.
+* **Evidence**: on the $2\times2\to4\times2$ smoke, recall was 0.345 at cost 0.394. The route also had no decisive test of its own.
+* **Why this kills it**: disagreement located only a third of the sign error while covering 39% of the weight, so concentrating samples there is no better than plain sampling.
+* **What the kill does not rule out**: the premise on a source with many-body sign content (the smoke source had two electrons); larger committees.
+* **Strongest case against the kill**: the premise was measured on a trivial 2-electron source, so it says little about the decisive instance. Unresolved; the route was dropped because R3.1's identifiability gate measured the same seed spread.
+* **Checked by**: round-2 per-leaf critic (objection vi: no decisive test, premise fails), 2026-11-11.
+* **Lesson**: route-specific — one smoke measurement on a trivial source.
+### R2.4 — Multigrid or RG prolongation of NQS parameters (Route 2.4) (KILLED)
+* **The idea**: Define a prolongation operator from source parameters to target parameters, as multigrid does between coarse and fine grids, interpolating each real-space kernel to the finer level so the transferred state is a smooth refinement of the source state.
+* **Lineage**: Operation B.3, cross-field translation from multigrid and renormalisation (round 2). Its interpolation reading merged into R2.2.
+* **Source analogy**: multigrid (Briggs, Henson & McCormick, A Multigrid Tutorial, 2000) works because smooth error components live on the coarse grid. Correspondence: coarse grid $\leftrightarrow$ source cluster; prolongation $\leftrightarrow$ size map. Translation gap: the lattice spacing and the Fermi wavevector set physical lengths, so rescaling is not a symmetry.
+* **Outcome**: KILLED at G1 (round 2, 2026-11-11).
+* **Kill rule**: Gate 1: does the map respect conservation laws?
+* **Evidence**: the rescaling reading $\kappa_{2L}(\mathbf r)=\kappa_L(\mathbf r/2)$ halves $k_F$, so the state has the wrong density and Fermi surface; coarse-graining is consistent only at a fixed point, which a doped $t$–$J$ ground state is not.
+* **Why this kills it**: the transferred state is at the wrong density by construction.
+* **What the kill does not rule out**: interpolation at fixed lattice spacing (that is R2.2).
+* **Strongest case against the kill**: none found; the argument is dimensional.
+* **Checked by**: round-2 per-leaf critic, 2026-11-11.
+* **Lesson**: route-specific — dimensional argument.
+### R2.5 — MERA-style block-and-refine (Route 2.5) (KILLED)
+* **The idea**: Block pairs of target sites into coarse sites, evaluate the source network on the blocked configuration, and multiply by a refining network that restores the fine structure, as a MERA layer or real-space RG step does, so the source carries the long-range part.
+* **Lineage**: Operation B.3, cross-field translation from tensor-network renormalisation (round 2).
+* **Source analogy**: fermionic MERA (Corboz & Vidal, PRB 80, 165129, 2009) and neural-network RG (Li & Wang, PRL 121, 260601, 2018) coarse-grain scale-free states. Correspondence: block site $\leftrightarrow$ source site; disentangler $\leftrightarrow$ refining network. Translation gap: a blocked $t$–$J$ site has 9 states, not 3.
+* **Outcome**: KILLED at G1 (round 2, 2026-11-11).
+* **Kill rule**: Gate 1: is the map well defined on the physical Hilbert space?
+* **Evidence**: feeding a blocked configuration to the 3-state source network needs a truncation to 3 block states, which discards every block holding two electrons, most of the weight at $\delta=1/4$.
+* **Why this kills it**: the refining network must restore most of the weight, so it is a full NQS and nothing transfers.
+* **What the kill does not rule out**: an effective-model (contractor RG) source trained on the 9-state blocks.
+* **Strongest case against the kill**: none found.
+* **Checked by**: round-2 per-leaf critic, 2026-11-11.
+* **Lesson**: route-specific — local-space mismatch of the $t$–$J$ model.
+### R3.0 — MFNG as submitted: single 4x2 source, seed picked by source energy (Route 3.0) (KILLED)
+* **The idea**: The round-2 design of R2.2: train the momentum-field geminal on one $4\times2$ torus with 2 holes, keep the seed with the lowest source energy, and copy it zero-shot to the $4\times4$ torus with 4 holes, scoring the fixed-sign excess against the transferred foil.
+* **Lineage**: R2.2 as submitted; kept as the ablation arm `tr0_r2` of R3.1.
+* **Outcome**: KILLED at CRITIC (round-2 per-leaf critic objection i, confirmed by measurement, 2026-11-11).
+* **Kill rule**: critic objection: an exactly fitted source makes the transferred state an arbitrary point of a solution manifold, so one seed decides the verdict.
+* **Evidence**: three seeds fit the source to relerr $2\times10^{-14}$ to $4\times10^{-9}$, yet their parameter vectors are a relative distance 1.05 to 1.75 apart, and 107 of 122 SR-metric directions are below $10^{-8}$ of the largest eigenvalue.
+* **Why this kills it**: the source does not determine the transferred object, so the test measures the seed, not the route.
+* **What the kill does not rule out**: a source that pins the parameters (more clusters, an anchor), which became R3.1 and R5.1.
+* **Strongest case against the kill**: the function on the target could still be the same even if the parameters differ. Answered by the R3.1 pilot: zero-shot target errors over seeds ranged 0.615 to 0.759 per site, and the source choice changed the result (criterion e).
+* **Checked by**: round-2 per-leaf critic, 2026-11-11; measured in the round-3 pre-check.
+* **Lesson**: L43 (`library.md`)
+### R3.1a — Twist-complete 4x2 source with y-phase 0 and π (Route 3.1a) (KILLED)
+* **The idea**: Pin every target momentum on the source by training on the $4\times2$ torus at $y$-boundary phase 0 and $\pi$, so the $4\times4$ grid is covered without a second geometry and nothing is interpolated.
+* **Lineage**: Operation A on the source of R3.0 (round 3); replaced by the tilted 8-site cluster in R3.1.
+* **Outcome**: KILLED at G1 (round 3, 2026-11-11).
+* **Kill rule**: Gate 1: does the source keep every configuration reachable?
+* **Evidence**: with $L_y=2$ and phase $\pi$ the doubled $y$-hops cancel, so each leg's hole number is conserved and an even pair field has $F(\Delta x,\pm1)=0$. Measured: 1.4% of configurations have exactly zero amplitude, and the median amplitude is $e^{-35}$ below the maximum.
+* **Why this kills it**: the twisted source cannot represent configurations with an odd count per leg, so it pins nothing about them.
+* **What the kill does not rule out**: twisted sources with $L_y\ge3$.
+* **Strongest case against the kill**: none found; checked by self-test (a).
+* **Checked by**: found while building the test; round-3 per-leaf critic did not contest it (2026-11-11).
+* **Lesson**: route-specific — geometry of the $L_y=2$ torus.
+### R3.1 — Grid-complete, minimum-norm, irrep-projected transfer, TCMN (Route 3.1) (KILLED)
+* **The idea**: Fit the size-independent momentum-field geminal jointly on two 8-site tori whose momentum grids together contain every symmetry orbit of the $4\times4$ grid, with a minimum-norm penalty and best-of-4 restarts to select one solution; copy it, project onto symmetry sectors, and choose the target sector zero-shot by comparing projected energies, instead of following one branch.
+* **Lineage**: Operation A on the source and sector components of R3.0, with cross-pollination from P1.1-P (round 3). Absorbed R3.2 as a diagnostic; its failure seeded R5.a to R5.c and R5.1.
+* **Outcome**: KILLED at T2 (pilot 410960 and closing job 451914; verdict CLOSED-FAIL by clauses F1, F2 and F3, aggregate re-read 2026-11-17).
+* **Kill rule**: critic-fixed rule (round 5): CLOSED-FAIL if F1 (robust median $\epsilon_{\rm tr}(20)$ above 0.9 of scratch's, at a counted budget), F2 ($m\,\epsilon_{\rm tr0}\ge2m\,\epsilon_{\rm foil}(10)$), F3 (speed-up $S(B)<1$ at every counted budget), F4 or F5. PROMOTE was already impossible because criterion (e) failed.
+* **Evidence**: $4\times4$ torus, 4 holes, $t'=-0.25$, $J=0.4$, 3 seeds. Zero-shot $\epsilon_{\rm tr0}$ = 0.663, 0.759 and 0.615 per site against 0.318, 0.130 and 0.285 for the untrained MF start, and against 0.454, 0.520 and 0.211 for the single-source R3.0 copy (criterion e fails in every seed). Fixed-sign excess 2.36 (median) against 0.53 for the MF start. After 20 projected-SR steps the transferred state has median $\epsilon=0.0335$ against scratch's 0.0240; at 50 steps 0.0248 against 0.0183; speed-up 0.83 at 10 steps and 0 at 20 and 50. The foil after 10 steps sits at 0.047 to 0.065.
+* **Why this kills it**: the copy starts worse than doing nothing, the grid-complete source makes it worse than the cheaper source, and it stays behind scratch training at every counted budget; all three FAIL clauses fire.
+* **What the kill does not rule out**: a source that identifies its null directions (an anchor, R5.1); open-boundary targets; larger sources.
+* **Strongest case against the kill**: only 50 SR steps were run, and P4.1 showed SR-trained states in this brainstorm can be strongly optimiser-limited (a damped LM polish removed 54% of a 12-site gap). That cannot rescue the zero-shot clauses (F2, criterion e), which involve no target optimisation; it could change F1 and F3. Unresolved for F1 and F3, not needed for the kill.
+* **Checked by**: round-3 per-leaf critic (rule) and round-5 per-leaf critic (closure accepted), 2026-11-12; the CLOSED-FAIL read-out was not separately reviewed.
+* **Lesson**: L43 (`library.md`)
+### R3.2 — Frozen-sign transfer, FST (Route 3.2) (KILLED)
+* **The idea**: P1.1 found that network width fixes amplitudes but not signs, so transfer the scarce object only: freeze the projected determinant part (fields and backflow) of the transferred state and refit just the 20-parameter charge Jastrow at the target, which can change amplitudes but cannot move a node.
+* **Lineage**: Operation B.3, cross-field translation of P1.1's sign/amplitude split into transfer (round 3); merged into R3.1 as a diagnostic after the critic.
+* **Source analogy**: fixed-node practice in quantum Monte Carlo: the nodes of a trial state are kept and only the positive part is optimised. Correspondence: trial nodes $\leftrightarrow$ transferred sign; Jastrow $\leftrightarrow$ refitted amplitude. Translation gap: the transferred nodes must already be better than the MF nodes.
+* **Outcome**: KILLED at CRITIC (round-3 per-leaf critic, 2026-11-12: relabel; premise falsified by pilot 410960).
+* **Kill rule**: critic objection: freezing the determinant and refitting a Jastrow is standard fixed-node practice, and its verdict is decided by R3.1's zero-shot sign.
+* **Evidence**: the transferred fixed-sign excess was 2.36 (median of 3 seeds) against 0.53 for the MF start (pilot 410960), so the frozen sign is worse than the prior's.
+* **Why this kills it**: a Jastrow refit cannot repair a sign worse than the MF sign, and the method is a relabel.
+* **What the kill does not rule out**: freezing a sign that is better than MF, e.g. from an identified source.
+* **Strongest case against the kill**: none beyond R3.1's; the premise measurement is direct.
+* **Checked by**: round-3 per-leaf critic, 2026-11-12.
+* **Lesson**: L43 (`library.md`)
+### R3.3 — Direct lattice port of Gerard et al. (Route 3.3) (KILLED)
+* **The idea**: Pretrain one network on several small lattices and twists with a per-size Hartree–Fock reference, then fine-tune everything at the target, as Gerard et al. do for continuum solids, where it saved a factor of about 50 in compute.
+* **Lineage**: generated in round 3 as the published comparison; it is R3.1's `trB` arm without the sector rule.
+* **Outcome**: KILLED at G0 (round 3, 2026-11-11).
+* **Kill rule**: Gate 0: is it known, and does it fix the reason the known method is not standard?
+* **Evidence**: it is Gerard et al. (arXiv:2405.07599) moved to a lattice. On doped lattices its barrier is sector selection (the $4\times2$, 4-hole smoke ground state has $T_x=-1$ for all five tested $(t',J)$), and a warm start cannot leave its symmetry sector under SR.
+* **Why this kills it**: it does nothing against the named barrier and counts merit in steps saved without a projected control.
+* **What the kill does not rule out**: the port with a sector rule (that is R3.1).
+* **Strongest case against the kill**: no lattice-fermion size transfer is published, so even a port would be new. Answered: the Unacceptable Outcome forbids relabels that do not fix the adoption barrier.
+* **Checked by**: round-3 per-leaf critic, 2026-11-12.
+* **Lesson**: route-specific — prior-art kill.
+### R3.4 — Averaging parameters over source seeds (Route 3.4) (KILLED)
+* **The idea**: Average the parameter vectors of several source seeds so that the arbitrary null-direction components cancel and only the identified content remains in the transferred state.
+* **Lineage**: Operation A on R3.0's seed problem (round 3).
+* **Outcome**: KILLED at G1 (round 3, 2026-11-11).
+* **Kill rule**: Gate 1: is the result still a solution of the source problem?
+* **Evidence**: the seed optima are a relative distance 1.3 to 2.0 apart, in different basins of a non-convex network, so their mean is not a solution; averaging wavefunctions instead gives an ensemble that costs $K$ amplitude evaluations with cross terms.
+* **Why this kills it**: parameter averaging is only meaningful within one basin.
+* **What the kill does not rule out**: averaging after aligning seeds to one basin (e.g. by an anchor).
+* **Strongest case against the kill**: none found.
+* **Checked by**: round-3 per-leaf critic, 2026-11-12.
+* **Lesson**: route-specific — non-convexity of this network.
+### R5.a — Transfer only the source-identified one- and two-body kernels (M5.a) (KILLED)
+* **The idea**: Transfer only what the source pins down: a renormalised one-body Hamiltonian, the pair kernel and the Jastrow $v(\mathbf r)$, and leave the poorly identified backflow to be learned at the target, so the copy contains no arbitrary null-direction content.
+* **Lineage**: Operation A on the transferred object of R3.1 (round 5).
+* **Outcome**: KILLED at G2 (round 5, 2026-11-12).
+* **Kill rule**: Gate 2: does a cheap baseline reach the same state?
+* **Evidence**: the identified components are about 10 kernel values per channel, which a target refit fixes in a handful of steps; this refit is the foil. The expensive components (backflow) are the ones the source leaves null.
+* **Why this kills it**: what can be transferred is cheap to refit, and what is expensive cannot be transferred.
+* **What the kill does not rule out**: sources large enough to identify the backflow.
+* **Strongest case against the kill**: none found; the dilemma is structural for 8-site sources.
+* **Checked by**: round-5 per-leaf critic, 2026-11-12.
+* **Lesson**: L43 (`library.md`)
+### R5.b — Linear source-null filter (M5.b) (KILLED)
+* **The idea**: Reset the parameter shift along the null directions of the source SR metric back to the MF initialisation, $\theta=\theta_{\rm src}-P_{\rm null}(\theta_{\rm src}-\theta_{\rm init})$, so the copy keeps only the identified part of what the source learned.
+* **Lineage**: Operation A on R3.1 (round 5); its nonlinear repair is R5.1.
+* **Outcome**: KILLED at G1 (measured on the close31 smoke and on job 451914, round 5).
+* **Kill rule**: Gate 1: does the filtered state still solve the source?
+* **Evidence**: resetting 95% of the shift along null directions took the source energies from $-8.946$ and $-8.825$ to $+0.138$ and $+1.645$ (smoke, seed 0); on job 451914 the filtered zero-shot target error was 0.87, 0.41 and 0.50 per site against 0.32, 0.13 and 0.29 for the MF start.
+* **Why this kills it**: null directions are null only to first order, so a large move along them destroys the fit.
+* **What the kill does not rule out**: nonlinear selection (an anchored fit, R5.1).
+* **Strongest case against the kill**: none found.
+* **Checked by**: round-5 per-leaf critic, 2026-11-12.
+* **Lesson**: L43 (`library.md`)
+### R5.c — Copy the projected NNBF of P2.1 through a site embedding (M5.c) (KILLED)
+* **The idea**: Use the higher-capacity projected neural-network backflow (NNBF) of P2.1 as the transferred family, mapping source sites into the target lattice so its trained weights can be copied.
+* **Lineage**: Operation A on the transferred family (round 5).
+* **Outcome**: KILLED at G1 (round 5, 2026-11-12).
+* **Kill rule**: Gate 1: does a size map exist?
+* **Evidence**: every NNBF tensor is site indexed ($\Phi_0\in\mathbb R^{V\times N}$, $2V$ inputs, $VN$ outputs).
+* **Why this kills it**: there is no size map without a new architecture.
+* **What the kill does not rule out**: using a transferred size-independent state to initialise the NNBF (R9.6).
+* **Strongest case against the kill**: none found.
+* **Checked by**: round-5 per-leaf critic, 2026-11-12.
+* **Lesson**: route-specific — architecture fact.
+### R5.1 — Prior-anchored transfer, PA (R5.1) (KILLED)
+* **The idea**: Fit the open-boundary MFNG-O on the $4\times2$ and $2\times4$ open sources with an L2-SP penalty toward the source run's own MF initialisation, so the full nonlinear fit decides which directions move, then copy it to the $4\times4$ open target and fine-tune; it must beat a scratch control by a factor of 2 in wall time with its source cost charged.
+* **Lineage**: nonlinear repair of R5.b; cross-field translation from L2-SP transfer learning (round 5). Its frame change to tori is R9.5.
+* **Source analogy**: L2-SP (Li, Grandvalet & Davoine, arXiv:1802.01483) works because pre-trained weights are already near a good target solution, so anchoring regularises. Correspondence: pre-trained weights $\leftrightarrow$ MF prior; fine-tune $\leftrightarrow$ source fit. Translation gap: an anchor fixes selection, not the capacity of the family at the target.
+* **Outcome**: KILLED at T2 (capacity pilots 452196 and 604157 under the pre-committed rule, 2026-11-15).
+* **Kill rule**: pre-committed capacity rule: if the scratch plateau of the family at the target has relerr above 3%, do not run the array (MUTATE); a faster route to that plateau is worthless.
+* **Evidence**: 600 projected-SR steps from scratch on the $4\times4$ OBC $6+6$ target: plateau relerr 5.97% (426 parameters, 452196) and 5.71% (818 parameters, 604157); the site-indexed projected NNBF reaches 0.56% with 1734 parameters on the same instance (410988). At the 4x4 plateau the best state in the span of the wavefunction and its derivatives improves the energy by at most 0.17% of the remaining error at the pre-registered overlap cut (5% at the loosest cut; job 659969).
+* **Why this kills it**: PA could at best reach the family's own plateau faster, and that plateau is ten times worse than a target-trained competitor.
+* **What the kill does not rule out**: periodic targets with no boundary sites (R9.5); a higher-capacity size-independent family.
+* **Strongest case against the kill**: the plateaus come from single-seed SR, and P4.1 showed a damped LM polish removed 54% of an SR-trained gap. Answered for the 4x4 plateau by the LM stationarity check (a single exact LM step in the full tangent span gains at most 5% at the loosest cut tested ($10^{-10}$), with the gain still rising with the cut, not converged (L29); a $4\times4$ ladder polish was refused under G2, predicted to stay above 3%). Not answered: a sequence of LM steps, or a different basin; on 4x3, 3000 SR steps lowered the base by 16% (704844).
+* **Checked by**: round-5 per-leaf critic, 2026-11-15.
+* **Lesson**: L30 (`library.md`)
+### R5.2 — Environment-library local transfer, ELT (R5.2) (KILLED)
+* **The idea**: Transfer only the local backflow and charge Jastrow, which depend on a site's hole environment, from a library of small clusters that together contain every environment of the target (3- and 4-hole clusters added), and rebuild the pair kernels from the target's mean field, which is the cheap, identified part.
+* **Lineage**: Operation A on where the transferred content comes from (round 5); cross-field translation from graph-network size generalisation.
+* **Source analogy**: Yehudai et al. (arXiv:2010.08853) show that graph networks fail across sizes when local patterns differ, and fix it by exposing the large graphs' local patterns. Correspondence: $d$-hop pattern $\leftrightarrow$ hole environment. Translation gap: exposing patterns here means fitting more clusters, which is routine VMC warm-starting.
+* **Outcome**: KILLED at G0 (round-5 per-leaf critic, 2026-11-12).
+* **Kill rule**: Gate 0: is it known, and does it fix the reason the known method is not standard?
+* **Evidence**: fitting small clusters and warm-starting is routine VMC practice; ELT would be new only as an amortised claim (one library serving two or more targets), which would double the decisive cost. Measured coverage: library 1.0000 of the target's site-environment weight, sources alone 0.7999.
+* **Why this kills it**: without the amortised claim it is a relabel.
+* **What the kill does not rule out**: the amortised version over several targets.
+* **Strongest case against the kill**: environment coverage is a real, measured gap of the sources. Answered later by R9.4: scratch training at the target sees every environment and still plateaus at 5.7%.
+* **Checked by**: round-5 per-leaf critic, 2026-11-12.
+* **Lesson**: route-specific — prior practice.
+### R5.3 — Enlarge the size-independent family (critic lever "enlarge") (KILLED)
+* **The idea**: If MFNG-O's plateau is a capacity limit, more kernel channels and a wider backflow ($8$ channels, hidden width 32, 818 parameters) should lower it below the 3% capacity line so the PA array can run.
+* **Lineage**: Operation A on R5.1's failed component (the MUTATE branch of the capacity rule), 2026-11-15.
+* **Outcome**: KILLED at T2 (job 604157, 2026-11-15).
+* **Kill rule**: the same pre-committed capacity rule as R5.1: plateau relerr above 3% means MUTATE, not RUN.
+* **Evidence**: plateau relerr 5.71% at 818 parameters against 5.97% at 426, an apparent exponent $\alpha\approx0.07$ in $\epsilon\propto P^{-\alpha}$ (about $10^7$ parameters to reach 3%). The effective tangent rank at the plateau is 34 of 426 and 48 of 818 (659969): width only re-parameterises a few dozen lookup tables of local hole counts.
+* **Why this kills it**: doubling the parameters adds 14 effective directions, so enlargement cannot reach the capacity line.
+* **What the kill does not rule out**: new inputs (spin features, position) rather than width; different optimisers.
+* **Strongest case against the kill**: SR at 600 steps; on 4x3, under 7000 s of LM c8h32 ends below the base (1.658% against 1.778%) and at 3000 SR steps reaches 1.057% against 1.294% (704844), so enlargement helps 1.22 times once optimised longer, the kind of optimiser effect P4.1 found. Still far from the factor 2 needed; the tangent-rank argument is optimiser independent.
+* **Checked by**: round-5 per-leaf critic (capacity saturation), 2026-11-15.
+* **Lesson**: L30 (`library.md`)
+### R5.4 — Spin features and two-body Jastrows on the size-independent family (critic ablation) (KILLED)
+* **The idea**: Add spin-resolved site features to the backflow and Jastrow and two-body density and $S^zS^z$ Jastrows, all size independent, on the hypothesis that MFNG-O's charge-only inputs miss the spin correlations that carry its remaining error.
+* **Lineage**: Operation A on R5.1's failed component (round-5 critic ablation, 2026-11-15).
+* **Outcome**: KILLED at T1 (4x3 OBC ablation, 2026-11-15).
+* **Kill rule**: pre-registered single-component rule: a component is the bottleneck if it alone gives at least a 2x gain while enlargement and the shift change each give under 25%.
+* **Evidence**: 4x3 OBC $5+5$, 600 SR steps, same start: base 1.54%; `jas2 c` 1.76%; `jas2 cs` 1.49%; spin features 1.40%; spin features with `jas2 cs` 1.41% (gains 0.87 to 1.10 times). Gate 0 also fails: spin-dependent backflow and long-range Jastrows are standard VMC (Tocchio–Becca–Gros; Lange et al., arXiv:2411.10430).
+* **Why this kills it**: no addition approaches the 2x bottleneck threshold, and each is known practice.
+* **What the kill does not rule out**: these components at much longer optimisation; a different instance.
+* **Strongest case against the kill**: single seed at 600 SR steps, and P4.1 showed SR leaves such states optimiser-limited; at 3000 SR steps spin with `jas2 cs` reaches 1.268%, but base also falls to 1.294%, so the relative gain stays near 1 (704844). Answered for the relative ranking at 3000 steps; LM polish not tried.
+* **Checked by**: round-5 per-leaf critic, 2026-11-15.
+* **Lesson**: route-specific — ablation of one family on one instance.
+### R5.5 — Boundary-class pair kernel bnd-f 3 (critic's size-independent substitute) (KILLED)
+* **The idea**: The free site-resolved pair matrix (a non-transferable oracle) gave 1.51 times alone and 2.41 times with spin terms on 4x3; replace it by a finite-range kernel $G[b_i,b_j,d_{ij}]$ that depends only on boundary class (bulk, edge, corner) and displacement class, which is size independent and might capture the oracle's edge structure.
+* **Lineage**: Operation A on R5.1's failed component, the size-independent stand-in for the oracle (round-5 critic, pre-registered in `PREREG_bnd.txt`).
+* **Outcome**: KILLED at T1 (2026-11-15).
+* **Kill rule**: pre-registered: a 4x4 re-pilot only if `bnd-f 3` with spin features and `jas2 cs` reaches relerr at most 0.85% on 4x3.
+* **Evidence**: 4.41% with the extras and 3.13% alone, against base 1.54% (600 SR steps, same start); the coarse kernel drives SR into a sign-dominated basin (sign share 0.54).
+* **Why this kills it**: it is worse than base, far from the gate.
+* **What the kill does not rule out**: oriented, depth-resolved boundary kernels (R9.1); other optimisers.
+* **Strongest case against the kill**: a strict superset ending worse is an optimiser or basin effect, not a capacity verdict; P4.1's LM polish result makes this plausible. Unresolved: no LM or longer run of `bnd-f 3` was made.
+* **Checked by**: round-5 per-leaf critic, 2026-11-15.
+* **Lesson**: L33 (`library.md`)
+### R5.6 — Adopt a weight-shared CNN or transformer orbital generator (critic §3) (KILLED)
+* **The idea**: Give the size-independent family the missing ingredients (site resolution and a global view) through a deep equivariant network whose receptive field grows with depth, so its parameter count stays size independent while its capacity approaches a site-indexed network's.
+* **Lineage**: Operation A on R5.1's failed component (round-5 critic §3); cross-field translation from CNN and transformer NQS for spins and fermions.
+* **Source analogy**: equivariant CNN and graph-network NQS transfer for spins (Kochkov et al., arXiv:2110.06390; Liang et al., arXiv:2204.07816) work because weights are shared and amplitudes are local. Correspondence: shared filters $\leftrightarrow$ size-independent parameters. Translation gap: the fermion version is the published transformer backflow, whose barrier is per-step cost, not transfer.
+* **Outcome**: KILLED at G0 (2026-11-15).
+* **Kill rule**: Gate 0: is it known, and does it fix the reason the known method is not standard?
+* **Evidence**: transformer and CNN backflows on Hubbard up to $16\times16$ and curriculum transfer for NQS are published (Gu et al., arXiv:2507.02644; arXiv:2505.00233); their barrier is cost per step.
+* **Why this kills it**: adopting the generator leaves no novel transfer mechanism.
+* **What the kill does not rule out**: a cheaper generator that fixes the cost barrier (P2.1's territory).
+* **Strongest case against the kill**: no published lattice-fermion size transfer exists even with these networks. Answered: weight sharing is already a size map, so the transfer would be a demonstration, not a method.
+* **Checked by**: round-5 per-leaf critic, 2026-11-15.
+* **Lesson**: route-specific — prior-art kill.
+### R9.1 — Boundary-layer kernel with edge depth and orientation (R9.1) (KILLED)
+* **The idea**: Make the pair kernel $F_{ij}=G[\tau(i),\tau(j),\mathbf r_j-\mathbf r_i]$ depend on each site's distances to the edges, truncated at a fixed depth $c$, with displacements oriented in the nearest edge's frame, so edge structure is resolved by a parameter set independent of $L$, as a boundary layer is in fluid mechanics.
+* **Lineage**: Operation A on missing ingredient I1 (site-resolved pairing) in the reopening review, 2026-11-16; cross-field translation from boundary-layer theory; repair of R5.5.
+* **Source analogy**: matched asymptotic expansions (Van Dyke, 1975): the inner layer has a fixed width in scaled variables, so one inner rule serves every domain. Correspondence: wall layer $\leftrightarrow$ edge sites of depth at most $c$. Translation gap: on ED-sized clusters every site is within depth 1 of an edge, so the kernel equals a mirror-symmetric site-resolved pair matrix (`fsym`).
+* **Outcome**: KILLED at T1 (2026-11-16).
+* **Kill rule**: K1: killed if `fsym` relerr at step 300 exceeds $0.8\,r_{\rm base}=1.527\%$ (gain under 1.25 times).
+* **Evidence**: 4x3 OBC $5+5$, same start (34.80%), 300 SR steps, one seed: `fsym` 3.622% against base 1.909% and the free-matrix oracle 1.170%.
+* **Why this kills it**: the symmetric site-resolved channel, which bounds R9.1 at ED size, is 1.9 times worse than base.
+* **What the kill does not rule out**: larger clusters with a real bulk; the channel under a better optimiser.
+* **Strongest case against the kill**: `fsym` is a strict superset of base from the same state, so ending worse is an SR basin or optimiser effect, and P4.1 found a damped LM polish removes 54% of SR-trained gaps. Unresolved: the K3 caveat in the review says the test cannot separate "the lever is symmetry breaking" from "symmetric channels steer SR into a worse basin".
+* **Checked by**: self-checked in the reopening review; the leaf-summary critic approved the review's reading (2026-11-16).
+* **Lesson**: L33 (`library.md`)
+### R9.2 — Spectral graph-filter pair kernel of the hopping matrix (R9.2) (KILLED)
+* **The idea**: Build the pair matrix as Chebyshev polynomials of the cluster's own normalised hopping matrix plus a $d$-wave bond term, with 14 size-independent coefficients, so edges are resolved by the missing bonds of the hopping matrix itself rather than by class labels; on a torus it reduces to a function of the band energy.
+* **Lineage**: Operation B.3, cross-field translation from spectral graph filters (reopening review, 2026-11-16).
+* **Source analogy**: ChebNet (Defferrard et al., arXiv:1606.09375) and the transferability result of Levie et al. (arXiv:1907.12972): a polynomial filter of the graph operator transfers between graphs sampling the same continuum. Correspondence: graph Laplacian $\leftrightarrow$ hopping matrix; filter taps $\leftrightarrow$ pair-kernel coefficients. Translation gap: transfer is guaranteed, capacity is not.
+* **Outcome**: KILLED at T1 (2026-11-16).
+* **Kill rule**: K2: killed if relerr at step 300 exceeds 1.527%, or if it recovers less than half of `fsym`'s gain.
+* **Evidence**: 4x3 OBC, same start, 300 SR steps: `gf` 1.871% against base 1.909% (1.02 times). It is the fastest arm for 20 steps (4.49% against 6.74%) and then merges into base's curve.
+* **Why this kills it**: a 2% gain cannot carry a transfer route.
+* **What the kill does not rule out**: higher polynomial order; filters of other operators (exchange, density).
+* **Strongest case against the kill**: 300 SR steps, one seed; P4.1's LM finding says the endpoint may be optimiser-limited. Partly answered: the arm is ahead early and then joins base, which looks like a shared plateau, not a slow descent.
+* **Checked by**: self-checked in the reopening review; the leaf-summary critic approved (2026-11-16).
+* **Lesson**: route-specific — a capacity measurement of one 14-parameter channel.
+### R9.3 — Global configuration view at constant parameter count (R9.3) (KILLED)
+* **The idea**: Give the size-independent family the missing ingredient I2, a view of the whole configuration, either by attention or a growing receptive field, or by feeding cluster-averaged descriptors (the hole structure factor) into the local backflow.
+* **Lineage**: Operation A on missing ingredient I2 (reopening review, 2026-11-16).
+* **Outcome**: KILLED at T0 (2026-11-16).
+* **Kill rule**: Gates 0 and 4 at T0: is it published, and does its gain survive growing size?
+* **Evidence**: attention or growing receptive fields are the published transformer and CNN backflows (Gu et al., arXiv:2507.02644). Pooled intensive descriptors fluctuate between configurations as $V^{-1/2}$.
+* **Why this kills it**: one form is a relabel, the other adds information per site that vanishes with size.
+* **What the kill does not rule out**: non-intensive global features with a size map.
+* **Strongest case against the kill**: none found.
+* **Checked by**: self-checked in the reopening review; leaf-summary critic, 2026-11-16.
+* **Lesson**: route-specific — prior art plus a scaling argument.
+### R9.4 — Environment-complete sources (R9.4) (KILLED)
+* **The idea**: Train the source on clusters that contain the target's 3- and 4-hole environments (or the 8-site clusters at higher doping), supplying missing ingredient I3, so the transferred local rules are never extrapolated.
+* **Lineage**: Operation A on missing ingredient I3 (reopening review, 2026-11-16); repair of R5.2.
+* **Outcome**: KILLED at T0 (dominated, 2026-11-16).
+* **Kill rule**: T0 dominance: can a transferred object beat the same family trained at the target?
+* **Evidence**: scratch training at the target sees every target environment and still plateaus at 5.7% (452196, 604157). A copy cannot be better than its family's target optimum, and a static head start scores a speed-up of 1 under the offset-free clock.
+* **Why this kills it**: richer sources can only shorten the time to a plateau that is already disqualifying.
+* **What the kill does not rule out**: environment-complete sources for a higher-capacity family.
+* **Strongest case against the kill**: the target plateau might be optimiser-limited (P4.1). Answered at 4x4 by the LM stationarity check (gain at most 5% at the loosest cut tested ($10^{-10}$), with the gain still rising with the cut, not converged (L29)).
+* **Checked by**: self-checked in the reopening review; leaf-summary critic, 2026-11-16.
+* **Lesson**: L30 (`library.md`)
+### R9.5 — Bulk-only transfer on periodic targets (R9.5) (SHELVED)
+* **The idea**: Every capacity number in this leaf is on open clusters, where 12 of 16 sites touch an edge; on a torus the missing ingredient "site-resolved pairing" is absent by symmetry, because the momentum-field kernel already spans every translation-invariant pair function. Run the anchored copy R5.1 unchanged on tori, where any gain is per site.
+* **Lineage**: Operation B.1, frame change to periodic targets, from untried regime U2 of the Saturation Diagnostic (reopening review, 2026-11-16). Round 10b (2026-11-17) replaced its MFNG-O capacity pilot by a direct torus test with the MFNG family, which the orchestrator then refused.
+* **Outcome**: SHELVED (GATE-REFUSED(G2) by the orchestrator, 2026-11-17; not refuted).
+* **Why shelved**: Job 451914 already bounds the torus capacity of the 122-parameter MFNG family: from scratch on the $4\times4$ torus ($6+6$, $E_0=-13.93410177t$) it reached 1.96–2.13% relative error in 50 projected SR steps (upper bounds; 2 of 3 seeds still falling), below the pilot's 3% line. That family is not MFNG-O (426 parameters, open-boundary kernel), so it does not answer the MFNG-O pilot, and the 47 CPU-h MFNG-O pilot was superseded by the direct test: the anchored copy R5.1 on the torus with MFNG, drafted at 9.6 CPU-h (gate PASS, digest 4d6cd30c2610) under a weakened rule (speed-up in SR steps against scratch, not wall time against a polished scratch arm). Its predicted verdicts were FAIL 0.55, AMBIGUOUS 0.30, PASS 0.15. FAIL and AMBIGUOUS both close R9.5, so the same action follows with $p=0.85$, and a PASS under the weakened rule would still need the wall-clock comparison before the leaf could reopen; the orchestrator refused it under G2. Recorded prediction: R9.5 closes (FAIL or AMBIGUOUS), $p=0.85$.
+* **What would unshelve it**: job 731382 (the U3 polish falsifier) showing that the open-boundary plateau is optimiser-limited, in which case the torus transfer is re-asked with polished arms and a wall-clock rule (capped cost of the drafted torus job: 9.6 CPU-h); or a cheaper torus instance whose sector is well above the parameter count.
+
+### R9.6 — Transferred state as initialiser of the site-indexed NNBF (R9.6) (KILLED)
+* **The idea**: Use the size-independent transferred state only as the starting point of the higher-capacity site-indexed projected NNBF of P2.1 at the target, so transfer contributes a head start and the NNBF supplies the capacity the transferable family lacks.
+* **Lineage**: untried regime U4 (reopening review, 2026-11-16).
+* **Outcome**: KILLED at T0 (Gate 2, 2026-11-16).
+* **Kill rule**: Gate 2 under the offset-free clock: is the head start worth more than the time the control needs to reach the same level?
+* **Evidence**: the best transfer can deliver is the MFNG-O level ($\approx5.7\%$); the NNBF passes that level within its first tens of steps (median $\epsilon$ 0.0049 per site, about 0.7%, at step 150, against 600 or more steps for a whole run; `nnbf_parser_check.txt`).
+* **Why this kills it**: the head start is used up early, so the offset-free speed-up is about 1; it is also Gerard-style warm starting (R3.3).
+* **What the kill does not rule out**: a transferred state already below the NNBF's early trajectory.
+* **Strongest case against the kill**: a warm start might steer the NNBF into a better basin rather than just saving steps. Unresolved; no run was made.
+* **Checked by**: self-checked in the reopening review; leaf-summary critic, 2026-11-16.
+* **Lesson**: L43 (`library.md`)
+### R9.7 — Projected period-2 patterned kernel (R9.7) (KILLED)
+* **The idea**: If the free-matrix oracle's gain comes from breaking mirror symmetry and restoring it by projection, a size-independent carrier would be a fixed-period broken pattern in the pair kernel, restored by the irrep projector, as projected broken-symmetry mean fields do in nuclear structure.
+* **Lineage**: untried regime U1 (symmetry split of the oracle), reopening review, 2026-11-16; cross-field translation from symmetry restoration by projection.
+* **Source analogy**: projected Hartree–Fock–Bogoliubov (Ring & Schuck, The Nuclear Many-Body Problem, 1980): a broken-symmetry intrinsic state captures correlations cheaply and projection restores quantum numbers. Correspondence: intrinsic state $\leftrightarrow$ patterned kernel; angular-momentum projection $\leftrightarrow$ irrep projection. Translation gap: in a nucleus the size is fixed; here the gain must survive growing $L$.
+* **Outcome**: KILLED at T0 (Gate 4, 2026-11-16).
+* **Kill rule**: Gate 4: does the gain survive growing system size?
+* **Evidence**: the energy gained by restoring a broken symmetry through projection is a finite-size gain that vanishes per site as $L$ grows; a period-2 charge pattern is not a known order at $\delta=1/4$.
+* **Why this kills it**: it could not give a per-site gain on the larger target, which is the purpose of transfer.
+* **What the kill does not rule out**: a pattern at the true ordering wavevector of a stripe phase, if one exists at this doping.
+* **Strongest case against the kill**: at ED sizes the finite-size gain is the whole gain, so the route might still help the $4\times4$ target. Answered: a finite-size device is excluded by Gate 4 by design.
+* **Checked by**: self-checked in the reopening review; leaf-summary critic, 2026-11-16.
+* **Lesson**: L10 (`library.md`)
+## Leaf Status Summary
+* **State**: EXHAUSTED at this budget
+* **Updated**: 2026-11-17 (job 731382 and the zero-step check: the optimiser falsifier U3 holds, c8h32 1.028% after a proper polish against the 1.02% line; the two remaining arms GATE-REFUSED(G2); every reopening-ledger row closed, with refused steps in U2 and U3: DORMANT → EXHAUSTED at this budget, section 3b exit 3; per-leaf critic SIGN-OFF-WITH-CHANGES 2026-11-17, changes applied: U3 recorded as marginal, 659969 gain marked cutoff-unconverged, 4×4 ladder polish added as a G2-refused row)
+* **Question**: Can a translation-equivariant fermionic NQS trained at $L$ initialize (or directly evaluate) $2L$ with an energy error per site that is already close to converged, so that finite-size scaling needs a fraction of the per-size retraining cost?
+* **Answer**: No, for the size-independent networks we built, going from 8 to 16 sites with open boundaries. Trained directly on the 16-site cluster, such a network stalls at about 5.7% energy error, and this is not an optimiser artefact; a network with separate parameters for each site reaches 0.56%. So copying from 8 sites could at best speed the approach to a 5.7% plateau. On a periodic 16-site cluster, where such a network reached about 2% when trained from scratch, size transfer itself was not tried: that test was judged predictable.
+* **Conclusion**: On open-boundary $t$–$t'$–$J$ clusters at exact-diagonalisation size, no size-independent fermionic NQS family we built gets below about 5.7% relative energy error on the $4\times4$ target, and no optimiser artefact was found: one exact linear-method step gains at most 5% at the loosest cut tested ($10^{-10}$), with the gain still rising with the cut, not converged (L29) on $4\times4$, and on $4\times3$ a cutoff-ladder polish of the best arm stays at 1.028%, 0.008 percentage points above the 1.02% line (one arm, marginal). A copy of such a family cannot beat the family trained at the target, so transfer could at best save time on the way to a 5.7% plateau, while a site-indexed network trained at the target reaches 0.56%. On a $4\times4$ torus a smaller size-independent family reached at most 1.96–2.13% from scratch, but the torus transfer test was refused by the compute gate as predictable, so the periodic case is closed at this budget, not answered.
+* **Scope**: $t'=-0.25$, $J=0.4$; target $4\times4$ open cluster, $6+6$ electrons (hole doping $\delta=1/4$); ablation cluster $4\times3$ open, $5+5$ ($\delta=1/6$); 8-site sources; $4\times4$ torus capacity for MFNG only; exact sums over the projected Hilbert space; single seeds for capacity runs; at most 3000 optimiser steps, plus up to 16 exact LM polish steps on one $4\times3$ arm.
+* **Compute spent**: about 445 CPU-hours on Slurm before the compute gate (jobs 410960, 451914, 452196, 604157, 659969, 704844); under the gate, job 731382 used 2.37 CPU-h of the 300 CPU-h leaf budget; plus a few CPU-hours of login-node T1 runs (including the 4.7 CPU-min zero-step check).
+
+**The question.** A neural quantum state (NQS) is a network that returns the amplitude $\psi(\mathbf n)$ of each occupation configuration $\mathbf n$, optimised variationally. For fermions it needs an antisymmetric layer (a determinant or pair-function "geminal") whose matrices change shape with lattice size and electron number, so finite-size scaling means retraining at every size. P4.2 asks whether a network trained on a small cluster can be copied to a cluster twice as large and start near its converged energy. The comparison is the Minimal Contrast Foil: a Jastrow factor times a projected BCS geminal, refitted at the target.
+
+**The mechanism.** The last surviving design is MFNG-O (momentum-field neural geminal, open-boundary version, 426 parameters). Its pair function $\kappa(\mathbf r_i-\mathbf r_j)$ is generated by a small network on a fixed Brillouin-zone grid, so it is the same function on every cluster, and it is dressed by a backflow and Jastrow that depend only on hole counts around each site. Every parameter is size independent, so transfer is an exact copy. The state is projected onto the ground state's symmetry sector (irrep), and spin $S=0$ is exact.
+
+**Chain of evidence.**
+1. *A copied exact fit is arbitrary.* 106 to 112 of 122 parameter directions are not constrained by the 8-site sources (null directions of the metric of stochastic reconfiguration, SR, the optimiser used throughout). Zero-shot on the $4\times4$ torus the copy had 0.663 t/site error (median of 3 seeds) against 0.285 for the untrained mean-field start, and after 20 and 50 SR steps it stayed behind scratch training (0.0335 against 0.0240; 0.0248 against 0.0183). Route R3.1 closed CLOSED-FAIL (jobs 410960, 451914).
+2. *Capacity, not speed, decides.* A pre-registered pilot trained MFNG-O from scratch at the $4\times4$ open target: plateau 5.97% with 426 parameters (452196), 5.71% with 818 (604157); the site-indexed projected neural-network backflow (NNBF) of P2.1 reaches 0.56% (410988). Above 3% the transfer array was not run (R5.1, R5.3).
+3. *The plateau is real for one step.* The linear method (LM) minimises the energy exactly over the span of the state and its parameter derivatives. At the plateau it gains at most 0.17% of the remaining error at the pre-registered overlap cut, and at most 5% at the loosest cut tested ($10^{-10}$), with the gain still rising with the cut, not converged (L29) (659969, which used the same relative cutoff; gain 0 → 0.0013 → 0.0298 for 818 parameters, 0 → 0.0017 → 0.051 for 426, so cutoff-unconverged). The effective tangent rank is 34 of 426 and 48 of 818: width re-parameterises a few dozen local lookup tables.
+4. *No size-independent ingredient is the lever.* On $4\times3$, spin features, two-body Jastrows and enlargement change the error by at most 1.10 times at 600 steps (R5.4). A free site-resolved pair matrix gives 2.41 times with spin terms, but breaks mirror symmetry and has no size map. Its stand-ins fail: boundary-class kernel 4.41% against a 0.85% gate (R5.5), symmetric site-resolved channel 3.62% against base 1.91% (R9.1), graph-filter kernel 1.02 times (R9.2).
+5. *Longer optimisation does not reach the 2 times lever.* A pre-registered retrain (falsify at 0.77% on $4\times3$) gave LM base 1.78% after 7000 s, above the 600-step SR base 1.536%, so the literal verdict is INCONCLUSIVE; 3000-step SR runs reached 1.294% (base) and 1.057% (enlarged), above the 1.02% confirm line (704844).
+6. *Polishing does not reach it either.* The best arm (c8h32, 1.057%) was regenerated exactly and polished by truncated-metric LM steps (job 731382). At a fixed relative cutoff of $10^{-5}$ the step was frozen (kept metric rank 37 of 818 against a top eigenvalue of $1.2\times10^6$); a cutoff ladder ($10^{-5}$ to $10^{-9}$) lowered it to 1.028%, 2.8% of its error, 0.008 percentage points above the 1.02% line: HOLDS, marginally. The zero-step CHECK rule returned UNCLEAR (a 0.029 pp drop exceeds its 0.02 pp GENUINE limit, the best value stays above 1.02%), and the ladder ran 16 steps, post hoc, against the registered 8-step cap, on one arm. The other two arms would need about a 20% drop in relative error just to fall below 1.02% (AMBIGUOUS), and 40% to reach the 0.77% falsification line; c8h32 lost 2.8% of its error under the proper polish, so HOLDS is predicted for both with $p\approx0.95$ (still plausible); they were not run (GATE-REFUSED(G2)).
+
+Every comparison used the same instance, start, exact-sum energies and pre-registered thresholds, and transfer was charged its source cost on an offset-free clock (time to a given error after subtracting any head start).
+
+**Why the alternatives fail.** Slater-orbital transfer carries only the occupied momentum set the foil already has (R2). Gluing gives zero pair correlation across the cut (R3). Twist folding and multi-size pretraining are Gerard et al. (R4, R3.3). Seed probing missed two thirds of the sign error (R2.3). Linear null filtering destroys the source fit (R5.b). Environment libraries and NNBF warm starts give a static head start worth a speed-up of 1 (R5.2, R9.4, R9.6). Global views are published transformer practice or vanish per site (R5.6, R9.3).
+
+**What this leaf taught beyond itself.**
+* L43 (R3.0, R3.1, R3.2, R5.a, R5.b, R9.6): score transferred and warm-started states against their own start and against scratch; a copied under-identified fit can start below its untrained prior, and a static head start is worth a speed-up of about 1.
+* L30 (R5.1, R5.3, R9.4): measure the capacity plateau and effective tangent rank at the target before speeding up a transferable family.
+* L33 (R5.5, R9.1): a strict superset can end worse under SR at fixed steps, so single-seed SR ablations bound capacity only from above.
+* L18 (R2.1) and L10 (R9.7): continuation through a seam keeps the wrong branch, and projected patterned kernels give only finite-size gains.
+* L29 (U3): a relative metric cutoff can freeze an LM step when the metric's top eigenvalue is large; choose the cutoff per step by the exact energy and log $\lvert z\rvert$ at full precision.
+
+
+**Strongest objection and answer.** *Optimiser-limited*: P4.1 found that a damped LM polish removed 54% of an SR-trained 12-site gap in this brainstorm. Answered for the best $4\times3$ arm: its first polish was frozen by the cutoff, but a cutoff ladder removed only 2.8% of its error (1.057% → 1.028%), 0.008 percentage points above the 1.02% line (so HOLDS rather than AMBIGUOUS, which changes no state) and far from the 0.77% that would have falsified the diagnostic; the ladder was post hoc (16 steps against the registered 8), one arm was measured and the two weaker arms were predicted. The $4\times4$ one-step gain is not converged in the cutoff (5% at $10^{-10}$ and rising); a $4\times4$ ladder polish was refused under G2 (predicted to stay above 3%, $p\approx0.9$). The 600-step ablations (R5.4, R5.5, R9.1, R9.2) remain upper bounds on capacity. *Surface artefact*: 12 of 16 sites touch an edge, every capacity number is open-boundary, and on a torus the kernel already spans every translation-invariant pair function. Job 451914 supports this objection for capacity: on the $4\times4$ torus the smaller MFNG family reaches at most 1.96% from scratch, against 5.7–6.0% for MFNG-O on the open target. Whether transfer pays there was refused by the gate (R9.5), so **this objection is not answered**, and it is why the leaf is closed at this budget.
+
+**Limits.** Open clusters for every transfer and capacity claim; one doping and one $(t',J)$; single seeds; the $4\times3$ base was still falling at 3000 steps; exact sums, never sampled VMC; the only torus capacity number is for MFNG (at most 1.96%, 50 steps), not MFNG-O; the U3 verdict rests on one measured arm and a post-hoc ladder; the $4\times4$ LM gain is cutoff-unconverged.
+
+### Closure certificate
+* **Claim**: For size-independent fermionic NQS families (the momentum-field neural geminal MFNG-O and its ablations) on open-boundary $t$–$t'$–$J$ clusters at ED size ($4\times4$, $6+6$; $4\times3$, $5+5$; $t'=-0.25$, $J=0.4$), the capacity plateau (5.71–5.97% on $4\times4$; 1.03–1.29% on $4\times3$ after 3000 SR steps) is an ansatz limit, not an optimiser artefact, so copying such a family from 8-site sources cannot beat the family trained at the target, and transfer is not a route to the 0.56% of a site-indexed network trained at the target. Not settled: whether transfer pays on periodic targets, where the family's capacity is better (MFNG at most 1.96% on the $4\times4$ torus).
+* **Decisive evidence**: 452196 and 604157 (plateaus 5.97% and 5.71%), 659969 (one-step LM stationarity, DIAGNOSTIC-HOLDS), 410960 and 451914 (copied fits behind scratch), R5.4, R5.5, R9.1, R9.2 (ingredient ablations), 704844 and 731382 with the zero-step check (U3 holds, marginally: c8h32 1.028%, 0.008 pp above the line; CHECK rule UNCLEAR; post-hoc 16-step ladder versus the registered 8-step cap; one arm). Reviewed by the round-5 per-leaf critic, the critic sign-off of 2026-11-16 and the per-leaf critic of 2026-11-17 (SIGN-OFF-WITH-CHANGES).
+* **Why no doubt remains**:
+    * *The plateau is an optimiser artefact* (round-5 critic; P4.1's polish result): one-step LM stationarity on $4\times4$ (659969; at most 5% at the loosest cut tested ($10^{-10}$), with the gain still rising with the cut, not converged (L29)), and a polished best $4\times3$ arm at 1.028% (731382 plus a post-hoc 16-step cutoff ladder, CHECK rule UNCLEAR). HOLDS against AMBIGUOUS at 1.028% changes no state (per-leaf critic, 2026-11-17). A $4\times4$ ladder polish was refused under G2 (row below).
+    * *Zero LM step was a bug* (orchestrator, 2026-11-17): the zero-step check found no bug; the freeze was a relative-cutoff conditioning artefact, and the cutoff ladder gave the 1.028% used here.
+    * *Two U3 arms not measured*: they need about a 20% error drop just to fall below 1.02% (AMBIGUOUS) and 40% to reach 0.77%, where the best arm moved 2.8%; HOLDS predicted with $p\approx0.95$; refused under G2 and listed below.
+    * *Superset ends worse under SR* (R9.1 `fsym`): read as an upper bound on capacity, which the claim respects.
+    * *Surface artefact / periodic targets*: not resolved; excluded from the claim and listed as a refused step.
+* **Falsifiers run**: LM stationarity at the $4\times4$ plateau: DIAGNOSTIC-HOLDS. U3 optimiser falsifier: DIAGNOSTIC-HOLDS (marginal) on c8h32 (c8h32 1.028%, 0.008 pp above the line; CHECK rule UNCLEAR; post-hoc 16-step ladder versus the registered 8-step cap; one arm); its base and spin_jas2cs arms GATE-REFUSED(G2). $4\times4$ cutoff-ladder polish of the 5.71% state: GATE-REFUSED(G2). U2 periodic targets: the torus capacity bound ran (451914); the transfer test was GATE-REFUSED(G2).
+* **Missing ingredients exhausted**: I1 site-resolved pairing → R5.5, R9.1, R9.2 KILLED(T1); I2 global configuration view → R9.3 KILLED(T0); I3 source environments → R9.4 KILLED(T0); U1 symmetry split of the free-matrix oracle → R9.7 KILLED(T0); U4 transfer into a site-indexed family → R9.6 KILLED(T0); U2 periodic targets → R9.5 GATE-REFUSED(G2).
+* **What would reopen it**: (1) The torus transfer test R9.5 (anchored MFNG copy against scratch on the $4\times4$ torus): capped cost 9.6 CPU-h, refused under G2 (FAIL or AMBIGUOUS predicted, $p=0.85$, both close R9.5); P4.2's 300 CPU-h leaf budget funds it, so it reopens on evidence, not budget: a periodic-target result that makes PASS likely, or a wall-clock comparison against a polished scratch arm that the step-count rule lacked. (2) The U3 remaining arms (base, spin_jas2cs): capped cost about 1.9 CPU-h, refused under G2 (HOLDS predicted, $p\approx0.95$); reopens if a better optimiser lowers any arm toward 0.77%. (3) A $4\times4$ cutoff-ladder polish of the 5.71% state: capped cost about 1 CPU-h (building the metric takes 139 s per step), refused under G2 (predicted to stay above the 3% transfer-array line, $p\approx0.9$); reopens the leaf if it falls below 3%. (4) A size-independent family whose $4\times4$ open plateau falls below about 1%.
+* **Certificate sign-off**: "P4.2 per-leaf critic, 2026-11-17: SIGN-OFF-WITH-CHANGES. EXHAUSTED at this budget (exit 3) stands; HOLDS versus AMBIGUOUS at 1.028% changes no state. U3 recorded as marginal with the CHECK UNCLEAR and the post-hoc ladder disclosed. 659969 gain marked cutoff-unconverged. 4×4 ladder polish (~1 CPU-h, $p\approx0.9$ stays $>3$%) added as a G2-refused row. R9.5 and the two-arm refusals valid." Changes applied by the editor on 2026-11-17.
+
+**Reopening ledger (closed 2026-11-17).**
+
+| Item | Source | Route or test | Outcome |
+| :--- | :--- | :--- | :--- |
+| I1 site-resolved pairing | Saturation Diagnostic | R5.5, R9.1, R9.2 | KILLED(T1) |
+| I2 global configuration view | Saturation Diagnostic | R9.3 | KILLED(T0) |
+| I3 source environments | Saturation Diagnostic | R9.4 (and R5.2 at G0) | KILLED(T0) |
+| U1 symmetry split of the free-matrix oracle | reopening review | R9.7; K3 reading of the `fsym` run | KILLED(T0) |
+| U2 periodic targets | reopening review | R9.5: 451914 bounds the MFNG torus capacity (1.96–2.13%, not MFNG-O), so the 47 CPU-h MFNG-O pilot is superseded; the direct torus transfer with MFNG (9.6 CPU-h) was refused | GATE-REFUSED(G2: FAIL or AMBIGUOUS predicted with $p=0.85$, both close R9.5; orchestrator, 2026-11-17) |
+| U4 transfer into a site-indexed family | reopening review | R9.6 | KILLED(T0) |
+| 4x4 plateau is an optimiser artefact | round-5 per-leaf critic | LM stationarity check, job 659969 | DIAGNOSTIC-HOLDS |
+| U3 plateau is optimiser-limited | closed-leaf falsifier and P4.1's LM polish result | LM retrain and 704844; regenerated c8h32 polished by job 731382 (1.057%, logged zero step) and, after the zero-step check, by a cutoff ladder (1.028%); base and spin_jas2cs not regenerated | DIAGNOSTIC-HOLDS, marginal (c8h32 1.028%, 0.008 pp above the line; CHECK rule UNCLEAR; post-hoc 16-step ladder versus the registered 8-step cap; one arm); the two remaining arms GATE-REFUSED(G2): about a 20% drop needed to reach AMBIGUOUS, HOLDS predicted, $p\approx0.95$, about 1.9 CPU-h |
+| $4\times4$ plateau gain is cutoff-unconverged | per-leaf critic, 2026-11-17 (659969 gain 0 → 0.0013 → 0.0298 at 818 parameters, still rising at $10^{-10}$) | cutoff-ladder polish of the 5.71% $4\times4$ state | GATE-REFUSED(G2: about 1 CPU-h, 139 s per metric build; predicted to stay above the 3% transfer-array line, $p\approx0.9$; reopens the leaf if below 3%) |
+
+Every row is closed and three (U2, the remaining arms of U3, and the $4\times4$ ladder polish) carry a GATE-REFUSED(G2) step, so section 3b exit 3 applies: EXHAUSTED at this budget.
+
+* **Critic sign-off (2026-11-16)**: approved, State stays DORMANT (the periodic-torus capacity pilot R9.5 is an unrun named falsifier). Fixed the 4x3 doping (1/6, not 1/4), aligned the surface-artefact objection with the reopening review (the lever is mirror-breaking, not boundary-resolved), softened "optimiser is not the cause", defined SR, the linear method, the offset-free clock and the route and ingredient labels; the 704844 numbers were checked against its aggregate and SR logs (that result has no body section yet).
+* **Documentation pass (2026-11-17)**: Analogy Map, Route Register and reopening ledger added under the updated skill; the U3 row is held open in the light of P4.1's optimiser finding. Not yet reviewed by a critic.
+* **Round 10c (2026-11-17)**: U3 DIAGNOSTIC-HOLDS (job 731382 plus the zero-step check, orchestrator decision); leaf moved from DORMANT to EXHAUSTED at this budget.
+* **Per-leaf critic (2026-11-17)**: "P4.2 per-leaf critic, 2026-11-17: SIGN-OFF-WITH-CHANGES. EXHAUSTED at this budget (exit 3) stands; HOLDS versus AMBIGUOUS at 1.028% changes no state. U3 recorded as marginal with the CHECK UNCLEAR and the post-hoc ladder disclosed. 659969 gain marked cutoff-unconverged. 4×4 ladder polish (~1 CPU-h, $p\approx0.9$ stays $>3$%) added as a G2-refused row. R9.5 and the two-arm refusals valid." Applied: U3 recorded as marginal with the CHECK result and the post-hoc ladder; two-arm refusal reason corrected (about 20% to AMBIGUOUS, not 40%); the "5%" one-step gain reworded and 659969 marked cutoff-unconverged; the $4\times4$ ladder polish added as a GATE-REFUSED(G2) row.

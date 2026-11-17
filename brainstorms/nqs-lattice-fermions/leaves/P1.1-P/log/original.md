@@ -1,0 +1,158 @@
+# Subproblem: P1.1-P — Symmetry-projected sign budget
+**Parent Chain**: P1 -> P1.1 -> P1.1-P  **Status**: ANSWERED (SYMMETRY-DOMINATED on all three tori, job 407525)
+
+### 1. Formulation
+* **Question**: on the three P1.1 clusters ($4\times3$ PBC, $t'=-0.25$; $5+5$ at $U=8$, $4+4$ at $U=8$, $5+5$ at $U=4$), what fraction of the NNBF energy and pair-correlation error is sign error once the state is projected onto $\psi_0$'s space-group irrep?
+* **Why**: P1.1 found $f_E=0.61$–$0.77$ for unprojected NNBF started from a broken-symmetry UHF. On the $4+4$ instance, post-hoc projection of one width-32 state cut $E_{\mathrm{sign}}-E_0$ from $0.084$ to $0.019$. The round-2 critics asked whether the sign branch is mostly symmetry restoration.
+* **Symmetry**: $P_\chi=\lvert G\rvert^{-1}\sum_{g\in G}\chi(g)\,U_g$ with $G$ = translations $\times\{1,M_x,M_y,M_xM_y\}$, $\lvert G\rvert=48$. This is the full point group of a rectangular torus; rotations need $L_x=L_y$. The probe (`probe_output.txt`) finds that $\psi_0$ on all three instances is non-degenerate, in the trivial irrep ($T_x=T_y=M_x=M_y=+1$) and a spin singlet.
+* **Spin**: P1.1 states have fixed $S^z$ but not fixed $S$. Each arm reports $\langle\hat S^2\rangle$ and the budget of $P_S\psi$. Here $P_S$ is the exact Löwdin projector onto $\psi_0$'s spin ($S=0$), applied to the full Hilbert vector. It is an oracle diagnostic, not a method claim.
+* **Code**:
+  - `tests/P1.1P_projected/micro_test.py` is the driver.
+  - `p11_core.py` is a verbatim copy of the P1.1 test.
+  - The projector functions are copied from P1.3 round 2.
+
+### 1b. Analogy Map
+Written retroactively (2026-11-17) against this leaf's routes (R1, R2 in the Route Register). "Tried (R$n$)" means one of this leaf's arms used the technique.
+* **Barrier A, broken symmetry or intrinsic error.** *Field-neutral form*: an approximation started from a solution that breaks a known exact symmetry of the target has some error; decide how much of it is the broken symmetry and how much is intrinsic, and restore the symmetry either after or during optimisation.
+  - *Nuclear structure: projection after variation (PAV) versus variation after projection (VAP).* Source problem: Hartree–Fock–Bogoliubov mean fields break particle number and rotational symmetry, so their states carry no sharp quantum numbers. Correspondence: broken-symmetry mean field ↔ NNBF trained from the unrestricted Hartree–Fock (UHF) start; PAV ↔ arm U→P (train, then project); VAP ↔ arm P (train the projected state). Technique: apply the symmetry projector to the mean-field state, before or inside the variational minimisation. Why it worked there: VAP lets the intrinsic state reorganise around the projection and captures correlations that PAV misses, most strongly where the broken-symmetry minimum is shallow. Translation gap: the nuclear projectors act on a single determinant with analytic overlaps; here the projector acts on a neural network, which is cheap only because the test sums over the full basis (a sampled VMC would pay $\lvert G\rvert$ evaluations per amplitude). Citation: Sheikh, Dobaczewski, Ring, Robledo & Yannouleas, J. Phys. G 48, 123001 (2021). Status: tried (R1 is VAP, R2 is PAV).
+  - *Quantum chemistry: projected Hartree–Fock.* Source problem: a broken-symmetry Slater determinant gives a better energy but the wrong spin and spatial quantum numbers. Correspondence: determinant ↔ NNBF; spin and point-group projectors ↔ $P_S$ and $P_\chi$. Technique: variational optimisation of the determinant inside the projected energy functional. Why it worked there: the projected functional is cheap for a determinant (one overlap per group element) and the deformed determinant captures static correlation. Translation gap: NNBF is not a single determinant (its orbitals depend on the configuration), so the overlap formulas do not apply and projection is done by brute summation over $G$. Citation: Jiménez-Hoyos, Henderson, Tsuchimochi & Scuseria, J. Chem. Phys. 136, 164109 (2012). Status: tried (R1, space group only; full spin projection only as the oracle copy in R2).
+  - *Machine learning: invariant architectures versus post-hoc symmetrisation.* Source problem: learn a function that is invariant under a group, either by building the group into the model (group averaging, equivariant layers) or by averaging a non-invariant model at test time. Correspondence: group average over $G$ ↔ $P_\chi$; training with the averaged model ↔ arm P; test-time averaging of a model trained without it ↔ arm U→P. Technique: weight sharing or group averaging inside training. Why it worked there: the invariant model searches a smaller hypothesis space, so its training signal is not spent on symmetry-breaking directions. Translation gap: the target here carries a character $\chi$ and fermionic reordering signs in $U_g$, which image-group averaging does not have; equivariant layers that build these in were not tried. Citation: Cohen & Welling, ICML 2016 (arXiv:1602.07576). Status: tried (R1, as group averaging; equivariant layers untried).
+* **Barrier B, mechanism or capacity.** *Field-neutral form*: tell whether a fit succeeds because of the mechanism under test or because the model has as many free parameters as the effective dimension of the target space.
+  - *Statistical learning: the interpolation threshold.* Source problem: models with as many parameters as data points interpolate any data, so their training error says nothing about the method. Correspondence: parameter count $P$ ↔ model size; dimension $d_{S\chi}$ of the symmetric singlet sector ↔ number of data points. Technique: report results as a function of $P/n$ and compare methods below the threshold. Why it worked there: the threshold is sharp and computable. Translation gap: NNBF is nonlinear, so the threshold for exact representation of one vector is not exactly $d_{S\chi}$; the leaf uses $P\approx d_{S\chi}/2$ as the warning line. Citation: Belkin, Hsu, Ma & Mandal, PNAS 116, 15849 (2019). Status: tried (R1, the width-8 control at $P/d_{S\chi}=0.37$).
+  - *Krylov subspace eigensolvers.* Source problem: Lanczos becomes exact once its subspace dimension reaches that of the invariant subspace, so only convergence before that point is informative. Correspondence: Krylov dimension ↔ $P$. Technique: a matched-dimension Lanczos foil, against which a variational state of $P$ parameters is compared. Why it worked there: the Krylov error is a known function of dimension and spectrum. Translation gap: a Krylov foil with $P$ vectors is not a compact ansatz at large size, so it is a control, not a competitor. Citation: Saad, *Numerical Methods for Large Eigenvalue Problems* (SIAM, 2011). Status: untried.
+  - *Model selection by information criteria.* Source problem: compare models of different size fairly by penalising parameters. Correspondence: parameters ↔ $P$; goodness of fit ↔ $\Delta E_{\mathrm{tot}}$. Technique: a penalty proportional to $P$ (Akaike). Why it worked there: a likelihood exists and the penalty has an asymptotic justification. Translation gap: the variational energy is not a likelihood and is bounded below, so no penalty has a derivation here. Citation: Akaike, IEEE Trans. Autom. Control 19, 716 (1974). Status: untried.
+
+### 2. Arms
+* **U**: the P1.1 protocol unchanged. UHF start, NNBF widths $8, 32, 128$, exact-force SR (1500 steps, $\eta=0.05$, shift $10^{-3}$, 2000-sample metric), 3 seeds (1234, 2345, 3456). For seed 1234 the RNG replays P1.1's foil draws, so the run follows P1.1's sampling stream. It is cross-checked against the P1.1 JSON (`p11_reference/`).
+* **U→P**: the trained U state projected post hoc, $P_\chi\psi_\theta$. It is computed in the arm-U task.
+* **P**: projected SR. The state $\psi_P=P_\chi\psi_\theta$ is trained directly, with the same SR settings, the same widths and the same number of steps (1500), so the step count matches arm U.
+  - With exact sums, $\psi_P$ costs one basis-wide evaluation of $\psi_\theta$ plus 48 permutations of a $D$-vector.
+  - The force is $\sum_n r(n)\,\partial\psi_\theta(n)$ with $r=(H-E)\psi_P/\lVert\psi_P\rVert^2$.
+  - Only the sampled metric needs the $\lvert G\rvert$ images of each sample.
+* **Spin-projected copies**: $P_S$ applied to every arm, giving U_S, UP_S and P_S.
+
+### 3. Metric
+* $f_E=\Delta E_{\mathrm{sign}}/\Delta E_{\mathrm{tot}}$ uses P1.1's $E_{\mathrm{sign}}$ upper bound: four L-BFGS-B starts plus the ten Haaf fixed node. $f_C$ uses P1.1's $d$-wave bond-pair definition. Both are computed for each arm against that arm's own $\Delta E_{\mathrm{tot}}$.
+* The absolute $\Delta E_{\mathrm{sign}}$ is also reported, because projection can lower both $\Delta E_{\mathrm{sign}}$ and $\Delta E_{\mathrm{tot}}$.
+
+### 4. Pre-committed decision rule
+Fixed before any production result exists, and implemented in `--aggregate`. Per instance, use the widest common width $W$ (128) and the seeds present for both arms; at least 3 seeds are needed, otherwise the instance is AMBIGUOUS. Define:
+
+* $f_P$ = the median over seeds of $f_E(\mathrm{P},W)$;
+* $\rho$ = the median $\Delta E_{\mathrm{sign}}(\mathrm{P},W)$ divided by the median $\Delta E_{\mathrm{sign}}(\mathrm{U},W)$;
+* guards, required for every seed: the calibration error is at most $10^{-3}\min(\Delta E_{\mathrm{tot}}^{\mathrm U},\Delta E_{\mathrm{tot}}^{\mathrm P})$, and the multi-start spread is below $0.05$ for both U and P.
+
+| Verdict | Condition | Consequence |
+| :--- | :--- | :--- |
+| SIGN-ROBUST | Guards hold, $f_P\ge0.5$ and $\rho\ge0.5$ on both $5+5$ instances | The P1.1 conclusion stands for near-node errors |
+| SYMMETRY-DOMINATED | Guards hold and ($\rho\le0.3$ or $f_P\le0.3$) on all three instances | The sign branch reduces mostly to symmetry restoration; round 3 starts from projected baselines |
+| AMBIGUOUS | Otherwise | Report per instance; the sign branch stays live only on instances that meet the SIGN-ROBUST condition |
+
+U→P ratios, spin-projected values, $\langle\hat S^2\rangle$, $f_C$ and the P1.1 cross-check (consistent if within 15%) are reported but do not enter the verdict.
+
+### 5. Cost
+One SR step was timed with 16 threads on the login node (`timing_output.txt`):
+
+| Instance | Arm | $H=8$ | $H=32$ | $H=128$ |
+| :--- | :--- | :--- | :--- | :--- |
+| $4+4$ ($D=245025$) | U | 1.1 s | 1.4 s | 2.1 s |
+| $4+4$ ($D=245025$) | P | 1.1 s | 1.3 s | 1.9 s |
+| $5+5$ ($D=627264$) | U | 2.5 s | 3.3 s | 4.7 s |
+| $5+5$ ($D=627264$) | P | 2.9 s | 3.3 s | 4.8 s |
+
+* **Arm P costs about the same as arm U**, not $\lvert G\rvert$ times as much. The test sums over the whole basis, which is closed under $G$, so only the metric pays the $48\times$ image cost (+0.2–0.3 s per step). The amplitude-cost penalty of projected NQS applies to sampling-based VMC, not here.
+* **Worst-case wall time per task** uses P1.1's own 8-CPU rates (4.9, 5.5 and 7.9 s per step). That gives about 7.6 h of SR, plus about 4 min per budget (12 for arm U, 6 for arm P), so at most about 9 h on the $5+5$ instances and about 4 h on $4+4$.
+* **Resources**: 18 tasks with 16 CPUs and 16 GB each. P1.1 peaked at 3.4 GB.
+
+### 6. Smoke evidence
+* **Checks** (`--checks-only 1`; all pass, in under 1 s):
+  - $\lVert[H,U_g]\rVert\le3\times10^{-16}$ over $\lvert G\rvert=36$ on $3\times3$.
+  - $P_\chi$ is idempotent ($5\times10^{-16}$) and symmetric ($8\times10^{-19}$), and commutes with $H$ ($7\times10^{-17}$). The overlap of $P_\chi\psi_0$ with $\psi_0$ is $1.000000000000$.
+  - The two-site singlet has $\langle\hat S^2\rangle=0$.
+  - $\psi_0$ has $\langle\hat S^2\rangle=6.0000000000$, i.e. $S=2$ on this smoke cluster.
+  - $[H,\hat S^2]$ and $[\hat S^2,U_g]$ are at most $10^{-15}$. $P_S$ is idempotent for $S=0$ and $S=2$.
+  - The projected-SR gradient matches finite differences: $0.64236802975$ against $0.64236802944$.
+  - The projected log-derivatives $O_P$ match finite differences to $7\times10^{-10}$.
+* **Pipeline**: $3\times3$ PBC, $3+3$, $U=8$, widths $4, 8$, 60 SR steps, 3 seeds, both arms; `smoke_output.txt` and `aggregate_smoke_output.txt`. At width 8 (medians):
+  - U: $\Delta E_{\mathrm{sign}}=0.329$, $f_E=0.51$.
+  - U→P: $\Delta E_{\mathrm{sign}}=4.6\times10^{-4}$.
+  - P: $\Delta E_{\mathrm{tot}}=0.038$, $\Delta E_{\mathrm{sign}}=2.6\times10^{-4}$.
+  - On this toy cluster the aggregate classifies the instance symdom. That is not evidence for the production instances: these are 60-step states, and $\psi_0$ is a high-spin state.
+
+### 7. Submission
+Submitted by the orchestrator on 2026-11-11 as Slurm array job 407525; all 18 tasks finished. The command was:
+
+```bash
+cd /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P1.1P_projected && sbatch submit_test.sbatch
+```
+
+After the run:
+
+```bash
+python3 micro_test.py --aggregate results
+```
+
+## Route Register
+### R1 — Arm P: variation after projection, training the space-group-projected network (LIVE)
+* **The idea**: Test whether P1.1's large sign error is symmetry contamination by training the projected state $\psi_P=P_\chi\psi_\theta$ directly, where $P_\chi=\lvert G\rvert^{-1}\sum_{g\in G}\chi(g)U_g$ averages the network over the 48 translations and mirrors $g$ of the $4\times3$ torus ($U_g$ the fermionic representation of $g$, $\chi$ the character of the ground state's trivial irrep). If the wrong signs of the unprojected network mostly encode a broken-symmetry pattern inherited from the unrestricted Hartree–Fock (UHF) start, training inside the sector removes them; a genuine nodal error would survive. Same widths, seeds, steps and stochastic-reconfiguration (SR) settings as the unprojected arm U, at the same cost per step because the full-basis sum is closed under $G$.
+* **Lineage**: created 2026-11-11 from the round-2 critics' question on P1.1's decisive test (P1.1 R1) and P1.3's pre-diagnostic (77% of one width-32 state's sign error removed by projection); the critical-path test of the round-2 synthesis.
+* **Outcome**: LIVE (T3 reached, job 407525, 2026-11-16): pre-registered verdict SYMMETRY-DOMINATED on all three tori. Median sign fraction $f_E$ at width 128: 0.008, 0.006 and 0.005 against 0.61, 0.77 and 0.66 for arm U; projected sign error at most $3.5\times10^{-6}$ of the unprojected one; at width 8 ($P/d_{S\chi}=0.37$ on both $5+5$ tori) $f_E=0.019$ and 0.011 against 0.43 and 0.38. The leaf is ANSWERED on this result.
+
+### R2 — Arm U→P (and its spin copy U$_S$): projection after variation of the unprojected network (KILLED)
+* **The idea**: Restore the symmetry after training instead of during it: take the network trained without projection from the UHF start (arm U) and apply $P_\chi$ once (U→P), or apply the exact Löwdin spin projector $P_S$ onto $S=0$ (U$_S$, an oracle copy). If the symmetric answer were contained in the broken-symmetry network, one projection would remove its contamination at the cost of a single group average, much cheaper than projected training in sampled VMC, where every amplitude costs $\lvert G\rvert$ network evaluations.
+* **Lineage**: reported arm of the P1.1-P design (2026-11-11), computed inside every arm-U task of 407525; it is the "projection after variation" entry of section 1b, Barrier A.
+* **Source analogy**: nuclear-structure symmetry restoration (Sheikh, Dobaczewski, Ring, Robledo & Yannouleas, J. Phys. G 48, 123001, 2021): Hartree–Fock–Bogoliubov mean field ↔ NNBF from the UHF start, projection after variation ↔ U→P; it works there when the broken-symmetry minimum is deep and the intrinsic state already contains the symmetric components; the translation gap is that a network trained into a broken-symmetry basin need not contain them.
+* **Outcome**: KILLED at T3 (2026-11-16).
+* **Kill rule**: no rule was pre-registered for this arm: section 4 says the U→P ratios and spin-projected values "are reported but do not enter the verdict". The question the comparison answers, stated here after the fact: does post-hoc projection of the trained unprojected network remove its sign error as training inside the sector (R1) does?
+* **Evidence**: job 407525, three $4\times3$ tori ($5+5$ at $U=8t$, $4+4$ at $U=8t$, $5+5$ at $U=4t$), width 128, medians over 3 seeds. U→P removes only 35%, 90% and 1% of arm U's sign error $\Delta E_{\mathrm{sign}}$, while R1's projected training leaves at most $3.5\times10^{-6}$ of it (more than 99.999% removed). Exact spin projection of arm U leaves $f_E=0.37$, 0.67 and 0.25 against 0.61, 0.77 and 0.66 unprojected. Arms U and P share widths, seeds, steps and SR settings, and arm U reproduces P1.1 within 2.4%.
+* **Why this kills it**: The symmetry-sector content of a network trained from a broken-symmetry start is not the sector's best state: on two of three tori projecting it afterwards leaves 65% or 99% of the sign error, while training in the sector removes essentially all of it. A cheap post-hoc repair that leaves most of the error is not a substitute for projected training, and the spin copy shows that spin restoration alone is not the mechanism either.
+* **What the kill does not rule out**: post-hoc projection of a network trained from a symmetric start, or projection followed by a short fine-tuning in the sector; on the $4+4$ torus post-hoc projection does remove 90%.
+* **Strongest case against the kill**: the verdict uses a rule written after the data, and three instances span 1% to 90%, so "post-hoc projection fails" does not hold on every case. Answer: the claim is scoped to "it does not match projected training", which holds on all three (worst U→P remainder 10% against at most $3.5\times10^{-6}$ for R1). Not raised by a critic.
+* **Checked by**: per-leaf critic, 2026-11-16, re-checked the U→P and spin-projected numbers quoted in the Leaf Status Summary; the kill itself was not separately reviewed.
+* **Lesson**: L1 (`library.md`)
+
+## Leaf Status Summary
+* **State**: ANSWERED
+* **Updated**: 2026-11-17 (documentation pass: analogy map and route cards R1–R2 added, no new result; last result: final aggregate of job 407525, re-run 2026-11-16 from the 18 result files)
+* **Question**: Is P1.1's finding that signs dominate, on its three 12-site Hubbard clusters, caused by the network breaking the ground state's lattice symmetries?
+* **Answer**: Yes. Trained with the lattice symmetries built in, the same backflow network gets at most 2.4% of its energy error from wrong signs on all three 12-site clusters, against 61–77% without them. Imposing symmetry only after training does not recover this. Wrong signs still carry 8–21% of the pairing-correlation error, but that error is tiny in absolute terms. At this size the network can fit nearly any symmetric state, so this says nothing about larger clusters.
+* **Conclusion**: On the three $4\times3$ periodic Hubbard tori of P1.1, a neural-network backflow trained inside the ground state's space-group symmetry sector has almost no sign error: the sign carries at most 2.4% of its energy error at every width (largest single run 2.34%), against 61–77% for the same network trained without projection. P1.1's "sign is the binding error" result was symmetry contamination from a broken-symmetry start, not an intrinsic nodal error. The pre-registered rule returns SYMMETRY-DOMINATED on all three instances.
+* **Scope**: $4\times3$ lattice with periodic boundaries in both directions, next-nearest hopping $t'=-0.25$; fillings $5+5$ at $U=8$, $4+4$ at $U=8$ and $5+5$ at $U=4$; ground state non-degenerate, trivial irrep, spin singlet; widths 8, 32 and 128; 3 seeds; 1500 steps of exact-sum (no Monte Carlo sampling in energy or force) stochastic reconfiguration. It does not cover larger lattices, open boundaries, $t$–$J$ models or sampled VMC.
+* **Compute spent**: 1,736 CPU-h (job 407525, the only Slurm job of this leaf; login-node smoke and timing runs negligible).
+
+### The argument
+**Question.** A neural quantum state (NQS) is a neural network that outputs the wave-function amplitude $\psi_\theta(n)$ of each occupation configuration $n$. For fermions it must get both the magnitudes and the signs right, and the sign problem is usually blamed for NQS failures. P1.1 split the energy error $\Delta E_{\mathrm{tot}}=E(\psi_\theta)-E_0$ ($E_0$ the exact ground energy from exact diagonalisation, ED) into a sign part and an amplitude part. The sign part is $\Delta E_{\mathrm{sign}}=E_{\mathrm{sign}}-E_0$, where $E_{\mathrm{sign}}$ is the lowest energy any state can reach while keeping $\psi_\theta$'s signs and choosing the best non-negative magnitudes. The sign fraction is $f_E=\Delta E_{\mathrm{sign}}/\Delta E_{\mathrm{tot}}$; $f_C$ is the same split for the $d$-wave pair-correlation error. For neural-network backflow (NNBF: a Slater determinant whose orbitals are shifted by a one-hidden-layer network of width $H$ fed the configuration) started from an unrestricted Hartree–Fock (UHF) state, P1.1 found $f_E=0.61$–$0.77$, rising with width. UHF breaks the lattice symmetries, so the round-2 critics asked whether that "sign error" is just a failure to restore symmetry. This leaf answers that question; it decided whether the whole sign branch (P1.2, P1.3) had a target.
+
+**Mechanism.** The exact ground state lies in one symmetry sector: invariant under all 48 elements $g$ of the torus space group $G$ (12 translations times the mirrors $M_x$, $M_y$). The projector $P_\chi=\lvert G\rvert^{-1}\sum_g\chi(g)U_g$, with $U_g$ the fermionic representation of $g$ and $\chi$ the sector's character, maps any state into that sector. If the unprojected network's wrong signs mostly encode a broken-symmetry pattern inherited from UHF, then training $\psi_P=P_\chi\psi_\theta$ directly should remove them, while a genuine nodal error would survive.
+
+**Evidence.** Arm U repeats P1.1 exactly; arm P trains $\psi_P$ with the same widths, seeds, step count and SR settings, at the same cost per step (1.9 against 2.1 s on $4+4$, width 128; §5). Medians over 3 seeds at width 128, in instance order $5+5/U{=}8$, $4+4/U{=}8$, $5+5/U{=}4$ (407525):
+* $f_E$: U 0.61, 0.77, 0.66; P 0.008, 0.006, 0.005.
+* $\Delta E_{\mathrm{sign}}$ (units of $t$): U 0.10, 0.076, 0.032; P $3.6\times10^{-7}$, $4.3\times10^{-8}$, $7.2\times10^{-8}$, a ratio of at most $3.5\times10^{-6}$.
+* $\Delta E_{\mathrm{tot}}$: U 0.17, 0.099, 0.049; P $4\times10^{-5}$, $8\times10^{-6}$, $2\times10^{-5}$.
+
+The pre-registered rule needed $\rho\le0.3$ or $f_P\le0.3$ on all three ($\rho$ the P/U ratio of $\Delta E_{\mathrm{sign}}$, $f_P$ the P median of $f_E$). Its guards held: calibration error at most $1.3\times10^{-13}t$ (absolute), multi-start spread of the four $E_{\mathrm{sign}}$ starts at most $2\times10^{-8}$ of $\Delta E_{\mathrm{tot}}$ (guard: below 0.05), and arm U reproducing P1.1 within 2.4% at every width. Arm P also reaches $\langle\hat S^2\rangle=0.000$ without spin projection.
+
+**Why the alternatives fail.** Projecting the trained U state afterwards (U→P, route card R2) removes only 35%, 90% and 1% of its sign error. Exact spin projection of U leaves $f_E=0.37$, 0.67 and 0.25. A broken-symmetry network does not contain the symmetric answer; the gain comes from training inside the sector (R1).
+
+**What this leaf taught beyond itself.**
+* L1 (R1, R2): an error budget measured on a network trained from a broken-symmetry mean-field start measures symmetry contamination, not intrinsic nodal error, and symmetry must be imposed during training: projecting afterwards removed between 1% and 90% of the sign error, against more than 99.999% for training inside the sector.
+
+**Strongest objection: sector fitting** (cross-node critic, Major 2). Once the parameter count $P$ reaches about half the dimension $d_{S\chi}$ of the symmetric singlet sector, any network fits the sector exactly. Here $d_{S\chi}=3752$ ($5+5$) and 1618 ($4+4$), so width 128 ($P=18800$, 15680) is deep in that regime. **Answer.** At width 8 ($P=1400$), both $5+5$ tori sit at $P/d_{S\chi}=0.37$, and arm P is only space-group projected, so its search space has dimension $d_\chi=13176$ ($P/d_\chi=0.11$). There it still has median $f_E=0.019$ and 0.011 and $\Delta E_{\mathrm{sign}}\le5\times10^{-5}$ in every seed, against U's $f_E=0.43$ and 0.38 (407525). The contamination finding does not need sector fitting. A second objection: the lower bound on $f_E$ is 0, so only the upper estimate is known. That bias favours a large sign fraction, so it cannot produce SYMMETRY-DOMINATED.
+
+**Limits.** These are 12-site tori with exact sums. The pair-correlation sign fraction stays larger than $f_E$ (median $f_C=0.08$–0.21 at width 128), though on a tiny absolute error. A sign error that survives projection exists elsewhere: on the $4\times4$ open-boundary $t$–$t'$–$J$ $6+6$ cluster, projected NNBF keeps $\Delta E_{\mathrm{sign}}=0.0125t$, $f_E=0.22$–0.24 (P2.1 jobs 410988, 451706; P1.3 found it capacity-limited). Nothing here speaks to lattices beyond ED.
+
+### Closure certificate
+* **Claim**: On the three P1.1 tori ($4\times3$ PBC, $t'=-0.25$; $5+5$ and $4+4$ at $U=8$, $5+5$ at $U=4$), space-group-projected NNBF trained by exact-sum SR at widths 8, 32 and 128 has median $f_E\le0.023$, and at width 128 its sign error is at most $3.5\times10^{-6}$ of the unprojected network's. The pre-registered verdict is SYMMETRY-DOMINATED on all three, so P1.1's sign-binding result on these clusters is symmetry contamination.
+* **Decisive evidence**: Job 407525 (18 tasks, all complete), `python3 micro_test.py --aggregate results` in `tests/P1.1P_projected/`, re-run 2026-11-16 with the same verdict; rule fixed in §4 before any production result. Reviewed by the orchestrator's re-check of the aggregate (master, pilot read-out 2026-11-12) and by the cross-node critic of 2026-11-16, which raised sector fitting but changed no verdict.
+* **Why no doubt remains**:
+    * *Is the sign branch only symmetry restoration?* (round-2 critics): this test, answered yes on these tori.
+    * *Sector fitting* (cross-node Major 2): answered by the width-8 arm on both $5+5$ tori at $P/d_{S\chi}=0.37$, $P/d_\chi=0.11$.
+    * *Upper estimate of $f_E$ only*: biased against this verdict, so conservative.
+    * *Arm U handicapped by the UHF start*: by design; P1.1 used that start, and the question was whether its result was intrinsic.
+    * *Fair comparison*: same widths, seeds, steps, SR settings and cost per step; guards and the P1.1 cross-check pass.
+    * *P1.3's qualification* ($4+4$ wrong-sign weight inherited from UHF) and the cross-node Minor 9 wording ("mostly amplitude, and capacity-limited") concern other instances or are consistent with this claim.
+    * Per-leaf critic (2026-11-16): re-ran `--aggregate` and recomputed the per-width medians from the 18 result files; every number above matches after two corrections (width-8 $\Delta E_{\mathrm{sign}}$ bound, guard values). Sign-off recorded below.
+* **Falsifiers run**: No falsifier of this claim was named by a critic or diagnostic. The open question this result raised (does a sign error survive projection where symmetry is weaker?) was run in other leaves: yes on the $4\times4$ OBC $t$–$t'$–$J$ instance (410988, 451706), which bounds the scope but leaves the torus claim intact. The sector-fitting check is in the 407525 data (width 8).
+* **What would reopen it**: An independent re-implementation of the projector or of $E_{\mathrm{sign}}$ giving projected $f_E\ge0.3$ on these tori; or projected training on these tori at $P/d_{S\chi}\le0.1$ (narrower than width 8) giving $f_E\ge0.3$, which would show that the contamination reading depends on capacity.
+
+Critic sign-off (2026-11-16): approved as ANSWERED. Every certificate item is filled and true: the rule was fixed before the run, all 18 tasks are complete and the re-run aggregate returns SYMMETRY-DOMINATED on all three tori, the only named objection (sector fitting) is answered by the width-8 data, and no critic or diagnostic named a falsifier that has not run. Corrected the width-8 sign-error bound ($4\times10^{-5}$ to $5\times10^{-5}$; the largest seed is $4.7\times10^{-5}$) and the guard values, which now quote the quantities the rule tests.

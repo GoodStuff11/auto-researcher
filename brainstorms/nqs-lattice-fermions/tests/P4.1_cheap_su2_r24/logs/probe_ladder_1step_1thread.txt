@@ -1,0 +1,6 @@
+[13:29:45] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[13:29:54] INVALID check: sampled E -7.808657 +- 4.1e-03 vs exact -7.805526 (0.8 se)
+[13:30:11] ladder step 1: exact R +0.0000 (step dR +0.0000); |dtheta| 0.000; sampled E -7.80866+-4.1e-03; w_max 8.02e+00 [0.5 CPU-min, step 0.38, wall 27 s]
+    cut 1e-04: rank 833 val dE +3.80e-03+-3.4e-03 exact R -0.3647; cut 1e-05: rank 1369 val dE +2.77e-02+-8.0e-03 exact R -1.2371; cut 1e-06: rank 1902 val dE +2.32e-01+-2.9e-02 exact R -9.3493; cut 1e-07: rank 2297 val dE +7.00e+00+-1.8e+00 exact R -262.0452; cut 1e-08: rank 2438 val dE +1.82e+01+-1.3e+00 exact R -878.6781
+[13:30:11] wrote ladder.json (27 s, 0.5 CPU-min)
+wall 29.45 s user 27.17 sys 2.16 maxrss 2014496 KB

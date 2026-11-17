@@ -1,0 +1,3016 @@
+# Subproblem: P4.1 Exact spin-SU(2) for fermionic NQS at sub-projection cost
+**Parent Chain**: P4 -> P4.1  **Status**: OPEN (2026-11-17; see the Leaf Status Summary at the end). Rung 1 (job 731462): exact polish CONFOUNDED ($\rho_{\mathrm{pol}}=0.761$, R2 stays at T2a flagged); sampled polish SAMPLED-LOSES; the r20 sampled-LM viability T1 GATE-REFUSED(G2); no 24-site sampled rung. Round 20 (2026-11-17): R19, R20, R21, R22 LIVE (cheap falsifiers of R19, R20 and R22 running in `tests/P4.1_cheap_su2_r21/`); R23–R26 KILLED at G1 or G2. History: Round 8 (2026-11-16): R3 variant (iii) `che_hf` KILLED at T1 (5x2 exact sums: $\rho=1.57$ against `che` at matched parameters while width binds); refill gated R7–R14, all killed at T0 or with (iii); live routes R1, R2, R3 (i)/(ii), all IN-FLIGHT (686990/687302, 699824, 700568); no new job prepared. Earlier, Stage 3.5 portfolio (2026-11-16): R1 `che_kK` IN-FLIGHT (686990/687302 scaling, 637776/637777 generality), Gate 4 at T0 FAIL expected for the rank part; R2 `pcg-scal` and R3 `che_ext` live (T0 PASS, T1 NO-TARGET), each with a pre-flighted T2 ready to submit (R2 T2a at 12 sites, R3 premise W at 12 and 24 sites); R4 and R5 killed, R6 merged into R3 at T0; no T2 submitted (waiting on premise $P_R$ of 686990). Earlier: rank ladder 508440 (2026-11-14): k family PASS (rank 8 below nnbf_SG at matched params, exact S), rbm AMBIGUOUS, foil FAIL, attribution RANK; cylinder + second-filling check pending. Earlier: Round 5 fix (2026-11-13): `che_rbm` relabelled as a $2^M$-component projected UHF mixture (Gate 0 narrow); rank-ladder test of charge-conditioned projected UHF mixtures (`che_rbm` ranks 2/4/8, `che_k` ranks 2/4/8, containing foil `che_kh4`, 4000-iteration `che` drift control) submitted as job 508440; pre-committed rule: gain stable or rising with rank and $\ge50\%$ of the `che`→`nnbf_SG` gap at the best rank, beyond `che`'s own drift, at iterations 1000 and 2000. Round 5: pilot 451886 failed `kagp2` and `sfb`; kills 5.1, 5.2, 5.3, 5.6, 5.7
+### 1. Mathematical Abstraction & Barriers
+* **Formulation**: Take $L$ lattice sites. A configuration $x=(\mathbf{n}_\uparrow,\mathbf{n}_\downarrow)\in\{0,1\}^{2L}$ has $N_\uparrow+N_\downarrow=N_e$ and $S^z=(N_\uparrow-N_\downarrow)/2=M$. Its charge configuration is $c(x)=(n_1,\dots,n_L)$ with $n_i=n_{i\uparrow}+n_{i\downarrow}\in\{0,1,2\}$, and $N_s(c)$ is its number of singly occupied sites. The total-spin operators are $S^+=\sum_i\hat c^\dagger_{i\uparrow}\hat c_{i\downarrow}$, $S^-=(S^+)^\dagger$, $S^z$, and $\hat S^2=S^+S^-+(S^z)^2-S^z$. **Input**: an antisymmetric NQS $\psi_\theta(x)$ built from a determinant or Pfaffian whose entries depend on $x$ through a neural backflow. **Output**: an amplitude map $x\mapsto\psi_\theta(x)$ with
+$$\hat S^2\lvert\psi_\theta\rangle=S(S+1)\lvert\psi_\theta\rangle\quad\text{exactly, for every }\theta,$$
+at a per-amplitude cost below that of the projection the field uses now. In mVMC/PHF that projection is the quadrature $\psi^S(x)=\tfrac{2S+1}{2}\sum_{g=1}^{N_{\mathrm{grid}}}w_g\sin\beta_g\,d^S_{MM}(\beta_g)\,\langle x\rvert e^{-i\beta_gS_y}\lvert\psi\rangle$. Here $w_g,\beta_g$ are the quadrature weights and nodes, $d^S_{MM}$ is the Wigner small-$d$ function, and $N_{\mathrm{grid}}=\mathcal{O}(N_e)$ is needed for exactness. **Solved** means three things together: $\langle\hat S^2\rangle-S(S+1)$ sits at machine precision; the cost per amplitude is below $N_{\mathrm{grid}}$ antisymmetric evaluations; and the variational energy and long-range correlations beat the Minimal Contrast Foil (the spin-projected Jastrow–pair-product state) on a doped, $t'\neq0$ 2D cluster.
+* **The Node Barrier**: The barrier is a commutant lemma, proved here in one line. A diagonal operator $D(x)$ in the $S^z$ occupation basis commutes with all $S^a$ if and only if $D=D(c)$, i.e. it depends on the charge configuration only. Proof: $[D,S^+]=0$ forces $D$ to be equal on configurations related by one spin flip on a singly occupied site, and these flips connect every spin arrangement with the same $c$. Consequences:
+  - (i) The mVMC quadrature is cheap ($N_{\mathrm{grid}}$ Pfaffians) only because the Gutzwiller and charge-Jastrow correlators are functions of $c$, so they commute with $e^{-i\beta S_y}$. Projecting the reference is then enough (Tahara & Imada, arXiv:0805.4457; Misawa et al., arXiv:1711.11418).
+  - (ii) Any correlator or backflow that reads spin-resolved occupations (NNBF, Luo & Clark arXiv:1807.10770; HFDS; the transformer backflow in SBP, Rende, Viteritti & Georges arXiv:2608.12465, whose embedding is spin-resolved and which enforces translation, not SU(2)) does not commute. Then $\langle x\rvert e^{-i\beta S_y}\lvert\psi\rangle=\sum_{x'\in\mathcal{O}(c)}\prod_i d^{1/2}(\beta)\,\psi(x')$ runs over the spin orbit $\mathcal{O}(c)$, which has $\binom{N_s}{N_s/2+M}$ elements. That is exponential in $N_s$.
+  - The **fundamental barrier** is therefore this: with $S^z$-basis inputs, a spin-reading correlator gets exact $S$ only at exponential cost. Spin-dependent information must enter through SU(2)-scalar but non-diagonal operators, or through a spin-adapted basis.
+  - The **practical barriers** are the $N_{\mathrm{grid}}\times$ cost and the fact that mVMC needs fast-update bookkeeping per grid point.
+  - **Anti-Solution Space**:
+    - (a) Penalty terms $\lambda\langle\hat S^2\rangle$ or a soft $S^z$ symmetrization: not exact.
+    - (b) Projecting a spin-resolved NNBF by quadrature: exponential, by (ii).
+    - (c) Fixed spin functions compressed to $R$ product terms (SA-NNBF, Li, Wu, Zhang, Fang & Li, arXiv:2604.06841): spin is exact only up to the CP-fit residual ($10^{-10}$ to $10^{-8}$), the spin function is not variational, and $R$ grows with the number of open shells.
+    - (d) Restricting to half filling with $t'=0$, where the Marshall sign makes spin-adapted sampling easy.
+### 1b. Analogy Map
+Written on 2026-11-17, after Rounds 1–11. The map was not built before route generation; it is reconstructed here from the routes the leaf actually tried, plus quick literature searches, and every entry says whether it was tried. "Tried (R<id>)" and "repaired (R<id>)" refer to cards in the Route Register at the end. Symbols: $c$ is the charge configuration (site occupations $0,1,2$), $N_s$ the number of singly occupied sites, $P_S$ the exact total-spin projector, $S$ the quantum geometric tensor (overlap matrix of log-derivatives) used by stochastic reconfiguration (SR), and "Gaussian" means a Slater determinant or pairing (Pfaffian) state.
+
+**Barrier A (fundamental), field-neutral form: "impose an exact non-Abelian symmetry on a parameterised function at polynomial cost, when the function's most useful input features are not invariant under the group".** Here it is the commutant lemma of section 1: a diagonal factor commutes with spin rotations only if it reads $c$ alone, so exact $P_S$ of a network that reads spins needs a sum over the $\binom{N_s}{N_s/2}$ spin arrangements of $c$.
+
+| Source field | Source problem | Correspondence (theirs → here) | Technique, and why it worked there | Translation gap | Citation | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Quantum chemistry | Broken-symmetry Hartree–Fock has wrong spin quantum numbers and misses static correlation | UHF or GHF determinant → charge-conditioned determinant per $c$; spin rotation → the same; projector quadrature → closed-form Che projection | Projected Hartree–Fock (PHF): rotate the determinant and integrate over the group with a few quadrature nodes. It works because a rotated determinant is again a determinant (Thouless), so every node costs one determinant | It needs every correlator to be invariant: a Jastrow or backflow that reads spin breaks closure. PHF is not size-extensive: its gain over UHF stays $\mathcal O(1)$ | Jiménez-Hoyos et al., J. Chem. Phys. 136, 164109 (2012), arXiv:1202.3148 | tried (R2.2, R3.1, R2) |
+| Nuclear physics | Deformed Hartree–Fock–Bogoliubov (HFB) vacua break rotational invariance; angular-momentum and particle-number projection restore it | Angular momentum $J$ → total spin $S$; HFB quasiparticle vacuum → charge-conditioned pairing Gaussian; variation after projection (VAP) → training with $P_S$ inside the energy | Projection over Euler angles with the Onishi overlap formula, and VAP so the mean field may break symmetry freely. It works because quasiparticle vacua are closed under rotations | Correlation beyond one vacuum comes from generator-coordinate mixing, a fixed-rank superposition, which has the same size limit as R1. Nothing in nuclear structure plays the role of the lattice sign problem | Sheikh, Dobaczewski, Ring, Robledo & Yannouleas, J. Phys. G 48, 123001 (2021), arXiv:1901.06992 | tried (R2: pairing Gaussian with VAP; R1: mixing) |
+| Machine learning | Learn functions that are exactly invariant or equivariant under a compact group | Input vectors → spins on singly occupied sites; irreps and Clebsch–Gordan products → spin couplings | Equivariant networks built from Clebsch–Gordan tensor products are exact for every weight. It works because inputs are continuous vectors that transform in a known irrep | Lattice amplitudes are multilinear in the spinors, and multilinear invariants are valence-bond (bracket) polynomials (first fundamental theorem of invariant theory). An equivariant network therefore collapses to resonating valence bonds, with no determinant layer for the fermion sign | Kondor, Lin & Trivedi, arXiv:1806.09231; SU(2) RBM for spins, Vieijra et al., arXiv:1905.06034 | tried (R3.3, R0.4) |
+| Tensor networks | DMRG and MERA with a conserved non-Abelian quantum number | MPS bond → bond of the squeezed spin chain; intertwiners → SU(2)-symmetric tensors conditioned on $c$ | Store only the reduced tensors in each irrep (Wigner–Eckart); exact for any bond dimension | Needs a site order; in 2D the bond dimension grows as $e^{\mathcal O(L_y)}$ (area law) | Singh & Vidal, arXiv:1208.3919 | tried (R2.5); repaired (R22: a balanced coupling tree with a network spin factor) |
+| Lattice gauge theory | Impose an exact non-Abelian Gauss law with a local Hamiltonian | Link irreps → intermediate spins of a coupling tree; Gauss law → fixed root spin $S$; plaquette term → hop between leaves | The spin-network (electric) basis makes the constraint exact, and recoupling is confined to the links a term touches; balanced SU(2) tree tensor networks do the same for spins | Fermions need a sign, and the tree basis has no determinant layer for the spin sector, so the network must learn the spin-sector sign (the Hard Core) | Gunst, Verstraete & Van Neck, J. Chem. Theory Comput. 14, 2026 (2018); arXiv:2104.14869 | tried (R22, LIVE) |
+| Machine learning (frame averaging) | Make any network exactly invariant under a group | Input point cloud → spin configuration; rotation → spin rotation; frame → finite subgroup of SU(2) | Average the output over a small, input-dependent set of group elements; works because the group maps inputs to inputs | SU(2) acts on Fock amplitudes by superposing basis states; only the spin-flip subgroup permutes them, so the cheap frame gives parity only (R23), and a Löwdin repair needs a number of factors growing with $N$ (R24) | Puny et al., arXiv:2110.03336; Kaba et al., arXiv:2211.06489 | tried (R23), repaired (R24) |
+| Correlated quantum chemistry | Spin-adapted correlated methods: configuration-state-function (CSF) and GUGA bases; spin-projected coupled cluster | CSF label → spin-coupling label of the singles; projected coupled cluster → projection of a non-Gaussian correlated state | GUGA makes $S$ exact by working in a spin-adapted basis. Projected coupled cluster disentangles the projector from the cluster exponential, approximately | The spin-adapted basis makes the Hamiltonian non-sparse and has no cheap antisymmetric layer (R0.4). Projected coupled cluster is approximate in the overlaps, so not exact | Dobrautz, Smart & Alavi, arXiv:1905.01346; Qiu, Henderson, Zhao & Scuseria, J. Chem. Phys. 147, 064111 (2017), arXiv:1706.06650 | tried (R0.4); projected coupled cluster tried (R25, with an SU(2)-scalar bond Hubbard–Stratonovich decoupling: exact per field, but the field integral is exponential) |
+
+**Barrier B (scaling), field-neutral form: "represent a correlation whose size grows with the system using a fixed number of mean-field components, or a fixed-width encoder".** Here it is the Gate 4 argument of R1: a rank-$K$ projected mixture gains $o(N)$ in energy, and a fixed-width backflow spans an $H$-dimensional affine set of orbital matrices for every $c$.
+
+| Source field | Source problem | Correspondence (theirs → here) | Technique, and why it worked there | Translation gap | Citation | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Quantum chemistry | Truncated configuration interaction is not size-consistent | Linear sum of $K$ states → rank-$K$ projected mixture; exponential cluster operator → product over patches | Coupled cluster writes the state as an exponential, so the energy adds over fragments | The exponential of SU(2)-scalar operators is non-Gaussian per $c$, so $P_S$ loses its closed form; a product of local rank-2 terms is a mixed-discriminant-type sum with no known resummation (R4) | Bartlett & Musiał, Rev. Mod. Phys. 79, 291 (2007) | tried (R2.1, R4, R5, RG1) |
+| Many-body theory | Resonating Hartree–Fock and non-orthogonal configuration interaction | Few non-orthogonal determinants → the $K$ components of `che_kK` | Superpose a few symmetry-broken determinants to capture static correlation of a few configurations | Components that differ on an extensive region become exponentially orthogonal, so the gain stays $\mathcal O(1)$ | Fukutome, Prog. Theor. Phys. 80, 417 (1988) | tried (R1, R5.4, R5.5) |
+| Statistics and machine learning | A mixture of $K$ components cannot represent a product distribution over $M$ independent blocks without $K^M$ components; a product of experts can | Mixture → rank-$K$ projected mixture; experts → local factors | Product of experts: multiply local densities and normalise jointly | A product of local spin factors under $P_S$ is non-Gaussian per $c$: exact projection costs $2^M$ closed forms (Lemma B) or an orbit sum | Hinton, Neural Comput. 14, 1771 (2002) | tried (R4, R5.5, R10, RG2) |
+| Machine-learned interatomic potentials | Make a learned energy size-extensive and transferable | Atomic environment → local charge pattern; shared local network → shared local backflow kernel | Behler–Parrinello: a sum of local terms from one shared network is extensive by construction | Backflow enters a determinant, not an additive energy; the local kernel `che_loc` was far worse than the global network at small sizes (T1 $\rho=46$ and 6.2) | Behler & Parrinello, Phys. Rev. Lett. 98, 146401 (2007) | tried (R3 variant (i), R7) |
+
+**Barrier C (practical; found in Rounds 9–11), field-neutral form: "optimise a parameterised model with a nearly singular metric, estimated from fewer samples than parameters".** Here the SR-trained 12-site `che` sits 0.49 of its gap above the best point one exact linear-method step reaches, and the gain lies in near-redundant parameter combinations.
+
+| Source field | Source problem | Correspondence (theirs → here) | Technique, and why it worked there | Translation gap | Citation | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Machine-learning optimisation | The Fisher metric of an over-parameterised network is ill-conditioned | Fisher matrix → $S$; minibatch → Monte Carlo samples | Natural gradient, approximated by Kronecker factors (K-FAC) and damped. It works because the curvature has layer structure and minibatches are large | Here samples per parameter are 0.1–0.4 and the output is a projected determinant, not a layered network output | Amari, Neural Comput. 10, 251 (1998); Martens & Grosse, arXiv:1503.05671 | natural-gradient variant tried in the R18'' screen (worse than the linear method); K-FAC untried |
+| Quantum-chemistry VMC | Optimise Jastrow–Slater parameters | Same objects | The linear method solves a generalised eigenproblem in the tangent space; the blocked linear method handles many parameters. It works because the tangent-space Hamiltonian has a zero-variance property | Mapping the eigenvector back to parameters through a near-singular overlap gives huge steps (R18, update norm 17.7) | Toulouse & Umrigar, J. Chem. Phys. 126, 084102 (2007); Zhao & Neuscamman, J. Chem. Theory Comput. 13, 2604 (2017), arXiv:1702.01481 | tried (R15d, R18, R18'), repaired (R18'') |
+| Numerical analysis | Ill-posed linear inverse problems | Overlap matrix → the ill-conditioned operator; parameter update → the solution | Truncated singular-value decomposition: drop directions below a relative cutoff instead of adding a Tikhonov (diagonal) shift. It works because the dropped directions amplify noise and carry little signal | Part of the gain sits in small-eigenvalue directions: a cutoff of $10^{-4}$ realises 0.32 of the gap, $10^{-5}$ realises 0.54 in 4 steps. Whether a sampled $S$ keeps this is untested | Hansen, Rank-Deficient and Discrete Ill-Posed Problems (SIAM, 1998) | repaired (R18''); cutoff ladder (R19) and truncated sampled SR (R21) LIVE |
+| NQS optimisation | Sample-space SR (minSR) for large networks | Same objects | SPRING adds a Kaczmarz momentum to minSR at no extra cost | Momentum carries noise when samples per parameter are about 0.1 | Goldshlager, Abrahamsen & Lin, arXiv:2401.10190 | tried (R15) |
+
+### 2. Candidate Routes & Falsification Gates
+* **Route 1 (R1/R1x)**: Charge-conditioned singlet geminal with an SU(2)-scalar exchange dressing.
+  - *Point of departure*: by the lemma, the only diagonal conditioning compatible with exact $S$ is on $c$. So put **all** of the neural expressivity in $c$, and put the spin structure into a geminal that is a singlet by construction.
+  - *Ansatz*:
+$$\lvert\psi\rangle=\sum_c\hat P_c\Big(1+\sum_b\alpha_b(c)\hat X_b\Big)\,e^{J(c)}\Big[\textstyle\prod_{k=1}^{2S}\hat\phi^\dagger_{k\uparrow}(c)\Big]\big(\hat\Gamma^\dagger_c\big)^{N_\downarrow}\lvert0\rangle .$$
+  - *Symbols*:
+    - $\hat P_c$ is the projector onto charge configuration $c$.
+    - $\hat\Gamma^\dagger_c=\sum_{ij}F_{c,ij}\hat c^\dagger_{i\uparrow}\hat c^\dagger_{j\downarrow}$ with $F_c=B_cF_0B_c^{\mathsf T}$ and $F_0=F_0^{\mathsf T}$.
+    - $B_c=\mathbb{1}+\eta(c)$, where $\eta(c)$ is the output of an MLP that reads only doublon and holon occupations; this is the backflow.
+    - $\hat\phi^\dagger_{k\uparrow}(c)$ are $2S$ unpaired orbitals with $\Phi_c=B_c\Phi_0$.
+    - $J(c)$ is a charge Jastrow plus Gutzwiller factor.
+    - $\hat X_b=2\mathbf{S}_i\cdot\mathbf{S}_j+\tfrac12 n_in_j$ is the spin exchange on bond $b=(i,j)$ (nearest and next-nearest neighbours), weighted by a charge-only MLP head $\alpha_b(c)$.
+  - *Exactness theorem*: $\hat P_c$, $\hat X_b$ and $e^{J(c)}$ commute with $S^\pm$ and $S^z$. $\hat\Gamma^\dagger_c$ is a singlet because $F_c$ is symmetric, so $[S^+,\hat\Gamma^\dagger_c]=0$. Also $[S^+,\hat\phi^\dagger_{k\uparrow}]=0$ and $S^+\lvert0\rangle=0$. Hence $S^+\lvert\psi\rangle=0$ and $S^z=S$, which gives exact $S$ for every $\theta$.
+  - *Amplitude*: $\psi(x)=e^{J(c)}\det[F_c(\mathrm{up},\mathrm{dn})\,\vert\,\Phi_c(\mathrm{up},:)]$. This is **one** $N_\uparrow\times N_\uparrow$ determinant, with $N_\uparrow=N_e/2$ for a singlet, compared with $N_{\mathrm{grid}}$ Pfaffians of size $N_e$ for the foil.
+  - *Dressing cost*: the dressing adds one rank-2 determinant ratio per bond, $\mathcal{O}(N_e)$ each given $A^{-1}$, i.e. $\mathcal{O}(\lvert B\rvert N_e)$ per amplitude, where $\lvert B\rvert$ is the number of dressed bonds.
+  - *Fast updates*: spin-exchange Monte Carlo moves leave $c$ and therefore $F_c$ unchanged, so they get $\mathcal{O}(N_e^2)$ updates. Hopping moves cost the same as standard NNBF.
+  - Gate 0 (Novelty & Adoption): **PASS**. The closest prior work, and why none of it is standard practice:
+    - (1) SA-NNBF (arXiv:2604.06841) also restricts the backflow input to spatial occupations. Its spin function is fixed (not variational), it is compressed into $R$ products costing $R$ determinants, and it is exact only to the CP residual. It was demonstrated on molecules only. R1 replaces the fixed spin function with a variational, $c$-dependent singlet geminal, which is exact with $R=1$.
+    - (2) SBP (arXiv:2608.12465) uses the same $\det f(\mathbf n)$ structure, but its inputs are spin-resolved and $f$ is not symmetric, so it does not enforce SU(2) and the paper does not discuss it.
+    - (3) Charge (doublon–holon) backflow on BCS: Tocchio, Becca & Gros, arXiv:1102.3017 (PRB 83, 195138). It is hand-crafted with few parameters, and in practice it is paired with a spin Jastrow that breaks SU(2).
+    - (4) mVMC and PHF quadrature: Tahara & Imada, arXiv:0805.4457; Misawa et al., arXiv:1711.11418; Jiménez-Hoyos et al., arXiv:1202.3148 (DOI 10.1063/1.4705280). RBM+PP with projection: Nomura et al., arXiv:1709.06475.
+    - *Adoption barrier and how R1 addresses it*: the field believes spin-resolved inputs are needed to get AF and stripe correlations, so it accepts spin contamination or pays for projection. R1's concrete mechanism is the charge-conditioned exchange dressing $\alpha_b(c)\hat X_b$, which supplies spin-dependent correlations through SU(2) scalars at $\mathcal{O}(\lvert B\rvert N_e)$ extra cost. Whether that is enough is exactly what Gate 2 and the decisive test measure.
+  - Gate 1 (Conservation & Asymptotics): **PASS**. The exactness theorem above, verified numerically.
+    - The smoke test prints $\langle\hat S^2\rangle-S(S+1)$ for agp, r1 and r1x at random parameters. The values are between $-7.4\times10^{-18}$ and $1.5\times10^{-17}$ for $S=0$, and between $-2.2\times10^{-16}$ and $0$ for the highest-weight $S=1$ construction ($2\times3$ torus, $N_e=4$).
+    - Analytic gradients agree with finite differences to $10^{-8}$ or better.
+    - In the non-interacting limit at closed shell, $F_0=\sum_{k\le N_e/2}\phi_k\phi_k^{\mathsf T}$ reproduces the Fermi sea exactly.
+  - Gate 2 (Baseline Gameability): **PASS (provisional; the decisive test is this gate)**.
+    - R1 strictly contains the foil's singlet sub-family (symmetric $f$ with the same $J$), and it adds $c$-dependent pairing at $1/N_{\mathrm{grid}}$ of the foil's antisymmetric cost.
+    - The foil is not contained in R1. Projected broken-symmetry (AF or triplet) pairing is the foil's advantage near the Mott limit.
+    - Matching the foil at lower cost would be a weak pass. The pre-committed PASS requires $\epsilon$ halved plus correlation guards (Section 4).
+    - The r2 ablation (R1 backflow plus exact projection of a general $f$) measures what the quadrature still buys on top of R1.
+  - Gate 3 (Hard-Core Shield): **PASS**. The exactness theorem uses no lattice, filling, $t'$ or dimensionality assumption. Sign structure comes from a determinant with a learnable, $c$-dependent pairing matrix, not from a Marshall rule. The known weak point is expressivity near half filling at large $U$, where $c$ carries little information. That is a performance question settled by the test, not a hidden reliance on a sign-free point. The test instance is doped, has $t'\neq0$ and is 2D.
+  - *Verdict*: SURVIVED
+* **Route 2**: Stochastic SU(2) projection of a spin-resolved NNBF. Sample the rotation angle $\beta$ and the spin-orbit configurations $x'\in\mathcal{O}(c)$ to estimate $\langle x\rvert P^S\lvert\psi\rangle$.
+  - Gate 0 (Novelty & Adoption): PASS. Group-element sampling is used for Abelian and point groups. For SU(2) on fermionic NQS no adoption exists, because of the variance problem below.
+  - Gate 1 (Conservation & Asymptotics): **FAIL**. $S$ is exact only in expectation. The VMC energy needs ratios $\psi(x')/\psi(x)$ of noisy estimates, so it is biased at any finite sample count. The estimator sums $\binom{N_s}{N_s/2+M}$ terms with signed weights $\prod d^{1/2}(\beta)$, so its relative variance grows exponentially in $N_s$ (an internal sign problem).
+  - Gate 2 (Baseline Gameability): not reached.
+  - Gate 3 (Hard-Core Shield): FAIL. The cost is exponential in $V$, which is the Unacceptable Outcome.
+  - *Verdict*: KILLED
+* **Route 3**: Analytic projection by polynomial roots. For a rotated pair-product reference, $\mathrm{Pf}\,X(\beta)=\cos^{N_e}(\beta/2)\,\mathrm{Pf}(A_0+tA_1+t^2A_2)$ with $t=\tan(\beta/2)$ and skew-symmetric coefficients $A_0,A_1,A_2$. The roots of this quadratic matrix polynomial, from one $2N_e$-dimensional linearised eigenproblem, give the whole $\beta$-polynomial, and the projection integral then has a closed form. This would replace $N_{\mathrm{grid}}$ Pfaffians by one $\mathcal{O}(N_e^3)$ solve.
+  - Gate 0 (Novelty & Adoption): PASS (not found in the mVMC, PHF or PQT literature checked).
+  - Gate 1 (Conservation & Asymptotics): PASS. It is exact algebra, but the root pairing of the doubly degenerate eigenvalues of $\det=\mathrm{Pf}^2$ is ill-conditioned.
+  - Gate 2 (Baseline Gameability): **FAIL**.
+    - The variational family is identical to the foil's, so the accuracy is identical by construction.
+    - It still requires correlators that commute with spin, by the lemma, so it adds no backflow expressivity.
+    - Its cost advantage disappears under fast updates: mVMC needs $\mathcal{O}(N_{\mathrm{grid}}N_e)$ per ratio, while the eigen solve needs $\mathcal{O}(N_e^3)$ per move, with a QZ prefactor around $30\times$.
+  - Gate 3 (Hard-Core Shield): not reached.
+  - *Verdict*: KILLED
+* **Route 4**: Spin-adapted basis (CSF/GUGA, Gelfand–Tsetlin, or valence-bond) NQS. Sample $(c,T)$, where $T$ is a spin-coupling label, so $S$ is exact by construction and a network on $T$ can be spin-dependent.
+  - Gate 0 (Novelty & Adoption): **FAIL**.
+    - Prior work: irreps-basis sampling exists for spins (Vieijra et al., arXiv:1905.06034, PRL 124, 097201); GUGA-FCIQMC exists for fermions (Dobrautz, Smart & Alavi, arXiv:1905.01346).
+    - Its adoption barrier for VMC is stated explicitly by Li et al. (arXiv:2604.06841): the spin-coupled basis gives a non-sparse Hamiltonian.
+    - In addition, there is no cheap antisymmetric layer. $\langle c,T\vert\Phi_{\mathrm{SD}}\rangle$ sums over exponentially many determinants, so the fermionic sign must be learned without a determinant. That is the open problem of P1.2 and P1.3.
+    - The route has no mechanism that fixes either barrier.
+  - Gate 1 (Conservation & Asymptotics): PASS.
+  - Gate 2 (Baseline Gameability): not reached.
+  - Gate 3 (Hard-Core Shield): FAIL. Positive or Marshall-signed amplitudes in VB/CSF bases are a half-filling, bipartite, $t'=0$ property, and doped holes moving through singlets carry nontrivial signs.
+  - *Verdict*: KILLED
+### 3. Top Surviving Route & Sharpest Gap
+* **Mechanism**: R1/R1x. All neural expressivity is put into SU(2)-scalar inputs. Charge-only backflow $F_c=B_cF_0B_c^{\mathsf T}$ acts on a symmetric (singlet) geminal, with highest-weight unpaired orbitals for $S>0$. Spin-dependent correlation comes only through charge-weighted SU(2)-scalar exchange operators $\alpha_b(c)\hat X_b$. The result is exact $S$ for every parameter value with one $N_e/2\times N_e/2$ determinant plus $\lvert B\rvert$ rank-2 ratios per amplitude. There is no quadrature and no CP compression. The commutant lemma shows this is essentially the maximal diagonal conditioning compatible with exact $S$.
+* **Sharpest Gap**: there is no lemma bounding the expressivity of charge-conditioned singlet geminals for doped spin correlations. Near half filling at large $U$, $c$ is almost constant, so R1 collapses to a single determinantal RVB state with hole-dependent pairing. A linear exchange dressing may not recover the AF/stripe spin correlations that the foil obtains from projecting a broken-symmetry pairing. Whether $\sum_b\alpha_b(c)\hat X_b$ at first order is enough, or whether the dressing has to be exponentiated (cost unknown), is unverified.
+### 4. 24-Hour Decisive Test & Compute Execution
+* **Minimal Instance**: Hubbard model on a $3\times4$ torus with $t=1$, $t'=-0.3$, $U=8$, $N_e=10$ (doping $\delta=1/6$), sector $S=0$, $S^z=0$. The Hilbert dimension is $627{,}264$, with about $5.8\times10^4$ distinct charge configurations. The instance is doped, 2D, non-stoquastic, and at strong coupling, so it retains the sign half of the Hard Core. All energies are exact sums: L-BFGS on the exact energy with hand-coded vector-Jacobian products, 3 seeds per ansatz, and an exact-diagonalisation (ED) reference with $\langle\hat S^2\rangle\approx0$ checked. Ansätze compared: foil, agp (no backflow), r1, r1x, and r2 (R1 backflow plus exact projection of a general $f$).
+* **Scalar Metric $M$**: Let $\epsilon_A=(E_A-E_0)/\lvert E_0\rvert$, with $E_A$ the lowest energy of ansatz $A$ over its 3 seeds. Then $M=\epsilon_{\mathrm{r1x}}/\epsilon_{\mathrm{foil}}$. Guards:
+  - (g1) $\lvert\langle\hat S^2\rangle_{\mathrm{r1x}}\rvert<10^{-10}$;
+  - (g2) $\Delta C_s(\mathrm{r1x})\le\Delta C_s(\mathrm{foil})$, where $\Delta C_s=\max_{R\neq0}\lvert C_s(R)-C^{\mathrm{ED}}_s(R)\rvert$ and $C_s(R)=\tfrac1L\sum_i\langle S^z_iS^z_{i+R}\rangle$;
+  - (g3) $\Delta P_d(\mathrm{r1x})\le\Delta P_d(\mathrm{foil})+10^{-4}$, where $\Delta P_d$ is the mean of $\lvert P_d(R)-P^{\mathrm{ED}}_d(R)\rvert$ over displacements whose $d$-wave stencils do not overlap, and $P_d(R)=\tfrac1L\sum_i\langle\Delta^\dagger_d(i)\Delta_d(i+R)\rangle$ with singlet bond pairs.
+  - $M$ with r1 in place of r1x (`--route r1`) is reported as an ablation.
+* **Execution Plan**: Script `/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2/micro_test.py` (modes `smoke`, `run`, `report`). Batch file `/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2/submit_test.sbatch`: a Slurm array of 15 CPU tasks (5 ansätze × 3 seeds), partition `kim`, 4 CPUs, 16 GB, 23.5 h, with a 21 h optimisation cap. The measured gradient time at dimension 48,400 is 0.7 s for r1 and 1.5 s for r1x, which extrapolates to about 10 s and 25 s at full size. Submit (not run): `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2/submit_test.sbatch`. Then run `/share/apps/software/anaconda3/bin/python3 micro_test.py --mode report --route r1x` and the same with `--route r1`, from the test directory.
+* **Thresholds**:
+  - PASS: $M\le0.5$ with g1, g2 and g3 all holding.
+  - FAIL: $M\ge1.0$ (the foil is at least as good), or g1 violated.
+  - AMBIGUOUS: $0.5<M<1$, or $M\le0.5$ with g2 or g3 violated. Pre-committed action: rerun the same array with `--Ne 8` ($\delta=1/3$, dimension 245,025). Promote R1x only if $M<1$ with all guards on both instances; otherwise KILL R1x and record the gap in Section 3 as fatal.
+* **Smoke-test evidence**: `cd tests/P4.1_cheap_su2 && /share/apps/software/anaconda3/bin/python3 micro_test.py --mode smoke` (4.8 s, output also saved in `logs/smoke_output.txt`). The $2\times3$ cluster has fewer basis states than r1 has parameters, so the optimisation lines only show that the code runs. They are not evidence for Gate 2.
+
+```
+[S=0] 2x3 torus Ne=4 dim=225 E0=-6.70374254 <S^2>_ED=-6.84e-18
+  agp   P=  52 E=-4.513405  <S^2>-S(S+1)=-1.14e-18 [PASS]  grad rel.err=1.5e-10 [PASS]
+  r1    P= 248 E=-4.028277  <S^2>-S(S+1)=+1.46e-17 [PASS]  grad rel.err=5.5e-09 [PASS]
+  r1x   P= 323 E=-4.369112  <S^2>-S(S+1)=-7.40e-18 [PASS]  grad rel.err=3.1e-10 [PASS]
+  foil  P=  52 E=-4.086800  <S^2>-S(S+1)=-2.29e-17 [PASS]  grad rel.err=1.3e-08 [PASS]
+  r2    P= 248 E=-4.101325  <S^2>-S(S+1)=+1.75e-17 [PASS]  grad rel.err=4.8e-09 [PASS]
+[S=1] 2x3 torus Ne=4 dim=120 E0=-7.05219632 <S^2>_ED=2.00e+00
+  agp   P=  64 E=-5.243667  <S^2>-S(S+1)=-2.22e-16 [PASS]  grad rel.err=2.5e-10 [PASS]
+  r1    P= 260 E=-5.107303  <S^2>-S(S+1)=+0.00e+00 [PASS]  grad rel.err=1.2e-09 [PASS]
+  r1x   P= 335 E=-5.113883  <S^2>-S(S+1)=-2.22e-16 [PASS]  grad rel.err=1.0e-09 [PASS]
+  foil  P=  64 E=-5.134360  <S^2>-S(S+1)=+0.00e+00 [PASS]  grad rel.err=1.1e-10 [PASS]
+  r2    P= 260 E=-5.181089  <S^2>-S(S+1)=+0.00e+00 [PASS]  grad rel.err=2.0e-09 [PASS]
+  opt foil : E=-6.68618765 eps=2.62e-03 (170 it, 0.7s)
+  opt agp  : E=-6.63954724 eps=9.58e-03 (125 it, 0.1s)
+  opt r1   : E=-6.70358294 eps=2.38e-05 (300 it, 0.5s)
+  opt r1x  : E=-6.70364723 eps=1.42e-05 (300 it, 0.9s)
+  opt r2   : E=-6.70373806 eps=6.69e-07 (300 it, 1.5s)
+SMOKE PASS
+```
+
+### 5. Local Autopsy Log
+* **Route 2 (stochastic SU(2) projection of spin-resolved backflow)**: by the commutant lemma, a spin-reading correlator forces the rotated amplitude to sum over the spin orbit of $c$, which has $\binom{N_s}{N_s/2+M}$ signed terms. The Monte Carlo amplitude estimate then has a variance that is exponential in $N_s$, and the energy computed from noisy amplitude ratios is biased. This violates both exactness and polynomial cost.
+* **Route 3 (analytic root-based projection)**: it is the same variational family as the foil, so it has the same accuracy. Like any cheap projection it needs SU(2)-commuting correlators, so it adds no backflow expressivity. Its $\mathcal{O}(N_e^3)$ eigen solve per move loses to mVMC's $\mathcal{O}(N_{\mathrm{grid}}N_e)$ fast-update ratios.
+* **Route 4 (CSF/GUGA/VB-basis NQS)**: it has no determinant layer in a spin-adapted basis, because the overlap with a Slater determinant is exponential. The fermionic sign must then be learned with no nodal scaffold, which reduces to P1.2 and P1.3. The VMC Hamiltonian is non-sparse in that basis (Li et al., arXiv:2604.06841). The sign simplifications of VB and CSF bases hold only at half filling with $t'=0$ on bipartite lattices.
+### Round 2 — Mutation & Replenishment (2026-11-11)
+* **Inputs carried over**:
+  - Critic kill of R1/R1x (Gate 0): R1 is the doublon–holon backflow of Tocchio, Becca, Parola & Sorella (PRB 78, 041101, 2008) on a singlet BCS state with an MLP in place of the hand-crafted form. SA-NNBF (arXiv:2604.06841) also feeds only spatial occupations into the backflow. The round-1 test had no parameter-matched spin-resolved NNBF arm.
+  - P1.1: on doped $4\times3$ clusters the sign carries 61–77% of the NNBF energy error, and network width does not fix it. Exact $S$ matters here mainly if it improves the sign.
+  - Gate 0 wall for Operation A: diagonal conditioning compatible with exact $S$ is charge-only (commutant lemma), so spin information never enters R1 directly.
+* **Spectrum fact used below (ED, this round)**: on P1.1 instance 1 ($4\times3$ PBC, $N_\uparrow=N_\downarrow=4$, $U=8$, $t'=-0.25$) the ground state has $S=0$ and $K=0$, with $E_0=-12.0429038$. The level at $0.086t$ above it is a spin **triplet** at momentum $(\pi,\pm2\pi/3)$. So it lies in the same $S^z=0$ sector as a spin-resolved NNBF but in a different $S$ sector from any singlet-exact ansatz. The next level inside the full ground-state sector is $0.515t$ up. The near-degenerate competitor reported in P1.1 is therefore a different-spin competitor. An exact-$S$ ansatz is automatically orthogonal to it, whereas a spin-resolved NNBF can mix it in.
+* **Generation Batch 2**:
+  - **Route 2.1 (Mutated from 1.x via Operation A.1): local spin-group-algebra dressing beyond first order.** The dressing is $\lvert\psi\rangle=\sum_c\hat P_c\,\mathcal A(c)\lvert\mathrm{AGP}_c\rangle$. Here $\mathcal A(c)$ is a learned element of the group algebra of spin permutations, restricted to products of bond exchanges $\hat X_b$ and plaquette ring exchanges, with charge-conditioned coefficients. By Schur–Weyl duality this family is complete at fixed $c$. In its exponentiated (gate) form $\prod_b(a_b+\beta_b\hat P_b)$, with $\hat P_b$ the spin exchange on bond $b$ and $a_b,\beta_b$ learned weights, it is the SU(2)-scalar analogue of a spin Jastrow.
+    - Gate 0 (Novelty & Adoption): PASS. Linear forms are Lanczos-step relatives (one Lanczos step on projected BCS: arXiv:1306.1434); the learned charge-conditioned group-algebra form was not found.
+    - Gate 1 (Conservation & Asymptotics): **FAIL**.
+      - (i) Any amplitude that is exact in $S$ and built from determinant ratios is linear in SU(2)-scalar operators applied to the reference. With polynomially many terms it is a CISD-like linear expansion, so it is not size-consistent: the captured spin-correlation energy per site goes to zero as $V$ grows. This also kills the first-order r1x dressing asymptotically.
+      - (ii) The size-consistent product form has $2^{\lvert B\rvert}$ terms, where $\lvert B\rvert$ is the number of dressed bonds.
+      - (iii) A single-Pfaffian resummation was attempted for one layer of disjoint bonds, using $\mathrm{Pf}(A+B)=\sum_T\pm\mathrm{Pf}(A_{TT})\,\mathrm{Pf}(B_{T^cT^c})$ with block-diagonal $B$. Here $T$ runs over index subsets and $T^c$ is the complement. It sums over the required block subsets only if the cross terms vanish. They do not: the cross terms are amplitudes of charge-moved configurations generated by products $\hat K^\uparrow_b\hat K^\downarrow_{b'}$ of single-spin hoppings on two different bonds $b,b'$, which are not SU(2) scalars. A rank-1 version of the bond weight is Gaussian, but it is just R1's charge-conditioned backflow again.
+    - Gate 2 (Baseline Gameability): not reached.
+    - Gate 3 (Hard-Core Shield): not reached.
+    - *By-product (conjecture, "cheap-exactness dichotomy")*: in the $S^z$ occupation basis, an exact-$S$ amplitude with at most polynomially many determinant or Pfaffian evaluations is a finite sum of charge-conditioned SU(2)-invariant Gaussians. The extensive part of its spin correlations must therefore come from the Gaussian itself, and spin structure beyond a singlet Gaussian needs a broken-symmetry Gaussian plus projection.
+    - *Verdict*: KILLED.
+  - **Route 2.2 (Mutated from 1.x via Operation A.1, swapping where the spin information lives): Projected Charge-conditioned Gaussian (PCG).** The ansatz is
+$$\lvert\psi\rangle=\hat P_S\hat P_K\sum_c\hat P_c\,e^{J(c)}\Big(\sum_{ij}f_{c,ij}\,\hat c^\dagger_{i\uparrow}\hat c^\dagger_{j\downarrow}\Big)^{N_e/2}\lvert0\rangle,\qquad f_c=B_1(c)\,f_0\,B_2(c)^{\mathsf T}.$$
+    - *Symbols*:
+      - $f_0$ is a **general** (not symmetric) $L\times L$ pairing matrix, i.e. singlet plus triplet, which allows antiferromagnetic and stripe pairing.
+      - $B_a(c)=\mathbb 1+\eta_a(c)$ for $a=1,2$, where $\eta_1,\eta_2$ are two heads of one MLP that reads only doublon and holon occupations of $c$; each $\eta_a$ is restricted to $\lvert i-j\rvert_\infty\le1$.
+      - $J(c)$ is a charge Jastrow plus Gutzwiller factor plus the mVMC doublon–holon factor.
+      - $\hat P_K$ is the $K=0$ translation projector and $\hat P_S$ the exact total-spin projector.
+    - *Mechanism*: the lemma forbids spin-dependent **diagonal** factors. It does not forbid spin structure in the **ket's Gaussian**. Since $\hat P_c$ and $J(c)$ commute with every rotation, $\langle x\rvert e^{-i\beta S_y}\lvert\psi_c\rangle$ is one Pfaffian of the rotated $f_c$ for **any** charge-conditioned $f_c$, including symmetry-broken ones. Choosing $B_1\neq B_2$ backflows up and down electrons differently around holes and doublons. This produces a hole-bound spin texture (domain walls, AF moments bent around holons) that depends on all of $c$. That spin texture is exactly the information the field otherwise adds through spin Jastrows (Tocchio et al.) or spin-resolved RBMs (Nomura et al.). The state is exact in $S$ for every $\theta$ and costs $N_{\mathrm{grid}}$ Pfaffians per amplitude, against the exponential orbit sum needed to project a spin-resolved NNBF.
+    - *Cost criterion amended*: by Route 2.1's dichotomy, extensive spin structure beyond a singlet Gaussian is not available below $N_{\mathrm{grid}}$ evaluations. PCG therefore meets criterion (ii) of Section 1 only in the weaker form "$\mathcal O(N_{\mathrm{grid}})$ instead of exponential". This is recorded as the price of the route. Route 2.5 below is the one that meets the original sub-projection cost.
+    - Gate 0 (Novelty & Adoption): **PASS**. Closest prior work:
+      - (1) mVMC: Tahara & Imada, arXiv:0805.4457; Misawa et al., arXiv:1711.11418. It uses a $c$-independent $f$, projection, and doublon–holon factors.
+      - (2) Tocchio-type backflow on AF or stripe mean field with a spin Jastrow and no spin projection: PRB 78, 041101 (2008); arXiv:1102.3017; striped states with backflow, SciPost Phys. 7, 021 (2019), arXiv:1905.02658.
+      - (3) RBM+PP (Nomura, Darmawan, Yamaji & Imada, arXiv:1709.06475). Checked in the paper text: the spin projection $L^{S=0}$ acts on the pair-product reference only, the RBM reads spin-resolved occupations, and no spin-rotation symmetry is imposed on it. The total state is therefore not an exact $S$ eigenstate. This is the field standard.
+      - (4) SA-NNBF (arXiv:2604.06841): a fixed spin function, compressed to $R$ product terms and exact only to the CP residual.
+      - (5) Round-1 r2: one $B_c$ on both indices, used as an ablation only.
+      - *Adoption barrier*: spin information enters every published method through spin-resolved diagonal correlators. By the lemma these cannot be projected cheaply, so the field accepts contamination (RBM+PP, NNBF, SBP) or drops spin correlators (mVMC). Backflow on broken-symmetry references has never been projected, because it was always paired with a spin Jastrow.
+      - *PCG's concrete fix*: delete the spin Jastrow and move its information into the charge-conditioned symmetry-broken Gaussian, which projects exactly. This targets the barrier the critic named ("charge-only conditioning loses spin information"): the conditioning is still charge-only, but the object being conditioned now carries spin.
+    - Gate 1 (Conservation & Asymptotics): **PASS**.
+      - Exact $S$ follows because $\hat P_S$ is the exact projector and $\hat P_c$ and $J$ commute with spin. The smoke test gives $\langle\hat S^2\rangle=-2.4\times10^{-17}$ at random parameters, and gradients match finite differences to $1.7\times10^{-9}$.
+      - The family is size-extensive, because the spin texture lives in a Gaussian.
+      - Cost is polynomial: $N_{\mathrm{grid}}=\mathcal O(N_e)$ Pfaffians, with the backflow evaluated once per charge configuration.
+    - Gate 2 (Baseline Gameability): **PASS (provisional; decided by the test)**. PCG contains the foil ($B_a=\mathbb 1$). The test therefore compares it with two arms at equal budget: the foil (mVMC-like, with doublon–holon factor and both projections), and a spin-resolved NNBF of matched parameter count with the same $J(c)$ and $K$ projection. The pass bar is also on $E_{\mathrm{sign}}$, so a pure amplitude gain does not pass.
+    - Gate 3 (Hard-Core Shield): **PASS**. No Marshall-sign or bipartite assumption is used; the sign comes from a learnable charge-conditioned Pfaffian. The test runs at $t'\neq0$ with doping $1/3$, in 2D. A second instance sits at the in-sector avoided crossing ($t'=-0.33$, minimum in-sector gap $0.273t$; source `tests/P3.2_biased_ensemble_r2/ed_precheck_output.txt`).
+    - *Verdict*: SURVIVED.
+  - **Route 2.3 (Operation B.1, duality): Shiba (partial particle–hole) frame.** Map $\hat c_{i\downarrow}\to(-1)^i\hat c^\dagger_{i\downarrow}$, so that spin SU(2) becomes $\eta$-pairing SU(2). The hope was that spin information becomes diagonal and "charge-like".
+    - Gate 0 (Novelty & Adoption): **FAIL**. The commutant lemma maps onto itself: diagonal operators commuting with $\eta$-SU(2) in the new frame are functions of the new-frame "charge", which is again the old-frame charge pattern. The frame relabels the barrier and does not remove it.
+    - Gates 1–3: not reached.
+    - *Verdict*: KILLED.
+  - **Route 2.4 (Operations B.1 and B.2): numerator-only stochastic projection of a spin-resolved NNBF, sampling the rotation angle $\beta$ and the spin orbit jointly.** The energy is $E=\langle\phi\rvert H\hat P_S\lvert\phi\rangle/\langle\phi\rvert\hat P_S\lvert\phi\rangle$, where $\phi$ is the unprojected NNBF, so no noisy amplitude enters a ratio.
+    - Gate 0 (Novelty & Adoption): PASS (no fermionic-NQS adoption found).
+    - Gate 1 (Conservation & Asymptotics): **FAIL**. The kernel $\langle x\rvert e^{-i\beta S_y}\lvert x'\rangle=\prod_kd^{1/2}_{\sigma_k\sigma'_k}(\beta)$ has absolute sum $(\lvert\cos\tfrac\beta2\rvert+\lvert\sin\tfrac\beta2\rvert)^{N_s}$. The projection weight of a contaminated state sits at $\beta\sim N_s^{-1/2}$, which gives an average sign of order $e^{-a\sqrt{N_s}}$ for some constant $a>0$, a stretched-exponential sign problem. The scheme is also a single-proposal replacement of an exact signed sum (global anti-pattern).
+    - Gates 2–3: not reached.
+    - *Verdict*: KILLED.
+  - **Route 2.5 (Operations B.1 and B.3: squeezed-space frame plus non-Abelian symmetric tensor networks): Spin–Charge Factorised SU(2)-MPS (SCF).** The amplitude is
+$$\psi(x)=s_{\mathrm{ord}}(x)\,e^{J(c)}\det\Psi_0[\mathrm{occ}_2(c)]\;\chi_c(\boldsymbol\sigma),\qquad \chi_c(\boldsymbol\sigma)=l^{\mathsf T}\prod_{k\in\mathcal S(c)}M_k^{\sigma_k}(c)\,r .$$
+    - *Symbols*:
+      - $\mathcal S(c)$ is the ordered set of singly occupied sites, and $\boldsymbol\sigma$ their spins, i.e. the squeezed spin chain.
+      - $\mathrm{occ}_2(c)$ are the occupied orbitals of a doubled spinless charge lattice: slot $a$ of site $i$ is occupied if $n_i\ge1$, and slot $b$ if $n_i=2$. $\Psi_0$ is a $2L\times N_e$ orbital matrix, so the determinant is $N_e\times N_e$ and carries the charge Jordan–Wigner sign.
+      - $s_{\mathrm{ord}}(x)=(-1)^{\sum_jn_{j\downarrow}\#\{i>j:\,n_{i\uparrow}=1\}}$ converts site-major operator order to up-then-down order.
+      - $M_k^{\sigma}(c)=\sum_wW_{k,w}(c)\,G_w^{\sigma}$, where $G_w$ are Clebsch–Gordan intertwiners from virtual spin $j_l\otimes\tfrac12$ to $j_r$. The virtual space is $\bigoplus_k(k/2)^{m_k}$, with multiplicities $m_k$ and bond dimension $D=\sum_km_k(k+1)$.
+      - $W_k(c)=W^0_k+U_k\,h(c)$ with $h(c)=\tanh(A\,\mathrm{feat}(c)+a)$, a charge-only network with weights $A,a$ acting on the doublon and holon indicators $\mathrm{feat}(c)$. $l$ and $r$ live in the $j=0$ sector.
+    - *Mechanism*: in the site-major frame SU(2) acts only on the squeezed chain, so symmetric tensors make $\chi_c$ an exact singlet, and the charge-conditioned network supplies the dependence on $c$. Spin information is therefore not lost: $\chi_c$ is a full spin wave function, extensive (MPS), and evaluated at $\mathcal O(LD^3)$ per amplitude, plus one $N_e^3$ determinant per charge configuration. This is **below** the projection cost, so it meets the original criterion (ii).
+    - Gate 0 (Novelty & Adoption): **PASS**. Closest prior work:
+      - Ogata–Shiba factorisation, exact only in 1D at $U\to\infty$.
+      - Squeezed-space and phase-string ansätze, e.g. fermion–spin transformation, arXiv:cond-mat/9311002; single-hole 2D VMC, PRB 99, 205128.
+      - SU(2)-symmetric MPS for spins and DMRG (arXiv:1809.08180).
+      - SU(2) RBM for spins (Vieijra et al., arXiv:1905.06034) and SU(2)-equivariant spin networks (arXiv:2101.07243, arXiv:2104.14869).
+      - Spin–charge separated NQS (arXiv:2606.17045): quasi-1D, one hole, no exact-SU(2) statement.
+      - SA-NNBF (arXiv:2604.06841).
+      - *Adoption barrier* for spin–charge factorised states in 2D: when a hole moves, it reorders the squeezed chain non-locally, so a fixed spin factor fails, and exact-SU(2) tensor constructions exist only for spin models. *SCF's fix*: every MPS tensor is conditioned on the whole charge configuration through one shared network, and the charge sign is carried by a determinant rather than learned.
+    - Gate 1 (Conservation & Asymptotics): **PASS**.
+      - Exact singlet by construction: smoke gives $\langle\hat S^2\rangle=6.6\times10^{-17}$, and gradients match finite differences to $8\times10^{-10}$.
+      - *Finding during smoke*: a virtual space capped at $j\le1$ is a hard, multiplicity-independent limit. The best overlap with the half-filled $2\times3$ singlet was $0.80$ for every multiplicity, because one Yamanouchi path of six spins passes through $j=3/2$. The default is now $j\le3/2$ ($D=13$), and $j_{\max}$ acts as a truncation, like the bond dimension.
+    - Gate 2 (Baseline Gameability): **PASS (provisional)**. SCF does not contain the foil and is compared at matched parameter count with the same budget.
+    - Gate 3 (Hard-Core Shield): **PASS with stated risk**. Nothing assumes Marshall signs or 1D. The fermion sign is split into the charge determinant plus the $c$-dependence of $\chi_c$ (the phase-string part), and that split is exactly the Hard Core under test. The known scaling limit is that of MPS on a snake order: $D\sim e^{\mathcal O(L_y)}$, the DMRG cylinder limit. That is polynomial at fixed width but is the route's main scaling cost.
+    - *Verdict*: SURVIVED.
+### Top Surviving Route & Sharpest Gap (Round 2)
+* **Mechanism (PCG, Route 2.2)**: exact-$S$ NQS with spin structure placed in a charge-conditioned **symmetry-broken** Gaussian, $f_c=B_1(c)f_0B_2(c)^{\mathsf T}$, followed by exact projection. This is the lemma's escape hatch: rotations act in closed form on any charge-conditioned Gaussian. It differs from the round-1 failure because the spin texture now depends on the hole configuration, and nothing diagonal reads spin.
+* **Second survivor (SCF, Route 2.5)**: a charge determinant on doubled spinless orbitals times a charge-conditioned SU(2)-symmetric MPS on the squeezed chain. It is exact $S$ at $\mathcal O(LD^3)$, below projection cost, and its spin information is a full extensive spin wave function rather than a charge-only stand-in.
+* **Sharpest Gap (PCG)**: there is no lemma that a charge-conditioned broken-symmetry Gaussian plus projection reproduces the amplitude correlations a spin Jastrow supplies. It is also unverified that exact $S$ improves the **sign**, i.e. $E_{\mathrm{sign}}$, rather than only the energy, which is P1.1's binding error. A related open question is whether the $N_{\mathrm{grid}}$ factor is unavoidable, i.e. whether the cheap-exactness dichotomy of Route 2.1 holds. That is a conjecture.
+* **Sharpest Gap (SCF)**: whether the phase-string reordering of the squeezed chain in 2D can be absorbed by charge-conditioned tensors at small $D$, or whether it needs $D$ exponential in the number of holes.
+### 24-Hour Decisive Test (Round 2)
+* **Minimal Instances**:
+  - A: P1.1 instance 1, $4\times3$ PBC, $N_\uparrow=N_\downarrow=4$, $U=8$, $t'=-0.25$, $D_{\mathrm{H}}=245{,}025$, where $D_{\mathrm{H}}$ is the Hilbert-space dimension. It has **no same-sector competitor**: $E_1$ is the triplet at $(\pi,\pm2\pi/3)$, and the next in-sector level is $0.515t$ up. For exact-$S$ arms instance A therefore tests **only the sign half** of the Hard Core. For the spin-resolved NNBF the triplet at $0.086t$ is inside its $S^z$ sector, so A also measures the contamination channel.
+  - B: same cluster at $t'=-0.33$, at the in-sector avoided crossing (minimum in-sector gap $0.273t$, i.e. $0.023t$ per site). It covers the competitor half in its near-crossing form. The gap is just above the $0.02t$ per-site flag used in P1.1, which is stated rather than hidden.
+  - All energies are exact sums.
+* **Arms (same budget)**: every arm gets L-BFGS with an exact gradient, at most 3000 iterations, a 16 h wall cap, seeds 0, 1 and 2, the same $J(c)$ (charge Jastrow, Gutzwiller and mVMC doublon–holon factor), and the same $K=0$ projection. Measured parameter counts:
+  - foil: mVMC-like $\hat P_S\hat P_K$ with general $f$, 221 parameters.
+  - pcg: 2149 parameters.
+  - scf: 2176 parameters.
+  - nnbf: spin-resolved Luo–Clark NNBF, **matched** at 2205 parameters.
+  - r1: round-1 ablation, 2083 parameters.
+* **Metrics**: per arm, best seed:
+  - $\epsilon=(E-E_0)/\lvert E_0\rvert$;
+  - $\langle\hat S^2\rangle$;
+  - $\Delta E_{\mathrm{sign}}=E_{\mathrm{sign}}^{\mathrm{up}}-E_0$ with the P1.1 bracket (ten Haaf fixed node plus 4 L-BFGS-B starts) and $f_E$;
+  - $\Delta C_s$ and $\Delta P_d$.
+  - Route metrics: $M_E=\epsilon_R/\epsilon_{\mathrm{nnbf}}$, $M_{\mathrm{sign}}=\Delta E_{\mathrm{sign}}(R)/\Delta E_{\mathrm{sign}}(\mathrm{nnbf})$ and $M_{\mathrm{foil}}=\epsilon_R/\epsilon_{\mathrm{foil}}$, for route $R$.
+  - Diagnostic $\rho_{\mathrm{proj}}=\Delta E_{\mathrm{sign}}(\hat P_S\psi_{\mathrm{nnbf}})/\Delta E_{\mathrm{sign}}(\psi_{\mathrm{nnbf}})$: does exact projection alone repair the NNBF sign?
+* **Thresholds (per route, per instance)**:
+  - PASS: $\lvert\langle\hat S^2\rangle\rvert<10^{-10}$, $M_E\le0.7$, $M_{\mathrm{sign}}\le0.7$ and $M_{\mathrm{foil}}\le0.5$, with correlation errors no worse than the NNBF's.
+  - FAIL: $M_E\ge1$, or $M_{\mathrm{foil}}\ge1$, or exactness violated.
+  - AMBIGUOUS: anything else. Pre-committed action: rerun on P1.1 instance 0 ($N_e=10$, $D_{\mathrm{H}}=627{,}264$). Promote the route only if it is not FAIL there and $M_{\mathrm{sign}}<1$ on both instances; otherwise KILL it.
+* **Execution**: `tests/P4.1_cheap_su2_r2/micro_test.py` (modes `smoke`, `time`, `run`, `report`) and `tests/P4.1_cheap_su2_r2/submit_test.sbatch`.
+  - The sbatch file is an array of 30 CPU tasks (2 instances × 5 arms × 3 seeds), partition `kim`, 8 CPUs, 24 GB, 24 h.
+  - Measured energy-plus-gradient time per evaluation on instance A: foil 1.8 s, pcg 2.9 s, nnbf 3.4 s, r1 2.7 s, scf 23.1 s. scf reaches the common 16 h cap after about 2300 iterations.
+  - Not submitted. Command: `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r2/submit_test.sbatch`.
+  - Afterwards, run `python3 micro_test.py --mode report --tp -0.25` and `--tp -0.33`.
+* **Smoke test**: `cd tests/P4.1_cheap_su2_r2 && /share/apps/software/anaconda3/bin/python3 micro_test.py --mode smoke` (5.7 s; output also in `logs/smoke_output.txt`).
+  - The $2\times3$ smoke cluster is at half filling and serves only as a code check.
+  - The optimisation lines only show that the code runs: most arms have more parameters than the symmetry sector has states.
+  - The $\langle\hat S^2\rangle$, gradient, translation-projector and sign-budget lines are the real checks.
+
+```
+2x3 torus Ne=6 U=6 t'=-0.3 dim=400: E0(S=0,K=0)=-6.43831205 <S^2>=1.3e-16; P_K idempotent 2.2e-16, [P_K,H] 3.6e-15 [PASS]
+  foil  P=  62 E=-5.169889 <S^2>=-3.81e-17 [PASS]  grad rel.err=6.7e-10 [PASS]
+  pcg   P= 317 E=-5.195038 <S^2>=-2.42e-17 [PASS]  grad rel.err=1.7e-09 [PASS]
+  scf   P= 331 E=+2.989023 <S^2>=+6.59e-17 [PASS]  grad rel.err=8.4e-10 [PASS]
+  nnbf  P= 294 E=-4.664799 <S^2>=+3.80e-01 [PASS (not required)]  grad rel.err=2.1e-09 [PASS]
+  r1    P= 307 E=-5.825611 <S^2>=-1.64e-16 [PASS]  grad rel.err=4.2e-09 [PASS]
+  sign budget on psi_0: E_sign_up - E0 = -8.9e-16 [PASS]
+  opt foil : E=-6.43831190 eps=2.32e-08 dE_sign=-8.88e-16 (150 it, 0.5s)
+  opt pcg  : E=-6.43831205 eps=9.63e-14 dE_sign=-8.88e-16 (150 it, 0.6s)
+  opt scf  : E=-6.28392450 eps=2.40e-02 dE_sign=2.79e-02 (150 it, 2.2s)
+  opt nnbf : E=-6.43831199 eps=8.70e-09 dE_sign=-8.88e-16 (150 it, 0.5s)
+  opt r1   : E=-6.43831205 eps=3.03e-15 dE_sign=-8.88e-16 (134 it, 0.4s)
+(the 2x3 cluster has fewer states than most arms have parameters: optimisation lines only show that the code runs)
+SMOKE PASS  (5.7s)
+```
+
+### Local Autopsy Log (Round 2 additions)
+* **R1/R1x (round-1 survivor, killed by the critic at Gate 0)**:
+  - It is Tocchio-type doublon–holon backflow on a projected singlet BCS state with an MLP in place of the hand-crafted form, and the r1x dressing adds only first-order exchange.
+  - New in Round 2: any polynomial linear dressing is also size-inconsistent (Route 2.1), so r1x fails asymptotically too.
+  - R1 is kept only as the `r1` ablation arm.
+* **Route 2.1 (higher-order and exponentiated group-algebra dressing)**:
+  - Linear forms are not size-consistent.
+  - Product forms have $2^{\lvert B\rvert}$ terms.
+  - The Pfaffian block-sum resummation leaks into charge-moving, non-SU(2) terms.
+  - Outcome: the cheap-exactness dichotomy conjecture, which sends spin structure into the Gaussian (Route 2.2).
+* **Route 2.3 (Shiba frame)**: the commutant lemma maps to itself under partial particle–hole transformation, so this is a relabel.
+* **Route 2.4 (numerator-only stochastic projection of spin-resolved NNBF)**:
+  - The orbit-kernel absolute weight $(\lvert\cos\rvert+\lvert\sin\rvert)^{N_s}$ at $\beta\sim N_s^{-1/2}$ gives a stretched-exponential sign problem.
+  - It is also a single-proposal replacement of an exact signed sum.
+* **Brief correction recorded**: the P1.1 instance-1 competitor at $0.086t$ is an $S=1$ state, so it is not a same-sector competitor for exact-$S$ ansätze. The Round-2 test states that instance A probes only the sign half and adds instance B at the in-sector avoided crossing.
+### Round 3 — Mutation & Replenishment (2026-11-11)
+* **Inputs carried over (binding)**:
+  - Critic, round 2:
+    - PCG is mVMC times Tocchio backflow, and it is not below projection cost.
+    - The PASS was against an unprojected NNBF.
+    - The code applied an exact Löwdin polynomial to the whole Hilbert vector instead of the per-amplitude quadrature it claimed.
+    - SCF's novelty is unproven (Ogata–Shiba), and SCF "stalls" at $\epsilon=2.4\times10^{-2}$.
+    - Budgets were mismatched, and the verdict used the best of 3 seeds.
+  - Brief rules 1–6:
+    - a projected control;
+    - at least 3 seeds and medians;
+    - honest Hard-Core coverage;
+    - per-amplitude code for every claimed cost;
+    - persistence.
+  - Orchestrator broadcasts:
+    - P1.1-P interim: on the $4\times3$ **torus** a spin-resolved NNBF trained with space-group projection plus exact $P_S$ ends within $\Delta E_{\mathrm{tot}}\approx10^{-5}$ of $E_0$ ($4+4$, width 32, median of 3 seeds).
+    - P1.2 critic: the lever is $\dim\mathrm{range}(P_SP_G)$ divided by the control's parameter count, not $\lvert G\rvert$.
+    - Consequences: the decisive comparison moves to the open $4\times3$ cluster with a premise gate, and the per-amplitude cost of exact $S$, measured in code, becomes the primary claim.
+* **Structural result used below (coherent-state form of the commutant lemma)**:
+  - Write each singly occupied site's spin in the spin-coherent representation $\lvert z_i\rangle$, $z_i\in\mathbb C^2$. Every amplitude $\langle c,\bar z\vert\psi\rangle$ is multilinear in the $z_i$.
+  - By the first fundamental theorem of invariant theory for $SL(2)$, multilinear invariants are generated by the brackets $[ij]=z_{i\uparrow}z_{j\downarrow}-z_{i\downarrow}z_{j\uparrow}$.
+  - Every exact singlet is therefore $\sum_c\lvert c\rangle\otimes\chi_c$, with $\chi_c$ a linear combination of valence-bond coverings of the singles.
+  - Its one-Pfaffian member is $\mathrm{Pf}[A_{ij}(c)\,[ij]]$. This sharpens the round-2 dichotomy conjecture: at one spin determinant, all spin information beyond the singlet pairing enters through $c$.
+#### Generation Batch 3
+* **Route 3.1 (Operation A on PCG's cost wall): per-amplitude closed-form projection of a charge-conditioned broken-symmetry backflow determinant.**
+  - *Formula*: $\langle x\rvert P_{S=0}\lvert\Phi_c\rangle=\tfrac12\sum_kw_k\cos^{N_e}(\beta_k/2)\det A\det(D+\tan^2(\beta_k/2)\,CA^{-1}B)$.
+  - *Symbols*: $A=\Phi_\uparrow(c)[U]$, $B=\Phi_\downarrow(c)[U]$, $C=\Phi_\uparrow(c)[D]$ and $D=\Phi_\downarrow(c)[D]$, where $U$ ($D$) are the up- (down-) occupied sites; $\beta_k,w_k$ are Gauss–Legendre nodes and weights.
+  - *Cost*: one LU plus $N_q=\lceil(N_e/2+1)/2\rceil$ determinants of size $N_e/2$.
+  - Gate 0 (Novelty & Adoption): **FAIL**. This is Eqs. S23–S24 of Che, arXiv:2608.22925 (August 2026):
+    - its backflow features are spin-scalar;
+    - $\nu_p=\lvert m_{p\uparrow}-m_{p\downarrow}\rvert$ equals 1 exactly on singly occupied orbitals, so the features are charge-only;
+    - the orbitals are held fixed under the spin projector;
+    - one LU is reused across $N_q$ nodes.
+
+    It is the round-2 PCG family with its cost wall already removed (molecules and hydrogen lattices).
+  - Disposition: kept as the **exact-$S$ control arm `che`**. `che_single()` implements Che's per-amplitude algorithm and agrees with the full-vector projector to $1.6\times10^{-15}$.
+  - *Verdict*: KILLED (prior art).
+* **Route 3.2 (Operation B.1): spin-multilinear backflow, projected at $N_q$ evaluations.** If each single's spin $\sigma_i$ entered the orbital matrix affinely through one rank-1 term, the rotated amplitude would be one determinant per node, evaluated at complex "expected spins".
+  - Gate 0 (Novelty & Adoption): PASS.
+  - Gate 1 (Conservation & Asymptotics): **FAIL**. Electron $i$ already selects its own spin-orbital row, so a rank-1 term in $\sigma_i$ that touches any other row makes the determinant quadratic in $\sigma_i$. Its multilinear reduction then needs $2^{N_s}$ evaluations. The only multilinear choice is "spin $i$ modifies row $i$", which is a UHF determinant.
+  - *Verdict*: KILLED.
+* **Route 3.3 (Operation B.3, from gauge-equivariant NQS): an SU(2)-invariant network on continuous spinors**, $\lvert\psi\rangle=\int d\mu(z)\,F(c,z)\lvert c,z\rangle$ with invariant $F$.
+  - Gate 0 (Novelty & Adoption): PASS.
+  - Gate 1 (Conservation & Asymptotics): **FAIL**.
+    - A basis amplitude is the Bergman projection of $F$, an $N_s$-dimensional integral. Sampling it puts noisy amplitudes into VMC ratios, which is a global anti-pattern.
+    - A multilinear $F$ is a bracket polynomial, i.e. VB/RVB (structural result above).
+  - *Verdict*: KILLED.
+* **Route 3.4 (Operation A on SCF's spin factor, plus Operation B.3 from slave-particle theory): SQ-RVB, a spin–charge factorised RVB with charge-conditioned spinon pairing.**
+$$\psi(x)=s_{\mathrm{ord}}(x)\,e^{J(c)}\det\Psi_c[\mathrm{occ}_2(c)]\;(-1)^{\mathrm{inv}(\sigma)}\det A_c[U_s,D_s].$$
+  - *Symbols*:
+    - $\mathrm{occ}_2(c)$: occupied doubled spinless charge orbitals; slot $a$ of site $i$ is occupied if $n_i\ge1$, slot $b$ if $n_i=2$.
+    - $\Psi_c=\Psi_0+\mathrm{reshape}(V_c\,h(c))$: a $2L\times N_e$ charge (holon and doublon) backflow orbital matrix.
+    - $A_c=\mathrm{sym}(A_0+\mathrm{reshape}(V_a\,h(c)))$: an $L\times L$ symmetric, lattice-indexed spinon pairing matrix, with no chain order.
+    - $h(c)=\tanh(W\,\mathrm{feat}(c)+b)$: a charge-only MLP on the doublon and holon indicators, with hidden width $H$.
+    - $U_s$, $D_s$: the up- and down-singly occupied sites, with $\lvert U_s\rvert=\lvert D_s\rvert=N_s/2$.
+    - $\mathrm{inv}(\sigma)=\#\{i<j:\ i\in D_s,\ j\in U_s\}$.
+    - $s_{\mathrm{ord}}$: the site-major to up-then-down reordering sign.
+    - $J(c)$: the shared charge Jastrow.
+  - *Exactness*:
+    - $\chi_c=(-1)^{\mathrm{inv}}\det A_c[U_s,D_s]$ is the singlet AGP of the singles, mapped to the site-major product basis ($A_c$ symmetric).
+    - Every other factor is a function of $c$.
+    - Hence $\hat S^2\psi=0$ for every $\theta$, with no projector. Smoke: $\langle\hat S^2\rangle=-2\times10^{-17}$ at random parameters.
+  - *Per-amplitude cost*: one $N_e\times N_e$ and one $(N_s/2)\times(N_s/2)$ determinant after $\mathcal O(HLN_e+HL^2)$ field evaluation.
+  - Gate 0 (Novelty & Adoption): **PASS (provisional)**.
+    - *Closest work*:
+      - slave-particle holon $\times$ spinon-RVB VMC states, e.g. fermionic-RVB VMC of the disordered $t$–$J$ model (arXiv:2402.02785) and the 1D Ogata–Shiba product;
+      - Che's charge-feature backflow with exact projection;
+      - spin–charge separated NQS (Wu et al. 2606.17045: quasi-1D, one hole, no exact SU(2)).
+      - Searches for a spinon pairing conditioned by a network on the full holon/doublon configuration, with exact SU(2) at two determinants, found nothing.
+    - *Adoption barrier*: product slave-particle states are quantitatively poor because spinons and holons are uncoupled; the gauge-fluctuation coupling is missing. In VMC they are used at the mean-field level and mainly for the $t$–$J$ model.
+    - *Concrete mechanism*: $A_c$ is a learned function of the whole charge configuration, i.e. a holon-dependent RVB and a direct spinon–holon coupling. The doubled-orbital charge determinant extends the construction to the Hubbard model with doublons. Exactness survives because the coupling runs through $c$, the only SU(2)-invariant diagonal information.
+    - *Ablation*: the test contains the uncoupled, parameter-matched `sqrvb0` ($V_a=0$). Gate $g_{\mathrm{mech}}$ requires $\mathrm m(\epsilon_{\mathrm{sqrvb}})\le0.8\,\mathrm m(\epsilon_{\mathrm{sqrvb0}})$, so a PASS cannot come from the known product state.
+  - Gate 1 (Conservation & Asymptotics): **PASS**.
+    - The gradient matches finite differences to $2.7\times10^{-9}$.
+    - `sqrvb_single`, the per-amplitude algorithm whose cost is claimed, equals the batched form to $4.5\times10^{-16}$.
+    - The cost is measured in code (table below).
+  - Gate 2 (Baseline Gameability): **PASS (decided by the test)**. The controls are:
+    - the projected spin-resolved NNBF;
+    - Che's exact-$S$ charge backflow;
+    - the uncoupled ablation;
+    - the foil.
+
+    Parameters are matched, there are 3 seeds with medians, the iteration cap is the same for every arm, and a premise gate applies.
+  - Gate 3 (Hard-Core Shield): **PASS with stated scope**.
+    - There is no Marshall or bipartite assumption.
+    - The charge sign comes from a learnable determinant and the spin sign from a learnable RVB.
+    - Sign half only.
+  - *Verdict*: **SURVIVED**.
+* **Route 3.5 (SCF re-examined): charge determinant $\times$ charge-conditioned SU(2)-symmetric MPS.**
+  - *Diagnosis of the round-2 "stall"* (`diag_scf_stall.py`, `logs/diag_scf_stall_output.txt`, same 400-state $2\times3$ cluster):
+
+| Setting | $\epsilon$ | L-BFGS iterations |
+| :--- | :--- | :--- |
+| $D=13$, $H=8$, 150-iteration cap (round-2 smoke) | $7.2\times10^{-3}$ | 150 |
+| $D=13$, $H=8$ | $1.8\times10^{-15}$ | 370 |
+| $D=26$ | $3.7\times10^{-15}$ | 473 |
+| $D=13$, $H=32$ | $1.7\times10^{-15}$ | 425 |
+
+  - *Reading of the diagnosis*:
+    - The stall was the 150-iteration budget, not expressivity or bond dimension.
+    - The tensors are already lattice-anchored (identity on holes and doublons), which rules out the squeezed-ordering hypothesis on this cluster.
+    - SCF converges more slowly per iteration than the determinant arms. Round 3 therefore matches budgets by iteration count, with the same cap for every arm.
+  - Gate 0 (Novelty & Adoption): **PASS (provisional)**, with the same caveat as 3.4.
+    - Ogata–Shiba uses a charge-independent spin factor.
+    - SU(2) tensor networks exist for spin models (1809.08180).
+    - Lami, Carleo & Collura's MPS backflow conditions on the spin-resolved configuration and is not SU(2)-exact.
+    - SCF's mechanism is the spinon–holon coupling of 3.4, with an MPS spin factor.
+  - Gate 1 (Conservation & Asymptotics): **PASS**.
+    - $\langle\hat S^2\rangle=-3\times10^{-17}$.
+    - The gradient error is $8\times10^{-6}$ (9 tensor layers, central differences).
+    - `scf_single` equals the batched form to $2.9\times10^{-16}$.
+  - Gate 2 (Baseline Gameability): **PASS (decided by the test)**.
+  - Gate 3 (Hard-Core Shield): **PASS with stated risk**. The required $D$ grows as $e^{\mathcal O(L_y)}$, polynomial at fixed width (the DMRG cylinder regime). The order-free 3.4 has no such wall.
+  - *Verdict*: **SURVIVED** (second survivor; an area-law MPS spin factor instead of an order-free RVB).
+### Top Surviving Route & Sharpest Gap (Round 3)
+* **Mechanism (SQ-RVB, 3.4)**:
+  - Exact $S$ by construction, with no projector, at two determinants per amplitude.
+  - Spin information enters through a singlet RVB whose pairing is a learned function of the full holon/doublon configuration.
+  - This is the maximal spin conditioning that the lemma, in its coherent-state form, allows at one spin determinant.
+* **Second survivor (SCF, 3.5)**: the same spinon–holon coupling with an SU(2)-MPS spin factor. It carries more spin entanglement on narrow cylinders but has an area-law wall.
+* **Sharpest Gap (both)**: does charge-only conditioning lose against spin-resolved conditioning once both are exactly projected? The test measures this directly in two ways:
+  - `che` against `nnbf_SG` (identical NNBF architecture, charge input against spin input);
+  - each route against `nnbf_SG`.
+
+  If spin-resolved conditioning wins, cheap exact SU(2) carries an irreducible accuracy price on these clusters.
+* **Measured per-amplitude cost** (`--mode cost`, `logs/cost_output.txt`; single core, random parameters, $L_x\times L_x$ tori, $N_e=2\,\mathrm{round}(7L/16)$):
+
+| $L$ | $N_e$ | $N_q$ | SQ-RVB | SCF ($D=13$) | Che, LU-reused GL | naive GL ($N_q$ full dets) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 144 | 126 | 32 | 0.51 ms | 0.72 ms | 1.57 ms | 3.88 ms |
+| 256 | 224 | 57 | 1.87 ms | 1.96 ms | 6.35 ms | 25.0 ms |
+| 400 | 350 | 88 | 4.56 ms | 3.43 ms | 21.4 ms | 138 ms |
+
+* **Reading of the cost table**:
+  - *Scaling*: the log–log slopes in $N_e$ over these three sizes are 2.15 (SQ-RVB), 1.54 (SCF), 2.55 (Che) and 3.48 (naive). These are pre-asymptotic, BLAS-bound values.
+  - *Routes against Che*: at $L=400$ both routes are 4.7–6.2$\times$ cheaper than Che's quadrature, and the gap widens with $N_e$.
+  - *Exact projection of the spin-resolved control has no polynomial algorithm*. `nnbf_orbit_single` (orbit sum with Löwdin kernel $(-1)^kk!(m-k)!/(m+1)!$, matching the full-vector projector to $1.6\times10^{-16}$) costs per amplitude:
+
+| $L$ | Orbit size | Time per amplitude |
+| :--- | :--- | :--- |
+| 12 | 252 | 3.6 ms |
+| 16 | 3432 | 54 ms |
+| 20 | 48620 | 0.92 s |
+| 24 | 184756 | 3.95 s |
+
+### 24-Hour Decisive Test (Round 3)
+* **Instance**: the $4\times3$ **open cluster** (OBC in $x$ and $y$).
+  - Hubbard model with $N_\uparrow=N_\downarrow=4$, $U=8$, $t'=-0.25$, Hilbert-space dimension 245,025.
+  - Point group $\{1,M_x,M_y,M_xM_y\}$, so $\lvert G\rvert=4$.
+* **Why this cluster (orchestrator broadcasts)**: whether accuracy can discriminate is set by the ratio $r=\dim\mathrm{range}(P_SP_G)/P_{\mathrm{ctrl}}$, where $P_{\mathrm{ctrl}}$ is the control's parameter count. The sector dimensions are the P1.2 critic's numbers.
+
+| Geometry | Sector dimension | Control parameters | $r$ |
+| :--- | :--- | :--- | :--- |
+| $4\times3$ torus | 1618 | 2205 | 0.73 |
+| $4\times3$ cylinder | 4663 | 2205 | 2.1 |
+| $4\times3$ open cluster | 17905 | 2205 | 8.1 |
+
+  - On the torus the projected NNBF is within $10^{-5}$ of $E_0$, so that geometry cannot discriminate.
+  - The open cluster has the largest ratio and is used here.
+  - The cylinder support (`--bc-x pbc`) is kept in the code.
+* **Hard-Core scope: sign half only.** No same-sector competitor is claimed.
+  - P3.2 has found a genuine same-irrep conical intersection: on the $4\times3$ torus, $4+4$, $U=8$, $t_y=1.11394$, $t'_c=-0.470482$, a period-4 stripe and a near-Néel singlet are separated by $1.4\times10^{-3}t$ at $t'_c\pm0.0002$ (`tests/P3.2_biased_ensemble_r3/scan_logs/instance_table.txt`).
+  - It is deliberately **not** used for this leaf's verdict, for three reasons:
+    - the primary claim is cost;
+    - both competitors are singlets, so exact $S$ does not separate them;
+    - that sector has dimension 1618, below the 2205-parameter control, so accuracy cannot discriminate there.
+  - It is the natural follow-up if a route PASSes here.
+* **Arms** (all trained with projection, exact sums, L-BFGS with an exact gradient, **2000 iterations for every arm**, a 20 h safety cap, seeds 0, 1 and 2; parameter counts are those at NNBF width 16; `logs/timing_output.txt` gives seconds per energy-and-gradient evaluation):
+
+| Arm | Description | Projection | Parameters | s / eval |
+| :--- | :--- | :--- | :--- | :--- |
+| `sqrvb` | Route 3.4 | $P_G$ | 2218 | 2.1 |
+| `sqrvb0` | Ablation of 3.4, $V_a=0$ | $P_G$ | 2149 | 2.1 |
+| `scf` | Route 3.5 | $P_G$ | 2176 | 30.1 |
+| `nnbf_SG` | **Projected control**: spin-resolved NNBF; oracle full-vector $P_S$, whose per-amplitude algorithm is the exponential orbit sum | $P_GP_S$ | 2205 | 5.4 |
+| `nnbf_G` | Spin-resolved NNBF, $S^z$ only; post-hoc $P_GP_S$ reported | $P_G$ | 2205 | 4.5 |
+| `che` | Che 2608.22925 family: same NNBF, charge input; training uses full-vector $P_S$, the identical state to `che_single` | $P_GP_S$ | 2205 | 3.9 |
+| `foil` | mVMC-like foil, native size | $P_GP_S$ | 221 | 2.0 |
+
+* **Metrics** (per arm; $\mathrm m(\cdot)$ is the median over the 3 seeds, and min/max are reported):
+  - $\epsilon=(E-E_0)/\lvert E_0\rvert$;
+  - $\Delta E_{\mathrm{sign}}$ from the P1.1 bracket;
+  - $\Delta C_s$, $\Delta P_d$ and $\langle\hat S^2\rangle$;
+  - post-hoc $P_GP_S$ values;
+  - a sampled local-energy diagnostic: $\mathrm{std}(E_{\mathrm{loc}})$ and its 99.9% tail ratio over 20,000 exact draws from $\lvert\psi\rvert^2$. This is not a gate, because no route uses cross-overlaps or nonstandard ratios.
+* **Pre-committed rule** (implemented in `--mode report`; route $R$; $\mathrm{nSG}$ stands for `nnbf_SG`):
+  - $g_1$: $\max_{\mathrm{seeds}}\lvert\langle\hat S^2\rangle\rvert<10^{-10}$.
+  - $g_{\mathrm{cost}}$: $t_R<t_{\mathrm{che}}$ at the largest benchmarked size, and the log–log slope of $t_R$ is below that of Che.
+  - $g_{\mathrm{mech}}$ (`sqrvb` only): $\mathrm m(\epsilon_{\mathrm{sqrvb}})\le0.8\,\mathrm m(\epsilon_{\mathrm{sqrvb0}})$.
+  - $g_2$: $\mathrm m(\Delta C_s)$ and $\mathrm m(\Delta P_d)$ no worse than nSG (with a $10^{-4}$ allowance on $\Delta P_d$).
+  - **Premise gate**: $\mathrm m(\epsilon_{\mathrm{nSG}})\ge10^{-4}$.
+  - **Accuracy metric**: accuracy is judged on $\epsilon$ ($\Delta E_{\mathrm{tot}}$) only.
+    - P1.1-P (orchestrator broadcast) shows that, after symmetry projection on ED-sized clusters, $\Delta E_{\mathrm{sign}}\le5\times10^{-5}$ and $f_E=0.004$–$0.023$.
+    - $\Delta E_{\mathrm{sign}}$ is therefore reported but does not gate.
+    - Exact $S$ acts measurably on $\Delta E_{\mathrm{tot}}$ and on cost.
+  - The verdicts are evaluated in the order listed.
+
+| Verdict | Condition |
+| :--- | :--- |
+| FAIL (cost) | $g_1$ or $g_{\mathrm{cost}}$ violated; this is the primary claim |
+| NO-TARGET | The premise gate fails: the spin- and space-projected control is already near-exact. The cost claim stands alone. Pre-committed action: rerun on the $6\times2$ ladder (`--Lx 6 --Ly 2 --bc-x obc --bc-y obc --Ne 10`) or a larger sampled system |
+| FAIL (accuracy) | $\mathrm m(\epsilon_R)\ge\mathrm m(\epsilon_{\mathrm{nSG}})$, or $\mathrm m(\epsilon_R)\ge\mathrm m(\epsilon_{\mathrm{che}})$; the second condition means the route does not match the quadrature-projected arm's accuracy at its lower cost |
+| PASS | $g_1$, $g_{\mathrm{cost}}$, $g_{\mathrm{mech}}$ and $g_2$ hold, and $\mathrm m(\epsilon_R)\le0.8\,\mathrm m(\epsilon_{\mathrm{nSG}})$, $\mathrm m(\epsilon_R)<\mathrm m(\epsilon_{\mathrm{che}})$ and $\mathrm m(\epsilon_R)\le0.5\,\mathrm m(\epsilon_{\mathrm{foil}})$ |
+| AMBIGUOUS | Anything else, or fewer than 3 seeds, or a capped run. Pre-committed action: rerun on the $4\times3$ cylinder (`--bc-x pbc`); promote $R$ only if it is not FAIL there and $\mathrm m(\epsilon_R)<\mathrm m(\epsilon_{\mathrm{nSG}})$ on both instances; otherwise KILL $R$ |
+
+* **Report logic checked on synthetic results** (`check_report_logic.py`, `logs/check_report_logic_output.txt`): four scenarios return PASS, FAIL (accuracy), NO-TARGET and FAIL (cost), as intended.
+
+* **Execution** (not submitted): `tests/P4.1_cheap_su2_r3/micro_test.py` (modes `smoke`, `time`, `cost`, `run`, `report`) and `submit_test.sbatch`.
+  - Slurm array 0–41: 2 matched widths $\times$ 7 arms $\times$ 3 seeds, partition `kim`, 8 CPUs, 32 GB, 24 h.
+  - The two widths are NNBF width 16 (table above, ratio 8.1) and NNBF width 4, a deliberately narrow control (753 parameters, ratio 24), whose matched arms are `sqrvb` 774, `sqrvb0` 847 and `scf` 825.
+  - Each width gets its own report and verdict.
+  - The slowest arm, `scf`, needs about 18 h for 2000 iterations (30 s per evaluation, about 1.1 evaluations per iteration) plus about 2 h for the sign budget.
+  - Command: `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r3/submit_test.sbatch`.
+  - Then, from the test directory: `python3 micro_test.py --mode report --nnbf-hidden 16` and the same with `--nnbf-hidden 4`.
+* **Smoke** (`cd tests/P4.1_cheap_su2_r3 && /share/apps/software/anaconda3/bin/python3 micro_test.py --mode smoke`; 10 s; `logs/smoke_output.txt`):
+
+```
+4x2 cylinder (y open) Ne=4 dim=784 |G|=16 irrep={'Tx': 1, 'My': 1, 'Mx': 1}: max(P_G idem, [P_G,H], [P_G,P_S], [U_g,H]) = 5.3e-15, <psi0|P_G|psi0>=1.000000000000 [PASS]
+4x2 open cluster Ne=4 dim=784 |G|=4 irrep={'My': 1, 'Mx': 1}: max(P_G idem, [P_G,H], [P_G,P_S], [U_g,H]) = 3.6e-15, <psi0|P_G|psi0>=1.000000000000 [PASS]
+2x3 Ne=6 U=6 t'=-0.3 dim=400 |G|=24 irrep={'Ty': 1, 'Tx': 1, 'My': 1, 'Mx': 1}: E0=-6.43831205 <S^2>=4.9e-17; P_G idem 2.2e-16 sym 3.1e-15 [P_G,H] 3.6e-15 [P_G,P_S] 4.0e-16 <psi0|P_G|psi0>=1.000000000000 [PASS]
+  sqrvb   P= 255 E=+1.286903 <S^2>(phi)=-1.98e-17 <S^2>(psi)=+6.78e-17 [PASS]  grad rel.err=2.7e-09 [PASS]
+  sqrvb0  P= 219 E=+1.003088 <S^2>(phi)=+4.85e-17 <S^2>(psi)=-5.33e-16 [PASS]  grad rel.err=2.6e-09 [PASS]
+  scf     P= 233 E=+4.595653 <S^2>(phi)=-3.45e-17 <S^2>(psi)=+1.28e-16 [PASS]  grad rel.err=8.3e-06 [PASS]
+  nnbf_SG P= 245 E=-4.787536 <S^2>(phi)=+2.21e+00 <S^2>(psi)=-1.04e-16 [PASS]  grad rel.err=1.7e-10 [PASS]
+  nnbf_G  P= 245 E=-4.519679 <S^2>(phi)=+2.21e+00 <S^2>(psi)=+5.71e-01 [PASS (not required)]  grad rel.err=8.8e-10 [PASS]
+  che     P= 245 E=-4.667028 <S^2>(phi)=+2.22e+00 <S^2>(psi)=+9.69e-17 [PASS]  grad rel.err=4.4e-10 [PASS]
+  foil    P=  62 E=-5.248864 <S^2>(phi)=+1.93e+00 <S^2>(psi)=-9.45e-17 [PASS]  grad rel.err=1.1e-08 [PASS]
+  per-amplitude: sqrvb_single vs batched 4.5e-16; che_single (N_q=2) vs full-vector P_S 1.6e-15; quad_single vs full-vector P_S 2.4e-16; scf_single vs batched 2.9e-16 nnbf_orbit_single vs full-vector P_S 1.6e-16 [PASS]
+  sign budget on psi_0: E_sign_up - E0 = -1.8e-15 [PASS]
+  opt sqrvb  : P= 255 eps=0.00e+00 (80 it, 0.3s)
+  opt sqrvb0 : P= 219 eps=1.38e-16 (85 it, 0.3s)
+  opt scf    : P= 233 eps=5.89e-03 (300 it, 5.2s)
+  opt nnbf_SG: P= 245 eps=8.69e-15 (87 it, 0.6s)
+  opt nnbf_G : P= 245 eps=4.00e-15 (188 it, 0.8s)
+  opt che    : P= 245 eps=1.52e-15 (81 it, 0.6s)
+  opt foil   : P=  62 eps=1.38e-15 (121 it, 0.6s)
+(2x3: more parameters than symmetric states for most arms; optimisation lines only show the code runs)
+SMOKE PASS  (9.8s)
+```
+
+* **Premise pre-check**: a short run of the projected control alone (seed 0, 300 of the 2000 iterations, no sign budget; `logs/precheck_nnbf_SG_h16_300it.txt`, `logs/precheck_nnbf_SG_h4_300it.txt`).
+
+| NNBF width | Parameters | $\epsilon$ at 100 | $\epsilon$ at 200 | $\epsilon$ at 300 iterations |
+| :--- | :--- | :--- | :--- | :--- |
+| 16 | 2205 | $3.9\times10^{-4}$ | $1.9\times10^{-4}$ | $1.24\times10^{-4}$ |
+| 4 | 753 | $1.5\times10^{-3}$ | $1.0\times10^{-3}$ | $9.3\times10^{-4}$ |
+
+  - Width 16 is still falling at 300 iterations, so its 2000-iteration value will probably fall below the $10^{-4}$ premise threshold, and that width will likely return NO-TARGET.
+  - Width 4, the deliberately narrow control, is flattening near $9\times10^{-4}$, about $9\times$ the threshold, so it is expected to discriminate.
+  - The array therefore runs both widths.
+  - ED on the open cluster: $E_0=-9.3617101438$ in the trivial irrep of $\{1,M_x,M_y,M_xM_y\}$, with $\langle\hat S^2\rangle=6\times10^{-18}$. The next singlet is $0.345t$ above.
+### Local Autopsy Log (Round 3 additions)
+* **Critic objections and how each was handled**:
+  - *PCG is mVMC × Tocchio and not below projection cost*: accepted; PCG is retired. Its cost-wall mutation (3.1) turned out to be Che 2608.22925 (killed as prior art) and is now the exact-$S$ control `che`.
+  - *PASS by construction against an unprojected control*: accepted.
+    - Every arm is now trained with $P_G$, and every comparison is against `nnbf_SG` ($P_GP_S$, trained with projection).
+    - The Tocchio-on-mVMC ablation the critic asked for is present in its stronger form: `che` uses the same NNBF with charge input, under $P_GP_S$.
+  - *The code did not implement the claimed algorithm*: accepted.
+    - Every per-amplitude algorithm whose cost is claimed or compared is implemented as a single-configuration function and checked against the batched or full-vector state: `sqrvb_single`, `scf_single`, `che_single`, `quad_single` and `nnbf_orbit_single`.
+    - `--mode cost` times exactly these functions.
+    - Full-vector $P_S$ remains only inside controls, where it gives a state proven identical to the per-amplitude one.
+  - *SCF novelty and stall*: the stall is rebutted by measurement (a budget artefact, $1.8\times10^{-15}$ at 370 iterations). Novelty is answered by the spinon–holon conditioning argument and by a parameter-matched uncoupled ablation (for 3.4).
+  - *Mismatched budget and best-of-3 seeds*: accepted. All arms share a 2000-iteration cap and the same wall-clock safety cap, verdicts use medians over 3 seeds with min/max spread, and a capped run makes the verdict AMBIGUOUS.
+* **Orchestrator broadcasts (P1.1-P interim; P1.2 critic's sector-dimension lever)**: accepted.
+  - The instance moved from the torus ($r=0.73$) to the open $4\times3$ cluster ($r=8.1$).
+  - A premise gate was added.
+  - The per-amplitude cost of exact $S$, measured on the implemented single-configuration algorithms, is the **primary** claim. The accuracy comparison is secondary.
+  - P1.1-P width-8 budgets show the post-projection error at ED size is amplitude, not sign. Accuracy is therefore judged on $\Delta E_{\mathrm{tot}}$ only; $\Delta E_{\mathrm{sign}}$ is reported, not gating; and the premise gate returns NO-TARGET when the projected control is near-exact.
+  - P3.2's same-irrep conical intersection is noted, and not used (see the Instance bullet).
+* **New kills**:
+  - Route 3.1: prior art, Che 2608.22925.
+  - Route 3.2: a multilinear spin dependence reduces to UHF.
+  - Route 3.3: Bergman-projected amplitudes are integrals, and multilinear invariants are VB.
+* **New anti-pattern**: spin-resolved backflow with a cheap exact SU(2) projector. Any one-determinant exact singlet carries spin information beyond singlet pairing only through $c$ (coherent-state lemma). Spin-resolved conditioning costs either the exponential orbit sum or a $2^{N_s}$ multilinear reduction.
+### Round 4 — Mutation & Replenishment (2026-11-11)
+* **Inputs carried over (binding)**: the round-3 per-leaf critic returned MUTATE with ten objections.
+  - (1) Gate 0: for a symmetric charge-conditioned pairing $F_c$, $\det F_c[U_s\cup D_b,D_s\cup D_b]=\det F_c[D_b,D_b]\,\det S_c[U_s,D_s]$, where $D_b$ are the doubly occupied sites and $S_c$ is the (symmetric) Schur complement. That is SQ-RVB's spin factor, so SQ-RVB is the round-1-killed Tocchio family.
+  - (2) Holon-dressed RVB already exists (Weng group: arXiv:1808.06173, PRB 99, 205128, arXiv:2106.14898; SA-NNBF 2604.06841). The real barrier is that one AGP per charge configuration may be too restrictive.
+  - (3) The cost gate used the wrong competitor: the same exact-$S$ class costs one determinant (Tocchio/R1).
+  - (4) Che's projection has a closed form, so its fair slope is 3, not 4.
+  - (5) SCF's cost was measured at a toy $D=13$; in 2D the required $D$ grows as $e^{\mathcal O(L_y)}$.
+  - (6) The cost and accuracy parameterisations differed.
+  - (7) Completeness of one AGP per $c$ was untested.
+  - (8) About 21% of SQ-RVB's parameters were dead, and $g_{\mathrm{mech}}$ was confounded.
+  - (9) Width-4 accuracy measures only capacity per parameter.
+  - (10) The 42-task array could not decide the cost claim.
+* **Running elsewhere, not duplicated**: the orchestrator's 9-task width-16 pilot (job 411494: `sqrvb`, `nnbf_SG`, `che`, 3 seeds) measures charge-only against spin-resolved conditioning, both exactly projected.
+#### Step 1a — honest per-amplitude cost
+* **Code**: `tests/P4.1_cheap_su2_r4/r4_test.py --mode cost` (single core, `OMP_NUM_THREADS=1`; `logs/cost_output.txt`, `results/cost_r4.json`).
+  - Every arm uses the same hidden width $H=8$ and gathers only the field entries it needs: $\mathcal O(Hn^2)$ for pairings and $\mathcal O(HnN_e)$ for orbitals, with $n=N_e/2$. This answers objection 6.
+  - `che_closed` is the closed form of objection 4. With $\mu$ the eigenvalues of $D_m^{-1}CA^{-1}B$, the amplitude is $\langle x\rvert P_0\lvert\Phi\rangle=\det A\det D_m\int_0^1\prod_i\big(x+(1-x)\mu_i\big)\,dx=\det A\det D_m\sum_ke_k(\mu)\,\frac{k!(n-k)!}{(n+1)!}$. Here $A,B,C,D_m$ are the up/down orbital blocks of round 3, $e_k$ is the $k$-th elementary symmetric polynomial, and the integral is a degree-$n$ polynomial, so it is computed exactly from $\mu$ in $\mathcal O(n^2)$. The total is one eigen-solve, $\mathcal O(n^3)$.
+  - Smoke checks (`logs/smoke_output.txt`): `che_closed` agrees with round 3's LU-reused quadrature to $1.1\times10^{-14}$, with the $e_k$ form to $8\times10^{-17}$, and with the full-vector $P_S$ to $1.1\times10^{-14}$.
+  - The single-determinant symmetric-$F_c$ singlet arm is `tocchio`, i.e. `kagp` with $K=1$.
+
+| $L$ | $N_e$ | NNBF, unprojected | `tocchio` (1 det) | `kagp2` | `kagp4` | SQ-RVB | Che closed form | Che quadrature (round 3) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 144 | 126 | 0.17 ms | 0.23 ms | 0.45 ms | 0.89 ms | 1.01 ms | 1.11 ms | 1.42 ms |
+| 256 | 224 | 0.50 ms | 0.65 ms | 1.29 ms | 2.71 ms | 1.67 ms | 3.12 ms | 5.20 ms |
+| 400 | 350 | 1.23 ms | 1.50 ms | 3.09 ms | 6.25 ms | 4.64 ms | 9.53 ms | 17.7 ms |
+| 576 | 504 | 2.80 ms | 3.30 ms | 6.73 ms | 13.5 ms | 10.9 ms | 20.8 ms | 53.8 ms |
+| slope in $N_e$ | | 2.13 | 2.00 | 2.04 | 1.97 | 2.31 | 2.34 | 2.88 |
+| ratio to `tocchio` at $L=576$ | | 0.8 | 1.0 | 2.0 | 4.1 | 3.3 | 6.3 | 16.3 |
+
+* **Reading of the honest cost table**:
+  - The cheapest exact-$S$ construction is the standard one: a symmetric charge-conditioned pairing at one $n\times n$ determinant. It costs $1.2\times$ the unprojected spin-resolved NNBF.
+  - SQ-RVB is $3.3\times$ `tocchio` for the same per-$c$ spin class (objection 1). Against the fair Che it is only $1.9\times$ cheaper, not the $4.7$–$6.2\times$ claimed in round 3.
+  - Closed-form Che is $6.3\times$ `tocchio`, and its slope (2.34, pre-asymptotic, BLAS-bound) is close to that of the determinant arms. The gap is a constant factor, as objection 4 said.
+  - The exponential orbit sum for the spin-resolved NNBF costs 2.8 s per amplitude at $L=24$ (`logs/lemma_output.txt`), against milliseconds for all of the above.
+  - SCF is dropped from every cost claim (objection 5).
+#### Step 1b — completeness of one AGP per charge configuration
+* **Dimension count** (`--mode dims`, `logs/dims_output.txt`). For a charge configuration with $N_s$ singles and no doublons, the spin factor lives in the singlet space of dimension $\mathrm{Cat}(N_s/2)$, the Catalan number. The table gives the Jacobian rank, at random parameters, of the tabular per-$c$ maps. A tabular map is one free parameter set per $c$, so it is the completeness ceiling of any charge-conditioned network. The Tocchio map's output was also checked to be an exact singlet ($\le4\times10^{-16}$).
+
+| $N_s$ | singlet dimension | one AGP (Tocchio / SQ-RVB) | 2 AGPs | 3 AGPs | projected UHF (Che) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 4 | 2 | 2 | 2 | 2 | 2 |
+| 6 | 5 | 5 | 5 | 5 | 5 |
+| 8 | 14 | **13** | 14 | 14 | 14 |
+| 10 | 42 | **26** | 42 | 42 | 42 |
+| 12 | 132 | **43** | 86 | 129 | 62 |
+
+* **Reading**:
+  - One AGP per $c$ is incomplete from $N_s=8$ on: its image is a hypersurface (rank 13 of 14). At $N_s=10$ it covers only a 26-dimensional cone of the 42-dimensional singlet space.
+  - Two AGPs, or one projected UHF, are locally complete up to $N_s=10$.
+  - For every fixed $K$ the $K$-AGP family is incomplete beyond some $N_s$. The singlet dimension grows as $4^{N_s/2}$, while each family has only polynomially many parameters per $c$. No polynomial family is complete per $c$ at scale, so completeness can only be a small-cluster diagnostic.
+* **Tabular fit to $\psi_0$** (Slurm job **411996**, `submit_agp.sbatch`, partition `kim`, 4 h). The $4\times3$ open cluster, $U=8$, $t'=-0.25$, at $N_e=8$, 10 and 12. For every charge configuration the job fits the best per-$c$ member of each family to $\psi_0$'s spin factor $\chi_c$. It reports the per-$N_s$ minimum fidelity, the weighted infidelity $1-\sum_cp_cF_c$ (with $p_c$ the weight of $c$ in $\psi_0$ and $F_c$ the best per-$c$ fidelity), and the energy error $\epsilon_{\mathrm{tab}}$ of the assembled tabular state.
+  - A first submission (job 411774) fitted every $N_s$ group and was too slow: 927 s for the $N_s=4$, $K=1$ group alone. Before it was cancelled it had fitted the $4+4$ groups $N_s=2$ (7888 configurations, all three families) and $N_s=4$ (13860 configurations, $K=1$), all with $F_c=1$. Job 411996 therefore fits only $N_s\ge8$ (`--agp-min-Ns 8`); groups with $N_s\le6$ are locally complete for every family by the dimension count. It runs $5+5$ first.
+  - Smoke on the $4\times2$ open cluster, $N_e=6$ ($N_s\le6$): all three families reach $F_c=1$ for every $c$ and total infidelity $\le4\times10^{-16}$, as the dimension count predicts (`logs/agp_smoke_4x2_N6.txt`).
+  - Results: pending (job 411996 running; it writes `results/agp_L4x3xobcobc_N{10,8,12}_U8_tp-0.25.json`). The Route 4.2 premise is read from the $N_e=10$ file by `--mode report`.
+#### Saturation diagnostic (Gate 0 applied to the formulation itself)
+* **What is already solved**: "exact $S$ below projection cost" is met by standard constructions.
+  - A singlet pairing with charge-only correlators and charge-conditioned backflow (Tocchio et al., PRB 78, 041101; R1) is exact for every $\theta$ at one $n\times n$ determinant, $1.2\times$ the cost of an unprojected NNBF (table above).
+  - For broken-symmetry references with charge-only backflow, Che's projection has an $\mathcal O(n^3)$ closed form, at $6.3\times$ the single-determinant cost.
+  - The formulation of Section 1 ("cost below $N_{\mathrm{grid}}$ evaluations") is therefore **saturated**. Every route that targeted it (R1, PCG, SQ-RVB, SCF, Route 3.1) either is one of these two constructions or loses to them on cost.
+* **What remains open**:
+  - (a) Exact $S$ for **spin-resolved** backflow. The round-2 conjecture said this needs the exponential orbit sum, but it was never stated precisely or proved.
+  - (b) Whether charge-only conditioning loses accuracy against spin-resolved conditioning once both are exactly projected. The orchestrator's pilot 411494 (`che` against `nnbf_SG`) measures this. It is not repeated here.
+  - (c) Whether one AGP per charge configuration is too restrictive. The dimension count proves it is incomplete from $N_s=8$. The tabular job measures how much this costs in energy on $\psi_0$. A cheap exact-$S$ family beyond one AGP per $c$ is needed only if that loss is material.
+* **Refined formulation (P4.1-R4, recorded; the Invariants are untouched)**:
+  - Inputs: exact-$S$ amplitudes with per-amplitude cost polynomial in $N_e$, which are compared at equal parameterisation with the two standard baselines, `tocchio` (cost 1) and closed-form Che (cost $\approx6$).
+  - "Solved" now means one of two things:
+    - (i) a precise complexity boundary for exact $S$ under spin-resolved conditioning, i.e. which spin-reading backflows admit polynomial exact projection, with a constructive member beyond charge-only conditioning; or
+    - (ii) an exact-$S$ family whose per-$c$ spin factor exceeds one AGP, priced below closed-form Che, that measurably reduces the energy error of `tocchio` at matched parameters on a cluster where $N_s\ge10$ configurations carry weight.
+  - The decisive instance moves to $4\times3$ open, $5+5$ ($N_s=10$ is the dominant no-doublon sector at $\delta=1/6$). The $4+4$ cluster has $N_s\le8$, where one AGP per $c$ misses only a codimension-1 set.
+#### Generation Batch 4
+* **Route 4.0 (SQ-RVB, round-3 survivor)**:
+  - Gate 0: **FAIL**. By the Schur-complement identity it is the Tocchio family with a reparameterised charge factor (objection 1).
+  - Cost: it is $3.3\times$ the one-determinant member of its own class.
+  - *Verdict*: **KILLED**. It stays only as a reported arm in job 411494.
+* **Route 4.0b (SCF, round-3 second survivor)**:
+  - Gate 1: **FAIL** under the refined formulation. The per-$c$ MPS is beyond one AGP, but the bond dimension it needs grows as $e^{\mathcal O(L_y)}$ in 2D (objection 5), so the cost is exponential in width. The round-3 cost row was a toy $D=13$ with random tensors.
+  - *Verdict*: **KILLED** for P4.1-R4. The area-law caveat is recorded in the autopsy.
+* **Route 4.1 (Operation B.3 from number projection, plus Operation A on the round-2 dichotomy conjecture): Spin-feature dichotomy.** The route has two halves, a hardness theorem and a constructive bucketing algorithm.
+  - *Theorem, hardness half*: let the backflow class contain every orbital map $x\mapsto\Phi(x)$ computable by a polynomial-size Boolean circuit of the spin-resolved occupations. ReLU MLPs of polynomial width and depth have this property on Boolean inputs. Then computing the exact amplitude $\langle x\rvert P_{S=0}\lvert\phi_\Phi\rangle$ is #P-hard.
+    - *Proof (dual rail)*: take $L=2n_v$ sites at half filling, with sites $(2a,2a+1)$ encoding variable $a$, and let $x_{\mathrm{ref}}$ have the up spins on the even sites.
+    - In the site-major basis $\langle\sigma\rvert P_0\lvert\sigma'\rangle=K_k=(-1)^kk!(m-k)!/(m+1)!\neq0$, where $k$ is the number of up spins moved, which equals the Hamming weight of the assignment.
+    - Choose orbitals that select the occupied sites, with one entry set to $g(x')=s_{\mathrm{ord}}(x')\,\mathrm{SAT}(x')/K_{k(x')}$ on valid dual-rail strings and 0 otherwise. Here $s_{\mathrm{ord}}$ is the site-major-to-up-then-down order sign and $\mathrm{SAT}(x')\in\{0,1\}$ is the formula evaluated on the assignment that $x'$ encodes. A polynomial-size circuit computes $g$.
+    - Then $(P_0\phi)(x_{\mathrm{ref}})=s_{\mathrm{ord}}(x_{\mathrm{ref}})\,\#\mathrm{SAT}$.
+    - *Verified in code* (`--mode lemma`, `logs/lemma_output.txt`): 30 random 3-CNF formulas with $n_v=3,4$, the orbitals built and the full-vector Löwdin projector applied. Every value equals #SAT to $10^{-12}$.
+    - It is a worst-case statement. It does not say that a particular trained NNBF is hard.
+  - *Constructive half*: let the backflow read spin only through $r$ integer features $w_a$ that are linear in the single-site spins, e.g. $w=$ the number of up-singles on sublattice $A$, with $R$ values each. Then exact $S$ costs $R^{2r}$ closed-form projections, $\mathcal O(R^{2r}n^3)$.
+    - *Mechanism*: write $\Pi_w=\frac1P\sum_je^{-i\theta_jw}e^{i\theta_j(W'+N_{sA})/2}$, where $W'=\sum_{i\in A}(n_{i\uparrow}-n_{i\downarrow})$, $N_{sA}$ is the number of singles on $A$, $P=N_{sA}+1$ and $\theta_j=2\pi j/P$. The operator $e^{i\theta W'/2}$ is one-body, i.e. a row phase on the orbitals, so each term is one `che_closed` evaluation. The orbit sum splits by feature value.
+    - The arm `sfb` takes $r=1$ and reads $s_A=(2w-N_{sA})/\max(N_{sA},1)$.
+    - `sfb_single` matches the full-vector $P_S$ to $5\times10^{-14}$ with doublons present (smoke). It costs 15 ms at $L=24$, against 2.8 s for the orbit sum, and 0.34 s at $L=64$, where the orbit sum is out of reach.
+    - Corollary: charge-only conditioning (Tocchio, Che) is the $r=0$ case. The cost of exact $S$ is set by the **number of independent spin features** the backflow reads, not by whether it reads spin at all. This upgrades round 2's conjecture to a theorem in both directions. (Withdrawn in the Round 4 fix: restated as folklore-level worst-case hardness plus a polynomial subclass.)
+  - Gate 0 (Novelty & Adoption): **PASS (provisional)**.
+    - The WebSearch queries "#P-hard symmetry projection neural network quantum state spin SU(2)" and "exact spin projection backflow depends on spin configuration Fourier one-body Slater" found no complexity result for spin projection of NQS and no spin-feature-bucketed projection.
+    - The closest work is SA-NNBF (2604.06841: spatial-only backflow, CP-compressed spin functions) and the SU(2)-equivariant spin networks (2104.14869), which cite superpolynomial irrep multiplicities but prove no hardness.
+    - The Fourier filter is the standard particle-number-projection device. What is new is its use inside the spin projector to condition on spin features.
+    - *Adoption barrier*: the field treats "reads spin" against "charge-only" as binary (Tocchio, Che, SA-NNBF all go charge-only). The bucketing shows there is a graded middle at polynomial cost.
+  - Gate 1 (Conservation & Asymptotics): **PASS**. Exact $S$ is shown for every $\theta$ (smoke $\langle\hat S^2\rangle=-7\times10^{-17}$; finite-difference gradient error $5\times10^{-10}$). The cost is $\mathcal O(N^5)$ for one global feature, or $\mathcal O(R_bN^4)$ with $R_b$ bins.
+  - Gate 2 (Baseline Gameability): **PASS (decided by the test)**. The trivial foil is `che` ($r=0$, same network). If one spin feature buys nothing, `sfb` FAILs.
+  - Gate 3 (Hard-Core Shield): **PASS** (label "sign half" withdrawn in the Round 4 fix). There is no Marshall or bipartite assumption: the sublattice is used only as a feature, and $t'\neq0$.
+  - *Verdict*: **SURVIVED** (structural survivor plus a constructive arm).
+* **Route 4.2 (Operation A on the "one AGP per $c$" wall): charge-conditioned $K$-AGP sum (KAGP)**, $\psi(x)=e^{J(c)}\sum_{k<K}\det F^{(k)}_c[U(x),D(x)]$ with every $F^{(k)}_c=\mathrm{sym}\big(F^{(k)}_0+\sum_hh_h(c)V^{(k)}_h\big)$ symmetric and one shared charge network $h(c)$.
+  - *Mechanism*: each term is an exact singlet, so their sum is too, with no projector. By the dimension count, $K=2$ is locally complete per $c$ up to $N_s=10$, exactly where one AGP fails. The cost is $K$ determinants: $2.0\times$ `tocchio` and $0.32\times$ closed-form Che at $L=576$.
+  - Gate 0 (Novelty & Adoption): **PASS (provisional, narrow)**.
+    - Linear combinations of AGPs exist: LC-AGP (Uemura & Nakajima arXiv:1906.02478; Uemura, Kasamatsu & Sugino; Scuseria group's non-orthogonal AGP sums, arXiv:2101.08911), and AGP-CI (2604.14115). Neural geminals also exist (2605.17083).
+    - None conditions the AGPs on the charge configuration, so in all of them the sum must be complete globally rather than per $c$.
+    - *Adoption barrier*: LC-AGP needs many terms, and optimising them jointly is ill-conditioned (Uemura and the AGP-CI paper both report this).
+    - *KAGP's fix*: the charge network supplies the configuration dependence, so $K$ only has to cover the per-$c$ spin deficit, which the dimension count bounds ($K=2$ up to $N_s=10$).
+  - Gate 1 (Conservation & Asymptotics): **PASS with stated limit**.
+    - Exact $S$: smoke $\langle\hat S^2\rangle=3\times10^{-17}$; finite-difference gradient error $5.5\times10^{-10}$; `kagp_single` agrees with the batched form to $3\times10^{-17}$.
+    - *Limit*: per-$c$ completeness needs $K$ to grow with $N_s$ (rank 129 < 132 at $K=3$, $N_s=12$). At scale KAGP is an accuracy-per-cost bet, not a completeness fix.
+  - Gate 2 (Baseline Gameability): **PASS (decided by the test)**. The foils are `tocchio` ($K=1$, same parameterisation, parameter-matched) and `che`.
+  - Gate 3 (Hard-Core Shield): **PASS** (label withdrawn in the Round 4 fix).
+  - *Verdict*: **SURVIVED (conditional on the tabular premise from job 411996)**.
+* **Route 4.3 (Operation B.1): exact projection of a spin-Jastrow times a charge-conditioned determinant.**
+  - Gate 1: **FAIL**. With $e^{\sum J_{ij}\sigma_i\sigma_j}$ the orbit sum is a fixed-magnetisation Ising partition function weighted by $K_k$. Interpolating in a one-body field recovers the fixed-magnetisation Ising sums, which are #P-hard for general $J$.
+  - It is the two-body special case of Route 4.1's hardness half.
+  - *Verdict*: **KILLED**.
+* **Route 4.4 (Operation B.3 from hidden-fermion determinants): hidden spinful ancillas in the spinon AGP, contracted into singlets.**
+  - Gate 2: **FAIL**. Grassmann integration of Gaussian ancillas gives the Schur complement $A_{vv}-A_{vh}(A_{hh}+B)^{-1}A_{hv}$, where $v$ and $h$ label the visible and hidden modes, $A$ is the pairing matrix and $B$ is the ancilla singlet pairing. That is again one AGP per $c$.
+  - Gaussian ancillas cannot leave the one-AGP class. Leaving it needs a sum (4.2), a projection (Che), or non-Gaussian structure (MPS, area law).
+  - *Verdict*: **KILLED**.
+### Top Surviving Route & Sharpest Gap (Round 4)
+* **Survivor 1 (Route 4.1, spin-feature dichotomy)**:
+  - Exact-$S$ projection of a spin-resolved backflow is #P-hard in the worst case (dual-rail reduction, verified in code).
+  - It is polynomial, $\mathcal O(R^{2r}n^3)$, when the backflow reads $r$ bounded integer spin features (bucketing plus Che's closed form, verified exact).
+  - The constructive arm `sfb` ($r=1$) is the first exact-$S$ backflow that reads spin at polynomial cost.
+* **Survivor 2 (Route 4.2, KAGP)**: $K$ charge-conditioned symmetric AGPs, exact $S$ with no projector, at $K$ determinants.
+  - $K=2$ closes the per-$c$ deficit of one AGP up to $N_s=10$.
+  - It costs $2\times$ the Tocchio baseline and $1/3$ of closed-form Che.
+* **Sharpest Gap**:
+  - (4.1) Does one global spin feature measurably beat charge-only conditioning? The theorem covers worst-case universal networks, not the trained ones.
+  - (4.2) Is the per-$c$ incompleteness of one AGP energetically material on $\psi_0$? The tabular job answers this. If $\epsilon_{\mathrm{tab}}(K{=}1)<10^{-4}$, the network parameterisation, not the per-$c$ class, limits `tocchio`, and Route 4.2 has no target on ED clusters.
+### 24-Hour Decisive Test (Round 4)
+* **Cost half (done, login node)**: the table in Step 1a, from `logs/cost_output.txt` and `results/cost_r4.json`, at equal $H$ with gathered fields.
+  - $g_{\mathrm{cost}}$ for 4.2: $t_{\mathrm{kagp2}}<t_{\mathrm{che\_closed}}$ at the largest size. Measured 6.7 ms against 20.8 ms: **holds**.
+  - Route 4.1 makes no cheaper-than-Che claim. Its cost claim is polynomial against exponential: 15 ms against 2.8 s at $L=24$, which also **holds**.
+* **Instance (accuracy half)**: the $4\times3$ open cluster, $N_\uparrow=N_\downarrow=5$, $U=8$, $t'=-0.25$, Hilbert dimension 627,264, 58,278 charge configurations.
+* **Arms**: all are parameter-matched to NNBF width 16 (2556–2653 parameters), trained with $P_G$ ($\{1,M_x,M_y,M_xM_y\}$), with exact sums, L-BFGS with an exact gradient, 2000 iterations for every arm, seeds 0, 1 and 2, and medians.
+
+| Arm | Description | Projection | Parameters | s per energy + gradient (8 CPUs) |
+| :--- | :--- | :--- | :--- | :--- |
+| `tocchio` | 1 symmetric charge-conditioned det | $P_G$ | 2587 | 4.9 |
+| `kagp2` | Route 4.2 | $P_G$ | 2556 | 9.8 |
+| `che` | Che family, charge NNBF | $P_GP_S$ | 2637 | 11.7 |
+| `sfb` | Route 4.1, `che` plus one spin feature | $P_GP_S$ | 2653 | 11.8 |
+| `nnbf_SG` | projected control, spin-resolved NNBF | $P_GP_S$ | 2637 | 11.7 |
+
+* **Metric**: $\epsilon=(E-E_0)/\lvert E_0\rvert$ per arm, with $\mathrm m(\cdot)$ the median over 3 seeds and the min/max spread reported. Exactness requires $\max\lvert\langle\hat S^2\rangle\rvert<10^{-10}$ for every arm.
+* **Pre-committed rule** (implemented in `--mode report`; checked on synthetic results in `logs/check_report_r4_output.txt`, where four scenarios give the intended verdicts):
+  - Route 4.2 premise, from job 411996: $\epsilon_{\mathrm{tab}}(K{=}1)\ge10^{-4}$ and $\epsilon_{\mathrm{tab}}(K{=}2)\le0.5\,\epsilon_{\mathrm{tab}}(K{=}1)$. If it fails, the verdict is NO-TARGET on this cluster.
+  - The verdicts are evaluated in the order listed.
+
+| Route | PASS | FAIL | AMBIGUOUS |
+| :--- | :--- | :--- | :--- |
+| 4.2 `kagp2` | $g_{\mathrm{cost}}$, and $\mathrm m(\epsilon_{\mathrm{kagp2}})\le0.7\,\mathrm m(\epsilon_{\mathrm{tocchio}})$ and $\le\mathrm m(\epsilon_{\mathrm{che}})$ | $g_{\mathrm{cost}}$ violated, or $\mathrm m(\epsilon_{\mathrm{kagp2}})\ge0.9\,\mathrm m(\epsilon_{\mathrm{tocchio}})$, or $>\mathrm m(\epsilon_{\mathrm{che}})$ | otherwise, or fewer than 3 seeds |
+| 4.1 `sfb` | $\mathrm m(\epsilon_{\mathrm{sfb}})\le0.7\,\mathrm m(\epsilon_{\mathrm{che}})$ | $\mathrm m(\epsilon_{\mathrm{sfb}})\ge0.95\,\mathrm m(\epsilon_{\mathrm{che}})$ | otherwise |
+
+* **Reported, not gating**: `che` against `nnbf_SG`, which is open question (b) and is also measured by pilot 411494; and $\mathrm m(\epsilon_{\mathrm{nnbf\_SG}})$ against $10^{-4}$.
+* **Pre-committed action on AMBIGUOUS**: rerun the array on the $4\times3$ cylinder (`--bc-x pbc`). Promote a route only if it is not FAIL on both clusters.
+* **Pilot sizing**:
+  - The tabular job (411996) sets the 4.2 premise.
+  - Seed 0 of every arm (`--array=0,3,6,9,12`) runs first as the pilot. The remaining ten tasks run only if no arm fails exactness and $\mathrm m(\epsilon_{\mathrm{tocchio}})\ge10^{-4}$.
+  - The measured cost is 4.9–11.8 s per evaluation (`logs/timing_output.txt`), i.e. at most about 7.5 h for 2000 iterations within a 12 h allocation.
+* **Execution (not submitted)**: `tests/P4.1_cheap_su2_r4/submit_test.sbatch`.
+  - Pilot: `sbatch --array=0,3,6,9,12 /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r4/submit_test.sbatch`.
+  - Then the remaining tasks: the same command with `--array=1,2,4,5,7,8,10,11,13,14`.
+  - Afterwards, from the test directory: `python3 r4_test.py --mode report --Ne 10`.
+* **Smoke** (`cd tests/P4.1_cheap_su2_r4 && /share/apps/software/anaconda3/bin/python3 r4_test.py --mode smoke`; 0.5 s):
+
+```
+[15:20:30] 2x3 torus Ne=6 dim=400
+[15:20:30]   tocchio  P= 307 <S^2>=-3.86e-17 grad rel.err=1.6e-09 [PASS]
+[15:20:30]   kagp2    P= 268 <S^2>=+3.34e-17 grad rel.err=5.5e-10 [PASS]
+[15:20:30]   che      P= 294 <S^2>=-6.47e-17 grad rel.err=2.9e-10 [PASS]
+[15:20:30]   sfb      P= 298 <S^2>=-6.76e-17 grad rel.err=5.1e-10 [PASS]
+[15:20:30]   kagp_single vs batched: 2.8e-17
+[15:20:30]   2x3 pbc/pbc Ne=6 che: |single - full-vector P_S| 1.1e-14, |closed - GL| 1.1e-14, |closed - e_k| 8.3e-17 (max|amp| 4.05e-01) [PASS]
+[15:20:30]   2x3 pbc/pbc Ne=6 sfb: |single - full-vector P_S| 7.3e-15 (max|amp| 1.98e-01) [PASS]
+[15:20:30]   4x2 obc/obc Ne=6 che: |single - full-vector P_S| 1.7e-16, |closed - GL| 1.9e-16, |closed - e_k| 4.2e-17 (max|amp| 2.40e-01) [PASS]
+[15:20:30]   4x2 obc/obc Ne=6 sfb: |single - full-vector P_S| 5.2e-14 (max|amp| 6.65e-01) [PASS]
+[15:20:30] SMOKE PASS  (0.5s)
+```
+
+### Local Autopsy Log (Round 4 additions)
+* **Critic objections and how each was handled**:
+  - (1) Accepted: SQ-RVB was killed (Route 4.0).
+  - (2) Accepted: the barrier is now stated as per-$c$ completeness, and it is measured by the dimension count and job 411996.
+  - (3) Accepted: `tocchio` is the cost baseline.
+  - (4) Accepted: the closed form is implemented and verified, and the fair slopes are 2.0–2.3.
+  - (5) Accepted: SCF was killed for the refined formulation (Route 4.0b).
+  - (6) Accepted: every cost arm uses the same $H$ and gathered fields, and the accuracy arms use the same families.
+  - (7) Accepted: completeness is now measured, by the dimension count and job 411996.
+  - (8) Moot, since SQ-RVB is retired. KAGP has no dead parameters of that kind: the doublon diagonal entries of $F_c$ do enter the determinant.
+  - (9) Accepted: the narrow width was dropped, and the test runs at width 16 only.
+  - (10) Accepted: the cost claim is decided on the login node and the array decides accuracy only.
+* **New kills**:
+  - 4.0: SQ-RVB, Gate 0 and cost-dominated.
+  - 4.0b: SCF, area law in 2D.
+  - 4.3: projected spin-Jastrow, #P-hard Ising sum.
+  - 4.4: Gaussian ancillas, which collapse to one AGP per $c$.
+* **New anti-pattern**: claiming "exact $S$ below projection cost" as novel. Tocchio-type singlet pairing (1 det) and closed-form Che ($\mathcal O(n^3)$) already saturate it, and any new exact-$S$ route must be priced against `tocchio` and `che_closed` at equal parameterisation.
+
+### Round 4 fix (2026-11-12)
+* **Inputs (binding)**:
+  - The round-4 per-leaf critic: 10 objections, 7 Major.
+  - Pilot 411494, $4\times3$ open, $4+4$, width 16, both arms exactly projected: $\mathrm m(\epsilon_{\mathrm{che}})=8.4\times10^{-5}$ (seeds $7.1$–$12.9\times10^{-5}$) against $\mathrm m(\epsilon_{\mathrm{nnbf\_SG}})=4.0\times10^{-5}$ (seeds $3.9$–$4.3\times10^{-5}$). The ratio is 2.10 and the seed ranges are disjoint, so charge-only conditioning loses real accuracy and `sfb` has headroom.
+  - Job 411996 (tabular AGP fit) timed out after ED. No $N_s\ge8$ group finished in about 3 h 50 min. Its joint L-BFGS over all configurations of a group (about $3\times10^5$ coupled parameters) was the bottleneck.
+* **Code**: `tests/P4.1_cheap_su2_fix/fix_test.py`, with local copies of the round-4 scripts. The modes are `smoke`, `complete`, `run`, `report` and `check`.
+#### Fix 1: hardness restated (Route 4.1)
+* The worst-case result is folklore-level. An exponential sum weighted by a circuit-computable $g$ is #P-hard by construction, as with RBM normalisation (Long & Servedio). The dual-rail check in `logs/lemma_output.txt` only confirms the encoding.
+* **Restated claim**:
+  - worst-case hardness of exact $P_S$ for backflows that read arbitrary spin information;
+  - a polynomial subclass: backflows reading $r=\mathcal O(1)$ integer features linear in the single-site spins cost $\mathcal O(R^{2r}n^3)$ by bucketing plus closed-form Che.
+* "Dichotomy" and "theorem in both directions" are withdrawn. The route is renamed **Route 4.1: polynomial spin-feature subclass (`sfb`)**.
+#### Fix 2: Gate 0 redone
+* **KAGP (Route 4.2) against multi-determinant NNBF** (Loehr & Clark, arXiv:2510.26906):
+  - That work finds that NNBF gains saturate with width, and that multi-determinant expansions, generated by one Lanczos step and symmetry projection, give the larger improvement.
+  - KAGP is a $K$-term multi-determinant backflow restricted to symmetric, charge-conditioned singlet pairings, with exact $S$ and no projector.
+  - The structural novelty is narrow:
+    - the per-$c$ completeness argument, i.e. one AGP per $c$ has Jacobian rank 26 of 42 at $N_s=10$;
+    - exactness without $P_S$.
+  - **Verdict: PASS (narrow, incremental)**. KAGP is kept only as a premise-gated test of whether the per-$c$ deficit matters.
+* **KAGP against SBP** (Rende, Viteritti & Georges, arXiv:2608.12465):
+  - SBP is one determinant of a configuration-dependent up–down pairing matrix $f(\mathbf n)$, produced by a transformer that reads the full spin-resolved configuration.
+  - Total $S$ is neither imposed nor projected; only the $C_{4v}$ point group is restored after training. There is one term.
+  - SBP is the spin-resolved, non-exact-$S$ sibling of `tocchio`, so it does not anticipate a $K>1$ exact-singlet sum.
+  - SBP is also the reason `sfb`'s question matters: state-of-the-art pairing NQS read full spin and give up exact $S$.
+* **`sfb` against multi-component PHF and ResHF**:
+  - ResHF with spin projection, and few-determinant / multi-component PHF (Jiménez-Hoyos and Scuseria; Henderson and Scuseria, arXiv:1706.01548), are $\sum_kc_kP_S\lvert\Phi_k\rangle$ with fixed determinants.
+  - `sfb` is $P_S\sum_w\Pi_w\lvert\Phi_w(c)\rangle$. Its components are charge-backflowed, and a spin-feature sector projector $\Pi_w$ glues them together rather than a coherent sum. Replacing $\Pi_w$ by the identity gives multi-component PHF with $R$ backflowed components.
+  - So `sfb` is the feature-gated member of the multi-component PHF family. A search ("spin-projected Hartree–Fock sublattice magnetization projection multi-component resonating Hartree–Fock Hubbard") found no feature-gated variant.
+  - **Verdict: PASS (narrow)**.
+  - **Pre-committed follow-up**: if `sfb` PASSes, it must also beat a multi-component Che arm, $P_S\sum_{k<R}\lvert\Phi_k(c)\rangle$ with $R=N_{sA}+1$, at matched cost before any promotion.
+#### Fix 3: premises enforced in `report()`, each with a hard NO-TARGET path
+* **$P_{\mathrm{run}}$**: at least 3 seeds per arm and $\max\lvert\langle\hat S^2\rangle\rvert<10^{-10}$. Otherwise the verdict is INCOMPLETE.
+* **$P_{\mathrm{floor}}$**: $\mathrm m(\epsilon_{\mathrm{nnbf\_SG}})\ge10^{-5}$. Otherwise both routes are NO-TARGET.
+  - The round-4 floor of $10^{-4}$ would have rejected pilot 411494, whose $4.0\times10^{-5}$ is resolved about $10\times$ above its seed spread.
+* **$P_{\mathrm{che}}$ (for `sfb`)**: $\mathrm m(\epsilon_{\mathrm{che}})\ge1.5\,\mathrm m(\epsilon_{\mathrm{nnbf\_SG}})$ and $\min\epsilon_{\mathrm{che}}>\max\epsilon_{\mathrm{nnbf\_SG}}$. Otherwise `sfb` is NO-TARGET.
+* **$P_{\mathrm{tab}}$ (for `kagp2`)**, tied to the trained network rather than a fixed number. All three must hold:
+  - $\epsilon_{\mathrm{tab}}(K{=}1)\ge0.5\,\mathrm m(\epsilon_{\mathrm{tocchio}})$, as specified;
+  - $\epsilon_{\mathrm{tab}}(K{=}1)\ge0.5\,\mathrm m(1-O^2_{\mathrm{tocchio}})$, the like-for-like infidelity;
+  - $\epsilon_{\mathrm{tab}}(K{=}2)\le0.5\,\epsilon_{\mathrm{tab}}(K{=}1)$.
+
+  Here $\epsilon_{\mathrm{tab}}(K{=}1)$ is the lower bound (unfitted configurations counted as exact), $\epsilon_{\mathrm{tab}}(K{=}2)$ is the upper bound (unfitted weight added), and $O^2$ is the overlap with $\psi_0$. A missing completeness file means NO-TARGET.
+* **Cost gate** (unchanged): $t_{\mathrm{kagp2}}<t_{\mathrm{che\_closed}}$ from `results/cost_r4.json`, measured as 6.7 ms against 20.8 ms.
+#### Fix 4: common reference start, and an independent second KAGP term
+* **Common start**: every arm starts from the same state, the closed-shell Fermi sea $\Phi$ (both spins) times the Gutzwiller factor:
+  - NNBF-type arms: $P_0=(\Phi,\Phi)$ with $W_2\sim10^{-3}$;
+  - KAGP arms: $F^{(0)}_0=\Phi\Phi^{\mathsf T}$, which gives the same amplitude, with $V\sim10^{-3}$.
+* **Instance checks**:
+  - the shell gap is 0.158 and the reference is non-degenerate;
+  - the reference already lies in $\psi_0$'s irrep and is a singlet: $P_G$ and $P_S$ preserve its norm to $10^{-4}$;
+  - $E_{\mathrm{ref}}=-6.2850$ against $E_0=-7.8279$, with overlap² 0.577.
+* **Smoke**: every arm's $E_{\mathrm{init}}$ agrees to $6\times10^{-4}$ relative, and $E_{\mathrm{init}}$ is stored in every run JSON.
+* **Second KAGP term**: $F^{(1)}_0=c\,QQ^{\mathsf T}$, with $Q$ an independent Haar-random orthonormal $L\times n$ matrix and $c$ set so that $\lvert\text{term }2\rvert=0.05\,\lvert\text{term }1\rvert$ at the start (smoke: cos(term 1, term 2) = 0.18).
+  - `run` stores the post-training cosine of the two terms, raw and $P_G$-projected, plus their norm ratio. `report` prints them, so a collapse onto one AGP is visible.
+  - A 30-iteration run on the $4\times2$ cluster checks this (`logs/run_smoke_kagp2.txt`).
+#### Fix 5: spread-aware verdicts with best-of-seeds; "sign half" labels dropped
+* **`sfb`** uses the gain fraction of the gap, $g=(\epsilon_{\mathrm{che}}-\epsilon_{\mathrm{sfb}})/(\epsilon_{\mathrm{che}}-\epsilon_{\mathrm{nnbf\_SG}})$, computed on medians ($g_{\mathrm m}$) and on best seeds ($g_{\mathrm b}$). `nnbf_SG` is promoted to the reference that `sfb` must approach.
+* **`kagp2`** is compared with `tocchio` and `che`.
+* Any capped arm downgrades its route's verdict to AMBIGUOUS. The verdicts are evaluated in order.
+
+| Route | PASS | FAIL | AMBIGUOUS |
+| :--- | :--- | :--- | :--- |
+| 4.1 `sfb` | $\max\epsilon_{\mathrm{sfb}}<\min\epsilon_{\mathrm{che}}$, $g_{\mathrm m}\ge0.5$ and $g_{\mathrm b}\ge0.5$ | $g_{\mathrm m}<0.2$, $g_{\mathrm b}<0.2$ and $\min\epsilon_{\mathrm{sfb}}>\max\epsilon_{\mathrm{nnbf\_SG}}$ | otherwise |
+| 4.2 `kagp2` | $\max\epsilon_{\mathrm{kagp2}}<\min\epsilon_{\mathrm{tocchio}}$, $\mathrm m$ and best-of-seeds both $\le0.7\times$ `tocchio`, and $\mathrm m(\epsilon_{\mathrm{kagp2}})\le\mathrm m(\epsilon_{\mathrm{che}})$ | cost gate violated; or $\mathrm m$ and best-of-seeds both $\ge0.9\times$ `tocchio`; or $\min\epsilon_{\mathrm{kagp2}}>\max\epsilon_{\mathrm{che}}$ | otherwise |
+
+* **Logic check**: `--mode check` (`logs/check_output.txt`) runs 10 synthetic scenarios, and every one gives its intended verdict. They cover:
+  - PASS/PASS and FAIL/FAIL;
+  - overlapping ranges, giving AMBIGUOUS;
+  - each NO-TARGET path: tabular ceiling, missing file, $K=2$ not closing, no `che` headroom, control at the floor;
+  - a missing seed, giving INCOMPLETE;
+  - a capped arm, giving AMBIGUOUS.
+* **Labels**: the "sign half" labels are removed from Round 4. This leaf concerns spin symmetry, and the instance claims no Hard-Core coverage.
+#### Fix 6: fast completeness check (replaces job 411996)
+* **Reduction**:
+  - For a symmetric $F_c$, $\det F_c[U_s\cup D_b,D_s\cup D_b]=\mathrm{sgn}(c)\,\det F_c[D_b,D_b]\,\det S_c[U_s,D_s]$, where $S_c$ is the symmetric Schur complement on the singles. The sign is spin-independent.
+  - The per-$c$ $K$-AGP family is therefore $\{\sum_k\beta_k\det S_k[U_s,D_s]\}$, with $K$ symmetric $N_s\times N_s$ matrices and $\beta_0=1$.
+  - Each configuration is an independent fit with at most 133 parameters against an orbit of at most 924 entries. Configurations run in waves through a 16-process pool in decreasing $\psi_0$ weight $p_c$, with L-BFGS capped at 400 iterations per restart and 3 restarts. $K=2$ starts from the $K=1$ optimum.
+  - Because the family's maximum overlap is $\sqrt{\sum_cp_cF_c^{\max}}$, the weighted infidelity $\epsilon_{\mathrm{tab}}=\sum_cp_c(1-F_c)$ is the family's minimum infidelity.
+* **Smoke** (literal output below):
+  - the reduction identity holds over the orbits to $3\times10^{-14}$;
+  - synthetic $N_s=8$ targets: a $K=1$ target is recovered by $K=1$, and a $K=2$ target is recovered by $K=2$ but not by $K=1$ ($F=0.996$);
+  - on the $4\times2$ open cluster, $N_e=6$, every $F_c=1$ and the assembled $\langle\hat S^2\rangle=2\times10^{-17}$, which validates the sign bookkeeping.
+* **Login-node probe**: `logs/complete_probe_N10_login.txt`, $4\times3$ open, $5+5$, 4 processes, 2-minute budget, which covered the 832 heaviest configurations.
+
+| $N_s$ | # configurations | $\psi_0$ weight | singlet dimension | fitted | $\sum p_c(1-F_c)$, $K=1$ | min $F_c$, $K=1$ | $\sum p_c(1-F_c)$, $K=2$ |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 8 | 1980 | 0.251 | 14 | 766 | $1.8\times10^{-4}$ | 0.9923 | $3\times10^{-18}$ |
+| 10 | 66 | 0.720 | 42 | 66 (all) | $6.6\times10^{-3}$ | 0.9632 | $2.0\times10^{-8}$ |
+
+* **Probe reading** (partial; the job gives the full numbers):
+  - $\epsilon_{\mathrm{tab}}(K{=}1)\ge6.8\times10^{-3}$ and $\epsilon_{\mathrm{tab}}(K{=}2)\approx2\times10^{-8}$ on the fitted weight, which was 93.5% of $\psi_0$.
+  - The assembled one-AGP tabular state has $\epsilon_E=4.8\times10^{-3}$ (an upper bound on the family's energy floor).
+  - The weight with $N_s\ge10$ is 0.720.
+  - So one AGP per $c$ is materially incomplete on this cluster, and two AGPs close the gap almost exactly.
+  - Whether the premise is MET now depends only on the trained `tocchio` error. Round 3's same-class `sqrvb` reached $7$–$8\times10^{-3}$ at $4+4$, so the premise is live, not assured.
+* **Slurm job 451839** (`submit_complete.sbatch`; partition `kim`, 16 CPUs, 1 h 58 min):
+  - $N_e=10$ with a 45-minute fit budget, then $N_e=8$ with 25 minutes, then $N_e=12$ (ED plus 20 minutes, optional).
+  - Each writes `results/complete_<tag>.json`.
+* **Smoke** (`cd tests/P4.1_cheap_su2_fix && /share/apps/software/anaconda3/bin/python3 fix_test.py --mode smoke`, 7 s; the full log, including the per-$N_s$ table, is in `logs/smoke_output.txt`):
+
+```
+[11:09:37] (a) 4x2 open Ne=6 dim=3136 E0=-5.895359; Fermi-sea shell gap 0.536
+[11:09:38]   tocchio  P= 427 E_init=-5.529954 <S^2>=+2.2e-17 grad rel.err=1.7e-09 [PASS]
+[11:09:38]   kagp2    P= 457 E_init=-5.529389 <S^2>=+1.0e-17 grad rel.err=4.2e-10 [PASS]
+[11:09:39]   che      P= 395 E_init=-5.526938 <S^2>=+2.4e-17 grad rel.err=1.2e-10 [PASS]
+[11:09:40]   sfb      P= 399 E_init=-5.526994 <S^2>=+4.5e-18 grad rel.err=3.9e-10 [PASS]
+[11:09:41]   nnbf_SG  P= 395 E_init=-5.527064 <S^2>=+6.6e-18 grad rel.err=8.6e-10 [PASS]
+[11:09:41]   kagp2 init: |term2|/|term1| = 0.050, cos(term1, term2) = +0.179
+[11:09:41] (b) Schur reduction det F[U,D] / det S[U_s,D_s] constant over the orbit: 59 configs, max rel. spread 3.0e-14 [PASS]
+[11:09:41] (c) N_s=8 synthetic: K=1 target F1=1.000000000000; K=2 target F1=0.99625245 F2=1.000000000000 [PASS]
+[11:09:43] (d) 4x2 open Ne=6 complete: eps_tab K1 -1.8e-16, K2 -2.3e-16, assembled <S^2> 2.1e-17 [PASS]
+[11:09:43] SMOKE PASS  (7.1s)
+```
+
+### Top Surviving Route & Sharpest Gap (Round 4 fix)
+* **Route 4.1 (`sfb`, polynomial spin-feature subclass)**: worst-case hardness plus a polynomial subclass at $r=\mathcal O(1)$. Pilot 411494 shows that the spin-resolved conditioning it partly restores is worth $2.1\times$ in error.
+* **Route 4.2 (KAGP, narrow)**: the probe shows that the per-$c$ deficit of one AGP is material ($\epsilon_{\mathrm{tab}}(K{=}1)\ge6.8\times10^{-3}$, $N_s=10$ weight 0.72) and that $K=2$ closes it.
+* **Sharpest gap**:
+  - (4.1) Does one linear spin feature recover at least half of the `che`→`nnbf_SG` gap at polynomial cost?
+  - (4.2) Is trained `tocchio` limited by the per-$c$ class ($\epsilon_{\mathrm{tab}}\ge0.5\,\mathrm m(\epsilon_{\mathrm{tocchio}})$) or by its network?
+### 24-Hour Decisive Test (Round 4 fix)
+* **Instance**: $4\times3$ open, $5+5$, $U=8$, $t'=-0.25$; dimension 627,264.
+* **Arms**: `tocchio`, `kagp2`, `che`, `sfb` and `nnbf_SG`, at width-16 parameter matching (2556–2653 parameters).
+  - All arms train with $P_G$; `che`, `sfb` and `nnbf_SG` also use exact $P_S$.
+  - All arms start from the common reference.
+  - L-BFGS with an exact gradient, 2000 iterations, cap of 15 h; seeds 0, 1 and 2.
+* **Metric and verdicts**: Fixes 3 and 5 above, run as `python3 fix_test.py --mode report --Ne 10`.
+* **Execution (not submitted)**: `sbatch --array=0-14 /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_fix/submit_test.sbatch` (16 CPUs, 16 h per task).
+### Local Autopsy Log (Round 4 fix additions)
+* **Critic objections**, with how each was handled:
+  - Folklore hardness: accepted (Fix 1).
+  - `sfb` narrow: accepted. It is now benchmarked as a fraction of the `che`→`nnbf_SG` gap, with a pre-committed multi-component Che foil if it passes.
+  - KAGP incremental: accepted (Fix 2).
+  - Completeness count is local: accepted. It is replaced by global per-$c$ fits with restarts (Fix 6).
+  - Tabular ceiling instead of trained capacity, and premises not enforced: accepted (Fix 3).
+  - Thresholds below seed noise and asymmetric initialisation: accepted (Fixes 4 and 5).
+* **Kill-path note**: job 411996 died from coupling all configurations of a group into one optimisation. Separable fits must be run as independent problems.
+
+### Round 5 (2026-11-13)
+* **Inputs (binding)**: decisive pilot 451886 on the $4\times3$ open cluster, $5+5$, $U=8$, $t'=-0.25$, about 2.6k parameters per arm, 3 seeds, all states exact $S$. Medians of $\epsilon$: `tocchio` $1.47\times10^{-3}$, `kagp2` $1.30\times10^{-3}$ (FAIL), `che` $3.4\times10^{-4}$, `sfb` $3.7\times10^{-4}$ (FAIL, gap fraction $-0.22$), `nnbf_SG` $2.1\times10^{-4}$.
+  - Exact $S$ built into the ansatz (`tocchio`, `kagp2`) is $4$–$7\times$ worse than exact projection of a broken-symmetry network.
+  - The tabular completeness gain of a second AGP ($6.8\times10^{-3}\to2\times10^{-8}$) does not survive training. So the per-$c$ class is not what limits trained networks at this size; parameter efficiency at a fixed budget is.
+  - Every arm stopped at the 2000-iteration cap without converging. The ranking is accuracy at an equal optimisation budget, and round 5 keeps that budget.
+* **Code**: `tests/P4.1_cheap_su2_r5/r5_test.py`, with local copies of the fix-round scripts. Modes: `smoke`, `cost`, `timing`, `run`, `report`, `check`.
+#### Step 1: Saturation Diagnostic, refined
+* **What is settled**:
+  - The best polynomial exact-$S$ construction is closed-form Che, $\mathcal O(n^3)$ at $6.3\times$ `tocchio`.
+  - The best accuracy comes from projecting a spin-resolved network, whose exact $P_S$ needs the orbit sum, of size $\binom{N_s}{N_s/2}$. That sum is #P-hard in the worst case (round 4).
+  - The open core is therefore a polynomial exact-$S$ method that closes most of the $1.66\times$ gap between `che` and `nnbf_SG`.
+* **Lemma A (twirl), proved here.** Let $U(g)$ be the spin rotation, $P_0=\int dg\,U(g)$ the singlet projector, and $\mathcal T(D)=\int dg\,U(g)DU(g)^\dagger$ the twirl of an operator $D$.
+  - For any operator $D$ and any singlet $\lvert\psi\rangle$: $P_0D\lvert\psi\rangle=\int dg\,U(g)DU(g)^\dagger U(g)\lvert\psi\rangle=\mathcal T(D)\lvert\psi\rangle$, because $U(g)\lvert\psi\rangle=\lvert\psi\rangle$.
+  - Consequence 1: projecting a singlet dressed by a degree-2 spin polynomial $1+\sum_{ij}g_{ij}(c)\sigma_i\sigma_j$, with $\sigma_i=n_{i\uparrow}-n_{i\downarrow}$, gives $1+\tfrac13\sum_{ij}g_{ij}(c)\,\boldsymbol\sigma_i\cdot\boldsymbol\sigma_j$ acting on the singlet. That is the round-1 R1x exchange dressing, a linear dressing, which the global anti-pattern says is not size-consistent.
+  - Consequence 2: degree-1 spin dressings of a singlet project to zero, since $\langle0\rVert T^{(1)}\lVert0\rangle=0$ (Wigner–Eckart).
+  - Consequence 3: a size-consistent (exponentiated) spin correlator $e^{\sum g_{ij}\sigma_i\sigma_j}$ needs $\mathcal T(e^{D})$. Here $\mathcal T(e^D)\neq e^{\mathcal T(D)}$, and the orbit sum is a fixed-magnetisation Ising partition function (Route 4.3, #P-hard).
+* **Lemma B (Gaussian closure), proved here.** Let $\sigma(x)$ be the vector of single-site spins of $x$. For a real vector $w$, $e^{w\cdot\sigma}$ is a one-body diagonal operator: it multiplies up-orbital row $j$ by $e^{w_j}$ and down-orbital row $j$ by $e^{-w_j}$. So if the pre-projection state restricted to charge configuration $c$ is a sum of $K$ Slater determinants (with spin fields of this form included), exact $P_S$ costs $K$ closed-form Che evaluations, $\mathcal O(Kn^3)$.
+  - `che` is $K=1$.
+  - `sfb` is $K=(N_{sA}+1)^2$ through the Fourier filter.
+  - The new arms below have $K=4$.
+* **Refined core (conjecture, stated as a working hypothesis, not a theorem)**:
+  - Exact $P_S$ at polynomial cost appears to need one of two structures in the per-$c$ pre-projection spin function: a polynomial projected-Gaussian rank $K$ (Lemma B), or a bounded-bond tree tensor network (round-3 SCF, which is area-law-limited in 2D).
+  - A spin-resolved NNBF has neither. Its orbitals change with every spin configuration, so its generic per-$c$ Gaussian rank is the orbit size.
+  - On this conjecture, polynomial exact $P_S$ of the full `nnbf_SG` class is plausibly impossible beyond the worst case, not only in it. Evidence: the round-4 reduction, the Ising sum of Route 4.3, and Lemma A, which shows the size-consistent spin correlator needs exactly the hard object.
+  - It does **not** make the target impossible. The target is half of the `nnbf_SG` accuracy gain on a cluster, not the `nnbf_SG` class, and a bounded-$K$ member could carry most of that gain.
+* **Refined formulation (P4.1-R5; Invariants untouched)**:
+  - Find an exact-$S$ family with bounded projected-Gaussian rank $K=\mathcal O(1)$ per $c$, costing at most $\approx4$ closed-form Che evaluations per amplitude, that closes $\ge50\%$ of the `che`→`nnbf_SG` gap at matched parameters and an equal optimisation budget.
+  - Separately, decide whether any gain comes from **spin input** or merely from **Gaussian rank**, with an equal-cost foil that has rank 4 and no spin input.
+  - If both bounded-$K$ arms fail, that is the practical form of the conjecture on this cluster: the gain is not low-rank, and P4.1 closes as "polynomial exact $S$ saturates at Che".
+  - Size-extensivity is not tested on ED clusters. For any bounded-$K$ route it is the sharpest gap, because extensive spin correlations need $K$ to grow with $L$.
+#### Generation Batch 5
+* **Gate 0 searches (2026-11-13, WebSearch)**. The queries were:
+  - "restricted Boltzmann machine pair product total spin projection hidden units Nomura Imada spin quantum number projection RBM";
+  - "approximate spin projection neural network quantum state Löwdin annihilator variational Monte Carlo fermions spin contamination";
+  - "multi-component projected Hartree-Fock neural network backflow exact spin projection sum of determinants Hubbard";
+  - "exact spin projection of RBM correlator times Slater determinant by summing hidden units one-body spin field Gaussian states";
+  - "SU(2)-invariant spin Jastrow exp(sum v_ij S_i·S_j) variational Monte Carlo Hubbard doped exchange correlator non-diagonal".
+* **Full-text check**: Nomura et al. (arXiv:1709.06475, ar5iv full text) apply $\mathcal L^{S=0}$ to the pair-product reference only. The RBM correlator multiplies the projected reference afterwards, so total $S$ is not exact.
+* **Route 5.1 (few-point spin quadrature on a spin-resolved network)**:
+  - Gate 1: **FAIL**. By the commutant lemma, every quadrature point $\langle x\rvert e^{-i\beta S_y}\lvert\phi\rangle$ of a spin-reading network is itself an orbit sum of $\binom{N_s}{N_s/2}$ terms. Fewer points do not reduce the exponential part, which sits inside each point.
+  - *Verdict*: **KILLED**.
+* **Route 5.2 (Operation A on 5.1): truncated Löwdin filter $p_d(\hat S^2)\phi$ with $p_d(0)=1$, degree $d$, trained in the loop**:
+  - Cost: $\hat S^2$ connects $x$ to $(N_s/2)^2$ spin-swapped configurations. A degree-$d$ filter needs $\phi$ on $\sim(N_s/2)^{2d}/(d!)^2$ configurations, and a spin-resolved NNBF has no fast update across them, since the network input changes. At $L=576$ ($N_s\approx400$), $d=1$ already needs $\approx4\times10^4$ NNBF amplitudes, about $110$ s per amplitude at 2.8 ms each.
+  - Exactness: the residual is $\sum_{S>0}\lvert p_d(S(S+1))\rvert^2w_S$, where $w_S$ is the weight of $\phi$ in spin sector $S$. It vanishes only for $d\ge S_{\max}$. A broken-symmetry $\phi$ spreads over $S\lesssim\sqrt N$, so a certificate at machine precision needs $d\sim\sqrt N$.
+  - Gate 0: Löwdin annihilators and Yamaguchi's approximate projection are the quantum-chemistry versions. The field moved to PHF quadrature for exactly this residual-contamination reason, and the route has no fix for it.
+  - Gate 1: **FAIL** (not exact; the cost exponent grows with $d$). *Verdict*: **KILLED**.
+* **Route 5.3 (sampled projection inside the amplitude, and its mutations)**:
+  - The plain form is the round-2 kill and the global single-proposal anti-pattern.
+  - Mutation (a): one-sided $\langle\phi\rvert HP_0\lvert\phi\rangle$ with the rotation angle and the orbit partner $x'$ sampled. Normalising the signed kernel gives $\sum_{x'}\lvert\langle x\rvert R(\beta)\lvert x'\rangle\rvert=(\lvert\cos\tfrac\beta2\rvert+\lvert\sin\tfrac\beta2\rvert)^{N_s}$, so the average sign decays exponentially in $N_s$.
+  - Mutation (b): sampling spin permutations $\pi$ with character weights, $P_0=\tfrac{d_\lambda}{N_s!}\sum_\pi\chi_\lambda(\pi)\pi$. Each sample is cheap (one amplitude $\phi(\pi x)$), but the weights reach $d_\lambda=\mathrm{Cat}(N_s/2)$, so the variance grows as $4^{N_s}$.
+  - Gate 1: **FAIL** (exponential variance, and the energy is biased through ratios). *Verdict*: **KILLED**; it adds to the global anti-pattern.
+* **Route 5.4 (multi-component Che, `che_k4`)**: $\phi=e^{J(c)}\sum_{k<4}a_k\det\Phi_{k\uparrow}(c)[U]\det\Phi_{k\downarrow}(c)[D]$, where $\Phi_k(c)=P_{0,k}+B(c)$ share one charge backflow $B(c)$ and have independent references $P_{0,k}$, with $a_0=1$; exact $P_SP_G$.
+  - Gate 0: **PASS (narrow; mainly a foil)**. It is multi-component PHF / ResHF (Jiménez-Hoyos, Henderson & Scuseria) with charge backflow, and it sits next to multi-determinant NNBF (Loehr & Clark arXiv:2510.26906; low-rank multi-determinant updates arXiv:2609.26544).
+    - Adoption barrier: those multi-determinant NNBF use spin-resolved backflow, so exact $P_S$ of the sum is exponential, and projected versions restore lattice symmetry only.
+    - Mechanism here: charge backflow keeps every component Gaussian per $c$, so exact $P_S$ is $K$ closed forms (Lemma B).
+    - This is the pre-committed multi-component Che foil of the round-4 fix.
+  - Gate 1: **PASS**. Smoke: $\langle\hat S^2\rangle=4\times10^{-17}$; finite-difference gradient error $1.9\times10^{-8}$ over every parameter block; `chek_single` (4 closed forms) matches the full-vector $P_S$ to $3\times10^{-15}$. Cost: $4.0\times$ `che_closed` at $L=576$, slope 2.15 in $N_e$.
+  - Gate 2: **PASS (decided by the test)**. The foils are `che` ($K=1$) and the gap to `nnbf_SG`.
+  - Gate 3: **PASS**. No lattice, filling or sign assumption.
+  - *Verdict*: **SURVIVED (as the equal-cost Gaussian-rank foil; conditional route)**.
+* **Route 5.5 (Operation A on the $r$-feature subclass of Route 4.1: hidden-unit-enumerated spin field, `che_rbm`)**: the mutation replaces `sfb`'s integer, Fourier-bucketed, fixed feature with $M$ **learned, real, charge-conditioned linear spin fields**, which Lemma B keeps Gaussian. The pre-projection state is
+
+$$\phi(x)=e^{J(c)}\det\Phi_\uparrow(c)[U]\,\det\Phi_\downarrow(c)[D]\prod_{m<M}2\cosh\big(b_m+w_m(c)\cdot\sigma(x)\big),\qquad w_m(c)=h(c)W_m+w_{0,m},$$
+
+  where $h(c)$ is the `che` trunk's hidden layer, $W_m$ and $w_{0,m}$ are learned, $M=2$, and the state is trained with exact $P_SP_G$.
+  - *Exact projection at polynomial cost*: $2\cosh a=\sum_{s=\pm1}e^{sa}$, so $\langle x\rvert P_S\lvert\phi\rangle=e^{J(c)}\sum_{s\in\{\pm1\}^M}e^{s\cdot b}\,\mathrm{che\_closed}\big(\Phi_\uparrow e^{f_s},\Phi_\downarrow e^{-f_s},U,D\big)$ with $f_s=\sum_ms_mw_m(c)$. That is $2^M$ closed forms, $\mathcal O(2^Mn^3)$.
+  - *Why this is not `sfb` again*:
+    - `sfb` fed the staggered magnetisation of the singles, which a projected AF-capable UHF already superposes over all orientations. That redundancy explains its $-22\%$.
+    - `che_rbm`'s fields $w_m(c)$ are produced from $c$. They can be localised around the holes, so after projection they encode hole–spin (spin-polaron) correlations, the local spin structure a spin-resolved backflow can use. The test settles whether that is what it learns.
+  - Gate 0: **PASS (provisional)**.
+    - Nomura et al. (arXiv:1709.06475) put the RBM after $\mathcal L^{S=0}$, so $S$ is not exact.
+    - Ferrari, Becca & Carrasquilla (arXiv:1906.00463) note that RBM correlators break SU(2).
+    - mVMC and Tahara–Imada restrict correlators to charge.
+    - No search returned an exact $P_S$ of an RBM-type spin correlator obtained by enumerating hidden units into one-body fields.
+    - *Adoption barrier*: the field treats spin correlators as incompatible with cheap exact $S$. Lemma B shows that the linear-field ones are Gaussian per hidden configuration.
+  - Gate 1: **PASS with a stated limit**. Smoke: $\langle\hat S^2\rangle=-3\times10^{-17}$; gradient error $7\times10^{-10}$ over all blocks; `rbm_single` matches the full-vector $P_S$ to $1.5\times10^{-14}$ ($2\times3$ torus) and $6.6\times10^{-13}$ at amplitude scale 38 ($4\times2$ open, doublons present). Cost: $3.0\times$ `che_closed` at $L=576$, slope 2.20. *Limit*: the cost is $2^M$, so a size-extensive spin correlator ($M\propto L$) is exponential. That is the conjecture's boundary, recorded as the sharpest gap.
+  - Gate 2: **PASS (decided by the test)**. The foils are `che` and `che_k4`, which has equal cost and equal Gaussian rank but no spin input.
+  - Gate 3: **PASS**. No Marshall, bipartite or filling assumption, and $t'\neq0$.
+  - *Verdict*: **SURVIVED**.
+* **Route 5.6 ($r=2$–4 integer collective features, the `sfb` extension)**:
+  - Cost: $\mathcal O(R^{2r}n^3)$ with $R\approx N_s/4+1$, which is $\mathcal O(N^{8}n^3)$ at $r=4$.
+  - Mechanism: collective sublattice or quadrant magnetisations are what the projected broken-symmetry `che` reference already superposes, and the $r=1$ case recovered $-22\%$.
+  - Gate 2: **FAIL** by mechanism and data. *Verdict*: **KILLED**, superseded by its Operation-A mutation 5.5, which reads learned real fields at cost $2^M$ instead of $R^{2r}$.
+* **Route 5.7 (hybrid: `che` plus a small spin-resolved correction trained on the residual)**:
+  - An unprojected correction breaks exactness (contamination of order $\eta^2$, where $\eta$ is the correction's amplitude).
+  - A projected correction is exponential (commutant lemma).
+  - Applied to the exact singlet, Lemma A turns a degree-2 correction into the linear exchange dressing, which is the size-consistency anti-pattern.
+  - Gate 1 / anti-pattern: **FAIL**. *Verdict*: **KILLED**.
+### Top Surviving Route & Sharpest Gap (Round 5)
+* **Survivor 1 (Route 5.5, `che_rbm`)**: exact $S$ for every $\theta$, with spin read through $M$ learned charge-conditioned linear fields, at $2^M$ closed-form Che evaluations: $3.0\times$ `che_closed` at $M=2$, slope 2.2.
+* **Survivor 2 (Route 5.4, `che_k4`)**: Gaussian rank 4 per $c$ with no spin input, at $4.0\times$ `che_closed`. It is also the attribution foil for 5.5.
+* **Sharpest gap**:
+  - (5.5) Does a rank-4 Gaussian mixture driven by spin fields carry the hole–spin correlations that `nnbf_SG` gains from spin input? If it does, does $M$ have to grow with $L$, which would make it exponential (the conjecture)?
+  - (5.4) Does Gaussian rank alone close the gap, which would mean the "spin-resolved" gain is really a rank gain?
+### 24-Hour Decisive Test (Round 5)
+* **Instance**: identical to job 451886: $4\times3$ open, $5+5$, $U=8$, $t'=-0.25$, dimension 627,264, common reference start (Fermi sea times Gutzwiller), $P_G$ plus exact $P_S$, L-BFGS with an exact gradient, 2000 iterations, seeds 0, 1 and 2.
+* **Arms**:
+  - New: `che_rbm` (2709 parameters, $H=14$) and `che_k4` (2565 parameters, $H=13$), within $\pm2.7\%$ of the width-16 NNBF count of 2637.
+  - Reference (read, not rerun; same code path): `che` and `nnbf_SG` from `tests/P4.1_cheap_su2_fix/results/`.
+  - Both new arms start from the common reference: `che_rbm` with $b_m=1$ and small fields ($E_{\mathrm{init}}=-6.2832$); `che_k4` with three Haar-random extra references at 5% norm ($E_{\mathrm{init}}=-6.2785$). The reference arms started at $-6.277$ to $-6.289$.
+* **Metric**: $\epsilon=(E-E_0)/\lvert E_0\rvert$; $\mathrm m$ is the median over seeds, and lo/hi are the best and worst seeds. The gap fractions are $g_{\mathrm m}=(\mathrm m_{\mathrm{che}}-\mathrm m_X)/(\mathrm m_{\mathrm{che}}-\mathrm m_{\mathrm{SG}})$ and $g_{\mathrm b}=(\mathrm{lo}_{\mathrm{che}}-\mathrm{lo}_X)/(\mathrm{lo}_{\mathrm{che}}-\mathrm{lo}_{\mathrm{SG}})$.
+  - With the reference numbers, PASS needs $\mathrm m_X\le2.75\times10^{-4}$, $\mathrm{lo}_X\le2.57\times10^{-4}$ and $\mathrm{hi}_X<3.26\times10^{-4}$.
+* **Premises (enforced in `report`)**:
+  - $P_{\mathrm{run}}$: 3 seeds per arm and $\lvert\langle\hat S^2\rangle\rvert<10^{-10}$. Otherwise INCOMPLETE.
+  - $P_{\mathrm{gap}}$: $\mathrm m_{\mathrm{che}}\ge1.5\,\mathrm m_{\mathrm{SG}}$ and $\mathrm{lo}_{\mathrm{che}}>\mathrm{hi}_{\mathrm{SG}}$. This holds now (ratio 1.66; $3.26\times10^{-4}>2.31\times10^{-4}$). Otherwise NO-TARGET.
+  - Cost gate: $t_X\le1.5\times4\,t_{\mathrm{che\_closed}}$ at $L=576$ and slope $\le3$. Measured: 3.01 and 4.03, slopes 2.20 and 2.15, so the gate **holds**.
+
+| Route | PASS | FAIL | AMBIGUOUS |
+| :--- | :--- | :--- | :--- |
+| 5.5 `che_rbm`, 5.4 `che_k4` (each) | cost gate, $g_{\mathrm m}\ge0.5$, $g_{\mathrm b}\ge0.5$ and $\mathrm{hi}_X<\mathrm{lo}_{\mathrm{che}}$ | cost gate violated, or $g_{\mathrm m}<0.2$ and $g_{\mathrm b}<0.2$ | otherwise, or any capped run |
+
+* **Attribution (pre-committed)**: a `che_rbm` PASS counts as a spin-resolved gain only if $\mathrm m_{\mathrm{rbm}}\le0.8\,\mathrm m_{\mathrm{k4}}$ and $\mathrm{hi}_{\mathrm{rbm}}<\mathrm{lo}_{\mathrm{k4}}$. Otherwise the gain is credited to Gaussian rank (Route 5.4, narrow multi-component PHF).
+* **Pre-committed actions**:
+  - Both FAIL: the conjecture's practical form holds on this cluster. P4.1 closes as "polynomial exact $S$ saturates at closed-form Che", with Lemmas A and B and the kills of Batch 5 as its content.
+  - AMBIGUOUS: rerun both arms with $M=3$ / $K=8$ (cost $\le8$ closed forms) on the same instance.
+  - PASS: run the $4\times3$ cylinder (`--bc-x pbc`) and an $M$-scan before any promotion.
+* **Logic check** (`--mode check`, `logs/check_output.txt`): eight synthetic scenarios, each giving its intended verdict. They are: spin-credited PASS, rank-credited PASS, both FAIL, overlap AMBIGUOUS, cost-gate FAIL, missing seed (INCOMPLETE), inexact $S$ (INCOMPLETE), and no gap (NO-TARGET).
+* **Execution (not submitted)**: `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r5/submit_test.sbatch`.
+  - It is an array of 6 tasks (arm = task / 3, seed = task % 3) on partition `kim`, with 16 CPUs, 48 GB, 24 h and a 22 h optimisation cap.
+  - Timing on 8 threads: 6.4 s (`che_rbm`) and 15.1 s (`che_k4`) per energy plus gradient (`logs/timing_output.txt`).
+  - Then, on the login node: `cd tests/P4.1_cheap_su2_r5 && python3 r5_test.py --mode report`.
+* **Smoke** (`cd tests/P4.1_cheap_su2_r5 && /share/apps/software/anaconda3/bin/python3 r5_test.py --mode smoke`, 4.9 s, `logs/smoke_output.txt`):
+
+```
+[09:04:38] (a) 4x2 open Ne=6 dim=3136 E0=-5.895359
+[09:04:40]   che      P= 395 H=4 E_init=-5.526938 (che -5.526938) <S^2>=+2.4e-17 grad rel.err (all blocks)=4.2e-09 [PASS]
+[09:04:41]   che_rbm  P= 396 H=3 E_init=-5.528480 (che -5.526938) <S^2>=-3.0e-17 grad rel.err (all blocks)=7.1e-10 [PASS]
+[09:04:43]   che_k4   P= 412 H=2 E_init=-5.524122 (che -5.526938) <S^2>=+3.8e-17 grad rel.err (all blocks)=1.9e-08 [PASS]
+[09:04:43] (b) 2x3 pbc/pbc Ne=6 che_rbm: |polynomial single - full-vector P_S| 1.5e-14 (max|amp| 1.37e+00) [PASS]
+[09:04:43] (b) 2x3 pbc/pbc Ne=6 che_k4: |polynomial single - full-vector P_S| 2.9e-15 (max|amp| 2.48e-01) [PASS]
+[09:04:43] (b) 4x2 obc/obc Ne=6 che_rbm: |polynomial single - full-vector P_S| 6.6e-13 (max|amp| 3.81e+01) [PASS]
+[09:04:43] (b) 4x2 obc/obc Ne=6 che_k4: |polynomial single - full-vector P_S| 1.5e-15 (max|amp| 7.17e-01) [PASS]
+[09:04:43] SMOKE PASS  (4.9s)
+```
+
+* **Cost** (`--mode cost`, single core, $H=8$, `logs/cost_output.txt`, `results/cost_r5.json`):
+
+| $L$ | $N_e$ | `che_closed` | `che_rbm` ($M=2$) | `che_k4` |
+| :--- | :--- | :--- | :--- | :--- |
+| 144 | 126 | 1.62 ms | 5.26 ms | 6.27 ms |
+| 256 | 224 | 5.78 ms | 15.8 ms | 22.1 ms |
+| 400 | 350 | 17.1 ms | 47.3 ms | 67.4 ms |
+| 576 | 504 | 31.1 ms | 93.6 ms | 125 ms |
+| slope in $N_e$ | | 2.09 | 2.20 | 2.15 |
+
+* **Cost reading**: the `che_closed` time at $L=576$ is 31 ms here against 20.8 ms in round 4, from machine load. Only the ratios are used. For comparison, the exponential orbit sum costs 2.8 s per amplitude already at $L=24$ (round 4).
+### Local Autopsy Log (Round 5 additions)
+* **New kills**:
+  - 5.1: few-point quadrature; each point is already an orbit sum.
+  - 5.2: truncated Löwdin filter; not exact for $d<S_{\max}\sim\sqrt N$, with an $(N_s/2)^{2d}$ cost and no fast update.
+  - 5.3: sampled projection, including two new mutations: signed angle–orbit sampling, whose average sign decays as $(\lvert\cos\rvert+\lvert\sin\rvert)^{-N_s}$, and character-weighted permutation sampling, whose variance grows as $\mathrm{Cat}(N_s/2)^2$.
+  - 5.6: $r=2$–4 integer features; redundant with the projected broken-symmetry reference and cost $R^{2r}$.
+  - 5.7: hybrid residual correction; reduces to linear exchange dressing by Lemma A.
+* **New anti-pattern (leaf)**: an exact-$S$ route that only enlarges the per-$c$ variational class (KAGP, tabular completeness) without changing how the shared network parameterises $c\mapsto$ state does not gain at a fixed training budget. Round-5 arms are therefore judged against `che` at an equal iteration budget, never against a tabular ceiling.
+* **Structural results kept regardless of the test outcome**: Lemma A (twirl; a projected low-degree spin dressing equals a linear SU(2)-scalar dressing) and Lemma B (Gaussian closure of linear spin fields, which makes RBM-type spin correlators exactly projectable at $2^M$ closed forms).
+
+### Round 5 fix (2026-11-13)
+* **Inputs (binding)**: the round-5 per-leaf critic, with a fix-then-submit path. Its five findings are handled as Fixes 1–5 below.
+* **Code**: `tests/P4.1_cheap_su2_r5/r5_test.py`, rewritten in place. The original round-5 script, sbatch and outputs are archived in `tests/P4.1_cheap_su2_r5/logs/r5_original/`. The modes are unchanged: `smoke`, `cost`, `timing`, `run`, `report` and `check`.
+#### Fix 1: `che_rbm` relabelled; Gate 0 downgraded to narrow
+* **What `che_rbm` is.** Expanding $2\cosh a=\sum_{s=\pm1}e^{sa}$ gives
+
+$$\phi(x)=e^{J(c)}\sum_{s\in\{\pm1\}^M}e^{s\cdot b}\,\det\!\big[e^{f_s(c)}\Phi_\uparrow(c)\big][U]\,\det\!\big[e^{-f_s(c)}\Phi_\downarrow(c)\big][D],\qquad f_s(c)=\sum_m s_m w_m(c).$$
+
+  - Each hidden configuration $s$ is one charge-conditioned UHF determinant whose up rows are scaled by $e^{f_s}$ and whose down rows by $e^{-f_s}$.
+  - $\sigma(x)$ enters only through these one-body row scalings. So `che_rbm` reads no spin information that `che` lacks.
+  - It is a $2^M$-component projected UHF mixture: ResHF / multi-component PHF with a charge backflow, whose components vary with $c$.
+* **Withdrawn round-5 claims**: "hidden-unit-enumerated spin field", "spin input encodes hole–spin correlations", and the SPIN-RESOLVED attribution path.
+* **The question becomes**: does accuracy improve with the projected-mixture rank $K$, and do components that vary with $c$ beat fixed ones?
+* **Gate 0: PASS (narrow)**. Prior art:
+  - the discrete Hubbard–Stratonovich / RBM correspondence (Carleo, Nomura & Imada, Nat. Commun. 9, 5322 (2018), arXiv:1802.09558): hidden units are discrete HS fields;
+  - symmetry-projected HS determinants in AFQMC (Shi, Jiménez-Hoyos, Rodríguez-Guzmán, Scuseria & Zhang, PRB 89, 125129 (2014)): sums of HS-field-dressed determinants projected exactly onto spin;
+  - Jastrow factors on PHF (Henderson & Scuseria, JCP 139, 234113 (2013));
+  - Nomura's RBM plus pair-product state (Nomura, Darmawan, Yamaji & Imada, PRB 96, 205152 (2017)) and the symmetry-restored RBM (Nomura, arXiv:2009.14777).
+  - What remains is narrow: exact $P_S$ of a mixture whose components are charge-conditioned (through the backflow and the row scalings), trained end to end at $K$ closed forms.
+  - **Adoption barrier**: the cost is $2^M$ closed forms. A size-extensive $M\propto L$ is exponential, so at fixed $M$ this is a bounded-rank mixture.
+#### Fix 2: rank ladder at matched parameters and a common start
+* **Arms** (all exact $S=0$, trained with $P_G$ and exact $P_S$). $H$ is the trunk width; $H_r\le H$ is the number of trunk units read by `che_rbm`'s field head. Timing is one energy plus gradient on the production instance in **one call**, with `che` included (`logs/timing_output.txt`, 8 threads). Cost is the per-amplitude ratio to `che_closed` at $L=576$ (`logs/cost_output.txt`).
+
+| Arm | Components | Rank $K$ | $P$ | $H$ ($H_r$) | Timing vs `che` | Cost vs `che_closed` (slope) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `che_rbm1` | row scalings vary with $c$ | 2 | 2589 | 15 (7) | 0.41 | 1.78 (2.02) |
+| `che_rbm2` | row scalings vary with $c$ | 4 | 2589 | 14 (9) | 0.42 | 3.25 (2.05) |
+| `che_rbm3` | row scalings vary with $c$ | 8 | 2601 | 13 (10) | 0.43 | 6.19 (2.05) |
+| `che_k2` | fixed offsets $P_{0,k}$, shared backflow | 2 | 2613 | 15 | 0.59 | 1.95 (2.07) |
+| `che_k4` | fixed offsets $P_{0,k}$, shared backflow | 4 | 2565 | 13 | 0.98 | 3.90 (2.08) |
+| `che_k8` | fixed offsets $P_{0,k}$, shared backflow | 8 | 2614 | 10 | 1.72 | 7.79 (2.11) |
+| `che_kh4` | own backflow head per component (containing foil) | 4 | 2580 | 4 | 0.94 | 3.99 (2.25) |
+| `che` (reference, drift control) | one | 1 | 2637 | 16 | 1.00 | 1 |
+
+* **Matching**: every new arm is within $\pm1\%$ of $P_C=2589$ (from $-0.93\%$ to $+0.97\%$; smoke check (c)).
+  - `che` and `nnbf_SG` have 2637, which is $1.9\%$ more than $P_C$. That favours the references, the conservative direction.
+  - `che_kh4` has no separate $b_2$, because $P_{0,k}$ is its head bias. The other arms inherit `che`'s duplicate pair $P_0+b_2$ (120 parameters).
+* **Common initialisation**: every arm starts from the `che` start of job 451886 (Fermi sea times Gutzwiller, $W_2\sim10^{-3}$, $W_1\sim\mathcal N(0,1/\text{fan-in})$, same RNG). Every component then gets small independent noise of relative size $\varepsilon=0.05$:
+  - k-arms and the foil: $P_{0,k}=P_0+\varepsilon\,\mathrm{rms}(P_0)\,\xi_k$ for every $k$, with $a_k=1$;
+  - rbm arms: $b_m=0$, and per-site fields of order $\varepsilon$ from $w_{0}$ and $W_r$.
+  - $E_{\mathrm{init}}$ lies between $-6.2768$ and $-6.2890$ for all arms, against `che`'s $-6.2770$ (references: $-6.277$ to $-6.289$).
+* **Pre-committed family rule** (critic): a family PASSes only if its gain is increasing or stable with rank **and** it closes $\ge50\%$ of the `che`→`nnbf_SG` gap at its best rank.
+#### Fix 3: drift control
+* **Every verdict must also hold at iteration 1000.** It is evaluated from the `E_best` lines logged every 50 iterations. These are stored as `traj` in every new run JSON, and parsed from the job-451886 logs for the references.
+* **Drift threshold** $\Delta_{\mathrm{drift}}$: the median over the three `che` seeds of $\epsilon(1000)-\epsilon(2000)$. Measured: $6.5$, $7.9$ and $9.4\times10^{-5}$, so $\Delta_{\mathrm{drift}}=7.9\times10^{-5}$. This is stricter than the critic's seed-0 value of $6.5\times10^{-5}$.
+  - An arm is credited only if $\mathrm m_{\mathrm{che}}-\mathrm m_X>\Delta_{\mathrm{drift}}$, at both iterations.
+* **Drift run**: one `che` seed (seed 0) is run to 4000 iterations (`che_drift4000`). If its $\epsilon(4000)\le\mathrm m_X(2000)$ for the best arm of a family, a PASS becomes AMBIGUOUS, because `che` with twice the iterations reaches it.
+* **Parameters are saved for every arm**: `results/<tag>_w16_<arm>_seed<s>_theta.npy`, with the block shapes in the JSON.
+#### Fix 4: capping and sizing
+* `che` was timed in the same call as every new arm (Fix 2 table). The slowest arm is `che_k8`, at $1.72\times$ `che`.
+* `che` took at most 12.3 h for 2000 iterations on `kim` in job 451886. That puts `che_k8` at about 21 h and the 4000-iteration drift run at about 25 h. `--max-hours 72` is at least $2.9\times$ every estimate, and `--time` is 3 days 8 h.
+* If any compared arm is still capped:
+  - every verdict is evaluated at the largest common logged iteration (equal iteration counts);
+  - it is INCOMPLETE if that iteration is below 1000;
+  - the attribution is reported as INVALID.
+#### Fix 5: lemma statements corrected
+* **Lemma A, Consequence 1** needs $i\neq j$. For $i=j$, $\sigma_i^2$ is the singly-occupied indicator, a function of $c$. Corrected statement: projecting a singlet dressed by $1+\sum_{i\neq j}g_{ij}(c)\sigma_i\sigma_j$ gives $1+\tfrac13\sum_{i\neq j}g_{ij}(c)\,\boldsymbol\sigma_i\cdot\boldsymbol\sigma_j$; the $i=j$ terms are charge-only and pass through unchanged.
+* **Lemma B, restated.**
+  - Let $\Pi_c$ project onto charge configuration $c$. Spin rotations preserve every $n_i$, so $[P_S,\Pi_c]=0$ and $\langle x\rvert P_S\lvert\phi\rangle=\langle x\rvert P_S\Pi_{c(x)}\lvert\phi\rangle$. The claim therefore holds **within each charge block** and needs only the restriction $\Pi_c\phi$.
+  - If $\Pi_c\phi=\Pi_c\sum_{k<K}\lvert\Phi_k(c)\rangle$ with each $\Phi_k(c)$ an **$S^z$-conserving** (UHF, no up–down mixing) determinant, exact $P_S$ costs $K$ closed-form Che evaluations. GHF components would need a different closed form.
+  - The row scaling $e^{w\cdot\sigma}$ keeps a UHF determinant UHF for any **complex** $w$; `che_closed` accepts complex orbitals.
+* **Code paths**: the accuracy runs (`run`) apply the exact $P_S$ of the sector (`sec.projS`) to the full 627,264-dimensional vector. The per-amplitude $K$-closed-form algorithm is used only by `cost` and by smoke check (b). Smoke (b) shows the two agree to $\le1.1\times10^{-12}$ for every arm on a $2\times3$ torus and a $4\times2$ open cluster.
+* **Smoke** (`cd tests/P4.1_cheap_su2_r5 && /share/apps/software/anaconda3/bin/python3 r5_test.py --mode smoke`, 12.4 s, `logs/smoke_output.txt`; part (b) abridged to the $4\times2$ cluster):
+
+```
+[09:22:24] (a) 4x2 open Ne=6 dim=3136 E0=-5.895359
+[09:22:25]   che      P= 395 H=4 E_init=-5.526938 (che -5.526938) <S^2>=+2.4e-17 grad rel.err (all blocks)=4.2e-09 [PASS]
+[09:22:26]   che_rbm1 P= 420 H=4 E_init=-5.527041 (che -5.526938) <S^2>=-8.3e-17 grad rel.err (all blocks)=5.8e-09 [PASS]
+[09:22:27]   che_rbm2 P= 380 H=3 E_init=-5.528531 (che -5.526938) <S^2>=+2.4e-18 grad rel.err (all blocks)=1.5e-09 [PASS]
+[09:22:28]   che_rbm3 P= 405 H=3 E_init=-5.528421 (che -5.526938) <S^2>=-1.3e-17 grad rel.err (all blocks)=5.1e-09 [PASS]
+[09:22:29]   che_k2   P= 444 H=4 E_init=-5.538972 (che -5.526938) <S^2>=-1.0e-17 grad rel.err (all blocks)=7.7e-10 [PASS]
+[09:22:31]   che_k4   P= 477 H=3 E_init=-5.528498 (che -5.526938) <S^2>=+1.1e-18 grad rel.err (all blocks)=1.4e-07 [PASS]
+[09:22:34]   che_k8   P= 608 H=2 E_init=-5.528691 (che -5.526938) <S^2>=-3.7e-17 grad rel.err (all blocks)=1.8e-08 [PASS]
+[09:22:35]   che_kh4  P= 652 H=2 E_init=-5.528648 (che -5.526938) <S^2>=-1.6e-17 grad rel.err (all blocks)=1.1e-08 [PASS]
+[09:22:35] (b) 4x2 obc/obc Ne=6 che_rbm1: |polynomial single - full-vector P_S| 5.1e-15 (max|amp| 2.29e+00) [PASS]
+[09:22:35] (b) 4x2 obc/obc Ne=6 che_rbm2: |polynomial single - full-vector P_S| 1.1e-12 (max|amp| 4.47e+00) [PASS]
+[09:22:35] (b) 4x2 obc/obc Ne=6 che_rbm3: |polynomial single - full-vector P_S| 6.7e-13 (max|amp| 7.17e+00) [PASS]
+[09:22:35] (b) 4x2 obc/obc Ne=6 che_k2  : |polynomial single - full-vector P_S| 1.6e-15 (max|amp| 9.70e-01) [PASS]
+[09:22:36] (b) 4x2 obc/obc Ne=6 che_k4  : |polynomial single - full-vector P_S| 7.9e-15 (max|amp| 2.00e+00) [PASS]
+[09:22:36] (b) 4x2 obc/obc Ne=6 che_k8  : |polynomial single - full-vector P_S| 1.1e-14 (max|amp| 4.13e+00) [PASS]
+[09:22:36] (b) 4x2 obc/obc Ne=6 che_kh4 : |polynomial single - full-vector P_S| 3.0e-15 (max|amp| 6.16e-01) [PASS]
+[09:22:36] (c) production counts (4x3, 5+5): che_rbm1 2589 (+0.00%), che_rbm2 2589 (+0.00%), che_rbm3 2601 (+0.46%), che_k2 2613 (+0.93%), che_k4 2565 (-0.93%), che_k8 2614 (+0.97%), che_kh4 2580 (-0.35%) vs P_C=2589 [PASS]
+[09:22:36] SMOKE PASS  (12.4s)
+```
+
+* **End-to-end check**: 60-iteration runs of `che_kh4`, `che_rbm3` and the `che` drift label on the $4\times2$ cluster wrote JSONs with `traj`, `capped` and the `_theta.npy` files, and `report` parsed them.
+### Top Surviving Route & Sharpest Gap (Round 5 fix)
+* **Survivor 1 (Route 5.5, relabelled)**: `che_rbmM`, a projected UHF mixture of rank $2^M$ whose components vary with $c$ through diagonal row scalings. Gate 0 is narrow (ResHF / multi-component PHF with charge backflow).
+* **Survivor 2 (Route 5.4)**: `che_kK`, a projected UHF mixture of rank $K$ with fixed reference offsets and a shared backflow. `che_kh4` is its containing foil, with one backflow head per component.
+* **Sharpest gap**:
+  - Does the accuracy of an exact-$S$ projected mixture rise with rank, and does any rank $\le8$ close half the `che`→`nnbf_SG` gap beyond `che`'s own drift?
+  - If it does, the rank must still grow with $L$ for extensive correlations, and that costs $2^M$ (rbm) or $K$ (k) closed forms. This is the size-extensivity gap that ED clusters cannot test.
+### 24-Hour Decisive Test (Round 5 fix)
+* **Instance**: identical to job 451886: $4\times3$ open, $5+5$, $U=8$, $t'=-0.25$, dimension 627,264, $P_G$ plus exact $P_S$, L-BFGS with an exact gradient, 2000 iterations, seeds 0, 1 and 2.
+* **Arms**: the seven new arms of Fix 2, plus the `che` drift run (seed 0, 4000 iterations). `che` and `nnbf_SG` at 2000 iterations are read from job 451886, which was not capped.
+* **Metric**: $\epsilon=(E-E_0)/\lvert E_0\rvert$ at iteration $n\in\{2000,1000\}$. $\mathrm m$ is the seed median, and lo/hi are the best and worst seeds. The gap fractions are $g_{\mathrm m}=(\mathrm m_{\mathrm{che}}-\mathrm m_X)/(\mathrm m_{\mathrm{che}}-\mathrm m_{\mathrm{SG}})$ and $g_{\mathrm b}=(\mathrm{lo}_{\mathrm{che}}-\mathrm{lo}_X)/(\mathrm{lo}_{\mathrm{che}}-\mathrm{lo}_{\mathrm{SG}})$.
+* **Per-arm qualification at iteration $n$**: $g_{\mathrm m}\ge0.5$, $g_{\mathrm b}\ge0.5$, $\mathrm{hi}_X<\mathrm{lo}_{\mathrm{che}}$ and $\mathrm m_{\mathrm{che}}-\mathrm m_X>\Delta_{\mathrm{drift}}=7.9\times10^{-5}$. With the reference numbers this means:
+  - at 2000: $\mathrm m_X<2.63\times10^{-4}$ (the drift bound binds; half the gap alone would allow $2.75\times10^{-4}$), $\mathrm{lo}_X\le2.57\times10^{-4}$ and $\mathrm{hi}_X<3.26\times10^{-4}$;
+  - at 1000: $\mathrm m_X\le3.38\times10^{-4}$, $\mathrm{lo}_X\le3.19\times10^{-4}$ and $\mathrm{hi}_X<4.07\times10^{-4}$.
+* **Premises (enforced in `report`)**:
+  - $P_{\mathrm{run}}$: 3 seeds per arm, $\lvert\langle\hat S^2\rangle\rvert<10^{-10}$, and the drift run present. Otherwise INCOMPLETE.
+  - $P_{\mathrm{gap}}$ at both iterations: $\mathrm m_{\mathrm{che}}\ge1.5\,\mathrm m_{\mathrm{SG}}$ and $\mathrm{lo}_{\mathrm{che}}>\mathrm{hi}_{\mathrm{SG}}$. It holds now: ratios 1.66 and 1.64; $3.26>2.31$ and $4.07>2.81$ (units of $10^{-4}$). Otherwise NO-TARGET.
+  - Cost gate: per-amplitude time $\le1.5\times$ rank $\times$ `che_closed` at $L=576$, and slope $\le3$. It holds for every arm (Fix 2 table).
+
+| Family | PASS | FAIL | AMBIGUOUS |
+| :--- | :--- | :--- | :--- |
+| rbm (ranks 2, 4, 8); k (ranks 2, 4, 8) | cost gate; best-rank arm qualifies at 2000 **and** 1000; $g_{\mathrm m}$ never drops by more than 0.2 between successive ranks; `che_drift4000` $\epsilon(4000)>\mathrm m_X(2000)$ | cost gate violated, or $g_{\mathrm m}<0.2$ and $g_{\mathrm b}<0.2$ at every rank | otherwise |
+| `che_kh4` (rank 4) | the same, without the rank condition | the same | otherwise |
+
+* **Attribution (pre-committed; INVALID if any compared arm is capped)**:
+  - If rbm PASSes: credit **c-varying components** only if $\mathrm m_{\mathrm{rbm}}\le0.8\,\mathrm m_{\mathrm k}$ and $\mathrm{hi}_{\mathrm{rbm}}<\mathrm{lo}_{\mathrm k}$ at the best rbm rank. Otherwise credit **rank**. Report also whether `che_kh4` matches or beats `che_rbm2` at rank 4.
+  - If only k or `che_kh4` PASSes: credit **projected-mixture rank** (a narrow multi-component PHF result).
+* **Pre-committed actions**:
+  - All three FAIL: P4.1 closes as "polynomial exact $S$ saturates at closed-form Che on this cluster; mixture rank $\le8$ does not help at an equal optimisation budget".
+  - Any PASS: run the $4\times3$ cylinder and a second filling before any promotion, and state the size-extensivity gap.
+  - AMBIGUOUS: extend the ambiguous family's arms and `che` to 4000 iterations from the saved parameters.
+* **Logic check** (`--mode check`, `logs/check_output.txt`): 14 synthetic scenarios, each giving its intended verdict. They are: rbm PASS with c-varying credit; rbm and k PASS equally (rank credit); all FAIL; gain drops with rank; PASS at 2000 but not at 1000; gain below `che`'s drift; drift run reaches the best arm; capped arm (equal-iteration comparison, attribution INVALID); cost gate; capped below 1000; missing seed; inexact $S$; missing drift run; no gap.
+* **Execution (submitted)**: job **508440**, `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r5/submit_test.sbatch`.
+  - Array 0–21 on `kim`, with 16 CPUs, 48 GB, `--time` 3 days 8 h and `--max-hours 72`.
+  - Tasks 0–20: arm = `NEW_ARMS[task / 3]`, seed = task % 3. Task 21: the `che` drift run.
+  - Then, on the login node: `cd tests/P4.1_cheap_su2_r5 && python3 r5_test.py --mode report`.
+### Local Autopsy Log (Round 5 fix additions)
+* **Critic objections**, with how each was handled:
+  - `che_rbm` is not spin-resolved: accepted (Fix 1). The SPIN-RESOLVED path is removed from `report`.
+  - Gate 0 too generous: accepted. It is now narrow, with the four prior-art lines and the $2^M$ adoption barrier.
+  - One rank per arm cannot separate rank from mechanism: accepted (Fix 2, rank ladder plus a containing foil).
+  - Drift at the 2000-iteration cap: accepted (Fix 3; the iteration-1000 check, the drift threshold and a 4000-iteration `che`).
+  - Capping and sizing not measured: accepted (Fix 4).
+  - Lemma statements loose: accepted (Fix 5).
+* **Kill-path note**: the round-5 `che_k4` was matched only to $\pm2.7\%$ and started from Haar-random references, unlike `che_rbm`. Both are replaced; the old numbers are not reused.
+
+### Rank-Ladder Result (job 508440, 2026-11-14)
+
+**Pre-committed report (`tests/P4.1_cheap_su2_r5/report_508440_output.txt`): family k PASS, family rbm AMBIGUOUS, containing foil `che_kh4` FAIL; attribution RANK (projected-mixture rank, a narrow multi-component PHF result).** Every arm is exact $S$ ($\lvert\langle\hat S^2\rangle\rvert\le5\times10^{-17}$), and no arm was capped.
+
+| arm | rank | $P$ | median $\epsilon$ (2000) | seed range | $g_{\mathrm m}$ (2000) | $g_{\mathrm b}$ (2000) | $g_{\mathrm m}$ (1000) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `che` (ref., 451886) | 1 | 2637 | $3.43\times10^{-4}$ | 3.26–4.26 | 0 | 0 | 0 |
+| `nnbf_SG` (ref.) | — | 2637 | $2.07\times10^{-4}$ | 1.89–2.31 | 1 | 1 | 1 |
+| `che_rbm1` | 2 | 2589 | $3.37\times10^{-4}$ | 2.73–3.42 | $+0.04$ | $+0.38$ | $+0.19$ |
+| `che_rbm2` | 4 | 2589 | $3.74\times10^{-4}$ | 3.02–3.80 | $-0.23$ | $+0.18$ | $-0.09$ |
+| `che_rbm3` | 8 | 2601 | $3.57\times10^{-4}$ | 3.04–3.84 | $-0.10$ | $+0.16$ | $+0.07$ |
+| `che_k2` | 2 | 2613 | $2.26\times10^{-4}$ | 2.11–2.32 | $+0.86$ | $+0.84$ | $+0.93$ |
+| `che_k4` | 4 | 2565 | $1.74\times10^{-4}$ | 1.51–1.85 | $+1.24$ | $+1.28$ | $+1.25$ |
+| `che_k8` | 8 | 2614 | $1.35\times10^{-4}$ | 1.12–1.46 | $+1.53$ | $+1.56$ | $+1.49$ |
+| `che_kh4` (foil) | 4 | 2580 | $4.64\times10^{-4}$ | 4.37–4.74 | $-0.90$ | $-0.81$ | $-0.72$ |
+
+(Seed ranges are in units of $10^{-4}$. Drift control: `che` seed 0 goes from $3.43\times10^{-4}$ at 2000 to $3.06\times10^{-4}$ at 4000, so $\Delta_{\mathrm{drift}}=7.9\times10^{-5}$ over 1000→2000.)
+
+* **The k family passes every clause.** Every k rank qualifies, and the gain rises monotonically with rank. At rank 4 and rank 8 the exact-$S$ projected mixture **beats `nnbf_SG` at matched parameter count** ($g_{\mathrm m}>1$); rank 8 is 35% below it. The worst `che_k8` seed (1.46) is below the best `nnbf_SG` seed (1.89). `che` at 4000 iterations (3.06) does not reach `che_k2` at 2000.
+* **The rbm family is AMBIGUOUS.** Its gain is within `che`'s drift and falls with rank. Components that vary with $c$ through row scalings add nothing at this budget.
+* **The containing foil fails.** One backflow head per component (`che_kh4`) is *worse* than `che`. The gain therefore needs the shared backflow: the mixture's references are fixed offsets on one common correlator, not independent correlated determinants.
+* **Pre-committed actions.**
+  * PASS (k): run the $4\times3$ cylinder and a second filling before any promotion, and state the size-extensivity gap. The gap is unchanged: rank $K$ costs $K$ closed-form Che projections per amplitude, and an extensive correlation energy needs $K$ to grow with $L$.
+  * AMBIGUOUS (rbm): extend `che_rbm1..3` and `che` to 4000 iterations from the saved parameters.
+* **Gate 0 stays narrow.** Multi-component projected HF (ResHF; few-determinant projected HF) is prior art. What is new is a closed-form exact-$S$ projected mixture on a *shared* neural charge backflow, at polynomial cost per amplitude.
+
+### Generality and rbm-extension tests (2026-11-14)
+This section carries out the two pre-committed actions of job 508440. All code is in `tests/P4.1_cheap_su2_r6/` (`gen_test.py` plus verbatim copies of the round-5 modules). Every rule below was written before submission and is enforced in `gen_test.py` (`instance_verdict`, `promotion`, `ext_verdict`).
+#### A. Generality of family k: design
+* **Instance `cyl`**: $4\times3$, periodic along $x$ (length 4) and open along $y$ (length 3), $5+5$, $U=8$, $t'=-0.25$, dimension 627,264. The periodic direction is $x$ for two reasons. The ring stays even, so nearest-neighbour hopping is bipartite and Néel order is not frustrated; a length-3 ring is. And the $5+5$ tight-binding Fermi sea is closed-shell with $x$ periodic (gap 1.17), but open-shell with $y$ periodic (gap 0). An open shell leaves no common reference start.
+* **Instance `fill`**: open $4\times3$, $4+4$ (filling 2/3), $U=8$, $t'=-0.25$, dimension 245,025. It was chosen over $6+6$ for two reasons. The round-3 pilot (job 411494, same cluster) measured a resolved `che`→`nnbf_SG` gap there (ratio 2.10, disjoint seed ranges). And it is 3.5 times smaller than $6+6$ (853,776).
+* **Ground-state spin** (`--mode prep`, `logs/prep_*_output.txt`). The cached $\psi_0$ is the lowest singlet ($H+5\hat S^2$). A second Lanczos run on $H$ alone, over the whole $S_z=0$ space, checks that this singlet is the true ground state.
+  - `fill`: lowest level $-9.3617101438$, $\langle\hat S^2\rangle=0$, equal to the singlet $E_0$. The next levels are triplets ($\langle\hat S^2\rangle=2$) at $-9.2292$ and $-9.2183$. The ground state is the singlet, so the $S=0$ sector is the right one. Irrep: even under both mirrors.
+  - `cyl`: lowest level $-9.0229100215$, $\langle\hat S^2\rangle=0$, equal to the singlet $E_0$ (ED took 248 s). The next levels are a triplet at $-8.7676$ and a singlet at $-8.5823$. The ground state is the singlet. Irrep: $T_x=+1$, even under both mirrors. It is a real one-dimensional irrep, as the space-group projection requires.
+* **Arms per instance**: `che` and `nnbf_SG` (`fix_test.build_arm_fix`, width 16, $P_{\mathrm{ref}}$ parameters), and `che_k2`, `che_k4`, `che_k8` (`r5_test.CheK`, the common `che` start). Each k arm has hidden width $H_K$, the largest $H$ whose count is at most $P_{\mathrm{ref}}$. A k arm therefore never has more parameters than the references. Seeds 0–2, 2000 L-BFGS iterations, exact $P_G$ and $P_S$. One more run per instance, `che_drift4000`, is `che` seed 0 run to 4000 iterations.
+
+| instance | $P_{\mathrm{ref}}$ | `che_k2` | `che_k4` | `che_k8` | one energy+gradient (16 CPUs): `che`, `nnbf_SG`, `che_k8` |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `cyl` | 2637 | $H=15$, 2613 ($-0.9\%$) | $H=13$, 2565 ($-2.7\%$) | $H=10$, 2614 ($-0.9\%$) | 14.1 s, 14.3 s, 27.0 s (job 508440's open instance: 15.2 s for `che` and 26.2 s for `che_k8`) |
+| `fill` | 2205 | $H=15$, 2181 ($-1.1\%$) | $H=13$, 2133 ($-3.3\%$) | $H=10$, 2158 ($-2.1\%$) | 3.9 s, 3.8 s, 7.5 s |
+
+(On `cyl` the widths and counts are those of job 508440, since $L$ and $N_e$ are unchanged.)
+#### A. Pre-registered rules
+* **Metric and notation**: as in the round-5 rule. $\epsilon(n)$ is read from the logged $E_{\mathrm{best}}$ trajectory. $\mathrm m$, lo and hi are the seed median, best and worst. $g_{\mathrm m}=(\mathrm m_{\mathrm{che}}-\mathrm m_X)/(\mathrm m_{\mathrm{che}}-\mathrm m_{\mathrm{SG}})$ and $g_{\mathrm b}=(\mathrm{lo}_{\mathrm{che}}-\mathrm{lo}_X)/(\mathrm{lo}_{\mathrm{che}}-\mathrm{lo}_{\mathrm{SG}})$, both computed per instance against that instance's own `che` and `nnbf_SG`.
+* **$P_{\mathrm{run}}$ (per instance)**: 3 seeds per arm, $\lvert\langle\hat S^2\rangle\rvert<10^{-10}$, `che_drift4000` present, and no arm capped before iteration 1000. Otherwise the instance is INCOMPLETE. A capped arm moves the comparison to the largest common iteration, as in round 5.
+* **$P_{\mathrm{gap}}$ (per instance, at 2000 and at 1000)**: $\mathrm m_{\mathrm{che}}\ge1.5\,\mathrm m_{\mathrm{SG}}$ and $\mathrm{lo}_{\mathrm{che}}>\mathrm{hi}_{\mathrm{SG}}$. Otherwise the instance is NO-TARGET: there is no resolved gap for k to close there.
+* **Qualification (per instance)**: the best k rank is the one with the largest $g_{\mathrm m}$ at 2000. It qualifies if, at 2000 **and** at 1000, it meets all four clauses:
+  - $g_{\mathrm m}\ge0.5$;
+  - $g_{\mathrm b}\ge0.5$;
+  - $\mathrm{hi}_X<\mathrm{lo}_{\mathrm{che}}$;
+  - $\mathrm m_{\mathrm{che}}-\mathrm m_X>\Delta_{\mathrm{drift}}$, where $\Delta_{\mathrm{drift}}$ is that instance's median `che` gain from 1000 to 2000.
+
+  It must also beat the drift run: `che_drift4000` must have $\epsilon(4000)>\mathrm m_X(2000)$. The instance status is QUALIFIES if all of this holds, and FAILS otherwise. Rank stability ($g_{\mathrm m}$ never dropping by more than 0.2 between ranks) is printed but does not gate. The cost gate is not re-run, because per-amplitude cost does not depend on the instance and round 5 passed it.
+* **Promotion rule (verbatim, enforced by `promotion`)**: "INCOMPLETE if either instance is INCOMPLETE. Otherwise PROMOTE iff family k qualifies at its best rank on both new instances, or on every instance that passes its premise $P_{\mathrm{gap}}$ with at least one such instance; KILL-GENERALITY iff it fails qualification on any premise-valid instance. NO-TARGET on both instances means generality is untested: P4.1 stays a single-instance narrow PASS ($4\times3$ open, $5+5$), is not promoted, and the next step is an instance with a resolved `che`→`nnbf_SG` gap, not a wider claim."
+* **Logic check** (`--mode check`, `logs/check_output.txt`): 11 synthetic pairs, each giving its intended overall verdict. They are: both qualify (PROMOTE); one qualifies and one is NO-TARGET (PROMOTE); both NO-TARGET; one flat (KILL); drift run reaches the best k (KILL); gain absent at 1000 (KILL); missing seed; inexact $S$; capped below 1000 (INCOMPLETE); capped at 1500 (compared at equal iteration, PROMOTE); flat plus NO-TARGET (KILL).
+#### B. rbm extension: design and pre-registered rule
+* **Runs** (instance of job 508440): `che_rbm1..3`, seeds 0–2, resume from the saved best parameters of job 508440 at iteration 2000 and continue to 4000. Each task first re-evaluates $E$ at the loaded parameters and aborts unless it matches the stored $E$ to $10^{-9}$ relative. **The L-BFGS curvature history was not saved, so it restarts empty at iteration 2000.**
+* **References.** `che` and `nnbf_SG` (seeds 0–2) are extended too. `nnbf_SG` is included so that the gap fractions at 4000 use a reference at the same budget; reusing `nnbf_SG`(2000) would be more lenient. Job 451886 saved no parameters, so each reference task reruns deterministically from the common start to 2000 (`che_drift4000` seed 0 already reproduced 451886's $\epsilon(2000)$). It then restarts L-BFGS with an empty history and continues to 4000. Every extended arm therefore has exactly one restart, at 2000. $\epsilon(2000)$ is printed next to the 451886 value as a reproduction check.
+* **Rule (the round-5 rbm rule moved to 4000)**: the verdict iteration is 4000 and the check iteration is 3000. $\Delta_{\mathrm{drift}}$ is the median gain of the extended `che` from 2000 to 4000, a doubling of the budget like round 5's 1000→2000.
+  - The check sits at 3000 because the 2000 values are already known and fail ($g_{\mathrm m}\le0.04$). A check at 2000 would make PASS impossible before any run.
+  - The round-5 drift-run clause (`che` at twice the verdict budget) would need an 8000-iteration `che`, so it is dropped. The doubled-budget $\Delta_{\mathrm{drift}}$ above stands in for it.
+  - $P_{\mathrm{run}}$: 3 seeds per arm and exact $S$, otherwise INCOMPLETE. $P_{\mathrm{gap}}$ at 4000 and 3000, otherwise NO-TARGET.
+  - **FAIL**: the cost gate fails (the round-5 `cost_r5.json`, which every rbm arm passed), or $g_{\mathrm m}<0.2$ and $g_{\mathrm b}<0.2$ at every rank at 4000.
+  - **PASS**: the best rank qualifies at 4000 and at 3000, by the four clauses of A, and $g_{\mathrm m}$ never drops by more than 0.2 between ranks.
+  - **AMBIGUOUS**: otherwise.
+* **Pre-committed consequences**:
+  - FAIL: rbm closes, since $c$-varying row scalings add nothing at twice the budget.
+  - AMBIGUOUS or NO-TARGET: rbm closes as unresolved at twice the budget, with no further extension.
+  - PASS: attribution is deferred. `che_k2/4/8` must first be extended to 4000 in the same way before $c$-varying components get credit over fixed ones.
+* **Logic check** (same file): 7 synthetic sets, each giving its intended verdict. They are: rbm stays at `che` (FAIL); rbm separates (PASS); modest gain (AMBIGUOUS); PASS at 4000 but not at 3000 (AMBIGUOUS); `che` closes on `nnbf_SG` (NO-TARGET); missing seed (INCOMPLETE); cost gate (FAIL).
+#### Smoke and resume check
+`--mode smoke` (`logs/smoke_output.txt`): **SMOKE PASS** in 23 s.
+* (a) It uses a $4\times2$ cylinder (periodic $x$, $N_e=10$; $N_e=6$ is open-shell there) and an open $4\times2$ cluster at $N_e=4$. For `che`, `nnbf_SG`, `che_k2`, `che_k4` and `che_k8`, $\lvert\langle\hat S^2\rangle\rvert\le8\times10^{-17}$. The finite-difference gradient error over every parameter block is at most $4.9\times10^{-9}$. Every k arm starts within 0.1% of `che`'s $E_{\mathrm{init}}$.
+* (b) On the cylinder, the polynomial per-amplitude projection ($K$ closed-form Che evaluations) agrees with the full-vector $P_S$ to $\le8.7\times10^{-14}$.
+* (c) A run from 0 to 60 with a restart at 30 matches a run to 30, saved to `.npy`, reloaded and resumed to 60. $\max\lvert\Delta E_{\mathrm{best}}\rvert=0$, and the labels run 10, 20, …, 60. A run with no restart ends at a different $E_{\mathrm{best}}$, so the restart does change the path, as documented.
+* (d) All nine saved job-508440 rbm parameter vectors have the length and block shapes of their production arms (2589, 2589, 2601).
+* (e) The production counts are as in the table above.
+#### Submission and aggregation
+* **A**: job **637776**, `sbatch tests/P4.1_cheap_su2_r6/submit_gen.sbatch`.
+  - Array 0–31 on `kim`, with 16 CPUs, 48 GB, `--time` 3 days 8 h and `--max-hours 72`.
+  - Tasks 0–15 are `cyl` and tasks 16–31 are `fill`. Within an instance, $j=$ task mod 16 sets the run: for $j\le14$ the arm is `ARMS[j/3]` and the seed is $j$ mod 3; $j=15$ is `che_drift4000`.
+* **B**: job **637777**, `sbatch tests/P4.1_cheap_su2_r6/submit_ext.sbatch`.
+  - Array 0–14, same resources.
+  - Arm `ARMS[task/3]` with seed task mod 3, for `ARMS` = `che_rbm1`, `che_rbm2`, `che_rbm3`, `che`, `nnbf_SG`.
+* **Sizing**: on the 627k open instance, `che` took at most 12.3 h, `che_k8` 22.9 h and `che_drift4000` 26.3 h. `fill` costs about a third of that per energy and gradient (table). `--max-hours 72` is at least 2.7 times every estimate.
+* **Aggregate** (login node): `cd tests/P4.1_cheap_su2_r6 && python3 gen_test.py --mode report` gives A. `python3 gen_test.py --mode report-ext` gives B.
+
+### Size-scaling decisive test (2026-11-16)
+**Question.** Does the `che_kK` rank gain of job 508440 survive with system size, and does `che_k8` beat a scalable baseline at equal compute? Every 12-site result so far could be a small-cluster effect: a fixed-rank mixture captures a non-extensive correlation, so its gain over $K=1$ per site should go to 0 unless $K$ grows with $L$.
+* **(Q1)** At fixed $K\in\{1,2,4,8\}$: the rank gain ratio $R(K,N)=\epsilon_{\mathrm{che\_k}K}/\epsilon_{\mathrm{che}}$, the per-site error, and the gap fraction against plain NNBF, versus $N$.
+* **(Q2)** `che_k8` against a **plain spin-resolved NNBF** ($S^z$ conserved, no spin projection, same backflow at width 16) at equal compute. The optional `tocchio` baseline is dropped to keep the array inside the budget. `nnbf_SG` is not used: its exact $P_S$ is an orbit sum that is exponential in $N_s$.
+* **Code**: `tests/P4.1_cheap_su2_scaling/`. `vmc.py` (torch VMC, modes `smoke`, `timing`, `train`), `dmrg_ref.jl` (ITensorMPS DMRG), `scaling_report.py` (verdict, `--check`), `make_tasks.py`, `submit_vmc.sbatch`, `submit_dmrg.sbatch`. The round-2 to round-5 modules are verbatim local copies, used only for cross-checks.
+#### Geometry
+* **Ladder**: open $L_x\times3$ strips (open along $x$ and $y$), $L_x=4,8,12,16$, so $N=12,24,36,48$ sites. Filling is fixed at $5/6$ ($N_e=10,20,30,40$, $S^z=0$), with $U=8$ and $t'=-0.25$. $L_x=4$ is exactly the instance of jobs 451886 and 508440. Site order is $i=xL_y+y$ (column by column), the same order for VMC and DMRG.
+* **Why width 3.**
+  - It keeps DMRG references far more accurate than any scored difference up to 48 sites. A width-4 strip at 48 sites would need bond dimensions well above 4000 to reach $10^{-4}$.
+  - The question is about extensivity in $N$, not about two-dimensionality. A fixed-$K$ mixture should lose its per-site gain as $N$ grows whatever the width.
+  - Fixed filling $5/6$ with even $N_e$ needs $N$ to be a multiple of 12. The tight-binding Fermi sea is closed-shell at every size (shell gaps 0.158, 0.108, 0.029 and 0.203), so the common Fermi-sea start of rounds 5 and 6 is defined everywhere.
+* **Ground-state spin**: checked at every size by DMRG in $2S^z=0$ and $2S^z=2$ (job 683137). If $E(S^z=1)>E(S^z=0)$ beyond both error bars, the ground state is a singlet. Hubbard ground states need not be singlets, and if a size is not a singlet the `che` family is in the wrong sector there. `scaling_report.py` prints this check; a non-singlet size is reported as such and not scored.
+#### References and their accuracy
+* **$N=12$**: ED, $E_0=-7.827899034271753$ (the job-451886 cache).
+* **$N=24,36,48$**: DMRG with `dmrg_ref.jl`, using ITensorMPS 0.4.2 in a local Julia project `dmrg_env` (installed for this test, $U(1)\times U(1)$ quantum numbers).
+  - Bond-dimension stages: up to 2500 at $N=24$, 3000 at $N=36$ and 3500 at $N=48$, with 4 or 5 sweeps per stage. The last three stages use no noise.
+  - The reference is the linear extrapolation of $E$ against the discarded weight over those three stages. Its error bar is the whole extrapolation distance $\lvert E(\chi_{\max})-E_{\mathrm{extrap}}\rvert$.
+* **Check against ED at $N=12$** (`logs/dmrg_vs_ed_4x3_output.txt`): at $\chi=1000$, $E=-7.8278960$ with discarded weight $1.4\times10^{-7}$. The extrapolated value is $-7.8279147\pm1.9\times10^{-5}$, and ED lies inside the bar ($1.6\times10^{-5}$ away).
+* **Validity rule (enforced in `scaling_report.py`)**: at each $N$, $\sigma_{\mathrm{ref}}<0.1\times\min(\lvert E_{\mathrm{che}}-E_{\mathrm{k8}}\rvert,\lvert E_{\mathrm{k8}}-E_{\mathrm{nnbf}}\rvert)$. Otherwise the verdict is AMBIGUOUS-REFERENCE, and the action is to rerun that size at a larger bond dimension.
+#### VMC method (identical for every arm and size)
+* **Arms** (`vmc.py`). `che` is $K=1$. `che_k2`, `che_k4` and `che_k8` are the rank-$K$ mixtures of `r5_test.CheK`, with fixed offsets $P_{0,k}$ on one shared charge backflow. `nnbf` is the plain spin-resolved NNBF of `r2_micro_test.NNBF`. Every arm carries the same charge Jastrow.
+  - **There is no space-group projection** at any size, for any arm. So the 12-site numbers here are not comparable with job 508440, which used $P_G$.
+  - Each `che` amplitude is the closed form $\tfrac12\det A\sum_q w_qc_q^{N_e}\det(D+t_q^2CA^{-1}B)$, Gauss–Legendre with $\lceil(N_\uparrow+1)/2\rceil$ nodes, at $\mathcal O(N^3)$ per component.
+  - The common start is round 5's: Fermi sea, Gutzwiller, small $W_2$, and offsets of relative size 0.05.
+* **Widths**: `nnbf` and `che` use $H=16$. Each `che_kK` takes the largest $H$ whose parameter count does not exceed `nnbf`'s at the same size.
+
+| $N$ | `nnbf`, `che` ($H=16$) | `che_k2` | `che_k4` | `che_k8` |
+| :--- | :--- | :--- | :--- | :--- |
+| 12 | 2637 | $H=15$, 2613 | $H=13$, 2565 | $H=10$, 2614 |
+| 24 | 9711 | $H=15$, 9663 | $H=13$, 9567 | $H=9$, 9375 |
+| 36 | 21249 | $H=15$, 21177 | $H=13$, 21033 | $H=9$, 20745 |
+| 48 | 37251 | $H=15$, 37155 | $H=13$, 36963 | $H=9$, 36579 |
+
+* **Sampling**: Metropolis on $\lvert\psi\rvert^2$ with 2048 persistent chains. A move picks a bond uniformly and one of: hop up, hop down, or exchange of opposite single spins. The proposal is symmetric. There are $\lceil N_e/2\rceil$ proposals per chain between SR steps.
+* **SR**: the sample-space (Woodbury) form, with diagonal shift $10^{-3}$, peak learning rate 0.05, and update norm capped at 0.5. The learning rate is constant for the first half of the run, then cosine-decays to 10% of the peak.
+  - The reported state is the parameter average over the last 25% of steps.
+  - The final energy uses 65,536 samples, with an error bar blocked over chains. At $N=12$ it is the exact sum over all 627,264 configurations.
+* **Budget**: 3000 SR steps for every `che` arm at every size (equal iterations, for Q1).
+  - **Equal compute for Q2**: `nnbf` gets $n_{\mathrm{eq}}(N)=\mathrm{round}(3000\,r_N)$ steps, where $r_N=t_{\mathrm{step}}(\mathrm{che\_k8})/t_{\mathrm{step}}(\mathrm{nnbf})$ was measured in one process on one node (table below).
+  - `nnbf` at step 3000 is also evaluated (equal iterations; reported, not gating).
+  - Seeds: 0, 1 and 2 at $N=12$; 0 and 1 at $N=24,36,48$.
+* **Hyperparameters were set on the 12-site `che` pilot only** (`logs/pilot/`, 1000 steps, exact final energy unless noted). Varying the learning rate (0.02 to 0.2), the shift ($10^{-4}$ to $10^{-2}$), scale-invariant SR, and the schedule with averaging all give a plateau between $-7.70$ and $-7.77$ ($\epsilon\approx7$–$11\times10^{-3}$). At the same settings `che_k8` reaches $-7.796$ ($\epsilon=4.1\times10^{-3}$). Going from 1024 to 4096 samples helped (to $-7.771$ at step 750), so 2048 samples were chosen.
+  - **Diagnostic**: this plateau is not a VMC defect. Exact-sum L-BFGS of `che` **without** $P_G$ reaches only $-7.737$ at iteration 50 (`logs/pilot/lbfgs_noPG.out`), against $-7.799$ with $P_G$ in job 508440. Most of the round-5 12-site accuracy came from the space-group projection.
+  - So this ladder compares arms **at an equal SR budget**. Absolute errors are larger than those of job 508440.
+* **Timing** (`logs/timing_output_2048.txt`): seconds per SR step with 2048 samples and 16 threads, all in one process on kim-compute-03. The per-sample cost is $t_{\mathrm{step}}/2048$.
+
+| $N$ | `che` | `che_k2` | `che_k4` | `che_k8` | `nnbf` | $r_N$ | $n_{\mathrm{eq}}$ (`nnbf` steps) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 12 | 0.29 | 0.36 | 0.45 | 0.62 | 0.16 | 3.85 | 11544 |
+| 24 | 1.25 | 1.98 | 3.41 | 6.68 | 0.48 | 13.94 | 41822 |
+| 36 | 3.68 | 6.54 | 12.68 | 22.90 | 1.86 | 12.34 | 37017 |
+| 48 | 11.97 | 19.26 | 34.61 | 64.87 | 5.11 | 12.68 | 38053 |
+
+  - Per step, `che_k8` costs 5.4 times `che` at $N=48$, below $K=8$. The local energy dominates: every hop changes the charge configuration, so every connected amplitude is recomputed, as in any NNBF.
+  - Expected wall time at $N=48$: `che_k8` and `nnbf` about 54 h each, `che_k4` 29 h, `che_k2` 16 h and `che` 10 h. At $N=36$, about 19 h for `che_k8`.
+#### Verification
+* **Smoke** (`~/.conda/envs/lit_env/bin/python vmc.py --mode smoke --threads 8`, `logs/smoke_output.txt`): **SMOKE PASS** in 442 s.
+  - (a) The strip hopping matrix equals `r3_micro_test.CylLattice` (obc, obc) on $4\times3$.
+  - (b) For every arm, on a $4\times2$ cluster ($N_e=6$) and on the production $4\times3$ ($N_e=10$, 627,264 configurations), the torch amplitudes equal the numpy references up to normalisation. The references are `r5_test.CheK` or the round-3 `ChargeNNBF` with full-vector $P_S$, and `r2_micro_test.NNBF`. The largest deviation is $\le4.7\times10^{-14}$.
+  - (c) The $\lvert\psi\rvert^2$-weighted mean of $E_{\mathrm{loc}}$ equals $\langle H\rangle$ from the sparse sector Hamiltonian to $\le3.4\times10^{-16}$ relative. This checks the local energy and the fermion signs.
+  - (d) The exact gradient built from the per-sample log-derivatives equals the numpy `State` gradient to $\le7.6\times10^{-11}$ relative, for every arm, on $4\times2$.
+  - (e) $4\times3$, 20,480 Metropolis samples. The sampled energy lies within statistical error of the exact one for every arm ($z=-0.21$, $-0.59$, $+0.37$, $-1.26$ and $+0.42$). The sampled gradient agrees with the exact one: cosine 0.977 to 0.998, and at most 0.12% of components have $\lvert z\rvert>3$.
+  - (f) 60 SR steps of `che` on $4\times3$ lower the exact energy from $-6.280$ to $-7.609$.
+* **End to end**: a 30-step `che_k2` run at $N=12$ with exact evaluation, and a `nnbf` run at $N=24$ with an extra checkpoint, killed and resumed from its checkpoint (`logs/train_check_output.txt`), both wrote complete result JSONs.
+* **Logic check** (`python3 scaling_report.py --check`, `logs/check_output.txt`): 10 synthetic ladders, each giving its intended verdict. They are: flat strong gain with `che_k8` beating `nnbf` (SCALES); $R$ rising to 0.95; a monotone rise whose fit reaches 1 before $N=100$; flat gain but `nnbf` winning (three DOES-NOT-SCALE); $R(8,48)=0.8$ non-monotone; flat gain with `che_k8` against `nnbf` unresolved; a rise of 0.2 ending at 0.7 (three AMBIGUOUS); a missing seed; a capped run (both INCOMPLETE); a coarse reference (AMBIGUOUS-REFERENCE).
+#### Pre-registered rule (written before submission; enforced by `scaling_report.py`)
+* **Metric**:
+  - $E_X$ is the lowest final energy over seeds (variational best-of-seeds). Seed means are printed too.
+  - $\epsilon_X=(E_X-E_{\mathrm{ref}})/\lvert E_{\mathrm{ref}}\rvert$, and $R(K,N)=\epsilon_{\mathrm{k}K}/\epsilon_{\mathrm{che}}$.
+  - `nnbf_wall` is `nnbf` after $n_{\mathrm{eq}}(N)$ steps.
+  - A comparison counts as resolved only at $2\sigma$, where $\sigma$ combines the VMC error bars and the reference error.
+* **Premises**: every arm has all its seeds and no run is capped, otherwise INCOMPLETE. The reference is valid at every size (see above), otherwise AMBIGUOUS-REFERENCE.
+* **DOES-NOT-SCALE** if any of:
+  - (D1) $R(8,48)\ge0.9$, resolved;
+  - (D2) $R(8,N)$ rises monotonically over the four sizes **and** a linear fit $R(8,N)=a+bN$ reaches 1 before $N=100$;
+  - (D3) `nnbf_wall` is below `che_k8` at $N=48$, resolved.
+* **SCALES** if all of:
+  - (S1) $R(8,48)\le0.75$, resolved;
+  - (S2) `che_k8` is below `nnbf_wall` at $N=48$, resolved;
+  - (S3) $R(8,48)-R(8,12)\le0.15$.
+* **AMBIGUOUS** otherwise. The decider is fixed in advance:
+  - if only $2\sigma$ resolution is missing, re-evaluate the saved parameters with 4 times the samples (`--n-eval 262144`);
+  - otherwise add $L_x=24$ (72 sites) for `che`, `che_k8` and `nnbf`, 2 seeds, and apply the same rule with $N_{\max}=72$.
+* **Reported, not gating**: $R(K,N)$ for $K=2,4,8$, plotted against $N$. Also:
+  - the gap fraction $g(K,N)=(\epsilon_{\mathrm{che}}-\epsilon_{\mathrm{k}K})/(\epsilon_{\mathrm{che}}-\epsilon_{\mathrm{nnbf\_wall}})$, when `nnbf` is below `che`;
+  - the per-site error $(E_X-E_{\mathrm{ref}})/N$;
+  - the smallest $K$ that holds $\epsilon_K(N)\le\epsilon_{\mathrm{k8}}(12)$;
+  - wall time per step and per sample;
+  - `nnbf` at equal iterations;
+  - the DMRG spin check.
+* **What each outcome means for the paper**:
+  - **SCALES**: `che_kK` is a scalable exact-$S$ method. A fixed rank keeps a size-independent fraction of the error, and it beats the plain network at equal compute.
+  - **"SCALES on cost but not accuracy"**: the per-amplitude cost is polynomial ($\mathcal O(KN^3)$; measured slope in the timing table), but the outcome is D1 or D2. Then the honest claim is narrow: `che_kK` is a **cheap exact-$S$ tool** for clusters where exact spin quantum numbers matter (spin gaps, sector-resolved spectra, symmetry-resolved benchmarks). It is not a scalable accuracy method, and the rank needed would have to grow with $N$.
+  - **D3 alone** (`che_k8` loses to plain NNBF at equal compute at 48 sites) means the same, even if $R$ stays low. Exact $S$ would then cost accuracy at scale.
+#### Submission and aggregation
+* **DMRG**: job **683137** (cancelled before any task started; superseded by **687302**, see Amendment 2), `sbatch tests/P4.1_cheap_su2_scaling/submit_dmrg.sbatch`.
+  - Array 0–6 on `kim`, with 16 CPUs, 48 GB and `--time` 4 days.
+  - Task 0 is $4\times3$ at $2S^z=2$. Tasks 1–6 are $8\times3$, $12\times3$ and $16\times3$, each at $2S^z=0$ and $2S^z=2$.
+  - $4\times3$ at $2S^z=0$ was run interactively; it is the ED check above.
+* **VMC**: job **685310** (cancelled before any task started; superseded by **686990**, see the amendment), `sbatch tests/P4.1_cheap_su2_scaling/submit_vmc.sbatch`.
+  - Array 0–44 on `kim`, with 16 CPUs, 24 GB, `--time` 6 days and `--max-hours 130`.
+  - Task $i$ runs line $i+1$ of `tasks.txt`, written by `python3 make_tasks.py --timing logs/timing2048/timing_kim-compute-03.physics.cornell.edu_t16.json`. The largest size comes first. A resubmitted task resumes from `results/<tag>_ckpt.npz`.
+* **Sizing**: the longest tasks are `che_k8` and `nnbf` at $N=48$, about 54 h each on the timing node. The budget allows 2.4 times that before the wall cap.
+  - The whole array is about 480 task-hours. With 8 to 10 tasks running at once it should finish in 3 to 4 days of wall clock after the jobs start; both jobs were still waiting on priority at submission.
+* **Aggregate** (login node, after both jobs): `cd tests/P4.1_cheap_su2_scaling && python3 scaling_report.py`. It prints the references, the spin check, the per-size table and the verdict.
+#### Amendment (2026-11-16, made before any production output existed)
+* **State when amended**: VMC job 685310 and DMRG job 683137 were both still pending (`squeue`), `results/` held no run output, and no task log existed. 685310 was then cancelled (`scancel 685310`) before any task started. 683137 is kept; `dmrg_ref.jl` now also records reflection characters, and the pending job will run the amended script.
+* **A1. Premise gate $P_R$ (mandatory, enforced in `scaling_report.py`)**. Reason: the protocol differs from job 508440 (VMC-SR instead of exact-sum L-BFGS). Without a rank gain at 12 sites under this protocol, the old rule could return DOES-NOT-SCALE for a gain the protocol never resolved at any size. Rule text: "$P_R$: $R(8,12)\le0.75$ resolved at $2\sigma$ under this protocol. If $P_R$ fails, the verdict is NO-BASELINE-GAIN: the protocol cannot see the 508440 rank gain at 12 sites, so no scaling conclusion is drawn, and the decider is restoring the projection or optimiser that produced it. D1–D3 and S1–S3 are not evaluated." Three new logic-check scenarios: $R(8,12)=0.95$, $R(8,12)=0.8$ and rising, and a 12-site gain unresolved at $2\sigma$. All give NO-BASELINE-GAIN, and `--check` now passes 13 of 13 (`logs/check_output.txt`).
+* **A2. Point-group projection in every arm**. The point group of an open $L_x\times3$ strip has only four elements, $\{E,M_x,M_y,M_xM_y\}$. So $P_G$ costs exactly 4 amplitudes per $\psi$ at every size and stays polynomial. The diagnostic above showed that most of the 508440 accuracy came from $P_G$, so without it the test would not represent the method. `che`, `che_kK` and `nnbf` alike are now trained as
+$$\psi(y)=\tfrac14\sum_g\chi(g)\,\sigma_g(y)\,\phi(gy),$$
+which is `vmc.py --pg=cMx,cMy`; for `che_kK`, $\phi$ already includes $P_S$. A projected amplitude that cancels to below $10^{-11}$ of its largest term is a symmetry zero and is set to exactly 0. Without this, rounding residues gave NaN log-derivatives on configurations of zero weight.
+* **Irrep per size** (`ed_irrep_4x3.py`, `logs/ed_irrep_4x3_output.txt`; DMRG at $\chi\le1000$ with `--outdir=dmrg_irrep`, `reflection_characters` in `dmrg_ref.jl`).
+  - $N=12$, ED: $E_0=-7.827899034272$, a singlet, with characters $M_x=+1$, $M_y=+1$. DMRG gives $\langle\mathrm{Inv}\rangle=+1.000$ and $\langle M_y\rangle=+1.000$, which also validates the sign conventions of the character code.
+  - $N=24$: $\langle\mathrm{Inv}\rangle=+1.000$, $\langle M_y\rangle=+0.999$.
+  - $N=36$: $\langle\mathrm{Inv}\rangle=+1.000$, $\langle M_y\rangle=+0.78$.
+  - $N=48$: $\langle\mathrm{Inv}\rangle=+1.000$, $\langle M_y\rangle=+0.63$.
+  - At $N=36$ and 48, $M_y$ is not yet clean at $\chi=1000$. That signals an unconverged MPS or a nearby level with $M_y=-1$. The sign is positive at every size, so **every size uses $(M_x,M_y)=(+1,+1)$**.
+  - **Pre-registered safeguard**: the production DMRG (683137, $\chi$ up to 3500) records the characters. If any of them is negative at a size, `scaling_report.py` returns INCOMPLETE ("irrep mismatch"), and that size is rerun in the corrected irrep before scoring.
+* **Verification against exact sums** (`vmc.py --mode smoke-pg --pg=1,1`, `logs/smoke_pg_output.txt`). On $4\times2$, every arm in irreps $(+,+)$, $(-,+)$ and $(+,-)$ was compared with the numpy `r3_micro_test.SG` projector:
+  - amplitudes agree to $\le1.3\times10^{-14}$;
+  - the $E_{\mathrm{loc}}$ identity holds to $\le5.7\times10^{-16}$;
+  - the exact gradient matches the numpy `State` gradient to $\le4.2\times10^{-10}$.
+
+  On $4\times3$ in $(+,+)$: amplitudes agree to $\le1.3\times10^{-14}$, and the $E_{\mathrm{loc}}$ identity holds exactly. Sampled energies are within $z=-0.87$, $+0.69$ and $-0.83$ of exact for `che`, `che_k2` and `che_k4`. Sampled gradients have cosines 0.995 to 0.998 with the exact ones, with about 0.1% of components at $\lvert z\rvert>3$. The run then finished for `che_k8` and `nnbf` as well, and the whole check is **SMOKE-PG PASS** (2532 s). For those two arms the sampled energies are within $z=+1.15$ and $+0.38$ of exact, and the gradient cosines are 0.993 and 0.982.
+* **Effect at 12 sites** (pilot, 1000 SR steps, 1024 samples, exact final energy, `logs/pilot/pg_*.out`):
+  - `che` with $P_G$ reaches $-7.8055$ ($\epsilon=2.9\times10^{-3}$), against $-7.743$ without $P_G$.
+  - `che_k8` with $P_G$ ends at $-7.8216$ ($\epsilon=8.1\times10^{-4}$, parameter average; it was $-7.824$ at step 700). The pilot $R(8,12)$ is therefore 0.28.
+  - So $P_G$ restores most of the 508440 accuracy, and the 12-site rank gain is visible under this protocol (premise $P_R$ is expected to hold; it is checked on the production runs).
+* **Budget with $P_G$**: every amplitude costs 4 evaluations, so per-step time grows by about 4 for every arm and $r_N$ is unchanged. Timings measured with $P_G$ on the shared node were not usable (node load 85 on 64 cores); the estimate below scales the uncontended 1024-sample timings by 4.
+  - Changes so the test fits about one week: **1024 samples per step** (was 2048), and **one seed at $N=36$** (was 2). $L_x=4$, 8 and 16 keep 3, 2 and 2 seeds.
+  - `nnbf` equal-compute steps, from the 1024-sample timing (`logs/timing_output.txt`): 12079, 41932, 50785 and 37645 for $N=12$, 24, 36 and 48.
+  - Longest tasks: `che_k8` and `nnbf` at $N=48$, about $4\times32.5\,\mathrm s\times3000\approx108$ h each, plus about 2 h of evaluation.
+  - The whole array is about 850 task-hours. `--max-hours 150` and `--time` 7 days.
+* **Resubmission**: VMC job **686990**, `sbatch tests/P4.1_cheap_su2_scaling/submit_vmc.sbatch` (array 0–39; `tasks.txt` lines carry the irrep and the sample count). DMRG job 683137 is unchanged (still pending) and runs the amended `dmrg_ref.jl`.
+* **Expected completion**: about 4.6 days after the 48-site tasks start, plus queue time.
+#### Amendment 2 (2026-11-16, made before any production output existed): sector-resolved reference
+* **Reason**: the DMRG characters $\langle M_y\rangle=+0.78$ at $N=36$ and $+0.63$ at 48 are not valid characters. A non-degenerate eigenstate has $\pm1$, so either DMRG is unconverged in that symmetry or two sectors are close in energy. Every arm is projected onto $(+,+)$, so the reference must be the $(+,+)$-**sector** energy. Using the global DMRG energy could shift $\epsilon$ by up to the sector gap.
+* **State when amended**: DMRG job 683137 was still pending, and was cancelled before any task started. VMC job 686990 is still pending and is unchanged.
+* **Method** (`dmrg_ref.jl --sector=±1`): run DMRG on $H+\lambda(1-sM_y)/2$ with $\lambda=10$.
+  - $M_y$ is an exact MPO: in each column, the fermionic transposition of sites $y=0$ and $y=2$, $\prod_\sigma(1-n_{a\sigma}-n_{c\sigma}+c^\dagger_{a\sigma}c_{c\sigma}+c^\dagger_{c\sigma}c_{a\sigma})$.
+  - The run records $\langle H\rangle$ of the final MPS and its characters. Error bars are the truncation extrapolation, as before.
+* **Check against ED at 12 sites** (`ed_sectors_4x3.py`, `logs/ed_sectors_4x3_output.txt`; DMRG in `dmrg_sector/`).
+  - ED gives $E(+,+)=-7.8278990$, $E(+,-)=-7.7005343$, $E(-,+)=-7.6398599$ and $E(-,-)=-7.7267642$.
+  - The $M_y=+1$ run gives $-7.8278998\pm3.5\times10^{-6}$ ($7.6\times10^{-7}$ from ED), with $\langle\mathrm{Inv}\rangle=\langle M_y\rangle=+1.000000$.
+  - The $M_y=-1$ run converges more slowly. With 4 sweeps per stage it stalled in a mixture of $(-,-)$ and $(+,-)$ at $-7.7207$ ($\langle\mathrm{Inv}\rangle=0.55$). With 10 sweeps and noise $10^{-4}$ it reaches $-7.72655\pm3\times10^{-5}$, against ED $-7.72676$ ($\langle\mathrm{Inv}\rangle=0.98$).
+  - So the $M_y=-1$ error bar can be too small by about $2\times10^{-4}$. It only feeds the sector-gap diagnostic, and the 12-site gap ($+0.101$) is large by comparison.
+  - The production runs therefore use noise $10^{-4}$ and 6–8 sweeps per stage.
+* **Rule changes** (`scaling_report.py`, `select_ref`):
+  - **The reference for every arm is $E(+,+)$.** It comes from the $M_y=+1$ run, provided $\langle\mathrm{Inv}\rangle,\langle M_y\rangle\ge0.95$. Failing that, the plain run is used only if its characters are $\ge0.95$. Otherwise the size is AMBIGUOUS-REFERENCE and is not scored.
+  - The sector gap $E(M_y=-1)-E(+,+)$ is printed for every size. If it is below zero beyond $2\sigma$, the size is marked "ground state in the $M_y=-1$ sector"; scoring stays within $(+,+)$.
+  - The spin check uses the lowest $2S^z=0$ energy over all runs.
+  - Five new reference scenarios bring the logic check to 18 of 18 (`logs/check_output.txt`).
+* **DMRG job**: **687302**, `sbatch tests/P4.1_cheap_su2_scaling/submit_dmrg.sbatch`.
+  - Array 0–9, with 16 CPUs, 48 GB and `--time` 5 days.
+  - Task 0 is $4\times3$ at $2S^z=2$. Each of $8\times3$, $12\times3$ and $16\times3$ gets three tasks: $M_y=+1$, $M_y=-1$, and $2S^z=2$.
+  - The penalty MPO adds a bond dimension of only a few to $H$, so memory at 48 sites is as before. Run time per task is about 1.5 times the old estimate (more sweeps).
+
+### Route Portfolio & Sharpest Gaps (Stage 3.5, 2026-11-16)
+This section applies Stage 3.5 to the open user concern, "nobody cares about an approach that only applies to small clusters". Every route below is aimed at that obstacle: exact $S$ at polynomial cost per amplitude **and** a gain that can be extensive. The T1 code is `tests/P4.1_cheap_su2_t1/t1_scaling.py` (modes `smoke`, `run`, `report`; it imports the round-5 modules from `tests/P4.1_cheap_su2_r5/`).
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| R1 `che_kK` (fixed-rank projected mixture, shared charge backflow) | T3 (12-site PASS, job 508440); Gate 4 T0 FAIL expected (critic round 7: argument upheld, width confound added); T1 NO-TARGET | IN-FLIGHT(686990, 687302 scaling; 637776, 637777 generality) | the jobs | `scaling_report.py` rule: $P_R$, D1–D3, S1–S3 (unchanged; paper wording per round-7 objection 1) | R1 decision tree below, plus the width premise W of round 7 for every verdict |
+| R2 `pcg-scal` (exact $P_S$ of a charge-backflowed broken-symmetry pairing Gaussian) | T0 PASS (Gate 0 narrow); T1 NO-TARGET; T1-pre PASS; cost gate PASS (compiled Pfaffian, 3.59 times `che` at 48 sites); **T2a PASS** (job 698223: $\rho=0.449$, $\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{r1}}=0.555$ at 12 sites) | T2b READY (pre-flight PASS; not submitted): `submit_t2b.sbatch`, array 0–5, about 76 CPU-hours under a written exception | orchestrator submission; scoring also needs the 24-site $(+,+)$ reference of job 687302 | T2b rule (R2 T2b design below): KILL if futility fires, $d=E_{\mathrm{r1}}-E_{\mathrm{pcg}}\le0$ at 24 sites, or $\rho_{24}\ge0.85$; PASS if $\rho_{24}+2\sigma\le0.60$, $(\rho_{24}-\rho_{12})+2\sigma\le0.15$ and $d>2\sigma_d$ | R2 T2b design decision tree; a T2b PASS also needs `pcg` to beat `che_wall` at equal wall time (R2 T2b equal-wall-time amendment below) |
+| R3 `che_ext` (extensive charge backflow: (i) local equivariant `che_loc`, (ii) width $H\propto N$, (iii) hidden-fermion rational head, merged from R6) | T0 PASS; T1 NO-TARGET; W pre-flight PASS | W READY (W-12: tasks 3–5 of `submit_t2a_w12.sbatch`; W-24: `submit_w24.sbatch`; not submitted); variants (ii) in (it is the W-24 $H=48$ arm), (i) after W HOLDS; **(iii) KILLED(T1)** (round 8: rational head worse than the affine head at matched parameters, $\rho=1.57$) | orchestrator submission; the W verdict also needs the 24-site reference of 687302 | W FAILS if $E_{48}\ge E_{16}-2\sigma$ at 24 sites, or if $r_{24}\le r_{12}$ | Round 7 T2 pilots decision tree |
+| R4 $c$-local rank (per-patch component sums) | T0 | KILLED(T0, rank-1 collapse; rank $\ge2$ has no known resummation, hardness not proven) | — | — | — |
+| R5 rank $K\propto\mathrm{poly}(N)$ of local-defect components | T0 | KILLED(T0, linear superposition, sub-extensive gain) | — | — | — |
+| R6 hidden-fermion determinant with a charge-only hidden network | T0 | MERGED into R3 as variant (iii) (round 7: the Gate 0 kill was a function-class argument that would also kill R3) | — | — | — |
+| R7 `pcg_tr` (size-independent parameters: translation-invariant pairing, local charge backflow, zero-shot size transfer) | T0 | KILLED(T0, Gate 0: re-treads the closed leaf P4.2) | — | — | — |
+| R8 `pcg_hf` (R2 pairing frame with the hidden-fermion rational head) | T0 PASS on paper | KILLED(T1, shared premise: the rational head lost to the affine head in the R3 (iii) T1) | — | — | — |
+| R9 R2 with translation projection on cylinders | T0 | KILLED(T0, Gate 4: a polynomial-order symmetry restoration gains $\mathcal O(1)$, the R5 argument) | — | — | — |
+| R10 R2 with a size-extensive spin Jastrow | T0 | KILLED(T0, Gate 1: a diagonal spin Jastrow breaks the per-$c$ Gaussian; a charge-only neural Jastrow is an R2 variant, not a route) | — | — | — |
+| R11 valence-bond amplitude-product states with mobile holes | T0 | KILLED(T0, Gate 3: sign-free VB sampling needs Marshall-positive amplitudes) | — | — | — |
+| R12 one Lanczos step on an exact-$S$ state | T0 | KILLED(T0, Gate 4: fixed-order Lanczos gain per site vanishes) | — | — | — |
+| R13 SU(2)-invariant plaquette (exchange) correlators | T0 | KILLED(T0, Gate 1: $\mathcal O(c^{N/4})$ terms per amplitude) | — | — | — |
+| R14 Shiba-dual frame (exact $S$ as exact $\eta$-spin of a determinant) | T0 | KILLED(T0, Gate 0: maps the `che` class into a subclass of R2, no new function class) | — | — | — |
+| R15 `spring` (round 9: the 24-site limit is optimisation; SPRING momentum on the sample-space SR of every exact-$S$ arm) | T1 | KILLED(T1: on the sample-starved 5×2 toy, $\epsilon_{\mathrm{spring}}/\epsilon_{\mathrm{base}}=2.67$ at equal wall time, 3 seeds) | — | — | — |
+| R15b `ns-rich` (protocol premise O: the 1024-sample SR noise floor limits `che` at 24 sites; 4096 samples at equal wall time) | T1 PASS as a premise (toy: $\epsilon$ ratio 0.616 at equal wall, $4.2\sigma$); Gate 0 FAIL as a method (a standard hyperparameter), so it carries no paper claim | T2 READY (`tests/P4.1_cheap_su2_opt/submit_t2_samples.sbatch`, array 0–1, about 1.8 CPU-hours per task; not submitted) | orchestrator submission; no reference needed | KILL if $E_A-E_B\le2\sigma$; PASS if $E_A-E_B>2\sigma$ and $\ge0.01$ (Round 9) | Round 9 decision tree |
+| R15c warm start of the 24-site state by tiling the 12-site one | T0 | KILLED(T0: the global MLP of `che` has no tiling; the size-transfer content is P4.2's closed diagnostic; and the T0 data place the deficit in the late noise floor, not in the early transient a warm start shortens) | — | — | — |
+| R15d linear method (Toulouse–Umrigar) for the exact-$S$ family | T0 | KILLED(T0: needs $\partial E_{\mathrm{loc}}/\partial\theta$ per sample, about 2–3 times the dominant local-energy cost per step, and is least stable in exactly the sample-starved regime found here) | — | — | — |
+
+#### Gate 0 searches (2026-11-16, WebSearch)
+* Queries: "spin-projected Hartree-Fock-Bogoliubov Hubbard backflow neural network exact spin projection Pfaffian variational Monte Carlo"; "multi-component projected Hartree-Fock size extensivity resonating Hartree-Fock not size-extensive correlation energy"; "neural network backflow hidden width scaling with system size convolutional backflow Hubbard extensive"; "SU(2) symmetric neural quantum state fermions Hubbard exact total spin configuration state function basis neural network".
+* Findings used below:
+  - Projected HF is not size-extensive. In hydrogen rings its correlation energy relative to UHF stays roughly constant with $N$, so the gain per particle goes to zero (Jiménez-Hoyos et al., arXiv:1202.3148). The multi-component version (arXiv:1309.4469) stays at mean-field cost only "if the number of configurations depends weakly on system size"; no extensivity statement was found.
+  - No paper combines exact spin projection of a pairing (HFB or Pfaffian) Gaussian with a neural backflow. Neural backflow on BdG states exists without projection (Luo & Clark, arXiv:1807.10770). Multi-determinant NNBF (arXiv:2510.26906, arXiv:2609.26544) is spin-resolved, and its authors report that gains from hidden width saturate.
+  - Spin-adapted NNBF (arXiv:2604.06841) uses a fixed sum-of-products spin function (anti-solution (c) of Section 1). CSF-basis NQS for doped fermions was killed in round 1 (Route 4, Gate 3) and is not repeated.
+
+#### R1 `che_kK`: Mechanism, Gate 4 at T0, Sharpest Gap
+* **Mechanism**: $\phi(x)=e^{J(c)}\sum_{k<K}a_k\det\Phi_{k\uparrow}(c)[U]\det\Phi_{k\downarrow}(c)[D]$ with $\Phi_k(c)=P_{0,k}+B(c)$, one shared charge backflow $B(c)=W_2^{\mathsf T}\tanh(W_1f(c)+b_1)+b_2$, and exact $P_SP_G$ at $K$ closed-form Che evaluations, $\mathcal O(KN^3)$ per amplitude.
+* **Gate 4 claim, stated**: cost $\mathcal O(KN^3)$ per amplitude, measured slope about 2.2. The claimed gain is the rank gain $\Delta E(K,N)=E_{\mathrm{che}}-E_{\mathrm{k}K}$.
+* **T0 argument: what the shared backflow can and cannot make extensive.**
+  - (a) *What can be extensive.* $J(c)$ and $B(c)$ act on the charge configuration, so a $c$-conditioned Gaussian can carry charge correlations and hole-bound spin textures anywhere in the lattice. This part is identical in `che` and in every `che_kK`, so it enters $\epsilon_{\mathrm{che}}$ and $\epsilon_{\mathrm{k}K}$ alike.
+  - (b) *What cannot.* At fixed $c$ the spin function on the singly occupied sites is $P_S$ of at most $K$ Gaussians, and two standard mechanisms make this rank part sub-extensive. First, for $M$ weakly coupled blocks, Gaussian components that differ on an extensive number of blocks have overlaps and cross terms of order $\prod_ms_m\to0$, so their energies only average. Components that differ on $\mathcal O(1)$ blocks gain $\mathcal O(1)$, and a linear superposition of locally different components is CI-like and gains at most $\mathcal O(\sqrt N)$ (Route 2.1). Second, $P_S$ and the four-element $P_G$ are symmetry restorations whose total energy gain is $\mathcal O(1)$ (arXiv:1202.3148). Hence $\Delta E(K,N)=o(N)$ at fixed $K$. Since $\epsilon_{\mathrm{che}}$ is extensive whenever `che` is not exact, $R(K,N)\to1$.
+  - (c) *A bottleneck the whole ladder shares.* With a fixed hidden width $H$, $\Phi(c)-P_0=\sum_{a\le H}h_a(c)W_{2,a}+b_2$ lies in one $H$-dimensional affine subspace of orbital matrices for **every** $c$. Dressing $N_h\propto N$ holes at arbitrary positions with local orbital deformations needs a subspace whose dimension grows with $N$, so a fixed-$H$ backflow is itself a finite-size device. Job 686990 uses fixed $H$ (16 for `che` and `nnbf`, 9 for `che_k8`) at every size. This weakens `che`, `che_kK` and `nnbf` alike as $N$ grows, so it confounds D3 more than $R$.
+  - (d) *Prediction for the in-flight rule.* Model $R(8,N)=1-(1-R(8,12))(12/N)^{\alpha}$ with $\alpha=1$ (the gain saturates at $\mathcal O(1)$) or $\alpha=1/2$ (a CI-like $\sqrt N$ gain), and take the 12-site pilot value $R(8,12)=0.28$. Then $\alpha=1$ gives $R(8,N)=0.28,0.64,0.76,0.82$ at $N=12,24,36,48$, and the linear fit reaches 1 at $N=56$ (D2). $\alpha=1/2$ gives $0.28,0.49,0.58,0.64$: S1 ($R(8,48)\le0.75$) holds but S3 fails (a rise of 0.36), and D2 fires (the fit reaches 1 at $N=81$). Both models give **DOES-NOT-SCALE**, so the pre-registered rule cannot mistake a $\sqrt N$ gain for SCALES.
+  - *T0 verdict*: **Gate 4 FAIL expected** for the rank part. R1 is a finite-size accuracy device on top of `che`, and its extensive content is `che`'s. The route is already IN-FLIGHT at T3, so the T0 result does not cancel the jobs; it fixes the prior and pre-plans the follow-ups.
+* **Sharpest Gap**: the size of the per-site rank gain between 12 and 48 sites, and whether `che_k8` still beats the plain network at equal compute at 48 sites (D3), where both share the fixed-$H$ bottleneck of (c).
+
+#### R1 decision tree (pre-planned; each next step starts in the turn its result lands)
+* **Scaling, jobs 686990 and 687302** (`python3 scaling_report.py`):
+  - **SCALES** (contradicts T0): first re-evaluate the saved 48-site parameters with `--n-eval 262144` to confirm that S1 and S2 are resolved. Then run the pre-planned 72-site extension ($L_x=24$; `che`, `che_k8`, `nnbf`; 2 seeds) under the same rule. Only if both hold does the paper claim "scalable exact-$S$ NQS", and T0 argument (b) gets an autopsy naming the assumption that failed.
+  - **DOES-NOT-SCALE by D1 or D2 only** (`che_k8` still below `nnbf_wall` at 48 sites): the claim narrows to "cheap exact-$S$ tool for sector-resolved cluster spectra". Next: submit the R3 bottleneck control, i.e. `che` and `nnbf` at $H=16N/12$ ($H=64$ at 48 sites), one seed, 24 and 48 sites only, to separate the rank effect from the width effect. Leaf focus then moves to R2 and R3.
+  - **DOES-NOT-SCALE by D3** (`nnbf_wall` below `che_k8` at 48 sites): exact $S$ costs accuracy at scale in the UHF class. Next: the R2 T2 pilot (pairing channel) at 24 sites against `che` and `nnbf`, plus the $H\propto N$ control. If the pairing channel does not close the per-site gap either, P4.1 closes on the dichotomy conjecture: exact $S$ at polynomial cost is a finite-size tool.
+  - **AMBIGUOUS**: apply the pre-registered decider (4 times the samples if only resolution is missing; otherwise $L_x=24$).
+  - **NO-BASELINE-GAIN** ($P_R$ fails): the VMC-SR protocol does not reproduce the 508440 rank gain. Next: train `che` and `che_k8` at 12 sites with VMC-SR at 4 times the samples and twice the steps. If the gain is still absent, it is specific to exact-gradient L-BFGS, and the 12-site PASS is recorded as optimiser-specific. The R2 and R3 T2 pilots wait on this premise too (Stage 3.5.1: a shared premise is tested once).
+  - **INCOMPLETE or AMBIGUOUS-REFERENCE**: resubmit the failed tasks, which resume from `results/<tag>_ckpt.npz`, or rerun that DMRG size at a larger bond dimension.
+* **Generality, job 637776** (`gen_test.py --mode report`): PROMOTE means the 12-site result is not instance-specific, a prerequisite for any paper claim that says nothing about scaling. KILL-GENERALITY retires R1 regardless of 686990. NO-TARGET on both instances keeps the claim a single-instance narrow PASS.
+* **rbm extension, job 637777** (`gen_test.py --mode report-ext`): FAIL, AMBIGUOUS or NO-TARGET closes the rbm family, as pre-committed. PASS defers attribution until `che_k2/4/8` are extended to 4000 iterations the same way.
+
+#### R2 `pcg-scal`: Mechanism, Gates, Gate 4 claim, Sharpest Gap
+* **Origin**: Operation A on R1's Gate 4 failure. The extra spin structure moves out of the non-extensive rank and into the Gaussian itself, which is where the round-2 dichotomy conjecture says any polynomial exact-$S$ amplitude must carry extensive spin correlation.
+* **Mechanism**: $\psi=P_GP_S\,e^{J(c)}\det f_c[U,D]$ with $f_c=B_1(c)f_0B_2(c)^{\mathsf T}$. Here $f_0$ is a general $L\times L$ pairing matrix (singlet plus triplet, so it contains AF order, $d$-wave pairing and their coexistence), and $B_a(c)$ are charge-conditioned backflows. This is the round-2 PCG family (code `r2_micro_test.DetArm("pcg")`). The UHF of `che` is its special case $f=\Phi_\uparrow\Phi_\downarrow^{\mathsf T}$.
+* **Gate 0**: PASS (narrow). mVMC projects a fixed pair product without backflow; Tocchio backflow and BdG NNBF have no exact projection; RBM+PP breaks $S$. The round-3 retirement applied the leaf's then-binding "below projection cost" criterion. The adoption barrier at scale is a different one: the field gets per-site accuracy from spin-resolved correlators that break $S$ (RBM+PP, NNBF). The concrete fix is to put the extensive capacity into a charge-conditioned pairing Gaussian, which stays exactly projectable.
+* **Gate 1**: PASS. Exact $S$ for every $\theta$ (T1 smoke: $\langle\hat S^2\rangle=1.3\times10^{-18}$, gradient error $2.8\times10^{-9}$). The cost is $\mathcal O(N_{\mathrm{grid}}N^3)=\mathcal O(N^4)$ per amplitude by Pfaffian quadrature, or $\mathcal O(N^3)$ with the round-1 Route 3 polynomial-root closed form. Route 3 was killed only because it brought no accuracy gain on a fixed pair product; with backflow every amplitude is recomputed anyway, so its cost argument now applies.
+* **Gate 2**: PASS (decided by test). The foils are `che` (no pairing), `tocchio` (symmetric pairing, no $P_S$) and the mVMC-like foil (no backflow).
+* **Gate 3**: PASS. No Marshall, bipartite or filling assumption; the sign is a learnable charge-conditioned determinant.
+* **Gate 4 claim (T0)**: the cost is polynomial. The extensive part of the gain is the pairing channel inside the Gaussian: Gutzwiller-projected pairing states (RVB, AF with $d$-wave coexistence) carry transverse spin fluctuations on every bond that a Gutzwiller-projected UHF lacks. That gain is per bond, so it should survive $N\to\infty$, while the $P_S$ part does not. T0 verdict: **PASS on paper**.
+* **Sharpest Gap**: whether the pairing channel plus charge backflow closes the per-site gap to a plain spin-resolved NNBF at equal compute at 24–48 sites. No lemma covers this, and the per-amplitude Pfaffian projection has no VMC implementation yet.
+
+#### R3 `che_ext`: Mechanism, Gates, Gate 4 claim, Sharpest Gap
+* **Origin**: Operation A on the bottleneck (c) found in R1's T0 argument.
+* **Mechanism**: keep `che`'s closed-form exact $P_S$ and make the charge backflow extensive.
+  - Variant (i), `che_loc`: $\Phi_s(c)=(\mathbb 1+\eta_s(c))\Phi_{s,0}$, where $\eta_s(c)_{ij}$ on the $3\times3$ neighbourhood mask comes from one shared, translation-equivariant MLP of local charge features (doublon and holon indicators of $i$ and $j$, and the holon and doublon neighbour counts of $i$ and $j$). Its backflow parameter count does not depend on $N$.
+  - Variant (ii): the global MLP with width $H\propto N$.
+* **Gate 0**: PASS (narrow). Tocchio's doublon–holon backflow is local but hand-crafted, with a few parameters and no exact projection. Convolutional and message-passing backflows exist for spin-resolved inputs. A learned local charge backflow under closed-form exact $P_S$ was not found.
+* **Gate 1**: PASS. T1 smoke: $\langle\hat S^2\rangle=9.6\times10^{-18}$, gradient error $3.3\times10^{-10}$, and the closed-form Che single amplitude on the $c$-conditioned orbitals equals the full-vector $P_S$ to $1.5\times10^{-16}$. Cost $\mathcal O(N^3)$ per amplitude plus $\mathcal O(N)$ for the local features.
+* **Gates 2 and 3**: PASS (decided by test; the foil is `che` at fixed $H$). No lattice or filling assumption.
+* **Gate 4 claim (T0)**: the cost is $\mathcal O(N^3)$, and every hole is dressed locally by the same kernel, so the charge-correlation gain is per hole and hence extensive at fixed doping. The per-$c$ spin function is still one Gaussian plus $P_S$, so the per-site ceiling is the best charge-conditioned projected UHF. T0 verdict: **PASS on paper**, with that ceiling stated.
+* **Sharpest Gap**: whether removing the width bottleneck changes the per-site comparison with a plain NNBF that is also given an extensive backflow. If both improve equally, R3 only re-levels the field.
+
+#### T0 kills (Operations A and B, 2026-11-16)
+* **R4 $c$-local rank** (Operation A on R1: a rank per patch and a product over patches, so the total rank $K^{\#\mathrm{patches}}$ is extensive). Write the orbital matrix as $M_0+\sum_pU_pV_{p,s_p}^{\mathsf T}$, one local term per patch $p$ with label $s_p$. By the matrix-determinant lemma, $\sum_s\prod_pa_{p,s_p}\det(\cdot)$ is a sum over $s$ of determinants whose row block $p$ depends only on $s_p$.
+  - If each patch term has rank 1, multilinearity collapses the sum to **one** determinant with averaged rows: a single Gaussian, nothing gained.
+  - If each patch term has rank $r\ge2$, the sum is a mixed discriminant of the per-patch $r$-forms, which is #P-hard in general. The 2-form case is a mixed Pfaffian with no single-Pfaffian resummation.
+  - Exact $P_S$ of a product of local RBM-type factors is Lemma B's $2^M$ with $M\propto L$.
+  - *Verdict*: **KILLED (T0, Gate 1)**.
+* **R5 rank $K\propto\mathrm{poly}(N)$ from local defects** (lattice translates of a learned local offset): a linear superposition of locally different Gaussians is CI-like, so its gain is at most $\mathcal O(\sqrt N)$ (Route 2.1, arXiv:1202.3148). A polynomial-rank symmetry projection (translations) is a finite-size restoration. *Verdict*: **KILLED (T0, Gate 4)**.
+* **R6 hidden fermions with a charge-only hidden network** (Operation B.3, HFDS): $\det\begin{pmatrix}A&B\\C(c)&D(c)\end{pmatrix}=\det D(c)\det(A-BD(c)^{-1}C(c))$, so the hidden block is a charge-conditioned backflow of the visible orbitals times a charge Jastrow, i.e. the `che` family. A spin-reading hidden network breaks exact $S$ (commutant lemma). *Verdict*: **KILLED (T0, Gate 0: reduces to `che`)**.
+
+#### Tier log: T1 three-size Gate 4 trend (all live routes, one computation)
+* **Pre-registered rule** (docstring of `t1_scaling.py`, written before any `run` output existed):
+  - Instance: open $L_x\times2$ strips, $L_x=3,4,5$ ($N=6,8,10$), two holes ($N_e=N-2$), $U=8$, $t'=-0.25$, dimensions 225, 3136 and 44,100. Every Fermi sea is closed-shell, and every ground state is a non-degenerate $(+,+)$ singlet (ED).
+  - Arms: `che`, `che_k2` and `che_k8` at fixed $H=4$ (R1); `pcg` at $H=4$ (R2); `che_loc` (R3, variant i). Exact $P_GP_S$, exact-gradient L-BFGS, 300 iterations, seed 0, at most 10 CPU-minutes per run on 2 threads. A capped run moves every comparison to the largest common logged iteration.
+  - Premise $P_{T1}(N)$: $\epsilon_{\mathrm{che}}(N)\ge10^{-4}$, otherwise size $N$ is NO-TARGET. A verdict needs $N=6$ and $N=10$ valid.
+  - R1 (indicator only): NON-EXTENSIVE-INDICATED if $R(8,N)$ is non-decreasing and $R(8,10)-R(8,6)\ge0.15$; FLAT if the change is below 0.15 in magnitude; MIXED otherwise.
+  - R2 and R3, with $\rho_X=\epsilon_X/\epsilon_{\mathrm{che}}$: KILL if $\rho_X\ge1$ at every valid size, or if $\rho_X$ rises by at least 0.15 to $\rho_X(10)\ge0.9$; PASS if $\rho_X(10)\le0.8$ and $\rho_X$ does not rise; AMBIGUOUS otherwise.
+* **Smoke** (`logs/smoke_output.txt`, 0.7 s): **SMOKE PASS**. Every arm has $\lvert\langle\hat S^2\rangle\rvert\le10^{-17}$ and a finite-difference gradient error of at most $8.5\times10^{-9}$. The `che_loc` closed-form single amplitude matches the full-vector $P_S$ to $1.5\times10^{-16}$.
+* **Result** (`logs/report_output.txt`; runs in `results/`, logs `logs/run_L*_*.out`). Every run has $\lvert\langle\hat S^2\rangle\rvert\le3\times10^{-17}$. `che_k8` at $N=10$ hit its cap at iteration 143, so the rule compares every arm at iteration 100.
+
+| $N$ | `che` | `che_k2` | `che_k8` | `pcg` | `che_loc` | parameters (same order) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 6 | $1.8\times10^{-11}$ | $<10^{-11}$ | $<10^{-11}$ | $1.4\times10^{-9}$ | $1.8\times10^{-3}$ | 222, 247, 397, 338, 146 |
+| 8 | $1.25\times10^{-4}$ | $7.3\times10^{-5}$ | $9.4\times10^{-5}$ | $1.25\times10^{-4}$ | $5.8\times10^{-3}$ | 395, 444, 738, 491, 183 |
+| 10 | $1.12\times10^{-3}$ | $9.0\times10^{-4}$ | $8.9\times10^{-4}$ | $1.52\times10^{-3}$ | $7.0\times10^{-3}$ | 620, 701, 1187, 656, 232 |
+
+* **Verdict (pre-registered)**: **NO-TARGET for R1, R2 and R3.** Premise $P_{T1}$ fails at $N=6$: every arm except `che_loc` reaches $\epsilon\le1.4\times10^{-9}$, because the parameter counts (222–397) exceed the dimension of the $S=0$, $(+,+)$ sector. No route is killed or passed at T1.
+* **Descriptive (not gating)**:
+  - At the valid sizes, $R(8,N)=0.75$ at $N=8$ and $0.79$ at $N=10$; $R(2,N)=0.59$ and $0.81$. The direction matches the T0 prediction ($R\to1$), but two sizes, one seed and 100 iterations decide nothing.
+  - `pcg` gives $\rho=1.00$ and $1.36$: no gain over `che` at equal iterations on this toy, and it falls behind as $N$ grows.
+  - `che_loc` gives $\rho=46$ and $6.2$: far worse than the global MLP at small $N$ (232 against 620 parameters), but the gap shrinks with $N$, which is the direction of its Gate 4 claim.
+  - Final-iteration values (300 iterations; `che_k8` capped at 143) at $N=10$: `che` $6.4\times10^{-4}$, `che_k2` $3.8\times10^{-4}$, `che_k8` $4.6\times10^{-4}$, `pcg` $7.4\times10^{-4}$, `che_loc` $1.7\times10^{-3}$.
+* **Structural lesson (recorded as a leaf anti-pattern)**: an exact-sum three-size Gate 4 trend cannot decide a projected-Gaussian route below about 16–20 sites. A UHF-type reference has $\mathcal O(N^2)$ parameters, while the symmetric sector grows like $2^N/N^{3/2}$, and the two cross only near $N\approx16$–20 in the spin sector. At smaller $N$ every arm saturates, and any ratio trend "rises from 0" whatever the asymptotics. For these routes the cheapest valid Gate 4 instance is the VMC ladder already in flight (12–48 sites).
+* **Budget breach (logged)**: the first version of `t1_scaling.py` set the BLAS thread variables after `import numpy`, so BLAS ignored them. At $N=10$, `che` used 21.7 and `che_k2` 23.8 CPU-minutes (cap 10); the other runs stayed within it. The script now sets the thread cap before importing numpy, and `--mode smoke` passes again. No rerun was made: the verdict does not depend on these two runs (it fails at $N=6$).
+* **T2 status**: no T2 job was submitted. No route passed T1, and the R2 and R3 T2 pilots depend on the premise $P_R$ of job 686990 (whether VMC-SR with $P_G$ resolves a gain at 12 sites). By Stage 3.5.1 that shared premise is tested once, first. The pre-planned R2 and R3 T2 design is below.
+
+#### Pre-planned T2 pilots for R2 and R3 (superseded by the Round 7 critic below: dependency dropped, cap infeasible at 24 sites, early stop struck)
+* **Instance**: $8\times3$ open strip, $N=24$, $N_e=20$, $U=8$, $t'=-0.25$, $(+,+)$ sector, reference from job 687302. One seed, 1024 samples per step, the VMC-SR settings of 686990, at most 2 CPU-hours per task, partition `kim`.
+* **Arms**: `che` at $H=16$ (rerun from the 686990 configuration; its 686990 output is read if present), R3 `che_loc`, R3(ii) `che` at $H=32$, and R2 `pcg-scal`. R2 first needs a per-amplitude Pfaffian $P_S$ in `vmc.py`, checked against the full-vector $P_S$ on $4\times2$ before submission. The pre-flight dry run (Stage 3.5.4) runs on $4\times2$ with a 30-step budget.
+* **Kill rule**: with $\rho_X=\epsilon_X/\epsilon_{\mathrm{che}}$ at equal steps, KILL if $\rho_X\ge1$ at the end. Early stop at 25% and 50% of the budget: KILL if $\rho_X>1.5$ there, since the 12-site pilot trajectories (`logs/pilot/`) show no later gain larger than that factor. PASS (promote to the 12–48 ladder, T3) if $\rho_X\le0.8$ at the end, and AMBIGUOUS otherwise (a second seed).
+* **Decision tree**: PASS sends R2 or R3 into a 12/24/48 ladder under the 686990 rule with `nnbf_wall` as the D3 foil. KILL marks the route `KILLED(T2)`, and the portfolio is refilled. AMBIGUOUS runs a second seed at the same instance. INCOMPLETE resubmits from the checkpoint.
+
+### Round 7 per-leaf critic (2026-11-16)
+Scope: the Route Portfolio section above, its tier log, `tests/P4.1_cheap_su2_t1/t1_scaling.py`, `tests/P4.1_cheap_su2_scaling/` (`vmc.py`, `scaling_report.py`, `logs/pilot/`), and the round-2 module `r2_micro_test.py` (`DetArm`). No job was touched; 686990, 687302 and 637777 are pending, and 637776 is partly running. Checks run by the critic: the T0 prediction (d) was recomputed ($\alpha=1$ gives $0.28,0.64,0.76,0.82$ and a fit reaching 1 at $N=55.9$; $\alpha=1/2$ gives $0.28,0.49,0.58,0.64$ and $N=81.3$; both as stated), and the 12-site pilot trajectories in `logs/pilot/pg_che.out` and `pg_che_k8.out` were read at iterations 250, 500, 750 and 1000.
+#### Major objections
+1. **The T0 Gate 4 argument for `che_kK` is upheld, but the width confound hits $R$, not mainly D3.**
+   - (b) is the standard non-extensivity argument for a fixed number of superposed states (NOCI, resonating HF, Jiménez-Hoyos et al.): components that differ on an extensive region are exponentially orthogonal, so the energy of their span is a weighted average plus $\mathcal O(1)$. Sharing $B(c)$ does not change this, because the amplitude is still a linear sum of $K$ fixed states. It is a heuristic, not a lemma, and should be labelled as such. Wording slip: $\epsilon$ is intensive; what is extensive is $E_{\mathrm{che}}-E_{\mathrm{ref}}$, so $\Delta E=o(N)$ gives $\epsilon_{\mathrm{che}}-\epsilon_{\mathrm{k}K}\to0$.
+   - (c) is correct as a capacity statement. The output layer is affine in the hidden vector, so $\{\Phi(c)-P_0\}$ lies in an $H$-dimensional affine subspace, while even the linear, Tocchio-type local dressing $\sum_in_h(i)\Delta_i$ spans $\Omega(N)$ dimensions. It does not prove that the per-site error degrades; that is premise W below.
+   - The confound direction is misstated. Parameter matching gives `che_k8` $H=9$ at $N\ge24$ against $H=16$ for `che` (table above), so the bottleneck hurts `che_k8` more than `che` and pushes $R(8,N)$ upward. A D1 or D2 outcome then mixes rank sub-extensivity with a width penalty, and the rule cannot separate them. For D3 the direction is unknown: both `che_k8` and `nnbf` are bottlenecked, and a fixed $H=16$ `nnbf` is not the field's scalable foil (NNBF is normally run at a fixed hidden density, $H\propto N$).
+   - **Ruling on the rule**: leave the pre-registered rule of 686990 exactly as it is. A pilot ($R(8,12)=0.28$) has been seen, so any change now is post hoc. What changes is the paper wording, fixed here before the result:
+     - SCALES: "at matched parameter count and fixed width, a rank-8 exact-$S$ mixture keeps a size-independent fraction of its gain up to 48 sites on width-3 strips, and beats a fixed-width spin-resolved NNBF at equal wall time". It may not say "beats NNBF at scale" until the $H\propto N$ control (W, then the 48-site arm) agrees. SCALES also contradicts T0 (b), so the 72-site extension and an autopsy of (b) remain mandatory.
+     - D1 or D2 only: "the rank gain does not survive to 48 sites at matched parameters". It may not say "a fixed rank is intrinsically non-extensive" unless W shows that widening `che_k8` does not restore the gain. The cheap-exact-$S$-tool claim for cluster spectra stands either way.
+     - D3: "at fixed width $H=16$ and equal wall time, a spin-resolved NNBF beats `che_k8` at 48 sites". The sentence "exact $S$ would then cost accuracy at scale" in the paper-meaning list above is withdrawn until the $H\propto N$ pair (`che` and `nnbf` at $H=64$, 48 sites) agrees.
+     - NO-BASELINE-GAIN: no scaling claim; the 12-site result is recorded as optimiser-specific if the pre-planned 12-site rerun also fails.
+     - AMBIGUOUS, INCOMPLETE or AMBIGUOUS-REFERENCE: no claim until the pre-registered decider resolves it.
+2. **R2 Gate 0 is narrower than stated, and its T2 omits the leaf's own mandatory foil.**
+   - Prior art covering every part separately: exact $P_S$ (Gauss–Legendre in $\beta$) of a pair product with charge-only correlators, Tahara & Imada (arXiv:0805.4457) and mVMC (arXiv:1711.11418); exact projection of Jastrow times AGP or Pfaffian references inside VMC, Mahajan & Sharma (arXiv:1902.07690); charge (doublon–holon) backflow on BCS, Tocchio et al. (PRB 78, 041101; arXiv:1102.3017); backflow on mVMC pair products without spin projection, Ido, Ohgoe & Imada (arXiv:1507.00274) and the finite-temperature VMC paper arXiv:1510.05352; projected HFB with spin and space-group projection on the Hubbard model, Rodríguez-Guzmán, Jiménez-Hoyos and Scuseria (PRB 2012 and 2013) [unverified: not re-searched this round]; BdG NNBF without projection, Luo & Clark (arXiv:1807.10770). R2 is "mVMC's $P_S$ times an MLP version of Tocchio's charge backflow", the round-3 description, which stands.
+   - Novel residue: only the combination. The adoption barrier is real and is stated in arXiv:1507.00274, which calls spin projection of a pair product with backflow difficult. R2's fix (a charge-only backflow commutes with every rotation, so the per-$c$ projection is exact) removes the commutation part. The cost part remains: backflow destroys mVMC's fast updates, so every connected amplitude costs one full projected evaluation. Gate 0 is PASS (narrow) on that basis.
+   - The Gate 0 text says Tocchio backflow has "no exact projection". That is wrong for the singlet case. This leaf showed in Round 4 that a symmetric charge-conditioned pairing with charge-only correlators is an exact singlet at one determinant, with no projection (`r1`; Round 4 anti-pattern: "any new exact-$S$ route must be priced against `tocchio` and `che_closed`"). The pre-planned T2 has no `r1` arm, so a PASS of `pcg-scal` could not be credited to $P_S$ plus the triplet channel. The arm already exists as `r2_micro_test.DetArm("r1")`.
+   - **Gate 4 for R2**: upheld on paper. A single charge-backflowed pairing Gaussian with a charge Jastrow is size-consistent up to the $\mathcal O(1)$ effects of number and spin projection, so its gain over `che` can be extensive, unlike a fixed-rank sum. Two consequences follow. First, $P_S$ itself contributes $\mathcal O(1)$; the extensive content is the AF-plus-pairing channel, whose singlet half needs no projection at all (`r1`). Second, an extensive per-bond gain must already be visible at the smallest unsaturated size; only finite-size bonuses vanish. So R2 is decidable at 12 sites, where `che` is far from saturated ($\epsilon_{\mathrm{che}}=2.9\times10^{-3}$ with $P_G$). The descriptive T1 data are unfavourable ($\rho_{\mathrm{pcg}}=1.00$ and $1.36$ at $N=8$ and 10, although `pcg` contains `che`), which makes the 12-site T2 the cheapest valid kill.
+   - The $\mathcal O(N^3)$ cost claim rests on the unimplemented Round-1 Route 3 (one $2N_e$-dimensional quadratic-pencil eigen solve per amplitude). An eigen solve costs 10–30 times an LU factorisation, so the per-step cost against `che` and `nnbf` must be measured at 12, 24 and 48 sites before any 24-site run.
+3. **R3 Gates 0 and 4: PASS on paper; the decisive premise is W, not the T2 kill rule.**
+   - Gate 0 (narrow) stands: Tocchio's backflow is local and charge-only but hand-crafted, and the learned local backflows in the literature read spins. Variant (ii), $H\propto N$, is not a method novelty; it is a control.
+   - Cost: (i) is $\mathcal O(N^3)$ per amplitude with $\mathcal O(1)$ backflow parameters, and a hop changes only $\mathcal O(1)$ rows of $\Phi(c)$, so low-rank updates are possible. (ii) has $\mathcal O(HN^2)=\mathcal O(N^3)$ parameters and forward cost of the same order; at $N=48$, $H=64$ gives about $1.5\times10^5$ parameters, cheap for sample-space SR with 1024 samples. Neither variant fails Gate 4 on cost.
+   - Accuracy ceiling: the per-$c$ spin function is still one projected UHF, so R3 can only remove the width bottleneck. Its gain is extensive against fixed-$H$ `che`, but that is a gain over a crippled foil. The relevant Gate 4 question is the one the Sharpest Gap already names (against a plain NNBF given the same extensive backflow), and it is worth asking only once W holds.
+   - The T1 descriptive data ($\rho_{\mathrm{loc}}=46$ and 6.2) come from a start with $W_2$ at scale $10^{-3}$ and 232 parameters against 620. Two sizes at 100 iterations decide nothing either way.
+4. **The R6 kill is unsound as stated.** The Schur-complement reduction is right: $\det D(c)\det(A-BD(c)^{-1}C(c))$ is a charge Jastrow times a charge-conditioned backflow. But "reduces to the `che` family" is a function-class statement, and R3 is in the same class. The difference that matters at scale is the one found in (c): $M(c)=D(c)^{-1}C(c)$ is a rational, not affine, function of the hidden vector, and with $N_h\propto N$ hidden orbitals the deformation set is not confined to an $H$-dimensional affine subspace. R6 is therefore a third parameterisation of R3's mechanism. Ruling: MERGED into R3 as variant (iii), not a separate live route. The portfolio stays at three live routes (R1, R2, R3).
+5. **The R2 and R3 dependency on $P_R$ of 686990 is not genuine.**
+   - $P_R$ asks whether VMC-SR with $P_G$ resolves the **rank** gain at 12 sites. R2 and R3 contain no rank. The only content they share with $P_R$ is "the protocol can resolve an expressivity difference at the $10^{-3}$ level", and the 12-site pilot already answers that ($R(8,12)=0.28$; `logs/pilot/pg_che_k8.out`).
+   - Waiting is expensive: 686990 is queued behind the remaining tasks of 637776 and 637777 and then needs about 4.6 days. Stage 3.5.1 says a shared premise is tested once at the **cheapest tier that decides it**, and that is not an 850-task-hour job.
+   - Ruling: the dependency is dropped. R2 and R3 advance now through the independent tests below.
+6. **The pre-planned T2 is infeasible within its own cap, and its early-stop clause contradicts the pilot.**
+   - Cap: the 12-site `che` pilot (1000 steps, 1024 samples, $P_G$, 3 threads) took 0.32 h, about 1.0 CPU-hour; `che_k8` took 0.87 h, about 2.6 CPU-hours. Per step, 24 sites cost about 4.3 times 12 sites (timing table above), so 1000 steps of `che` at 24 sites need about 4–5 CPU-hours, and 2 CPU-hours buy about 200 steps. The T2 as written cannot run at $N=24$ under its cap.
+   - Early stop: "KILL if $\rho_X>1.5$ at 25% or 50%, since the pilots show no later gain larger than that factor" is false for the pilot it cites. At iteration 250 the single-step energies are $-7.7999$ for `che` and $-7.8031$ for `che_k8`, a ratio near 0.88, which fell to 0.28 by the end: a late gain of about 3. Stage 3.5.5 requires the futility margin to come from the trajectory of the arm in question, and `che_loc` and `pcg-scal` have none. The clause is struck.
+#### Minor objections
+7. The T1 instance failure (NO-TARGET at $N=6$, 222–397 parameters against a 225-state space) was predictable at T0 by counting. The pre-flight validity asserts of Stage 3.5.4 should include "parameter count below the target-sector dimension". The structural lesson recorded above is correct and is kept as a leaf anti-pattern.
+8. The T1 CPU-cap breach (21.7 and 23.8 CPU-minutes) is logged and fixed, and does not affect the verdict. Accepted.
+9. The R4 kill overstates hardness. The rank-1 collapse is correct: the $P\times P$ matrix $\mathbb 1+V^{\mathsf T}M^{-1}U$ has row $p$ depending only on $s_p$, so the weighted sum is multi-affine and collapses to averaged rows. For rank $r\ge2$ the object is a sum of exponentially many determinants over independent row blocks. Gurvits' #P-hardness is proven for mixed discriminants of PSD forms, not for this determinantal block structure. Restate as "no known polynomial resummation; the analogous mixed discriminant is #P-hard". The kill stands on cost. A possible mutation seed, not a resurrection: treat $s$ as sampled auxiliary variables. That needs marginal amplitudes for $E_{\mathrm{loc}}$ and was not gated.
+10. The R5 kill is sound. A sum over translated single-region defects is CIS-like, and truncated CI on $N$ independent fragments captures a correlation energy proportional to $\sqrt N$. A polynomial-rank translation projection is a finite-size restoration.
+#### Independent premise checks and the cheapest valid T2 (replaces the pre-planned T2 subsection)
+* **T1-pre (no job, at most 10 CPU-minutes, now)**: add `pcg-scal` (per-amplitude $P_S$ by Gauss–Legendre in $\beta$ with $\lceil N_e/2\rceil+1$ nodes; the Route 3 closed form is optional), `r1` and `che_loc` to `vmc.py`. Smoke on $4\times2$: amplitudes against the full-vector $P_S$ references, the $E_{\mathrm{loc}}$ identity, exact against per-sample gradient, and $\lvert\langle\hat S^2\rangle\rvert\le10^{-12}$. Time one step at $N=12$, 24 and 48 with $P_G$. Pre-registered cost kill for R2: KILL (Gate 4, cost) if $t_{\mathrm{step}}(\texttt{pcg-scal})/t_{\mathrm{step}}(\texttt{che})>5$ at $N=48$, since the equal-wall-time foil would then get more than 60 times the steps of `pcg-scal`.
+* **T2a for R2 (12 sites, at most 2 CPU-hours per task, 3 threads, one seed)**: open $4\times3$, $N_e=10$, $(+,+)$, ED reference $E(+,+)=-7.8278990$, 1000 SR steps with 1024 samples and the 686990 optimiser settings, $P_G$, exact final energy over all 627,264 configurations.
+  - Arms: `che` at $H=16$, which is exactly the pilot `logs/pilot/pg_che` ($\epsilon=2.9\times10^{-3}$; reuse it, do not rerun); `r1` (symmetric $F_c$, no $P_S$, parameter-matched to `che`); `pcg-scal` (parameter-matched); and the mVMC-like `foil` (no backflow) at native size.
+  - Rule, with $\rho=\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{che}}$: KILL if $\rho\ge1$, or if $\epsilon_{\mathrm{pcg}}\ge\epsilon_{\mathrm{r1}}$ (then $P_S$ and the triplet channel add nothing over a projection-free exact singlet, and R2 reduces to Tocchio). PASS if $\rho\le0.8$ and $\epsilon_{\mathrm{pcg}}\le0.8\,\epsilon_{\mathrm{r1}}$. AMBIGUOUS otherwise: run seed 1 on the same instance and apply the rule to the best of seeds. No early stop. A run over its cap is INCOMPLETE; the breach is recorded and the task is resubmitted at 2 threads.
+  - Next on PASS: T2b at 24 sites (`che`, `pcg-scal`, `nnbf` at equal wall time) under a written exception sized from the T1-pre timing.
+* **Premise W (the width bottleneck binds), shared by R3 and by the reading of every 686990 verdict**:
+  - W-12 (at most 2 CPU-hours per task): `che` at $H=4$, 8 and 32 on the same 12-site instance and protocol, with $H=16$ taken from the pilot. Output: the width $H^\ast(12)$ beyond which $\epsilon$ falls by less than 10% per doubling.
+  - W-24 (written exception: about 5 CPU-hours per task, 2 tasks): `che` at $H=16$ and $H=48$ at 24 sites, 1000 steps, 1024 samples, final energy from 65,536 samples. The energy difference needs no reference. Reason for the exception: the bottleneck is a statement about $H$ against $N$, and no 12-site run has $N$ well above a width that trains; 24 sites is the smallest size with $N/H\ge1.5$ at $H=16$.
+  - Rule: W HOLDS if $E(H=48)<E(H=16)$ at 24 sites beyond $2\sigma$ and the relative error reduction exceeds that of $H=32$ over $H=16$ at 12 sites. W FAILS otherwise. W HOLDS sends `che_loc` and $H=2N$ `che` at 24 sites to T2 against `che` at $H=16$, under the same exception. W FAILS marks R3 NO-TARGET up to 24 sites (it waits for the 48-site $H\propto N$ arms of the R1 tree), and the width caveat of objection 1 is withdrawn.
+* **Budget**: T2a adds 3 tasks of at most 2 CPU-hours each, W-12 adds 3 tasks of at most 1 CPU-hour, and W-24 adds 2 tasks of about 5 CPU-hours under the exception. All are independent of 686990 and of each other, and can be submitted together once T1-pre passes.
+#### Per-route verdicts
+* **R1 `che_kK`**: KEEP at T3 (IN-FLIGHT). The rule of 686990 is unchanged. The paper wording for each outcome is fixed by objection 1, and W is added to the decision tree as the attribution test.
+* **R2 `pcg-scal`**: ADVANCE to T1-pre, then T2a at 12 sites, now. Gate 0 PASS (narrow: mVMC $P_S$ times a learned Tocchio-type charge backflow); Gate 4 PASS on paper and decidable at 12 sites; the `r1` foil is mandatory.
+* **R3 `che_ext`**: ADVANCE to premise W now (W-12 under the cap, W-24 under the written exception). Variant (iii) added from R6.
+* **R4**: KILL upheld, with the reason restated (objection 9).
+* **R5**: KILL upheld.
+* **R6**: KILL overturned; MERGED into R3 as variant (iii).
+
+### Round 7 T2 pilots: pre-registration, pre-flight and sizing (2026-11-16)
+This section executes the round-7 ADVANCE verdicts for R2 (T1-pre, then T2a) and R3 (premise W). Every rule below was written before any production output existed, and no T2 job has been submitted. The code is in `tests/P4.1_cheap_su2_t2/` (`vmc_t2.py`, `t2_report.py`, `submit_t2a_w12.sbatch`, `submit_w24.sbatch`). `vmc_t2.py` imports the frozen `P4.1_cheap_su2_scaling/vmc.py` without modifying it, because job 686990 runs that file.
+#### Implementation (T1-pre)
+* **New arms** (Model subclass `DetModel`, parameter for parameter equal to `r2_micro_test.DetArm`):
+  - `pcg` (R2 `pcg-scal`): $P_GP_Se^{J(c)}\det f_c[U,D]$, with $f_c=B_1(c)f_0B_2(c)^{\mathsf T}$ and $B_a=\mathbb 1+\eta_a(c)$ on the $3\times3$ mask. The projection is per amplitude: $\langle x\rvert P_0\lvert\phi\rangle=\tfrac12\sum_qw_q\,\mathrm{Pf}\,X(u_q)$, by Gauss–Legendre in $u=\cos\beta$ with $\lceil(N_\uparrow+1)/2\rceil$ nodes. This is exact, because the integrand has degree at most $N_\uparrow$ in $u$. $X(u)$ is the $N_e\times N_e$ rotated pairing block matrix (see the docstring). The Pfaffian is a batched, differentiable Parlett–Reid elimination with pivoting.
+  - `r1` (the mandatory foil): $\det F_c[U,D]$ with $F_c=B(c)F_0B(c)^{\mathsf T}$ and $F_0$ symmetric. It is an exact singlet with no projection.
+  - `foil` (mVMC-like): $P_Se^{J(c)}\det f_0[U,D]$ with no backflow and 221 parameters. It is descriptive and does not gate.
+* **Parameter matching** at 12 sites, to the count closest to `che` at $H=16$ (2637), as in `build_arm`:
+  - `pcg`: $H=15$, 2696 parameters ($+2.2\%$).
+  - `r1`: $H=25$, 2596 parameters ($-1.6\%$).
+#### Pre-flight dry run (Stage 3.5.4)
+* **Smoke** (`logs/smoke_output.txt`, 449 s on 4 threads): **SMOKE PASS** on every check.
+  - Validity asserts: $N_\uparrow=N_\downarrow=5\le12$; the Fermi sea is closed-shell (gap 0.158); and every arm has fewer parameters than the $(+,+)$, $S=0$ dimension (about 42,000), which addresses round-7 minor objection 7.
+  - Amplitudes against numpy `DetArm` with full-vector $P_S$: at most $1.0\times10^{-15}$ on $4\times2$ and on $4\times3$. With $P_G$ $(1,1)$ on $4\times2$: at most $1.5\times10^{-16}$.
+  - The $E_{\mathrm{loc}}$ identity holds to $5\times10^{-16}$ or better. $\lvert\langle\hat S^2\rangle\rvert\le4.5\times10^{-17}$ for all three arms.
+  - **Exact-gradient check** of the new ansatz code (per-sample log-derivatives against the numpy `State` gradient, on $4\times2$, with and without $P_G$): at most $3.2\times10^{-15}$.
+  - Pfaffian unit checks: against $\det$ in block form, $8.9\times10^{-16}$; $\mathrm{Pf}^2$ against $\det$ for general antisymmetric matrices, $9.6\times10^{-16}$.
+  - Structural positive control: `pcg` with symmetric $f_0$ and $V_2=V_1$ equals `r1` ($1-\lvert\mathrm{overlap}\rvert=0$), because $P_S$ of an exact singlet is the state itself.
+  - Structural negative control: at generic parameters the projection changes the state ($1-\lvert\langle P_S\phi\vert\phi\rangle\rvert=0.48$ and 0.56).
+* **Toy pipeline** (`vmc_t2.py --mode pipeline`: $4\times2$, 40 steps, $P_G$; output in `logs/pipeline_output.txt` and `logs/preflight_output.txt`): **PREFLIGHT PASS**.
+  - The real toy files parse, and the rule prints a verdict (KILL on this toy, which is not evidence).
+  - Positive control (the `pcg` slot replaced by an exact state): PASS.
+  - Negative control (the `pcg` slot replaced by the `che` run itself, so $\rho=1$): KILL.
+  - Futility control (a real `pcg` run with a threshold below any $\epsilon$): the run stops at its checkpoint with `early_kill` set, and the rule returns KILL.
+  - W controls: replacing the $H=48$ slot by an exact state gives W HOLDS, and filling both slots with the same run gives W FAILS.
+  - Cap and resume (`logs/cap_resume_output.txt`): a run capped at step 11 resumes from its checkpoint when resubmitted and finishes uncapped at step 40.
+* **Logic check** (`t2_report.py --mode check`, `logs/check_output.txt`): **CHECK PASS 21/21**.
+  - 13 T2a scenarios: PASS, three KILL paths, KILL-COST, two AMBIGUOUS, best of seeds, AMBIGUOUS-FINAL, NO-TARGET, two INCOMPLETE and INVALID.
+  - 8 W scenarios: HOLDS, three FAILS paths, PENDING-REFERENCE, NO-TARGET and two INCOMPLETE.
+* **Reference check**: the 12-site reference is the ED value $E(+,+)=-7.8278990$, in the same sector as the arms (checked against DMRG in Amendment 2).
+#### Measured per-step cost
+Measured on this node with 4 threads, $P_G$ and 32 chains, 7.7 CPU-minutes in total:
+
+| sites | `che` $H=16$ (s/step) | `pcg` / `che` | `r1` / `che` | `che` $H=48$ / $H=16$ |
+| :--- | :--- | :--- | :--- | :--- |
+| 12 | 0.074 | 2.06 | 0.80 | — |
+| 24 | 0.266 | 4.19 | 0.57 | 0.79 |
+| 48 | 1.64 | 30.5 | 1.09 | — |
+
+* Logs: `logs/timing_L48_output.txt` and `logs/timing_L12_24_output.txt`. The node was loaded (load average about 37), so the 32-chain values are good to roughly 30%.
+* **The 48-site ratio is set by the implementation.**
+  - Microbenchmark (`logs/pfaffian_microbench.txt`, 11,264 matrices): the torch Parlett–Reid Pfaffian of $40\times40$ matrices takes 1.48 s. A LAPACK determinant of the same size takes 0.072 s, and the $20\times20$ determinants that `che` uses take 0.041 s.
+  - The Python-level elimination is therefore about 20 times slower than a compiled one. An optimised Pfaffian costs about half of $\det_{40}$, so the method's own floor at 48 sites is about 1–2 times `che` per quadrature node, plus the $\mathcal O(L^3)$ product $B_1f_0B_2^{\mathsf T}$.
+* **Ruling on the round-7 cost kill** (KILL if the ratio exceeds 5 at 48 sites).
+  - Read strictly, the measured 30.5 is KILL-COST. But the rule was written to price the method, and the microbenchmark shows that 30.5 prices this Python Pfaffian instead.
+  - The cost gate is therefore **not applied now**. It moves, unchanged (threshold 5 at 48 sites), to a re-timing with a compiled Pfaffian (pfapack or an equivalent C kernel), which must run before any 24-site T2b.
+  - T2a runs at 12 sites, where the measured ratio (2.1) is affordable and the accuracy question can be decided independently of cost. The 24-site ratio of 4.2 is flagged as a risk for the re-timing.
+  - The orchestrator may overrule this and apply the strict reading. In that case T2a tasks 0–2 are not submitted, and R2 becomes `KILLED(T1-pre, Gate 4 cost)`.
+#### T2a (R2 `pcg-scal`): pre-registered rule
+* **Instance and protocol**: open $4\times3$, $N_e=10$, $U=8$, $t'=-0.25$, $(+,+)$ via $P_G$, seed 0, with the protocol of the 12-site pilot:
+  - 1000 SR steps with 1024 chains, lr 0.05 with a cosine decay over the second half, a Polyak average of the last 250 steps, and 3 threads.
+  - The final energy is exact over all 627,264 configurations, so $\epsilon$ has no sampling noise. Exact checkpoint energies are recorded at steps 250, 500 and 750.
+* **Arms**: `pcg` (task 0), `r1` (task 1) and `foil` (task 2).
+  - `che` is the pilot `logs/pilot/pg_che` ($\epsilon_{\mathrm{che}}=2.858\times10^{-3}$), reused and not rerun, as round 7 requires.
+  - `che_k8` serves as a reference number only: $8.1\times10^{-4}$ in the VMC pilot, and a median of $1.35\times10^{-4}$ in 508440 (exact-gradient L-BFGS, 2000 iterations).
+* **Rule** (`t2_report.rule_t2a`), with $\rho=\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{che}}$:
+  - INVALID if any arm has $\lvert\langle\hat S^2\rangle\rvert>10^{-10}$.
+  - KILL-COST if the compiled-Pfaffian ratio exceeds 5 at 48 sites. This is checked first, once that timing exists.
+  - INCOMPLETE if `pcg` or `r1` is missing, or capped without an early kill.
+  - NO-TARGET if $\epsilon_{\mathrm{che}}<10^{-3}$.
+  - **KILL** if the futility stop fired, or $\rho\ge1$, or $\epsilon_{\mathrm{pcg}}\ge\epsilon_{\mathrm{r1}}$.
+  - **PASS** if $\rho\le0.8$ and $\epsilon_{\mathrm{pcg}}\le0.8\,\epsilon_{\mathrm{r1}}$.
+  - **AMBIGUOUS** otherwise. Then run seed 1 of `pcg` and `r1`, and apply the rule to the best seed of each arm. If the result is still ambiguous, the verdict is AMBIGUOUS-FINAL.
+* **Futility early stop** (in-job, `pcg` only): KILL if the exact $\epsilon$ of the current parameters exceeds $2.29\times10^{-2}=8\,\epsilon_{\mathrm{che}}$ at step 250, or $1.43\times10^{-2}=5\,\epsilon_{\mathrm{che}}$ at step 500.
+  - Derivation from the known 12-site trajectories (50-step window averages of the logged energies in `logs/pilot/`): the late improvement $\epsilon(n)/\epsilon(1000)$ is 2.3 for `che` and 4.0 for `che_k8` at step 250, and 1.4 and 2.5 at step 500. Each threshold is twice the larger value.
+  - A run stopped by the clause would therefore need more than twice the largest late gain seen in any 12-site trajectory just to reach $\rho=1$.
+  - `che_k8` is the slow starter the critic cited (single-step ratio 0.88 at step 250, 0.28 at the end). It sat at $\epsilon(250)\approx3.2\times10^{-3}$, seven times below the step-250 threshold, so the clause cannot fire on such a run.
+  - Early stops may kill but never promote (Stage 3.5.5). `r1` and `foil` have no early stop, because the rule needs them complete.
+* **Cap**:
+  - `r1`: 2 CPU-hours.
+  - `pcg` and `foil` use the Pfaffian path and cost 2.1 times `che` per step. The `che` pilot used about 1.0 CPU-hour, so each should need about 2.0–2.3 CPU-hours.
+  - **Written exception** for `pcg` and `foil`: 2.55 CPU-hours (`--max-hours 0.85` at 3 threads). Reason: the 1000-step protocol must match the reused `che` reference exactly, and fewer steps would bias $\rho$ against `pcg`.
+  - A capped task writes `capped = true` and resumes when resubmitted.
+#### Premise W (R3): pre-registered rule
+* **W-12** (tasks 3–5 of the same array, at most 2 CPU-hours each): `che` at $H=4$, 8 and 32 with the T2a protocol; $H=16$ is the pilot. The outputs are descriptive:
+  - $\epsilon(H)$ for each width;
+  - $H^\ast(12)$, the smallest ladder $H$ whose doubling lowers $\epsilon$ by less than 10%;
+  - $r_{12}=(\epsilon_{16}-\epsilon_{32})/\epsilon_{16}$.
+* **W-24** (`submit_w24.sbatch`, 2 tasks): `che` at $H=16$ and $H=48$ on the open $8\times3$ strip, $N_e=20$, $(+,+)$. Each runs 1000 steps with 1024 chains, and the final energy comes from 65,536 samples with chain-blocked errors.
+  - Written exception (round 7): about 5 CPU-hours per task, with a hard cap of 6 (`--max-hours 1.5` at 4 threads). The measured step ratio of 24 to 12 sites for `che` is 3.6, and $H=48$ costs the same as $H=16$ within noise, so each task should take 4–4.5 CPU-hours.
+  - The reason for the exception is unchanged: 24 sites is the smallest size with $N/H\ge1.5$ at $H=16$.
+* **Rule** (`t2_report.rule_w`), with $\sigma=\sqrt{\delta E_{16}^2+\delta E_{48}^2}$:
+  - INCOMPLETE if a run is missing or capped.
+  - **W FAILS** if $E_{48}\ge E_{16}-2\sigma$. This clause needs no reference.
+  - PENDING-REFERENCE if the first clause holds but there is no valid 24-site $(+,+)$ reference yet (job 687302, `scaling_report.select_ref`).
+  - NO-TARGET if $E_{16}-E_{\mathrm{ref}}\le2(\delta E_{16}+\sigma_{\mathrm{ref}})$.
+  - **W HOLDS** if $E_{48}<E_{16}-2\sigma$ and $r_{24}=(E_{16}-E_{48})/(E_{16}-E_{\mathrm{ref}})>r_{12}$. Otherwise, **W FAILS**.
+* **Early stop**: none. W is a premise measurement that needs both arms. Partial values are logged as they appear but never decide anything.
+* **R3 variants in scope, per the critic**:
+  - (ii) $H\propto N$ is in. The $H=48=2N$ arm of W-24 *is* variant (ii) at 24 sites, so a W HOLDS already carries its T2 number.
+  - (i) `che_loc` is in after W HOLDS, at 24 sites against `che` at $H=16$, under the same exception. It first needs a port of the `t1_scaling.py` arm into `vmc_t2.py`, and a smoke run.
+  - (iii), the hidden-fermion rational head merged from R6, is **not in this round**. It has no implementation and no T1 smoke, and the critic's W HOLDS action names only (i) and (ii). It enters T1 if W HOLDS.
+#### Decision tree (next action per verdict)
+* **T2a**:
+  - PASS: build a compiled Pfaffian and re-time at 12, 24 and 48 sites. If the ratio at 48 sites is at most 5, R2 goes to T2b at 24 sites (`che`, `pcg` and `nnbf` at equal wall time) under a written exception sized from that timing. If it is above 5, R2 is `KILLED(T2, Gate 4 cost)`.
+  - KILL: `KILLED(T2)` with an autopsy. If $\epsilon_{\mathrm{pcg}}\ge\epsilon_{\mathrm{r1}}$, the autopsy states that $P_S$ plus the triplet channel add nothing over a projection-free Tocchio singlet. Refill by Operation A.
+  - AMBIGUOUS: run `sbatch --export=ALL,SEED=1 --array=0-1 submit_t2a_w12.sbatch`, then report again.
+  - AMBIGUOUS-FINAL: no promotion; R2 is parked as undecided at 12 sites.
+  - INCOMPLETE: resubmit the same array index, which resumes from its checkpoint.
+  - INVALID: autopsy the projection and rerun the smoke.
+* **W**:
+  - HOLDS: port `che_loc`, smoke it, and run its 24-site T2. Variant (iii) enters T1. The round-7 width caveat stays on every 686990 reading.
+  - FAILS or NO-TARGET: R3 is NO-TARGET up to 24 sites and waits for the 48-site $H\propto N$ arms of the R1 tree. The width caveat of objection 1 is withdrawn up to 24 sites.
+  - PENDING-REFERENCE: report again when 687302 lands.
+  - INCOMPLETE: resubmit; the task resumes.
+#### Submission (prepared, not submitted; for the orchestrator)
+* T2a and W-12: `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/submit_t2a_w12.sbatch` (array 0–5). If the strict cost reading is applied, add `--array=3-5`.
+* W-24: `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2/submit_w24.sbatch`.
+* Aggregation (on the login node): `cd tests/P4.1_cheap_su2_t2 && python3 t2_report.py --mode report`.
+
+* **Orchestrator decision on the R2 cost gate (2026-11-16).** The pre-registered cost rule (kill if the `pcg`/`che` per-step cost exceeds 5 at 48 sites) is kept unchanged. The measured 30.5 used a Python Pfaffian about 20× slower than a compiled one, so it is not a valid measurement of the method. A compiled-Pfaffian re-timing applies the same rule before any 24-site R2 run. The ratio rising 2.06 → 4.19 from 12 to 24 sites is a warning that the re-timing may still kill R2. The 12-site T2a accuracy pilot runs now regardless, since its result is informative either way.
+* **Submitted:** job 698223 (`submit_t2a_w12.sbatch`, array 0–5: T2a and W-12) and job 698224 (`submit_w24.sbatch`, array 0–1: W-24). Report: `python3 t2_report.py --mode report` in `tests/P4.1_cheap_su2_t2/`. W needs the 24-site (+,+) reference from job 687302.
+
+### R2 compiled-Pfaffian re-timing (2026-11-16)
+This applies the unchanged pre-registered cost rule of the orchestrator decision above: KILL R2 if the per-step cost of `pcg` exceeds 5 times `che` at 48 sites. Code in `tests/P4.1_cheap_su2_pfretime/`: `pf_fast.py` (numba-compiled batched Parlett–Reid Pfaffian, same pivoting as `vmc_t2.slogpf`, parallel over the batch, analytic backward $\tfrac12X^{-\mathsf T}$) and `retime.py` (modes `verify`, `timing`). `retime.py` imports `vmc_t2.py` read-only and swaps only the Pfaffian inside its own process, so `DetModel`, $P_G$, Metropolis, $E_{\mathrm{loc}}$, log-derivatives and the SR solve are the T2a code path unchanged. numba 0.68.1 and pfapack 1.1.1 were added to `lit_env` (pip, no other package changed).
+* **Verification** (`logs/verify_output.txt`): VERIFY PASS.
+  - Random antisymmetric matrices ($m$ from 2 to 60): the compiled Pfaffian agrees with the torch one and with pfapack's C routine to at most $2.2\times10^{-12}$ relative. Against an exact 40-digit mpmath Pfaffian of the same matrices its worst error is $5.0\times10^{-13}$, no worse than torch ($5.3\times10^{-13}$) or pfapack.
+  - Actual R2 amplitudes (`pcg` with $P_G$ at 12, 24, 36 and 48 sites, 256 configurations, two initialisations): signs agree everywhere; the worst amplitude disagreement is $1.5\times10^{-11}$ (48 sites), above the $10^{-12}$ target. Recomputing the worst configurations with exact Pfaffians shows this is float64 cancellation shared by both: at that configuration the compiled path is closer to exact ($1.4\times10^{-12}$ against $1.6\times10^{-11}$ for torch), and the worst case overall is $2.9\times10^{-11}$ for compiled and $2.8\times10^{-11}$ for torch (36 sites), set by the quadrature and $P_G$ sums, not the Pfaffian.
+  - SR log-derivatives (12 and 24 sites, with $P_G$): at most $2.0\times10^{-13}$ relative to the torch autograd path.
+* **Timing** (`logs/timing_output.txt`, `results/retime_*_t4.json`): this node (kim-compute-03, load average about 40), 4 threads for torch and numba, $P_G$ $(1,1)$, 32 chains, the parameter-matched widths of the round-7 timing, one warm-up step excluded, then 5 steps alternating `che` and `pcg`; medians. About 7 CPU-minutes in total.
+
+| sites | $n_q$ | `che` $H=16$ (s/step) | `pcg` compiled Pf (s/step) | `pcg` / `che` | old torch Pf ratio (same run) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 12 | 3 | 0.066 | 0.083 | 1.25 | 2.01 |
+| 24 | 6 | 0.168 | 0.412 | 2.46 | 4.66 |
+| 36 | 8 | 0.437 | 1.366 | 3.12 | — |
+| 48 | 11 | 1.254 | 4.499 | **3.59** | (30.5, round 7) |
+
+* A second 48-site run (7 alternating repeats, `logs/timing_repeat48_output.txt`) gave 3.38. The spread of single steps is under 5%.
+* **Fitted slopes** in $N$ (log-log, 12 to 48 sites): `che` 2.05, `pcg` 2.82, ratio 0.77. The local ratio slope falls from 0.98 (12 to 24) to 0.59 (24 to 36) and 0.49 (36 to 48).
+* **Source of the growth: not an extra power of $N$.** Both arms evaluate $n_q=\lceil(N_\uparrow+1)/2\rceil\propto N$ quadrature nodes per amplitude, `che` with $N_\uparrow\times N_\uparrow$ determinants and `pcg` with $N_e\times N_e$ Pfaffians, so both amplitudes are $\mathcal O(n_qN^3)=\mathcal O(N^4)$. Per node the Pfaffian of size $N_e$ costs a fixed multiple of a determinant of size $N_e/2$: 8 in flops for this full-block elimination, 4 for one that updates only the upper triangle. The other `pcg` terms are lower order: $f_c=B_1f_0B_2^{\mathsf T}$ is $\mathcal O(N^3)$ per amplitude and the $X(u)$ assembly is $\mathcal O(n_qN^2)$. The rising ratio from 12 to 48 sites is these lower-order terms and fixed per-call overheads giving way to the shared $n_qN^3$ term; the ratio is bounded and tends to a constant (the flop model `flops.py`, `logs/flops_output.txt`, gives 5.9 at 48 sites and a limit of 8 for this kernel, 4 for a triangular one). The measured ratio is below the flop count because the batched small-matrix LAPACK calls of `che` run far from peak. At 48 sites (2048 configurations, no $P_G$) the `pcg` amplitude splits into $X(u)$ assembly 237 ms, compiled Pfaffian 117 ms and $f_c$ 74 ms, against 128 ms for the whole `che` amplitude. The largest `pcg` term is therefore torch gather overhead, which a fused kernel would remove.
+* **Verdict: KEEP (cost gate PASS).** The ratio at 48 sites is 3.59, at most 5. Per the decision tree, R2 goes to T2b at 24 sites if T2a (job 698223) passes; the T2b exception is sized from this table (`pcg` costs 2.5 times `che` per step at 24 sites). The bounded-ratio argument covers the method beyond 48 sites only up to the constant: with this kernel the ratio may exceed 5 at larger $N$, and a triangular-update Pfaffian (limit about 4) or the Route 3 closed form would then be needed.
+
+#### T2a and W-12 Result (job 698223, 2026-11-16)
+
+Report: `t2_report.py --mode report` (saved as `tests/P4.1_cheap_su2_t2/report_698223_output.txt`).
+
+* **T2a (R2 `pcg-scal`, 12 sites, exact sums): PASS.**
+
+| arm | $\epsilon$ |
+| :--- | :--- |
+| `che` (pilot reference) | $2.86\times10^{-3}$ |
+| `r1` (singlet charge-backflow foil) | $2.31\times10^{-3}$ |
+| `pcg` (R2) | $1.28\times10^{-3}$ |
+
+  $\rho=\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{che}}=0.449$ and $\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{r1}}=0.555$. The `pcg` checkpoints fall steadily: $2.80\times10^{-3}$ at step 250, $2.09\times10^{-3}$ at 500 and $1.59\times10^{-3}$ at 750, so the early-stop clause did not fire. The cost gate passed separately (ratio 3.59 at 48 sites, compiled Pfaffian).
+* **Context.** At 12 sites R2 is still above the rank-8 mixture `che_k8` (about $8\times10^{-4}$ in the scaling pilot). R2's case is extensivity: its gain should survive with $N$, where the fixed-rank gain is expected not to.
+* **W (R3 width premise): INCOMPLETE.** It needs W-24 (job 698224) and the 24-site $(+,+)$ reference from job 687302.
+* **Next (pre-planned):** R2 goes to T2b at 24 sites, with the budget exception sized from the re-timing (`pcg` costs 2.5 times `che` per step at 24 sites).
+
+### R2 T2b design (2026-11-16)
+This section pre-registers T2b for R2 `pcg-scal`, the next action of the T2a PASS (job 698223). Every rule, threshold and budget below was written before any T2b run existed; no T2b job has been submitted. Code in `tests/P4.1_cheap_su2_t2b/`:
+* `t2b.py` (modes `train`, `validate`, `gradcheck`, `pipeline`). It imports `vmc_t2.py`, the frozen `vmc.py`, `pf_fast.py` and `scaling_report.py` read-only. None of them is modified, because jobs 686990, 687302 and 698224 run them.
+* `t2b_report.py` (modes `check`, `report`, `preflight`), `tasks_t2b.txt` and `submit_t2b.sbatch`.
+#### Question and instance
+* **Question**: does R2's gain over `che` survive from 12 to 24 sites? At 12 sites $\rho=\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{che}}=0.449$. A fixed-rank mixture is expected to lose its gain with $N$ (R1, round-7 objection 1). R2's claim is the opposite: its gain comes from one size-consistent pairing Gaussian, so $\rho$ should stay flat.
+* **Instance**: the 24-site rung of the 686990 ladder. Open $8\times3$ strip, $N_e=20$ (filling $5/6$), $U=8$, $t'=-0.25$, irrep $(+,+)$ through $P_G$ $(1,1)$. The reference is the $(+,+)$ sector energy of job 687302 (`scaling_report.select_ref`, status OK).
+#### Arms and protocol
+* **Arms at 24 sites** (tasks 0–2):
+  - `pcg` (R2): $H=25$, 9788 parameters, with the compiled Pfaffian.
+  - `che` (foil): $H=16$, 9711 parameters.
+  - `r1` (mandatory foil): $H=44$, 9795 parameters.
+* **Baseline at 12 sites** (tasks 3–5): the same three arms on $4\times3$ ($H=15$, 16 and 25), with exact checkpoint and final energies.
+* **Protocol**: exactly that of job 686990. Each run takes 3000 SR steps with 1024 chains. The learning rate is 0.05, constant for the first half, then cosine-decayed to 10%. The parameters are averaged over the last 750 steps.
+  - At 24 sites the final energy comes from 262,144 samples, with error bars blocked over chains. At 12 sites it is exact.
+  - Checkpoint energies are taken at steps 750, 1500 and 2250 (25, 50 and 75%). At 24 sites each uses 32,768 samples on a separate chain set, so the training chains and their random stream are untouched. At 12 sites they are exact.
+* **Why 3000 steps, not the T2a 1000.**
+  - The T2a `pcg` checkpoints were still falling at step 750 ($2.80$, $2.09$ and $1.59\times10^{-3}$ at steps 250, 500 and 750, then $1.28\times10^{-3}$ final). At 24 sites the parameter count is 3.6 times larger.
+  - 3000 steps is the 686990 budget. So `che_k8` at 24 sites (686990 lines 16–17) is directly comparable. It is referenced, not rerun: `t2b_report.py --mode report` prints it as context once it exists.
+  - `che` at 24 sites (686990 lines 24–25) has the same protocol too. T2b still runs its own `che` (task 1), because 686990 is pending behind about 850 task-hours and R2 should not wait on it. The 686990 value is printed as a reproducibility check, and it does not gate.
+* **Change of the 12-site baseline (written reason, before running).** The rule compares $\rho(24)$ with $\rho(12)$ at the **same** step budget, so tasks 3–5 rerun the 12 sites at 3000 steps. The T2a value 0.449 was measured at 1000 steps while `pcg` was still falling. A difference against it would mix a size effect with a step-budget effect. The T2a value is printed as context and does not gate.
+#### Pre-registered rule (`t2b_report.rule_t2b`)
+* **Definitions** (best seed per arm):
+  - $\rho_{24}=(E_{\mathrm{pcg}}-E_{\mathrm{ref}})/(E_{\mathrm{che}}-E_{\mathrm{ref}})$ at 24 sites.
+  - $\sigma_\rho^2=[\delta E_{\mathrm{pcg}}^2+\rho_{24}^2\,\delta E_{\mathrm{che}}^2+(1-\rho_{24})^2\sigma_{\mathrm{ref}}^2]/(E_{\mathrm{che}}-E_{\mathrm{ref}})^2$. The reference is shared by both arms, so its error enters through $(1-\rho_{24})$.
+  - $\rho_{12}=\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{che}}$ at 12 sites (exact, 3000 steps).
+  - $d=E_{\mathrm{r1}}-E_{\mathrm{pcg}}$ at 24 sites, with $\sigma_d=\sqrt{\delta E_{\mathrm{r1}}^2+\delta E_{\mathrm{pcg}}^2}$.
+* **Order of evaluation**:
+  1. INVALID if a 12-site arm has $\lvert\langle\hat S^2\rangle\rvert>10^{-10}$.
+  2. KILL if the 24-site `pcg` run was stopped by the futility clause.
+  3. INCOMPLETE if `pcg`, `che` or `r1` at 24 sites is missing or capped.
+  4. KILL if $d\le0$: `pcg` does not beat `r1` at 24 sites. This clause needs no reference.
+  5. INCOMPLETE-REFERENCE if there is no valid 24-site $(+,+)$ reference (job 687302).
+  6. NO-TARGET if $E_{\mathrm{che}}-E_{\mathrm{ref}}\le2\sqrt{\delta E_{\mathrm{che}}^2+\sigma_{\mathrm{ref}}^2}$ (`che` saturated, so $\rho$ is undefined).
+  7. KILL if $\rho_{24}\ge0.85$.
+  8. INCOMPLETE if the 12-site `pcg` or `che` run is missing or capped.
+  9. **PASS** if $\rho_{24}+2\sigma_\rho\le0.60$, $(\rho_{24}-\rho_{12})+2\sigma_\rho\le0.15$ and $d>2\sigma_d$.
+  10. **AMBIGUOUS** otherwise. Then seed 1 of the three 24-site arms is run, and the rule is applied to the best seed of each arm. If the result is still ambiguous, the verdict is AMBIGUOUS-FINAL.
+* **Threshold changes against the orchestrator's draft, with reasons**:
+  - The PASS thresholds (0.60 and a rise of 0.15) and the KILL threshold (0.85) are unchanged. "Resolved at $2\sigma$" is read as one-sided for both PASS bounds: the bound must hold with $2\sigma_\rho$ added.
+  - KILL on $\rho_{24}\ge0.85$ uses the point estimate, as drafted.
+  - The `r1` clause is split. PASS needs $d>2\sigma_d$, and KILL needs only $d\le0$. This clause needs no reference, so it may be decided before 687302 lands.
+  - NO-TARGET is added. If `che` is not resolved from the reference, $\rho$ is undefined.
+  - $\rho_{12}$ is the 3000-step value; the reason is given above.
+* **Futility early stop** (in-job, `pcg` at 24 sites only).
+  - At step 750 (25%) or 1500 (50%), the job computes $\rho_{\mathrm{ck}}=(E_{\mathrm{pcg}}(t)-E_{\mathrm{ref}})/(E_{\mathrm{cmp}}-E_{\mathrm{ref}})$ from the sampled checkpoint energy. Here $E_{\mathrm{cmp}}$ is the finished 1000-step W-24 `che` run (job 698224 task 0, same instance and irrep).
+  - The job stops if $\rho_{\mathrm{ck}}-2\sigma>8$ at step 750, or $>5$ at step 1500.
+  - The multiples are those of T2a. Each is twice the largest late gain $\epsilon(t)/\epsilon(\mathrm{final})$ seen in any 12-site trajectory at that fraction of the run: 4.0 at 25% and 2.5 at 50%, both from `che_k8`, the slow starter. T2a `pcg` itself had 2.19 and 1.63.
+  - The comparator has had 1000 steps rather than 3000, so it overstates $\epsilon_{\mathrm{che}}$ and understates $\rho_{\mathrm{ck}}$. This makes the clause harder to fire.
+  - If the reference or the comparator is missing at that step, the clause is disarmed for that step. The pre-flight checks this behaviour.
+  - The clause can kill but never promote. `che` and `r1` have no early stop, because the rule needs them complete.
+#### Power sizing (Stage 3.5.5)
+* **Input**: the finished W-24 `che` run (job 698224 task 0: 24 sites, $H=16$, 1000 steps, this protocol).
+  - It gives $E=-16.43073\pm0.00477$ from 65,536 samples, so the effective error is $s=\delta E\sqrt n\approx1.22$ per sample, autocorrelation included.
+  - Against the $\chi=1000$ DMRG energy $-16.60459$ (clean $(+,+)$ characters; the extrapolated 687302 value will be slightly lower), $E_{\mathrm{che}}-E_{\mathrm{ref}}\approx0.174$, that is $\epsilon_{\mathrm{che}}(24)\approx1.05\times10^{-2}$ at 1000 steps. At 12 sites and the same budget it was $2.86\times10^{-3}$, so the 24-site target is large.
+* **$\rho_{24}$**: with 262,144 samples, $\delta E\approx0.0024$ per arm (the `pcg` variance can only be lower if its state is better). Take $E_{\mathrm{che}}-E_{\mathrm{ref}}\ge0.12$ after 3000 steps, $\rho_{24}\approx0.45$ and $\sigma_{\mathrm{ref}}\le10^{-3}$. Then $\sigma_\rho\le0.024$, and $2\sigma_\rho\le0.05$ is far below the 0.25 gap between the PASS bound (0.60) and the KILL bound (0.85). So the test is not expected to return AMBIGUOUS for lack of resolution.
+* **$d$ (the `r1` clause) sets the sample count.**
+  - If the 12-site gap carries over in relative terms ($\epsilon_{\mathrm{r1}}-\epsilon_{\mathrm{pcg}}=1.03\times10^{-3}$), then $d\approx0.017$ at 24 sites.
+  - With 65,536 samples, $\sigma_d\approx0.0067$ would resolve $d$ only at about $2.5\sigma$. With 262,144 samples, $\sigma_d\approx0.0034$, which gives about $5\sigma$.
+  - The final evaluation therefore uses 262,144 samples. This costs 0.8 h for `pcg`.
+* **Steps**: 3000, for the reasons above. The 12-site tasks show directly whether 1000 steps cut the `pcg` trend: compare $\epsilon_{\mathrm{pcg}}(12)$ at 3000 steps with $1.28\times10^{-3}$. The 24-site checkpoints at 25, 50 and 75% are reported as they appear and never promote.
+#### Budget (written exception)
+Measured on this node with 1024 chains, 4 threads and $P_G$ (`logs/timing1024_L24_output.txt`, `logs/timing_r1_L24_output.txt`). The 24-site seconds per step are: `che` 4.11 (the running W-24 job shows the same, 4.1), `pcg` 10.69 with the compiled Pfaffian (ratio 2.60, against 2.46 at 32 chains in the re-timing), and `r1` 1.95.
+
+| task | arm, size | train (h) | evaluations (h) | expected CPU-hours (4 threads) | `--max-hours` (training loop) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 0 | `pcg`, 24 | 8.9 | 1.2 | 40 | 12.0 |
+| 1 | `che`, 24 | 3.4 | 0.45 | 16 | 5.0 |
+| 2 | `r1`, 24 | 1.6 | 0.25 | 8 | 4.0 |
+| 3–5 | `pcg`, `che`, `r1`, 12 | about 1 each | under 0.05 | 3–5 each | 2.5 |
+
+* **Expected total: about 76 CPU-hours.** The hard caps sum to about 120 CPU-hours, including the final evaluations that run after a cap. The array time limit is 15 h. An AMBIGUOUS verdict adds seed 1 of tasks 0–2, about 64 CPU-hours.
+* **Exception for task 0** (about 40 CPU-hours, above the T3 cap of 24). The question is about 24 sites against 12, and 24 sites is the smallest rung above 12 on the 686990 ladder. A shorter run would bias $\rho$ against `pcg`, which converges more slowly than `che` per step. The cost per step is the method's own: the compiled-Pfaffian cost gate passed at 48 sites.
+* Tasks 1 and 2 are below the T3 cap, and tasks 3–5 are within about 2.5 times the T2 cap.
+#### Pre-flight dry run (Stage 3.5.4), local, about 8 CPU-minutes in total
+* **Validity asserts** (`t2b.py --mode validate`, `logs/validate_output.txt`): **VALIDATE PASS**.
+  - $N_e=20$ and 10 equal `vmc.default_ne`, and $N_\uparrow=N_\downarrow\le L$.
+  - The Fermi seas are closed-shell (gaps 0.108 and 0.158).
+  - The `pcg` and `r1` parameter counts are within 5% of `che` at $H=16$, at both sizes.
+  - The 24-site DMRG characters are $\langle\mathrm{Inv}\rangle=0.9999$ and $\langle M_y\rangle=0.9989$, so the arms' $(+,+)$ is the reference sector.
+  - The 24-site reference is PENDING (job 687302 has not run).
+  - The futility comparator was PENDING when the asserts ran. It has since landed: 698224 task 0, $E=-16.43073\pm0.00477$, uncapped (see Power sizing).
+* **Gradient check on a toy** (`t2b.py --mode gradcheck`, $4\times2$, with and without $P_G$; `logs/gradcheck_output.txt`): **GRADCHECK PASS**.
+  - With the compiled Pfaffian, the exact gradient from per-sample log-derivatives equals the numpy round-3 `State` gradient to at most $3.2\times10^{-15}$ relative, for `pcg` and `r1`.
+  - The `pcg` log-derivatives agree between the compiled and the torch Pfaffian to $5.9\times10^{-13}$.
+* **Toy pipeline** (`t2b.py --mode pipeline --iters 20`, $4\times2$ in $(+,+)$; `logs/pipeline_output.txt`): the three arms trained in a sampled "24-site slot" and an exact "12-site slot", then `t2b_report.py --mode preflight` (`logs/preflight_output.txt`): **PREFLIGHT PASS**.
+  - The real toy files parse, and the rule prints a verdict (KILL, $\rho=0.88$ on a 20-step toy, which is not evidence).
+  - Positive control (both `pcg` slots replaced by the exact state): PASS.
+  - Negative controls: the `pcg` slot replaced by `che` itself ($\rho=1$) gives KILL; replaced by `r1` itself ($d=0$) gives KILL.
+  - Futility control: a real `pcg` run with multiple $-1$ stops at its first checkpoint with `early_kill` set, and the rule returns KILL.
+  - Disarmed control: the same run with no reference available runs to the end, with the clause logged as disarmed. Its checkpoint and final energies equal those of the ordinary `pcg` toy run to all printed digits. So the futility logic changes nothing in a run unless it fires. The checkpoint energies use their own chain set and generator (seed $7000+s$), so they cannot perturb the training chains by construction.
+  - Missing reference with `pcg` below `r1`: INCOMPLETE-REFERENCE.
+* **Logic check** (`t2b_report.py --mode check`, `logs/check_output.txt`): **CHECK PASS 19/19**. It covers PASS, PASS by best of seeds, five KILL paths (rho, `r1` with and without a reference, futility, and KILL before a missing 12-site baseline), four AMBIGUOUS paths, AMBIGUOUS-FINAL, three INCOMPLETE paths, two INCOMPLETE-REFERENCE paths, NO-TARGET and INVALID.
+* **Reference check**: the 24-site reference is the $M_y=+1$ sector DMRG. Its method was checked against ED in the same sector at 12 sites in Amendment 2 ($7.6\times10^{-7}$ from ED).
+* **Array argument check**: every array line was parsed by `t2b.parse_args` through the sbatch script, and gives the intended tag, sample count, cap and futility.
+#### Decision tree (next action per verdict)
+* **PASS**: R2's gain is extensive from 12 to 24 sites. R2 goes to T3: a 12/24/48 ladder under the 686990 rule, with `nnbf_wall` as the D3 foil and 2 seeds per size, sized from the T2b spread. A 48-site `pcg` task is about 3.6 times `che` per step, so it needs a written exception, or the triangular-update Pfaffian (limit about 4 times) first.
+* **KILL** by $\rho_{24}\ge0.85$: `KILLED(T2b, finite-size gain)`. The autopsy records that the pairing channel's gain is a finite-size bonus, like the fixed-rank mixture. Refill the portfolio by Operation A.
+* **KILL** by $d\le0$: `KILLED(T2b, foil)`. At 24 sites, $P_S$ plus the triplet channel add nothing over the projection-free Tocchio singlet.
+* **KILL** by futility: as for $\rho_{24}\ge0.85$, with the checkpoint values in the autopsy.
+* **AMBIGUOUS**: `sbatch --export=ALL,SEED=1 --array=0-2 submit_t2b.sbatch`, then report again (best of seeds). AMBIGUOUS-FINAL parks R2 as undecided at 24 sites.
+* **INCOMPLETE**: resubmit the same array index; the task resumes from its checkpoint.
+* **INCOMPLETE-REFERENCE**: report again when 687302 lands. A KILL by $d\le0$ is already final without it.
+* **NO-TARGET**: `che` is at the reference within error at 24 sites, so there is nothing to beat. Move the question to 36 sites.
+* **INVALID**: autopsy the projection and rerun the smoke.
+#### Submission (prepared, not submitted; for the orchestrator)
+* T2b: `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/submit_t2b.sbatch` (array 0–5).
+* Aggregation (login node): `cd tests/P4.1_cheap_su2_t2b && python3 t2b_report.py --mode report`.
+
+* **W-24 (job 698224, 2026-11-16): INCOMPLETE.** Task 1 (`che`, $H=48$) hit its 1.5-hour wall cap at step 958 of 1000. Current energies: $E_{16}=-16.4307\pm0.0048$, $E_{48}=-16.4348\pm0.0048$ (gap 0.0040, inside $2\sigma$, so W leans toward FAIL: width does not bind at 24 sites). Per the pre-registered rule the verdict needs the completed run, so task 1 was resubmitted from its checkpoint as job 700568 (`sbatch --array=1 submit_w24.sbatch`). Scoring also needs the 24-site $(+,+)$ reference from job 687302.
+
+### R2 T2b equal-wall-time amendment (2026-11-16)
+This amendment answers Major 3 of the cross-node critic (master, 2026-11-16) and the anti-pattern "matched parameters at unequal cost per step". T2b (job 699824) compares `pcg` with `che` and `r1` at matched parameters and 3000 steps each. But `pcg` costs about 2.6 to 2.8 times `che` per step at 24 sites, so a PASS on that rule alone shows parameter efficiency, not a cheaper route to exact $S$. The P2.1 lesson applies: matched-parameter, fixed-step comparisons may kill but never promote in a cost-sensitive comparison.
+* **Written before any T2b result existed.** At writing, job 699824 tasks 0–3 were running (task 0 `pcg` at step 550, task 1 `che` at step 1600) and tasks 4–5 were pending. `results/t2b/` held only `_ckpt.npz` files, no result JSON, and nothing had been aggregated. The original rule, thresholds and job are unchanged, and no file that 699824 imports was edited.
+* **Code** (new files only, in `tests/P4.1_cheap_su2_t2b/`):
+  - `t2b_wall.py` is a thin wrapper. It imports `t2b.py` read-only and, inside its own process, appends `_wall` to the result tag. It then calls `t2b.main` unchanged. It refuses `--outdir results/t2b`, because `t2b_report.py` globs that folder and groups files by arm.
+  - `tasks_t2b_wall.txt` and `submit_t2b_wall.sbatch` (partition kim) write to `results/t2b_wall/`.
+  - `t2b_wall_report.py` (modes `check`, `report`, `preflight`) imports `t2b_report.py` read-only and applies the amended rule after the original one.
+  - `preflight_wall.sh` runs the toy dry run.
+#### Arms and step counts
+* The learning-rate schedule and the Polyak window are fractions of `--iters`. A run of $N$ steps is therefore the 3000-step protocol stretched to $N$ steps: constant learning rate for the first half, cosine decay to 10%, and an average over the last 25%. Seeds, chains, samples and instance are as in T2b. Checkpoints are at 25, 50 and 75%, the same wall times as the `pcg` checkpoints. There is no futility clause.
+* **Ratio $R$ (pre-registered).** $R$ is the larger of the paired same-node timing and the in-job timing of 699824, rounded up to 0.1. Rounding up gives the foil more time, so it can only make a PASS harder.
+
+| arm (array index) | size | $R$ source | $R$ | steps | role |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `che_wall` (0) | 24 | paired 2.60 (`logs/timing1024_L24_output.txt`); in-job 10.82 s for `pcg` against 3.91 s for `che` = 2.77 | 2.8 | 8400 | gating |
+| `che_wall` (1) | 12 | paired 1.65 (`logs/timing1024_L12_wall_output.txt`, 1024 chains, this session) | 1.7 | 5100 | context |
+| `r1_wall` (2, optional) | 24 | paired 10.69 / 1.95 = 5.49; in-job 10.82 / 2.09 = 5.18 | 5.5 | 16500 | context |
+
+#### Amended rule (`t2b_wall_report.rule_wall`)
+* The original T2b verdict $V_0$ (`t2b_report.rule_t2b`) is computed first. If $V_0$ is not PASS, it stands unchanged: KILL, AMBIGUOUS, INCOMPLETE, INCOMPLETE-REFERENCE, NO-TARGET and INVALID pass through.
+* If $V_0$ is PASS:
+  1. INCOMPLETE-WALL if `che_wall` at 24 sites is missing or capped. Resubmit index 0, which resumes.
+  2. INCOMPLETE-WALL if the realised ratio $R_{\mathrm{real}}$ exceeds $1.10\times2.8=3.08$. Here $R_{\mathrm{real}}$ is the seconds per step of `pcg` over that of `che`, both from the 699824 training trajectories at 24 sites, with intervals that contain a checkpoint excluded. In that case `che_wall` was given less time than `pcg`, so it is rerun at $\lceil3000R_{\mathrm{real}}/100\rceil\times100$ steps under the tag suffix `_wall2`.
+  3. **PASS** if $d_w=E_{\mathrm{che\_wall}}-E_{\mathrm{pcg}}>2\sigma_w$, where $\sigma_w=\sqrt{\delta E_{\mathrm{che\_wall}}^2+\delta E_{\mathrm{pcg}}^2}$ (best seed per arm, 24 sites, no reference needed). `pcg` then beats `che` at matched parameters and at equal wall time.
+  4. **PARAMETER-EFFICIENT-ONLY** otherwise. This is a scoped result: `pcg` is better per parameter and per step, not per CPU-hour. It is not a scaling PASS.
+* The original thresholds (0.60, a rise of 0.15, 0.85, and $d>2\sigma_d$) are unchanged.
+* Context lines that never gate: $\rho_{24}^{\mathrm{wall}}=(E_{\mathrm{pcg}}-E_{\mathrm{ref}})/(E_{\mathrm{che\_wall}}-E_{\mathrm{ref}})$; $\rho_{12}^{\mathrm{wall}}$ (exact, 12 sites); $E_{\mathrm{r1\_wall}}-E_{\mathrm{pcg}}$.
+* **Power.** With 262,144 samples per arm, $\delta E\approx0.0024$, so $2\sigma_w\approx0.0068$, that is $4\times10^{-4}$ in $\epsilon$ at 24 sites. This is small against the expected $\epsilon_{\mathrm{che}}(24)\approx10^{-2}$.
+#### Decision tree (amended branches)
+* **PASS**: as in the T2b decision tree (T3 ladder). The T3 design must keep an equal-wall `che` arm at every size.
+* **PARAMETER-EFFICIENT-ONLY**: R2 is recorded as `VERDICT(T2b, parameter-efficient only)`. It does not go to T3 as a cost-competitive method. The next step is cost, not accuracy: a triangular-update Pfaffian and a fused $X(u)$ kernel (the largest `pcg` term at 48 sites is torch gather overhead). Then rerun the equal-wall comparison at the new $R$ from the stored T2b result.
+* **INCOMPLETE-WALL**: resubmit index 0, or rerun `che_wall` at the new step count as stated.
+* **If T2b is AMBIGUOUS**: in addition to seed 1 of tasks 0–2 of T2b, run `sbatch --export=ALL,SEED=1 --array=0 submit_t2b_wall.sbatch`.
+#### Pre-flight dry run (Stage 3.5.4), local, about 5 CPU-minutes
+* **Array arguments** (`logs/wall_args_output.txt`): every line of `tasks_t2b_wall.txt` was parsed through the sbatch script itself (`WRAP=--print-only`), for seeds 0 and 1. Results:
+  - The tags end in `_wall`.
+  - The checkpoints fall at fractions 0.25, 0.5 and 0.75.
+  - The Polyak windows are steps 6301–8400, 3826–5100 and 12376–16500.
+  - The learning rate is 0.05 at the start and at mid-run, and 0.005 at the end.
+  - `--outdir results/t2b` is refused, and an empty tag suffix is refused.
+* **Toy runs** (`preflight_wall.sh`, $4\times2$, $N_e=6$, $(+,+)$; `logs/wall_toy_output.txt`; 2.8 CPU-minutes):
+  - Identity control: `t2b.py` and `t2b_wall.py` with the same arguments give bitwise-equal final energies, checkpoint energies and training energies, both exact and sampled. These also equal the T2b toy `che` files. So the wrapper changes only the tag.
+  - Toy `che_wall` (40 steps against the 20-step T2b toy runs): exact and sampled runs finished, with checkpoints at steps 10 and 20.
+  - Resume control: rerunning a finished task is skipped.
+* **Aggregation on the real toy files** (`t2b_wall_report.py --mode preflight`, `logs/wall_preflight_output.txt`): **PREFLIGHT PASS 8/8**.
+  - The two identity controls pass.
+  - On the real toy files the original KILL passes through.
+  - Positive control: `pcg` set to the exact state, with the real `che_wall` file, gives PASS ($d_w=3.1\sigma$).
+  - Negative controls: `che_wall` set to the exact state, or to the energy of `pcg`, gives PARAMETER-EFFICIENT-ONLY.
+  - A missing `che_wall` gives INCOMPLETE-WALL.
+  - The realised-ratio guard, computed from real toy trajectories, fires.
+* **Logic check** (`--mode check`, `logs/wall_check_output.txt`): **CHECK PASS 16/16**. It covers four PASS paths (including the ratio 3.05 just under the guard and the context-only 12-site and `r1_wall` inputs), three PARAMETER-EFFICIENT-ONLY paths (one by best of seeds), three INCOMPLETE-WALL paths (missing, capped, ratio 3.38) and six original verdicts passing through unchanged.
+* **Report on today's disk state** (`logs/wall_report_now_output.txt`): INCOMPLETE (24-site `pcg` missing), as expected.
+#### Budget (written exception)
+* **Task 0** (`che_wall`, 24 sites): 8400 steps at 3.9–4.1 s is 9.1–9.6 h. With the checkpoints and the final evaluation it comes to about 10.2 h, so about 41 CPU-hours. The cap is `--max-hours 14` (about 58 CPU-hours).
+  - This is above the T3 cap of 24 CPU-hours, by construction: the arm exists to match the wall time of T2b task 0 (about 40 CPU-hours, already excepted).
+* **Task 1** (12 sites): about 1 h, about 4.5 CPU-hours. The cap is 3 h.
+* **Task 2** (optional `r1_wall`): about 10 h, about 40 CPU-hours. The cap is 14 h.
+* **Default array 0–1**: about 45 CPU-hours expected, about 71 at the caps. With task 2: about 85 expected.
+#### Submission (prepared, not submitted; for the orchestrator)
+* Gating arm and 12-site context: `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/submit_t2b_wall.sbatch` (array 0–1). It can run at once, in parallel with 699824.
+* Optional `r1_wall`: the same command with `--array=2`.
+* Aggregation (login node): `cd tests/P4.1_cheap_su2_t2b && python3 t2b_wall_report.py --mode report`. It prints the original and the amended verdict.
+
+### Round 8: R3 variant (iii) and portfolio refill (2026-11-16)
+Stage 3.5 submit-and-switch work while 686990/687302 (R1), 699824 (R2 T2b) and 700568 (R3 W-24) run. No job was submitted or prepared. Code: `tests/P4.1_cheap_su2_hf/hf.py` (modes `smoke`, `t1`, `t1report`, `train`, `t2report`). It imports the frozen `vmc.py` and `vmc_t2.py` read-only and modifies neither. Local compute: 27.7 CPU-minutes in total on at most 4 threads (smoke 0.35; four T1 runs of 7.4, 7.3, 7.4 and 5.3).
+#### R3 variant (iii) `che_hf`: T0
+* **Mechanism**: per spin $s$, visible orbitals $P_s=[P_{a,s}\,\vert\,P_{b,s}]$ ($L\times(N_s+M)$) and $M$ hidden rows $[C_s(c)\,\vert\,D_s(c)]$, affine in the hidden vector $h(c)=\tanh(W_1^{\mathsf T}x(c)+b_1)$ of the charge configuration $c$. The Schur complement gives $\det D_s(c)\,\det\Phi^{\mathrm{eff}}_s(c)[R_s]$ with $\Phi^{\mathrm{eff}}_s(c)=P_{a,s}-P_{b,s}D_s(c)^{-1}C_s(c)$, which is rational in $h$. Then $\psi=P_GP_S\,e^{J(c)}\det D_\uparrow\det D_\downarrow\det\Phi^{\mathrm{eff}}_\uparrow[U]\det\Phi^{\mathrm{eff}}_\downarrow[D]$, and $P_S$ is the closed-form Che quadrature of `che`, because every factor except the two $\Phi^{\mathrm{eff}}$ determinants depends on $c$ only. Default $M=N_s$, with $H$ matched to the parameter count of `che`.
+* **Gate 0** (WebSearch: "hidden fermion determinant state spin SU(2) symmetry projection Hubbard"; "hidden fermion neural quantum state spin-symmetric total spin conserving 2025 Hubbard doped"): HFDS (Robledo Moreno et al., arXiv:2111.10420) projects onto spatial symmetries only, and its hidden network reads spins. Gutzwiller-projected HFDS for $t$–$J$ (arXiv:2411.10430) and the SU(3) Hubbard work (PRL, DOI 10.1103/x68w-lwvv) symmetrise over flavour permutations, a finite sum, not exact SU(2). No exact-$S$ HFDS was found. **PASS (narrow)**: the residue is a charge-only hidden network, which makes the per-$c$ state one Gaussian, so it can be projected exactly.
+* **Gates 1–3**: PASS. Exact $S$ for every $\theta$ (smoke below). The cost per amplitude is $\mathcal O(M^3+LMN_s)$ for the head plus the `che` projection, which is $\mathcal O(N^3)$ per node at $M\propto N$. There is no lattice or filling assumption.
+* **Gate 4** (capacity, the reason for the variant): with an affine readout, $\Phi(c)-P_0$ spans at most $H$ dimensions (round-7 objection 1 (c)). The entries of $D^{-1}C$ are rational of degree up to $M$ in the $H$ components of $h$, so their linear span can reach $\binom{H+M}{M}$ dimensions, which escapes the affine bound at fixed $H$. The per-$c$ ceiling is still one projected UHF, as for R3 (i) and (ii), and an extensive gain needs premise W. **T0: PASS on paper**, conditional on W (leaning FAIL at 24 sites).
+#### R3 variant (iii): T1 pre-registration, pre-flight and result
+* **Why not at 12 sites**: an exact-gradient iteration at $4\times3$ costs about 7 s on 16 cores (job 508440), and a 12-site VMC arm costs about 1 CPU-hour. Neither fits the 10-CPU-minute local cap. The T1 is therefore a mechanism test at the largest exact-sum toy where width binds. It is not a Gate 4 trend, because the round-6 anti-pattern rules those out below about 16 sites.
+* **Instance and protocol**: open $5\times2$ strip, $N_e=8$, $U=8$, $t'=-0.25$, $(+,+)$ via $P_G$, ED $E_0=-6.5490569$ (rechecked in the smoke). Exact energy and exact gradient over all 44,100 configurations, scipy L-BFGS (`r2_micro_test.optimise`), seed 0, 2 threads, cap 7 CPU-minutes (5 for `r1`).
+* **Arms**: `che` at $H=4$ (620 parameters); `che_hf` with $M=4$ and $H=4$ (620); `r1` parameter-matched ($H=6$, 594); `che8`, i.e. `che` at $H=8$ (1024), the width-binding control. `pcg` is reference only (round-6 T1: $7.4\times10^{-4}$ at 300 iterations, numpy implementation).
+* **Rule** (`hf.t1_rule`, written before any `t1` output; $\epsilon_X=(E_X-E_0)/\lvert E_0\rvert$):
+  - INVALID if any $\lvert\langle\hat S^2\rangle\rvert>10^{-10}$.
+  - NO-TARGET if $\epsilon_{\mathrm{che8}}>0.8\,\epsilon_{\mathrm{che}}$: width does not bind, so the head has nothing to relieve.
+  - KILL if $\epsilon_{\mathrm{hf}}\ge\epsilon_{\mathrm{che}}$ or $\epsilon_{\mathrm{hf}}\ge\epsilon_{\mathrm{r1}}$.
+  - PASS if $\epsilon_{\mathrm{hf}}\le0.8\,\epsilon_{\mathrm{che}}$ and $\epsilon_{\mathrm{hf}}<\epsilon_{\mathrm{r1}}$. AMBIGUOUS otherwise.
+* **Amendment 1** (made when the `che_hf` log showed only its iteration-50 value, $-6.52719$ against $-6.52803$ for `che`): the cap stops every arm before 300 iterations, and `che_hf` costs about 1.6 times `che` per iteration. Every arm is therefore compared at the largest common logged iteration, as in the round-6 T1, and the result is INCOMPLETE if that iteration is below 100. The original text ("INCOMPLETE if capped before 150 iterations") would have returned INCOMPLETE. The equal-CPU reading (final values) is reported beside it.
+* **Smoke** (`logs/smoke_output.txt`, 9 s): **SMOKE PASS**.
+  - The closed-form projected `che_hf` vector equals the full-vector $P_S$ of its unprojected vector to $2.2\times10^{-16}$ ($4\times2$).
+  - The Schur identity holds against the augmented $(N_s+M)$ determinant to $5.4\times10^{-16}$, and $\lvert\langle\hat S^2\rangle\rvert=9.2\times10^{-19}$.
+  - The exact-sum gradient agrees with central finite differences to $8.5\times10^{-10}$, with $P_G$.
+  - Positive control: `che_hf` with $P_b=0$ and $W_2=0$ equals `che` with $P_0=P_a$ (overlap defect $0$). Negative control: the projection changes a generic state (defect 0.185).
+  - Validity: closed shells, and parameter counts below the $(+,+)$, $S=0$ dimension at both $5\times2$ and $4\times3$.
+* **Result** (`logs/t1_report_output.txt`; runs in `results/`, logs `logs/t1_*.out`). Every $\lvert\langle\hat S^2\rangle\rvert\le3.4\times10^{-17}$.
+
+| arm | $P$ | $\epsilon$ at iteration 100 | final $\epsilon$ (iterations, CPU-minutes) |
+| :--- | :--- | :--- | :--- |
+| `che` $H=4$ | 620 | $1.12\times10^{-3}$ | $7.10\times10^{-4}$ (219, 7.4) |
+| `che_hf` $M=4$, $H=4$ | 620 | $1.76\times10^{-3}$ | $1.51\times10^{-3}$ (131, 7.3) |
+| `r1` $H=6$ | 594 | $3.27\times10^{-3}$ | $2.34\times10^{-3}$ (161, 5.3) |
+| `che8` $H=8$ | 1024 | $5.42\times10^{-4}$ | $2.48\times10^{-4}$ (215, 7.4) |
+
+* **Verdict (pre-registered, amended)**: **KILL**. Width binds on this toy ($\epsilon_{\mathrm{che8}}/\epsilon_{\mathrm{che}}=0.48$ at iteration 100), so there is a target. But the rational head at the same 620 parameters is worse than the affine head: $\rho_{\mathrm{hf}}=1.57$ at equal iterations and 2.13 at equal CPU. The verdict is the same under the original and the amended rule, at either reading.
+* **Scope**: one seed, at most 219 iterations, one toy. The kill says that at matched parameters, trading affine output weights for hidden rows costs more than the rational lift returns. It does not say that a rational head appended to a full-width affine head could not help. That variant has more parameters, and its question is W itself, which W-24 answers first.
+* **No T2 was prepared**: the 12-site T2 rule (`hf.t2_rule`, checked on 6 synthetic cases in the smoke) is kept in the code for the record.
+#### Portfolio refill (Operations A and B, 2026-11-16)
+The aim was to reach 3 non-in-flight routes. Each candidate below went through the five gates. All failed, at T0 or with variant (iii).
+* **R7 `pcg_tr`** (Operation A on R1's finite-size gain and on R3 (i)): size-independent parameters (a translation-invariant pairing $g(x_j-x_i,y_i,y_j)$, a local charge backflow and a translation-invariant Jastrow), trained at 12 sites and transferred zero-shot to 24 sites. **KILLED (T0, Gate 0)**: it re-treads the closed leaf P4.2. There, the transferred residual geminal lost to a fresh mean-field foil ($M=1.30$), and "no size-independent component helps on 4x3". The only new element, exact $P_S$, is $\mathcal O(1)$ and does not change that verdict. A WebSearch on transferable lattice-fermion NQS found only continuum work (Gerard et al., arXiv:2405.07599), already priced in P4.2.
+* **R8 `pcg_hf`** (Operation A of (iii) onto R2's frame): $f_c=f_0+P_{b,\uparrow}D(c)^{-1}P_{b,\downarrow}^{\mathsf T}$, with exact $S$ by the same per-$c$ argument. T0 passes on paper. **KILLED (T1, shared premise)**: its mechanism is the rational lift, which the (iii) T1 falsified at matched parameters (Stage 3.5.1: a shared premise is tested once).
+* **R9 R2 with translation projection on cylinders** (orchestrator suggestion). **KILLED (T0, Gate 4)**: a projection with a polynomial number of elements restores a symmetry and gains $\mathcal O(1)$ (the R5 argument, upheld by the round-7 critic). Translation parameter sharing as a transfer device is R7.
+* **R10 R2 with a size-extensive Jastrow** (orchestrator suggestion). R2 already carries an all-pairs charge Jastrow, which is size-extensive. A diagonal spin Jastrow $e^{\sum v_{ij}S^z_iS^z_j}$ makes the per-$c$ state non-Gaussian, and exact $P_S$ then needs a Hubbard–Stratonovich sum over $2^{\#\mathrm{bonds}}$ fields. **KILLED (T0, Gate 1)**. A charge-only neural Jastrow keeps exactness but is an R2 variant with a Gate 0 risk (RBM+PP with quantum-number projection, Nomura et al., arXiv:1709.06475; whether its RBM is charge-only was not verified). It is not a separate route.
+* **R11 valence-bond amplitude-product states with mobile holes** (Operation B.1, a valence-bond frame: exact $S=0$ and product-form extensivity). **KILLED (T0, Gate 3)**: the overlap-weighted VB estimator is sign-free only for Marshall-positive amplitudes, i.e. bipartite and undoped. With $t'\ne0$ and holes the weights $\langle V_a\vert V_b\rangle\psi_a\psi_b$ change sign.
+* **R12 one Lanczos step on an exact-$S$ state**, $(1+\alpha\hat H)P_S\phi$, which commutes with $\hat S$. **KILLED (T0, Gate 4)**: the energy gain per site of a fixed number of Lanczos steps vanishes as $N\to\infty$ (the standard VMC+Lanczos result, Sorella; Becca and Sorella's textbook). It stays useful only for variance extrapolation.
+* **R13 SU(2)-invariant plaquette correlators** $\prod_p(1+v_p\hat P_p)$ with exchange operators $\hat P_p$ (Operation B.3, from entangled-plaquette states). **KILLED (T0, Gate 1)**: the operators are non-diagonal, so one amplitude sums over $\mathcal O(c^{N/4})$ configurations. The diagonal (Changlani-type) correlators break $S$ by the commutant lemma.
+* **R14 Shiba-dual frame** (Operation B.1): under the down-spin particle–hole map, spin SU(2) becomes $\eta$-pseudospin, and an exact-$\eta$ determinant is a number-projected BCS state. **KILLED (T0, Gate 0)**: the map sends the `che` class into a subclass of R2's pairing frame, so it adds no function class.
+* **Portfolio after the refill**: three live routes (R1, R2, R3 (i)/(ii)), all IN-FLIGHT. No non-in-flight route survived. Per Stage 3.5.3, step 5, the leaf now waits on notifications.
+* **Seed for the next refill (not gated)**: the T1 table and W-24 together point at optimisation, not capacity, as the 24-site limiter. W-24 gives $\epsilon_{\mathrm{che}}(24)\approx1.05\times10^{-2}$ at 1000 steps whether $H=16$ or 48, while width binds at 5×2 and at 12 sites. A route that changes the optimiser for exact-$S$ Gaussians (natural-orbital SR, or a per-$c$ Gaussian reparametrisation with better-conditioned $S$) is the next Operation-A seed, once T2b and W-24 land.
+#### Anti-patterns added (round 8)
+* At matched parameter count, a rational (hidden-fermion) head under the same charge-only input loses to the affine backflow head. The capacity lift on paper ($\binom{H+M}{M}$) does not pay for the output weights it takes from the affine head.
+* A worker CPU cap that is too small to reach the pre-registered iteration count forces an amendment. Size the cap from a measured per-iteration cost of the slowest arm before writing the rule.
+
+### Round 9: optimisation seed R15 (2026-11-16)
+Stage 3.5.3 idle-time work (thinking queue: gate the ungated round-8 seed) while 686990/687302 (R1), 699824 and 703587 (R2 T2b) and 700568 (R3 W-24) run. No job was submitted. Code in `tests/P4.1_cheap_su2_opt/` (new files only): `t0_evidence.py`, `t1_spring.py`, `t2_samples.py`, `submit_t2_samples.sbatch`. They import `vmc.py` and `vmc_t2.py` read-only; no file imported by a running job was edited. Local compute: about 13 CPU-minutes on at most 4 threads (T1 8.5, timings 4.0, pre-flight 0.5).
+#### Seed and T0 evidence (`logs/t0_evidence_output.txt`)
+* **Seed** (round 8): "at 24 sites the limit is optimisation, not capacity". Below, $E(t)$ is the sampled energy of the current parameters (1024 samples, logged every 10 steps), averaged in 250-step blocks; slopes are least-squares fits in energy per 1000 steps; $\epsilon$ uses the $\chi=1000$ DMRG energy $-16.60459$.
+* **W-24 width insensitivity is confounded by the sample count.** At 12 sites, widening `che` from $H=16$ to 32 lowered $\epsilon$ from $2.86\times10^{-3}$ to $1.35\times10^{-3}$ (W-12), which is $\Delta E\approx0.025$ if it carried over per site to 24 sites. W-24 measured $E_{16}-E_{48}=0.0040\pm0.0068$, about $3\sigma$ below that. But the samples per parameter per step, $N_s/P$, are $1024/2637=0.39$ at 12 sites, $0.105$ for $H=16$ at 24 sites and $0.038$ for $H=48$. The wider arm is the more sample-starved one, so W-24 cannot separate "width does not bind" from "the wider net cannot be trained at 1024 samples".
+* **Trajectories at 24 sites end on a noise floor, not on a slow descent.**
+  - `che` $H=16$, 3000-step T2b run (job 699824 task 1, running, step 2000): block means at constant learning rate 0.05 are $-16.374$, $-16.390$, $-16.400$ and $-16.395$ (steps 500–1500, errors about 0.008). The slope over steps 1250–1500 is $-0.13\pm0.10$, unresolved. The checkpoint energies (32,768 samples) are $-16.3938\pm0.0087$ at step 750 and $-16.4028\pm0.0070$ at step 1500, a change of $-0.009\pm0.011$.
+  - The energy drops only when the learning rate decays: $-16.412$ and $-16.428$ in the blocks ending at steps 1750 and 2000. W-24 (1000 steps) shows the same: slope $-0.43\pm0.11$ at the end of its constant phase, then about $-0.04$ in energy during the decay, and a Polyak average of $-16.4307$.
+  - A floor that the decay and the average remove is the signature of an SR step whose sampling noise, not the curvature of the energy landscape, sets the stationary energy. Its height here is about 0.03–0.04 in energy ($2\times10^{-3}$ in $\epsilon$), against $\epsilon_{\mathrm{che}}(24)=1.05\times10^{-2}$.
+  - 12-site contrast: the `che` pilot ends flat (slope $-0.002\pm0.042$) at $N_s/P=0.39$, while `pcg` at 12 sites is still falling at 3000 steps (exact $\epsilon=1.77$, 1.36 and $1.05\times10^{-3}$ at steps 750, 1500 and 2250).
+* **Protocol confound found at T0.** Job 686990 uses 1024 samples at every size, so $N_s/P$ for `che` falls as 0.39, 0.105, 0.048 and 0.027 at 12, 24, 36 and 48 sites. If the floor scales like $P/N_s$, part of the rise of $\epsilon$ with $N$ in every ladder (R1, and R2 T2b at 24 sites) comes from the protocol, not the ansatz. This is recorded before any 686990 output exists; it changes no pre-registered rule.
+* **T0 verdict**: the seed survives in a sharper form: "the 24-site `che` energy sits on the SR noise floor of a sample-starved protocol". Capacity is not excluded, because the floor (about $2\times10^{-3}$ in $\epsilon$) is only part of the $1.05\times10^{-2}$.
+#### Mechanism-level routes and Gate 0 (WebSearch, 2026-11-16)
+* Queries: "SPRING Kaczmarz momentum minSR neural network wavefunction optimization Goldshlager"; "Rende simple linear algebra identity minSR stochastic reconfiguration large-scale neural quantum states"; "linear method neural network quantum states optimization Hubbard fermions variance noise floor sample size stochastic reconfiguration"; "neural quantum state transfer learning warm start smaller lattice initialization larger system Hubbard tiling".
+* Findings:
+  - The sample-space SR in `vmc.Run.step` is already minSR, the push-through form of Chen and Heyl and of Rende et al. (arXiv:2310.05715). "Use minSR" is therefore no change.
+  - SPRING (Goldshlager, Abrahamsen and Lin, arXiv:2401.10190, J. Comput. Phys. 516 (2024)) adds a Kaczmarz momentum to minSR at no extra cost, and beat minSR and KFAC on small molecules.
+  - The linear method for NQS (Frank and Kastoryano, arXiv:2104.11011) was shown on spin chains only.
+  - Warm starts by transfer exist for spins and $t$–$J$ (arXiv:1908.09883, arXiv:2204.07816) and as curriculum learning for Hubbard (arXiv:2505.00233), always with size-independent (convolutional) weights.
+* **R15 `spring`**: SPRING on the unchanged exact-$S$ arms. Gate 0 PASS (narrow): a known optimiser, not yet applied to exact-$S$ fermionic NQS. The claim is about the leaf's limiter, not about a new optimiser.
+* **R15b `ns-rich`**: trade steps for samples at equal wall time. Gate 0 FAIL as a method (a standard hyperparameter), so it can carry no paper claim. It is kept as **protocol premise O**, because it decides how every 24-site comparison of the leaf may be read, the role premise W had for R3.
+* **R15c warm start by tiling the 12-site state**: KILLED (T0). `che` has a global MLP whose input and output sizes depend on $N$, so there is nothing to tile. Transferring size-independent pieces is the closed P4.2 diagnostic (R7). And the T0 data put the deficit in the late floor, which a warm start does not touch.
+* **R15d linear method**: KILLED (T0). It needs $\partial E_{\mathrm{loc}}/\partial\theta$ per sample, about 2–3 times the local-energy cost, which is already 80% of a step. It is also least stable in the sample-starved regime that T0 found.
+#### Gates 1–4 for R15 and R15b
+* **Gate 1**: PASS. Only the parameter update changes; exact $S$ holds for every $\theta$.
+* **Gate 2**: PASS by design. The foil is the same ansatz with the baseline optimiser (the 686990 SR) at equal wall time. For R15 the trivial variance-reduction foil (more samples, fewer steps) is a second, mandatory foil, so SPRING cannot pass by beating a mistuned baseline.
+* **Gate 3**: PASS. No lattice, filling or sign assumption.
+* **Gate 4**: SPRING adds one product $\bar O\phi$ per step, $\mathcal O(N_sP)$, negligible next to the local energy, so the cost class is unchanged. R15b keeps the cost per amplitude at $\mathcal O(N^3)$ per quadrature node. But if the floor needs a fixed $N_s/P$, then $N_s\propto P\propto N^2$, and the cost per step grows by a further factor $N^2$. That is still polynomial, but it is a real scaling cost and must be stated with any result.
+#### R15 T1 (`t1_spring.py`, `logs/t1_all_output.txt`)
+* **Instance**: open $5\times2$ strip, $N_e=8$, $U=8$, $t'=-0.25$, $(+,+)$ via $P_G$, ED $E_0=-6.5490569$. `che` at $H=4$ has $P=620$, so $N_s=64$ gives $N_s/P=0.103$, the 24-site ratio. Exact-gradient L-BFGS reaches $\epsilon=7.1\times10^{-4}$ on this ansatz (round 8), so the toy runs in the optimisation-limited regime by construction. It is a mechanism test, not a Gate 4 trend.
+* **Arms** (seeds 0–2; 686990 schedule; 250 steps; exact energy of the Polyak average):
+  - `base`: minSR, $N_s=64$.
+  - `spring`: $\mu=0.9$, $\lambda=10^{-3}$, $N_s=64$.
+  - `base4`: $N_s=256$ at equal wall time.
+  - `ctrl`: $N_s=256$ for 250 steps, the positive control "noise binds".
+* **Rule** (docstring, before any run):
+  - KILL if $e_{\mathrm{spring}}\ge e_{\mathrm{base}}-2s$ or $e_{\mathrm{spring}}\ge e_{\mathrm{base4}}$.
+  - PASS if $e_{\mathrm{spring}}\le0.8\,e_{\mathrm{base}}$ and $e_{\mathrm{spring}}<e_{\mathrm{base4}}-2s$.
+  - NO-TARGET if `ctrl` does not beat `base` by $2s$.
+  - INCOMPLETE-WALL if `spring` took more than 1.15 times the wall time of `base`.
+  - Logic check: `logs/check_output.txt`, CHECK PASS 8/8.
+* **Amendment A1** (before any run): the draft gave `base4` $T/4$ steps. The timing mode measured 0.0708 s per step at $N_s=64$ and 0.1218 s at 256 (`logs/timing_output.txt`), so `base4` gets $0.58\,T$ steps for equal wall time. $T$ was cut from 400 to 250 to fit the 10-CPU-minute cap.
+
+| arm | mean $\epsilon$ (3 seeds) | per seed | mean wall (s) |
+| :--- | :--- | :--- | :--- |
+| `base` | $6.85\times10^{-3}\pm2.3\times10^{-4}$ | 7.30, 6.67, $6.59\times10^{-3}$ | 15.6 |
+| `spring` | $1.83\times10^{-2}\pm1.3\times10^{-3}$ | 1.68, 1.72, $2.09\times10^{-2}$ | 15.1 |
+| `base4` (equal wall) | $4.22\times10^{-3}\pm5.7\times10^{-4}$ | 4.47, 3.13, $5.07\times10^{-3}$ | 16.1 |
+| `ctrl` (4 times the compute) | $3.13\times10^{-3}\pm5.0\times10^{-4}$ | 2.66, 2.61, $4.13\times10^{-3}$ | 26.9 |
+
+* **Verdict (pre-registered)**: **R15 KILL**. At equal wall time SPRING is 2.67 times worse than minSR, and its constant-phase energies were worse too ($\epsilon\approx0.04$–0.05 at step 125, against about 0.010). The premise holds (`ctrl` is far below `base`), so this is a real kill, not NO-TARGET.
+* **Scope**: one $\mu$, no tuning, one toy. Momentum carries old directions from steps whose 64-sample $\bar O$ is nearly uncorrelated with the next one, which is the sample-starved regime itself. No $\mu$ scan was run: a scan would tune the route against the foil after seeing the result.
+* **R15b premise O at T1 (reported, not gated by the R15 rule)**: `base4` beats `base` at equal wall time, with $e_{\mathrm{base4}}/e_{\mathrm{base}}=0.616$ and a difference of $(2.63\pm0.62)\times10^{-3}$, $4.2\sigma$. On the toy, at the 24-site samples-per-parameter ratio, plain variance reduction is the optimiser change that helps. This promotes premise O to T2.
+#### R15b T2 (prepared, not submitted)
+* **Question**: at 24 sites and equal wall time, does `che` reach a lower energy with 4096 samples per step than with 1024?
+* **Design** (`t2_samples.py`, `submit_t2_samples.sbatch`): both arms start from the W-24 `che` $H=16$ Polyak-averaged parameters ($E=-16.43073\pm0.00477$). The start is loaded through `vmc_t2`'s own resume path, from a step-0 checkpoint written by the wrapper. Both arms use the 686990 schedule shape with peak learning rate 0.02, seed 0, and a final energy from 65,536 samples.
+  - Arm A: 1024 chains, 300 steps. Arm B: 4096 chains, 75 steps.
+  - Equal wall time comes from the 24-site timing on this node with 4 threads (`logs/t2_timing24_output.txt`): 4.00 and 16.09 s per step, $t_A/t_B=0.2485$.
+* **Pre-registered rule** (`t2_samples.rule`), with $d=E_A-E_B$ and $\sigma=\sqrt{\delta E_A^2+\delta E_B^2}$:
+  - INCOMPLETE if a result is missing or capped.
+  - INCOMPLETE-WALL if B's realised training time exceeds 1.15 times A's.
+  - INVALID if either final energy is more than 0.05 above the warm start (divergence).
+  - **KILL** if $d\le2\sigma$: the 1024-sample floor is not the 24-site limiter (R15b `KILLED(T2)`).
+  - **PASS** if $d>2\sigma$ and $d\ge0.01$ ($6\times10^{-4}$ in $\epsilon$).
+  - AMBIGUOUS otherwise.
+* **Power**: $\sigma\approx0.0068$, so a PASS needs $d\gtrsim0.014$. The T0 floor height (0.03–0.04 at learning rate 0.05) predicts a resolvable $d$ if at least a third of it is sample noise at learning rate 0.02. A smaller effect returns KILL or AMBIGUOUS; that limit is accepted for a T2.
+* **Early stop**: none in-job, with a written reason. Each task runs under 30 minutes, so a checkpointed stop would save at most about 15 minutes, and `vmc_t2`'s futility clause needs exact energies ($\le12$ sites).
+* **Pre-flight** (Stage 3.5.4, $4\times2$, `logs/t2_preflight_output.txt`):
+  - A 40-step toy run was made, and both arms were warm-started from it through the checkpoint path. Both resumed at step 0, ran 16 and 8 steps with 64 and 256 chains, and wrote complete JSONs.
+  - The warm start took effect: the final energies were $-5.497$ and $-5.512$, against $-5.500$ for the seed run.
+  - The rule returned INVALID on the toy files, as it must, because the 24-site warm-start energy is hard-coded.
+  - Logic check 8/8 (`logs/t2_check_output.txt`). The sbatch argument lists parse to the intended tag, chains and steps (`logs/t2_args_output.txt`). The report on today's disk state gives INCOMPLETE (`logs/t2_report_now_output.txt`).
+* **Budget**: per task, about 20 minutes of training, 4.6 minutes of evaluation and at most 2 minutes of thermalisation at 4 threads, so about 1.8 CPU-hours (T2 cap 2). `--max-hours 0.45`, `--time 00:50:00`.
+* **Submission (for the orchestrator)**: `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_opt/submit_t2_samples.sbatch` (array 0–1). Aggregation: `cd tests/P4.1_cheap_su2_opt && python3 t2_samples.py --mode report`.
+#### Decision tree (R15b)
+* **PASS**: the 24-site protocol is sample-starved.
+  - Every result of 686990 and T2b at 24 sites or more is worded "at 1024 samples per step"; no rule is changed after the fact.
+  - The W-24 FAIL reading "width does not bind at 24 sites" is withdrawn. W-24 is rerun at 4096 chains and equal wall time ($H=16$ against 48), one seed, under a written exception.
+  - Then the R2 question is asked again in the sample-rich protocol: `pcg` against `che` at 24 sites, 4096 chains, equal wall time. This is a T3 with a written exception, sized from the T2 spread.
+  - The Gate 4 cost $N_s\propto P$ is stated with every such result.
+* **KILL**: more samples at equal wall time do not lower the 24-site energy, so the seed narrows to capacity or slow modes. The T2b `che` 3000-step result (job 699824, task 1) then decides between them. If it is not below W-24 beyond $2\sigma$, the leaf records "the `che` class at fixed $H$ saturates near $\epsilon\approx10^{-2}$ at 24 sites", and the W-24 reading stands.
+* **AMBIGUOUS**: rerun both arms at twice the steps (600 and 150) with 131,072 evaluation samples, about 3.8 CPU-hours per task under a written exception.
+* **INCOMPLETE**: resubmit that index; it resumes from its checkpoint.
+* **INCOMPLETE-WALL**: move `results_t2/A` aside and rerun A at $\mathrm{round}(300r)$ steps.
+* **INVALID**: autopsy the warm-start learning rate.
+* **Context prediction** (written before task 1 of 699824 finished; not gating): the 3000-step `che` block mean at steps 1750–2000 ($-16.428$) equals the W-24 1000-step block at 750–1000 ($-16.424$). So the 3000-step T2b `che` is predicted to land within about 0.02 of W-24's $-16.4307$: more steps of the same optimiser buy little at 24 sites.
+#### Anti-patterns added (round 9)
+* A size ladder run at a fixed number of samples per step changes $N_s/P$ by a factor of 14 between 12 and 48 sites. Any rise of $\epsilon$ with $N$ then mixes the ansatz with the protocol's noise floor. Report $N_s/P$ beside every size.
+* A width test run at a fixed number of samples makes the wider arm the more sample-starved one, so "width does not bind" cannot be read from it.
+* Momentum on minSR (SPRING) hurts when $N_s/P\approx0.1$: the old direction it carries is mostly sampling noise.
+
+* **Orchestrator note on the size-scaling evidence (2026-11-16).** Round 9 measured samples per parameter per SR step: 0.39 at 12 sites, 0.105 at 24 sites (0.038 for the $H=48$ arm). Job 686990 uses 1024 samples at every size, so this ratio falls 14× from 12 to 48 sites, and `che` at 24 sites sits at a sample-noise floor. Every size trend in 686990, and the W-24 width comparison, is therefore confounded with sampling. **No pre-registered rule is changed**, but each verdict from 686990 and W is to be reported with this confound, and a DOES-NOT-SCALE or W-FAIL verdict cannot be read as a capacity statement until the R15b samples pilot (job 704030, `t2_samples.py --mode report`) says whether 24 sites are noise-limited.
+
+* **W-24 resume 2 (2026-11-16).** The first resume (job 700568) restarted from the step-950 checkpoint and hit the wall cap again at step 956, because `--max-hours` is cumulative (`t_used` plus elapsed). Task 1 was resubmitted once more with a 2.0-hour cumulative cap (job 705203, `submit_w24_resume2.sbatch`, a one-off copy; command otherwise unchanged, no rule change). Interim $E_{48}=-16.4295\pm0.0051$ against $E_{16}=-16.4307\pm0.0048$.
+
+* **W-24 verdict (job 705203, 2026-11-16): W FAILS** by the pre-registered rule. $E_{16}=-16.43073\pm0.00477$, $E_{48}=-16.43309\pm0.00489$, $(E_{16}-E_{48})/\sigma=0.35$; W-12 gives $r_{12}=0.527$. Per the orchestrator note on sampling, this is not a capacity statement yet: the $H=48$ arm had 0.038 samples per parameter per step.
+* **R15b samples pilot (job 704030, 2026-11-16): INCOMPLETE.** Arm A (1024 samples, 300 planned steps) hit its 0.45-hour cumulative wall cap at step 288; arm B (4096 samples, 75 steps) finished. Interim: $E_A=-16.4217\pm0.0045$, $E_B=-16.4358\pm0.0043$ (B lower by about 2.3 sigma; the rule KILLs unless B is lower by more than 2 sigma). Arm A already had more wall time than B, so it was resumed with a 0.55-hour cap (job 705667, `submit_t2_samples_resumeA.sbatch`); this can only favour A. Rule unchanged.
+
+* **R15b samples pilot (jobs 704030 and 705667, 2026-11-16): KILL.** $E_A=-16.43988\pm0.00668$ (1024 samples, 300 steps), $E_B=-16.43576\pm0.00430$ (4096 samples, 75 steps), $d=-0.0041\pm0.0079$ ($-0.52\sigma$; B is not lower). Caveats: B ran for 0.63 of A’s wall time because the resume of A gave it extra time (accepted in advance as favouring A); and A’s interim and final runs differ by 0.018 (about $3\sigma$ of the quoted error), so run-to-run spread at 24 sites exceeds the per-run error bars.
+* **Update to the orchestrator note on sampling (2026-11-16).** The sampling confound is **not confirmed**: four times the samples did not lower the 24-site energy, so the 24-site floor is not clearly sample noise. The W-24 FAIL and the 686990 size trends are therefore not explained away by sampling. A new caveat replaces it: per-run error bars at 24 sites understate the seed-to-seed spread, so single-seed 24-site comparisons (W-24, T2b) need their margins read against that spread.
+
+### T2b error-bar amendment (2026-11-16)
+This amendment follows the R15b caveat above: per-run error bars at 24 sites understate the run-to-run spread. It is written before any T2b result is scored. Code and output: `tests/P4.1_cheap_su2_errbar/k_spread.py`, `logs/k_spread_output.txt` (read-only on all result files; under one CPU-minute).
+* **T2b status at writing.** `results/t2b_wall/` does not exist (job 703587 has written nothing). No aggregation output exists in `tests/P4.1_cheap_su2_t2b/logs/`; the only VERDICT line there is the pre-run `wall_report_now_output.txt` (INCOMPLETE). The 24-site `pcg` result is missing, so no T2b verdict can exist yet.
+  - The 24-site `r1` JSON and, during this analysis, the 24-site `che` JSON of 699824 landed. Neither final energy was opened, and neither enters $k$, so $k$ does not depend on T2b data. The `che` checkpoint energies at steps 750 and 1500 were seen while checking whether the checkpoint held a final energy (it did not); they do not enter $k$ either.
+* **Finished 24-site `che` energies on disk** ($8\times3$, $N_e=20$, $(+,+)$ through $P_G$, all with 65,536 evaluation samples and 1024 chains unless stated). Job 686990 has no 24-site result yet. T2b checkpoints are partial and are not counted.
+
+| run | $E$ | quoted $\delta E$ | $H$ | steps | peak lr | start | Polyak window |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| W-24, job 698224 task 0 | $-16.43073$ | 0.00477 | 16 | 1000 | 0.05 | cold | 250 steps |
+| W-24, job 698224 task 1 (resumed as 700568) | $-16.43309$ | 0.00489 | 48 | 1000 | 0.05 | cold | 250 steps |
+| R15b A interim, job 704030 task 0 (capped at step 288; value from the job log) | $-16.42171$ | 0.00445 | 16 | 288 of 300 | 0.02 | warm (W-24 $H=16$) | 63 steps |
+| R15b A final, job 705667 (resumed from the step-250 checkpoint) | $-16.43988$ | 0.00668 | 16 | 300 | 0.02 | warm | 75 steps |
+| R15b B, job 704030 task 1 (4096 chains) | $-16.43576$ | 0.00430 | 16 | 75 | 0.02 | warm | 19 steps |
+
+* **Spread against quoted sigma** ($k$ = sample standard deviation of $E$ over runs with comparable protocol, divided by the median quoted $\delta E$):
+  - Warm-start family (the three R15b values): SD 0.00952, median $\delta E$ 0.00445, so $k=2.14$.
+  - A interim against A final: the difference is 0.0182, that is 2.26 times the combined quoted error, so $k\approx2.26$. (The earlier "about $3\sigma$" used A's own error, 0.0067, alone.) These two evaluations share steps 225 to 250 of the trajectory, so they are not fully independent; that can only shrink their difference.
+  - Cold 1000-step family (W-24 at $H=16$ and $H=48$): SD 0.00167, so $k=0.35$. This pair differs in width, and it shows no inflation.
+* **Small-sample caveat.** These are 2 or 3 runs each, with 1 or 2 degrees of freedom. The 95% $\chi^2$ interval on $k$ is 1.1 to 13 for the warm family and 0.15 to 11 for the cold pair. The data allow anything from no inflation to an order of magnitude. The warm runs have short Polyak windows (19 to 75 steps), whereas T2b averages over 750 steps, so their spread may overstate the T2b spread. $k$ is therefore taken from the largest estimate, which is the conservative choice for a PASS: $\max(2.14,0.35,2.26)=2.26$, rounded up to 0.5, gives **$k_{\mathrm{eff}}=2.5$**.
+* **Amendment (pre-registered).** In every "resolved at $2\sigma$" comparison of the T2b rule and of the equal-wall-time rule, each 24-site VMC error $\delta E$ is replaced by $\sigma_{\mathrm{eff}}=\max(1,k_{\mathrm{eff}})\,\delta E=2.5\,\delta E$ before the combined error is formed. This covers $\delta E_{\mathrm{pcg}}$, $\delta E_{\mathrm{che}}$ and $\delta E_{\mathrm{r1}}$ inside $\sigma_\rho$ and $\sigma_d$ (PASS clause 9 and NO-TARGET clause 6), and $\delta E_{\mathrm{che\_wall}}$ and $\delta E_{\mathrm{pcg}}$ inside $\sigma_w$.
+  - Not inflated: $\sigma_{\mathrm{ref}}$ (a DMRG error, not a VMC run-to-run spread), the exact 12-site energies, and the in-job futility clause (already evaluated in the running job; it can only kill).
+  - No threshold changes: 0.60, a rise of 0.15, 0.85, $d>2\sigma_d$, $d_w>2\sigma_w$ and the ratio guard 3.08 are as pre-registered. The KILL clauses $d\le0$ and $\rho_{24}\ge0.85$ use point estimates and are unaffected.
+  - **This only makes PASS harder.** Every PASS clause needs a bound to hold with $2\sigma$ added, and a larger $\sigma$ can only turn a PASS into AMBIGUOUS, PARAMETER-EFFICIENT-ONLY or NO-TARGET, never the reverse. No KILL becomes a PASS.
+  - **Power cost.** With $\delta E\approx0.0024$, $\sigma_d$ grows from about 0.0034 to about 0.0085. The expected $d\approx0.017$ then sits at about $2\sigma_d$, so the `r1` clause is marginal and AMBIGUOUS (seed 1 of tasks 0 to 2) is now a likely outcome. Seed 1 also gives the first direct seed-to-seed spread under the T2b protocol. Once two seeds per arm exist, $k$ may be re-estimated from them, but only upward.
+  - **Scoring procedure.** `t2b_report.py` and `t2b_wall_report.py` are not edited, so the pre-registered code stays fixed. The reports are run as pre-registered, and the gating verdict is recomputed with the 24-site $\delta E$ values multiplied by 2.5. Both verdicts are recorded; the inflated one gates.
+
+* **Queue review under the new Compute Value Gate (2026-11-16).** Job 686990 (the $L_x\times3$ size ladder: 40 tasks of 16 CPUs, about 850 task-hours, roughly 13,000 CPU-hours) was cancelled before it started. Its outcome for R1 (`che_kK`) is predicted by cheaper evidence: the T0 Gate 4 argument (fixed-rank mixtures give a finite-size gain), upheld by the Round 7 critic. Its single-seed comparisons would also be weaker than the measured run-to-run spread at 24 sites (2–3 times the per-run error). The live scaling question moved to R2, which T2b (699824) tests directly. R1 is recorded as a 12-site result whose failure to scale is predicted by argument and not measured. If a falsifying check is ever wanted, it is a single 24-site rung (`che_k8` against `che`, two seeds, about 200 CPU-hours), not the full ladder.
+* **DMRG job 687302 trimmed** to tasks 1 (8×3, $M_y=+1$: the 24-site $(+,+)$ reference that T2b needs) and 3 (8×3, $2S^z=2$: the spin check). Tasks 0, 2 and 4–9 served only the cancelled ladder and were cancelled.
+
+* **Queue review, second pass (2026-11-16).** Jobs 637776 (generality: R1 on the 4×3 cylinder and at 4+4; 6 tasks done, 15 running, about 1400 CPU-hours spent, cap about 41,000) and 637777 (rbm extension to 4000 iterations; never started) were cancelled. R1 is now a 12-site result whose failure to scale is predicted by argument, so whether its 12-site gain also holds on two other 12-site instances changes no decision; the rbm family was AMBIGUOUS and is no longer on the critical path. The six completed 637776 task outputs stay on disk in `tests/P4.1_cheap_su2_r6/results/` and can be reported descriptively.
+
+### Round 10: refill (2026-11-16)
+Stage 3.5.3 refill. At writing, R1 is no longer in flight (686990 was cancelled by the queue review above), and R2 is in flight (T2b 699824 and 703587). No job was submitted. Code in `tests/P4.1_cheap_su2_r10/` (new files only): `tangent.py` (modes `rule`, `run`, `report`) and `slack.py` (mode `run`, options `--w2-units`, `--step`, `--shift`). Both import the frozen `vmc.py` and `vmc_t2.py` read only, and load the parameters of runs that were already scored: the 12-site `che` pilot and the T2a `pcg` and `r1` runs. No 24-site T2b output was opened. Local compute was about 33 CPU-minutes on 4 threads:
+* three tangent runs (6.2, 7.5 and 6.3);
+* slack attempts of 0.9 (killed by the 20 GB job memory limit), 4.6 (stopped by its timeout) and 1.9 (dry run);
+* the R18 and R18' steps (2.8 and 2.6).
+#### Inputs that shape the refill
+* At 24 sites the exact-$S$ energy sits on a plateau. Four times the samples did not lower it (R15b KILL), and width did not lower it (W FAILS). The run-to-run spread is about 2.3 times the quoted error.
+* Two readings remain: the frame or class is limiting (R2's pairing frame helped at 12 sites, $\rho=0.449$), or the optimiser's landscape is. The T1 below measures both on the same trained states.
+#### Generated candidates and T0 kills
+* **G1 `pcg_kK`** (several pairing references, exact $S$, fixed $K$, shared backflow; orchestrator suggestion (a)). Gates 0 to 3 pass as for R1. **KILLED (T0, Gate 4)**: the rank part is a fixed linear superposition, so its gain is $o(N)$ by R1's argument (b), which the round-7 critic upheld. The pairing frame does not change the argument, which concerns the sum, not its components. It revives only if a 24-site rank rung ever contradicts that argument.
+* **G2 `pcg` with a spin-projected Jastrow that stays per-charge Gaussian** (suggestion (a)). A pairwise spin Jastrow breaks the per-$c$ Gaussian (R10). The only Gaussian-preserving spin Jastrow is a Hubbard–Stratonovich sum, $e^{v(\sum_ia_iS^z_i)^2}=\sum_qw_qe^{\phi_q\sum_ia_iS^z_i}$, whose terms are one-body operators. That is a fixed-rank mixture over one collective coordinate. **KILLED (T0, Gate 4)**: one collective mode gains $\mathcal O(1)$, and the mixture is R1's rank argument again. The charge-only form survives as R17.
+* **G3 non-collinear frame** (generalised HFB with $S^z$-breaking pairing, for spiral textures, under full SU(2) projection; Operation B.1). Gate 0: PASS (narrow); projected GHF and GHFB exist without backflow (the Jiménez-Hoyos and Scuseria family, arXiv:1202.3148). **KILLED (T0, Gate 4 cost)**. For an $S^z$-breaking Gaussian, $\langle x\rvert P^0\lvert\Phi\rangle=\tfrac12\int\sin\beta\,d\beta\,\langle x\rvert e^{-i\beta S_y}P_{K=0}\lvert\Phi\rangle$ needs the $S^z$ projection ($N_e+1$ nodes in $\gamma$) inside the $\beta$ quadrature (about $N_e/2+1$ nodes). At 48 sites that is $41\times21=861$ Pfaffians of size 40 per amplitude, against 11 for `pcg`: about 78 times `pcg` and about 280 times `che`, while the leaf's cost gate is 5 times `che`.
+* **G4 best-of-$K$ seeds at equal compute** (suggestion (b); not R15, which changed the optimiser). **KILLED (T0, Gates 0 and 4)**. Best of seeds is already in every pre-registered rule of the leaf, so it is not a method. Its expected gain is $\sigma_{\mathrm{seed}}\sqrt{2\ln K}$ at $K$ times the compute. At 24 sites $\sigma_{\mathrm{seed}}\approx2.5\times0.0048=0.012$, so best of 4 gains about 0.012, which is 7% of the `che` gap of about 0.17. If the spread comes from independent regions, $\sigma_{\mathrm{seed}}\propto\sqrt N$, and the per-site gain falls as $N^{-1/2}$.
+* **G5 train unprojected, project at the end** (projection after variation, then variation after projection). **KILLED (T0, Gate 0 and evidence)**. Starting projected HF from the unprojected solution is standard. The per-step saving is only the `che`/`nnbf` cost ratio (2.6 at 24 sites and 2.3 at 48, from the timing table above), and more steps of the same optimiser buy little at 24 sites (Round 9 context prediction).
+#### Routes that passed the gates
+* **R16 `sq`, squeezed (spin–charge separated) frame** (Operation B.1). Each occupied site $i$ adds a learned row $Q[s(i,c)]$ to its orbital row. Here $s(i,c)$ is the rank of $i$ among the occupied sites along the snake path of the strip. For `pcg`, $f_c[i,j]$ gets $Q[s(i),s(j)]$; for `r1`, $Q$ is symmetrised.
+  - Gate 0: PASS (narrow). Ogata–Shiba factorisation is exact in 1D at large $U$, and its 2D use is phenomenological only. WebSearch ("squeezed space spin-charge separated variational wave function doped Hubbard two dimensions") found arXiv:cond-mat/0209437 and arXiv:1702.00642, but no projected-Gaussian or NQS implementation.
+  - Gate 1: PASS. $Q[s(\cdot,c)]$ depends on $c$ only, so $P_S$ keeps its closed form; the extra cost is an $\mathcal O(NN_e)$ gather.
+  - Gate 2: decided by test against a matched generic extension. Gate 3: PASS; the term is additive and assumes no 1D limit.
+  - Gate 4 (T0): it has $\mathcal O(NN_e)$ parameters, like $P_0$. Each hole shifts every downstream row, a non-local and extensive dressing that a fixed-width affine backflow cannot represent. PASS on paper.
+* **R17 `nj`, extensive local charge Jastrow** (the charge-only form of suggestion (a); the R10 variant that was never run). The amplitude gets the factor $e^{\sum_Pv_PN_P(c)}$, where $N_P(c)$ counts the $2\times2$ plaquettes in charge pattern $P$: 81 patterns, a parameter count independent of size.
+  - Gate 0: PASS (narrow). The RBM of RBM+PP (Nomura et al., arXiv:1709.06475) reads spin-resolved occupations, and its Hubbard runs used no $S$ projection (checked in the text via WebFetch). mVMC's many-body doublon–holon factors are hand-crafted. A learned plaquette charge correlator under exact $P_S$ was not found.
+  - Gate 1: PASS, because charge-only factors commute with $\hat S$. Gate 3: PASS. Gate 4 (T0): the gain is per plaquette and therefore extensive; the cost is $\mathcal O(N)$ per amplitude.
+#### T1: exact tangent-space test at 12 sites (`tangent.py`)
+* **Design.** A 12-site SR fine-tune within the 10-CPU-minute cap is about 60 steps, and the leaf has just found that run-to-run spread exceeds the quoted errors. So the T1 uses no sampling and no seeds. At a trained exact-$S$ state $\Psi$, one exact linear-method step in $\mathrm{span}\{\Psi,\partial_k\Psi\}$ gives the lowest energy reachable at first order from a set of directions. Every sum runs over all 627,264 configurations of the open $4\times3$ strip ($N_e=10$, $U=8$, $t'=-0.25$, $(+,+)$ through $P_G$, $E_0=-7.8278990$). A first-order gain is necessary for a trained gain, but not sufficient, so this test can kill but never promote past T2.
+* **Parents**: the `che` pilot ($\epsilon=2.858\times10^{-3}$), T2a `pcg` ($1.284\times10^{-3}$) and T2a `r1` ($2.313\times10^{-3}$).
+* **Direction families**:
+  - Slack families: C1 is the parent's own pair and doublon–holon Jastrow (77 directions), and C3 is its own constant orbital or pairing entries (120 or 144).
+  - SQ is R16 (120 or 144). Its foil W is one new tanh hidden unit times a free orbital vector, with the same count.
+  - NJ is R17 (81). Its foil RF is 81 random global tanh charge features.
+* **Pre-registered rule** (script docstring, printed to `logs/rule_output.txt` before any run). Each gain $G$ is a fraction of the parent's gap $g=E(\Psi)-E_0$, measured as the increment over the slack families: $G_{\mathrm{SQ}}$ and $G_{\mathrm W}$ over C1+C3, and $G_{\mathrm{NJ}}$ and $G_{\mathrm{RF}}$ over C1.
+  - KILL if $G_{\mathrm{route}}\le G_{\mathrm{foil}}$ for both `che` and `pcg`.
+  - PASS if $G_{\mathrm{route}}\ge2G_{\mathrm{foil}}$ and $G_{\mathrm{route}}\ge0.05$ for both.
+  - AMBIGUOUS otherwise: no promotion, and a T2 only with a written reason. `r1` is reported and does not gate.
+* **Validation and controls** (`logs/run_che_output.txt`, `logs/run_pcg_output.txt`, `logs/run_r1_output.txt`): all passed.
+  - The $P_G$ index maps reproduce `vmc.logpsi` (overlap $1-10^{-15}$), and $E(\Psi)$ equals each stored exact energy to $9\times10^{-16}$ or better.
+  - Every sampled tangent is an exact singlet: relative $\lvert\langle\hat S^2\rangle\rvert\le2.6\times10^{-13}$.
+  - Positive control: adding the exact ground state gives $\Delta=g$ to $5\times10^{-15}$. Negative control: 81 random charge-only multipliers give $G\le0.0024$.
+* **Result** (`logs/report_output.txt`). Each entry is $\Delta/g$, the fraction of the gap that one exact step removes:
+
+| parent | C1 | C1+C3 | C1+C3+SQ | C1+C3+W | C1+NJ | C1+RF |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `che` | 0.0067 | 0.0853 | 0.1035 | 0.1015 | 0.0119 | 0.0143 |
+| `pcg` | 0.0108 | 0.0670 | 0.0933 | 0.0941 | 0.0233 | 0.0181 |
+| `r1` | 0.0086 | 0.0588 | 0.0722 | 0.0723 | 0.0275 | 0.0201 |
+
+* **Verdicts (pre-registered)**:
+  - **R16: AMBIGUOUS.** $G_{\mathrm{SQ}}=0.018$ against $G_{\mathrm W}=0.016$ for `che`, and 0.026 against 0.027 for `pcg` (`r1`: 0.013 against 0.013). The squeezed frame is indistinguishable from a matched generic extension, and both are far below 0.05.
+  - **R17: AMBIGUOUS.** $G_{\mathrm{NJ}}=0.005$ against $G_{\mathrm{RF}}=0.008$ for `che`, and 0.012 against 0.007 for `pcg` (`r1`: 0.019 against 0.012). That is at most 2% of the gap.
+  - No written reason for a T2 exists, so neither route is promoted. Both stay at T1, parked.
+* **Reading beyond the verdicts.** On every parent, the parent's own constant directions (C3) remove 5 to 8% of the gap in one exact step, more than any new family adds (at most 2.7%). At 12 sites the trained exact-$S$ states are further from the optimum of their own class than any cheap enlargement of the class takes them at first order. That points at the optimiser rather than the frame, so premise L was measured next.
+#### Premise L (optimisation slack) and route R18 `blm` (`slack.py`)
+* **Premise L**: the VMC-SR-trained exact-$S$ states are optimiser-limited. Measure: one exact linear-method step in the full 2637-direction tangent space of the trained 12-site `che`. The fraction $L=\Delta_{\mathrm{full}}/g$ is a lower bound on the slack.
+  - The per-parameter log-derivatives are assembled from the orbital gradient, the hidden layer and the features. They match torch autograd to $4.2\times10^{-17}$ on 32 configurations.
+  - Pre-registered reading (docstring, before any linear-method output): HOLDS if $L\ge0.30$, FAILS if $L\le0.10$, PARTIAL otherwise.
+  - Amendment, written after the first attempt was killed by the 20 GB job memory limit and before any linear-method output existed: the tangent matrix is stored in float32 with float64 products, so the positive-control tolerance becomes $10^{-4}g$.
+* **Dry run** (`--w2-units 1`, `logs/slack_dryrun_output.txt`). It uses 838 of the 2637 directions: every block except the output weights of 15 of the 16 hidden units.
+  - One exact step removes **19.9% of the gap**. By block: the first layer 12.1%, the constant orbitals 7.0%, one output unit 3.6%, and the Jastrow 0.7%. The positive-control error is $8\times10^{-15}$.
+  - The script labels this DRY-RUN, so it is not a reading. Its span is a subspace of the full one, so the full $L\ge0.199$ and FAILS is excluded.
+* **Route R18 `blm`** (Operation A on R15d with this evidence: a block linear method for the exact-$S$ family, on the blocks where the slack sits).
+  - Gate 0: PASS (narrow). The linear method (Toulouse–Umrigar) and its blocked form (Zhao and Neuscamman) are standard in VMC. For NQS it was shown on spin chains (arXiv:2104.11011), not on projected fermionic states.
+  - Gates 1 and 3: PASS, since only the update rule changes.
+  - Gate 4: the block has $\mathcal O(N^2)$ directions, and its eigen solve is polynomial.
+  - **Sharpest gap**: whether the first-order slack can be reached by a real parameter update.
+  - **T1 rule** (docstring, before any `--step` output): map the lowest linear-method eigenvector of the dry-run block back to $\delta\theta$. Evaluate the exact energy at $\theta+s\,\delta\theta$ for $s\in\{1,0.5,0.25\}$, and let $R=(E(\theta)-\min_sE)/g$. PASS if $R\ge0.10$, KILL if $R<0.03$, AMBIGUOUS otherwise.
+  - **Result: KILL** (`logs/r18_t1_unshifted_output.txt`). $\lvert\delta\theta\rvert=17.7$, and every step raises the energy by hundreds of gaps.
+* **R18' (stabilised; pre-registered after that KILL and before any `--shift` output)**: a level shift $\lambda$ on the complement of $\Psi$, raised as $10^{-3}\times2^j$ until $\lvert\delta\theta\rvert\le0.5$ (the SR protocol's own update cap), then $s\in\{1,0.5\}$. Same thresholds.
+  - **Result: KILL**, $R=10^{-4}$ (`logs/r18s_t1_output.txt`).
+  - Scope: the shift reached its ceiling ($\lambda\approx10^6$) with $\lvert\delta\theta\rvert$ still 5.7, so the step-size cap was never met. The large components come from near-redundant parameter combinations: the gain-carrying tangent directions have small overlap eigenvalues, and mapping them back to parameters inflates them. A shift in the orthonormal tangent basis cannot control that.
+* **What premise L now says.** At 12 sites at least 20% of the `che` gap is first-order reachable in function space, but along ill-conditioned parameter combinations that neither 1000 SR steps nor an exact linear-method step turns into a real update. That is a landscape (conditioning) statement, not a capacity statement.
+* **Compute Value Gate on the prepared full-tangent T2** (`submit_slack.sbatch`: 1 task, 8 CPUs, 32 GB, 1 h, under 1 CPU-hour, prepared and not submitted).
+  - Decision: HOLDS and PARTIAL now trigger the same action, because R18 and R18' are killed and the next step is the mutation below either way. FAILS is excluded by the dry run.
+  - Recommendation: **do not submit**. The job changes no decision, and the lower bound 0.199 is recorded instead. It is cheap evidence that a later route can cite: if a mutation needs the exact full-$L$ number, the job is ready.
+* **Next Operation-A seed (not gated, no budget left this round)**: R18'', a linear method in a **truncated parameter metric**, i.e. the linear method on the parameter-space overlap with a relative eigenvalue cutoff of about $10^{-4}$ instead of $10^{-11}$. This drops the ill-conditioned combinations before mapping back, and the realised gain is measured against the first-order gain that remains. The same `slack.py` path at about 2.6 CPU-minutes decides it.
+#### Route Portfolio (Round 10)
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| R1 `che_kK` | T3 at 12 sites | ladder cancelled (queue review); failure to scale predicted by T0 | — | — | an optional single 24-site rung only (queue review text) |
+| R2 `pcg-scal` | T2b | IN-FLIGHT(699824, 703587) | the jobs; the 687302 reference | T2b rule with the error-bar amendment | T2b decision trees |
+| R16 `sq` squeezed frame | T1 | AMBIGUOUS, parked (no written reason for T2) | a polished parent (R18'') | the tangent rule, rerun at a polished parent | KILL there retires R16; PASS there sends it to a 24-site warm-start T2 |
+| R17 `nj` local charge Jastrow | T1 | AMBIGUOUS, parked (as R16) | as R16 | as R16 | as R16 |
+| R18'' truncated-metric linear method | seed | GATED next (T1 about 2.6 CPU-minutes) | — | PASS $R\ge0.10$, KILL $R<0.03$ (as R18) | PASS: sampled block linear method against SR at equal wall time, 12 sites, exact final energy (T1 then T2); KILL: premise L closed as "slack not reachable by parameter updates" |
+| Premise L | T1 dry run ($L\ge0.199$) | recorded; full T2 prepared, not recommended (Compute Value Gate) | — | HOLDS $\ge0.30$; PARTIAL otherwise | none (no decision depends on it now) |
+| R18 and R18' `blm` | T1 | KILLED(T1: $R=-244$ unshifted, $R=10^{-4}$ shifted) | — | — | — |
+| G1 to G5 | T0 | KILLED(T0; reasons above) | — | — | — |
+
+* **Live and not in flight**: R16, R17 and the seed R18''. R16 and R17 passed all five gates but are weak (T1 AMBIGUOUS, under 3% of the gap). R18'' has passed no gate yet. The refill did **not** produce a frame route with a resolvable first-order gain. The evidence now favours the landscape reading: there is first-order slack, but it sits in ill-conditioned directions.
+#### Anti-patterns added (round 10)
+* A frame or class extension read at a parent that is not at its own optimum. At 12 sites the parent's own constant directions remove 5 to 8% of the gap in one exact step, more than any new family. Class tests need a polished parent, or an increment measured over the parent's own slack families, as here.
+* A linear-method step mapped back to parameters through a near-singular overlap. The tangent-space gain sits in near-redundant combinations, and with a $10^{-11}$ cutoff the update norm reaches 17.7. A level shift in the orthonormal basis cannot cap it. Truncate the parameter metric first.
+* A local exact-sum job sized from the vector length alone. The full-tangent Gram matrix at 12 sites is about 17 TFlop, and 13 GB in float64. Price the Gram stage and the job memory limit (20 GB here) before the run.
+
+* **Orchestrator decision on R18'' (2026-11-16): submitted as job 707268**, against the worker's recommendation. Value-of-information note: the decision is how to read every P4.1 result. If a linear method with a truncated metric recovers a substantial part of the 19.9% of the gap that one exact step along 838 `che` directions removes, the 24-site plateau is an optimiser limit, not a frame limit, and the next route should be an optimiser on R2. If it does not, the slack sits in near-redundant directions and the frame reading stands. The outcome is not predictable from R18 and R18' (both failed for step-control reasons). Cost: about 2.6 CPU-minutes of work in a 1-hour, 8-CPU allocation (at most 8 CPU-hours, tier at most 10).
+
+* **R18'' result (job 707268, 2026-11-16): PREMISE L HOLDS.** Exact Ritz in the full tangent space of the trained 12-site `che` state (rank 2448 of 2638, all 627,264 configurations) removes **0.49 of the gap** ($\Delta=1.095\times10^{-2}$ against a gap of $2.237\times10^{-2}$); positive control matches to $8.0\times10^{-15}$. By block: second-layer weights W2 0.39, W1 and b1 0.12, P0 and b2 0.07, Jastrow vector 0.007. Reading: the trained state is far from the best point reachable by one linear-method step in its own tangent space, so the 12-site plateau is largely an optimiser limit, concentrated in W2. This measures the achievable one-step gain, not a realised parameter step (R18 and R18' failed on step control). Next: whether a damped, truncated-metric linear-method step realises it (T1, below).
+
+### Round 11: realising the tangent-space gain (2026-11-16)
+Task T1 at 12 sites (open $4\times3$, $N_e=10$, $(+,+)$, exact $S=0$; every energy summed over all 627,264 configurations). Code: `tests/P4.1_cheap_su2_r11/realise.py` (new module; imports `tangent.py` and the frozen `vmc.py` read only, edits nothing that jobs 699824 and 703587 import). No job was submitted. Local compute: about 24 CPU-minutes on 8 threads (probe 0.5, screen 6.3, first sequence about 9, stopped by hand after step 4 once it had plateaued, second sequence 7.7), under the 30-minute cap.
+#### Pre-registered rule (`logs/rule_output.txt`, printed before any screen or sequence output)
+* A step is $\theta\leftarrow\theta+s\,\delta\theta$, with S and H rebuilt at the current $\theta$ and a line search over $s\in\{1,\tfrac12,\tfrac14\}$ on the exact energy (first lowering $s$ taken; otherwise the step is rejected and the sequence stops). $R=(E(\theta_0)-E_{\mathrm{final}})/g$.
+* **REALISED** if some variant reaches $R\ge0.25$ within 20 steps with no accepted step raising $E$ by more than $10^{-4}g$. **NOT-REALISED** if no variant reaches 0.10. **PARTIAL** otherwise; a budget-truncated sequence below 0.25 is PARTIAL, never NOT-REALISED.
+* Variants: block (all 2637 parameters, or the 1920 W2 weights); relative cutoff of the tangent metric (orthogonalised against $\Psi$) from $10^{-4}$ down to $10^{-8}$; mode `lm` (lowest root of the level-shifted linear method, shift raised until the metric norm $\lvert z\rvert\le\tau$) or `ng` (natural gradient with the same truncated metric at metric length $\tau$); $\tau$ from 0.02 to 0.4, plus undamped. Step 1 is screened over the grid; the sequence uses the variant with the lowest exact step-1 energy (stated as a line search over the damping).
+* INVALID checks, all passed (`logs/screen_output.txt`): $E(\theta_0)$ equals the stored energy to $10^{-10}$; the orbit-reduced Gram (157,216 point-group representatives, weighted by orbit size) reproduces the R18'' full Ritz fraction 0.4895 exactly; positive control (exact ground state as one direction) $\lvert\Delta-g\rvert/g=1.2\times10^{-12}$; orbit expansion, norm and reduced-H checks at $10^{-16}$.
+#### Step-1 screen (`logs/screen_output.txt`, `results/screen.json`)
+Fraction of the gap: the truncated one-step Ritz value, and the exact energy after the best predicted candidate (line-search trial in brackets when $s=1$ raised the energy).
+
+| block, cutoff | rank kept | Ritz (truncated) | `lm` exact | `ng` exact | $\lvert\delta\theta\rvert$ (`lm`) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| full, $10^{-4}$ | 1018 | 0.271 | **0.273** | 0.227 | 0.36 |
+| full, $10^{-5}$ | 1739 | 0.378 | 0.269 | 0.249 | 1.0 |
+| full, $10^{-6}$ | 2372 | 0.478 | 0.215 ($s=\tfrac12$) | 0.185 ($s=\tfrac12$) | 2.7 |
+| full, $10^{-7}$ | 2442 | 0.488 | 0.190 ($s=\tfrac14$) | 0.130 ($s=\tfrac14$) | 3.3 |
+| full, $10^{-8}$ | 2447 | 0.490 | 0.106 ($s=\tfrac14$) | 0.112 ($s=\tfrac14$) | 3.9 |
+| W2, $10^{-4}$ | 1064 | 0.272 | 0.270 | 0.228 | 0.45 |
+| W2, $10^{-5}$ | 1607 | 0.351 | 0.249 | 0.224 | 1.2 |
+| W2, $10^{-6}$ and below | 1920 | 0.394 | 0.036 | 0.110 | 2.3 |
+
+* The undamped linear-method step is short in function space: $\lvert z\rvert\le0.045$ at every cutoff, so the trust region never binds. What fails at small cutoffs is the map back to parameters: $\lvert\delta\theta\rvert$ grows from 0.36 to 3.9 as the cutoff drops, and the nonlinearity eats the gain (at $10^{-8}$ the full step raises the energy by 214 gaps). At cutoff $10^{-4}$ the realised gain (0.273) slightly exceeds the first-order prediction (0.271).
+#### Step sequences (`logs/seq_full_lm_1e-4_output.txt`, `logs/seq_full_lm_1e-5_output.txt`, `logs/verdict_output.txt`)
+
+| variant | step 1 | step 2 | step 3 | step 4 | final $\epsilon$ |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| full `lm`, cutoff $10^{-4}$ (screen winner) | 0.273 | 0.308 | 0.315 | 0.317 | $1.95\times10^{-3}$ |
+| full `lm`, cutoff $10^{-5}$ | 0.269 | 0.434 | 0.512 | **0.539** | $1.32\times10^{-3}$ |
+
+* Every accepted step had $s=1$ and lowered the energy (maximum rise 0). The cutoff-$10^{-4}$ sequence stalls at its subspace (the predicted per-step gain falls to 0.003); the cutoff-$10^{-5}$ sequence keeps more directions and passes the one-step Ritz value of the full tangent space (0.49) in 4 steps, because the tangent is rebuilt after each step. Final parameters: `results/theta_full_lm_thr1e-05_tau0.05.npy`.
+* **VERDICT: REALISED** ($R=0.273$ after one step of the pre-selected variant; $R=0.539$ after 4 steps at cutoff $10^{-5}$; $E=-7.8175886$ against the parent's $-7.8055263$ and $E_0=-7.8278990$).
+#### What it implies for P4.1
+* **The 12-site `che` is optimiser-limited, by more than half of its gap.** Four exact truncated-metric linear-method steps take it from $\epsilon=2.86\times10^{-3}$ to $1.32\times10^{-3}$, after 1000 sampled SR steps had stopped. The class was never the binding limit at 12 sites.
+* **R2's T2a PASS is confounded.** It compared SR-trained arms: $\rho=\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{che}}=0.449$ with $\epsilon_{\mathrm{pcg}}=1.28\times10^{-3}$. The polished `che` alone reaches $1.32\times10^{-3}$, so against it the unpolished `pcg` gives $\rho=0.97$. Whether `pcg` keeps an advantage once both are polished is open; its own constant directions removed 6.7% of its gap in one step (round 10), so it has slack too.
+* **`che_k8`, `pcg`, `r1` and the R1 rank ladder** were all trained with the same SR protocol (2048 samples per step for about 2600 parameters, absolute diagonal shift $10^{-3}$, cosine-decayed learning rate). Every ratio in the leaf that compares such runs carries an optimiser term of unknown sign, and none of them is a clean class comparison until both arms are polished.
+* **R2 T2b at 24 sites (699824, 703587) is confounded in the same way.** Its $\rho_{24}$ compares SR-trained arms, and the 24-site plateau (R15b KILL, W FAILS) is now more plausibly an optimiser plateau than a frame limit. Its result can still be read as "equal-protocol SR comparison", not as frame evidence. Not cancelled by this worker; the queue decision belongs to the orchestrator once rung 1 below lands.
+* **R16 and R17 are unblocked.** Their parking condition was "a polished parent"; the polished `che` now exists at 12 sites, and the round-10 tangent rule can be rerun at it for about 7 CPU-minutes.
+* **Limits.** This used exact S, H and gradients. The training used sampled S with fewer samples than parameters and a diagonal shift rather than a cutoff, so the test does not say which of the three (sampling noise, Tikhonov rather than truncation, or the linear method itself) caused the stall. At 24 sites only a sampled version exists, and whether a sampled truncated metric at cutoff $10^{-5}$ keeps the gain is the open question.
+* **Strongest objection**: four exact steps over 627,264 configurations are not a method, and the gain may need exact S. Answer: the 12-site rung 1b below measures exactly that with sampled S at equal cost, before any 24-site compute.
+#### Value-of-information note: polish `pcg` and `che` at 12 and 24 sites (prepared, nothing submitted)
+* **Rung 1 (12 sites, local T1, no job; about 30 CPU-minutes).** (a) Polish `pcg` (T2a parameters) with the same exact sequence (cutoff $10^{-5}$, up to 8 steps); this needs a `pcg` log-derivative assembly (per-chunk `torch.func.jacrev`) in a new module. (b) Rerun the `che` and `pcg` polish with **sampled** S and gradient (8192 samples per step, cutoff $10^{-5}$, exact energy only for scoring) to see if the gain survives sampling.
+  - Decision: if $\rho_{\mathrm{pol}}=\epsilon_{\mathrm{pcg,pol}}/\epsilon_{\mathrm{che,pol}}\ge0.85$, R2's T2a PASS is retracted as optimiser slack, R2 T2b can no longer be read as frame evidence, and P4.1 turns to an optimiser route (sampled truncated linear method). If $\rho_{\mathrm{pol}}\le0.60$, the frame advantage survives polishing and R2 stays live, with polished arms required at 24 sites. In between, R2 stays at T2a with a confounded flag. If (b) keeps less than half of the exact 4-step gain, no 24-site rung is run, because a sampled optimiser could not realise the gain.
+  - Prediction: $\rho_{\mathrm{pol}}$ between 0.6 and 1.0, with no branch above probability 0.8, so it runs.
+  - Cost tier: T1, below 10 CPU-hours; no critic needed.
+* **Rung 2 (24 sites, only if rung 1 leaves R2 live or shows the sampled version keeps the gain).** A warm-started sampled truncated-metric linear method on the 24-site `che` and `pcg` parameters already trained by T2b. About 30 steps with samples at least 4 times the parameter count, scored against the 687302 reference. Estimated 2 arms of 8 CPUs for 1 to 2 h, i.e. 16 to 32 CPU-hours, in the 10–100 tier, so it needs the per-leaf critic's written agreement. Decision changed: whether the 24-site plateau is an optimiser limit (polished $\epsilon$ falls by at least 30% of the gap to the reference) and whether `pcg` beats `che` once both are polished. Cheapest decisive version: one seed per arm, the trained parameters reused, the final energy from the existing evaluator; rung 1b must pass first.
+
+* **Queue review after the REALISED verdict (2026-11-16): jobs 699824 (T2b) and 703587 (equal-wall-time arms) cancelled.** Both compare SR-trained `pcg` with SR-trained `che` at 24 sites, and Round 11 showed SR leaves `che` optimiser-limited (four damped linear-method steps remove 0.539 of its 12-site gap, and polished `che` matches unpolished `pcg`: $\rho=0.97$). Either T2b verdict would therefore be uninterpretable. The 24-site DMRG reference (687302) is kept, because any re-run at 24 sites needs it. Next: rung 1 of the Round 11 value-of-information note (polish `pcg` at 12 sites, about 30 CPU-minutes, local).
+
+### Rung 1 gated, and a smoke-test finding on sampled polish (2026-11-17)
+* **Rule** (`tests/P4.1_cheap_su2_r19/RULE.md`, written before any output; it supersedes the earlier `tests/P4.1_cheap_su2_r12/polish.py` draft, which printed a rule but never ran). Open $4\times3$ Hubbard strip, $5+5$, $U=8$, $t'=-0.25$, exact $S=0$, exact sums over 627,264 configurations. (a) Exact polish of both arms, up to 8 truncated-metric linear-method steps (cutoff $10^{-5}$, $\lvert z\rvert\le0.05$, line search $s\in\{1,\tfrac12,\tfrac14\}$ on the exact energy); $\rho_{\mathrm{pol}}=\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{che}}$ after at most 8 steps: RETRACT if $\ge0.85$, KEEP-LIVE if $\le0.60$, CONFOUNDED between. (b) Sampled polish, 4 steps of 8192 fresh exact samples each, scored by exact energies: $f=R_{\mathrm{sampled}}/R_{\mathrm{exact}}$; SAMPLED-KEEPS if $f\ge0.5$ for every required arm, SAMPLED-LOSES otherwise.
+* **Job in flight: 731462** (T1, cap 1.08 CPU-h, `submit_rung1.sbatch`, `voi.md`; prediction exact KEEP-LIVE and SAMPLED-LOSES, $p=0.62$). A local 9-minute sampled `che` run was denied by the permission classifier, so the sampled arm runs only inside this job.
+* **Smoke-test finding (one step, single thread, about 2.3 CPU-minutes).** Exact step 1 gave $R=0.240$ for `pcg` against $0.269$ for `che`. The sampled `che` step 1 (8192 samples for 2637 parameters, about 3 samples per parameter) passed the validity check (sampled $E=-7.79947\pm0.0047$ against exact $-7.805526$, 1.3 standard errors) but then raised the exact energy by 4.9 times the gap ($R=-4.906$; exact $E$ from $-7.80553$ to $-7.69576$), while the reweighted in-sample estimate on the same samples claimed a drop of 0.131 (from $-7.79947$ to $-7.93034$). A line search scored on the samples that built the step selects the step that best fits their noise. Consequence, recorded before the job's result: rung 2 as described (24-site warm-started sampled polish with an in-sample line search) should not run, whatever 731462 returns; the next sampled test needs a line search on fresh samples, or many more samples per parameter. Library entry L52 (PROVISIONAL).
+
+### Rung 1 result (job 731462) and the sampled-LM viability step, gate-refused (2026-11-17)
+* **Job 731462** (T1, 0.80 CPU-h of a 1.08 CPU-h cap; rule `tests/P4.1_cheap_su2_r19/RULE.md`, quoted in the section above).
+* **(a) Exact polish, verdict CONFOUNDED.** After 8 truncated-metric linear-method (LM) steps at cutoff $10^{-5}$ on the exact energy: `che` $\epsilon=1.2172\times10^{-3}$ (from the SR value $2.8581\times10^{-3}$, $R=0.5741$ of its gap removed); `pcg` $\epsilon=9.2619\times10^{-4}$ (from $1.2842\times10^{-3}$, $R=0.2788$). $\rho_{\mathrm{pol}}=\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{che}}=0.761$ after 8 steps (0.705 after 4). Rule: RETRACT if $\ge0.85$, KEEP-LIVE if $\le0.60$, CONFOUNDED between: **CONFOUNDED**. R2's T2a PASS ($\rho=0.449$ against SR-trained `che`) shrinks to a 24% margin against polished `che`, which is neither retracted nor confirmed; R2 stays at T2a, flagged.
+* **(b) Sampled polish, verdict SAMPLED-LOSES.** `che` with 8192 fresh samples per step (about 3 samples per parameter), symmetrised Hamiltonian estimator: the exact energy rose on every step ($R=-4.9$, $-14.1$, $-24.0$, $-42.4$ gaps) while the in-sample estimates reported drops; $f=R(4)/0.5392=-78.6$, far below the 0.5 keep line: **SAMPLED-LOSES**. The sampled `pcg` arm was not needed.
+* **Prediction scoring.** The VOI predicted "exact KEEP-LIVE and SAMPLED-LOSES" jointly with $p=0.62$: the exact part MISSED (CONFOUNDED), the sampled part HIT.
+* **Next step proposed, then refused: r20 sampled-LM viability T1** (`tests/P4.1_cheap_su2_r20/`, prepared, compute-gate check PASS at 0.8 CPU-h, digest 231e104a517a; NOT SUBMITTED). It would run `che` at 12 sites with the non-symmetric (Toulouse–Umrigar) Hamiltonian estimator and a fresh-sample validation line search, at 8k and 64k samples. Probe evidence (one step each, same seeds, interactive): the non-symmetric estimator removes r19's catastrophe (true metric norm equal to the sampled one); at 8192 samples every candidate step raised the exact energy by 0.16–0.78 gaps (validation correctly rejected them all); at 65,536 samples the best candidate by exact energy gained $R=+0.080$ per step against $+0.269$ for the exact LM, and validation rated it at 1.8σ (rejected). **GATE-REFUSED(G2) by the orchestrator**: MARGINAL ($p\approx0.45$, which without critic agreement counts as NOT-VIABLE) and NOT-VIABLE ($p\approx0.45$) both lead to "no 24-site sampled-LM rung", so the action is fixed with $p\approx0.9$; only VIABLE ($p\approx0.10$) would change the plan. Prediction recorded instead of the run: sampled LM NOT-VIABLE or MARGINAL at at most 8 samples per parameter on 12 sites, $p=0.9$.
+* **Consequences.** No 24-site sampled-LM rung; rung 2 (24 sites) as described is closed. The scalable-optimiser question moves to another route (an SR or minSR variant, or a reduced-block LM). R2 stays at T2a, flagged CONFOUNDED. Generation round 20 is in progress (another agent).
+
+### Round 20: route generation after rung 1 (2026-11-17)
+Two questions. Q1: how to decide R2 (`pcg`) now that the 12-site polish gave $\rho_{\mathrm{pol}}=0.761$ (CONFOUNDED) and the sampled linear method failed. Q2: new routes to cheap exact SU(2) that scale. Every route was gated at T0 (argument, operation count, quick literature search); nothing was run at generation. Cards R19–R26 are in the Route Register. Symbols: $\epsilon=(E-E_0)/\lvert E_0\rvert$ on the open $4\times3$ Hubbard strip ($5+5$, $U=8$, $t'=-0.25$, $S=0$, $(+,+)$ sector, $E_0=-7.827899$, exact sums over 627,264 configurations); $\rho=\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{che}}$; $R$ the fraction of an arm's starting gap removed; "cutoff" the relative eigenvalue cutoff of the truncated parameter metric $S$.
+* **What the r19 endpoints say** (`tests/P4.1_cheap_su2_r19/results/seq_*.json`). After 8 exact LM steps at cutoff $10^{-5}$: `che` $\epsilon=1.217\times10^{-3}$, kept rank 1747 of 2637 (66%), predicted gain of step 8 0.009 of its gap, realised increments of steps 5–8 0.0136, 0.0094, 0.0066, 0.0053 (still moving; a geometric tail puts its asymptote near $\epsilon\approx1.17\times10^{-3}$); `pcg` $\epsilon=9.262\times10^{-4}$, kept rank 1228 of about 2600 (47%), predicted gain 0.0002, increments 0.0007, 0.0004, 0.0002, 0.0002 (frozen, the P4.2 r10 signature of a relative cutoff against a large top eigenvalue). At these asymptotes $\rho_\infty\approx0.79$, still CONFOUNDED; KEEP-LIVE ($\rho\le0.60$) needs a 24% drop of `pcg`'s error, RETRACT ($\rho\ge0.85$) needs `che` 7% below its extrapolated asymptote. Both thresholds are reachable only by changing the polish (R19) or the question (R20, R21).
+* **Considered and not generated**: a polished three-size trend at 8, 10 and 12 sites. The leaf's own T1 trend gave NO-TARGET at these sizes because a UHF-type reference's parameter count reaches the symmetric sector's dimension (L36, L39); polishing does not change that.
+* **Q2 constraint.** L11 (ESTABLISHED): in the $S^z$ occupation basis exact SU(2) is polynomial only if every spin-breaking ingredient sits inside a Gaussian per charge configuration; with L10 and L53 this leaves two exits: change the basis so the commutant lemma no longer applies (R22, and R26 as the Operation B probe), or find a new closed-form group-covariant object (R23–R25). R23–R26 died at the gates and confirm L11 within the $S^z$ basis; R22 leaves that basis and pays with a determinant-free spin sector, which is the Hard-Core risk its Gate 2 test measures.
+* **Batch outcome.** LIVE: R19 (cutoff-ladder re-polish), R20 (same-code rank-5 ablation of the pairing matrix), R21 (truncated sampled SR), R22 (balanced coupling-tree basis). KILLED: R23 and R24 (frame averaging and its repair) and R25 (projected coupled cluster via an SU(2)-scalar Hubbard–Stratonovich decoupling) at G1; R26 (dimer-orbital charge basis) at G2.
+* **Ranked cheapest falsifiers**: (1) R20 step 1, under 1 CPU-minute; (2) R22 falsifier 1, seconds; (3) R19 one-step cutoff probe, 6–8 CPU-minutes; (4) R21, about 12 CPU-minutes as a quick-note job; (5) R20 step 2, 15–30 CPU-minutes; (6) R22 falsifier 2, about 1 CPU-hour plus implementation. Items 1–3 (about 10 CPU-minutes in all, interactive, no compute gate) are PENDING: a worker is running them in `tests/P4.1_cheap_su2_r21/`.
+* **Effect on the leaf.** R20's nested ablation answers "is the pairing frame an ansatz effect at 12 sites?" without a scalable optimiser; whether that effect is extensive still needs 24 sites, so R21's verdict gates R2's ANSWERED (scoped) exit.
+
+## Route Register
+Written on 2026-11-17. One card per route ever generated in this leaf. **Id scheme**: R0.$n$ is round-1 Route $n$ (round 1 labelled its first route "R1/R1x"; that label is not reused here); R$a$.$b$ is "Route $a$.$b$" of Rounds 2–5; R$n$ without a dot is the Stage 3.5 portfolio label used from 2026-11-16 on (R1 `che_kK` to R18'' truncated-metric linear method); RG1–RG5 are the Round 10 candidates G1–G5; R1-L, R1-G and R2-T2b are steps of R1 and R2 that were cancelled on compute grounds; RW and RL are the premises W and L. **Common symbols**: $L$ sites, $N_e$ electrons, $c$ the charge configuration, $N_s$ the number of singly occupied sites, $P_S$ the exact total-spin projector, $P_G$ the point-group projector, $\epsilon=(E-E_0)/\lvert E_0\rvert$ the relative energy error against exact diagonalisation (ED) or DMRG, `che` the charge-only neural backflow (NNBF) determinant with exact closed-form $P_S$ (Che, arXiv:2608.22925), `nnbf_SG` the spin-resolved NNBF with exact $P_S$ by orbit sum (exponential, a control only), SR stochastic reconfiguration, L-BFGS exact-gradient quasi-Newton optimisation. "The 12-site instance" is the open $4\times3$ Hubbard cluster, $N_e=10$ ($5+5$), $U=8$, $t'=-0.25$, Hilbert dimension 627,264.
+
+**Optimiser caveat (Round 11; applies to every card that compares trained arms).** On the 12-site instance, the SR-trained `che` ($\epsilon=2.86\times10^{-3}$ after 1000 SR steps) drops to $\epsilon=1.32\times10^{-3}$ after four exact, damped linear-method steps with a truncated metric (0.539 of its gap removed), with no change of ansatz. The L-BFGS runs (jobs 451886, 508440) also stopped at their 2000-iteration cap without converging. So every ratio between trained arms in this leaf contains an optimiser term of unknown sign. The cards below say where this matters.
+
+### R0.1 — round-1 charge-conditioned singlet geminal with exchange dressing (`r1`, `r1x`) (KILLED)
+* **The idea**: Put all neural expressivity into SU(2)-invariant inputs. A singlet pairing $F_c=B_cF_0B_c^{\mathsf T}$ with $F_0$ symmetric and a backflow $B_c$ from a network that reads only doublons and holons is an exact singlet for every parameter, at one $N_e/2\times N_e/2$ determinant. Spin correlation is added by a first-order dressing $\sum_b\alpha_b(c)(2\mathbf S_i\cdot\mathbf S_j+\tfrac12n_in_j)$ over bonds $b=(i,j)$, also SU(2)-invariant. The foil (projected pair product) costs $N_{\mathrm{grid}}$ Pfaffians.
+* **Lineage**: initial batch (round 1). Its symmetric-pairing core survives as the `r1` and `tocchio` baselines (R4.T); its dressing was re-derived by Lemma A in R5.7.
+* **Outcome**: KILLED at G0 (round-2 critic, 2026-11-11).
+* **Kill rule**: Gate 0: "If a proposed idea already exists in the literature it cannot be presented as novel, and the route is disqualified unless it fixes the reason the technique is not standard."
+* **Evidence**: The construction is the doublon–holon backflow on a singlet BCS state of Tocchio, Becca, Parola & Sorella (PRB 78, 041101, 2008; arXiv:1102.3017) with an MLP in place of the hand-crafted form; SA-NNBF (arXiv:2604.06841) also feeds only spatial occupations to its backflow. Round 2 (R2.1) added that any polynomial linear dressing is not size-consistent. Later (job 451886) the parameter-matched one-determinant member `tocchio` had median $\epsilon=1.47\times10^{-3}$ against $3.4\times10^{-4}$ for `che`.
+* **Why this kills it**: The exact-$S$ part is prior art, and the only addition (a linear exchange dressing) captures a correlation energy that vanishes per site, so nothing in the route fixes the adoption barrier (spin information is lost by charge-only conditioning).
+* **What the kill does not rule out**: A size-consistent (exponentiated) SU(2)-scalar dressing at polynomial cost; that is R2.1, killed separately.
+* **Strongest case against the kill**: The 451886 comparison that put `tocchio` 4.3 times above `che` used L-BFGS capped at 2000 iterations, so an optimiser effect is possible; but the kill rests on prior art, which no optimiser result changes.
+* **Checked by**: round-2 per-leaf critic, 2026-11-11.
+* **Lesson**: route-specific — a prior-art finding about one construction.
+
+### R0.2 — round-1 stochastic SU(2) projection of a spin-resolved NNBF (KILLED)
+* **The idea**: Keep the spin-resolved NNBF, which is more accurate, and estimate its projected amplitude $\langle x\rvert P_S\lvert\psi\rangle$ by Monte Carlo over the rotation angle and over the spin arrangements of $c$, so exact $S$ holds in expectation at a polynomial number of samples per amplitude.
+* **Lineage**: initial batch (round 1); mutated into R2.4 (numerator-only form) and R5.3.
+* **Outcome**: KILLED at G1 (round 1, 2026-11-10).
+* **Kill rule**: Gate 1: "does it violate a conservation law, a symmetry, or a complexity bound?"
+* **Evidence**: The estimator sums $\binom{N_s}{N_s/2+M}$ terms with signed weights $\prod d^{1/2}(\beta)$ ($d$ the Wigner small-$d$ function), so its relative variance grows exponentially in $N_s$; the VMC local energy uses ratios of noisy amplitude estimates, which is biased at any finite sample count.
+* **Why this kills it**: Exact $S$ only in expectation plus exponential variance is the Unacceptable Outcome (cost exponential in volume).
+* **What the kill does not rule out**: Sign-stratified, multi-proposal estimators (the master's P2.2′ caveat).
+* **Strongest case against the kill**: None found; the variance argument is a counting argument.
+* **Checked by**: round-1 cross-node critic, 2026-11-10; the cross-node re-audit of single-proposal kills (2026-11-16) confirmed it dies on the biased ratios, not on the variance floor alone.
+* **Lesson**: L11 (`library.md`)
+
+### R0.3 — round-1 analytic projection by polynomial roots (KILLED)
+* **The idea**: For a rotated pair-product reference, the Pfaffian is $\cos^{N_e}(\beta/2)$ times a matrix polynomial in $t=\tan(\beta/2)$; its roots from one $2N_e$-dimensional linearised eigenproblem give the whole $\beta$ dependence, so the projection integral has a closed form at one $\mathcal O(N_e^3)$ solve instead of $N_{\mathrm{grid}}$ Pfaffians.
+* **Lineage**: initial batch (round 1); its closed-form idea reappears in Che's projection (R3.1) and is cited as R2's optional $\mathcal O(N^3)$ path.
+* **Outcome**: KILLED at G2 (round 1).
+* **Kill rule**: Gate 2: "does a cheap baseline or the foil reach the same metric?"
+* **Evidence**: The variational family is exactly the foil's, so the accuracy is identical; it still needs spin-commuting correlators (commutant lemma); and with fast updates mVMC pays $\mathcal O(N_{\mathrm{grid}}N_e)$ per ratio against $\mathcal O(N_e^3)$ per move here, with a QZ eigen-solver prefactor near 30.
+* **Why this kills it**: Same accuracy as the foil and no cost gain under fast updates.
+* **What the kill does not rule out**: Its use for backflow states, where fast updates are lost anyway (noted in R2's Gate 1).
+* **Strongest case against the kill**: With backflow every amplitude is recomputed, so the cost argument flips; the leaf recorded this in R2 and did not revive R0.3 as a route.
+* **Checked by**: round-1 cross-node critic, 2026-11-10.
+* **Lesson**: route-specific — a cost comparison against one implementation of the foil.
+
+### R0.4 — round-1 spin-adapted-basis NQS (CSF, GUGA or valence-bond basis) (KILLED)
+* **The idea**: Sample the charge configuration and a spin-coupling label together, so total spin is exact by construction and a network on the coupling label can depend on spin freely; this is how spin-adapted quantum chemistry (GUGA) and SU(2) spin NQS make $S$ exact.
+* **Lineage**: initial batch (round 1); its invariant-theory form returns as R3.3, its valence-bond form as R11.
+* **Outcome**: KILLED at G0 (round 1).
+* **Kill rule**: Gate 0 (prior art without a fix of the adoption barrier) and Gate 3 ("works only by removing the Hard Core").
+* **Evidence**: Irrep-basis sampling exists for spins (Vieijra et al., arXiv:1905.06034) and GUGA-FCIQMC for fermions (arXiv:1905.01346). Li et al. (arXiv:2604.06841) state the VMC barrier: the spin-coupled basis gives a non-sparse Hamiltonian. The overlap of a spin-coupled basis state with a determinant is an exponential sum, so there is no cheap antisymmetric layer.
+* **Why this kills it**: It is known, its adoption barrier is not addressed, and its sign simplifications hold only at half filling, $t'=0$, on bipartite lattices.
+* **What the kill does not rule out**: A spin-adapted basis paired with a new antisymmetric layer (the open problem of leaves P1.2 and P1.3).
+* **Strongest case against the kill**: None recorded.
+* **Checked by**: round-1 cross-node critic, 2026-11-10.
+* **Lesson**: route-specific — the barrier is the missing determinant layer in that basis.
+
+### R2.1 — local spin group-algebra dressing beyond first order (KILLED)
+* **The idea**: Dress a charge-conditioned singlet geminal by a learned element of the spin-permutation group algebra (products of bond and plaquette exchanges with charge-conditioned weights). It is complete at fixed $c$ by Schur–Weyl duality, and its product form $\prod_b(a_b+\beta_b\hat P_b)$ is an SU(2)-scalar analogue of a spin Jastrow.
+* **Lineage**: Operation A on R0.1 after its G0 kill (round 2).
+* **Outcome**: KILLED at G1 (round 2, 2026-11-11).
+* **Kill rule**: Gate 1: "does it violate a complexity bound?" (polynomial cost and size consistency required).
+* **Evidence**: A linear form with polynomially many terms is CI-like and not size-consistent; the product form has $2^{\lvert B\rvert}$ terms ($\lvert B\rvert$ dressed bonds); the attempted single-Pfaffian resummation leaks into charge-moving terms $\hat K^\uparrow_b\hat K^\downarrow_{b'}$ that are not SU(2) scalars.
+* **Why this kills it**: The exact and polynomial forms are not size-consistent, and the size-consistent forms are exponential.
+* **What the kill does not rule out**: A sampled auxiliary-field version (not gated).
+* **Strongest case against the kill**: The resummation failure is shown for one layer of disjoint bonds, not proven for all layouts. Unresolved, but R4 and Lemma A later reached the same wall from two other directions.
+* **Checked by**: round-3 per-leaf critic (no objection to this kill), 2026-11-11.
+* **Lesson**: L10 (`library.md`)
+
+### R2.2 — projected charge-conditioned Gaussian, round-2 form (PCG) (MERGED)
+* **The idea**: Put the spin structure into the Gaussian instead of a diagonal factor: $P_SP_K\sum_c\hat P_ce^{J(c)}(\sum f_{c,ij}c^\dagger_{i\uparrow}c^\dagger_{j\downarrow})^{N_e/2}$ with $f_c=B_1(c)f_0B_2(c)^{\mathsf T}$ and a general (singlet plus triplet) $f_0$. Because $\hat P_c$ and $J(c)$ commute with rotations, each rotated amplitude is one Pfaffian, so exact $P_S$ is polynomial even for symmetry-broken pairing.
+* **Lineage**: Operation A on R0.1 (round 2). Retired by the round-3 critic as "mVMC times Tocchio backflow, not below projection cost"; revived on 2026-11-16 as R2 `pcg-scal` once the formulation changed from cost to scaling.
+* **Outcome**: MERGED into R2.
+
+### R2.3 — Shiba (partial particle–hole) frame (KILLED)
+* **The idea**: Map down spins by $c_{i\downarrow}\to(-1)^ic^\dagger_{i\downarrow}$, which turns spin SU(2) into $\eta$-pairing SU(2), in the hope that spin information becomes a diagonal, charge-like quantity that a cheap projection could condition on.
+* **Lineage**: Operation B.1 (duality), round 2; its Round-8 variant is R14.
+* **Outcome**: KILLED at G0 (round 2).
+* **Kill rule**: Gate 0: does the route add a mechanism beyond a relabelling of a known barrier?
+* **Evidence**: The commutant lemma maps onto itself: the diagonal operators that commute with $\eta$-SU(2) in the new frame are functions of the new-frame charge pattern, which is the old charge pattern again.
+* **Why this kills it**: The frame relabels the barrier and removes nothing.
+* **What the kill does not rule out**: Nothing beyond the relabelling.
+* **Strongest case against the kill**: None; the argument is an identity.
+* **Checked by**: round-3 per-leaf critic, 2026-11-11.
+* **Lesson**: route-specific — an identity of this one transformation.
+
+### R2.4 — numerator-only stochastic projection of a spin-resolved NNBF (KILLED)
+* **The idea**: Avoid noisy amplitude ratios by writing $E=\langle\phi\rvert HP_S\lvert\phi\rangle/\langle\phi\rvert P_S\lvert\phi\rangle$ with the unprojected network $\phi$, and sample the rotation angle and the spin orbit jointly inside both expectation values.
+* **Lineage**: Operations B.1 and B.2 on R0.2, round 2.
+* **Outcome**: KILLED at G1 (round 2).
+* **Kill rule**: Gate 1 (complexity bound).
+* **Evidence**: The rotation kernel has absolute sum $(\lvert\cos\tfrac\beta2\rvert+\lvert\sin\tfrac\beta2\rvert)^{N_s}$; the projection weight sits at $\beta\sim N_s^{-1/2}$, so the average sign decays as $e^{-a\sqrt{N_s}}$.
+* **Why this kills it**: A stretched-exponential sign problem is exponential in volume.
+* **What the kill does not rule out**: Character-weighted permutation sampling (tried as R5.3, also exponential).
+* **Strongest case against the kill**: None found.
+* **Checked by**: round-3 per-leaf critic, 2026-11-11.
+* **Lesson**: L11 (`library.md`)
+
+### R2.5 — spin–charge factorised SU(2)-symmetric MPS (SCF; also Route 3.5 and Route 4.0b) (KILLED)
+* **The idea**: Factor the amplitude into a charge determinant on doubled spinless orbitals times a spin function $\chi_c$ on the squeezed chain of singly occupied sites. $\chi_c$ is an SU(2)-symmetric matrix product state built from Clebsch–Gordan intertwiners, with tensors conditioned on $c$ by a network, so it is an exact singlet with a full, extensive spin wave function at $\mathcal O(LD^3)$ per amplitude ($D$ the bond dimension).
+* **Lineage**: cross-field translation from non-Abelian symmetric tensor networks and squeezed-space (Ogata–Shiba) physics (Operations B.1 and B.3), round 2; re-examined as Route 3.5; killed in round 4 as Route 4.0b.
+* **Source analogy**: In DMRG with SU(2) symmetry, the MPS bond corresponds here to the bond of the squeezed spin chain and the symmetric tensors to $c$-conditioned intertwiners; the technique works there because Wigner–Eckart makes the reduced tensors exact for any bond dimension in 1D. Translation gap: 2D needs $D\sim e^{\mathcal O(L_y)}$. Citation: Singh & Vidal, arXiv:1208.3919.
+* **Outcome**: KILLED at G1 (round 4, 2026-11-11).
+* **Kill rule**: Gate 1 under the refined formulation P4.1-R4: per-amplitude cost polynomial in $N_e$ at the accuracy claimed.
+* **Evidence**: The round-3 cost row used a toy $D=13$ with random tensors (0.72 to 3.43 ms at $L=144$ to 400). On a snake order in 2D the bond dimension needed grows as $e^{\mathcal O(L_y)}$, the DMRG cylinder limit. The round-2 "stall" at $\epsilon=2.4\times10^{-2}$ was an iteration-budget artefact ($1.8\times10^{-15}$ at 370 iterations on 400 states), so accuracy was never the reason.
+* **Why this kills it**: At fixed accuracy the cost is exponential in width, so it is not a polynomial method in 2D.
+* **What the kill does not rule out**: Quasi-1D cylinders of fixed width, where it is polynomial; a tree or PEPS spin factor (not gated).
+* **Strongest case against the kill**: The area-law argument is standard, but the required $D$ for doped states was never measured; the route was never trained on a cluster large enough to test it. Unresolved.
+* **Checked by**: round-4 per-leaf critic (objection 5), 2026-11-11.
+* **Lesson**: route-specific — the area law of MPS in 2D is known.
+
+### R3.1 — closed-form per-amplitude projection of a charge-backflowed determinant (Che's method; the `che` control) (KILLED)
+* **The idea**: Exact $P_{S=0}$ of a determinant whose orbitals depend on $c$ only, per amplitude, as $\tfrac12\sum_kw_k\cos^{N_e}(\beta_k/2)\det A\det(D+\tan^2(\beta_k/2)CA^{-1}B)$ with one LU reused over the Gauss–Legendre nodes, or in closed form from the eigenvalues of $D^{-1}CA^{-1}B$ at one $\mathcal O(n^3)$ solve.
+* **Lineage**: Operation A on R2.2's cost wall, round 3. Kept as the exact-$S$ control `che` in every later test, and as the base of R1, R3, R5.4 and R5.5.
+* **Outcome**: KILLED at G0 (round 3, 2026-11-11) as a route; kept as the control.
+* **Kill rule**: Gate 0 (prior art).
+* **Evidence**: It is Eqs. S23–S24 of Che, arXiv:2608.22925 (August 2026): spin-scalar backflow features, orbitals fixed under the projector, one LU reused over the nodes. The round-4 closed form costs 6.3 times one determinant (`tocchio`) at $L=576$, slope 2.34 in $N_e$.
+* **Why this kills it**: The method is published.
+* **What the kill does not rule out**: Its use as a building block (every later route uses it).
+* **Strongest case against the kill**: None; the identity with the published equations was checked in code ($1.6\times10^{-15}$).
+* **Checked by**: round-3 per-leaf critic, 2026-11-11.
+* **Lesson**: route-specific — prior art.
+
+### R3.2 — spin-multilinear backflow projected at $N_q$ nodes (KILLED)
+* **The idea**: Let each single's spin enter the orbital matrix through one rank-1 term, so the rotated amplitude would be one determinant per quadrature node evaluated at complex "expected spins", giving exact $P_S$ of a spin-reading backflow at $N_q$ determinants.
+* **Lineage**: Operation B.1, round 3.
+* **Outcome**: KILLED at G1 (round 3).
+* **Kill rule**: Gate 1 (complexity bound).
+* **Evidence**: Electron $i$ already selects its spin-orbital row, so a rank-1 term in $\sigma_i$ that touches any other row makes the determinant quadratic in $\sigma_i$, and its multilinear reduction needs $2^{N_s}$ evaluations; the only multilinear choice, "spin $i$ modifies row $i$", is a UHF determinant.
+* **Why this kills it**: The polynomial member is the `che` class; the rest is exponential.
+* **What the kill does not rule out**: Spin features that enter as one-body row scalings (Lemma B, R5.5).
+* **Strongest case against the kill**: None found.
+* **Checked by**: round-4 per-leaf critic (no objection), 2026-11-11.
+* **Lesson**: L11 (`library.md`)
+
+### R3.3 — SU(2)-invariant network on continuous spinors (KILLED)
+* **The idea**: Write each single's spin in the spin-coherent representation and let an SU(2)-invariant (equivariant) network $F(c,z)$ act on the spinors, so the state $\int d\mu(z)F(c,z)\lvert c,z\rangle$ is exactly invariant for every weight, as in equivariant machine learning.
+* **Lineage**: cross-field translation from rotation- and gauge-equivariant networks (Operation B.3), round 3.
+* **Source analogy**: In equivariant ML, input vectors correspond to spinors here and Clebsch–Gordan layers to spin couplings; it works there because inputs are continuous vectors in a known irrep. Translation gap: a lattice amplitude is the Bergman projection of $F$, an $N_s$-dimensional integral, and multilinear invariants are valence-bond polynomials. Citation: Kondor, Lin & Trivedi, arXiv:1806.09231.
+* **Outcome**: KILLED at G1 (round 3).
+* **Kill rule**: Gate 1 (complexity bound and exactness).
+* **Evidence**: Basis amplitudes are $N_s$-dimensional integrals; sampling them puts noisy amplitudes into VMC ratios (global anti-pattern); a multilinear $F$ is a bracket polynomial, i.e. a valence-bond state (first fundamental theorem of invariant theory for $SL(2)$).
+* **Why this kills it**: Either exponential integrals or a reduction to valence-bond states with no determinant layer.
+* **What the kill does not rule out**: Equivariant networks acting on the spin-coupling label of a CSF basis (that is R0.4).
+* **Strongest case against the kill**: None found.
+* **Checked by**: round-4 per-leaf critic (no objection), 2026-11-11.
+* **Lesson**: route-specific — the invariant-theory reduction is specific to multilinear spin amplitudes.
+
+### R3.4 — spin–charge factorised RVB with charge-conditioned spinon pairing (SQ-RVB; also Route 4.0) (KILLED)
+* **The idea**: Multiply a doubled-orbital charge determinant by a singlet resonating-valence-bond (RVB) determinant of the singles whose symmetric pairing matrix $A_c$ is a learned function of the whole charge configuration: a direct spinon–holon coupling with exact $S$ at two determinants and no projector.
+* **Lineage**: Operation A on R2.5's spin factor plus slave-particle ideas (Operation B.3), round 3; killed in round 4 as Route 4.0.
+* **Outcome**: KILLED at G0 (round 4, 2026-11-11).
+* **Kill rule**: Gate 0 (prior art) and the round-4 cost criterion (priced against the cheapest member of the same class).
+* **Evidence**: For a symmetric charge-conditioned pairing, $\det F_c[U_s\cup D_b,D_s\cup D_b]=\det F_c[D_b,D_b]\det S_c[U_s,D_s]$ with $S_c$ the symmetric Schur complement on the singles, so SQ-RVB's spin factor is the R0.1 (Tocchio) class; holon-dressed RVB exists (Weng group, arXiv:1808.06173). Its measured cost was 3.3 times the one-determinant member `tocchio` at $L=576$.
+* **Why this kills it**: Same variational class as a known construction, at 3.3 times its cost.
+* **What the kill does not rule out**: More than one AGP per $c$ (R4.2).
+* **Strongest case against the kill**: None; the Schur identity was verified to $3\times10^{-14}$.
+* **Checked by**: round-4 per-leaf critic (objection 1), 2026-11-11.
+* **Lesson**: route-specific — a class identity.
+
+### R4.T — one-determinant symmetric charge-conditioned pairing baseline (`tocchio`, KAGP with $K=1$) (MERGED)
+* **The idea**: The cheapest exact-$S$ construction: one $n\times n$ determinant ($n=N_e/2$) of a symmetric pairing $F_c$ conditioned on $c$ by a charge network, an exact singlet with no projector at 1.2 times the cost of an unprojected NNBF. It is the cost baseline every exact-$S$ route must be priced against.
+* **Lineage**: the R0.1 family, reinstated as the round-4 cost baseline after the critic's objection 3; the $K=1$ member of R4.2. In 451886 it reached median $\epsilon=1.47\times10^{-3}$ against $3.4\times10^{-4}$ for `che` (L-BFGS, 2000 iterations, capped). The `r1` arm of R2's tests is the same family.
+* **Outcome**: MERGED into R4.2 (as its $K=1$ foil).
+
+### R4.1 — polynomial spin-feature subclass of exact projection (`sfb`) (KILLED)
+* **The idea**: Exact $P_S$ of a backflow that reads spin is #P-hard in the worst case, but if the backflow reads only $r$ integer features linear in the single-site spins (here $r=1$, the staggered magnetisation of the singles), a Fourier filter over feature values (as in particle-number projection) turns the orbit sum into $R^{2r}$ closed-form Che evaluations: a first exact-$S$ backflow that reads spin at polynomial cost.
+* **Lineage**: cross-field translation of particle-number projection (Operation B.3) plus Operation A on the round-2 dichotomy conjecture, round 4; mutated into R5.6 and R5.5.
+* **Source analogy**: In nuclear and quantum-chemistry number projection, the Fourier phase $e^{i\theta\hat N}$ is one-body, so each node is one determinant; here $e^{i\theta W'/2}$ with $W'$ the sublattice magnetisation is one-body, so each node is one closed-form Che evaluation. It works there because the projected quantity is a sum of one-body terms. Translation gap: only linear spin features qualify, and the cost is $R^{2r}$. Citation: Sheikh et al., arXiv:1901.06992.
+* **Outcome**: KILLED at T2 (job 451886, 2026-11-13).
+* **Kill rule**: "FAIL if $g_{\mathrm m}<0.2$, $g_{\mathrm b}<0.2$ and $\min\epsilon_{\mathrm{sfb}}>\max\epsilon_{\mathrm{nnbf\_SG}}$", with $g=(\epsilon_{\mathrm{che}}-\epsilon_{\mathrm{sfb}})/(\epsilon_{\mathrm{che}}-\epsilon_{\mathrm{nnbf\_SG}})$ on medians ($g_{\mathrm m}$) and best seeds ($g_{\mathrm b}$).
+* **Evidence**: 12-site instance, about 2,650 parameters per arm, 3 seeds, L-BFGS 2000 iterations: medians `che` $3.4\times10^{-4}$, `sfb` $3.7\times10^{-4}$, `nnbf_SG` $2.1\times10^{-4}$; gap fraction $-0.22$.
+* **Why this kills it**: One spin feature added nothing; its median is above `che`'s, so the gap fraction is negative.
+* **What the kill does not rule out**: Learned, $c$-dependent spin fields (R5.5); features not already superposed by a projected broken-symmetry reference.
+* **Strongest case against the kill**: Every arm stopped at the 2000-iteration cap without converging, and Round 11 later showed this leaf's arms sit far from their own optimum; `sfb` has extra parameters in hard-to-train directions, so its loss may be an optimiser effect. Unresolved; the mechanism argument (a projected broken-symmetry UHF already superposes every staggered-magnetisation value) points the same way as the data.
+* **Checked by**: round-5 per-leaf critic, 2026-11-13.
+* **Lesson**: route-specific — the feature it read is redundant with what the projected reference already contains.
+
+### R4.2 — charge-conditioned sum of $K$ singlet AGPs (KAGP, `kagp2`) (KILLED)
+* **The idea**: One antisymmetrised geminal power (AGP) per charge configuration is incomplete from $N_s=8$ (Jacobian rank 26 of 42 at $N_s=10$), but a sum of $K=2$ symmetric charge-conditioned AGPs is locally complete up to $N_s=10$: exact $S$ with no projector, at 2 determinants (0.32 times closed-form Che).
+* **Lineage**: Operation A on the "one AGP per $c$" wall, round 4; the tabular completeness fit (job 451839) confirmed the deficit ($\epsilon_{\mathrm{tab}}$ $6.8\times10^{-3}$ for $K=1$ against $2\times10^{-8}$ for $K=2$ on 93.5% of the weight).
+* **Outcome**: KILLED at T2 (job 451886, 2026-11-13).
+* **Kill rule**: "FAIL if the cost gate is violated; or median and best-of-seeds both $\ge0.9\times$ `tocchio`; or $\min\epsilon_{\mathrm{kagp2}}>\max\epsilon_{\mathrm{che}}$".
+* **Evidence**: 12-site instance, 3 seeds, L-BFGS 2000 iterations: medians `tocchio` $1.47\times10^{-3}$, `kagp2` $1.30\times10^{-3}$ (ratio 0.88), `che` $3.4\times10^{-4}$.
+* **Why this kills it**: `kagp2` is above every `che` seed, which fires the third FAIL clause, and it barely improves on `tocchio`.
+* **What the kill does not rule out**: A trained network that actually reaches the tabular ceiling; larger $K$.
+* **Strongest case against the kill**: The tabular gain of a second AGP is enormous and the trained gain small, which is what an optimiser limit would produce; all arms were capped at 2000 iterations, and Round 11 makes this the most plausible reading. The kill stands under its rule, but its interpretation ("the class is not the limit") is optimiser-confounded. Unresolved.
+* **Checked by**: round-5 per-leaf critic, 2026-11-13.
+* **Lesson**: L33 (`library.md`)
+
+### R4.3 — exact projection of a spin Jastrow times a charge-conditioned determinant (KILLED)
+* **The idea**: Keep the standard spin Jastrow $e^{\sum J_{ij}\sigma_i\sigma_j}$, which gives VMC its spin correlations, and project the product exactly by summing the orbit with the closed-form spin kernel, hoping the two-body structure admits a polynomial resummation.
+* **Lineage**: Operation B.1, round 4.
+* **Outcome**: KILLED at G1 (round 4).
+* **Kill rule**: Gate 1 (complexity bound).
+* **Evidence**: The orbit sum is a fixed-magnetisation Ising partition function weighted by the Löwdin kernel; interpolating in a one-body field recovers the fixed-magnetisation Ising sums, which are #P-hard for general couplings.
+* **Why this kills it**: Exact projection is as hard as a general Ising partition function.
+* **What the kill does not rule out**: A Hubbard–Stratonovich decomposition with few fields (RG2, killed at G4).
+* **Strongest case against the kill**: Trained Jastrows are not worst-case couplings. Unresolved, but no polynomial algorithm is known for frustrated couplings.
+* **Checked by**: round-4 fix critic, 2026-11-12.
+* **Lesson**: L11 (`library.md`)
+
+### R4.4 — hidden spinful ancillas in the spinon AGP (KILLED)
+* **The idea**: Add Gaussian hidden fermions to the spinon pairing and contract them into singlets, so that integrating them out gives a richer, non-AGP spin factor per charge configuration while staying an exact singlet.
+* **Lineage**: Operation B.3 from hidden-fermion determinant states, round 4.
+* **Outcome**: KILLED at G2 (round 4).
+* **Kill rule**: Gate 2 (a cheaper baseline spans the same class).
+* **Evidence**: Grassmann integration of Gaussian ancillas gives the Schur complement $A_{vv}-A_{vh}(A_{hh}+B)^{-1}A_{hv}$, which is again one AGP per $c$.
+* **Why this kills it**: Gaussian ancillas cannot leave the one-AGP class.
+* **What the kill does not rule out**: Non-Gaussian ancillas; a charge-conditioned hidden block in the orbital determinant (R6, then R3iii).
+* **Strongest case against the kill**: None; the identity is exact.
+* **Checked by**: round-4 fix critic, 2026-11-12.
+* **Lesson**: route-specific — a Gaussian-integration identity.
+
+### R5.1 — few-point spin quadrature on a spin-resolved network (KILLED)
+* **The idea**: Approximate the SU(2) projection of a spin-resolved NNBF by a few rotation angles, accepting a small symmetry error in exchange for the spin-resolved network's accuracy and a polynomial number of evaluations.
+* **Lineage**: Operation B, round 5.
+* **Outcome**: KILLED at G1 (round 5).
+* **Kill rule**: Gate 1 (complexity bound).
+* **Evidence**: By the commutant lemma each node $\langle x\rvert e^{-i\beta S_y}\lvert\phi\rangle$ of a spin-reading network is itself an orbit sum of $\binom{N_s}{N_s/2}$ terms.
+* **Why this kills it**: The exponential cost sits inside each node, so fewer nodes do not help.
+* **What the kill does not rule out**: Nothing in that direction.
+* **Strongest case against the kill**: None.
+* **Checked by**: round-5 per-leaf critic, 2026-11-13.
+* **Lesson**: L11 (`library.md`)
+
+### R5.2 — truncated Löwdin filter trained in the loop (KILLED)
+* **The idea**: Apply a degree-$d$ polynomial $p_d(\hat S^2)$ with $p_d(0)=1$ to a spin-resolved network during training, as the Löwdin annihilators of quantum chemistry do, so spin contamination is filtered at a polynomial number of $\hat S^2$ applications.
+* **Lineage**: cross-field translation from quantum chemistry (Löwdin and Yamaguchi approximate projection), Operation A on R5.1, round 5.
+* **Source analogy**: In quantum chemistry, the UHF determinant corresponds to the spin-resolved network here, and the Löwdin annihilator removes the leading contaminants; it worked there because a UHF state is dominated by a few spin sectors. Translation gap: a broken-symmetry network spreads over $S\lesssim\sqrt N$ sectors and has no fast update across spin-swapped configurations. Citation: Jiménez-Hoyos et al., arXiv:1202.3148, and the Löwdin references therein.
+* **Outcome**: KILLED at G1 (round 5).
+* **Kill rule**: Gate 1 (exactness and complexity).
+* **Evidence**: A degree-$d$ filter needs the network on about $(N_s/2)^{2d}/(d!)^2$ configurations; at $L=576$, $d=1$ already needs about $4\times10^4$ network amplitudes (about 110 s per amplitude); exactness needs $d\ge S_{\max}\sim\sqrt N$.
+* **Why this kills it**: Not exact at fixed $d$, and the cost exponent grows with $d$.
+* **What the kill does not rule out**: An approximate filter as a training aid (not exact, so outside this leaf).
+* **Strongest case against the kill**: None.
+* **Checked by**: round-5 per-leaf critic, 2026-11-13.
+* **Lesson**: route-specific — the field already moved to quadrature for this reason.
+
+### R5.3 — sampled projection inside the amplitude, and its two mutations (KILLED)
+* **The idea**: Estimate the projection by sampling, either one-sided ($\langle\phi\rvert HP_0\lvert\phi\rangle$ with the rotation angle and the orbit partner sampled) or by sampling spin permutations with character weights, so each sample costs one network amplitude.
+* **Lineage**: Operation A on R0.2 and R2.4, round 5.
+* **Outcome**: KILLED at G1 (round 5).
+* **Kill rule**: Gate 1 (complexity bound).
+* **Evidence**: Normalising the signed rotation kernel gives an average sign decaying as $(\lvert\cos\rvert+\lvert\sin\rvert)^{-N_s}$; character weights reach $\mathrm{Cat}(N_s/2)$, so the variance grows as $4^{N_s}$.
+* **Why this kills it**: Exponential variance and biased ratios.
+* **What the kill does not rule out**: Sign-stratified multi-proposal schemes (master P2.2′).
+* **Strongest case against the kill**: None.
+* **Checked by**: round-5 per-leaf critic, 2026-11-13.
+* **Lesson**: L11 (`library.md`)
+
+### R5.4 — multi-component Che, fixed offsets on one shared charge backflow (`che_k4`, then `che_kK`) (MERGED)
+* **The idea**: Superpose $K$ UHF determinants $\Phi_k(c)=P_{0,k}+B(c)$ that share one charge backflow $B(c)$ and differ by fixed reference offsets $P_{0,k}$; each component is Gaussian per $c$, so exact $P_S$ costs $K$ closed-form Che evaluations (Lemma B). It is multi-component projected Hartree–Fock with a shared neural backflow.
+* **Lineage**: Operation B, round 5, first as the equal-cost foil of R5.5; it became the rank ladder `che_k2`, `che_k4`, `che_k8` (job 508440) and the portfolio route R1.
+* **Outcome**: MERGED into R1.
+
+### R5.4h — one backflow head per component (`che_kh4`, the containing foil) (KILLED)
+* **The idea**: Give each of the 4 mixture components its own backflow head instead of sharing one. This contains `che_k4` and should be at least as expressive, so it tests whether independent correlated determinants beat fixed offsets on a shared correlator.
+* **Lineage**: critic-requested containing foil for R5.4 and R5.5 (round-5 fix).
+* **Outcome**: KILLED at T3 (job 508440, 2026-11-14).
+* **Kill rule**: Family rule of the round-5 fix: "FAIL if the cost gate is violated, or $g_{\mathrm m}<0.2$ and $g_{\mathrm b}<0.2$ at every rank", with $g$ the gap fraction from `che` to `nnbf_SG`.
+* **Evidence**: 12-site instance, 3 seeds, L-BFGS 2000 iterations, exact $S$: median $\epsilon$ `che_kh4` $4.64\times10^{-4}$ (seeds 4.37–4.74) against `che` $3.43\times10^{-4}$ and `che_k4` $1.74\times10^{-4}$; $g_{\mathrm m}=-0.90$, $g_{\mathrm b}=-0.81$.
+* **Why this kills it**: It is worse than `che`; the mixture gain needs the shared backflow.
+* **What the kill does not rule out**: Separate heads at a larger parameter budget (each head here had $H=4$).
+* **Strongest case against the kill**: At matched parameters each head is 4 units wide, so the comparison mixes "independent heads" with "narrow heads"; the L-BFGS runs were capped, and with Round 11's optimiser finding a polished `che_kh4` could rank differently. Unresolved.
+* **Checked by**: round-7 per-leaf critic reviewed the 508440 report, 2026-11-16.
+* **Lesson**: route-specific — a width-at-matched-parameters effect of this foil.
+
+### R5.5 — projected UHF mixture from enumerated hidden units (`che_rbm`, ranks 2, 4, 8) (SHELVED)
+* **The idea**: Multiply the `che` determinant by $\prod_m2\cosh(b_m+w_m(c)\cdot\sigma)$, an RBM-type spin correlator whose fields are produced from $c$. Expanding the cosh turns it into $2^M$ UHF determinants with one-body row scalings (Lemma B), so exact $P_S$ costs $2^M$ closed forms. The critic relabelled it as a $2^M$-component projected UHF mixture whose components vary with $c$.
+* **Lineage**: cross-field translation of the RBM–Hubbard–Stratonovich correspondence, Operation A on R4.1 (round 5); relabelled in the round-5 fix; its extension to 4000 iterations was cancelled (job 637777).
+* **Source analogy**: In auxiliary-field QMC, discrete Hubbard–Stratonovich fields correspond to the RBM hidden units here, and symmetry-projected field-dressed determinants are projected exactly because each field configuration is one determinant; it worked there because the fields are one-body. Translation gap: here the fields are learned, and a size-extensive correlator needs $M\propto L$, so $2^M$ is exponential. Citation: Carleo, Nomura & Imada, Nat. Commun. 9, 5322 (2018), arXiv:1802.09558; Shi et al., PRB 89, 125129 (2014).
+* **Outcome**: SHELVED (rank ladder 508440 AMBIGUOUS; the pre-committed extension 637777 was cancelled before it started, 2026-11-16).
+* **Why shelved**: The second queue review (2026-11-16) cancelled 637777 (15 tasks, cap about 19,200 CPU-hours, never started) because the family was AMBIGUOUS and off the critical path, and its pre-committed consequence was that AMBIGUOUS or NO-TARGET closes the family as unresolved anyway. Evidence so far (12-site instance, L-BFGS 2000 iterations): medians `che_rbm1` $3.37\times10^{-4}$, `che_rbm2` $3.74\times10^{-4}$, `che_rbm3` $3.57\times10^{-4}$ against `che` $3.43\times10^{-4}$, a gain within `che`'s own drift of $7.9\times10^{-5}$ and falling with rank.
+* **What would unshelve it**: A polished comparison (the Round 11 truncated-metric linear method) in which `che_rbm` at some rank beats a polished `che` and a polished `che_kK` of the same rank; the earlier ranking was at a capped L-BFGS budget.
+
+### R5.6 — two to four integer collective spin features (the `sfb` extension) (KILLED)
+* **The idea**: Extend R4.1 to $r=2$ to 4 integer features (sublattice or quadrant magnetisations), still projected exactly by Fourier bucketing at $\mathcal O(R^{2r}n^3)$, hoping several collective features carry what one did not.
+* **Lineage**: Operation A on R4.1, round 5; superseded by R5.5.
+* **Outcome**: KILLED at G2 (round 5).
+* **Kill rule**: Gate 2 (a cheaper baseline reaches the same metric).
+* **Evidence**: Collective magnetisations are what the projected broken-symmetry `che` reference already superposes, and $r=1$ gave a gap fraction of $-0.22$; the cost is $\mathcal O(N^8n^3)$ at $r=4$.
+* **Why this kills it**: Redundant with the foil by mechanism and data, at much higher cost.
+* **What the kill does not rule out**: Local, learned features (R5.5).
+* **Strongest case against the kill**: The $r=1$ data point is optimiser-confounded (see R4.1). Unresolved but low priority.
+* **Checked by**: round-5 per-leaf critic, 2026-11-13.
+* **Lesson**: route-specific — redundancy with the projected reference.
+
+### R5.7 — `che` plus a small spin-resolved correction trained on the residual (KILLED)
+* **The idea**: Keep the exact-$S$ `che` and add a small spin-resolved network correction trained on what `che` misses, hoping a small symmetry error buys the spin-resolved accuracy.
+* **Lineage**: Operation B, round 5.
+* **Outcome**: KILLED at G1 (round 5).
+* **Kill rule**: Gate 1 (exactness) and the global size-consistency anti-pattern.
+* **Evidence**: An unprojected correction breaks exactness (contamination of order $\eta^2$); a projected one is exponential (commutant lemma); by Lemma A (twirl), projecting a degree-2 spin dressing of a singlet gives the linear exchange dressing of R0.1, which is not size-consistent.
+* **Why this kills it**: Every version is inexact, exponential or size-inconsistent.
+* **What the kill does not rule out**: Nothing in that direction.
+* **Strongest case against the kill**: None.
+* **Checked by**: round-5 per-leaf critic, 2026-11-13.
+* **Lesson**: L11 (`library.md`)
+
+### R1 — fixed-rank exact-$S$ projected mixture on a shared charge backflow (`che_kK`) (KILLED)
+* **The idea**: $\phi=e^{J(c)}\sum_{k<K}a_k\det\Phi_{k\uparrow}(c)[U]\det\Phi_{k\downarrow}(c)[D]$ with $\Phi_k(c)=P_{0,k}+B(c)$ and one shared charge backflow, projected exactly by $P_SP_G$ at $K$ closed-form Che evaluations ($\mathcal O(KN^3)$). At 12 sites rank 8 beat the spin-resolved control at matched parameters, so the question became whether the rank gain survives with system size.
+* **Lineage**: R5.4 promoted after the 508440 PASS; mutated into R2 (move the extra structure into one Gaussian), R4, R5 and RG1 (ways to make the rank extensive).
+* **Outcome**: KILLED at G4 (T0 argument, 2026-11-16; upheld by the round-7 critic).
+* **Kill rule**: Gate 4: "its gain or its cost does not survive growing system size" (T0 verdict: "Gate 4 FAIL expected for the rank part").
+* **Evidence**: (1) 12-site PASS, job 508440, L-BFGS 2000 iterations, 3 seeds, about 2,600 parameters each, exact $S$: medians `che` $3.43\times10^{-4}$, `che_k2` $2.26\times10^{-4}$, `che_k4` $1.74\times10^{-4}$, `che_k8` $1.35\times10^{-4}$ (seeds 1.12–1.46), `nnbf_SG` $2.07\times10^{-4}$ (seeds 1.89–2.31). (2) T0: components that differ on an extensive region are exponentially orthogonal, so a fixed linear superposition gains $\mathcal O(1)$ (at most $\mathcal O(\sqrt N)$, CI-like), and $P_S$ and the 4-element $P_G$ restore symmetry at $\mathcal O(1)$; hence $R(K,N)=\epsilon_{\mathrm{k}K}/\epsilon_{\mathrm{che}}\to1$. (3) From the VMC pilot value $R(8,12)=0.28$, both gain models predict $R(8,48)=0.64$ to 0.82 and DOES-NOT-SCALE under the pre-registered ladder rule. (4) The T1 three-size exact-sum trend was NO-TARGET (parameters exceed the sector dimension at $N=6$); descriptively $R(8,N)=0.75$ and 0.79 at $N=8$ and 10.
+* **Why this kills it**: The rank part is a finite-size gain, so the method's extensive content is that of `che`; no size ladder could turn it into a scalable method.
+* **What the kill does not rule out**: Its use as a cheap exact-$S$ tool for cluster spectra and sector-resolved benchmarks at fixed size; a rank that grows with local structure (R5, also killed).
+* **Strongest case against the kill**: The argument is a heuristic, not a lemma (round-7 critic), and the ladder that would measure it was cancelled. Round 11 adds a second caveat: the 12-site gain itself was measured with capped L-BFGS, and a polished `che` might close part of the rank gap, so even the 12-site result is optimiser-confounded. Neither caveat favours the route at scale; unresolved as a measurement.
+* **Checked by**: round-7 per-leaf critic, 2026-11-16; cross-node critic (scope note), 2026-11-16.
+* **Lesson**: L10 (`library.md`)
+
+### R1-L — R1 size ladder at 12 to 48 sites (job 686990 with DMRG 687302) (SHELVED)
+* **The idea**: Measure whether the R1 rank gain survives from 12 to 48 sites on open $L_x\times3$ strips at filling $5/6$, with `che`, `che_k2`, `che_k4`, `che_k8` and a plain spin-resolved NNBF at equal compute, all trained by VMC-SR with $P_G$, against sector-resolved DMRG references, under a pre-registered SCALES or DOES-NOT-SCALE rule.
+* **Lineage**: R1's pre-committed scaling step (2026-11-16); it superseded 685310 and 683137.
+* **Outcome**: SHELVED (cancelled before start by the Compute Value Gate queue review, 2026-11-16).
+* **Why shelved**: About 850 task-hours of 16 CPUs (roughly 13,000 CPU-hours; cap 107,520) to measure an outcome the T0 Gate 4 argument predicts (DOES-NOT-SCALE), with single-seed comparisons weaker than the measured 24-site run-to-run spread (about 2.3 times the per-run error). Later evidence makes it uninterpretable as well: it trained every arm by SR, which Round 11 found optimiser-limited.
+* **What would unshelve it**: A sampled optimiser that realises the polished gain (rung 1b of Round 11 passing), plus a result that contradicts the T0 argument; even then the cheapest falsifier is a single 24-site rung (`che_k8` against `che`, two seeds, about 200 CPU-hours).
+
+### R1-G — R1 generality on two more 12-site instances (job 637776) (SHELVED)
+* **The idea**: Check that R1's 12-site PASS is not specific to one instance by rerunning the rank ladder on the $4\times3$ cylinder (periodic along $x$, $5+5$) and on the open $4\times3$ at $4+4$, with a pre-registered PROMOTE or KILL-GENERALITY rule.
+* **Lineage**: the pre-committed action of the 508440 PASS.
+* **Outcome**: SHELVED (cancelled by the second queue review, 2026-11-16, after 6 of 32 tasks finished and about 1,424 CPU-hours).
+* **Why shelved**: R1 had become a 12-site result whose failure to scale is predicted by argument, so whether its 12-site gain holds on two other 12-site instances changes no decision; the cap was about 41,000 CPU-hours. Descriptive read of the six finished tasks (cylinder, L-BFGS 2000 iterations): `che` $\epsilon=1.15$, 1.22 and $1.27\times10^{-5}$; `che_k2` 1.29 and $0.95\times10^{-5}$; `nnbf_SG` seed 0 $0.90\times10^{-5}$. The cylinder is near-exact for every arm, and its `che` to `nnbf_SG` ratio (about 1.35) is below the 1.5 premise, so it would probably have returned NO-TARGET.
+* **What would unshelve it**: A reason to make a cluster-scale claim for R1 (a paper that uses `che_kK` as a sector-resolved benchmark tool), on an instance with a resolved `che` to `nnbf_SG` gap.
+
+### R2 — exact $P_S$ of a charge-backflowed broken-symmetry pairing Gaussian (`pcg-scal`, `pcg`) (LIVE)
+* **The idea**: Put the extra spin structure into one Gaussian instead of a fixed-rank sum: $\psi=P_GP_Se^{J(c)}\det f_c[U,D]$ with $f_c=B_1(c)f_0B_2(c)^{\mathsf T}$, a general (singlet plus triplet) pairing that contains antiferromagnetic order and $d$-wave pairing, and charge-only backflows $B_a$. Because every factor except the Gaussian depends on $c$ only, $P_S$ is exact per amplitude at $\lceil(N_\uparrow+1)/2\rceil$ Pfaffians, and a single size-consistent Gaussian can carry a per-bond (extensive) gain, unlike R1.
+* **Lineage**: the revived R2.2, as Operation A on R1's Gate 4 failure (2026-11-16); its source in other fields is projected Hartree–Fock–Bogoliubov with variation after projection (Analogy Map, Barrier A). Evidence so far: Gate 0 narrow (mVMC's $P_S$ times an MLP version of Tocchio's charge backflow; round-7 critic). Cost gate PASS with a compiled Pfaffian: `pcg`/`che` per-step ratio 1.25, 2.46, 3.12 and 3.59 at 12, 24, 36 and 48 sites (threshold 5), bounded by a flop argument. T2a (job 698223, 12 sites, SR 1000 steps, exact final energies): $\epsilon$ `pcg` $1.28\times10^{-3}$, `r1` $2.31\times10^{-3}$, `che` $2.86\times10^{-3}$, so $\rho=0.449$ and $\epsilon_{\mathrm{pcg}}/\epsilon_{\mathrm{r1}}=0.555$ (PASS). Round 11: the polished `che` reaches $1.32\times10^{-3}$, so against it the unpolished `pcg` gives $\rho=0.97$; `pcg` itself has slack (its own constant directions remove 6.7% of its gap in one exact step).
+* **Outcome**: LIVE (T2a PASS at 12 sites, flagged CONFOUNDED by rung 1 (job 731462, 2026-11-17): with both arms polished by 8 exact LM steps, $\rho_{\mathrm{pol}}=0.761$, between the RETRACT line 0.85 and the KEEP-LIVE line 0.60; T2b cancelled, see R2-T2b; no 24-site sampled-LM rung).
+
+### R2-T2b — R2 at 24 sites against `che`, `r1` and an equal-wall-time `che` (jobs 699824 and 703587) (SHELVED)
+* **The idea**: Test whether R2's 12-site gain is extensive by training `pcg`, `che` and `r1` at matched parameters on the open $8\times3$ strip ($N_e=20$) for 3000 SR steps, plus an equal-wall-time `che` arm, under a pre-registered rule (PASS needs $\rho_{24}+2\sigma\le0.60$, a rise from 12 sites of at most 0.15, and a resolved win over `r1`; KILL if $\rho_{24}\ge0.85$ or `pcg` does not beat `r1`), with the error-bar inflation $k_{\mathrm{eff}}=2.5$.
+* **Lineage**: R2's pre-planned next step after T2a; amended for equal wall time (cross-node critic Major 3) and for run-to-run spread.
+* **Outcome**: SHELVED (cancelled by the queue review after Round 11, 2026-11-16).
+* **Why shelved**: Both jobs compare SR-trained `pcg` with SR-trained `che`, and Round 11 showed that SR leaves `che` optimiser-limited (0.539 of its 12-site gap removed by four linear-method steps; polished `che` matches unpolished `pcg`, $\rho=0.97$). Either verdict would mix ansatz and optimiser and could not settle R2's frame. Spent before cancellation: 48 CPU-hours in 699824 (ledger) and nothing in 703587 (cap 144). The 24-site DMRG reference 687302 was later cancelled too, when the brainstorm paused.
+* **What would unshelve it**: Rung 1 of Round 11 leaving R2 live ($\rho_{\mathrm{pol}}\le0.60$ with both arms polished) and the sampled truncated-metric linear method keeping at least half of the exact gain; then a 24-site rerun with polished arms (rung 2, about 16 to 32 CPU-hours) and a resubmitted 24-site reference. Neither condition was met (job 731462: $\rho_{\mathrm{pol}}=0.761$, CONFOUNDED; sampled polish SAMPLED-LOSES); a scalable optimiser from another route would be needed first.
+
+### R3 — extensive charge backflow under closed-form Che projection (`che_ext`: (i) local equivariant `che_loc`, (ii) width $H\propto N$) (SHELVED)
+* **The idea**: Keep `che`'s closed-form exact $P_S$ but remove the fixed-width bottleneck: with an affine readout, every $\Phi(c)-P_0$ lies in one $H$-dimensional affine set, which cannot dress $\propto N$ holes independently. Variant (i) dresses each hole with one shared, translation-equivariant local kernel ($\mathcal O(1)$ backflow parameters, extensive by construction); variant (ii) grows $H$ with $N$.
+* **Lineage**: Operation A on bottleneck (c) of R1's T0 argument (2026-11-16); its local form echoes Behler–Parrinello locality (Analogy Map, Barrier B); R6 merged into it as variant (iii), card R3iii.
+* **Outcome**: SHELVED (premise W FAILS at 24 sites; the pre-committed follow-up, the 48-site $H\propto N$ arms of the R1 tree, was cancelled with 686990).
+* **Why shelved**: The W FAIL branch made R3 NO-TARGET up to 24 sites and deferred it to 48-site $H\propto N$ arms that existed only inside the cancelled ladder (R1-L, about 13,000 CPU-hours). T1 descriptive data were unfavourable for (i) at small sizes ($\rho_{\mathrm{loc}}=46$ and 6.2 at $N=8$ and 10, one seed, 100 iterations).
+* **What would unshelve it**: Premise W re-measured with polished arms, showing that width binds at 24 sites. W-24 used SR, which Round 11 found optimiser-limited, so "width does not bind at 24 sites" is not yet a capacity statement.
+
+### RW — premise W: does the width bottleneck bind? (W-12, W-24; jobs 698223, 698224, 700568, 705203) (MERGED)
+* **The idea**: Before testing extensive backflows, measure whether a wider `che` lowers the energy at 24 sites more than at 12; if it does not, the fixed-width bottleneck of R1's argument (c) does not bind at the sizes the leaf can reach, and R3 has no target there.
+* **Lineage**: round-7 critic (a premise shared by R3 and by the reading of every R1 ladder verdict). Result: W-12 gave $r_{12}=0.527$ ($\epsilon$ from $2.86$ to $1.35\times10^{-3}$ for $H=16\to32$); W-24 gave $E_{16}=-16.43073\pm0.00477$ and $E_{48}=-16.43309\pm0.00489$ ($0.35\sigma$), so W FAILS. With 0.038 samples per parameter per step for $H=48$, and SR found optimiser-limited in Round 11, this is an equal-protocol SR statement, not a capacity statement.
+* **Outcome**: MERGED into R3 (as its premise).
+
+### R3iii — hidden-fermion rational head with a charge-only hidden network (`che_hf`; Route 6 merged) (KILLED)
+* **The idea**: Add $M$ hidden rows that depend on $c$; the Schur complement gives a charge Jastrow $\det D(c)$ times an effective orbital matrix $P_a-P_bD(c)^{-1}C(c)$ that is rational, not affine, in the hidden vector. The set of orbital deformations then escapes the $H$-dimensional affine bound while staying Gaussian per $c$ and exactly projectable.
+* **Lineage**: R6 (Operation B.3 from hidden-fermion determinant states), merged into R3 by the round-7 critic; Round 8 T1. Its pairing-frame copy is R8.
+* **Outcome**: KILLED at T1 (Round 8, 2026-11-16).
+* **Kill rule**: "KILL if $\epsilon_{\mathrm{hf}}\ge\epsilon_{\mathrm{che}}$ or $\epsilon_{\mathrm{hf}}\ge\epsilon_{\mathrm r1}$" (NO-TARGET if width does not bind), compared at the largest common logged iteration (Amendment 1).
+* **Evidence**: Open $5\times2$ strip, $N_e=8$, exact-sum L-BFGS, seed 0. At iteration 100: `che` ($H=4$, 620 parameters) $1.12\times10^{-3}$, `che_hf` (620) $1.76\times10^{-3}$, `r1` (594) $3.27\times10^{-3}$, `che8` ($H=8$, 1024) $5.42\times10^{-4}$. So $\rho_{\mathrm{hf}}=1.57$ at equal iterations and 2.13 at equal CPU, while width binds ($\epsilon_{\mathrm{che8}}/\epsilon_{\mathrm{che}}=0.48$).
+* **Why this kills it**: There is a target, and at matched parameters the rational head is worse than the affine one.
+* **What the kill does not rule out**: A rational head added on top of a full-width affine head (more parameters).
+* **Strongest case against the kill**: One seed, at most 219 iterations, capped runs on one toy; the rational head has a harder landscape, and Round 11 showed this leaf's comparisons are optimiser-sensitive, so a polished `che_hf` might not lose. Unresolved.
+* **Checked by**: not yet reviewed by a critic (worker T1, 2026-11-16).
+* **Lesson**: L33 (`library.md`)
+
+### R4 — $c$-local rank: a product over patches of per-patch component sums (KILLED)
+* **The idea**: Make the rank extensive by giving each lattice patch its own small set of components and taking the product over patches, so the total rank $K^{\#\mathrm{patches}}$ grows with size while each patch adds only a local term to the orbital matrix.
+* **Lineage**: Operation A on R1's Gate 4 failure (2026-11-16).
+* **Outcome**: KILLED at T0 (2026-11-16).
+* **Kill rule**: Gate 1 at T0: polynomial per-amplitude cost.
+* **Evidence**: By the matrix-determinant lemma, rank-1 patch terms make the weighted sum multi-affine, so it collapses to one determinant with averaged rows (nothing gained); rank $r\ge2$ gives a sum over exponentially many block-structured determinants with no known polynomial resummation (the analogous mixed discriminant is #P-hard); exact $P_S$ of a product of local RBM-type factors is Lemma B's $2^M$ with $M\propto L$.
+* **Why this kills it**: Either no gain or no known polynomial algorithm.
+* **What the kill does not rule out**: Treating the patch labels as sampled auxiliary variables (not gated; it needs marginal amplitudes).
+* **Strongest case against the kill**: Hardness is not proven for this block structure (critic objection 9); the kill stands on the absence of an algorithm.
+* **Checked by**: round-7 per-leaf critic (kill upheld, reason restated), 2026-11-16.
+* **Lesson**: L11 (`library.md`)
+
+### R5 — rank growing polynomially with $N$ from translated local defects (KILLED)
+* **The idea**: Let the rank grow with size by superposing lattice translates of a learned local orbital offset, so every region of the lattice gets its own component and the rank is $\mathcal O(N)$ at polynomial cost, escaping R1's fixed-rank limit.
+* **Lineage**: Operation A on R1 (2026-11-16).
+* **Outcome**: KILLED at G4 (T0, 2026-11-16).
+* **Kill rule**: Gate 4 (the gain survives growing size).
+* **Evidence**: A linear superposition of locally different Gaussians is CIS-like, so truncated-CI scaling bounds its gain at $\mathcal O(\sqrt N)$; a polynomial-size translation projection is an $\mathcal O(1)$ symmetry restoration.
+* **Why this kills it**: The gain per site still vanishes.
+* **What the kill does not rule out**: Product (exponential) forms, which hit R4.
+* **Strongest case against the kill**: None (critic: sound).
+* **Checked by**: round-7 per-leaf critic, 2026-11-16.
+* **Lesson**: L10 (`library.md`)
+
+### R6 — hidden-fermion determinant with a charge-only hidden network (MERGED)
+* **The idea**: Use the hidden-fermion determinant construction with a hidden network that reads only charges, so the hidden block reduces by the Schur complement to a charge Jastrow times a charge-conditioned orbital deformation that stays exactly projectable by Che's closed form.
+* **Lineage**: Operation B.3 (2026-11-16). First killed at T0 as "reduces to `che`"; overturned by the round-7 critic because the rational dependence on the hidden vector escapes the affine width bound; became R3 variant (iii).
+* **Outcome**: MERGED into R3 (as variant (iii), card R3iii).
+
+### R7 — size-independent pairing with zero-shot size transfer (`pcg_tr`) (KILLED)
+* **The idea**: Give R2 size-independent parameters (a translation-invariant pairing, a local charge backflow and a translation-invariant Jastrow), train at 12 sites and transfer to 24 sites without retraining, so the per-site gain is extensive by construction.
+* **Lineage**: Operation A on R1 and R3 (i), Round 8.
+* **Outcome**: KILLED at G0 (Round 8, 2026-11-16).
+* **Kill rule**: Gate 0 (prior art, including closed leaves of this brainstorm).
+* **Evidence**: It re-treads leaf P4.2, where the transferred residual geminal lost to a fresh mean-field foil ($M=1.30$) and no size-independent component helped on $4\times3$; the only new element, exact $P_S$, is an $\mathcal O(1)$ restoration.
+* **Why this kills it**: Its mechanism was already tested and failed.
+* **What the kill does not rule out**: Transfer as a warm start only (R15c).
+* **Strongest case against the kill**: P4.2's result is itself DORMANT with an unrun periodic-torus falsifier. Unresolved.
+* **Checked by**: not yet reviewed by a critic (Round 8 worker gate, 2026-11-16).
+* **Lesson**: L30 (`library.md`)
+
+### R8 — R2 pairing frame with the hidden-fermion rational head (`pcg_hf`) (KILLED)
+* **The idea**: Apply R3iii's rational lift to R2: $f_c=f_0+P_{b\uparrow}D(c)^{-1}P_{b\downarrow}^{\mathsf T}$, still Gaussian per $c$, so exact $P_S$ keeps its quadrature while the pairing deformations escape the affine bound of a fixed-width backflow.
+* **Lineage**: Operation A of R3iii onto R2, Round 8.
+* **Outcome**: KILLED at T1 (shared premise, Round 8).
+* **Kill rule**: Stage 3.5.1: a shared premise is tested once; R3iii's rule ("KILL if the rational head is not better than the affine head at matched parameters") applies.
+* **Evidence**: R3iii: $\rho_{\mathrm{hf}}=1.57$ at a matched 620 parameters on the $5\times2$ toy.
+* **Why this kills it**: Its only mechanism is the rational lift, which lost.
+* **What the kill does not rule out**: A rational head added to a full-width affine head.
+* **Strongest case against the kill**: It inherits R3iii's optimiser confound and was never run itself. Unresolved.
+* **Checked by**: not yet reviewed by a critic (Round 8 worker gate, 2026-11-16).
+* **Lesson**: L33 (`library.md`)
+
+### R9 — R2 with translation projection on cylinders (KILLED)
+* **The idea**: Add translation projection to R2 on periodic cylinders, restoring momentum as well as spin, which on small clusters gave large accuracy gains in other leaves of this brainstorm.
+* **Lineage**: orchestrator suggestion, Round 8.
+* **Outcome**: KILLED at G4 (T0, Round 8).
+* **Kill rule**: Gate 4 (the gain survives growing size).
+* **Evidence**: A projection over a polynomial number of group elements restores a symmetry and gains $\mathcal O(1)$ in total energy (the R5 argument, upheld by the round-7 critic).
+* **Why this kills it**: Its gain per site vanishes.
+* **What the kill does not rule out**: Translation parameter sharing as a transfer device (R7).
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 8 worker gate, 2026-11-16).
+* **Lesson**: L10 (`library.md`)
+
+### R10 — R2 with a size-extensive spin Jastrow (KILLED)
+* **The idea**: Multiply R2 by a pairwise spin Jastrow $e^{\sum v_{ij}S^z_iS^z_j}$, the field's standard source of extensive spin correlation, and keep exact $P_S$, combining R2's pairing frame with per-bond spin correlations.
+* **Lineage**: orchestrator suggestion, Round 8.
+* **Outcome**: KILLED at G1 (T0, Round 8).
+* **Kill rule**: Gate 1 (complexity bound).
+* **Evidence**: A diagonal spin Jastrow makes the per-$c$ state non-Gaussian; exact $P_S$ then needs a Hubbard–Stratonovich sum over $2^{\#\mathrm{bonds}}$ fields (R4.3, Lemma B).
+* **Why this kills it**: Exponential cost.
+* **What the kill does not rule out**: A charge-only neural Jastrow (an R2 variant; R17).
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 8 worker gate, 2026-11-16).
+* **Lesson**: L11 (`library.md`)
+
+### R11 — valence-bond amplitude-product states with mobile holes (KILLED)
+* **The idea**: Use a valence-bond basis, where $S=0$ is exact by construction and amplitude products give size extensivity, and let holes move through the singlet coverings, so the exact spin and the extensivity come together.
+* **Lineage**: Operation B.1 (valence-bond frame), Round 8.
+* **Outcome**: KILLED at G3 (T0, Round 8).
+* **Kill rule**: Gate 3: "it works only by removing the Hard Core".
+* **Evidence**: The overlap-weighted valence-bond estimator is sign-free only for Marshall-positive amplitudes (bipartite, undoped); with $t'\neq0$ and holes the weights $\langle V_a\vert V_b\rangle\psi_a\psi_b$ change sign.
+* **Why this kills it**: It needs the sign-free regime the Invariants exclude.
+* **What the kill does not rule out**: Valence-bond states with a determinant layer (open problem of P1.2 and P1.3).
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 8 worker gate, 2026-11-16).
+* **Lesson**: route-specific — a known sign condition.
+
+### R12 — one Lanczos step on an exact-$S$ state (KILLED)
+* **The idea**: Apply $(1+\alpha\hat H)$ to the exact-$S$ state. $\hat H$ commutes with total spin, so exactness is kept, and one Lanczos step typically lowers VMC energies noticeably at a cost of one local-energy evaluation per amplitude.
+* **Lineage**: Operation B, Round 8.
+* **Outcome**: KILLED at G4 (T0, Round 8).
+* **Kill rule**: Gate 4.
+* **Evidence**: The energy gain per site of a fixed number of Lanczos steps vanishes as $N\to\infty$ (the standard VMC-plus-Lanczos result; Becca and Sorella's textbook).
+* **Why this kills it**: Finite-size gain.
+* **What the kill does not rule out**: Its use for variance extrapolation.
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 8 worker gate, 2026-11-16).
+* **Lesson**: L10 (`library.md`)
+
+### R13 — SU(2)-invariant plaquette exchange correlators (KILLED)
+* **The idea**: Multiply by $\prod_p(1+v_p\hat P_p)$ with plaquette exchange operators $\hat P_p$, which are SU(2) scalars, borrowing the entangled-plaquette correlator idea in a form that keeps exact $S$.
+* **Lineage**: Operation B.3 from entangled-plaquette states, Round 8.
+* **Outcome**: KILLED at G1 (T0, Round 8).
+* **Kill rule**: Gate 1 (complexity bound).
+* **Evidence**: The exchange operators are non-diagonal, so one amplitude sums over $\mathcal O(c^{N/4})$ configurations; the diagonal (Changlani-type) correlators break $S$ by the commutant lemma.
+* **Why this kills it**: Exponential per-amplitude cost.
+* **What the kill does not rule out**: Sampling the plaquette expansion (single-proposal anti-pattern).
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 8 worker gate, 2026-11-16).
+* **Lesson**: L11 (`library.md`)
+
+### R14 — Shiba-dual frame: exact $S$ as exact $\eta$-spin of a determinant (KILLED)
+* **The idea**: Under the down-spin particle–hole map, spin SU(2) becomes $\eta$-pseudospin, and an exact-$\eta$ determinant is a number-projected BCS state, which might offer a new projectable function class.
+* **Lineage**: Operation B.1, Round 8 (a variant of R2.3).
+* **Outcome**: KILLED at G0 (T0, Round 8).
+* **Kill rule**: Gate 0 (no new mechanism).
+* **Evidence**: The map sends the `che` class into a subclass of R2's pairing frame.
+* **Why this kills it**: No new function class.
+* **What the kill does not rule out**: Nothing beyond R2.
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 8 worker gate, 2026-11-16).
+* **Lesson**: route-specific — an identity.
+
+### R15 — SPRING momentum on sample-space SR for the exact-$S$ arms (`spring`) (KILLED)
+* **The idea**: The 24-site plateau looked like an optimisation limit, so replace the baseline sample-space SR (minSR) by SPRING, which adds a Kaczmarz-type momentum at no extra cost and beat minSR on small molecules.
+* **Lineage**: cross-field translation from NQS and machine-learning optimisation, Round 9 (the seed of Round 8).
+* **Source analogy**: In molecular NQS, minSR on few samples corresponds to SR at 0.1 samples per parameter here, and momentum averages the noisy natural-gradient direction across steps; it worked there because consecutive steps' directions were correlated. Translation gap: at 0.1 samples per parameter consecutive directions are mostly noise. Citation: Goldshlager, Abrahamsen & Lin, arXiv:2401.10190.
+* **Outcome**: KILLED at T1 (Round 9, 2026-11-16).
+* **Kill rule**: "KILL if $e_{\mathrm{spring}}\ge e_{\mathrm{base}}-2s$ or $e_{\mathrm{spring}}\ge e_{\mathrm{base4}}$" ($e$ the mean $\epsilon$ over seeds, $s$ its standard error, `base4` four times the samples at equal wall time).
+* **Evidence**: Open $5\times2$ strip, `che` $H=4$ (620 parameters), 64 samples per step (0.103 per parameter, the 24-site ratio), 250 steps, 3 seeds, exact energies: `base` $6.85\times10^{-3}\pm2.3\times10^{-4}$, `spring` $1.83\times10^{-2}\pm1.3\times10^{-3}$, `base4` $4.22\times10^{-3}\pm5.7\times10^{-4}$; ratio 2.67 at equal wall time.
+* **Why this kills it**: SPRING is much worse than the plain baseline.
+* **What the kill does not rule out**: Other momentum values (deliberately not scanned); SPRING at higher samples per parameter.
+* **Strongest case against the kill**: One untuned momentum on one toy; answered by design, since tuning after seeing the result would bias the comparison.
+* **Checked by**: not yet reviewed by a critic (Round 9 worker T1, 2026-11-16).
+* **Lesson**: route-specific — one optimiser setting (SPRING momentum at about 0.1 samples per parameter per step) on one 10-site instance; not enough to generalise.
+
+### R15b — four times the samples per SR step at equal wall time (protocol premise O, `ns-rich`) (KILLED)
+* **The idea**: If the 24-site plateau is the noise floor of SR at 0.1 samples per parameter, trading steps for samples at equal wall time should lower the energy. This decides how every 24-site comparison may be read; it is a protocol premise, not a method.
+* **Lineage**: Round 9, from R15's T1, where `base4` beat `base` at equal wall time (ratio 0.616, $4.2\sigma$).
+* **Outcome**: KILLED at T2 (jobs 704030 and 705667, 2026-11-16).
+* **Kill rule**: "KILL if $d=E_A-E_B\le2\sigma$" (A: 1024 samples, 300 steps; B: 4096 samples, 75 steps; both warm-started from the W-24 `che` at $H=16$).
+* **Evidence**: $E_A=-16.43988\pm0.00668$, $E_B=-16.43576\pm0.00430$, $d=-0.0041\pm0.0079$ ($-0.52\sigma$); B ran 0.63 of A's wall time (accepted in advance as favouring A); A's interim and final values differ by 0.018, about 2.3 times the combined error.
+* **Why this kills it**: More samples did not lower the 24-site energy, so the plateau is not clearly sample noise.
+* **What the kill does not rule out**: An optimiser limit of another kind (conditioning, a Tikhonov shift instead of a truncation); Round 11 then found exactly that at 12 sites.
+* **Strongest case against the kill**: Run-to-run spread at 24 sites exceeds the quoted errors ($k\approx2.3$), so a difference of 0.01 could be missed; and an SR step with a diagonal shift may stay stuck at any sample count if the gain sits in near-singular directions, which Round 11 suggests. Unresolved.
+* **Checked by**: not yet reviewed by a critic (orchestrator scored the rule, 2026-11-16).
+* **Lesson**: route-specific — a protocol hyperparameter on one instance.
+
+### R15c — warm start of the 24-site state by tiling the 12-site one (KILLED)
+* **The idea**: Shorten the 24-site training by initialising it from two copies of the trained 12-site state, as transfer and curriculum learning do for spin and $t$–$J$ networks, so the 24-site run starts near a good state.
+* **Lineage**: Operation B, Round 9.
+* **Outcome**: KILLED at T0 (Round 9).
+* **Kill rule**: T0: does the mechanism apply to this ansatz and to the observed deficit?
+* **Evidence**: `che` has a global MLP whose input and output sizes depend on $N$, so nothing tiles; transferring size-independent pieces is P4.2's closed diagnostic (R7); the T0 trajectories place the deficit in the late plateau, not the early transient.
+* **Why this kills it**: The mechanism does not apply.
+* **What the kill does not rule out**: Warm starts for convolutional variants (R3 (i)).
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 9 worker gate, 2026-11-16).
+* **Lesson**: route-specific — architecture mismatch.
+
+### R15d — sampled linear method (Toulouse–Umrigar) for the exact-$S$ family (KILLED)
+* **The idea**: Replace SR by the linear method of quantum-chemistry VMC, which solves a generalised eigenproblem in the tangent space and usually converges in far fewer steps than gradient-type methods.
+* **Lineage**: Operation B, Round 9; repaired later as R18, R18' and R18''.
+* **Outcome**: KILLED at T0 (Round 9).
+* **Kill rule**: T0 cost and stability argument.
+* **Evidence**: It needs the derivative of the local energy per sample, about 2 to 3 times the local-energy cost that is already 80% of a step, and it is least stable in the sample-starved regime found at T0.
+* **Why this kills it**: Cost and expected instability.
+* **What the kill does not rule out**: An exact or blocked linear method used to diagnose and remove slack (R18'').
+* **Strongest case against the kill**: Partly undercut by R18'': an exact truncated-metric linear method removes 0.539 of the 12-site gap in 4 steps where SR had stalled, so the method's value was underestimated. The sampled cost argument stands untested. Unresolved; the idea continues as R18''.
+* **Checked by**: not yet reviewed by a critic (Round 9 worker gate, 2026-11-16).
+* **Lesson**: L29 (`library.md`)
+
+### RG1 — several pairing references with exact $S$ (`pcg_kK`) (KILLED)
+* **The idea**: Combine R1 and R2: a fixed-rank $K$ mixture of charge-backflowed pairing Gaussians on one shared backflow, projected exactly at $K$ Pfaffian quadratures, to add R1's 12-site rank gain on top of R2's pairing frame.
+* **Lineage**: orchestrator suggestion (a), Round 10 (G1).
+* **Outcome**: KILLED at G4 (T0, Round 10).
+* **Kill rule**: Gate 4.
+* **Evidence**: The rank part is a fixed linear superposition, so R1's argument (b) gives an $o(N)$ gain; the pairing frame does not change an argument about the sum.
+* **Why this kills it**: Finite-size gain.
+* **What the kill does not rule out**: A 24-site rank rung that contradicted R1's argument would revive it.
+* **Strongest case against the kill**: Same as R1 (heuristic, unmeasured). Unresolved.
+* **Checked by**: not yet reviewed by a critic (Round 10 worker gate, 2026-11-16).
+* **Lesson**: L10 (`library.md`)
+
+### RG2 — R2 with a spin-projected Jastrow that stays Gaussian per charge configuration (KILLED)
+* **The idea**: Find a spin Jastrow that keeps each charge block Gaussian, so R2 gains spin correlations without losing closed-form projection; the only candidate is a Hubbard–Stratonovich sum over one collective coordinate, whose terms are one-body operators.
+* **Lineage**: orchestrator suggestion (a), Round 10 (G2).
+* **Outcome**: KILLED at G4 (T0, Round 10).
+* **Kill rule**: Gate 4.
+* **Evidence**: $e^{v(\sum_ia_iS^z_i)^2}=\sum_qw_qe^{\phi_q\sum_ia_iS^z_i}$ is a fixed-rank mixture over one collective mode, which gains $\mathcal O(1)$ (R1's argument).
+* **Why this kills it**: Finite-size gain.
+* **What the kill does not rule out**: A charge-only extensive Jastrow (R17).
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 10 worker gate, 2026-11-16).
+* **Lesson**: L10 (`library.md`)
+
+### RG3 — non-collinear (generalised HFB) frame under full SU(2) projection (KILLED)
+* **The idea**: Allow pairing that also breaks $S^z$ (spiral textures), as projected generalised Hartree–Fock does in chemistry, under full SU(2) projection with charge backflow, to widen R2's frame.
+* **Lineage**: Operation B.1, Round 10 (G3).
+* **Outcome**: KILLED at G4 (T0 cost, Round 10).
+* **Kill rule**: Gate 4 cost, with the leaf's cost gate of 5 times `che`.
+* **Evidence**: The $S^z$ projection ($N_e+1$ nodes) sits inside the $\beta$ quadrature (about $N_e/2+1$ nodes): $41\times21=861$ Pfaffians of size 40 per amplitude at 48 sites, against 11 for `pcg`, about 78 times `pcg` and 280 times `che`.
+* **Why this kills it**: Far over the cost gate.
+* **What the kill does not rule out**: A non-collinear frame at a fixed small size as a diagnostic.
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 10 worker gate, 2026-11-16).
+* **Lesson**: route-specific — a node count.
+
+### RG4 — best of $K$ seeds at equal compute (KILLED)
+* **The idea**: Since 24-site runs scatter by about 2.5 times their quoted errors, train $K$ seeds and keep the best, spending the compute on seeds instead of steps to exploit the spread.
+* **Lineage**: orchestrator suggestion (b), Round 10 (G4).
+* **Outcome**: KILLED at G4 (T0, Round 10; also Gate 0).
+* **Kill rule**: Gate 0 (already standard) and Gate 4.
+* **Evidence**: Best of seeds is in every pre-registered rule of the leaf; its expected gain is $\sigma_{\mathrm{seed}}\sqrt{2\ln K}$, about 0.012 for $K=4$ at 24 sites, 7% of the `che` gap of about 0.17, and it falls per site as $N^{-1/2}$ if the spread comes from independent regions.
+* **Why this kills it**: Not a method, and its gain vanishes per site.
+* **What the kill does not rule out**: Nothing.
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 10 worker gate, 2026-11-16).
+* **Lesson**: route-specific — an extreme-value estimate.
+
+### RG5 — train unprojected, project at the end (KILLED)
+* **The idea**: Save the projection cost during training by optimising the unprojected state and applying $P_S$ only at the end (projection after variation), then refining with the projection switched on.
+* **Lineage**: Operation B, Round 10 (G5).
+* **Outcome**: KILLED at G0 (T0, Round 10).
+* **Kill rule**: Gate 0 and the measured evidence.
+* **Evidence**: Starting projected HF from the unprojected solution is standard; the per-step saving is only the `che`/`nnbf` cost ratio (2.6 at 24 sites, 2.3 at 48), and more steps of the same optimiser bought little at 24 sites.
+* **Why this kills it**: Known, and its saving does not address the limiter.
+* **What the kill does not rule out**: Its use as an initialisation for R18''.
+* **Strongest case against the kill**: None.
+* **Checked by**: not yet reviewed by a critic (Round 10 worker gate, 2026-11-16).
+* **Lesson**: L1 (`library.md`)
+
+### R16 — squeezed (spin–charge separated) frame term (`sq`) (LIVE)
+* **The idea**: Add to each occupied site's orbital row a learned row indexed by the site's rank among occupied sites along the snake path, an Ogata–Shiba-like squeezed coordinate. It depends on $c$ only, so $P_S$ stays closed-form, and each hole shifts every downstream row, a non-local extensive dressing a fixed-width affine backflow cannot represent.
+* **Lineage**: Operation B.1, Round 10. T1 exact tangent-space test AMBIGUOUS: first-order gain 0.018 of the gap against 0.016 for a matched generic extension on `che`, and 0.026 against 0.027 on `pcg`. Parked until a polished parent existed, which Round 11 supplied.
+* **Outcome**: LIVE (T1 AMBIGUOUS, parked; unblocked by the polished 12-site `che`; next: rerun the tangent rule at the polished parent, about 7 CPU-minutes).
+
+### R17 — extensive local charge Jastrow on $2\times2$ plaquettes (`nj`) (LIVE)
+* **The idea**: Multiply by $e^{\sum_Pv_PN_P(c)}$, where $N_P(c)$ counts the $2\times2$ plaquettes in each of 81 charge patterns: a size-independent, per-plaquette (hence extensive) charge correlator that commutes with spin, so exactness is free and the cost is $\mathcal O(N)$.
+* **Lineage**: the charge-only form of orchestrator suggestion (a), Round 10 (the R10 variant that was never run). T1 AMBIGUOUS: 0.005 of the gap against 0.008 for 81 random features on `che`, 0.012 against 0.007 on `pcg`.
+* **Outcome**: LIVE (T1 AMBIGUOUS, parked; unblocked as R16).
+
+### R18 — block linear method on the slack blocks, unshifted (`blm`) (KILLED)
+* **The idea**: Premise L's dry run showed one exact linear-method step in an 838-direction block removes 19.9% of the 12-site `che` gap; map that eigenvector back to a parameter step and take it, to realise the gain that SR did not reach.
+* **Lineage**: Operation A on R15d with premise L's evidence, Round 10.
+* **Outcome**: KILLED at T1 (Round 10, 2026-11-16).
+* **Kill rule**: "PASS if $R\ge0.10$, KILL if $R<0.03$", with $R=(E(\theta)-\min_sE(\theta+s\,\delta\theta))/g$ over $s\in\{1,0.5,0.25\}$ and $g$ the gap.
+* **Evidence**: $\lvert\delta\theta\rvert=17.7$; every step raised the energy by hundreds of gaps ($R=-244$).
+* **Why this kills it**: The predicted gain was not realised at any step length.
+* **What the kill does not rule out**: A truncated metric (R18'').
+* **Strongest case against the kill**: It failed on step control, not on the existence of the gain; answered by R18''.
+* **Checked by**: not yet reviewed by a critic (Round 10 worker T1, 2026-11-16).
+* **Lesson**: L29 (`library.md`)
+
+### R18' — block linear method with a level shift (KILLED)
+* **The idea**: Stabilise R18 with a level shift on the complement of $\Psi$, raised until the update norm is at most 0.5 (the SR protocol's cap), then take the step, the standard stabilisation of the linear method.
+* **Lineage**: Operation A on R18, pre-registered after its kill, Round 10.
+* **Outcome**: KILLED at T1 (Round 10, 2026-11-16).
+* **Kill rule**: As R18: "PASS if $R\ge0.10$, KILL if $R<0.03$".
+* **Evidence**: $R=10^{-4}$; the shift reached its ceiling ($\lambda\approx10^6$) with $\lvert\delta\theta\rvert$ still 5.7.
+* **Why this kills it**: A shift in the orthonormal tangent basis cannot control the map back through near-redundant parameters.
+* **What the kill does not rule out**: Truncating the parameter metric (R18'').
+* **Strongest case against the kill**: Same as R18; answered by R18''.
+* **Checked by**: not yet reviewed by a critic (Round 10 worker T1, 2026-11-16).
+* **Lesson**: L29 (`library.md`)
+
+### RL — premise L: the SR-trained exact-$S$ states are optimiser-limited (MERGED)
+* **The idea**: Measure, without sampling, the fraction of the gap one exact linear-method step in the trained state's own tangent space can remove; if it is large, the trained state is far from the best point of its own class, and every comparison of trained arms measures the optimiser.
+* **Lineage**: Round 10, from the T1 observation that each parent's own constant directions remove 5 to 8% of its gap in one exact step, more than any new family. Dry run $L\ge0.199$ on 838 directions; job 707268 (full tangent, rank 2448 of 2638, all 627,264 configurations) gave $L=0.4895$ ($\Delta=1.095\times10^{-2}$ against a gap of $2.237\times10^{-2}$; by block W2 0.39, W1 and b1 0.12, P0 and b2 0.07, Jastrow 0.007): HOLDS.
+* **Outcome**: MERGED into R18'' (as its premise).
+
+### R18'' — truncated-metric damped linear method with exact sums (LIVE)
+* **The idea**: Realise the tangent-space gain by dropping near-redundant parameter combinations before mapping back: solve the linear method with the parameter overlap truncated at a relative eigenvalue cutoff ($10^{-4}$ to $10^{-8}$), damp the step in function space, line-search on the exact energy, and rebuild the tangent after each step.
+* **Lineage**: translation repair of R15d, R18 and R18' (the linear method from quantum-chemistry VMC, plus truncated singular-value regularisation from numerical analysis), Rounds 10–11; premise RL (job 707268), then a local Round 11 T1.
+* **Source analogy**: In quantum-chemistry VMC the linear method optimises Jastrow–Slater parameters in the tangent space (Toulouse & Umrigar, J. Chem. Phys. 126, 084102, 2007); in ill-posed inverse problems truncated SVD drops noise-amplifying directions (Hansen, SIAM 1998). Here the overlap matrix plays the ill-posed operator and the parameter step the solution. Translation gap: part of the gain sits in small-eigenvalue directions, and only the exact (not sampled) metric has been tested.
+* **Outcome**: LIVE in its exact form only (T1 REALISED, Round 11, 2026-11-16: $R=0.539$ after 4 steps at cutoff $10^{-5}$; rung 1, job 731462: $R=0.574$ for `che` and 0.279 for `pcg` after 8 exact steps), as a polishing diagnostic at 12 sites. Its sampled form lost: SAMPLED-LOSES in job 731462 ($f=-78.6$; the exact energy rose 4.9 to 42.4 gaps over 4 steps of 8192 samples), and the r20 viability T1 with the non-symmetric estimator was GATE-REFUSED(G2) with the prediction NOT-VIABLE or MARGINAL, $p=0.9$ (L52, L55). No 24-site sampled-LM rung will run.
+
+### R19 — cutoff-ladder re-polish of both r19 endpoints (`ladder`) (LIVE)
+* **The idea**: Continue both 12-site arms (`che`, the projected UHF-type control, and `pcg`, R2) from their rung-1 step-8 parameters with the linear-method metric cutoff chosen per step from a ladder ($10^{-5}$ to $10^{-9}$) by the exact energy, instead of the fixed $10^{-5}$. `pcg`'s polish froze with 47% of its directions kept and a predicted gain of $2\times10^{-4}$ of its gap, the P4.2 r10 artefact that a per-step cutoff scan unfroze there. If `pcg`'s freeze is an artefact, $\rho_{\mathrm{pol}}=0.761$ is biased upward; if `che` also gains, it is biased downward. The ladder removes the one known optimiser artefact from the 12-site comparison.
+* **Lineage**: Operation A on R18'' after its rung-1 result (job 731462) left $\rho_{\mathrm{pol}}$ CONFOUNDED, Round 20; the fix comes from P4.2 r10 (`polish_v2`, cutoff scan with a minimum-gain acceptance) and L29. Gates at T0: G0 a diagnostic of the leaf's own optimiser, G1 and G3 PASS, G2 not predictable to $p\ge0.9$ (P4.2's ladder gained only 2.8%, but `pcg`'s kept-rank deficit is larger than anything P4.2 saw), G4 not applicable at 12 sites. Prediction: CONFOUNDED persists $p\approx0.65$, KEEP-LIVE 0.15, RETRACT 0.20. Cheapest falsifier (T1, about 6–8 CPU-minutes, interactive): one exact LM step from each endpoint at cutoffs $10^{-5}$ (control), $10^{-6}$, $10^{-7}$, $10^{-8}$, with $\lvert z\rvert\le0.05$ and a line search over $s\in\{1,\tfrac12,\tfrac14\}$ on the exact energy, recording the gradient fraction outside the kept subspace. Pre-registered per arm: FROZEN-ARTEFACT if some cutoff below $10^{-5}$ lowers $\epsilon$ by at least 3% in one step and beats the control by at least 2 percentage points; GENUINE if no cutoff lowers $\epsilon$ by more than 1%; UNCLEAR otherwise. If `pcg` is FROZEN-ARTEFACT, ladder-polish both arms to "predicted gain below $10^{-3}$ of the gap" (at most 1 CPU-hour, quick-note job) and read the r19 thresholds on the endpoints; if both are GENUINE, the 12-site ratio is final at about 0.76–0.79 and R2's decision passes to R20; if only `che` is FROZEN-ARTEFACT, ladder `che` alone.
+* **Outcome**: LIVE (T0 PASS); T1 cutoff probe PENDING (running in `tests/P4.1_cheap_su2_r21/`).
+
+### R20 — same-code frame ablation: rank-$N_e/2$ truncation of `pcg`'s pairing matrix (`abl-rank`) (LIVE)
+* **The idea**: `pcg` and `che` differ in two ways at once, the frame (general pairing against a product of up and down orbitals) and the backflow parametrisation ($B_1f_0B_2^{\mathsf T}$ against `che`'s orbital backflow), so $\rho$ cannot credit any gain to pairing even with perfect polishing (L38). Inside `pcg`'s own code, replace the $12\times12$ pairing matrix $f_0$ by its best rank-5 factorisation $U_0D_0^{\mathsf T}$; then $\det f_c[U,D]=\det(B_1U_0)[U]\det(B_2D_0)[D]$, a charge-backflowed UHF in exactly `pcg`'s parametrisation, with the same backflow, Jastrow, projector and quadrature, and parameter counts matched within 1%. Starting it from `pcg`'s polished point puts the ablated arm in `pcg`'s basin, which favours it and makes the test conservative for pairing.
+* **Lineage**: Operation A on R2's CONFOUNDED rung-1 result, Round 20, using L33 (separately trained arms compare optimisers) and L38 (credit needs an ablation); it replaces the cross-architecture comparison by a nested one. Gates at T0: G0 (no record of this ablation for exactly projected backflow states; a test of R2's mechanism), G1, G2 (the foil is the ablated arm) and G3 PASS; G4: attributes the 12-site gain, its extensivity stays open, and it is the prerequisite for funding any 24-site rung. Step 1 (T1, under 1 CPU-minute): truncate $f_0$ at `pcg`'s rung-1 parameters to rank 5 by SVD and evaluate the exact energy with no re-optimisation; if $\epsilon_{\mathrm{trunc}}\le1.10\,\epsilon_{\mathrm{pcg}}$, the trained `pcg` does not use pairing beyond UHF, R2's pairing mechanism is KILLED at T1, and any `pcg` advantage is reassigned to the backflow form, which then needs its own pre-registered test (L51); otherwise go to step 2 (a large rise alone proves nothing, since nothing was relaxed). Step 2 (T1, 15–30 CPU-minutes, quick-note job): ladder-polish the rank-5 arm (R19) to `pcg`'s stopping rule; $\rho_{\mathrm{abl}}=\epsilon_{\mathrm{pcg,pol}}/\epsilon_{\mathrm{rank5,pol}}\le0.60$ → pairing is an ansatz effect at 12 sites (R2 KEEP-LIVE, mechanism attributed); $\ge0.85$ → R2's mechanism retracted; CONFOUNDED otherwise. Needs a reparametrised `DetModel` arm (about 20 lines).
+* **Outcome**: LIVE (T0 PASS); step 1 PENDING (running in `tests/P4.1_cheap_su2_r21/`).
+
+### R21 — sampled SR with a truncated metric and many small steps (`trSR`) (LIVE)
+* **The idea**: The 24-site rung needs a scalable optimiser. The sampled linear method fails because it solves an eigenproblem in one large step, which amplifies metric noise (at 65,536 samples the best candidate realised $R=0.080$ against 0.269 exact). The leaf's SR used an absolute diagonal shift of $10^{-3}$, which Round 11 left untested as the cause of the stall, while exact natural-gradient steps with a truncated metric (cutoff $10^{-4}$) realised 0.227 of the gap in one step. Sampled SR with the same relative truncation and a small fixed step averages noise over many steps instead of fitting it in one, and separates "SR is the problem" from "the Tikhonov shift is the problem", the confound Round 11 named.
+* **Lineage**: Operation A on R15d, R18 and the r20 sampled-LM probes, Round 20: the "SR or minSR variant" branch of r20's NOT-VIABLE decision tree. Gates at T0: G0 (SR with a relative eigenvalue cutoff is a known tool, used here as the leaf's optimiser, not claimed as a solution), G1 and G3 PASS, G2 (L19 says sampler-only changes leave infinite-sample SR fixed points unchanged; truncation changes the flow, so L19 does not predict the outcome), G4 (cost of SR or minSR per step, both scale to 24 sites). Prediction: NOT-VIABLE $p\approx0.5$, MARGINAL 0.3, VIABLE 0.2. Cheapest falsifier (T1, about 12 CPU-minutes, so a quick-note batch job of at most 1 CPU-hour): from `che`'s trained parameters, 15 SR steps with 16,384 i.i.d. exact samples per step, relative cutoff $10^{-4}$, metric step length 0.05, against a control arm with the training's absolute shift $10^{-3}$; every step scored by the exact energy, no in-sample line search (L52). Pre-registered: VIABLE if $R_{\mathrm{trSR}}(15)\ge0.20$, at least 0.15 above the control, and no step raises the exact energy by more than 0.02 of the gap; NOT-VIABLE if $R_{\mathrm{trSR}}(15)<0.08$; MARGINAL otherwise. VIABLE sets the 24-site protocol (with the critic's agreement); NOT-VIABLE closes sampled polishing at about 6 samples per parameter, and R2 can then be decided only at 12 sites (R19, R20).
+* **Outcome**: LIVE (T0 PASS; T1 not yet submitted).
+
+### R22 — balanced coupling-tree (spin-network) basis with a charge determinant (`spin-tree`) (LIVE)
+* **The idea**: Sample in a spin-adapted basis $\lvert c,T\rangle$: each singly occupied site carries spin $\tfrac12$, every other site spin 0, and $T$ lists the intermediate spins of a fixed balanced binary coupling tree over the lattice sites (a k-d tree in 2D), with the root fixed to $S$. Any amplitude $\psi(c,T)=D(c)F_\theta(c,T)$, with $D(c)$ a charge-only determinant and $F_\theta$ any network, is then an exact spin-$S$ eigenstate for every $\theta$, and the commutant lemma does not apply because the basis is not the $S^z$ basis. R0.4 died on "the spin-coupled basis gives a non-sparse Hamiltonian", which holds for sequential coupling (GUGA, Vieijra et al.): a hop crossing $k$ singly occupied sites changes up to $k$ intermediate spins, about $2^k$ connected states. T0 lemma (Wigner–Eckart): the hop $\sum_\sigma c^\dagger_{j\sigma}c_{i\sigma}$ is a rank-0 tensor supported in the subtree of the lowest common ancestor (LCA) of $i$ and $j$, so it changes only the nodes on the two paths to the LCA, at most $2^{d_i+d_j}$ connected states; for a balanced 2D tree this sums to $\mathcal O(L^{2.5})$ per configuration in the worst case, polynomial, against $e^{\mathcal O(W)}$ for sequential coupling on a width-$W$ strip.
+* **Lineage**: translation repair of R0.4 (spin-adapted basis), restoring sparsity by changing the coupling tree; cross-field translation from lattice gauge theory and SU(2) tree tensor networks, Round 20. It is the "tree spin factor" that R2.5's card left open, with a network instead of a tensor network. Gates at T0: G0 narrow PASS (no fermionic or Hubbard version with a balanced tree and a charge determinant found); G1 PASS (exact $S$ by construction, polynomial local energy by the lemma); G2 OPEN and the main risk (exactly singlet constructions without a broken-symmetry Gaussian were 4–7 times worse in job 451886, though those were fixed forms, and Vieijra et al. found the coupled basis more accurate for 1D Heisenberg RBMs); G3 PASS (no Marshall or half-filling assumption; $F$ must learn the sign, which is the Hard Core); G4 PASS on paper, constant to be measured. Falsifier 1 (seconds, no Hilbert space): connected-state count for nearest- and next-nearest-neighbour hops at doping $1/8$ on balanced k-d trees for $L=16$, 64, 256, 1024 sites; KILL at G4 if the fitted exponent exceeds 3, PASS at 2.6 or below, otherwise UNCLEAR with the worst case at $L=1024$ deciding. Falsifier 2 (about 1 CPU-hour plus implementation, only after a pass): at 12 sites, exact sums, $D(c)F_\theta(c,T)$ with $P\approx2637$ and a sign head, ladder-polished; KILL (G2) if $\epsilon_{\mathrm{tree}}\ge1.217\times10^{-3}$ (polished `che`), PASS-T1 if $\le0.6$ of it, AMBIGUOUS otherwise ($P$ is about 0.1 of the sector dimension, below L36's saturation regime).
+* **Source analogy**: In non-Abelian lattice gauge theory the spin-network (electric) basis makes Gauss's law exact and keeps the Hamiltonian local, because recoupling is confined to the links a term touches; Jacobi-tree coupling in nuclear few-body physics does the same for angular momentum; SU(2)-symmetric tree tensor networks (the three-legged T3NS of Gunst, Verstraete and Van Neck, J. Chem. Theory Comput. 14, 2026 (2018); the SU(2)-equivariant tree network for the $J_1$–$J_2$ model, arXiv:2104.14869) use balanced trees. Correspondence: link irreps → intermediate spins; Gauss law → fixed root $S$; plaquette term → hop between leaves. Translation gap: fermions need a sign, and the tree basis has no determinant layer for the spin sector, so $F$ must carry the spin-sector sign while $D(c)$ carries only the charge sign. Prior art checked: Vieijra et al., arXiv:1905.06034 (sequential coupling, 1D spins); arXiv:2104.14869; spin-adapted NNBF with a sum-of-products spin function, arXiv:2604.06841.
+* **Outcome**: LIVE (T0: Gate 0 narrow PASS, Gates 1, 3 and 4 PASS on paper, Gate 2 open); falsifier 1 PENDING (running in `tests/P4.1_cheap_su2_r21/`).
+
+### R23 — frame averaging over a finite subgroup of SU(2) (`frame-avg`) (KILLED)
+* **The idea**: In equivariant machine learning, a non-invariant network becomes exactly invariant by averaging its output over a frame or a finite group (frame averaging, canonicalisation). Average a spin-reading NNBF over the binary octahedral group $2O$ (48 elements) instead of the full SU(2) quadrature, at 48 evaluations independent of $N$.
+* **Lineage**: cross-field translation from ML equivariance, Operation B, Round 20; repaired as R24.
+* **Source analogy**: Puny et al. (frame averaging, arXiv:2110.03336) and Kaba et al. (canonicalisation, arXiv:2211.06489) make networks invariant by averaging over a small, input-dependent set of group elements. Correspondence: input point cloud → spin configuration; rotation → spin rotation. It works there because the group acts on the network's input by a map of inputs to inputs. Translation gap: SU(2) acts on Fock-basis amplitudes by superposition, not by permuting basis states.
+* **Outcome**: KILLED at G1 (2026-11-17).
+* **Kill rule**: Gate 1, here the leaf's exactness requirement $\hat S^2\psi=S(S+1)\psi$ for every $\theta$ at polynomial cost.
+* **Evidence**: (i) Inexact: the trivial irrep of the octahedral group occurs in the spin-$S'$ irreps $S'=0,4,6,8,9,\dots$, so averaging over $2O$ leaves $S'\ge4$ admixtures. (ii) Not cheap: only the $\pi$ rotations (spin flips with phases) permute $S^z$ basis states and have one-term matrix elements; every other element of $2O$ is a rotation $e^{-i\beta\hat n\cdot\mathbf S}$ whose matrix element for a spin-reading network is the orbit sum over $\binom{N_s}{N_s/2}$ spin arrangements (commutant lemma, Lemma B).
+* **Why this kills it**: the cheap part (spin flips) gives only a parity, and the part that would approach exactness costs exponentially; both halves of the requirement fail.
+* **What the kill does not rule out**: averaging over the spin-flip subgroup as a cheap parity symmetry (already standard), and averaging over finite subgroups of the point group, which do permute configurations.
+* **Strongest case against the kill**: the admixtures $S'\ge4$ may lie high in energy and carry negligible weight. Answer: the leaf requires exactness at machine precision (anti-solution (a)), and the cost argument (ii) kills the route independently of (i).
+* **Checked by**: Round 20 worker gate (2026-11-17); not yet reviewed by a critic.
+* **Lesson**: L56 (`library.md`): frame averaging gives exact invariance cheaply only when the group maps inputs to inputs; supports L11.
+
+### R24 — spin-flip averaging plus a Löwdin filter for the residual spins (`frame-avg` repair) (KILLED)
+* **The idea**: Repair R23's translation gap by keeping only the subgroup that acts by permutation (spin flips, which fix the parity under $S^z\to-S^z$) and removing the remaining wrong-spin components with a Löwdin factor $\prod_{S'\in\mathcal K}\big(\hat S^2-S'(S'+1)\big)$ over the set $\mathcal K$ of admixed spins.
+* **Lineage**: translation repair of R23 (replace the component that relied on the group permuting inputs by a polynomial filter in $\hat S^2$), Round 20. No successor.
+* **Source analogy**: as R23 (frame averaging, Puny et al., arXiv:2110.03336); the property that did not carry over was the group's action on inputs, and this repair replaces the continuous average by a polynomial filter. Translation gap: a filter in $\hat S^2$ is not a map of inputs either; each factor connects a configuration to $\mathcal O(N_s^2)$ others.
+* **Outcome**: KILLED at G1 (2026-11-17).
+* **Kill rule**: Gate 1 (exact at polynomial cost).
+* **Evidence**: $\hat S^2$ connects a configuration to $\mathcal O(N_s^2)$ others, so a filter with $\lvert\mathcal K\rvert$ factors costs $\mathcal O(N_s^{2\lvert\mathcal K\rvert})$ amplitudes. Spin-flip parity removes only odd or only even $S'$, so $\lvert\mathcal K\rvert\approx N_s/4$ grows with $N$, and the cost is $N_s^{\mathcal O(N_s)}$. A truncated $\mathcal K$ is inexact, which is R5.2 (truncated Löwdin filter, killed).
+* **Why this kills it**: exactness needs a number of factors that grows with $N$, and each factor multiplies the cost by $\mathcal O(N_s^2)$.
+* **What the kill does not rule out**: nothing new beyond R5.2's scope.
+* **Strongest case against the kill**: none; the repair reduces to a known kill.
+* **Checked by**: Round 20 worker gate (2026-11-17); not yet reviewed by a critic.
+* **Lesson**: L56 and L10 (`library.md`): with R23 it supports L56; a fixed number of filter factors is a finite-size device (L10).
+
+### R25 — projected coupled cluster made exact by an SU(2)-scalar bond Hubbard–Stratonovich decoupling (`pcc-hs`) (KILLED)
+* **The idea**: The exchange $\mathbf S_i\cdot\mathbf S_j=-\tfrac12\chi^\dagger_{ij}\chi_{ij}+(\text{density terms})$, with $\chi_{ij}=\sum_\sigma c^\dagger_{i\sigma}c_{j\sigma}$, can be decoupled in the SU(2)-scalar bond channel: $e^{J\chi^\dagger\chi}=\int d\phi\,e^{-\lvert\phi\rvert^2/J}e^{\phi\chi^\dagger+\phi^*\chi}$. Each field configuration gives a one-body, SU(2)-scalar exponential, which maps a projected Gaussian to a projected Gaussian and commutes with $P_S$, so an extensive coupled-cluster-like exchange correlator $\prod_{\langle ij\rangle}e^{J_{ij}\mathbf S_i\cdot\mathbf S_j}P_S\Phi$ is exactly spin-$S$ for every field and every $J$; unlike R10's spin-channel decoupling, exactness holds field by field.
+* **Lineage**: cross-field translation from spin-projected coupled cluster (the untried entry of the Analogy Map, Barrier A), with this decoupling as its translation repair, Round 20; Operation A on R10 (size-extensive spin Jastrow) and R13 (SU(2)-invariant plaquette exchange correlators). One card, because the bare projected-coupled-cluster form dies at once on L11: $e^{T_2}$ with two-body $T_2$ is non-Gaussian per $c$, and the projector's disentangling is approximate.
+* **Source analogy**: projected coupled cluster (Qiu, Henderson, Zhao and Scuseria, J. Chem. Phys. 147, 064111 (2017), arXiv:1706.06650) combines size-extensive exponentials with symmetry projection; it works there because projective (non-variational) amplitude equations need only low-order overlaps. Translation gap: VMC needs the amplitude itself, exactly, at every configuration.
+* **Outcome**: KILLED at G1 (2026-11-17).
+* **Kill rule**: Gate 1 (polynomial cost with exact, noise-free amplitudes).
+* **Evidence**: the amplitude is $\int d\phi\,w(\phi)\langle x\rvert P_S\Phi(\phi)\rangle$ over one complex field per bond. Sampling $\phi$ puts noisy amplitudes into VMC ratios, with an average phase that decays exponentially in the number of bonds (the auxiliary-field sign problem; L11's variance argument). A fixed quadrature or a saddle point gives a fixed-rank sum of Gaussians (L10) or one Gaussian, which `pcg`'s backflow already contains.
+* **Why this kills it**: exactness per field is kept, but the field integral is the exponential object, so either the cost or the noise is exponential.
+* **What the kill does not rule out**: the same decoupling used as a projector (symmetry-projected auxiliary-field QMC with a `pcg` trial state), which is a different method, not an NQS amplitude.
+* **Strongest case against the kill**: joint sampling of $(x,\phi)$, as in hidden-variable NQS, avoids estimating amplitudes. Answer: the joint weight $w(\phi)\langle x\rvert P_S\Phi(\phi)\rangle$ is not positive, so joint sampling inherits the same sign problem; unresolved only for a positive-definite subclass, not known to exist away from half filling.
+* **Checked by**: Round 20 worker gate (2026-11-17); not yet reviewed by a critic.
+* **Lesson**: L11 (`library.md`; extends its evidence: exactness per auxiliary field does not make the integral cheap).
+
+### R26 — charge variables in a dimer-orbital basis (`bond-basis`) (KILLED)
+* **The idea**: The commutant lemma allows diagonal factors that depend on charge occupations only, but "charge" refers to the sampled orbital basis. Sample in the bonding and antibonding orbitals of a fixed dimer covering: a charge backflow there reads SU(2)-invariant information (bond-orbital occupations) that mixes the site occupation patterns $(1,1)$ and $(2,0)$ on a dimer, which site charges cannot see, and $P_S$ stays closed-form because a Gaussian conditioned on dimer-basis charges is still a Gaussian.
+* **Lineage**: Operation B (frame transformation), Round 20. No successor.
+* **Outcome**: KILLED at G2 (2026-11-17).
+* **Kill rule**: Gate 2 (a cheap baseline or the foil reaches the same metric), here because the route loses its most important correlator.
+* **Evidence**: the site Gutzwiller factor $P_G$ (and the charge Jastrow on site occupations) becomes non-diagonal in the dimer basis; its amplitude is a product of $16\times16$ local transforms over dimers applied to the Gaussian, a sum over about $4^{\#\text{dimers}}$ configurations. At $U=8$ the Gutzwiller and doublon–holon factors are the leading correlators of every exactly projected state in this leaf (mVMC, `che`, `pcg`), so either they are dropped, losing more than the new information gains, or they cost an exponential sum.
+* **Why this kills it**: only factors diagonal in the sampled basis are cheap, and trading site charge for bond charge removes the factor that matters most at strong coupling.
+* **What the kill does not rule out**: weak-coupling regimes, where the Gutzwiller factor matters less (outside the Hard Core's strong-correlation regime).
+* **Strongest case against the kill**: a learned backflow on dimer charges might absorb the Gutzwiller physics; unresolved at T0. Against it: a backflow changes the Gaussian per configuration but cannot remove doubly occupied site weight inside that Gaussian, which is what $P_G$ does, and every projected Gaussian in this leaf without $P_G$ was far worse at $U=8$.
+* **Checked by**: Round 20 worker gate (2026-11-17); not yet reviewed by a critic.
+* **Lesson**: route-specific: it says which basis the commutant lemma refers to, not a mechanism shared with other kills.
+
+## Leaf Status Summary
+* **State**: OPEN
+* **Updated**: 2026-11-17 (job 731462, rung 1: exact polish CONFOUNDED, $\rho_{\mathrm{pol}}=0.761$, R2 stays at T2a flagged; sampled polish SAMPLED-LOSES, $f=-78.6$; the r20 sampled-LM viability T1 GATE-REFUSED(G2); no 24-site sampled rung; then round 20: R19 cutoff-ladder re-polish, R20 same-code rank-5 ablation of `pcg`'s pairing matrix, R21 truncated sampled SR and R22 balanced coupling-tree basis LIVE, R23–R26 KILLED at G1 or G2; the cheap falsifiers of R19, R20 and R22 are running). Earlier: the Round 11 REALISED verdict and the cancellation of R2's 24-site T2b (jobs 699824 and 703587) as optimiser-confounded.
+* **Question**: Can the total-spin sector $S$ be imposed on a determinant- or Pfaffian-based NQS exactly, at cost below the $\mathcal{O}(N_{\mathrm{grid}})$ spin-projection quadrature, without sacrificing backflow expressivity?
+* **Answer**: Partly. Exact total spin stays cheap, 1.3 to 3.6 times the cost of the simplest exactly projected version at 12 to 48 sites, if the backflow network reads only where the charges are, not the spins. We proved that reading the spins makes exact projection exponentially costly in the worst case. On a 12-site cluster the restricted network beat an exactly projected spin-reading one by 35%, but that kind of gain must fade at larger sizes. Its best size-independent form, with a pairing term, is 24% better than without it, too little to rule out an optimiser effect, and no affordable optimiser yet exists to test 24 sites.
+* **Conclusion**: Exact total spin for a neural fermionic wave function is cheap only when every spin-breaking ingredient sits inside a Gaussian per charge configuration; within that class, no tested route has yet shown an accuracy gain that is not confounded by the optimiser, because the SR-trained reference state turned out to sit about half its error above what its own parameters can reach. With both arms polished by exact linear-method steps, R2's broken-symmetry pairing Gaussian keeps a 24% edge over the projected UHF mixture (ratio 0.761), inside the pre-registered confounded band; the sampled version of that optimiser raised the true energy at about 3 samples per parameter, so the 24-site test that would settle R2 has no affordable optimiser yet.
+
+**The question in plain terms.** Neural quantum states (NQS) for the doped Hubbard model build a determinant or Pfaffian whose orbitals depend on the configuration through a neural backflow (NNBF). The ground state has a definite total spin $S$, and imposing it exactly helps accuracy and is needed for sector-resolved physics. The field's tool is spin projection $P_S$ by quadrature, which is cheap only when every correlator reads charges alone. The leaf asked whether exact $S$ can be had at polynomial cost without giving up the spin information that makes spin-resolved networks accurate.
+
+**The mechanism and its boundary.** A one-line commutant lemma settles the structure: a diagonal factor commutes with spin rotations only if it depends on the charge configuration $c$ alone, so projecting a network that reads spins costs a sum over all $\binom{N_s}{N_s/2}$ spin arrangements of $c$ ($N_s$ singly occupied sites), which is #P-hard in the worst case. Lemma B gives the escape: if the state restricted to each $c$ is a sum of $K$ spin-conserving Gaussians, exact $P_S$ costs $K$ closed-form evaluations (Che, arXiv:2608.22925), $\mathcal O(KN^3)$. Ten routes that tried to bring spin information in any other way died at Gates 0 or 1 (cards R0.2, R2.4, R3.2, R4.3, R5.1–R5.3, R5.7, R10, R13): they are exponential, inexact, or reduce to a linear exchange dressing (Lemma A), which is not size-consistent.
+
+**The chain of evidence.** (1) Within the Lemma B class, a rank-8 mixture on one shared charge backflow (`che_k8`, R1) beat an exactly projected spin-resolved NNBF by 35% at matched parameters on the open $4\times3$ cluster ($5+5$, $U=8$, $t'=-0.25$; medians $1.35$ against $2.07\times10^{-4}$ in relative energy error $\epsilon$, 3 seeds, job 508440). (2) A T0 argument, upheld by a critic, shows that a fixed number of superposed components gains $\mathcal O(1)$ in total energy, so the rank gain vanishes per site (R1 KILLED at G4); the 13,000 CPU-hour ladder that would have measured it was cancelled as predictable. (3) The leaf moved the extra structure into one size-consistent Gaussian: R2 `pcg` projects a charge-backflowed singlet-plus-triplet pairing exactly at 3.6 times the per-step cost of `che` at 48 sites (compiled Pfaffian, under the pre-registered limit of 5). At 12 sites and 1000 SR steps it reached $\epsilon=1.28\times10^{-3}$ against $2.86\times10^{-3}$ for `che` and $2.31\times10^{-3}$ for the projection-free singlet foil `r1` ($\rho=0.449$; T2a PASS, exact final energies, parameters matched within 2.2%). (4) At 24 sites the exact-$S$ energy sat on a plateau that neither more width (W FAILS, $0.35\sigma$) nor four times the samples (R15b KILL, $-0.52\sigma$) moved. (5) Round 11 measured the plateau's cause at 12 sites without sampling: one exact linear-method step in the trained `che` tangent space can remove 0.49 of its gap (job 707268), and four damped steps with the parameter metric truncated at a relative cutoff of $10^{-5}$ actually realise 0.539 ($\epsilon$ $2.86\to1.32\times10^{-3}$, no step raising the energy; R18''). The polished `che` therefore matches the unpolished `pcg` ($\rho=0.97$), so step (3) is no longer evidence for R2's frame.
+
+**Why the alternatives fail or are worse.** Ansätze that are exact singlets by construction (`tocchio`, KAGP, SQ-RVB) are 4 to 7 times worse than projecting a broken-symmetry state (job 451886) and are prior art or Tocchio-class (R0.1, R3.4, R4.2). Mixtures whose components vary with $c$ through row scalings (`che_rbm`, R5.5) gained nothing within drift; one head per component (R5.4h) lost to `che`. Rational hidden-fermion heads lost to the affine head at matched parameters (R3iii, $\rho=1.57$). Every size-extending refill (R4, R5, R7, R9, R12, RG1–RG3) dies on the same Gate 4 argument or on cost.
+
+**What this leaf taught beyond itself** (entries of `library.md`): L11 (R0.2 and eight other cards): exact non-Abelian symmetry is polynomial only for ingredients inside a closed-form group-covariant object; L10 (R1, R2.1, R5, R9, R12, RG1, RG2): fixed-rank superpositions give finite-size gains; L11 also covers R4 (a product over patches of component sums needs a #P-hard-type resummation); L33 (R3iii, R4.2, R8, Round 11): separately trained arms compare optimisers as much as ansätze unless polished; L29 (R15d, R18, R18', R18''): truncate the parameter metric in linear-method steps, choosing the cutoff per step by the exact or held-out energy; L52 and L55 (R18'' sampled): a same-sample line search overfits, and a sampled LM with the symmetrised estimator diverges; L1 (RG5): train inside the symmetry sector; L56 (R23, R24): frame averaging and canonicalisation give exact invariance cheaply only when the group maps inputs to inputs, so for SU(2) on Fock amplitudes the only cheap frame is the spin-flip subgroup; R25 extends L11 (exactness per auxiliary field does not make the field integral cheap). The SPRING-momentum result (R15) and the dimer-basis kill (R26) stay route-specific.
+
+**The strongest objection and the answer.** "Four exact steps over 627,264 configurations are not a method." Agreed: the result is a diagnosis of the SR baseline, not a scalable optimiser. Rung 1b tested the sampled version and it lost: at 8192 samples per step (about 3 per parameter) the exact energy rose on every step while the in-sample estimates claimed drops (job 731462, $f=-78.6$); probes with a non-symmetric estimator stopped the divergence but kept only about 30% of the exact step's gain at about 25 samples per parameter. The r20 viability test was refused as predictable. So the leaf has no scalable optimiser that reaches the polished baseline.
+
+**Limits.** All accuracy evidence is from 12-site clusters (one filling for every positive result) plus 24-site SR runs that are now uninterpretable as capacity statements; no route has a measured per-site trend; the optimiser finding is from one parent state (`che`), with `pcg` shown to have slack but not yet polished.
+
+* **Scope**: open $4\times3$ Hubbard cluster, $5+5$ and $4+4$, $U=8$, $t'=-0.25$, $S=0$ in the $(+,+)$ point-group sector, exact sums; $5\times2$ and $4\times2$ toys for T1; 24-site $8\times3$ strips with VMC-SR at 1024 samples per step; per-amplitude cost measured up to 576 sites.
+* **Compute spent**: 6,979 CPU-hours in 20 Slurm jobs by the master compute ledger (2026-11-16 snapshot, which counts 48 CPU-hours for 699824 before its cancellation and nothing for 703587 or 687302); about 98% of it in jobs 508440 (3,214), 451886 (2,013) and 411494 (220) plus cancelled 637776 (1,424). Not in the ledger: job 707268 (under 0.1 CPU-hours used of an 8 CPU-hour cap) and local T0 and T1 work of roughly 2 CPU-hours. Under the compute gate: job 731462, 0.80 CPU-hours of the 300 CPU-hour per-leaf budget registered on 2026-11-17 (plus interactive r20 probes).
+* **Most promising direction**: R2 `pcg`, the exactly projected charge-backflowed pairing Gaussian. Mechanism: one size-consistent broken-symmetry Gaussian carries per-bond spin and pairing structure that a projected UHF lacks, at a bounded cost ratio. For: T2a PASS against SR-trained `che` and `r1`; cost gate PASS; with both arms polished it still leads by 24% ($\rho_{\mathrm{pol}}=0.761$, job 731462). Against: that lead is inside the pre-registered CONFOUNDED band (0.60–0.85), `pcg`'s polish froze with 47% of its metric directions kept (so the ratio may move under a cutoff ladder, R19), the comparison changes frame and backflow form at once (so it cannot credit pairing until the same-code rank-5 ablation R20 runs), and no affordable optimiser exists to test it at 24 sites (the sampled LM lost; the r20 viability test was refused; truncated sampled SR, R21, is the remaining candidate). Outside the Gaussian class, R22 (an exact-$S$ coupling-tree basis whose sparsity lemma gives $\mathcal O(L^{2.5})$ connected states) is the one live escape from L11, with its Gate 2 risk open.
+* **Next step**: the round-20 cheap falsifiers, PENDING (a worker is running them interactively in `tests/P4.1_cheap_su2_r21/`, about 10 CPU-minutes in all): R20 step 1 (truncate `pcg`'s $f_0$ to rank 5 at its polished point; if $\epsilon_{\mathrm{trunc}}\le1.10\,\epsilon_{\mathrm{pcg}}$, R2's pairing mechanism is KILLED at T1); R22 falsifier 1 (connected-state count against $L$ on balanced trees; KILL above exponent 3, PASS at 2.6 or below); R19 (one-step cutoff probe on both endpoints; FROZEN-ARTEFACT, GENUINE or UNCLEAR per arm). Then, by verdict: R21 (truncated sampled SR against the shift control, about 12 CPU-minutes as a quick-note job; decides whether any 24-site rung is possible), R20 step 2 ($\rho_{\mathrm{abl}}$ with ladder-polished arms, 15–30 CPU-minutes), R22 falsifier 2 (about 1 CPU-hour plus implementation). R2 stays at T2a, flagged CONFOUNDED; the R16 and R17 tangent rule at the polished `che` (about 7 CPU-minutes) is still owed. No Slurm job is running for this leaf.
+* **What would close it**: EXHAUSTED at this scale if R16 and R17 die at the polished parent, R22 dies at its gates, and no scalable optimiser (R21 NOT-VIABLE) reaches the polished 12-site baseline (then no exact-$S$ frame can be tested beyond 12 sites, and R2's CONFOUNDED margin stays unsettled), or EXHAUSTED at this budget if such an optimiser exists but its 24-site test is refused by the gate. ANSWERED (scoped) if a scalable optimiser polishes both arms at 24 sites and $\rho_{24}\le0.60$ with a rise of at most 0.15 from 12 sites at equal wall time (critic agreement needed). PROVEN-IMPOSSIBLE is not in reach: the commutant lemma and the worst-case hardness bound the spin-reading class only.

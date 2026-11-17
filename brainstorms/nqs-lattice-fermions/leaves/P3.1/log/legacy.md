@@ -1,0 +1,2275 @@
+# Log: P3.1 (legacy rounds, migrated)
+
+### 2. Candidate Routes & Falsification Gates
+* **Route 1**: Zero-variance extrapolation of $C(r)$ along $p=0,1,2$ statistical Lanczos steps, used as an error bar $\hat\delta=a_{\mathrm{vex}}-a_\psi$.
+  - Gate 0 (Novelty & Adoption): FAIL. This is the established Sorella–Becca scheme (arXiv:cond-mat/0009149; arXiv:cond-mat/0201388, which applies it explicitly to correlation functions). It is not universal for NQS because $p\ge2$ steps cost $\mathcal O(N_{\mathrm{conn}}^{p})$ per sample and because it is silent on near-degenerate admixtures; the route proposes no mechanism that fixes either.
+  - Gate 1 (Conservation & Asymptotics): PASS. Lanczos steps preserve all symmetries of $\psi$; exact for an eigenstate.
+  - Gate 2 (Baseline Gameability): FAIL. A projected-BCS foil in the wrong competing order with low high-energy contamination has its variance reduced by the Lanczos step while $a$ barely moves, so the extrapolation reports a small error.
+  - Gate 3 (Hard-Core Shield): FAIL. Its resolving power for the competing-order admixture is $\propto\Delta$ (see Node Barrier).
+  - *Verdict*: KILLED
+* **Route 2**: Susceptibility (Legendre) certificate $\lvert\delta\rvert\le\sqrt{2\hat\chi_A\hat\varepsilon}$, with $\hat\varepsilon$ from zero-variance-extrapolated energies and $\hat\chi_A$ from the curvature of the energy of a few VMC runs in fields $\hat H+h_k\hat A$.
+  - Gate 0 (Novelty & Adoption): PASS. The inequality is elementary but I found no use of it as an order-parameter certificate for VMC/NQS (searches on susceptibility/Hellmann–Feynman bounds of observables returned only textbook energy-error statements); the concrete new mechanism is replacing the unknowable gap by the measurable $\hat A$-specific $\chi_A$.
+  - Gate 1 (Conservation & Asymptotics): PASS. Exact inequality for any sector-restricted $\psi$; reduces to the Eckart estimate in the two-level case.
+  - Gate 2 (Baseline Gameability): FAIL. $\chi_A$ can only be measured inside the variational family. A Jastrow–projected-BCS family cannot represent the competing-order fluctuation that makes the true $\chi_A$ large, so its constrained-energy profile is stiffer than the truth, $\hat\chi_A<\chi_A$, and the bound shrinks exactly on a wrong foil: it certifies the mean-field order.
+  - Gate 3 (Hard-Core Shield): PASS as an inequality (no gap), but moot after Gate 2.
+  - *Verdict*: KILLED
+* **Route 3**: Pinning/pairing-field response: run VMC at $\hat H-h\hat O$ for several $h$ and extrapolate the induced order parameter to $h\to0$ (Assaad & Herbut, PRX 3, 031010).
+  - Gate 0 (Novelty & Adoption): FAIL. Standard in sign-free QMC; its VMC adoption barrier is ansatz bias at small $h$, and the route has no mechanism against it.
+  - Gate 1 (Conservation & Asymptotics): PASS. Correct $h\to0$, $V\to\infty$ order of limits is well defined.
+  - Gate 2 (Baseline Gameability): FAIL. A projected-BCS state with a built-in gap responds linearly at every $h$ and extrapolates to its own built-in order parameter, which is literally the Unacceptable Outcome.
+  - Gate 3 (Hard-Core Shield): FAIL. The field must be small compared with the competing-order splitting to be non-selective, i.e. $h\ll\Delta$, which is unresolvable at variational precision.
+  - *Verdict*: KILLED
+* **Route 4 (A-Ritz)**: Order-operator-augmented Ritz step. Solve Rayleigh–Ritz for $\hat H$ in the 3-dimensional space $\mathcal K_A=\mathrm{span}\{\psi,\hat H\psi,\hat A\psi\}$ (optionally adding $\hat H\hat A\psi$), with all matrix elements $\langle v_i\vert v_j\rangle$, $\langle v_i\rvert\hat H\lvert v_j\rangle$, $\langle v_i\rvert\hat A\lvert v_j\rangle$, $\langle\hat Hv_i\vert\hat Hv_j\rangle$ estimated by VMC local estimators $(\hat O\psi)(\mathbf n)/\psi(\mathbf n)$ on the same samples. Take the lowest Ritz vector $\phi$ and extrapolate linearly in variance, $a_{\mathrm{vex}}=a_\psi+(a_\phi-a_\psi)\,\sigma^2_\psi/(\sigma^2_\psi-\sigma^2_\phi)$, giving $\hat\delta=a_{\mathrm{vex}}-a_\psi$. A certificate is issued only if the step removes at least half of the variance, $(\sigma^2_\psi-\sigma^2_\phi)/\sigma^2_\psi\ge\tfrac12$; otherwise the method abstains. *Point of departure*: the first-order error is $\delta=2\,\mathrm{Re}\langle\delta\psi\rvert(\hat A-a_\psi)\lvert\psi\rangle+\mathcal O(\lVert\delta\psi\rVert^2)$, so the one direction in Hilbert space that decides $\delta$ is $(\hat A-a_\psi)\psi$. Putting that direction into the Ritz space lets the *energy* (a second-order, variationally safe quantity) decide how much of it the state should carry. In the two-level-plus-noise model, $(\hat A-a_\psi)\psi$ has a component in the near-degenerate plane of size $\sim\sin\varphi\,(a_{11}-a_{00})$ or $a_{01}$, independent of $\Delta$, whereas $(\hat H-E_\psi)\psi$ has only $\sim\Delta\sin\varphi$ there.
+  - Gate 0 (Novelty & Adoption): PASS. The construction is a quantum subspace expansion (McClean, Kimchi-Schwartz, Carter & de Jong, PRA 95, 042308 (2017), DOI 10.1103/PhysRevA.95.042308; generalized QSE, arXiv:2107.02611) and a relative of Sorella's generalized Lanczos (arXiv:cond-mat/0009149). Searches found no use of the *measured order operator itself* as the expansion direction to correct or certify a VMC/NQS correlation function under competing orders; the nearest NQS work (Viteritti et al., arXiv:2604.21978; Levy, Morales & Zhang, arXiv:2308.08594; projected inverse iteration, arXiv:2606.07825) changes the ansatz or optimizer rather than estimating the error. Why QSE is not standard in VMC: arbitrary choice of operators, ill-conditioned noisy generalized eigenproblem, and no decision rule. The route fixes each concretely: the operator is fixed by the observable (the first-order identity above), the space is 3-dimensional with canonical orthogonalization, and the variance-reduction rule turns the output into certificate-or-abstain. Cost per sample is $\mathcal O(N_H N_A)$ connections, with $N_H$ and $N_A$ the numbers of configurations connected by $\hat H$ and $\hat A$, the same order as one statistical Lanczos step.
+  - Gate 1 (Conservation & Asymptotics): PASS. $\hat A$ is translation- and particle-number-conserving, so $\mathcal K_A\subset\mathcal H_\Gamma$; the Ritz energy is a variational upper bound; if $\psi=\psi_0$ then $\phi=\psi_0$ and $\hat\delta=0$ (consistency). Caveat carried to Section 3: like any single global Krylov step, its effect on an extensive error decreases with $V$.
+  - Gate 2 (Baseline Gameability): PASS (to be verified by $G$ in the decisive test). A Jastrow–projected-BCS foil with relative energy error of order $10^{-1}$ has its variance reduced by much less than one half by one step (smoke test: reductions $0.17$, $0.16$ and negative values), so the method abstains instead of certifying it. An exact excited eigenstate $\psi_1$ used as a "foil" is exposed whenever $a_{01}\ne0$, because $\hat A\psi_1$ then contains $\psi_0$ and the Ritz step selects it.
+  - Gate 3 (Hard-Core Shield): PASS. The resolving power comes from matrix elements of $\hat A$ in the near-degenerate subspace, not from $\Delta$; no assumption of half filling, $t'=0$, 1D or weak coupling; the test instances are doped ($\delta=1/6$ to $1/3$), $t'\ne0$, $U=8t$, with a fixed-$(N_\uparrow,N_\downarrow)$ gap as low as $0.029t$ on the $4\times3$ cylinder (round-3 correction: the irrep of that level was never checked, so this is not evidence of a same-irrep competitor).
+  - *Verdict*: SURVIVED
+### 3. Top Surviving Route & Sharpest Gap
+* **Mechanism**: A-Ritz. Augment the one-Lanczos-step subspace with $\hat A\psi$, where $\hat A$ is the very correlation operator whose error is wanted; let Rayleigh–Ritz in $\mathrm{span}\{\psi,\hat H\psi,\hat A\psi\}$ choose the energetically preferred amount of the error direction $(\hat A-a_\psi)\psi$; report $\hat\delta=a_{\mathrm{vex}}-a_\psi$ only if the step removes at least half of the variance, otherwise abstain. The order-parameter correction is thereby decided by the energy, which is second order in the wave-function error, instead of by the first-order expectation value, and the near-degenerate plane is resolved through $\hat A$ instead of through $\Delta$.
+* **Sharpest Gap**: the *$\hat A$-filter ratio* $\rho_A=\lVert P_{\mathrm{low}}(\hat A-a_\psi)\psi\rVert/\lVert(\hat A-a_\psi)\psi\rVert$, where $P_{\mathrm{low}}$ projects on the near-degenerate same-sector subspace, is unproven to be $\mathcal O(1)$. $\hat A$ is a sum of $\sim V$ local terms, each of which also creates high-energy excitations, so $\rho_A$ may decay with $V$ and the Ritz step may then mostly fight high-energy junk again (the own4 variant with $\hat H\hat A\psi$ is the fallback filter, at cost $\mathcal O(N_H^2N_A)$ per sample). Secondary unverified assumptions: (i) the variance-reduction trust rule separates good from bad certificates; (ii) VMC noise in the $3\times3$ generalized eigenproblem is controllable at realistic sample counts; (iii) contamination in *other* symmetry sectors is invisible to $\hat A$, so the method needs exactly symmetric trial states (dependency on P4.1).
+### 4. 24-Hour Decisive Test & Compute Execution
+* **Minimal Instance**: Doped $t$–$t'$–$U$ Hubbard clusters with $U=8t$, $t'\in\{-0.35,-0.25,-0.15\}t$, $N_\uparrow=N_\downarrow$: $4\times3$ cylinder with $N_e=8$ (fixed-$(N_\uparrow,N_\downarrow)$ gaps $0.029t$, $0.087t$, $0.15t$ at $t'=-0.25t$; irreps not checked, see the round-3 correction), $4\times3$ torus with $N_e=8$ and $N_e=10$, and $6\times2$ cylinder with $N_e=8$ (Hilbert dimensions $2.45\times10^5$ to $6.27\times10^5$; ED by scipy Lanczos). Observables: $d$-wave pair, spin and charge correlations at the largest displacement $r=(\lfloor L_x/2\rfloor,\lfloor L_y/2\rfloor)$. Trial-state families: **nd**, $\psi_0+s\,\psi_k$ with $\psi_k$ one of the lowest three same-sector excited states with $\langle k\rvert\hat A\lvert0\rangle\ne0$, plus multiplicative amplitude noise $\psi_0(\mathbf n)\,\eta\,\xi_{\mathbf n}$, with $\xi_{\mathbf n}\sim\mathcal N(0,1)$, $s\in\{0.1,0.3,0.6\}$ and $\eta\in\{0,0.1,0.3\}$; **amp**, $\psi_0\,e^{\sum_d g_dJ_d+\eta\xi}$ with random symmetric Jastrow couplings $g_d$ on density–density features $J_d$, plus sign flips on a fraction $f\in\{0,0.05,0.2\}$ of the smallest-amplitude configurations (NQS-like amplitude and sign errors); **mf**, the Minimal Contrast Foil: Gutzwiller–Jastrow projected $d$-wave BCS pair-product state from a real-space BdG mean field, energy-optimized by Nelder–Mead, plus copies with wrong pairing amplitude $\Delta_d\in\{0,0.05,0.6,1.2\}$.
+* **Scalar Metric $M$**: For each trial state $s$ and observable, $\delta_s=a_0-a_{\psi_s}$ (exact) and $\hat\delta_s=a_{\mathrm{vex}}-a_{\psi_s}$ (A-Ritz, own3 subspace, exact matrix elements). Only states with $\lvert\delta_s\rvert>0.05\max(\lvert a_0\rvert,10^{-3})$ are scored. State $s$ is *tracked* iff it is trusted (variance reduction at least $\tfrac12$) and $\tfrac12\le\hat\delta_s/\delta_s\le2$; it is a *false certificate* iff it is trusted and $\hat\delta_s/\delta_s<\tfrac12$ (this includes the wrong sign). Then
+$$M=\frac{\#\{\text{tracked states in nd}(\eta>0)\cup\text{amp}\}}{\#\{\text{scored states in nd}(\eta>0)\cup\text{amp}\}},$$
+$M_L$ is the same quantity for the one-Lanczos-step baseline $\mathrm{span}\{\psi,\hat H\psi\}$ with the identical extrapolation and trust rule, and $G$ is the false-certificate fraction of A-Ritz over all scored states, foil included.
+* **Execution Plan**: Code: `/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error/micro_test.py` (pure numpy/scipy; operators applied as $\Psi\mapsto U\Psi D^{T}$ on the $(\dim_\uparrow\times\dim_\downarrow)$ amplitude matrix; `--mc_samples` switches every matrix element to its VMC local estimator). Job script: `/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error/submit_test.sbatch` (partition `kim`, 4 CPUs, 16 GB, 12 h; logs next to the script). Command (not run): `sbatch /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error/submit_test.sbatch`. Expected wall time about 1–2 h (timed on the login node: one $\hat A_{\mathrm{pair}}$ application at dimension $6.27\times10^5$ takes $0.67$ s, one $\hat H$ application $0.02$ s).
+* **Thresholds**: PASS: $M\ge0.70$ and $M-M_L\ge0.20$ and $G\le0.05$. FAIL: $M<0.50$ or $M-M_L<0.05$ or $G>0.15$. AMBIGUOUS (anything else): pre-committed action is to rerun once with `--subspace own4 --mc_samples 100000` (commented line in the sbatch); if that is not PASS, the route is killed, and if it is PASS, the route survives with the $\mathcal O(N_H^2N_A)$ cost caveat recorded.
+* **Smoke-test evidence**: Correctness checks on the $4\times2$ cylinder ($N_e=4$, $U=8t$, $t'=-0.25t$, dimension 784): $\langle\hat{\mathbf S}^2_{\mathrm{tot}}\rangle=0$ for the ED ground state (validates the spin-flip fermion signs), all $\hat A$ Hermitian to $10^{-18}$, and the projected-BCS construction reproduces the $U=0$ ED energy ($-9.99999886$ vs $-10$ on the $4\times2$, $N_e=6$ cluster). Command run (about 0.2 s): `/share/apps/software/anaconda3/bin/python3 micro_test.py --quick --clusters "4,2,4,cyl" --out none`. Literal output (tail, verbatim lines; zero-count family rows, the column-header separator line and five of the eight sample rows omitted for length):
+
+```
+obs pair: r=(2,1)  a0=+1.932121e-02  hermiticity_err=5.5e-19
+obs spin: r=(2,1)  a0=+1.700269e-02  hermiticity_err=2.8e-19
+obs charge: r=(2,1)  a0=+2.423567e-01  hermiticity_err=0.0e+00
+A-coupled excited states (E-E0, max|<k|A|0>|): 
+foil optimized: E_mf=-5.580347 (rel err 1.501e-01) params=[-0.006, 0.116, -1.149, -0.003, 0.01]  (0.0s)
+instance done: 4 states x 3 observables (0.2s)
+--- per-family breakdown (estimator=vex) ---
+family   obs        n | A: tracked untrusted false over | L1: tracked untrusted false over
+amp      pair       1 | A:    1    0    0    0    | L1:    1    0    0    0
+mf       pair       3 | A:    0    3    0    0    | L1:    0    3    0    0
+mf       spin       3 | A:    0    3    0    0    | L1:    0    3    0    0
+mf       charge     1 | A:    0    1    0    0    | L1:    0    1    0    0
+fam  obs        fid     d_true      dhatA      dhatL   redA   redL
+amp  pair    0.9861 +2.759e-03 +3.013e-03 +3.433e-03  0.881  0.882
+mf   pair    0.5398 -1.818e-02 -7.892e-02 -6.315e-02  0.181  0.172
+mf   spin    0.5398 +4.271e-02 +3.790e-02 +8.957e-02 -0.022  0.172
+M (A-Ritz own3, tracked fraction, near-GS families) = 1.000  (n=1)
+M_L (L1 baseline)                                       = 1.000
+G (A-Ritz false-certificate fraction, all families)      = 0.000  (n=8);  G_L1 = 0.000
+total time 0.2s
+VERDICT: FAIL
+```
+
+  The smoke verdict is not evidence for or against the route: this cluster has no $\hat A$-coupled state among the 12 lowest levels (empty nd family) and only one scored near-ground-state state, so $M-M_L=0$ fails trivially. It shows that the pipeline runs end to end and that the foil is abstained on (all mf rows "untrusted", $G=0$). Note found while smoke-testing: on the $4\times2$ cylinder with $N_e=6$ and the $6\times2$ cylinder with $N_e=10$ the ED ground state lies in a symmetry sector orthogonal to the projected-BCS foil (fidelity 0), so those clusters were excluded from the decisive run.
+### 5. Local Autopsy Log
+* **Route 1 (Lanczos-step variance extrapolation of $C(r)$)**: killed at Gate 0 (it is the published Sorella–Becca scheme, no new mechanism) and Gate 3. Fatal mechanism: the Krylov direction $(\hat H-E_\psi)\psi$ weights each contaminant by its excitation energy, so a competing-order admixture at splitting $\Delta$ is reached only with weight $\propto\Delta$; the step removes high-energy junk, the variance collapses, and the extrapolation certifies the wrong order.
+* **Route 2 (susceptibility/Legendre certificate $\sqrt{2\chi_A\varepsilon}$)**: killed at Gate 2. Fatal mechanism: $\chi_A$ is only accessible through the variational family; a mean-field-anchored family is stiffer along the competing-order direction than the true ground state, so it under-estimates $\chi_A$ and narrows the bound precisely when it is wrong.
+* **Route 3 (pinning/pairing-field response extrapolation)**: killed at Gates 0, 2 and 3. Fatal mechanism: an ansatz with built-in order responds to the field with its own order at every $h$, so $h\to0$ returns the mean-field reference; a non-selective field needs $h\ll\Delta$, below variational resolution.
+### Round 2 — Mutation & Replenishment (2026-11-11)
+**Binding inputs.**
+* **Critic.**
+    * The round-1 test favoured A-Ritz by construction: contaminants were chosen with $\langle k\rvert\hat A\lvert0\rangle\ne0$, and the noise was white and multiplicative.
+    * The trust rule (variance halved) made the false-certificate rate $G$ trivial, because the foil and every realistic state were abstained on.
+    * Matrix elements were exact.
+    * For diagonal $\hat A$, the direction $\hat A\psi$ is a Jastrow derivative that the linear method already spans. The claim is therefore restricted to off-diagonal $\hat A$ (pairing).
+* **P1.1 (job 329057)**, on the three $4\times3$ PBC clusters:
+    * 71–93% of the $d$-wave pair-correlation error of width-128 NNBF is carried by the sign structure.
+    * Widening the network from $H=8$ to $H=128$ hidden units cuts the amplitude energy error by 3.4–4.9, but the sign energy error only by 1.2–1.6.
+    * The P1.1 JSONs show the scale: on the $N_\uparrow=N_\downarrow=4$ cluster the largest long-range bond-pair error of NNBF-128 is $0.025$, against a ground-state $d$-wave correlation of $0.020$. The NNBF pairing error is as large as the signal itself.
+
+**Notation used below.**
+* $\psi$ is a normalized trained state, $E_\psi=\langle\hat H\rangle_\psi$ and $\sigma_\psi^2=\langle\hat H^2\rangle_\psi-E_\psi^2$.
+* The order operator is the translation- and orientation-averaged long-range $d$-wave pair correlation
+$$\hat A=\frac{1}{N_{\mathrm p}}\sum_{(b_0,b):\,d(b_0,b)\ge r_{\min}}\eta_{b_0}\eta_b\,\hat\Delta_{b_0}^\dagger\hat\Delta_b,$$
+where:
+    * $b_0,b$ run over nearest-neighbour bonds and $d(b_0,b)$ is the distance between bond centres, with $r_{\min}=1.5$;
+    * $\eta_b=+1$ for $x$ bonds and $-1$ for $y$ bonds;
+    * $N_{\mathrm p}$ is the number of ordered bond pairs kept;
+    * $\hat\Delta_b$ is the singlet pair annihilator on bond $b$ (P1.1 convention).
+* $a_\psi=\langle\hat A\rangle_\psi$, $a_0=\langle\hat A\rangle_{\psi_0}$, and the true error is $\delta=a_0-a_\psi$.
+* Every arm produces an improved state $\phi$, and the pre-committed first-order estimate is
+$$\hat r=1-\frac{\sigma_\phi}{\sigma_\psi},\qquad \hat\delta=\frac{a_\phi-a_\psi}{\hat r}.$$
+It follows from $\psi=\psi_0+e$ and $\phi\approx\psi_0+(1-r)e$, where $r$ is the fraction of the error vector $e$ that the step removes and both $a$ and $\sigma$ are first order in $e$.
+* The round-1 rule, linear in $\sigma^2$, mixed a first-order quantity with a second-order one. It under-stated $\delta$ by about a factor of two whenever $\hat r$ was small.
+* **Generation Batch 2**:
+  - **Route 2.1 (Mutated from Route 4 via Operation A.3)**: *A-Ritz on real states with an abstention-penalized trust rule.*
+    * **Step**: Ritz step of $\hat H$ in $\mathrm{span}\{\psi,\hat H\psi,\hat A\psi\}$, off-diagonal $\hat A$ only, with the first-order estimate $\hat\delta$ above.
+    * **Estimation**: every matrix element is estimated as a VMC code would, $\langle v_i\rvert\hat O\lvert v_j\rangle\approx\overline{(v_i/\psi)(\hat Ov_j/\psi)}$ over $N_s=2\times10^5$ samples $\mathbf n\sim\lvert\psi\rvert^2$. This keeps the heavy tails of $\langle\hat H\hat A\psi\vert\hat H\hat A\psi\rangle$.
+    * **Trust rule**: a certificate is issued iff $\hat r\ge0.05$ (about 10% variance reduction, instead of 50%) and the bootstrap relative standard error of $\hat\delta$ is at most $0.5$.
+    * **Scoring**: abstentions count as failures, and the arm must cover at least half of the NNBF states, so abstaining is no longer free.
+    * **Why A.3**: it retargets the gate that failed (gameability by abstention). The witness is now the amount of the order direction $(\hat A-a_\psi)\psi$ chosen by the energy, measured on states that a real optimizer produced.
+    - Gate 0 (Novelty & Adoption): PASS (restricted claim).
+      * Nearest prior art: the subspace is a quantum subspace expansion (McClean et al., PRA 95, 042308, 2017) and a cousin of the linear method (Toulouse & Umrigar, J. Chem. Phys. 126, 084102, 2007, arXiv:physics/0701039), whose space is $\{\psi,\partial_\theta\psi\}$.
+      * For an off-diagonal pair-hopping $\hat A$, $\hat A\psi$ is not in the tangent space of NNBF or Slater–Jastrow: no parameter derivative moves a pair across $r\ge r_{\min}$ while weighting it by the amplitude ratio $\psi(\mathbf n')/\psi(\mathbf n)$. The critic's diagonal-$\hat A$ objection does not apply.
+      * The zero-variance zero-bias estimators of Assaraf & Caffarel (arXiv:cond-mat/9911396; arXiv:physics/0310035) reduce variance, but their bias stays linear in the trial-function error. They do not estimate $\delta$.
+      * Why QSE is not used for VMC error bars: the operator choice is arbitrary, the noisy generalized eigenproblem is ill-conditioned, and there is no decision rule. The route fixes the operator by the observable, bootstraps the noise, and uses a decision rule that pays for abstention.
+    - Gate 1 (Conservation & Asymptotics): PASS.
+      * $\hat A$ conserves $N_\uparrow$, $N_\downarrow$ and total momentum.
+      * The Ritz energy is variational, and $\psi=\psi_0$ gives $\phi=\psi_0$.
+      * The first-order rescaling is consistent to leading order in $e$.
+    - Gate 2 (Baseline Gameability): PASS (to be verified; the test can now fail).
+      * The foil is scored like every other state, and an abstention lowers $M$.
+      * $\mathrm{Cov}\ge0.5$ is required on NNBF.
+      * Two Lanczos steps (L2, at least as costly per sample) serve as a matched-budget control.
+    - Gate 3 (Hard-Core Shield): PASS.
+      * A near-degenerate admixture is resolved through $\langle\psi_1\rvert\hat A\lvert\psi_0\rangle$, not through $\Delta$.
+      * (Retracted in round 3: the $N_\uparrow=N_\downarrow=4$ instance has no same-irrep competitor; its lowest excitation is a triplet at another momentum.)
+      * The test records the overlap weights $\lvert\langle\psi_k\vert\psi\rangle\rvert^2$ with the four lowest ED states, so it shows whether real NNBF states carry that admixture.
+    - *Verdict*: SURVIVED
+  - **Route 2.2 (Orthogonal replenishment via Operation B.1, frame transformation from Krylov space to sign-gauge space)**: *Sign-defect Ritz.*
+    * **Definitions**:
+      * Local sign-consistency field: $\kappa(\mathbf n)=(\hat H_{\mathrm{off}}\psi)(\mathbf n)/\psi(\mathbf n)$, with $\hat H_{\mathrm{off}}=\hat H-\mathrm{diag}\,\hat H$.
+      * Sign-defect set: $F_\tau=\{\mathbf n:\kappa(\mathbf n)>\tau\}$, for a threshold $\tau\ge0$ in units of $t$.
+    * **Exact lemma**: take any eigenstate with energy $E_k<\min_{\mathbf n}H_{\mathbf n\mathbf n}$. Here this holds because $E_k<0\le U\,n_{\mathrm{dbl}}(\mathbf n)$, where $n_{\mathrm{dbl}}(\mathbf n)$ is the number of doubly occupied sites. Then $\kappa(\mathbf n)=E_k-H_{\mathbf n\mathbf n}<0$ on every configuration with $\psi_k(\mathbf n)\ne0$, so $F_0=\emptyset$. $F_\tau$ is therefore a zero-bias witness of *sign* error, and it costs nothing beyond the local energy.
+    * **Step**: augment the Lanczos space with the restriction of $\psi$ to that set, $\mathrm{span}\{\psi,\hat H\psi,P_{F_\tau}\psi\}$, where $P_F$ projects on the configurations in $F$.
+      * $\tau\in\{0,0.5,1,2\}$ is chosen by minimal Ritz energy.
+      * The Ritz coefficient on $P_F\psi$ may be below $-1$, so the energy decides whether, and how strongly, the defect configurations flip sign.
+      * $\hat\delta$, the trust rule and the metric are those of Route 2.1.
+    * **Motivation (P1.1)**: the pairing error is carried by the sign and does not shrink with width. An estimator that can only rescale amplitudes (Lanczos, fixed node) is therefore blind to most of it by construction.
+    - Gate 0 (Novelty & Adoption): PASS.
+      * Nearest work: supervised wave-function optimization towards $(1-\tau\hat H)\psi$ (Kochkov & Clark, arXiv:1811.12423), the self-learning power method (arXiv:2303.08902), sign-structure learning (Szabó & Castelnovo, arXiv:2002.04613), and ten Haaf fixed node, which deletes sign-violating hops (PRB 51, 13039).
+      * All of these either *train* a sign or *freeze* it. None uses the local sign-consistency set as a Ritz direction, and none uses it to estimate the error of a correlation function. A search for a power-method or one-step sign correction used as an error estimate found nothing.
+      * It avoids the killed anti-pattern "power-method sign refitting" (refitting a sign network to a power step): nothing is refit, and only one direction is added, with its weight set by the energy.
+    - Gate 1 (Conservation & Asymptotics): PASS.
+      * $P_F$ is diagonal in the occupation basis. It conserves $N_\uparrow$, $N_\downarrow$ and every diagonal quantum number, and breaks translation only where $\psi$ already does.
+      * By the lemma, the arm reduces to one Lanczos step on an exact eigenstate.
+      * Cost per sample, with $N_H$ and $N_A$ the numbers of configurations connected by $\hat H$ and $\hat A$:
+        * $(\hat HP_F\psi)(\mathbf n)$ needs $\kappa$ at each $\hat H$-neighbour, i.e. $\mathcal O(N_H^2)$ amplitude ratios, the same as one Lanczos step;
+        * $(\hat AP_F\psi)$ needs $\mathcal O(N_AN_H)$, the same as A-Ritz.
+    - Gate 2 (Baseline Gameability): PASS (to be verified).
+      * The foil's error is 67–76% amplitude (P1.1), so the sign-defect direction should add little for it.
+      * On the foil the route must then either abstain (counted as a miss) or fall back to the Lanczos value. It cannot score on the foil for free.
+      * L1 and L2 run on identical samples.
+    - Gate 3 (Hard-Core Shield): PASS, with a declared scope.
+      * The sign half is retained: $F_\tau$ is non-empty only because $\hat H_{\mathrm{off}}$ has both signs (doped, $t'\ne0$, 2D).
+      * For the competing-order half the lemma cuts both ways. A near-degenerate admixture $\cos\varphi\,\psi_0+\sin\varphi\,\psi_1$ has $\kappa=E_0-H_{\mathbf n\mathbf n}+\mathcal O(\Delta)$, so $F_\tau$ cannot see it and the arm collapses to L1 on such states.
+      * The route is therefore declared a *sign-channel* estimator.
+      * The test keeps the $N_\uparrow=N_\downarrow=4$ instance. (Retracted in round 3: it has no same-irrep competitor, so it cannot probe an admixture.)
+      * It also reports the combined arm $\mathrm{span}\{\psi,\hat H\psi,\hat A\psi,P_F\psi\}$ (secondary, AS), which composes this route with Route 2.1.
+    - *Verdict*: SURVIVED
+  - **Route 2.3 (Operation B.3, translation of current NQS practice)**: cross-width zero-variance extrapolation. Fit $a_k$ against $\sigma_k^2$ over network widths $k$ and read off $\sigma^2\to0$. This is how NNBF correlation biases are judged in practice, e.g. Loehr & Clark, arXiv:2510.26906.
+    - Gate 0: FAIL; it is current practice.
+    - Gate 2: FAIL, by the P1.1 mechanism:
+      * width removes the amplitude error, so $\sigma^2$ falls 2–3-fold;
+      * the sign-borne pair error barely moves: on the $N_\uparrow=N_\downarrow=4$ cluster the largest bond error goes from $0.0273$ at $H=8$ to $0.0255$ at $H=128$;
+      * so the fit finds a small slope and under-states $\delta$.
+    - *Verdict*: KILLED. It stays in the test as control arm XW with a pre-registered prediction: XW under-states ($\hat\delta/\delta<1/2$) on at least two thirds of the widest-NNBF states.
+  - **Route 2.4 (first draft of 2.2)**: replace the signs wholesale, $\tilde\psi=\lvert\psi\rvert\,\mathrm{sgn}(-\hat H_{\mathrm{off}}\psi)$, and report $a_{\tilde\psi}-a_\psi$.
+    - Gate 0: FAIL. Replacing every sign by one power step is the power-method sign refit from the anti-pattern list.
+    - Gate 1: FAIL. There is no variational control: on a gapless spectrum, a wholesale one-step sign map can raise the energy, and nothing decides how much of the flip to keep.
+    - *Verdict*: KILLED. Mutated into 2.2, where the Ritz energy decides the flip amplitude.
+  - **Route 2.5**: use a fixed-sign amplitude correction as the error bar, $\hat\delta=a_{\mathrm{FN}}-a_\psi$. Here $a_{\mathrm{FN}}$ is the pair correlation of the ten Haaf fixed-node state or of the sign-constrained optimum; lattice FN-GFMC makes this scalable.
+    - Gate 2: FAIL on P1.1's own data. The sign-constrained optimum keeps $f_C=$ 71–93% of the NNBF-128 pair error. This estimator therefore recovers at most 7–29% of $\delta$, an under-statement by a factor of 3.5 to 14.
+    - *Verdict*: KILLED.
+  - **Route 2.6**: zero-variance zero-bias improved estimators of $\langle\hat A\rangle$ (Assaraf & Caffarel).
+    - Gate 0: FAIL. The method is established, and its bias is linear in the trial-function error, so it sharpens $a_\psi$ but does not estimate $\delta$.
+    - *Verdict*: KILLED.
+### Top Surviving Route & Sharpest Gap (Round 2)
+* **Mechanism**:
+    * **Route 2.1 (top survivor, A-Ritz on real states)**:
+        * one Ritz step of $\hat H$ in $\mathrm{span}\{\psi,\hat H\psi,\hat A\psi\}$, with the off-diagonal pairing operator $\hat A$;
+        * first-order rescaling $\hat\delta=(a_\phi-a_\psi)/(1-\sigma_\phi/\sigma_\psi)$;
+        * a certificate iff $\hat r\ge0.05$ and the bootstrap relative error is at most $0.5$;
+        * abstentions count as misses.
+    * **Route 2.2 (second survivor, sign-defect Ritz)**: the same step with $P_{F_\tau}\psi$ in place of $\hat A\psi$. $F_\tau$ is the set where the local sign-consistency field $\kappa$ is positive, which is empty for every low eigenstate.
+    * **Contrast**: Route 2.1 targets the order direction and does not depend on $\Delta$. Route 2.2 targets the sign defects that P1.1 identified as the carrier of the pairing error, and does not depend on the observable.
+* **Sharpest Gap**: *first-order regime on realistic states.*
+    * The NNBF pair error is as large as $a_0$ itself (P1.1), while one step removes only a fraction $\hat r$ of the error vector (0.23–0.60 in the smoke run).
+    * The rescaling $1/\hat r$ is exact only if the step shrinks every component of $e$ uniformly.
+    * P1.1 puts the sign error on a fraction $w_{\mathrm{sign}}\approx0.2$ of the weight. The step may shrink the high-energy amplitude part much faster than that sign part.
+    * $\hat\delta$ would then under-state $\delta$ with a small bootstrap error, which is a false certificate.
+* **Secondary gaps**:
+    * The filter ratio $\rho_A=\lVert P_{\mathrm{low}}(\hat A-a_\psi)\psi\rVert/\lVert(\hat A-a_\psi)\psi\rVert$ is still not proven to stay $\mathcal O(1)$ as $V$ grows. Here $P_{\mathrm{low}}$ projects on the near-degenerate same-sector subspace.
+    * The MC noise of $\langle\hat H\hat A\psi\vert\hat H\hat A\psi\rangle$: in the smoke run only a third of the states pass the bootstrap rule.
+    * For Route 2.2: are NNBF sign defects locally visible ($F_\tau\ne\emptyset$), or do they form coherent domains on which $\kappa<0$? The latter is the same blindness as for a competing eigenstate.
+### 24-Hour Decisive Test (Round 2)
+* **Minimal Instance**: the three P1.1 clusters, $4\times3$ PBC with $t'=-0.25t$, Hilbert dimensions $2.45\times10^5$ to $6.27\times10^5$:
+    * $N_\uparrow=N_\downarrow=5$ at $U=8t$;
+    * $N_\uparrow=N_\downarrow=4$ at $U=8t$. (Round-3 correction: the competitor once cited here is a spin triplet at another momentum, not a same-irrep state; inside $\psi_0$'s irrep the next level is $0.515t$ up.)
+    * $N_\uparrow=N_\downarrow=5$ at $U=4t$.
+* **Test population (real, not synthetic)**:
+    * **States**: the Slater–Jastrow foil and NNBF of widths 8, 32 and 128.
+    * **Training**: the identical P1.1 code, seed and hyper-parameters (exact-force SR, 1500 iterations).
+        * The P1.1 random-number draw is replicated, so the final states reproduce P1.1's.
+        * The final $\Delta E$ is cross-checked against the P1.1 JSON.
+    * **Snapshots**: SR iterations 300 and 750 plus the final state, i.e. 12 states per instance and 36 in total (9 foil, 27 NNBF).
+    * **Diagnostics recorded per state**:
+        * $\lvert\langle\psi_k\vert\psi\rangle\rvert^2$ for the four lowest ED states;
+        * the sign-mismatch weight.
+* **Arms**:
+    * AR: Route 2.1.
+    * SR: Route 2.2.
+    * AS: both directions (secondary).
+    * L1: one Lanczos step.
+    * L2: two Lanczos steps, a matched-or-larger per-sample budget.
+    * XW: cross-width variance extrapolation, always trusted.
+    * L1 and L2 use the same estimator and trust rule as AR and SR.
+* **Scalar Metric $M$**:
+    * A state is *scored* if $\lvert\delta\rvert>0.05\lvert a_0\rvert$.
+    * Per arm $X$:
+        * *tracked*: trusted and $\tfrac12\le\hat\delta/\delta\le2$;
+        * *false*: trusted and $\hat\delta/\delta<\tfrac12$;
+        * $M_X$ = tracked/scored, with abstentions counted as misses;
+        * $G_X$ = false/scored;
+        * $\mathrm{Cov}_X$ = trusted fraction of the scored NNBF states.
+    * Baseline: $B=\max(M_{L1},M_{L2})$.
+    * Also reported: the Spearman correlation of $\lvert\hat\delta\rvert$ with $\lvert\delta\rvert$.
+    * Primary mode is Monte Carlo ($N_s=2\times10^5$, 100 bootstraps). Exact matrix elements are reported alongside.
+* **Thresholds**, per route, pooled over the three instances:
+    * PASS: $M_X\ge0.5$ and $M_X-B\ge0.2$ and $G_X\le0.10$ and $\mathrm{Cov}_X\ge0.5$.
+    * FAIL: $M_X<0.3$ or $M_X-B<0.05$ or $G_X>0.20$.
+    * AMBIGUOUS otherwise. Pre-committed action: rerun with $N_s=2\times10^6$ and a new sampling seed. A route that is still not PASS is killed.
+* **Pre-registered prediction (from P1.1, not a route verdict)**: XW under-states on at least two thirds of the widest-NNBF states. If it does not, the P1.1-based reading of current practice is wrong, and that is recorded in the master.
+* **Execution Plan**:
+    * **Code**: `/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r2/micro_test.py`. It copies P1.1's ED, NNBF and SR verbatim, and adds:
+        * the matrix-free pair operator (checked Hermitian to $10^{-16}$, and equal to the explicit bond-pair sum to $10^{-18}$);
+        * the sign-witness check ($\max\kappa(\psi_0)<0$);
+        * the five Ritz arms and XW;
+        * MC emulation with bootstrap;
+        * `--aggregate`.
+    * **Job**: `submit_test.sbatch` in the same folder: array 0–2 (one task per instance), partition `kim`, 8 CPUs, 32 GB, 24 h.
+    * **Cost**:
+        * Training is identical to P1.1 job 329057: 9.2 h, 3.3 h and 7.1 h for the three instances.
+        * The analysis adds about 10 s per state. Measured at $D=2.45\times10^5$ on the login node, one $\hat A$ application takes 0.05 s and one $\hat H$ application 0.015 s.
+    * **Command** (not run): `cd /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r2 && sbatch submit_test.sbatch`.
+    * **Reading the verdict**: `python3 micro_test.py --aggregate results`.
+* **Smoke-test evidence**: a code check only, on a cluster without the Hard Core.
+    * **Instance**: $3\times2$ (periodic in $x$, open in $y$), $N_\uparrow=N_\downarrow=2$, $U=8$, $t'=-0.25$, $D=225$.
+    * **Settings**: 40 SR iterations, $N_s=5000$, $r_{\min}=1$. Wall time 26 s.
+    * **Command**: `/share/apps/software/anaconda3/bin/python3 micro_test.py --Lx 3 --Ly 2 --bcx pbc --bcy obc --nup 2 --ndn 2 --tp -0.25 --U 8 --widths 4,8 --sr-iters 40 --mc-samples 5000 --n-boot 20 --r-min 1.0 --out smoke/smoke.json --overwrite 1`.
+    * **Literal output**: verbatim lines (the checks, then the metric blocks); the per-state tables are omitted for length.
+
+```
+[10:42:14] ALL CHECKS PASSED
+[10:42:14] check PairOp: hermiticity 1.11e-16  vs explicit bond sum 1.73e-18
+--- this instance [exact]  scored=9 (NNBF 6)
+arm   M      G      trusted  Cov(NNBF)  spearman
+L1   0.556  0.333  0.889    1.000      -0.300
+L2   0.556  0.111  0.889    1.000      -0.100
+AR   0.778  0.000  0.889    1.000      +0.083
+SR   0.556  0.333  0.889    1.000      -0.300
+AS   0.778  0.000  0.889    1.000      +0.083
+XW (cross-width extrapolation): under-states on 3/3 widest-NNBF states
+--- this instance [mc]  scored=9 (NNBF 6)
+arm   M      G      trusted  Cov(NNBF)  spearman
+L1   0.222  0.333  0.556    0.667      -0.184
+L2   0.556  0.111  0.667    0.833      -0.333
+AR   0.333  0.000  0.333    0.500      +0.052
+SR   0.222  0.333  0.556    0.667      -0.184
+AS   0.333  0.000  0.333    0.500      +0.052
+XW (cross-width extrapolation): under-states on 3/3 widest-NNBF states
+VERDICT (mc mode): AR (route 2.1 A-Ritz) = FAIL;  SR (route 2.2 sign-defect Ritz) = FAIL;  XW prediction = CONFIRMED
+[10:42:48] wrote smoke/smoke.json  (total 26.2s)
+```
+
+* **Reading**:
+    * The pipeline runs end to end, and every arm is scored on real SR-trained states, foil included.
+    * The verdict is not evidence. The cluster has almost no sign frustration (sign-mismatch weight $0.012$), so SR nearly coincides with L1.
+    * The smoke run already shows that the round-2 rule can fail. In exact mode AR beats L1 and L2 ($M=0.78$ against $0.56$, with $G=0$). In MC mode, noise in the A-Ritz matrix elements cuts its coverage to $0.33$, and the MC verdict is FAIL.
+    * The sign-witness check passed: $\kappa(\psi_0)<0$ on every non-zero configuration, after excluding the symmetry zeros of $\psi_0$.
+### Local Autopsy Log (Round 2 additions)
+* **Round-1 Route 4 (A-Ritz with the 50% variance trust rule)**: downgraded by the critic, not by data. Route 2.1 replaces each fatal sub-component:
+    * the test population was built so that $\hat A\psi$ contained the contaminant;
+    * under the trust rule every realistic state abstained, so $G\le0.05$ was automatic;
+    * a first-order quantity was extrapolated linearly in $\sigma^2$;
+    * matrix elements were exact.
+
+  The diagonal-$\hat A$ variant is dropped: it lies in the linear-method span.
+* **Route 2.3 (cross-width variance extrapolation)**: killed at Gates 0 and 2.
+    * Fatal mechanism (P1.1): network width shrinks the amplitude error, and with it $\sigma^2$, but not the sign error that carries the pairing error.
+    * A $\sigma^2\to0$ fit through the widths therefore follows a nearly flat line and certifies the current $C(r)$.
+    * It is kept as a falsifiable control.
+* **Route 2.4 (wholesale one-step sign replacement)**: killed at Gates 0 and 1. It is the power-method sign refit, and nothing controls the energy. Route 2.2 is the version in which the energy decides.
+* **Route 2.5 (fixed-node or sign-constrained amplitude correction as error bar)**: killed at Gate 2 by P1.1's measured $f_C=$ 0.71–0.93. An amplitude-only correction under the trial sign recovers at most 7–29% of the pair error.
+* **Route 2.6 (ZVZB improved estimators)**: killed at Gate 0. It reduces variance, not bias, and the bias is linear in the trial error.
+* **Dependencies**:
+    * Uses P1.1's code and states (retrained and cross-checked).
+    * Needs P4.1 only if the claim is extended to states mixed across sectors, because neither $P_F$ nor $\hat A$ detects contamination from other sectors.
+    * Feeds P3.2 as the per-branch error bar.
+### Round 3 — Mutation & Replenishment (2026-11-11)
+**Binding inputs.**
+* **Round-2 critic (all objections accepted, see the autopsy additions below)**:
+    * Route 2.2's $\kappa>0$ set is a set of local-energy outliers, not a sign witness.
+    * Route 2.1's $\hat\delta$ is a two-point extrapolation in $\sigma$, and its quantum-subspace-expansion noise was never fixed (MC coverage 0.33).
+    * $\hat A$ is a translation-averaged spin singlet, so it cannot couple $\psi_0$ to the triplet that was cited as the competitor.
+    * There was no projected baseline, and with contamination of order one the first-order derivation did not hold.
+    * Statistical power was over-stated.
+* **P1.1-P (Slurm job 407525, still running; partial outputs read on 2026-11-11 at 13:40)**. Projected-SR NNBF (space group $P_\chi$ only) is nearly exact on these clusters:
+    * on $N_\uparrow=N_\downarrow=4$, width 8, three seeds: $\Delta E_{\mathrm{tot}}=(0.8\text{–}0.9)\times10^{-3}$, $\lvert\langle\psi_0\vert\psi\rangle\rvert^2=0.99994$, sign-mismatch weight $w_{\mathrm{sign}}=(2.5\text{–}4.7)\times10^{-7}$, largest bond-pair error $(3\text{–}12)\times10^{-5}$, against $0.028$–$0.036$ unprojected;
+    * on $N_\uparrow=N_\downarrow=5$, $U=8$, width 8, seed 1234: $\Delta E_{\mathrm{tot}}=2.0\times10^{-3}$, overlap $0.99985$, pair error $1.4\times10^{-4}$;
+    * the sign fraction of the remaining pair error is $f_C=0.06$–$0.11$. **After projection the residual pair error is amplitude error**, and it is about 200 times smaller than the unprojected one.
+* **Orchestrator broadcast (2026-11-11)**: P1.1-P interim results show that projected NNBF is close to exact on the tori. On the $4+4$ torus at width 32 (median of 3 seeds): $\Delta E_{\mathrm{tot}}=3\times10^{-5}$, $\Delta E_{\mathrm{sign}}<10^{-5}$, overlap $1.000$, $f_C=0.065$. Instruction:
+    * use lower-symmetry clusters (the P1.2 round-3 set), earlier snapshots and narrower widths;
+    * add a premise gate on the size of the residual pair error, so that already-exact states return NO-TARGET rather than a pass.
+
+  Both are implemented below.
+* **Consequences for this leaf**:
+    * the real target is the small, in-irrep, mostly amplitude residual of projected states;
+    * any sign-witness route has no target on these clusters;
+    * the test population must cover the error range that projected NQS have at realistic sizes, which on 12 sites means short or narrow training, not 1500 steps at width 128.
+
+**Notation.**
+* $\psi$ is a normalised trained state in $\psi_0$'s irrep. $\hat\Pi$ is its projector: $\hat\Pi=P_\chi$ (space group $G$, translations times $\{1,M_x,M_y,M_xM_y\}$, $\lvert G\rvert=48$) or $\hat\Pi=P_SP_\chi$, where $P_S$ is the Löwdin projector on $\psi_0$'s total spin.
+* $E=\langle\hat H\rangle_\psi$, $\hat K=\hat H-E$, $\hat Q=1-\lvert\psi\rangle\langle\psi\rvert$, and $\tilde K=\hat Q\hat K\hat Q$.
+* $\hat A$ is the round-2 long-range $d$-wave bond-pair operator, $a=\langle\hat A\rangle_\psi$, and $a_0=\langle\hat A\rangle_{\psi_0}$.
+* $r=\hat K\psi$ is the residual, and $w=(\hat A-a)\psi$ is the order direction. Both are orthogonal to $\psi$. $\hat A$ commutes with $G$ and with $\hat{\mathbf S}^2$, so $r$ and $w$ lie in the irrep.
+* Error vector $e=\psi_0-\psi$ (sign of $\psi_0$ chosen so that $\langle\psi_0\vert\psi\rangle>0$). For normalised states, exactly,
+$$\delta\equiv a_0-a=2\langle e\vert w\rangle-\langle e\rvert(\hat A-a_0)\lvert e\rangle .$$
+* To first order $r=\hat K e$, so $e\approx\tilde K^{-1}r$ and
+$$\delta\approx2\langle r\rvert\tilde K^{-1}\lvert w\rangle .$$
+  Within an irrep, $\tilde K$ is positive while $E-E_0$ stays below the in-irrep gap, which is $0.515t$ on the $N_\uparrow=N_\downarrow=4$ cluster.
+* The covariance $c=\langle r\vert w\rangle=\langle\psi\rvert\hat K(\hat A-a)\lvert\psi\rangle=\mathrm{Cov}_{\lvert\psi\rvert^2}(E_{\mathrm{loc}},A_{\mathrm{loc}})$ is signed, first order in $e$, and zero for every eigenstate.
+* **Lemma (tangent-space blindness)**: let $\psi_\theta$ be stationary, so $\langle\partial_k\psi\vert r\rangle=0$ for every parameter $k$. Then $\langle r\vert y\rangle=0$ for every $y$ in the tangent span. Any error estimate of the form $\langle r\vert y\rangle$ therefore needs a $y$ outside the tangent space of $\psi$.
+  * Proof: $y=\sum_k\alpha_k\partial_k\psi$, so $\langle r\vert y\rangle=\sum_k\alpha_k\langle r\vert\partial_k\psi\rangle=0$.
+  * This is why the zero-bias correction of Assaraf & Caffarel (arXiv:physics/0310035), with $\psi'$ taken as the derivative of the variational optimum, vanishes for fully optimised states.
+* **Generation Batch 3**:
+  - **Route 3.1 (Mutated from Route 2.3 via Operation A.3; critic direction "ensemble disagreement calibrated against the residual")**: *Ensemble-calibrated covariance (ECC), i.e. zero-covariance extrapolation.*
+    * **Regressor**: Route 2.3 regressed $a$ on $\sigma^2$, which is unsigned and second order in $e$. Seeds whose errors have opposite signs then fall on no line, and a shared bias leaves a flat fit. ECC regresses on $c$ instead, which is signed and first order: in the eigenbasis $\{\lvert n\rangle\}$ of $\hat H$ in the irrep, with $\omega_n=E_n-E_0$, $e_n=\langle n\vert e\rangle$ and $w_n=\langle n\rvert\hat A\lvert0\rangle$,
+$$\delta\approx2\sum_ne_nw_n,\qquad c\approx\sum_ne_nw_n\omega_n,\qquad \delta\approx\frac{2c}{\omega_{\mathrm{eff}}}.$$
+    * **Fit**: over all $K$ independent projected trajectories of one instance (all seeds, widths and snapshots; one family $f$ for NNBF and one for the foil), fit
+$$a_k=\hat a_0-\beta_fc_k ,$$
+      with one common intercept, because the truth $a_0$ is common to all members. Then $\hat\delta_k=\beta_fc_k$ and $\beta_f=2/\omega_{\mathrm{eff},f}$.
+    * **What the ensemble supplies**: seed disagreement fixes the scale $\beta_f$, which no single state can supply. The absolute anchor is still the residual $c$, which vanishes only at an eigenstate, so a bias shared by all seeds is not invisible, unlike plain seed spread.
+    * **Estimator**: $c$ is sampled with the one-sided local estimator $\big[\tfrac12(\hat H\hat A+\hat A\hat H)\psi\big](\mathbf n)/\psi(\mathbf n)-aE_{\mathrm{loc}}-EA_{\mathrm{loc}}+Ea$, which has a single $1/\psi$ tail and costs $\mathcal O(N_HN_A)$ amplitude evaluations per sample. Here $N_H$ and $N_A$ are the numbers of configurations connected by $\hat H$ and by $\hat A$.
+    * **Trust**: a certificate is issued iff the seed-bootstrap relative standard error of $\beta_f$ is at most $0.5$ and $\lvert c_k\rvert$ is at least twice its Monte Carlo standard error.
+    - Gate 0 (Novelty & Adoption): PASS.
+      * Seed spread is current NQS practice (Rende et al., arXiv:2606.02794, where error bars come from seed-to-seed variation). Zero-variance extrapolation in $\sigma^2$ is the Sorella–Becca standard.
+      * $\mathrm{Cov}(E_{\mathrm{loc}},O_{\mathrm{loc}})$ appears in force and zero-bias estimators (Assaraf & Caffarel, arXiv:physics/0310035). Searches found no use of it as the extrapolation variable for a correlation function, and none that combines it with a common-intercept ensemble fit.
+      * Adoption barrier of the standard methods:
+        * seed spread misses shared bias;
+        * $\sigma^2$ extrapolation is unsigned and second order, and P1.1 showed that it under-states a sign-borne error.
+      * ECC fixes both with a signed, first-order regressor anchored at the eigenstate condition $c=0$.
+    - Gate 1 (Conservation & Asymptotics): PASS.
+      * $c$ is in-irrep, exactly zero for every eigenstate, and costs $\mathcal O(N_HN_A)$ per sample.
+      * Both $\delta$ and $c$ are intensive for the averaged $\hat A$.
+      * The fit needs $K\ge3$ trajectories, which practitioners already run.
+    - Gate 2 (Baseline Gameability): PASS (to be verified).
+      * The foil is scored, and an abstention counts as a miss.
+      * The controls are seed spread (SD), zero-variance extrapolation over the same ensemble (ZV) and one Lanczos step (L1).
+      * The single-state ablation SMA uses $\omega_{\mathrm{SMA}}=\langle w\rvert\tilde K\lvert w\rangle/\langle w\vert w\rangle$ in place of the ensemble scale.
+    - Gate 3 (Hard-Core Shield): PASS for the sign half only, declared.
+      * No gap, half filling, $t'=0$ or 1D is assumed, and the instances are doped, non-stoquastic 2D clusters.
+      * Competitor half: if the shared bias sits in a near-degenerate same-irrep state while the seeds disagree only in high-energy components, then $\beta_f$ is calibrated on the wrong $\omega$ and $\hat\delta$ under-states the error.
+      * The P1.1 clusters have no same-irrep competitor, so this half is not tested: **sign half only**.
+    - *Verdict*: SURVIVED
+  - **Route 3.2 (Mutated from Route 2.1 via Operation A.1: the adoption wall was the noisy QSE eigenproblem plus a two-point extrapolation; the engine is swapped, the intuition kept)**: *Hylleraas-trained response network (ZR).*
+    * **Intuition kept from Route 2.1**: the direction that decides $\delta$ is $w$, and the energy, not $\langle\hat A\rangle$, should decide how much of it counts.
+    * **New engine**: no eigenproblem and no extrapolation. A second projected NNBF $\phi=\hat\Pi\phi_\vartheta$ maximises the Rayleigh–Hylleraas quotient
+$$R[\phi]=\frac{\langle\phi\vert w\rangle^2}{\langle\hat Q\phi\rvert\tilde K\lvert\hat Q\phi\rangle},$$
+      whose maximiser is the first-order response $y^*=\tilde K^{-1}w$, with $R^*=\langle w\rvert\tilde K^{-1}\lvert w\rangle$.
+    * **Estimate**: with $y=(N/D_n)\hat Q\phi$, where $N=\langle\phi\vert w\rangle$ and $D_n$ is the denominator, the estimate is the zero-bias contraction
+$$\hat\delta=2\langle r\vert y\rangle .$$
+    * **Why it is not blind**: by the Lemma, the correction is non-zero only because $\phi$ is a separate network outside the tangent space of $\psi$.
+    * **Cost and sampling**: training costs one extra optimisation of the same size (Adam on exact-sum gradients here, as every training in this brainstorm). The contraction is sampled from $\lvert\psi\rvert^2$ with the one-sided local estimator $((\hat H-E)\phi)(\mathbf n)/\psi(\mathbf n)$, at $\mathcal O(N_H)$ amplitude evaluations per sample.
+    * **Trust**: a certificate is issued iff the bootstrap standard error is at most half of $\lvert\hat\delta\rvert$.
+    - Gate 0 (Novelty & Adoption): PASS.
+      * Nearest prior art:
+        * zero-bias estimators need $\psi'$ (Assaraf & Caffarel, arXiv:physics/0310035) and are not used for fully optimised states, by the Lemma;
+        * the Hylleraas functional has been minimised with matrix product states, but for second-order *energies* (Sharma & Chan, arXiv:1408.5092);
+        * the Z-vector / Lagrangian method of quantum chemistry obtains relaxed properties of non-variational methods, not the error of a variational state;
+        * NQS response work (arXiv:2504.20195, Lorentz integral transform) computes response *functions*, not an observable's bias.
+      * Searches found no response NQS trained to correct or certify a ground-state correlation function.
+      * The adoption barrier of zero-bias estimation (a $\psi'$ outside the family costs a response solve) is paid here by one network optimisation of ground-state cost.
+      * The barrier of Route 2.1 (an ill-conditioned noisy generalised eigenproblem) is removed: the only sampled quantity is one linear contraction.
+    - Gate 1 (Conservation & Asymptotics): PASS.
+      * $\phi$ is projected into the irrep, and $\tilde K$ is positive in the irrep near the ground state.
+      * $\psi=\psi_0$ gives $r=0$ and $\hat\delta=0$.
+      * The cost scales like one VMC optimisation.
+      * Residual risk: $\phi/\psi$ is heavy-tailed near the nodes of $\psi$. This is measured in the sampled arm (rule 4).
+    - Gate 2 (Baseline Gameability): PASS (to be verified).
+      * The quality of $\hat\delta$ depends on how well $\phi$ captures $y^*$ (reported as $R/R^*$), not on the quality of $\psi$, so a stiff foil gets no free certificate.
+      * The ablation KR2 replaces the trained network by the Krylov space $\mathrm{span}\{w,\tilde Kw\}$, i.e. the linearised version of the killed A-Ritz family.
+      * The oracle ZRO, with exact $\tilde K^{-1}w$, isolates the first-order premise and gates the verdict.
+    - Gate 3 (Hard-Core Shield): PASS for the sign half only, declared.
+      * The response is resolved through $\tilde K^{-1}$, so a near-degenerate same-irrep state enters with weight $1/\Delta$ and is not suppressed by $\Delta$, unlike the Krylov step. The P1.1 clusters have no such state, so this is not tested here.
+    - *Verdict*: SURVIVED
+  - **Route 3.3 (Operation B.2, active ensemble probing)**: *seed NOCI.* Rayleigh–Ritz in $\mathrm{span}\{\psi_1,\dots,\psi_K\}$ of independent seeds, extrapolating $a$ in $1/K$ to remove the seed-independent error.
+    - Gate 1: FAIL. The cross-overlap estimator $\langle\psi_2/\psi_1\rangle_{\lvert\psi_1\rvert^2}$ has relative variance $(1-F)/F$, where $F$ is the seed–seed fidelity. $F$ decays as $e^{-\epsilon V}$ for a per-site infidelity $\epsilon$, so the sample cost is exponential in $V$. This is P3.2's killed NOCI mechanism.
+    - *Verdict*: KILLED
+  - **Route 3.4 (Operation A.1 of Route 2.6)**: *in-family zero-bias correction*, with $\psi'$ the variational response $\partial\theta/\partial h$ of $\hat H+h\hat A$.
+    - Gate 1: FAIL. By the Lemma it vanishes identically at a stationary point.
+    - *Verdict*: KILLED. It motivates Route 3.2.
+  - **Route 3.5 (critic direction "provable sign witness")**: a sign witness on projected states.
+    - Gate 2: FAIL on P1.1-P's partial data. Projected NNBF has $w_{\mathrm{sign}}\le5\times10^{-7}$ and $f_C\le0.11$, so the trivial baseline "sign error zero" is already right within error bars.
+    - The $\kappa$ witness is moreover not a witness (autopsy below).
+    - *Verdict*: KILLED for these clusters. It may re-open where P1.1-P shows a projected sign fraction of at least $0.5$.
+  - **Route 3.6 (Operation B.3, Laplace / Fisher posterior error bar)**: $\delta a_{\mathrm{rms}}^2=\nabla_\theta a^{\mathsf T}\mathcal H^{-1}\nabla_\theta a$, with $\mathcal H$ the energy Hessian.
+    - Gate 2: FAIL. It lives in the tangent space (Lemma). A stiff foil has a large curvature along $\nabla_\theta a$ and gets a small error bar exactly when it is wrong (round-1 Route 2 mechanism).
+    - *Verdict*: KILLED
+  - **Route 3.7 (single-state variant of 3.1)**: two-point extrapolation in $c$ along one Lanczos step.
+    - Gates 0 and 3: FAIL. The Lanczos step removes mostly high-$\omega$ error, so the two-point slope is the high-energy $\omega$, and the estimate under-states the low-energy residual. This is Route 1's mechanism in a new variable. It survives only as the SMA ablation.
+    - *Verdict*: KILLED
+### Top Surviving Route & Sharpest Gap (Round 3)
+* **Mechanism**:
+    * **Route 3.1, ECC**: fit $a_k=\hat a_0-\beta_fc_k$ over independent projected trajectories, with one intercept and one slope per family, where $c=\mathrm{Cov}(E_{\mathrm{loc}},A_{\mathrm{loc}})$. Report $\hat\delta_k=\beta_fc_k$. The residual anchors the error, and the ensemble supplies the scale.
+    * **Route 3.2, ZR**: train a projected response NNBF by maximising $\langle\phi\vert w\rangle^2/\langle\hat Q\phi\rvert\tilde K\lvert\hat Q\phi\rangle$, then report $\hat\delta=2\langle r\vert y\rangle$, sampled with a one-sided local estimator. This is the zero-bias correction with a response outside the tangent space.
+* **Contrast**:
+    * ECC uses only per-state scalars and many trajectories.
+    * ZR uses one state and one extra network.
+    * Both answer the critic in quantities that are non-trivial after projection: the in-irrep residual $r$ and the in-irrep order direction $w$.
+* **Sharpest Gap (shared)**: the *first-order regime*. Exactly, $\delta=2\langle e\vert w\rangle-\langle e\rvert(\hat A-a_0)\lvert e\rangle$. Because $\hat A$ is averaged over many bond pairs, $\lVert w\rVert$ is small, and the second-order term competes at infidelities of order $10^{-2}$:
+    * in the smoke run the oracle first-order estimate is $1.5$–$2.2$ times $\delta$ for infidelities of $0.02$–$0.2$;
+    * on a perturbed ground state with infidelity $10^{-6}$ it matches to $0.2\%$ (checks).
+
+  Production projected states sit between those (infidelity $10^{-4}$–$10^{-2}$), so the oracle arm ZRO gates ZR's verdict.
+* **Route-specific gaps**:
+    * ECC: a common $\omega_{\mathrm{eff}}$ across seeds is assumed. The test reports the per-state $\omega_k=2c_k/\delta_k$ and its seed spread. The competitor half (shared bias in a different spectral band) is untested.
+    * ZR: whether a width-8 NNBF captures $y^*$ at $D=6.3\times10^5$ (the test reports $R/R^*$; it is 0.88–1.00 at $D=7056$), and the heavy tail of $\phi/\psi$ under sampling.
+### 24-Hour Decisive Test (Round 3)
+* **Instances** (all $t=1$, $t'=-0.25$). Smaller symmetry groups average over fewer images, so a residual is more likely to survive projection. The irreps and in-irrep gaps of instances 0–2 come from the P1.2 round-3 probe; the tori are from P1.1-P.
+
+| ID | Cluster | Filling, $U$ | $D$ | $\lvert G\rvert$ | $\psi_0$ irrep, $S$ | In-irrep gap |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 0 | $4\times3$ open | $4+4$, $8$ | 245025 | 4 | $M_x=M_y=+1$, $S=0$ | $0.345t$ |
+| 1 | $4\times3$ cylinder (periodic $x$) | $4+4$, $8$ | 245025 | 16 | $T_x=M_x=M_y=+1$, $S=0$ | $0.362t$ |
+| 2 | $6\times2$ ladder (periodic $x$) | $5+5$, $8$ | 627264 | 24 | $T_x=M_y=+1$, $M_x=-1$, $S=1$ | $0.259t$ |
+| 3 | $4\times3$ torus | $5+5$, $8$ | 627264 | 48 | trivial, $S=0$ | not computed |
+| 4 | $4\times3$ torus | $4+4$, $8$ | 245025 | 48 | trivial, $S=0$ | $0.515t$ |
+| 5 | $4\times3$ torus | $5+5$, $4$ | 627264 | 48 | trivial, $S=0$ | not computed |
+
+* Every run re-checks $[\hat H,U_g]$, $[\hat A,U_g]$ and $P_SP_\chi\psi_0=\psi_0$ on its own instance and aborts if any fails. **Sign half only**: no instance has a same-irrep competitor at the Hard-Core scale.
+* **Population**: six independent seeds (101–106) per instance, i.e. 36 trajectory units. Each unit trains, by exact-force projected SR (P1.1-P code, 400 steps):
+    * projected NNBF with $\hat\Pi=P_\chi$ at widths 2 and 8;
+    * projected NNBF with $\hat\Pi=P_SP_\chi$ at width 8;
+    * the Slater–Jastrow foil with $P_\chi$ and with $P_SP_\chi$.
+
+  Each NNBF state is scored at steps 30 and 100 and at its best-energy state, giving 11 verdict states per unit and 396 in total.
+* **Reported only, never in the verdict**: unprojected NNBF width 8 (U) and its post-hoc projection (UP).
+* **Sampling**: $10^5$ i.i.d. exact draws from $\lvert\psi\rvert^2$ per state, with 200 bootstraps. The heavy-tail diagnostics (largest single-sample share and excess kurtosis) are reported for the one-sided and two-sided estimators of both routes.
+* **Arms**:
+
+| Arm | Role | What it computes |
+| :--- | :--- | :--- |
+| ECC | Route 3.1 | Common-intercept fit of $a$ on sampled $c$, seed-bootstrap trust |
+| ZR | Route 3.2 | Trained response network, sampled contraction $2\langle r\vert y\rangle$ |
+| SD | Control | Seed spread of $a$ per state type (current NQS practice) |
+| ZV | Control | Same fit as ECC with $\sigma^2/V$ in place of $c$ |
+| L1 | Control | One Lanczos step, round-2 first-order rule |
+| SMA | Ablation of 3.1 | $2c/\omega_{\mathrm{SMA}}$ for a single state |
+| KR2 | Ablation of 3.2 | Galerkin response in $\mathrm{span}\{w,\tilde Kw\}$ |
+| ZRO | Premise | Exact $\tilde K^{-1}w$ by MINRES |
+
+* **Metric** (implemented in `--aggregate`):
+    * A verdict state is scored iff $\lvert\delta\rvert\ge0.02\lvert a_0\rvert$.
+    * *Tracked*: trusted and $\tfrac12\le\hat\delta/\delta\le2$, using $\lvert\hat\delta\rvert/\lvert\delta\rvert$ for SD. *False*: trusted and $\hat\delta/\delta<\tfrac12$, which includes the wrong sign.
+    * $T_X(u)$ is the tracked fraction of unit $u$, with abstentions as misses, and $M_X=\mathrm{median}_uT_X(u)$.
+    * $B$ is the control with the largest $M$ among SD, ZV and L1.
+    * $\Delta_X=\mathrm{median}_u[T_X(u)-T_B(u)]$ (paired), with a unit-bootstrap 90% interval and the win/loss count.
+    * $G_X$ is the pooled false-certificate fraction, and $\mathrm{Cov}_X$ the trusted fraction of scored NNBF states.
+* **Thresholds**:
+    * PASS: $M_X\ge0.5$, $\Delta_X\ge0.2$, $G_X\le0.10$, $\mathrm{Cov}_X\ge0.5$, **and** the per-instance median gain is positive on every instance.
+    * FAIL: $M_X<0.3$ or $\Delta_X<0.05$ or $G_X>0.20$.
+    * AMBIGUOUS otherwise. Pre-committed action: rerun with $10^6$ samples and seeds 107–112; a route that is still not PASS is killed.
+    * **Residual-size premise gate (NO-TARGET)**: an instance has a target iff it has at least 6 scored states over at least 3 seeds, of which at least 3 are final (best-energy, not snapshot) states.
+        * An instance without a target is printed with the median $\lvert\delta\rvert/\lvert a_0\rvert$ of its final states and excluded, and all verdict metrics are recomputed on the target instances.
+        * If fewer than 2 instances have a target, both routes are **NO-TARGET**: the states are already exact, and no pass is possible.
+    * ZR is "FAIL (premise)" if ZRO tracks less than 70% of scored states.
+* **Reported diagnostics**: the exact-mode table, Spearman correlations, $\omega_k$, $R/R^*$, the overlap with $\psi_0$, $w_{\mathrm{sign}}$ and $\langle\hat S^2\rangle$.
+* **Execution**:
+    * Code: `tests/P3.1_order_parameter_error_r3/micro_test.py`. It copies the P1.1-P projector and projected SR verbatim, and `p11_core.py` is a verbatim copy.
+    * Job: `submit_test.sbatch` there, an array 0–35 with one task per (instance, seed), partition `kim`, 16 CPUs, 16 GB, 24 h.
+    * Cost, measured on the login node at $D=627264$ (`timing_output.txt`):
+        * one projected SR step takes 4.3 s, or 4.8 s with $P_S$;
+        * one response Adam step takes about 2.5 s;
+        * at most about 7.5 h per task at $D=627264$, and about 40% of that at $D=245025$.
+    * Command (not run): `cd /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r3 && sbatch submit_test.sbatch`.
+    * Verdict: `python3 micro_test.py --aggregate results`.
+* **Correctness checks** (every run aborts if one fails; literal lines from `smoke/log_s101.txt`, timestamps removed):
+
+```
+check group 3x2 obc/obc: |G|=4 max ||[H,U_g]v|| 2.4e-14
+check group 3x2 pbc/obc: |G|=12 max ||[H,U_g]v|| 2.8e-14
+check projector P: idempotent 4.9e-16 [Pi,H] 7.4e-17 ||Pi psi0 - psi0|| 7.0e-15
+check projector PS: idempotent 5.0e-16 [Pi,H] 2.3e-17 ||Pi psi0 - psi0|| 7.0e-15
+check A: hermitian 0.0e+00 vs bond sum 3.4e-19 [A,U_g] 2.8e-16 [A,S2] 1.1e-17
+check per-sample E_loc, A_loc, (HA psi)_loc vs indexed full vectors: max rel err 1.6e-15
+check Cov(E_loc,A_loc) = <(H-E)psi|(A-a)psi>: -4.352160125338e-02 vs -4.352160125338e-02
+check first-order response formula eps=0.01: delta -6.620497e-05 oracle -6.510001e-05
+check first-order response formula eps=0.001: delta -6.720727e-06 oracle -6.709665e-06
+check response gradient: analytic 3.2028808878e-02 finite-diff 3.2028808938e-02
+P3.1-r3 CHECKS PASSED
+```
+
+* **Smoke run**: a code check only, on the $3\times3$ PBC cluster (instance 6) with $N_\uparrow=N_\downarrow=3$, $U=8$ and $D=7056$. Its $\psi_0$ has $S=2$, and its states are trained for only 30 steps.
+    * Settings: seeds 101–103 run in parallel; $4000$ samples, 40 response steps, $r_{\min}=1$.
+    * Command, per seed: `/share/apps/software/anaconda3/bin/python3 micro_test.py --instance 6 --seed 101 --sr-iters 30 --snaps 10 --sr-samples 200 --mc-samples 4000 --n-boot 40 --zr-steps 40 --r-min 1.0 --out smoke/inst6_s101.json --overwrite 1` (about 19 s each).
+    * Aggregate: `python3 micro_test.py --aggregate smoke --include-smoke 1`. With one instance, the pre-committed rule returns NO-TARGET (`smoke/aggregate_output.txt`).
+    * To exercise the rest of the rule, `--min-target-inst 1` gives `smoke/aggregate_output_min1.txt`. Its literal Monte Carlo block, with the per-label lines omitted:
+
+```
+===== mode mc =====
+instance 6: states 30, scored 15 over 3 seeds; a0=+1.06301e-02; ECC a0_hat=+1.07567e-02; ZV a0_hat=+1.05318e-02
+arm   M      G      Cov(NNBF)  spearman  n_scored   (units=3)
+ECC  0.800  0.067  1.000      +0.818    15
+ZR   0.667  0.000  1.000      +0.921    15
+SD   0.000  0.000  1.000      +0.821    15
+ZV   0.800  0.133  1.000      +0.679    15
+L1   1.000  0.000  1.000      +0.886    15
+SMA  0.800  0.067  1.000      +0.864    15
+KR2  1.000  0.000  1.000      +0.950    15
+ZRO  0.600  0.000  1.000      +0.904    15
+target gate: instance 6: scored 15 (final 7); median |delta|/|a0| of final states 1.70e-02 -> TARGET
+verdict metrics on target instances [6] (units=3):
+ECC  M=0.800 G=0.067 Cov=1.000
+ZR   M=0.667 G=0.000 Cov=1.000
+SD   M=0.000 G=0.000 Cov=1.000
+ZV   M=0.800 G=0.133 Cov=1.000
+L1   M=1.000 G=0.000 Cov=1.000
+SMA  M=0.800 G=0.067 Cov=1.000
+KR2  M=1.000 G=0.000 Cov=1.000
+ZRO  M=0.600 G=0.000 Cov=1.000
+ECC: M=0.800 vs best control L1 M=1.000; paired median Delta=-0.200 [90% -0.333,+0.000] wins/losses 0/2; per-instance 6:-0.20; G=0.067 Cov=1.000 -> FAIL
+ZR: M=0.667 vs best control L1 M=1.000; paired median Delta=-0.333 [90% -0.400,-0.250] wins/losses 0/3; per-instance 6:-0.33; G=0.000 Cov=1.000 -> FAIL (premise: oracle first-order response does not track)
+VERDICT (mc mode): ECC (route 3.1) = FAIL;  ZR (route 3.2) = FAIL (premise: oracle first-order response does not track)
+```
+
+  Default rule (`smoke/aggregate_output.txt`), last line:
+
+```
+VERDICT (mc mode): ECC (route 3.1) = NO-TARGET (fewer than 2 instances with a non-trivial residual);  ZR (route 3.2) = NO-TARGET (fewer than 2 instances with a non-trivial residual)
+```
+
+* **Reading of the smoke run** (not evidence; 30-step states on a toy cluster):
+    * The pipeline runs end to end with projected populations, and the decision rule can fail.
+    * The states are barely trained, and their error is high-energy junk ($\omega_k=10$–$41t$), which one Lanczos step removes well. That is the regime where L1 should win.
+    * At infidelities of $0.02$–$0.2$ the first-order oracle over-states $\delta$ by $1.5$–$2.2$, which trips the ZR premise guard. This is the sharpest gap, seen already.
+    * The default rule returns NO-TARGET, because one instance is fewer than the two target instances required. The residual-size gate therefore cannot be passed by a run whose states have nothing to estimate.
+    * The response network reaches $R/R^*=0.88$–$1.00$.
+    * Under sampling, the two-sided covariance estimator drifts from the exact value by several of its bootstrap SEs. This is why both routes use one-sided estimators.
+### Local Autopsy Log (Round 3 additions)
+* **Route 2.2 (sign-defect Ritz)**: killed; critic objection accepted.
+    * Take $\psi=\psi_0(1+\varepsilon)$ with exact signs. Then
+$$\kappa(\mathbf n)=(E_0-H_{\mathbf n\mathbf n})+\sum_{\mathbf n'\ne\mathbf n}H_{\mathbf n\mathbf n'}\frac{\psi_0(\mathbf n')[\varepsilon(\mathbf n')-\varepsilon(\mathbf n)]}{\psi_0(\mathbf n)(1+\varepsilon(\mathbf n))},$$
+      which is unbounded with either sign as $\psi_0(\mathbf n)\to0$. $F_\tau$ therefore fires on amplitude error near nodes.
+    * A coherent wrong-sign domain $D$ has $\kappa<0$ inside, since locally it is $-\psi_0$, which is an eigenvector. Only its walls fire.
+    * The code never measured the overlap of $F_\tau$ with the true wrong-sign set.
+    * After projection the target vanishes anyway ($w_{\mathrm{sign}}\le5\times10^{-7}$, Route 3.5).
+* **Route 2.1 (A-Ritz)**: killed; objection accepted.
+    * $\hat\delta=(a_\phi-a_\psi)/(1-\sigma_\phi/\sigma_\psi)$ is a two-point linear extrapolation in $\sigma$ through $\psi$ and $\phi$.
+    * Adding $\hat A\psi$ to the Krylov space is quantum subspace expansion, whose noisy generalised eigenproblem gave MC coverage 0.33.
+    * Route 3.2 keeps only the physical point (the decisive direction is $w$, and its weight is set by $\tilde K$), and replaces the engine by a trained response contracted linearly with $r$.
+* **Hard-Core objection**: accepted. $\hat A$ is a translation-averaged singlet, so $\langle\psi_1\rvert\hat A\lvert\psi_0\rangle=0$ for the triplet $E_1$. All citations of the retracted same-sector competitor in rounds 1 and 2 above have been replaced by in-place corrections. Round 3 claims the **sign half only**.
+* **No projected baseline**: accepted.
+    * The whole round-3 population is projected-SR trained, with $P_\chi$ and with $P_SP_\chi$.
+    * Unprojected states appear only as reported arms (U and UP).
+    * The first-order derivation is now applied only within the irrep, and its validity is measured by the ZRO premise arm and by $\delta$ against its first-order part.
+* **Statistical power**: accepted.
+    * The units are 36 independent trajectories (6 seeds on each of 6 instances), and all verdicts are medians or paired medians over units with a unit bootstrap.
+    * Snapshots are kept only inside their unit.
+    * The ECC slope's trust is a seed bootstrap, not a sample bootstrap.
+    * There is no free threshold such as $\tau$, and the $\hat r$ floor is gone with Route 2.1.
+* **Routes 3.3–3.7**: killed in Batch 3, for the reasons given there.
+* **New anti-patterns for the master**:
+    * *Tangent-space blindness*: any error estimate of the form $\langle r\vert y\rangle$ with $y$ in the variational tangent span is identically zero at a stationary point.
+    * *Two-sided local-estimator products* $(E_{\mathrm{loc}}-E)(O_{\mathrm{loc}}-o)$ have a $1/\psi^2$ tail and drift under sampling. Use one-sided local estimators instead.
+* **Dependencies**:
+    * Uses the P1.1-P projector and projected SR, copied.
+    * If P1.1-P ends SIGN-ROBUST on some instance, Route 3.5 re-opens there.
+    * The competitor half needs an ED instance with a same-irrep near-degenerate pair. That is P3.2's search, which is not done here.
+    * Feeds P3.2 as the per-branch error bar.
+### Round 5 (2026-11-12)
+**Binding inputs.**
+* **Pilot 410398**: NO-GO. No 4×3 instance had converged projected finals with a scorable pair error. Pre-committed action: re-scope onto an instance where projected states keep real error.
+* **Shared instance** (round-5 brief): 4×4 OBC $t$–$t'$–$J$, $6+6$, $t'=-0.25$, $J=0.4$, $D=1681680$, $\dim\mathrm{range}(P_SP_\chi)=30220$. Projected NNBF width 6, seed 11: $\Delta E_{\mathrm{sign}}=0.0125t$, $f_E=0.24$, overlap $0.936$. Seeds 22 and 33 are running in job 451706.
+* **Round-3 critic kills**: ZR is the Assaraf–Caffarel zero-bias correction and needs one extra NQS per observable. ECC's regressor is the first Lanczos moment, so it is blind ($\propto\Delta$) to low-energy competitors.
+* **Round-5 requirements**: the estimate must be cheap (no extra NQS per observable), must not be an $H$-Krylov moment, must use sampled estimators, and must be scored on converged projected finals, with a leave-one-seed-out rule wherever an ensemble enters.
+
+**Step 1: target measurement (done; `tests/P3.1_order_parameter_error_r5/target_probe.py`).**
+* **Observables** (fixed before any data): the $d$-wave bond-pair correlation over the 22 bond pairs with centre distance $\ge3$; $\hat{\mathbf S}_i\cdot\hat{\mathbf S}_j$ over the 10 site pairs with distance $\ge3.5$; and $(n_i-\bar n)(n_j-\bar n)$ over the same pairs. All three commute with the point group and with $\hat{\mathbf S}^2$; checked in code.
+* **Measurement**: the P2.1 width-6 seed-11 parameter file was loaded into the identical network, and P and its post-hoc spin projection P_S were compared with ED:
+
+| State | $\Delta E$ | Overlap | pair rel. error | spin rel. error | charge rel. error |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| P | 0.0518 | 0.936 | 0.314 | 0.148 | 0.220 |
+| P_S | 0.0302 | 0.957 | 0.302 | 0.160 | 0.239 |
+
+* **Values**: $a_0$ = $9.22\times10^{-5}$ (pair), $5.34\times10^{-2}$ (spin) and $-1.42\times10^{-3}$ (charge). The errors are 7 to 15 times the 2% bar, so **TARGET** on all three observables (seed 11; the median over three seeds is job 451837, below).
+* **Lanczos steps leave the error**: one and two steps cut $\Delta E$ from $0.052$ to $0.023$ and $0.015$, yet the pair error moves only from $2.9\times10^{-5}$ to $2.6$ and $2.8\times10^{-5}$. The residual error therefore sits in low-$\omega$ directions, which is the regime this leaf is about.
+* **In-irrep spectrum** (Lanczos on $P_SP_\chi HP_\chi P_S$): gaps $0.209$, $0.234$, $0.314t$, i.e. $0.013t$ per site.
+  * The full-$(N_\uparrow,N_\downarrow)$ levels at $0.049$–$0.071t$ lie in other irreps.
+  * There is no same-irrep competitor at the Hard-Core scale: **sign half only**.
+
+```
+[11:11:24] in-irrep (chi, S=0) levels [-11.3880108862953, -11.179103818878872, -11.153852544878855, -11.074216308177926, -11.021945815556078, -10.979113735772314] gaps [0.0, 0.20890706741642795, 0.23415834141644432, 0.3137945781173741, 0.36606507073922145, 0.4088971505229857] (220 s)
+[11:11:30]     L1: dE=0.02277 pair: d=+2.620e-05 spin: d=+6.785e-03 charge: d=-3.181e-04
+[11:11:30]     L2: dE=0.01495 pair: d=+2.800e-05 spin: d=+5.747e-03 charge: d=-2.739e-04
+[11:11:33] median rel error over 1 P states: pair=0.3139 spin=0.1475 charge=0.2205; median dE_sign(P)=0.0125 (premise >= 0.005: True)
+[11:11:33] STEP-1 VERDICT: TARGET pair,spin,charge
+```
+
+* **Three-seed confirmation**: Slurm job **451837** (`submit_target.sbatch`, 8 CPUs, 2 h, `--dependency=afterany:451706`) reruns the probe on seeds 11, 22 and 33 once P2.1's seeds land. Output: `results/target_probe_all.json`.
+
+**Gate-0 search (round 5).**
+* *Control variates for observables*: the zero-variance zero-bias estimators (Assaraf & Caffarel, arXiv:physics/0310035; Toulouse, Assaraf & Umrigar, arXiv:0705.0721) need an improved trial function $\psi'$. They give only a linear zero-bias property for general observables, and their $\psi'$ is in-family, so it is tangent-blind at stationarity (round-3 Lemma).
+* *Correlated sampling and ensemble error bars*: current NQS practice is seed spread (arXiv:2606.02794: the error bar is the spread of the two best seeds) and the spread across independent chains (arXiv:2605.07779). Width extrapolation is used for energies (arXiv:2606.02794); variance extrapolation is used for NN-VMC energies.
+* *Sign/amplitude factorisation*: fixed-sign-times-amplitude ansätze exist (arXiv:2308.09664; CNN–PEPS, arXiv:2009.14370), but as architectures, not as an error estimator.
+* No hit uses (i) a Galerkin response in the span of the observable's own resolved pieces, or (ii) sign/amplitude hybrids of an ensemble as extrapolation points for a correlation function.
+
+**Generation Batch 5.**
+  - **Route 5.1 (Operation A.1 on Route 3.2, ZR; the adoption wall was "one trained NQS per observable")**: *observable-split Galerkin zero-bias correction (OSG)*.
+    * **Intuition kept from ZR**: $\delta\approx-2\langle r\rvert\tilde K^{-1}\lvert w\rangle$, and the response must lie outside the tangent space of $\psi$.
+    * **New engine**: no network and no training. The response is solved in closed form in $\mathcal Y=\mathrm{span}\{y_c=(\hat A_c-a_c)\psi\}$, where $\hat A_c$ is the same correlator restricted to one point-group-invariant distance class $c$. This is the full correlation function $C(r)$ the run measures anyway: 15 pair classes, 9 spin, 9 charge.
+    * **Estimate**: $\hat\delta=-2\,c^{\mathsf T}M^{+}b$, with $c_p=\langle r\vert y_p\rangle$, $M_{pq}=\langle y_p\rvert\tilde K\lvert y_q\rangle$ and $b_p=\langle y_p\vert w\rangle$. All three are sampled from $\lvert\psi\rvert^2$ with one-sided local estimators.
+    * **Truncation**: $M$ is inverted only on eigen-directions with $\lvert\lambda\rvert\ge10^{-3}\max\lvert\lambda\rvert$ and $\lvert\lambda\rvert\ge3\,\mathrm{SE}_{\mathrm{boot}}(\lambda)$. This handles the exact dependences, e.g. the sum of all charge pieces is a constant for $t$–$J$.
+    - Gate 0 (Novelty & Adoption): **FAIL (critic, 2026-11-12)**. OSG is the Assaraf–Caffarel / Toulouse–Assaraf–Umrigar zero-variance zero-bias correction with a fixed linear-basis $\psi'=\sum_c x_c(\hat A_c-a_c)\psi$. Choosing the basis from the observable's own pieces does not make it a new estimator. The original claim, kept for the record: prior art was ZVZB with an in-family $\psi'$ (tangent-blind) and QSE (McClean et al. 2017).
+    - Gate 1 (Conservation & Asymptotics): PASS.
+      * Each $\hat A_c$ commutes with $G$ and $\hat{\mathbf S}^2$ (checked), so $\mathcal Y$ lies in $\psi$'s sector.
+      * $\hat\delta=0$ for an eigenstate ($c=0$).
+      * The number of classes grows like $V$ (distance classes), not like the number of parameters.
+    - Gate 2 (Baseline Gameability): PASS on paper.
+      * It is not an $H$-Krylov moment: the basis is generated by the observable's pieces, and $H$ enters once, as the Galerkin metric. If a low-energy error direction lies in $\mathcal Y$, the ratio $c^{\mathsf T}M^{-1}b$ is independent of its $\omega$. The Krylov step weights it by $\omega$, which is exactly why L1 and L2 fail here (step 1).
+      * Ablations: SMA (span $\{w\}$ only, which is the killed ECC/first-moment mechanism) and OSGX (exact matrix elements).
+    - Gate 3 (Hard-Core Shield): PASS for the sign half only, declared. The resolving power for a near-degenerate component needs statistical precision of order $\Delta$ in $c$ and $M$; this is stated, not hidden.
+    - *Verdict*: **KILLED** (critic, 2026-11-12) at Gate 0 and on mechanism. The exact-element ablation OSGX gives the wrong sign or zero on 4 of 6 smoke items, and on the small-cluster check the sampled OSG is biased $3.7\times$ against exact Galerkin (charge: $-1.33\times10^{-4}$ vs $-3.57\times10^{-5}$). OSGX and ZRO stay as diagnostics only; sampled OSG and SMA are no longer computed.
+  - **Route 5.2 (Operation B.2, active ensemble probing; replaces ECC)**: *ensemble sign/amplitude hybrid extrapolation (EHX)*.
+    * **Hybrids**: for state $k$ and every ensemble member $j$ of the same label from another seed (leave-own-seed-out), form
+      * $h_{kj}=\lvert\psi_k\rvert\,\mathrm{sgn}\,\psi_j$, sampled from $\lvert\psi_k\rvert^2$;
+      * $h_{jk}=\lvert\psi_j\rvert\,\mathrm{sgn}\,\psi_k$, sampled from $\lvert\psi_j\rvert^2$.
+    * **Cost**: local estimators need only both networks' amplitudes at sampled and connected configurations. There is no cross-overlap $\langle\psi_j\vert\psi_k\rangle$ and no ratio $\psi_j/\psi_k$, so the exponential NOCI kill of Route 3.3 does not apply.
+    * **Irrep (corrected after the critic)**: write $\psi_j(gn)=\chi(g)\,\xi_g(n)\,\psi_j(n)$, with $\xi_g(n)=\pm1$ the fermionic reordering sign. Then $\mathrm{sgn}\,\psi_j(gn)=\chi(g)\xi_g(n)\,\mathrm{sgn}\,\psi_j(n)$, while the configuration function $\lvert\psi_k\rvert$ is unchanged by the permutation $n\mapsto gn$. So $h_{kj}(gn)=\chi(g)\xi_g(n)h_{kj}(n)$ and the hybrid is in $\chi$. The reason is that $\mathrm{sgn}\,\psi_j$ carries $\chi(g)\xi_g$. It is not that $\lvert\psi\rvert$ is $G$-invariant: as a fermionic state, $\lvert\psi\rvert$ alone is not in the trivial irrep.
+    * **SU(2)**: $\lvert\psi_k\rvert\,\mathrm{sgn}\,\psi_j$ is not a spin eigenstate even when both factors come from spin-projected states. P_S-label hybrids are therefore dropped, and only the P label is scored, i.e. one label per network.
+    * **Fit forms (pre-registered after the critic)**: $\delta a$ is first order in the wavefunction error $e$, while $E-E_0$ and $\sigma^2$ are second order. A linear chord of $a$ in $E$ therefore understates $\delta$. Over $\{\psi_k\}\cup$ hybrids, three forms are computed:
+      * **S (decides)**: $a=\alpha+\gamma\sigma$, $\hat a=\alpha$. It needs no $\hat E_0$.
+      * **R (reported)**: $a=\alpha+\gamma\sqrt{\max(E-\hat E_0,0)}$, with $\hat E_0$ from $E=\hat E_0+s\sigma^2$. The error of $\hat E_0$ enters under the root, which is why R does not decide.
+      * **E (reported, the original linear form)**: $a=\alpha+\beta E$, $\hat a=\alpha+\beta\hat E_0$.
+      * In each form $\hat\delta_k=\hat a-a_k$. Nothing is fitted to the truth.
+    * **Why it can see shared bias, unlike seed spread**: the hybrids move $\psi_k$ along the actual sign and amplitude error directions of this architecture, and the extrapolation is anchored at $\hat E_0$, not at the ensemble mean.
+    - Gate 0 (Novelty & Adoption): PASS. The sign/amplitude factorisation is an ansatz design (arXiv:2308.09664) and P1.1's exact diagnostic; no hit uses ensemble hybrids as extrapolation points for an observable error. Adoption barrier of seed spread and ZV: shared bias, and the few points per state. EHX adds $2(K-K_{\mathrm{seed}})$ points per state at no training cost.
+    - Gate 1 (Conservation & Asymptotics): PASS. Cost is one extra amplitude evaluation per configuration per partner, and the method is exact if every member is $\psi_0$. Risk at scale: hybrid energies degrade as sign disagreement grows with $V$, which the fit treats as more leverage, not as noise.
+    - Gate 2 (Baseline Gameability): PASS on paper. ZV is the same fit without hybrids, so it isolates what the hybrids add, and **the decisive comparison is EHX vs ZV**. L1 and L2 are reported only, since they fail here by a known mechanism (the residual error is low-$\omega$; see step 1). A shared bias orthogonal to all sign and amplitude disagreements stays invisible; this is the route's declared blind spot. Form S regresses on an unsigned first-order quantity. Seeds whose errors have opposite signs along the same direction then fold onto one branch, which is Route 2.3's failure mode; the gate tests for it directly.
+    - Gate 3 (Hard-Core Shield): PASS for the sign half only. No gap is assumed. The in-irrep gap of the instance is $0.209t$.
+    - *Verdict*: SURVIVED
+  - **Route 5.3 (single-mode SMA promoted to a route)**: Gate 0 and the round-5 rule fail, since it is a ratio of first $H$ moments of $w$, i.e. ECC's mechanism. *Verdict*: KILLED, kept as an ablation. It looked good on the smoke state (spin ratios 0.98 and 0.94); recorded here so that a PASS of SMA is not mistaken for a PASS of OSG.
+  - **Route 5.4 (Gutzwiller-type local imaginary-time step $e^{-\tau\hat H_{\mathrm{loc}}}$)**: an $H$-generated direction. *Verdict*: KILLED by the round-5 rule.
+
+### Top Surviving Route & Sharpest Gap (Round 5)
+* **Mechanism (EHX, the only survivor)**: zero-variance extrapolation over the ensemble's sign/amplitude hybrids, leave-own-seed-out, label P only, with fit form S ($a$ against $\sigma$) deciding.
+* **OSG** is killed (critic, 2026-11-12). Its smoke evidence is kept below: the exact first-order oracle ZRO tracks 5 of 6 items (ratios 1.40, 1.30, 0.47, 1.22, 1.37, 0.57), but OSGX tracks spin only (0.99, 0.95) and gives the wrong sign or zero for pair and charge ($-0.15$, $-0.23$, $-0.26$, $0.01$). So $\tilde K^{-1}w$ is not in the span of $\{(\hat A_c-a_c)\psi\}$.
+* **Sharpest gap (EHX), already visible in the injected check**: on synthetic members with known sign flips, form S overshoots spin by $2.6$–$2.8\times$ (classified "over") and is untrusted on the other 5 scored items. The linear form E tracks 2 of 7 (spin, at $1.4$–$1.5\times$). Hence the $\sigma$-line through hybrids does not land on $a_0$ even when the error is pure, known sign flips. The open question is whether real networks, whose errors are $15$–$31\%$ rather than $2$–$6\%$, behave any better.
+
+### 24-Hour Decisive Test (Round 5, after critic fixes)
+**Critic fixes applied (2026-11-12).**
+* OSG killed (Gate 0 and mechanism). OSGX and ZRO kept as diagnostics only.
+* Fit forms pre-registered: S decides; R and E are reported.
+* P_S hybrids dropped. The irrep argument is corrected (Route 5.2).
+* Injected-sign-flip check added, which EHX must recover.
+* $G$ is redefined as false certificates / trusted items, defined only with at least 3 trusted items.
+* SE for the trust rule: $\sqrt{\mathrm{SE}_{\mathrm{boot}}^2+\mathrm{SE}_{\mathrm{jk}}^2}$, where $\mathrm{SE}_{\mathrm{jk}}$ is a leave-one-partner-out jackknife.
+* One label per network (P) is scored, with seeds as units. **The per-seed EHX/ZV estimates share partner data** (each seed's fit uses every other seed), so they are not independent.
+* The decisive comparison is EHX vs ZV. L1, L2 and SD are reported only.
+* All dependencies are `afterany`. Widths 3 and 12 are dropped.
+
+**Injected-sign-flip check (pre-registered; part of the gate).**
+* **States**: $\psi_i=\psi_0\,e^{0.1\,\xi(\mathrm{orbit})}\,(-1)^{[n\in S_i]}$, $i=1,2,3$.
+  * $S_i$ is a union of whole $G$-orbits drawn with probability proportional to orbit weight, up to flipped weight $0.01$, $0.02$, $0.04$.
+  * $\xi$ is a $G$-invariant Gaussian, so the hybrids differ from the members.
+* **Exactness**: each $\psi_i$ stays in $\chi$ ($\lVert P_\chi\psi_i-\psi_i\rVert=1.5\times10^{-13}$), and $\delta=a_0-a(\psi_i)$ is exact.
+* **Rule**: INJECT-PASS iff EHX (form S) tracks at least 50% of the scored injected items, with at least 3 scored.
+* **Result** on the 4×4 OBC instance ($10^5$ draws, 100 bootstraps; `smoke/inject_output.txt`): **INJECT FAIL**. The overlaps are 0.951, 0.911 and 0.835, and the relative errors 2–6%; 7 of 9 items are scored.
+
+```
+INJECT: scored 7; tracked {'EHX': 0, 'ZV': 0, 'EHX_R': 0, 'EHX_E': 2}; EHX classes ['untrusted', 'over', 'untrusted', 'untrusted', 'untrusted', 'over', 'untrusted']
+inject 0 (w_flip=0.0100) spin: delta=+1.186e-03 | EHX=+3.32e-03+-1.1e-03 EHX_E=+1.65e-03+-5.4e-04 ZV=-2.97e-04+-8.6e-04
+inject 2 (w_flip=0.0401) spin: delta=+1.815e-03 | EHX=+4.76e-03+-1.3e-03 EHX_E=+2.68e-03+-6.5e-04 ZV=-6.01e-04+-8.3e-04
+```
+
+**Cheap gate (submitted: job 452146).**
+* **Instance and population**: the shared 4×4 OBC $t$–$t'$–$J$ instance. Analyze-only, width 6, seeds 11/22/33 from P2.1 (seeds 22/33 from job 451706; missing files are skipped and logged), label P only, plus the injected check.
+* **Resources**: `sbatch --dependency=afterany:451706 submit_gate.sbatch`, partition kim, 8 CPUs, 2 h, $10^5$ draws, 100 bootstraps. Output in `results_gate/`.
+* **Metric**:
+  * An item is scored iff $\lvert\delta\rvert\ge0.02\lvert a_0\rvert$, and trusted iff $\mathrm{SE}\le0.5\lvert\hat\delta\rvert$.
+  * Tracked: $\tfrac12\le\hat\delta/\delta\le2$. False: trusted and $\hat\delta/\delta<\tfrac12$.
+  * $T_X(u)$ is the tracked fraction of seed $u$; $M_X=\mathrm{median}_uT_X(u)$.
+* **Premise (NO-TARGET otherwise)**: the P2.1 width-6 median $\Delta E_{\mathrm{sign}}\ge0.005t$, and at least 6 scored items over at least 3 seeds.
+* **Gate rule (pre-committed)**:
+  * **GATE-PASS** iff INJECT-PASS and $M_{\mathrm{EHX}}\ge0.5$ and $\mathrm{median}_u[T_{\mathrm{EHX}}(u)-T_{\mathrm{ZV}}(u)]>0$ and $G_{\mathrm{EHX}}\le0.10$ (with at least 3 trusted items). Action: train at least 8 more width-6 seeds (`submit_train.sbatch`, array 0–7, 8 CPUs, 8 h), then `sbatch --dependency=afterany:<TRAIN_JOB> submit_analyze.sbatch` with the full rule. Neither is submitted.
+  * **Otherwise GATE-FAIL**: EHX is "Route 2.3 restated" (variance extrapolation of $a$), the leaf is marked for mutation, and no training compute is spent.
+* **Expected outcome, stated before the gate runs**: since INJECT already fails at $10^5$ draws, GATE-FAIL is the expected verdict. The gate's real-network EHX-vs-ZV numbers are still read, for the mutation.
+* **Full rule (only after GATE-PASS; 11 width-6 seeds, label P)**:
+  * PASS: $M\ge0.5$, $\Delta=\mathrm{median}_u[T_{\mathrm{EHX}}-T_{\mathrm{ZV}}]\ge0.2$, the gain positive on every seed, $G\le0.10$ (defined), and INJECT-PASS.
+  * FAIL: $M<0.3$, or $\Delta<0.05$, or $G>0.20$, or INJECT fails.
+  * AMBIGUOUS otherwise: rerun with $5\times10^5$ draws; a route still not PASS is killed.
+
+**Checks** (`checks_output.txt`; `micro_test.py --mode checks`).
+* The first-order oracle matches $\delta$ to 0.02–2% at perturbation 0.001–0.01.
+* The indexed local energy equals the sparse-row sum.
+* The small-cluster (2+2) injected check runs end to end, with irrep deviation $3.7\times10^{-14}$. All 7 scored items are untrusted at $2\times10^4$ draws (FAIL).
+* $[\hat A,U_g]$ and $[\hat A,\hat S^2]$ vanish to $10^{-16}$ (`target_probe.py --checks`).
+
+**Smoke (after fixes).** Command: `micro_test.py --mode analyze --widths 6 --seeds 11,22,33 --labels P --mc-samples 20000 --n-boot 30 --results smoke_fix`, then `--mode aggregate --rule gate`. Only seed 11 exists yet, so EHX, ZV and SD abstain (NaN) and the premise gate fires, as it should. The run takes 20 s per state.
+
+```
+[11:37:56] w6 s11 P pair: delta=+2.895e-05 (rel 0.314) | EHX=+nan ZV=+nan EHX_R=+nan EHX_E=+nan ZV_R=+nan ZV_E=+nan L1=+3.62e-06 L2=-9.22e-07 SD=+nan OSGX=-4.37e-06 ZRO=+4.06e-05
+[11:38:01] w6 s11 P spin: delta=+7.876e-03 (rel 0.148) | EHX=+nan ZV=+nan EHX_R=+nan EHX_E=+nan ZV_R=+nan ZV_E=+nan L1=+1.44e-03 L2=+3.21e-03 SD=+nan OSGX=+7.81e-03 ZRO=+1.02e-02
+[11:38:05] w6 s11 P charge: delta=-3.122e-04 (rel 0.220) | EHX=+nan ZV=+nan EHX_R=+nan EHX_E=+nan ZV_R=+nan ZV_E=+nan L1=+7.84e-06 L2=-8.43e-05 SD=+nan OSGX=+7.29e-05 ZRO=-1.48e-04
+VERDICT: NO-TARGET (premise gate)
+```
+
+* **Aggregate path past the premise**: exercised once on synthetic rows (injected states relabelled as seeds); it printed GATE-FAIL and FAIL as the rules require. Not evidence.
+* **Pre-fix smoke (historic; OSG evidence)**: in `smoke/analyze_output.txt`, L1 and L2 under-state every item ($\hat\delta/\delta$ between $-0.11$ and $0.49$), ZRO tracks 5 of 6, and OSGX fails pair and charge.
+
+### Local Autopsy Log (Round 5 additions)
+* **Round-3 critic, ZR**: accepted. The trained response network is replaced by a closed-form Galerkin solve (OSG), with no per-observable network.
+* **Round-3 critic, ECC**: accepted. ECC is the first Lanczos moment. Its single-state relative SMA is kept only as an ablation; EHX is the ensemble route and uses no $H$-moment regressor.
+* **Round-3 critic, "no real target"**: resolved on the 4×4 OBC instance. Converged finals have 15–31% errors, and Lanczos steps do not remove them.
+* **Hard Core**: the in-irrep gap is $0.209t$ ($0.013t$ per site). Sign half only.
+* **New anti-pattern**: on converged projected states the residual observable error is low-$\omega$, so one or two Lanczos steps lower $\Delta E$ by $2$–$3.5\times$ while leaving $\delta$ within 20%. Krylov variance extrapolation then issues false certificates. Measured.
+* **Process note**: while restarting the smoke run I issued `pkill -f "micro_test.py --mode analyze"` inside the shared Claude job. Only my own process was running at that time (`ps` afterwards), but this pattern should not be used in a shared allocation.
+* **Kill (critic, 2026-11-12): Route 5.1 OSG.** It is the Assaraf–Caffarel / Toulouse–Assaraf–Umrigar zero-bias correction with a fixed linear-basis $\psi'$, so it fails Gate 0. On mechanism, OSGX has the wrong sign or zero on 4 of 6 smoke items, and the sampled OSG is biased $3.7\times$ against exact Galerkin. ZRO and OSGX are kept as diagnostics only.
+* **Critic, EHX irrep argument**: corrected. The hybrid is in $\chi$ because $\mathrm{sgn}\,\psi_j$ carries $\chi(g)\xi_g$, not because $\lvert\psi\rvert$ is $G$-invariant. The P_S hybrids break SU(2) and are dropped.
+* **Critic, EHX fit form**: a linear chord in $E$ understates a first-order $\delta a$. Form S ($\sigma$) was pre-registered as deciding before any network data. On the injected check, S overshoots by $2.6$–$2.8\times$ where E is at $1.4$–$1.5\times$, so the critic's bias argument holds in sign but S over-corrects.
+* **New anti-pattern**: a fit line through hybrids of one ensemble anchors neither the slope nor the endpoint. Making the regressor first order ($\sigma$) does not by itself recover a known injected $\delta$.
+
+### Round 6 (2026-11-12)
+**Binding inputs.**
+* **EHX**: the injected-sign-flip check fails on the real instance. EHX tracks 0 of 7 items, and spin overshoots by $2.6$–$2.8\times$. Gate job 452146 is pending as a formal record; GATE-FAIL is expected.
+* **Measured on seed 11**: one and two Lanczos steps cut $\Delta E$ from $0.052$ to $0.023$ and $0.015$. The pair error moves only from $2.9$ to $2.6$ and $2.8\times10^{-5}$.
+* **Killed so far**: Sorella–Becca Lanczos extrapolation, A-Ritz, ZR, ECC, OSG and EHX.
+* **This round's brief**: run a Saturation Diagnostic first. Then refine the leaf to information that is not generated by $\hat H$. Every route must pass an injected low-energy check on the real instance before any decisive test.
+
+**Saturation Diagnostic.**
+* **Setup.** Let $\lvert n\rangle$ be the eigenstates in $\psi_0$'s sector, with $\omega_n=E_n-E_0$. Write the normalised trial state as $\psi=\alpha\psi_0+e$, with $e=\sum_{n\ge1}c_n\lvert n\rangle$. Then
+$$\delta=a_0-a_\psi=\delta_1+\mathcal O(\lVert e\rVert^2),\qquad \delta_1=-2\alpha\sum_{n\ge1}c_nA_{n0},\qquad \Delta E=\sum_{n\ge1}\lvert c_n\rvert^2\omega_n ,$$
+with $A_{n0}=\langle n\rvert\hat A\lvert\psi_0\rangle$.
+* **Proposition S1 (moments are phase-blind).**
+  * *Statement.* Every moment $\langle\psi\rvert\hat H^k\lvert\psi\rangle=\lvert\alpha\rvert^2E_0^k+\sum_n\lvert c_n\rvert^2E_n^k$ depends only on the $\lvert c_n\rvert$. The map $c_n\to-c_n$ for $n$ in any set $L$ therefore leaves every moment unchanged (variance, V-score, energy error, all $k$). It changes $\delta_1$ by $4\alpha\sum_{n\in L}c_nA_{n0}$.
+  * *Consequence.* No function of $\hat H$-moments determines $\delta$, nor even its sign. This holds at every $\omega$, gap or no gap.
+  * *Check.* `checks_output.txt` confirms it numerically: the moments agree to $7\times10^{-16}$, while $\delta$ changes sign.
+* **Proposition S2 (Krylov filters are capped by $\omega/W$).**
+  * *Statement.* Let $\phi\propto p(\hat H)\psi$ with $\deg p\le K$, normalised so that $p(E_0)=1$, and let $M=\max_{[E_0,E_{\max}]}\lvert p\rvert$ and $W=E_{\max}-E_0$. Markov's inequality gives $\lvert p'\rvert\le2K^2M/W$ on the spectrum. Hence $\lvert p(E_n)-1\rvert\le2K^2M\,\omega_n/W$.
+  * *What this means.* Any degree-$K$ filter rescales a component with $\omega_n\le\Omega$ by $1+\mathcal O(\varepsilon_K)$, with $\varepsilon_K=2K^2M\Omega/W$. So the part of $\delta_1$ carried by those components changes by at most a fraction $\varepsilon_K$, up to a common normalisation.
+  * **Consequence (a): Lanczos-step variance extrapolation.** The estimate is $\hat\delta=(a_\phi-a_\psi)\,\sigma_\psi^2/(\sigma_\psi^2-\sigma_\phi^2)$. Its prefactor is $\mathcal O(1)$ whenever the step removes mostly high-$\omega$ variance, which is the case here. So it recovers at most $\mathcal O(\varepsilon_K)$ of the low-$\omega$ part of $\delta_1$.
+  * **Consequence (b): zero-bias / DWR corrections with an $\hat H$-generated $\psi'=q(\hat H)\psi$.** The correction is linear in the residual $(\hat H-E)\psi$, whose low components carry weight $\omega_nc_n$. Recovering $c_nA_{n0}$ therefore needs $q\approx1/\omega$ on $[\Omega,W]$, which takes a polynomial degree $K\gtrsim\sqrt{W/\Omega}$ (Chebyshev approximation of $1/x$).
+  * **Consequence (c): field-response routes that take $\hat E_0$ from variance extrapolation.** These reduce to $\partial_h\sigma^2$, which is again a second $\hat H$-moment.
+  * *Numbers.* On the 4×4 2+2 smoke cluster, $W=19.5t$. With $\Omega=0.5t$ this gives $\varepsilon_1=0.05$, $\varepsilon_2=0.21$ and $\sqrt{W/\Omega}=6.2$. Job 452272 prints the same numbers for the main instance. Statistical Lanczos with $p\ge3$ steps is not practical in VMC.
+* **Literature check (Gate 0 of the diagnostic itself).**
+  * Error bounds on expectation values need either the gap or the exact energies: Eckart; Weinhold's overlap bounds; Jennings & Wilson's Bazley–Fox-type bounds. The search found only these, plus the mixed-state extension of Weinhold-type bounds to VQE (arXiv:2110.09793).
+  * Kaniel–Paige–Saad Lanczos convergence is governed by Chebyshev polynomials in the gap ratio.
+  * DMRG treats observable error as $\propto\sqrt{\varepsilon}$, i.e. first order (Jeckelmann, arXiv:cond-mat/0510637).
+  * No VMC/NQS paper found gives a general error estimate for correlation functions; the closest hits are variance-reduction preprints (arXiv:2603.14521) and fidelity-estimator bounds (arXiv:2311.14820).
+  * **Verdict: known in spirit, not claimed as new.** S1 and S2 are elementary, explicit forms of the folklore. Their use here is to close the leaf's $\hat H$-moment branch with a proof rather than a sequence of kills.
+* **Saturated (with S1/S2 as the mechanism):** Route 1, Route 2.3, the $\hat H\psi$ part of A-Ritz, ECC, and the $\sigma$- and $E$-regressors of ZV and EHX. OSG and ZR are saturated as well whenever their response is $\hat H$-generated.
+* **Measured part (pre-registered; job 452272).** The run resolves $\delta_1$ and $\Delta E$ into $\omega$ shells by Lanczos quadrature. On the small cluster the quadrature reproduces $\delta_1$ and $\Delta E$ to $10^{-8}$ and matches an eigenvector sum. For each available real width-6 state it reports the cumulative fractions $F_\delta(\Omega)$ and $F_E(\Omega)$.
+  * *Rule.* LOW-OMEGA-CONFIRMED for an observable iff $F_\delta(1t)\ge0.5$ and $F_\delta(1t)\ge2F_E(1t)$ on the median state.
+  * *Caveat.* When contributions of opposite sign cancel in $\delta_1$, $F_\delta$ is not monotone; the smoke state shows this.
+
+**Refined leaf (P3.1-R6).**
+* **Input.** A *capacity ladder*: projected-trained states $\psi_{u,w}$ of one architecture, one seed $u$, at widths $w_1<\dots<w_L$. Each member provides sampled $E_{\mathrm{loc}}$ and $A_{\mathrm{loc}}$ plus one statistical Lanczos step.
+* **Output.** $\hat\delta$ for the top member, or an abstention.
+* **Information source.** Knowledge of the low-$\omega$ error comes from how the error changes along the ladder, which is not generated by $\hat H$. $\hat H$ is used only where S2 says it works: to remove high-$\omega$ error from the regressor.
+* **Regime where cheap information can work.** The low-$\omega$ error shrinks along the ladder without rotating. When it rotates, the method must abstain rather than certify.
+* **Hard Core.** Sign half only. For a true near-degeneracy ($\omega\to0$), $\sigma_{L1}$ loses the low component, so the competitor half stays out of reach.
+
+**Generation Batch 6.**
+  - **Route 6.1: capacity-ladder first-order extrapolation with a Lanczos-cleaned regressor (CLX).**
+    * **Method.** For each ladder member, take the one-step Ritz state $\phi_{1}$. Fit $a(\phi_1)=\alpha+\gamma\,\sigma(\phi_1)$ over the ladder by OLS and set $\hat\delta=\alpha-a_\psi$.
+    * **Why first order is right.** If the low error is $\lambda_wu$ with a fixed $u$, then $\delta\propto\lambda_w$ and $\sigma_{\mathrm{low}}^2=\lambda_w^2\sum\lvert u_n\rvert^2\omega_n^2\propto\lambda_w^2$, so the relation is linear in $\sigma$ with the right endpoint.
+    * **Why clean first.** The step removes the high-$\omega$ variance that dominates the raw $\sigma$ but does not move $a$. That decoupling is exactly what broke ZV and EHX.
+    * **Abstention.** A leave-one-level-out jackknife plus a Monte Carlo bootstrap; abstain when $\mathrm{SE}>0.5\lvert\hat\delta\rvert$.
+    - Gate 0 (Novelty & Adoption): PASS (marginal).
+      * *Prior art.* DMRG extrapolates observables in $\sqrt{\varepsilon}$ (arXiv:cond-mat/0510637). NQS extrapolates energies against variance across hidden-unit ratio (arXiv:2111.10420; arXiv:2510.26906; Mach. Learn.: Sci. Technol. 2024, DOI 10.1088/2632-2153/ad1f75). In arXiv:2510.26906 correlation functions are only *reported* against width. The search found no extrapolation of an NQS correlation function along a capacity ladder.
+      * *Why it is not used.* NQS ladders are non-monotone, and the raw $\sigma$ is dominated by high-$\omega$ error that does not move $a$ (measured).
+      * *New mechanism.* The S2-justified Lanczos-cleaned first-order regressor; per-seed ladders as independent units; jackknife abstention for rotating error directions.
+      * *Declared risk.* A critic may call this "DMRG practice plus a Lanczos step".
+    - Gate 1 (Conservation & Asymptotics): PASS.
+      * *Consistency.* Exact when every member equals $\psi_0$. All members and Ritz states stay in the irrep (asserted in code).
+      * *Cost.* One statistical Lanczos step per member ($\mathcal O(N_{\mathrm{conn}}^2)$ per sample) and $L-1$ trainings of smaller networks. Width scans are already routine for energy extrapolation. There is no network per observable.
+    - Gate 2 (Baseline Gameability): PASS on paper, decided by test.
+      * *Ablations.* CLXraw (the uncleaned ladder, i.e. ZV on a ladder) and L1VEX/L2VEX (the saturated arms).
+      * *Stress set.* Set B (a rotating direction) shows the declared blind spot; it must abstain there, not certify.
+    - Gate 3 (Hard-Core Shield): PASS for the sign half only (declared above). No gap is assumed.
+    - *Verdict*: SURVIVED. Conditional on the injected check, job 452272.
+  - **Route 6.2: twist / boundary-condition averaging as an error signal.**
+    * *Gate 2 FAIL.* Averaging over twists reduces the finite-size error of $a_0$ itself, not the variational bias. The state trained at each twist carries its own error, so the twist spread is a seed-spread analogue.
+    * *Not applicable.* The shared instance is OBC, so it has no twist.
+    * *Verdict*: KILLED.
+  - **Route 6.3: field derivative of the ladder's extrapolated $\hat E_0(h)$ (Hellmann–Feynman).** Because $\partial_hE_\theta=a_\theta$ for an optimised state, the estimate reduces to $\hat\delta=-s\,\partial_h\sigma^2_\theta$, a second $\hat H$-moment. *Verdict*: KILLED by S1/S2, and by Gate 0 (it is Route 3, the pinning field, again).
+  - **Route 6.4: disagreement across architectures, calibrated by an independent-error model.**
+    * *Gate 0 FAIL.* It is architecture consensus (Viteritti et al., arXiv:2604.21978) and seed spread (arXiv:2606.02794).
+    * *Gate 2 FAIL.* Shared bias is invisible to it.
+    * *What is kept.* Any family ordered by capacity can serve as a CLX ladder.
+    * *Verdict*: KILLED.
+  - **Route 6.5: proxy-calibrated alignment.**
+    * *Idea.* By Cauchy–Schwarz, $\lvert\delta_1\rvert\le\sqrt{2\chi_A\Delta E}$, with equality iff $c_n\propto A_{n0}/\omega_n$. Calibrate the alignment $\kappa=\delta/\sqrt{2\chi_A\Delta E}$ on an ED proxy.
+    * *Gate 2 FAIL.* $\chi_A$ on the target needs in-family field runs, which is the Round 1 Route 2 kill.
+    * *Gate 3 FAIL.* Whether $\kappa$ transfers across Hamiltonians is unproven, and that question belongs to P4.2.
+    * *Verdict*: KILLED. The inequality is kept as a sanity bound.
+
+### Top Surviving Route & Sharpest Gap (Round 6)
+* **Mechanism (CLX).** Extrapolate the Lanczos-cleaned observable linearly in the Lanczos-cleaned $\sigma$ along a per-seed capacity ladder, and abstain by jackknife.
+  * The $\hat H$-Krylov step is used only on the high-$\omega$ error. There it works: on the small-cluster smoke, L1VEX tracks the junk-only set N.
+  * The low-$\omega$ error is seen through its change along the ladder, which S1/S2 put out of reach of any single-state $\hat H$ information.
+* **Sharpest gap: direction stability on real ladders.**
+  * Does the low-$\omega$ error of a projected NNBF shrink with width without rotating?
+  * Does the high-$\omega$ residual after one Lanczos step still dominate $\sigma_{L1}$? On seed 11, $\Delta E_{L1}=0.023$ against $\Delta E=0.052$.
+  * The injected check (job 452272) tests only the fixed-direction premise (set A) and reports the failure mode (set B). The real ladders test the premise itself.
+
+### 24-Hour Decisive Test (Round 6)
+**Step 1: injected low-energy check (submitted: job 452272, `submit_inject.sbatch`, partition kim, 8 CPUs, 4 h).**
+* **States.** Exact in-irrep ($\chi$, $S=0$) eigenvectors $\lvert n\rangle$, $n=1..9$. The ladders are
+$$\psi_{ij}=N\big[\psi_0+\lambda_iu_{ij}+\mu_{ij}\,j_{ij}\big],\qquad \lambda=(0.35,0.28,0.21,0.14),\quad \mu_{ij}=(0.30,0.26,0.22,0.18)_i\,(1\pm0.3).$$
+  * $u_{ij}$ is a low-$\omega$ combination of the $\lvert n\rangle$.
+  * $j_{ij}$ is high-$\omega$ junk: $(\hat H-E_0)P_\chi[\psi_0\xi]$ with the $\psi_0$ and $\lvert n\rangle$ components removed.
+  * The magnitudes match the real state's overlap of 0.94 and its 15–31% errors, since $\lvert A_{n0}\rvert\sim\lvert a_0\rvert$.
+* **Sets.**
+  * **A (fixed direction, must pass):** 5 synthetic seeds × 4 levels.
+  * **B (rotating, reported):** $u$ turns by $\pi/6$ per level.
+  * **N (junk only, reported).**
+* **Exactness.** Every member is asserted to lie in $\chi$, and $\delta$ is exact.
+* **Sampling.** $2\times10^5$ draws per point and 100 bootstrap replicas. Local estimators are exact vectors indexed at the draws (the r5 convention). The Ritz coefficient of the Lanczos step is exact; at scale it is a VMC estimate (Sorella).
+* **Scoring.**
+  * An item is (seed, observable) at the top level, scored iff $\lvert\delta\rvert\ge0.10\lvert a_0\rvert$. The threshold was raised from 0.02 after the small-cluster smoke and before any main-instance run.
+  * Trusted iff $\mathrm{SE}\le0.5\lvert\hat\delta\rvert$, with $\mathrm{SE}^2=\mathrm{SE}_{\mathrm{boot}}^2+\mathrm{SE}_{\mathrm{jk}}^2$.
+  * Tracked iff trusted and $\tfrac12\le\hat\delta/\delta\le2$. False iff trusted and $\hat\delta/\delta<\tfrac12$.
+  * $G$ = false / trusted, defined only with at least 3 trusted items.
+* **INJECT-PASS iff all of:**
+  * at least 9 scored items;
+  * CLX tracked fraction $\ge0.7$;
+  * median over seeds of the per-seed tracked fraction $\ge2/3$;
+  * $G\le0.10$.
+* **Otherwise INJECT-FAIL.** CLX is killed, and no training compute is spent.
+* **Also printed:** the Saturation measurement on the real width-6 states, and the median $\lvert$L1VEX$/\delta\rvert$ on set A, which is S2's prediction made visible.
+
+**Step 2: decisive test on real ladders (only after INJECT-PASS; written, not submitted).**
+* **Instance and population.** The shared 4×4 OBC $t$–$t'$–$J$ instance. Per-seed NNBF ladders at widths 2, 3, 4 and 6 for seeds 11, 22, 33, 44 and 55. Width 6 for seeds 11/22/33 comes from P2.1, so 17 trainings remain.
+* **Submission.**
+  * Training: `sbatch submit_ladder_train.sbatch` (array 0–16, 8 CPUs, 16 h each).
+  * Analysis: `micro_test.py --mode ladder --widths 2,3,4,6 --seeds 11,22,33,44,55`.
+* **Units.** Seeds are the units. $T_X(u)$ is the tracked fraction of seed $u$'s three top-width items.
+* **PREMISE (NO-LADDER otherwise).** At least 5 seeds have at least 3 widths; the median top-width relative error is $\ge0.02$ on at least one observable; and $\sigma_{L1}$ decreases monotonically with width on at least 80% of seeds.
+* **PASS iff all of:**
+  * $\mathrm{median}_uT_{\mathrm{CLX}}\ge2/3$;
+  * lower quartile $\ge1/3$;
+  * $T_{\mathrm{CLX}}(u)>T_{\mathrm{CLXraw}}(u)$ on at least 80% of seeds;
+  * $G_{\mathrm{CLX}}\le0.10$, with $G$ defined;
+  * INJECT-PASS on record.
+* **FAIL iff any of:** median $\le1/3$; $G>0.20$; INJECT-FAIL.
+* **AMBIGUOUS otherwise.** Add 5 seeds; a route still not at PASS is killed.
+
+**Checks** (`micro_test.py --mode checks`, 4×4 OBC 2+2 cluster; `checks_output.txt`):
+
+```
+[11:49:53] check S1 pair: moments rel diff 7.4e-16; delta(+c) +2.166e-03 delta(-c) -1.402e-03
+[11:49:53] check quad: dE 5.316326e-01 quad 5.316326e-01
+[11:49:53] check quad spin: delta1 -1.9351e-03 quad -1.9351e-03 | F_delta(1.2) -0.3476 vs eigvec -0.3476 (omega_low [0.943, 1.111, 1.184, 1.361, 1.493, 1.73, 1.743])
+[11:49:54] check CLX junk-free ladder pair: delta +1.7234e-04 CLX-exact +1.7274e-04 (ratio 1.002) CLX-sampled +2.130e-04+-9.1e-05 L1VEX +2.185e-04
+[11:49:54] check CLX junk-free ladder charge: delta +9.7347e-05 CLX-exact +9.8992e-05 (ratio 1.017) CLX-sampled +1.998e-04+-1.3e-04 L1VEX +2.328e-04
+```
+
+**Smoke** (small cluster, machinery only, no physics claim). The gap there is $0.94t$, so this is not the low-$\omega$ regime. Command: `micro_test.py --mode inject --instance small --n-low 6 --n-seeds 3 --mc-samples 100000 --n-boot 50 --lanczos-steps 60 --results smoke`.
+
+```
+SET A (top level): CLX 3/5 med_seed 0.50 G 0.00; CLX2 3/5 med_seed 0.50 G 0.00; CLXraw 1/5 med_seed 0.00 G nan; CLX_R 1/5 med_seed 0.00 G nan; L1VEX 0/5 med_seed 0.00 G 1.00; L2VEX 0/5 med_seed 0.00 G 1.00
+SET A saturation: median |L1VEX/delta| over all scored levels = 0.160
+SET B (top level): CLX 0/8 ... L1VEX 0/8 med_seed 0.00 G 1.00
+SET N (top level): CLX 0/1 ... L1VEX 1/1 med_seed 1.00
+INJECT (set A, CLX): scored 5 tracked 3 frac 0.60 median_seed 0.50 G 0.00 -> INJECT-FAIL (14 s)
+```
+
+* **Reading.**
+  * On set A, CLX never issues a false certificate ($G=0$); its misses are abstentions on the small-$\delta$ items.
+  * The saturated arms (L1VEX/L2VEX) issue false certificates on set A ($G\ge0.78$) and recover only 16% of $\delta$.
+  * On set B every arm misses. CLX abstains, which is the declared blind spot.
+
+### Local Autopsy Log (Round 6 additions)
+* **Saturation Diagnostic.**
+  * Propositions S1 and S2 explain every round-1 to round-5 kill in the $\hat H$-moment branch by one mechanism. Moments do not see the phase of the error. Degree-$K$ filters change low-$\omega$ components by at most $2K^2M\omega/W$.
+  * New global anti-pattern for this leaf: no estimator of $\delta$ from $\hat H$-moments or $\hat H$-Krylov information about a single state, unless the polynomial degree satisfies $K\gtrsim\sqrt{W/\Omega}$.
+* **Kills: Routes 6.2–6.5.** Twist averaging (Gate 2, and not applicable on OBC). Field derivative (S1/S2 and Gate 0). Architecture consensus (Gates 0 and 2). Proxy alignment (Gates 2 and 3).
+* **EHX** stays killed by its injected check. Gate 452146 is a formal record only.
+* **Process note: threshold change.** The injected-check scoring threshold was raised from $0.02$ to $0.10\lvert a_0\rvert$ after the small-cluster smoke and before the main run. On the small cluster, 3% items are limited by Monte Carlo noise, whereas the real target has 15–31% errors.
+
+### Round 7 (2026-11-12)
+**Binding inputs (job 452272).**
+* **Low-$\omega$ dominance confirmed on a real state.** For the converged width-6 projected NNBF (seed 11), $F_\delta(1t)$ = 1.41 (pair), 0.87 (spin), 0.83 (charge), against $F_E(1t)=0.31$.
+* **CLX: INJECT-FAIL.** Set A: 0/4 tracked; the jackknife SE is about $\lvert\delta\rvert$, so CLX abstains almost everywhere. CLX is killed.
+* **Saturated controls.** L1VEX/L2VEX give false certificates on every trusted set-A item ($G=1.00$) and track set N (junk only) 3/3, as S1/S2 predict.
+* **Spectrum.** The 9 lowest in-irrep ($\chi$, $S=0$) levels lie at $\omega=0.209$–$0.483t$, and the spectral width is $W=19.43t$.
+* **Constraints for this round.** No estimator from $\hat H$-moments or $\hat H$-Krylov information about $\psi$ (S1/S2). No width-ladder extrapolation (too noisy). The error lives in a handful of low-energy in-irrep states.
+
+**Refined leaf (P3.1-R7).**
+* **Input.** The trained state $\psi$, plus a small set of $K$ in-irrep variational states $\varphi_1,\dots,\varphi_K$ that approximate the lowest excited states. All observables share these states, and each needs one statistical Lanczos step of cost.
+* **Output.** $\hat\delta$ or an abstention.
+* **Information source.** The low-$\omega$ subspace itself. It is not generated by $\hat H$ acting on $\psi$, so S1/S2 do not apply.
+* **Span used (consistent with the code, critic fix e).** The Ritz span is $\mathrm{span}\{\psi,(\hat H-E_\psi)\psi,\varphi_1,\dots,\varphi_K\}$. The vector $(\hat H-E_\psi)\psi$ is included; by S2 it is blind to low-$\omega$ error and only removes high-$\omega$ junk from $\psi$ (alone it is the L1R control). The new information comes only from the $\varphi_k$. S3 is stated for $\mathrm{span}\{\psi,\varphi\}$; adding $(\hat H-E_\psi)\psi$ does not change its low-$\omega$ fraction at leading order in $\omega/W$.
+
+**Proposition S3 (what a low-energy subspace buys, and what it needs).**
+* **Statement.** Let $\psi=\alpha\psi_0+c\lvert k\rangle+\dots$ and $\varphi=\lvert k\rangle+j$, where $j\perp\{\psi_0,\lvert k\rangle\}$ costs $\varepsilon=\langle j\rvert\hat H-E_k\lvert j\rangle$. Rayleigh–Ritz in $\mathrm{span}\{\psi,\varphi\}$ minimises $(c-x)^2\omega_k+x^2\varepsilon$ over the admixture $x$. So it removes the fraction $x^*/c=\omega_k/(\omega_k+\varepsilon)$ of the low component and leaves the residual fraction $\varepsilon/(\omega_k+\varepsilon)$ of its contribution $-2\alpha c\,A_{k0}$ to $\delta_1$.
+* **Consequence 1.** A subspace route recovers the low-$\omega$ error to within a factor 2 when (i) the window $\{\varphi_k\}$ spans the levels that carry $\delta_1$, and (ii) $\varepsilon_k\lesssim\omega_k$. Rotations *inside* the window do not matter, because Ritz depends only on the span.
+* **Consequence 2.** In the competitor limit $\omega_k\to0$ at fixed $\varepsilon_k$, the recovered fraction goes to zero. The route therefore covers the sign half only, as every earlier P3.1 route did.
+* **Consequence 3 (minimal extra information).** If the window must reach $K_{1/2}$ levels before the oracle Ritz ratio stays within $[\tfrac12,2]$, no cheaper object can replace those $K_{1/2}$ approximate eigenstates without per-observable information. The only alternative is the single vector $P_L(\hat A-a_0)\psi_0$, which is per observable (killed ZR). Part 1 of job 454376 measures $K_{1/2}$ on the real state.
+
+**Generation Batch 7.**
+  - **Route 7.1: excited-state subspace Ritz (ESR0; ESR is its Krylov-cleaned variant).**
+    * **Method.**
+      * Train $K$ in-irrep excited states $\varphi_k$ at the same width as $\psi$. Use orthogonality penalties against $\psi$ and against $\varphi_{<k}$ (Choo et al., PRL 121, 167204 (2018); improved penalty VMC, arXiv:2405.17089), or train them jointly with NES-VMC (Pfau et al., Science 2024, arXiv:2308.16848).
+      * The window is $K=\min(\#\{\hat\omega_k\le1t\},24)$, where $\hat\omega_k$ are the variational excited energies.
+      * Solve the Ritz problem for $\hat H$ in $\mathrm{span}\{\psi,(\hat H-E_\psi)\psi,\varphi_1,\dots,\varphi_K\}$. Every $\langle b_i\rvert O\lvert b_j\rangle$ is estimated by mixture importance sampling from $p\propto\lvert\psi\rvert^2+\sum_k\lvert\varphi_k\rvert^2$.
+      * Set $\hat\delta=a(\text{Ritz})-a(\psi)$.
+    * **Abstention.** Abstain unless the bootstrap SE is at most $0.5\lvert\hat\delta\rvert$ and the estimate is stable when the top third of the window is dropped ($\lvert\hat\delta_K-\hat\delta_{K'}\rvert\le0.5\lvert\hat\delta_K\rvert$, $K'=\lceil2K/3\rceil$).
+    * **Cost.** $K$ extra trainings per state, shared by every observable and every $r$. ZR needs one extra network per (observable, $r$). For a full $C(r)$ map of three correlators at about 8 distances, $K\le24$ is at break-even or better. For the three aggregated observables used here it is up to $8\times$ more expensive, and this is stated as the price.
+    - Gate 0 (Novelty & Adoption): **FAIL as a method; PASS only as a diagnostic** (critic fix d, after the injected check).
+      * *As a method.* Rayleigh–Ritz in a span of separately optimised variational states is established: NOVQE (arXiv:1909.09114), MC-VQE (PRL 122, 230401 (2019)), SSVQE (arXiv:1810.09434), Filippi-type multistate VMC (arXiv:2002.03622), excited-state VMC and NES-VMC (arXiv:2207.12160, arXiv:2308.16848), and recent subspace NQS work (arXiv:2606.05148, arXiv:2504.21459). Using that Ritz vector as an improved ground-state estimate is therefore not new.
+      * *As a diagnostic.* What is not covered is the error-bar use: S3's quantitative condition and the measured $K_{1/2}$ that say when the span correction can be trusted. This counts only if the shrinkage-aware abstention rule (fix b, Step 2) is shown to work.
+      * *Prior art (earlier search).*
+        * Excited-state NQS and VMC methods exist: Choo et al.; NES-VMC (arXiv:2308.16848); improved penalty VMC (arXiv:2405.17089); Excited Pfaffians (arXiv:2603.14515).
+        * Non-orthogonal Ritz over a basis of NQS states exists in the generalized-Lanczos NQS (arXiv:2502.01264). Its basis is $\hat H$-generated, so it falls under S2 for a few steps.
+        * Multi-state Monte Carlo Rayleigh–Ritz is old (Ceperley–Bernu correlation-function MC; physics/0010066).
+        * None of the searches found excited states used to *correct or error-bar a ground-state observable* (two WebSearch queries; the search summaries state this explicitly).
+      * *Why it is not used.* Three reasons: excited-state NQS cost $K\times$ more; cross-state matrix elements are noisy; and nothing said which states or how many are needed.
+      * *New mechanism.*
+        * S2 plus the measured $F_\delta$ show that the low window is where the error lives.
+        * S3 gives a quantitative condition, $\varepsilon_k\lesssim\omega_k$, and a window size $K_{1/2}$ that is measured rather than guessed.
+        * The window-stability rule turns the estimate into certificate-or-abstain.
+    - Gate 1 (Conservation & Asymptotics): PASS on ED-sized clusters (the leaf's "solved" criterion), with a declared asymptotic gap.
+      * All $\varphi_k$ and Ritz vectors stay in $\chi$ (asserted).
+      * The cost per sample is polynomial: $\mathcal O(K\,N_{\mathrm{conn}})$ amplitude evaluations.
+      * The number of in-irrep levels below $\Omega$ grows exponentially with $V$, so the route scales only if $\delta_1$ is *concentrated* on $\mathcal O(\mathrm{poly}\,V)$ of them. This is the sharpest gap, below.
+    - Gate 2 (Baseline Gameability): PASS on paper, decided by test.
+      * The cheap baseline is L1R (Ritz in $\mathrm{span}\{\psi,\hat H\psi\}$), which S2 says is blind. ESR0 must beat it by $\ge0.3$ in tracked fraction on set A.
+      * The window-stability rule is the guard against the leak failure mode (error outside the window). Grade H and set W stress it.
+    - Gate 3 (Hard-Core Shield): PASS for the sign half only (S3, consequence 2). No gap is assumed. Stated quantitatively (critic fix g): the route is valid for those levels with $\omega_k\gtrsim2.5\,\varepsilon_k$ (S3 then recovers at least $\omega_k/(\omega_k+\varepsilon_k)\ge0.7$ of the level's error) and $\varepsilon_k\ge\Delta E_\psi$ (an excited state trained with the ground state's architecture is not expected to be better than the ground state). Together these need $\omega_k\gtrsim2.5\,\Delta E_\psi\approx0.13t$ on the seed-11 state, which the three lowest in-irrep levels ($\omega=0.21$–$0.31t$) meet and a same-sector competitor at $\omega\to0$ does not.
+    - *Verdict*: INJECT-PASS on set A (job 454376). The per-leaf critic downgrades it to a diagnostic (Gate 0 FAIL as a method). Step 2 is gated on the excited-state pilot, job 456094.
+  - **Route 7.2: response of the projected network to a conjugate field $\hat H+h\hat A$.**
+    * *Mechanism.* $\delta$ is an offset, $a_0-a_\psi$. A field derivative measures the family's susceptibility $\chi_\theta=\partial_ha_\theta$, not the offset.
+    * *Gate 2 FAIL.* This is Round 1 Route 2 (in-family $\chi$) and Route 3 (pinning field).
+    * *Does projection change that?* No. Projection removes the symmetry-breaking reason an ordered ansatz "answers with its own order". The capacity-limited offset is unaffected, because $\delta$ does not enter $\partial_ha_\theta$ at first order.
+    * *Gate 0 FAIL* as well (Assaad & Herbut, PRX 3, 031010).
+    * *Verdict*: KILLED.
+  - **Route 7.3: certificate only, using a Weinstein/Temple bound restricted to the low in-irrep window.**
+    * *Gate 1 FAIL.* A certificate needs rigorous *lower* bounds on $E_0$ and on $E_{K+1}$ in the irrep (Temple/Lehmann). A variational excited state gives only an *upper* bound on $\omega_k$, which points the wrong way. Ground-energy lower bounds are QMA-hard in general. The practical SDP route, Wang et al. "Certifying ground-state properties of quantum many-body systems" (PRX 14, 031006 (2024), arXiv:2310.05844), is shown for Heisenberg models; for doped $t$–$J$ its lower bounds are not near $0.05t$ precision [unverified for this instance].
+    * *Floor even with oracle $E_0$ and gap.* Any certificate that uses only the energy window must cover every state with energy $\le E_\psi$. By the Cauchy–Schwarz form of S1, that set contains states with $\lvert\delta_1\rvert$ up to $C^*=\alpha\sqrt{2\chi_A\Delta E}$. Part 1 of job 454376 prints $C^*/\lvert\delta\rvert$ on the real state.
+    * *Verdict*: KILLED. $C^*/\lvert\delta\rvert$ is recorded as the price of certification.
+  - **Route 7.4: diagonal-ensemble (real-time dephasing) estimator.**
+    * *Idea.* For exact dynamics, the time average $\bar a_T$ of $a(t)$ removes the $\psi_0$–$\lvert n\rangle$ cross terms. Then $\bar a_T-a_\psi=\delta-\sum_n\lvert c_n\rvert^2(a_0-A_{nn})$ once $T\gg1/\omega_1\approx5/t$. This uses $\hat A$ and a propagator of effective degree $\sim WT\gg\sqrt{W/\Omega}$, so S1/S2 do not apply.
+    * *Gate 1 FAIL.* With NQS the dynamics is projected (TDVP), $\dot\theta=-iS^{-1}\partial_{\bar\theta}E$, and at the trained energy minimum $\partial E=0$. The state is a fixed point of the variational dynamics, so $a(t)=a_\psi$ and $\hat\delta=0$ identically. Kicking it first gives the tangent-space linear response, which is again in-family $\chi_\theta$ (Route 7.2).
+    * *Verdict*: KILLED. The search found no NQS diagonal-ensemble error estimate (arXiv:2412.11778 is the closest).
+  - **Route 7.5: tangent-space Ritz (linear method at convergence).** By the Brillouin condition, $\langle\partial_i\psi\rvert\hat H-E\lvert\psi\rangle=0$ at the minimum, so the lowest tangent-space Ritz vector is $\psi$ and $\hat\delta=0$. *Verdict*: KILLED (Gate 1).
+  - **Route 7.6: Ritz-trained single auxiliary (RTA).**
+    * *Idea.* Train one auxiliary network $\chi$ to minimise the lowest Ritz value of $\mathrm{span}\{\psi,\hat H\psi,\chi\}$.
+    * *Gate 2 FAIL.* The optimum $\chi$ is $Q\psi_0$, so RTA is a two-member capacity ladder without extrapolation. $\hat\delta$ is the improvement at doubled capacity, a systematic under-estimate whenever the doubled family keeps a shared bias (Route 6.4's mechanism).
+    * *Verdict*: KILLED.
+  - **Route 7.7: multi-seed Ritz (MSR).**
+    * *Idea.* Ritz in $\mathrm{span}\{\psi_s,(\hat H-E_s)\psi_s\}$ over trained seeds; errors with independent low directions cancel coherently.
+    * *Gate 2 risk.* A bias shared across seeds is invisible to it (Route 6.4). It also overlaps with the P3.2 kill of non-orthogonal CI across branches.
+    * *Verdict*: CONDITIONAL diagnostic, not a survivor. Job 454376 prints the seeds' in-window error cosines and exact MSR ratios when the P2.1 seeds 22/33 parameter files exist at run time (job 451706 is still training them).
+
+**Refined Saturation Diagnostic (if ESR0 fails).**
+* With S1/S2/S3, the cheapest information that can see the error is an in-irrep low subspace that spans the $K_{1/2}$ levels carrying $\delta_1$, with variational errors $\varepsilon_k\lesssim\omega_k$.
+* If ESR0 fails while ORC (exact window states) passes, the binding obstacle is excited-state quality, and the minimal extra information is "$K_{1/2}$ excited states at $\varepsilon_k\le\omega_k$".
+* If ORC also fails at $K\le24$, the error is not concentrated. Then the only object left is the per-observable vector $P_L(\hat A-a_0)\psi_0$, and P3.1 narrows to "per-observable auxiliary (ZR class) or nothing".
+
+### Top Surviving Route & Sharpest Gap (Round 7)
+* **Mechanism (ESR0).** Ritz of $\hat H$ in $\mathrm{span}\{\psi,(\hat H-E_\psi)\psi,\varphi_1..\varphi_K\}$ with in-irrep excited-state NQS $\varphi_k$, sampled by mixture importance sampling. Set $\hat\delta=a(\text{Ritz})-a(\psi)$, and abstain on noise or window instability.
+* **Sharpest gap: concentration.** Is $\delta_1$ of a converged NQS carried by $K_{1/2}=\mathcal O(1)$ (or $\mathrm{poly}\,V$) in-irrep levels? And can the same architecture reach $\varepsilon_k\lesssim\omega_k$ on those levels? $K_{1/2}$ is measured exactly on the real state in job 454376 (oracle-ESR curve); the $\varepsilon_k/\omega_k$ question needs training.
+
+### 24-Hour Decisive Test (Round 7)
+**Step 1: premise measurement and injected check (submitted: job 454376, `tests/P3.1_order_parameter_error_r7/submit_inject.sbatch`, partition kim, 8 CPUs, 48 GB, 4 h).**
+* **Part 1 (exact, real states present at run time).**
+  * The concentration curve $R(K)$.
+  * The oracle-ESR curve $\hat\delta(K)/\delta$ with exact $\lvert1..K\rangle$, and $K_{1/2}$.
+  * The certificate floor $C^*/\lvert\delta\rvert$.
+  * Seed cosines and MSR, if at least 2 seeds exist.
+* **Part 2 (injected).**
+  * Exact in-irrep levels $n\le36$.
+  * Window $K=\min(\#\{\omega\le1t\},24,30)$.
+  * Synthetic excited states $\varphi_k=N[\lvert k\rangle+\eta_{\mathrm{rot}}g_k+\eta_{\mathrm{leak}}l_k+\mu_kj_k]$: $g_k$ rotates inside the window, $l_k$ leaks to low levels outside it, and $j_k$ is high-$\omega$ junk scaled so that it costs $\kappa\,\Delta E_{\mathrm{ref}}$, with $\Delta E_{\mathrm{ref}}$ the seed-11 $\Delta E$.
+  * No $\psi_0$ or $e$ component goes into $\varphi_k$.
+  * Grade R (deciding): $\kappa=1$, $\eta_{\mathrm{rot}}=0.3$, $\eta_{\mathrm{leak}}=0.1$. Grade H (reported): $\kappa=2$, $0.5$, $0.3$.
+  * Targets:
+    * the real states;
+    * set A: 8 synthetic seeds $N[\psi_0+0.30u+\mu j]$, with $u$ in the 9 lowest levels;
+    * set W (reported): $u$ over all 36 levels.
+  * Sampling: $2\times10^5$ mixture draws per target, with a 40-batch bootstrap of 100 replicas.
+* **Arms.**
+
+| Arm | Ritz span | Role |
+| :--- | :--- | :--- |
+| ESR0 | $\psi,(\hat H-E)\psi,\varphi_{1..K}$ | **deciding** |
+| ESR | adds $(\hat H-E)\varphi_k$ | reported |
+| ESR0s / ESRs | first $K'=\lceil2K/3\rceil$ states only | stability |
+| L1R | $\psi,(\hat H-E)\psi$ | saturated control |
+| ORC | exact $\lvert1..K\rangle$, exact matrices | window ceiling |
+
+* **Scoring.**
+  * An item (target, observable) is scored iff $\lvert\delta\rvert\ge0.10\lvert a_0\rvert$.
+  * Trusted iff $\mathrm{SE}\le0.5\lvert\hat\delta\rvert$ and the estimate is window-stable.
+  * Tracked iff $\tfrac12\le\hat\delta/\delta\le2$. False iff trusted and below $\tfrac12$.
+* **INJECT-PASS iff all of:**
+  * set A: at least 9 scored items; tracked fraction $\ge0.7$; per-seed median $\ge2/3$; $G\le0.10$ (defined); and ESR0 minus L1R tracked fraction $\ge0.3$;
+  * real items: at least $2/3$ tracked, with no false certificate.
+* **Otherwise INJECT-FAIL.** ESR0 is killed, and the leaf is reported as the refined Saturation Diagnostic above. Which branch applies is decided by ORC and $K_{1/2}$.
+
+**Step 2 (only after INJECT-PASS; not written).**
+* Train the $K$ excited states at width 6 for seeds 11/22/33 with orthogonality penalties in $\chi$, $S=0$ (reusing the P2.1 projected-SR code).
+* Pre-registered premise (critic fix a, replacing the median $\le1$): **per level**, $\varepsilon_k/\omega_k\le0.4$ for every $k\le\max K_{1/2}$ over the scored observables, measured first by the ED-scale pilot below.
+* Then score sampled ESR0 on the three real states with the same thresholds. PASS needs at least 6 of 9 items tracked and $G\le0.10$.
+* **Shrinkage-aware abstention (critic fix b).** For each item, report the S3-corrected interval $\hat\delta\cdot[1,\,1+\hat\varepsilon_k/\hat\omega_k]$, where $k$ runs over $k\le K_{1/2}$ of that observable and the largest ratio is used. Here $\hat\varepsilon_k=E[\varphi_k]-\theta_k$ and $\hat\omega_k=\theta_k-\theta_0$, with $\theta$ the Ritz values of $\hat H$ in $\mathrm{span}\{\psi,(\hat H-E)\psi,\varphi_j,(\hat H-E_j)\varphi_j\}$; no ED information is used. Abstain if the interval spans a factor greater than 2 ($\hat\varepsilon_k/\hat\omega_k>1$). The pilot prints $\hat\varepsilon_k/\hat\omega_k$ against the exact $\varepsilon_k/\omega_k$ to calibrate this rule.
+* **Scoring (critic fix c).** An item counts as tracked only if the sampled estimate tracks **and** the exact-matrix ESR0 ratio on the same trained states also lies in $[\tfrac12,2]$. The sampled arm draws configurations by Metropolis from the mixture $\sum_k\lvert\varphi_k\rvert^2/\hat Z_k$ (with $\hat Z_k$ estimated by ratio sampling), not by exact draws.
+* **Matched-compute controls (critic fix i).** Step 2 must beat, at equal total training compute ($K+1$ networks):
+  * a single wider network of the same total parameter count (does capacity alone remove $\delta$?);
+  * MSR over $K+1$ seeds (Route 7.7);
+  * $a(\text{Ritz})$ used as the improved estimate, reported beside $\hat\delta$, so that "a better estimate" and "an error bar" are scored separately.
+
+**Smoke** (4×4 OBC 2+2 cluster; machinery only, no physics claim; levels are sparse there, $\omega_1=0.94t$).
+* Command with the window forced to cover the injected error: `micro_test.py --instance small --n-low 14 --n-seeds 4 --K 9 --mc-samples 50000 --n-boot 30 --results smoke` (`smoke_output_K9.txt`):
+
+```
+[13:48:08] grade R SET A: ESR0 5/7 med_seed 0.75 G 0.00; ESR 5/7 med_seed 0.75 G 0.00; ESR0s 5/7 med_seed 0.75 G 0.00; ESRs 6/7 med_seed 1.00 G 0.00; L1R 0/7 med_seed 0.00 G 1.00; ORC 7/7 med_seed 1.00 G 0.00
+[13:48:08] INJECT (ESR0, grade R): set A scored 7 tracked 5 frac 0.71 median_seed 0.75 G 0.00 (L1R frac 0.00); real tracked 0/0 false 0 -> INJECT-FAIL
+```
+
+* Default window rule (`smoke_output.txt`; here $K=2$ does not cover the 9-level injected error, so the expected failure appears):
+
+```
+[13:48:11] INJECT (ESR0, grade R): set A scored 5 tracked 2 frac 0.40 median_seed 0.50 G 0.50 (L1R frac 0.20); real tracked 0/0 false 0 -> INJECT-FAIL
+```
+
+* **Reading.**
+  * When the window spans the error, sampled ESR0 tracks 5/7 with no false certificate, while L1R gives $G=1.00$ (S2 visible again). The FAIL lines come from the smoke having no real states (0/0) and fewer than 9 scored items.
+  * When the window misses the error, ESR0 issues false certificates ($G=0.50$). This is the leak failure mode, which the stability rule does not catch when $K'=K$; on the main instance $K'<K$.
+
+**Step 1 result (job 454376) and the per-leaf critic's record.**
+* **INJECT-PASS (grade R, ESR0, sampled).**
+  * Set A: 16 of 21 tracked (0.76), per-seed median 0.83, $G=0$. L1R tracked 1 of 21 with $G=0.90$.
+  * Real seed-11 items: 3 of 3 tracked, none false. ORC tracked 21 of 21 on set A.
+  * $K_{1/2}$ on the real state is 2 (pair), 6 (spin) and 11 (charge). The oracle certificate envelope is $C^*/\lvert\delta\rvert=81$ (pair), 8.6 (spin) and 29 (charge).
+* **Set W stays weak (critic fix f).** When the error is spread over all 36 levels, ESR0 tracks **8 of 19** (grade R, $G=0.10$; grade H, $G=0.18$), while ORC tracks 17 of 19. Window leakage is therefore the binding failure mode.
+* **A real false certificate at grade H (critic fix f).** For the seed-11 charge item, sampled ESR0 gives $\hat\delta/\delta=0.35$ and is trusted. That is a false certificate on a real state (exact-matrix ratio 0.55; ORC 0.81).
+* **The real-item evidence is $n=1$ (critic fix h).** The seed 22/33 parameter files were absent when job 454376 ran, so the "3 of 3 real" count is one state with three observables. Seed cosines and MSR were not computed.
+
+**Step 1.5: ED-scale excited-state pilot (submitted: job 456094, `tests/P3.1_order_parameter_error_r7/submit_excpilot.sbatch`, partition kim, 16 CPUs, 48 GB, 24 h; writes `results_excpilot/`).**
+* **Premise tested.** Can the ground state's own architecture be trained into excited states good enough for S3? This is an ED-scale premise test: training and every matrix use exact sums over $D=1681680$, so no sampling enters.
+* **Method** (`excited_pilot.py`).
+  * Sequential penalty VMC (Choo et al., PRL 121, 167204 (2018)) for $K=3$ in-irrep states $\varphi_k=P_SP_\chi\psi_{\theta_k}$ ($\chi$, $S=0$), using NNBF width 6 on instance 0.
+  * Each $\varphi_k$ minimises $\langle\hat H\rangle+\beta\sum_j\lvert\langle\hat r_j\vert\hat\varphi\rangle\rvert^2$ with $\beta=2.0t$. The references are $\psi$ (the trained width-6 seed-11 ground NQS loaded from the P2.1 parameters, not $\psi_0$) and $\varphi_{<k}$.
+  * The SR settings are those of the ground state (1200 iterations, step 0.05, shift $10^{-3}$, 2000 metric samples, exact force). Each state is initialised as a fresh NNBF with seed $11+100k$.
+* **Exact outputs per $k$.**
+  * $\varepsilon_k/\omega_k$, with the level matched by maximal overlap;
+  * $\lvert\langle k\vert\varphi_k\rangle\rvert^2$;
+  * the in-window weight $\lVert P_3\varphi_k\rVert^2$ and the out-of-window weight $\lVert(1-P_{24})\varphi_k\rVert^2$, where $P_{24}$ projects onto $\mathrm{span}\{\psi_0,\lvert1..24\rangle\}$;
+  * $\lvert\langle\psi_0\vert\varphi_k\rangle\rvert^2$;
+  * the principal angles between $\mathrm{span}\{\varphi_{1..3}\}$ and $\mathrm{span}\{\lvert1..3\rangle\}$;
+  * the training wall time against the ground state's 15229 s.
+* **Then, with exact matrices on the real seed-11 state:** ESR0($K=3$) against ORC($K=3$) and L1R, reporting $\hat\delta/\delta$ for pair ($K_{1/2}=2$), spin and charge, the ratio ESR0/ORC, and the fix-(b) interval with its abstention flag.
+* **Pre-registered rule** (also printed by the script):
+  * **GO** to step 2 if all of the following hold: $\varepsilon_k/\omega_k\le0.4$ for $k=1..3$; out-of-window weight $\le0.03$; $\lvert\langle\psi_0\vert\varphi_k\rangle\rvert^2\le0.02$; and the exact-matrix pair ratio ESR0/ORC lies in $[0.7,1.3]$.
+  * **MUTATE** if $\varepsilon_1/\omega_1>1$ or any out-of-window weight exceeds 0.05.
+  * **CONDITIONAL** otherwise: step 2 is scored on spin and pair only.
+* **Smoke** (4×4 OBC 2+2 cluster, $D=10920$, $S_0=1$; the penalty reference is the exact $\psi_0$; 400 iterations, 400 samples; `smoke_excpilot_output.txt`).
+  * The penalty force agrees with central finite differences to a relative error of $5\times10^{-9}$ (4 random directions, two penalty references).
+  * $\varphi_1$ reproduces ED's first in-irrep excited state: $\lvert\langle1\vert\varphi_1\rangle\rvert^2=0.9998$ and $\varepsilon_1/\omega_1=0.001$. $\varphi_2$ gives 0.992 and 0.003. The principal angles are 0.6° and 5.1°.
+  * The one-Krylov-step estimate $\hat\varepsilon_k/\hat\omega_k$ = 0.001 and 0.002 matches the exact 0.001 and 0.003.
+
+```
+[15:00:10] smoke training: |<1|phi_1>|^2 = 0.9998, eps_1/omega_1 = 0.001 (need >= 0.95 and <= 0.1) -> ok
+[15:00:10] SMOKE PASS
+```
+
+* **Reading of the smoke.** The machinery is correct. The small cluster says nothing about the main instance, where the sector is 17 times the parameter count and the levels are 0.02–0.08$t$ apart.
+
+**Step 1.5 result (job 456094, 72653 s; `P3.1r7_excpilot_456094.out`, `results_excpilot/excited_pilot_K3_456094.json`): GO.**
+
+| $k$ | matched level | $\omega_k/t$ | $\varepsilon_k/\omega_k$ | $\lvert\langle k\vert\varphi_k\rangle\rvert^2$ | out-of-24 weight | $\lvert\langle\psi_0\vert\varphi_k\rangle\rvert^2$ | wall / ground |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | 1 | 0.209 | 0.180 | 0.625 | 0.0089 | 0.0191 | 1.51 |
+| 2 | 2 | 0.234 | 0.129 | 0.617 | 0.0105 | 0.0080 | 1.59 |
+| 3 | 3 | 0.314 | 0.161 | 0.956 | 0.0136 | 0.0027 | 1.61 |
+
+* **All four GO conditions hold.** The tightest is the $\psi_0$ weight of $\varphi_1$ (0.0191 against 0.02). $\varphi_1$ and $\varphi_2$ are each about 62% on their own level and mixed with each other, but $\mathrm{span}\{\varphi_{1..3}\}$ is close to $\mathrm{span}\{\lvert1..3\rangle\}$: the principal angles are 7.7°, 11.5° and 12.4°.
+* **The one-Krylov-step estimate under-reads the exact ratio:** $\hat\varepsilon/\hat\omega=[0.143,0.097,0.119]$ against $[0.180,0.129,0.161]$, about 0.75× in each case. The fix-(b) interval must therefore be widened by about $1/0.75$; this is recorded before step 2.
+* **Exact-matrix ratios on the real seed-11 state.**
+
+| observable | $\delta$ | $K_{1/2}$ | ESR0($K=3$) ratio | ORC($K=3$) ratio | L1R ratio | ESR0/ORC |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| pair | $+2.9\times10^{-5}$ | 2 | 1.173 | 1.060 | 0.095 | 1.106 |
+| spin | $+7.9\times10^{-3}$ | 6 | 0.187 | 0.189 | 0.139 | 0.990 |
+| charge | $-3.1\times10^{-4}$ | 11 | 0.102 | 0.060 | $-0.019$ | 1.705 |
+
+* **Reading.** The trained excited states are as good as the exact window: ESR0/ORC is close to 1 wherever ORC carries signal. The cost is about 1.5× ground-state training per state. For pair, the only observable with $K_{1/2}\le3$, the error is recovered (1.17, against L1R 0.10). Spin and charge fail **at the ORC ceiling**, not because of excited-state quality: three levels do not span their error ($K_{1/2}=6$ and 11). Step 2 at $K=3$ cannot reach its 6/9 PASS, because fix (c) requires the exact ESR0 ratio in $[\tfrac12,2]$.
+
+**Step 1.5b: extension to $K=6$ (submitted: job 618646, `submit_excK6.sbatch`; resumes $\varphi_{1..3}$ and trains $\varphi_{4..6}$, about 21 h).** This applies step 2's own pre-registered premise ($\varepsilon_k/\omega_k\le0.4$ for every $k\le\max K_{1/2}$ over the scored observables), which the $K=3$ pilot only checked up to $k=3$.
+* **Scope.** Charge ($K_{1/2}=11$) is dropped from step 2. Eleven sequential excited states are about 75 h serial and about 17× the ground-state training. That is outside the brainstorm's low-compute constraint, and the dependence is recorded as a finding: ESR0 cost scales with $K_{1/2}$, which grows for observables whose error sits in a dense low-$\omega$ band.
+* **Pre-registered rule (written before job 618646 produces output).**
+  * **GO-6** if, for $k=4..6$, $\varepsilon_k/\omega_k\le0.4$, out-of-24 weight $\le0.03$ and $\lvert\langle\psi_0\vert\varphi_k\rangle\rvert^2\le0.02$, **and** the exact ESR0($K=6$) spin ratio lies in $[\tfrac12,2]$. Then step 2 runs at $K=6$ on pair and spin over seeds 11/22/33. That is 6 items; PASS needs at least 4 tracked (the same 2/3) and $G\le0.10$, with the fix-(b) interval widened by $1/0.75$.
+  * **PAIR-ONLY** otherwise. ESR0 is reported as a working diagnostic only for observables with $K_{1/2}\le3$, and P3.1 closes with the refined Saturation Diagnostic: the minimal information is $K_{1/2}$ good excited states, and $K_{1/2}$ is set by the observable's low-$\omega$ spectral weight.
+
+### Local Autopsy Log (Round 7 additions)
+* **CLX** is killed by INJECT-FAIL 452272. Its jackknife SE is about $\lvert\delta\rvert$ at $2\times10^5$ draws per point. New anti-pattern: an extrapolation across separately sampled states whose signal is smaller than their per-state statistical error.
+* **Kills: Routes 7.2–7.6.**
+  * Conjugate field (Gate 2: offset versus response; projection does not help).
+  * Certificate (Gate 1: needs rigorous spectral lower bounds; energy-window floor $C^*$).
+  * Diagonal ensemble (Gate 1: TDVP fixed point at the minimum).
+  * Tangent-space Ritz (Brillouin).
+  * RTA (Gate 2: a two-member ladder).
+* **New anti-pattern for this leaf.** No estimator built from the variational manifold's own dynamics or tangent space at a converged minimum: both are stationary there by construction.
+* **Process note: deciding-arm change.** The deciding arm was changed from ESR to ESR0 after the small-cluster smoke and before any main-instance run. The $(\hat H-E)\varphi_k$ vectors double the sampled basis and added more noise than they removed junk (grade H: ESR0 5/7, ESR 3/7 in the first smoke). ESR is still reported.
+* **Critic downgrade (Round 7).** ESR0 is a Gate-0 FAIL as a method (Ritz in a span of variational states is NOVQE / MC-VQE / SSVQE / multistate VMC / NES-VMC). It is carried only as a diagnostic, pending the excited-state pilot (job 456094) and a demonstration that the shrinkage-aware abstention rule works.
+### Round 8 (2026-11-16): Stage 3.5 portfolio
+**T1 pre-registration (written before `t1_portfolio.py --mode main` was run; census only seen).**
+* Script `tests/P3.1_order_parameter_error_r8/t1_portfolio.py` (rules also in its docstring). Census (`census_output.txt`): 3×2 2+2 (sector 12 levels, none below $1t$), 3×3 3+3 (60 levels, 1 below $1t$), 6×2 4+4 (11 below $1t$, reported only), 4×3 4+4 (11 below $1t$, $\omega_1=0.161t$), all OBC at $n=2/3$, $t'=-0.25$, $J=0.4$.
+* **G4 rule (ESR0 Gate 4, per real-space observable).** FAIL if the median $K_{1/2}$ at 4×3 is at least twice the 3×2 median or not reached by $N_{\mathrm{low}}$; PASS if it is at most the 3×2 median plus 1; UNCLEAR otherwise.
+* **RWR rule (Route 8.1).** KILL if RWR* tracks under 0.9 of scored items, or RWR-R under 0.5, or RWR-R at 4×3 is more than 0.25 below 3×2. PASS if RWR* $\ge0.9$, RWR-R $\ge0.75$, RWR-R at 4×3 within 0.1 of 3×2, and RWR-R minus ORC(3) at 4×3 $\ge0.2$. UNCLEAR otherwise.
+* **SF rule (Route 8.3).** PASS if every structure-factor observable has median $K_{1/2}\le3$ at every size and no growth beyond $+1$; KILL if the G4 FAIL condition holds for 2 of 3 SF observables, or SF $K_{1/2}$ is not smaller than its real-space partner at 4×3 for 2 of 3; UNCLEAR otherwise.
+* **AOW rule (Route 8.4, added after the first main run, before its arm was computed).** The arm ORC-A orders the exact levels by $\lvert\langle n\rvert(\hat A-a_\psi)\lvert\psi\rangle\rvert^2/\omega_n$ (a quantity a targeted trainer sees) instead of by energy. PASS if, for at least 2 of 3 real-space observables, the median $K_{1/2}^{\mathrm{A}}\le3$ at every size and the 4×3 median is at most the 3×2 median plus 1; KILL if, for at least 2 of 3, the 4×3 median is at least twice the 3×2 median, or not below the energy-ordered 4×3 median; UNCLEAR otherwise.
+* **TMW rule (Route 8.5, added after the AOW run, before its arm was computed).** Arm TMW: Ritz in $\mathrm{span}\{\psi,(\hat H-E)\psi\}$ plus the sector projections of the two-mode vectors $(\hat O_m^\dagger\hat O_m-\langle\cdot\rangle_\psi)\psi$ for $\hat O\in\{\rho,\mathbf S,\Delta_d\}$ and the 8 lowest open-boundary standing-wave modes $m=(m_x,m_y)\ne(0,0)$ with $m_x,m_y\le2$ (24 vectors at every size). Scored on the real-space observables. PASS if TMW tracks $\ge0.75$ overall, at 4×3 within 0.1 of 3×2, and at 4×3 at least ORC(3)+0.2; KILL if it tracks under 0.5 overall, or 4×3 is more than 0.25 below 3×2, or at 4×3 it does not beat L1R by 0.2; UNCLEAR otherwise.
+* **RWR-SF rule (Route 8.8, added after the TMW run, before its arm was computed).** RWR restricted to the two concentrated structure factors: Ritz in $\mathrm{span}\{\psi,(\hat H-E)\psi,\tilde y_{\mathrm{pairSF}},\tilde y_{\mathrm{chargeSF}}\}$ with grade-R injected response error (separate random stream). PASS if it tracks $\ge0.75$ of the scored pairSF and chargeSF items overall and the 4×3 fraction is within 0.1 of 3×2; KILL if it tracks under 0.5 or the 4×3 fraction is more than 0.25 below 3×2; UNCLEAR otherwise.
+
+**Binding inputs.**
+* ESR0 is a diagnostic, not a method (Round 7 critic). The $K=3$ pilot (job 456094) is GO: trained excited states reach $\varepsilon_k/\omega_k=0.13$–$0.18$ at about $1.5\times$ ground-state cost each, and ESR0/ORC is close to 1.
+* The binding obstacle is the window size: $K_{1/2}=2$ (pair), 6 (spin), 11 (charge) on the real seed-11 state. Spin and charge fail at $K=3$ at the ORC ceiling, not on excited-state quality. Job 618646 extends to $K=6$; charge was dropped for cost.
+* P3.2 (closed) found that one symmetric block-Lanczos step decides crossings in exact arithmetic. That is an energy lever, not error-bar information.
+
+**Gate 4 for ESR0 (retroactive).**
+* **Claim under test.** ESR0 costs $K_{1/2}$ excited-state trainings (about $1.5\times$ the ground state each), and every one of them must reach $\varepsilon_k\lesssim0.4\,\omega_k$. The open question is whether $K_{1/2}$ grows with $N$.
+* **T0 argument (FAIL on paper unless the error concentrates).**
+  * Write $\delta_1=\sum_nw_n$ with $w_n=-2\alpha c_nA_{n0}$. For a translation-averaged long-range two-point $\hat A$, the low-$\omega$ part of $(\hat A-a_0)\psi_0$ sits on in-irrep states made of two collective excitations at opposite momenta. The number of such pairs below a fixed $\Omega$ grows as $V$, one per momentum.
+  * ESR0 trains the window in *energy order*. It must therefore include every in-irrep level below the largest $\omega$ that carries $\delta_1$, and the number of those levels grows as $e^{s(\Omega)V}$.
+  * A capacity-limited NQS has $\Delta E\propto V$ spread over modes up to $\mathcal O(t)$. Its $c_n$ do not concentrate on the lowest few levels. (Real state: $F_E(1t)=0.31$, and 11 levels reach $\omega=0.51t$ at $V=16$.)
+  * Hence $K_{1/2}$ grows at least as $V$ and generically exponentially, unless $\delta_1$ is carried by $\mathcal O(1)$ lowest levels. That would be a finite-size bonus or a property of a special observable.
+  * Per state, S3 needs only the span, so individual levels need not be resolved. But the window edge must fall in a gap, and the gaps shrink.
+* **T1 result** (`t1_portfolio.py --mode main`, `t1_main_output.txt`, 77 s on 4 threads). The table gives the median $K_{1/2}$ over the scored synthetic states; 6×2 is reported only.
+
+| observable | 3×2 | 3×3 | 6×2 | 4×3 | G4 rule |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| pair (long-range aggregate) | 2 | 1 | 2 | 17.5 | **FAIL** |
+| spin | 2 | 1 | 2 | 2 | PASS |
+| charge | 1 | 1 | 2 | 13 | **FAIL** |
+| pair structure factor $P_d$ | 2 | 1 | 3.5 | 1 | PASS |
+| spin structure factor $S(\pi,\pi)$ | 2 | 1 | 14 | 17 | FAIL |
+| charge structure factor $N(\pi,\pi)$ | 1 | 1 | 1 | 1 | PASS |
+
+* **Fraction of scored items tracked by the ORC ceiling on 4×3**: 0.53 at $K=3$, 0.68 at $K=6$, 0.95 at $K=60$ (L1R: 0.05).
+* **Verdict: ESR0 Gate 4 FAIL for the real-space pair and charge aggregates, PASS (toy only) for spin.** Spin's real-instance $K_{1/2}=6$ already exceeds every toy value, so its PASS is not evidence of scalability.
+* **Consequence.** ESR0 on real-space long-range aggregates is a fixed-size (ED-scale) diagnostic. Its cost grows with the level density, which confirms the Step 1.5b note that $K_{1/2}$ "grows for observables whose error sits in a dense low-$\omega$ band". A GO-6 outcome cannot change this. Promoting ESR0 to T3 *as a scalable error bar* is blocked unless it is restricted to observables whose error stays concentrated (Route 8.3).
+* **Caveats.**
+  * The toy error model is the first-order ground state of a wrong Hamiltonian ($t'$, $J$, random short-range density, $\mathbf S\cdot\mathbf S$ and pair couplings) plus high-$\omega$ junk, at overlap 0.94. It is not a trained NQS.
+  * The toy errors are larger than the real ones ($\lvert\delta/a_0\rvert$ up to 1).
+  * The 3×2 sector has 12 levels and an $S=1$ ground state.
+
+**Generation Batch 8** (aimed at the binding obstacle: the error needs many excited states).
+  - **Route 8.1: response-window Ritz (RWR; Operation A on the ZR/OSG kills).**
+    * *Lemma (proved, first order).* Let $y_A=(\hat H-E_0)^{-1}Q_0(\hat A-a_0)\psi_0$. Ritz in $\mathrm{span}\{\psi,y_{A_1},\dots,y_{A_m}\}$ removes the $\omega$-weighted projection of $e$ onto the span. Every $A_{n0}=\omega_n(y_A)_n$ lies in it, so the recovered error equals $\langle c,y_A\rangle_\omega=\sum_nc_nA_{n0}$ *exactly* for every observable in the span, however many levels carry $\delta_1$. The estimate does not depend on the scale of $y_A$.
+    * *Why it targets the obstacle.* It needs one vector per observable instead of $K_{1/2}(V)$ eigenstates, which corrects S3 Consequence 3: that consequence counted ZR as killed for cost, but its cost does not grow with $V$.
+    * Gate 0: PASS (marginal). The static response is the $\omega=0$ correction vector (Kühner & White, PRB 60, 335 (1999)), and ZR (Round 3) is its zero-bias form. A quick search found no response-vector Ritz window used as an observable error bar. Gate 1: PASS (exact lemma). Gate 2: PASS (L1R is blind). Gate 3: sign half only (for $\omega_k\to0$, $y$'s own error must be below $\omega_k$). Gate 4 claim: $m$ trainings, independent of $K_{1/2}$.
+    * *T1 (rule above).* RWR* with exact $y^*$ tracks 0.93 of items, which confirms the lemma up to second order (0.84 at 4×3). The response built from $\psi$ alone with an exact solve (RWR0) tracks 0.84. With grade-R training error (30% random in-window and 50% junk, the ground state's own error level), RWR-R tracks **0.80 at 3×2 but 0.37 at 4×3**; grade H gives 0.23 overall.
+    * **Verdict: KILLED (T1).** Mechanism: Ritz in a span that contains $\tilde y=y+\eta g$ uses any low-energy content of $g$. The denominator $\langle\tilde y,\tilde y\rangle_\omega$ picks up $\eta^2\lVert g\rVert_\omega^2$ from the dense window, while $y$ itself sits at the lowest $\omega$. The precision needed of $y$ grows with the level density, which is Gate 4 in disguise. The zero-bias form $2\langle r\vert\tilde y\rangle$ with the Hylleraas-optimal scale has the same denominator, so ZR dies by the same mechanism.
+  - **Route 8.2: field-ladder eigenvector continuation (Operation A on Routes 7.2 and 7.6).** Ritz over states trained at $\hat H+h_i\hat A$.
+    * Gate 0: eigenvector continuation is known (Frame et al., PRL 121, 032501 (2018)); NN-VMC with EC exists (arXiv:2606.12998).
+    * Gate 1 (T0 kill): to first order in $h$, $\psi_{h}-\psi_0$ lies in the tangent space, so $\langle t\rvert\hat H-E\lvert\psi\rangle=0$ (Brillouin) and the recovered fraction is zero. At finite $h$, the shared bias $e(h)\approx e(0)+he'$ cannot be cancelled because the coefficients satisfy $\sum_ix_i\approx1$.
+    * **KILLED (T0).**
+  - **Route 8.3: structure-factor targeting (Operation B.1, real space to mode space; ESR0 aimed at the observables that decide order).**
+    * *Mechanism.* The finite-size-scaling quantities that decide long-range order are structure factors at the ordering mode ($P_d$, $S(\pi,\pi)$, $N(\pi,\pi)$), not the real-space aggregate at $r_{\max}$. Their low-$\omega$ weight can concentrate on the lowest level, so ESR0 with $K\le3$ trained states would suffice at every size.
+    * Gate 0: PASS as a scope refinement of the ESR0 diagnostic. Structure factors are standard; the claim is the size-stable concentration. Gate 1: PASS. Gate 2: L1R control. Gate 3: sign half only. Gate 4 claim: $K_{1/2}=\mathcal O(1)$ for the ordering-mode observables.
+    * *T1:* UNCLEAR by rule. $P_d$ and $N(\pi,\pi)$ give $K_{1/2}=1$ at 3×3 and 4×3, but $S(\pi,\pi)$ grows from 1 to 17. The claim is restricted to the pair and charge structure factors. Note that only 3 charge-SF items are scored at 4×3.
+    * **State: IN-FLIGHT (job 698163).** The T2 premise pilot on the real states (below) was submitted by the orchestrator with user approval (the worker’s own `sbatch` was refused by the auto-mode classifier).
+  - **Route 8.4: A-ordered window (AOW).** Train excited states in order of their coupling to $(\hat A-a_\psi)\psi$, not in energy order.
+    * *T1:* KILL by rule. Median $K_{1/2}^{\mathrm A}$ for spin goes 1.5→9 and for charge 1→19 (above the energy-ordered 13). The coupling to $\psi$ does not identify the levels that carry $c_nA_{n0}$, because the error's own $c_n$ decide which levels matter.
+    * **KILLED (T1).**
+  - **Route 8.5: two-mode (Bijl–Feynman) window (TMW).** The window is $(\hat O_m^\dagger\hat O_m-\langle\cdot\rangle)\psi$ for density, spin and $d$-pair standing waves (24 vectors), so no training is needed.
+    * *T1:* KILL by rule. TMW tracks 1.00 at 3×2, which is trivial because the 24 vectors span the 12-level sector, but only 0.09 at 6×2 and 0.47 at 4×3. Operator-generated vectors carry high-$\omega$ weight (the A-Ritz filter-ratio gap, now measured).
+    * **KILLED (T1).**
+  - **Route 8.6: extrapolation in the window size $K$.**
+    * *T0 kill (S1′).* $\delta_{\mathrm{out}}=\langle c_{\mathrm{out}},a\rangle$ and the window data $\langle c_{\mathrm{out}},b_k\rangle$ ($k\le K$) are different linear functionals of the out-of-window error. The $\hat H$-moments depend only on $\lvert c_n\rvert$.
+    * Once there are more than $K+1$ out-of-window levels, there exist perturbations of $c_{\mathrm{out}}$ that move $\delta$ while leaving every window datum unchanged at first order. Any extrapolation in $K$ therefore needs a model of $c_{\mathrm{out}}$.
+    * **KILLED (T0).**
+  - **Route 8.7: sector-resolved window (Operation B.1, momentum sectors).**
+    * *T0 kill.* By the selection rule, $A_{n0}=0$ and $c_n=0$ outside $\psi_0$'s irrep for a symmetric $\hat A$ and $\psi$. The two-mode in-irrep states cannot be assembled from sector ground states as a product of NQS. On the leaf's OBC instance momentum sectors do not exist, and on PBC their number grows as $V$.
+    * **KILLED (T0).**
+  - **Route 8.8: RWR restricted to the concentrated structure factors (Operation A on 8.1).**
+    * *T1:* KILL by rule. Tracked fraction 0.49 overall; 0.86 at 3×2 and 0.33 at 4×3. Concentration does not rescue response noise.
+    * **KILLED (T1).**
+  - **Route 8.9: mode-resolved windows (Operation A on 8.3; GATED, T1 next).**
+    * *Mechanism.* Decompose the real-space aggregate into standing-wave structure factors, $\delta C(r)=\sum_mF_m(r)\,\delta S_m$, and run ESR0 per mode with its own small window. The union of the windows grows as the number of modes, i.e. polynomially in $V$, instead of $e^{sV}$.
+    * Gates 0–3 as Route 8.3. Gate 4 claim: $K_{\mathrm{tot}}\propto V\cdot\max_mK_{1/2}(S_m)$.
+    * *Sharpest gap.* Per-mode concentration. It holds for $P_d$ and $N(\pi,\pi)$ on the toys and fails for $S(\pi,\pi)$, so the spin channel is already out.
+    * *Second gap.* Each mode needs states *targeted* to it, and AOW showed that coupling-ordered targeting fails. Only modes whose carrier is the lowest level are cheap.
+    * *Next action:* T1 run of $K_{1/2}(S_m)$ for all pair and charge modes with $m_x,m_y\le2$ at the four toy sizes.
+
+**Route 8.3, T2 premise pilot (pre-registered; `t2_sf_premise.py`, `submit_t2_sf.sbatch`; not yet submitted, command: `cd tests/P3.1_order_parameter_error_r8 && sbatch submit_t2_sf.sbatch`).**
+* **Instance.** The shared 4×4 OBC 6+6 instance, with exact sums. The targets are the real P2.1 width-6 states for seeds 11/22/33. The script computes the 30 in-irrep levels, $\delta$, ORC($K$) for $K=1..30$, $K_{1/2}$ and L1R for six observables. On seed 11 it also computes ESR0($K$) with the trained $\varphi_{1..3}$ (and $\varphi_{4..6}$ if job 618646 has written them).
+* **Validity.** Seed-11 ESR0($K=3$) for pair, spin and charge must reproduce job 456094 (1.173, 0.187, 0.102) within 0.005. Otherwise the verdict is INVALID.
+* **Budget exception.** About 6 CPU-hours, above the 2 CPU-hour T2 cap. The only trained-NQS states with a measurable error exist on this $D=1.68\times10^6$ instance; projected states are symmetry-dominated at smaller ED sizes (P1.1-P).
+* **Kill rule.**
+  * NO-TARGET if fewer than 2 of the 3 SF observables are scored ($\lvert\delta\rvert\ge0.10\lvert a_0\rvert$) on at least 2 seeds.
+  * PASS if every SF observable scored on at least 2 seeds has median $K_{1/2}\le3$, **and** seed-11 ESR0($K=3$) lies in $[\tfrac12,2]$ for every scored SF observable.
+  * KILL if every scored SF observable has median $K_{1/2}>6$, or seed-11 ESR0($K=3$) is outside $[\tfrac12,2]$ for all of them.
+  * AMBIGUOUS otherwise.
+  * Early stop: if no SF observable is scored on the first two seeds, stop with NO-TARGET.
+* **Pre-flight dry run** (`dryrun_output.txt`).
+  * The verdict self-test returns NO-TARGET, PASS, KILL and AMBIGUOUS on synthetic records built for each branch.
+  * The 4×4 OBC 2+2 dry run (synthetic targets and synthetic $\varphi$) runs end to end in 1 s and prints a verdict.
+  * The reference check is skipped on the small instance.
+  * The positive control is ORC itself (exact levels); the negative control is L1R.
+* **Decision tree.**
+  * **PASS:** write the T3 design for sampled ESR0 on $P_d$ and $N(\pi,\pi)$. Use seeds 11/22/33 with $K=3$; the excited states for seeds 22/33 need $2\times3$ trainings of about 6.7 h at 16 CPUs (a cap exception), so check first whether $K=1$ suffices (it would if $K_{1/2}=1$ holds). Also run the Route 8.9 T1.
+  * **AMBIGUOUS:** when 618646 finishes, rerun `t2_sf_premise.py` (about 30 min); the script then also prints the $K=6$ rescore, with $K_{1/2}\le6$. Not PASS then → KILL.
+  * **KILL or NO-TARGET:** Route 8.3 is killed. Route 8.9 then loses its premise and is killed too. The leaf is left with ESR0-K6 alone and goes to the close-out below.
+  * **INVALID:** debug the observable or loading path against `excited_pilot.py` before any verdict is read.
+
+**ESR0-K6 (job 618646) decision tree, pre-planned.**
+* **Progress at 09:31.** $\varphi_4$ is at iteration 600 with $\lvert\langle4\vert\varphi_4\rangle\rvert^2=0.946$ and $\lvert\langle\psi_0\vert\varphi_4\rangle\rvert^2=0.0022$, already under the 0.02 bar.
+* **GO-6 → step 2.** `tests/P3.1_order_parameter_error_r8/submit_go6_step2_train.sbatch` is written but not submitted. It trains $\varphi_{1..6}$ for seeds 22 and 33 (array 0–1, 16 CPUs, 48 h) with exactly the pilot's settings.
+  * At about 640 CPU-hours per task it needs the orchestrator's written T3 exception.
+  * Given the Gate 4 FAIL, a PASS would be an ED-size diagnostic only. The leaf's recommendation is therefore to submit it only if the master wants the ED-scale demonstration on spin.
+  * The sampled Metropolis-mixture scorer (fix c) is written while the training runs.
+  * Scoring as pre-registered: 6 items (pair and spin × 3 seeds), PASS with at least 4 tracked and $G\le0.10$, using the fix-(b) interval widened by $1/0.75$.
+* **PAIR-ONLY → close-out text (ready to paste into the master):**
+  * P3.1 closes as a refined Saturation Diagnostic. Correlation-function error of a converged projected NQS is invisible to every $\hat H$-moment and Krylov estimator (S1, S2). Within the sign half, it is recoverable by Ritz in a window of in-irrep excited states trained with the same architecture (S3; pilot $\varepsilon/\omega\le0.18$, ESR0/ORC $\approx1$).
+  * The window size $K_{1/2}$ is set by the observable's low-$\omega$ spectral weight, and it grows with system size for real-space long-range aggregates (Round 8 Gate 4 FAIL). Per-observable responses (ZR, RWR) do not escape, because their precision requirement grows with the level density.
+  * ESR0 remains a valid ED-scale diagnostic for observables with $K_{1/2}\le3$ (pair here), and for the ordering-mode structure factors if Route 8.3 passes.
+* **INCOMPLETE (timeout or crash):** resume (`--overwrite 0` reloads finished states) with the same sbatch under a new job id. The Route 8.3 T2 run is unaffected.
+
+### Route Portfolio & Sharpest Gaps (Round 8)
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 7.1 ESR0-K6 (diagnostic; pair + spin) | T2 (pilot GO at $K=3$); Gate 4 FAIL as a scalable method | IN-FLIGHT(618646) | — | GO-6 / PAIR-ONLY (Step 1.5b) | GO-6 → step-2 sbatch ready, needs a cap exception; PAIR-ONLY → paste close-out |
+| 8.3 structure-factor targeting ($P_d$, $N(\pi,\pi)$) | T1 (UNCLEAR, partial) | T2 READY (dry run done) | submission (worker had no `sbatch` permission) | T2 rule above | PASS → T3 design; AMBIGUOUS → K=6 rescore; KILL/NO-TARGET → kill 8.3 and 8.9 |
+| 8.9 mode-resolved windows | GATED (T0 argued) | GATED | premise shared with 8.3 (T2) | T1 rule to write: per-mode median $K_{1/2}\le3$ at every size for the pair and charge modes | T1 now (toy, under 2 min); if T1 passes, a T2 on the real states with the same script |
+| 8.1 RWR | T1 | KILLED(T1, response-noise denominator grows with level density) | — | — | — |
+| 8.2 field-ladder EC | T0 | KILLED(T0, Brillouin / shared bias) | — | — | — |
+| 8.4 AOW | T1 | KILLED(T1, coupling order does not find the carriers) | — | — | — |
+| 8.5 TMW | T1 | KILLED(T1, operator vectors are high-$\omega$) | — | — | — |
+| 8.6 extrapolation in $K$ | T0 | KILLED(T0, S1′) | — | — | — |
+| 8.7 sector window | T0 | KILLED(T0, selection rule) | — | — | — |
+| 8.8 RWR-SF | T1 | KILLED(T1, same as 8.1) | — | — | — |
+
+* **7.1 ESR0.** *Mechanism:* Ritz in $\mathrm{span}\{\psi,(\hat H-E)\psi,\varphi_{1..K}\}$. *Sharpest gap:* $K_{1/2}$ grows with $V$ (now measured); $\varepsilon_k\le0.4\,\omega_k$ for $k=4..6$ (618646). *Gate 4 claim:* $K_{1/2}\times1.5$ ground trainings, FAIL for the pair and charge aggregates (toy trend: median $K_{1/2}$ 2→17.5 and 1→13).
+* **8.3 SF targeting.** *Mechanism:* ESR0 on the ordering-mode structure factors, whose error sits on the lowest level. *Sharpest gap:* is the real-state SF error scored, and is it concentrated (T2)? *Gate 4 claim:* $K_{1/2}=\mathcal O(1)$; toy medians are 1 at 4×3 for $P_d$ and $N(\pi,\pi)$.
+* **8.9 mode-resolved windows.** *Mechanism and gaps:* see Batch 8. *Gate 4 claim:* $K$ polynomial in $V$, a finite-size bonus if the per-mode carriers are not the lowest levels.
+* **Tier log.** Every T0 argument and T1 result is recorded with its rule and verdict in Batch 8 and Gate 4 above. Outputs are in `tests/P3.1_order_parameter_error_r8/`: `census_output.txt`, `t1_main_output.txt`, `results/t1_main.json`, `dryrun_output.txt` and `results/dry_small.json`.
+
+### Local Autopsy Log (Round 8 additions)
+* **ESR0, Gate 4 (T0 and T1).** The energy-ordered window needed for real-space aggregates grows with the level density. ESR0 stays an ED-scale diagnostic.
+* **The per-observable response class (RWR, and ZR by the same algebra)** is exact at first order, but its tolerance to training error shrinks with the level density. New anti-pattern: any vector added to a Ritz window whose error has low-energy weight spread over the window corrupts the recovered fraction through $\langle\tilde y,\tilde y\rangle_\omega$.
+* **Window-ordering and window-generation tricks (AOW, TMW, extrapolation in $K$, sector windows, field-ladder EC)** are killed at T0 or T1 for the reasons above.
+* **Process note.** The AOW, TMW and RWR-SF arms and the 6×2 geometry were added after earlier T1 outputs had been seen. Each rule was written into this log before its own arm was computed, and earlier arms were reproduced unchanged (diffed).
+
+#### Route 8.3 T2 Result (job 698163, 2026-11-16): NO-TARGET
+
+Output: `tests/P3.1_order_parameter_error_r8/P3.1r8_t2sf_698163.out` and `results/t2_sf_premise.json`. The reference check passes: the job-456094 ESR0($K=3$) ratios reproduce to within $5\times10^{-4}$.
+
+| structure factor | relative error of the trained states (seeds 11, 22, 33) | scored | $K_{1/2}$ on the real states |
+| :--- | :--- | :--- | :--- |
+| pair | 0.026, 0.037, 0.050 | none | 3, 2, 2 |
+| spin | $-0.043$, $-0.130$, $-0.009$ | seed 22 only | 24, 24, $\infty$ |
+| charge | 0.008, 0.008, 0.000 | none | $\infty$ for all three |
+
+* **Verdict: NO-TARGET** (pre-registered: fewer than 2 of 3 structure factors have an error of at least 10% on 2 or more seeds). The trained width-6 states already get the pair and charge structure factors right to within 1–5%. The error that P3.1 targets sits in the real-space correlators (pair 31–89%, charge 22–31% relative), not in their momentum-summed structure factors.
+* **The toy result did not transfer.** On the toys, $K_{1/2}=1$ for the pair and charge structure factors. On the real states the only structure factor with an error (spin) needs $K_{1/2}\ge24$.
+* Route 8.3 is closed as NO-TARGET at ED size. It is not a kill of the mechanism, but there is no instance at this size on which it can be scored.
+
+### Round 9 (2026-11-16): after the Route 8.3 NO-TARGET
+
+**What the 8.3 result says about the error (T0, from the job-698163 numbers).**
+* **The scored real-space observables are the longest-range tails, not short-range correlators.** They are averages over the 22 bond pairs at bond-centre distance $\ge3$ (pair) and the 10 site pairs at distance $\ge3.5$ (spin, charge) of the 4×4 OBC cluster. Their exact values are small: $a_0=9.2\times10^{-5}$ (pair), $5.3\times10^{-2}$ (spin), $-1.4\times10^{-3}$ (charge). The trained states suppress every tail on every seed: the sign of $\delta$ is the same on all three seeds in all three channels.
+* **Pair channel: the tail is about 1% of the structure-factor error.** The tail enters the $d$-wave structure factor with weight $2n_{\mathrm{pair}}/V=2.75$. Its share of the pair structure-factor error is therefore $2.75\,\delta_{\mathrm{pair}}=0.8$, 1.6 and $2.3\times10^{-4}$ on seeds 11, 22 and 33. The full pair structure-factor errors are 1.0, 1.5 and $2.0\times10^{-2}$. So the structure factor is accurate only in relative terms. Its absolute error comes from short-range classes and is about 100 times the tail's share.
+* **Spin and charge channels: the tail and the short-range errors cancel.** Assume equal per-pair errors inside the tail. The tail's share of the $(\pi,\pi)$ structure-factor error is then $(2/V)(2-8)\,\delta=-0.75\,\delta$. That is $-5.9\times10^{-3}$ (spin, seed 11) against a total of $-6.6\times10^{-3}$, and $+2.3\times10^{-4}$ (charge) against $+4.8\times10^{-4}$. Here the tail error is of the same size as the whole structure-factor error, so the remaining classes cancel part of it.
+* **Lesson for every route below (8.3 anti-pattern).** In mode space, the tail error is either a 1% remainder of a mode's error (pair) or a partly cancelling sum over modes (spin, charge). An estimate that adds up per-mode observable corrections inherits the per-mode relative error times the cancellation ratio $\kappa=\sum_m\lvert F_m\delta S_m\rvert/\lvert\delta C_{\mathrm{tail}}\rvert$, with $\kappa\gtrsim100$ for pair. A usable correction must be made at the *state* level: one corrected state, on which every observable is then evaluated, so that no observable is assembled from mode pieces.
+
+**Route 8.9 (mode-resolved windows): KILLED at T0, no run needed.**
+* The pre-registered 8.3 decision tree already says that NO-TARGET kills 8.9, because 8.9's premise is per-mode concentration on the real states. The T0 argument behind that decision has three parts.
+* **Pair.** Tracking the tail within a factor 2 from per-mode estimates needs a per-mode relative precision of about $1/(2\kappa)\approx0.5\%$. ESR0's factor-2 tracking is about 100 times too coarse.
+* **Spin.** On the real states the only scored structure factor (spin) has $K_{1/2}=24$, 24 and $\infty$, so per-mode concentration fails exactly where the error is.
+* **Charge.** The per-mode errors are below 1%, so their carriers cannot be scored, and the toy concentration ($K_{1/2}=1$) did not transfer (8.3).
+* **Verdict: KILLED (T0, cancellation amplification plus non-transfer).**
+
+**Constraints for the Round 9 batch (from the kill record).**
+* No $\hat H$-moment or $\hat H$-Krylov information about $\psi$ alone (S1, S2).
+* No energy-ordered window whose size has to grow like $K_{1/2}(V)$ (Round 8, Gate 4).
+* No assembly of the tail from per-mode pieces (8.9, above).
+* No seed, width, field or parameter ladders: the error is shared across seeds (Routes 6.4, 7.7 and 8.2; all three seeds have the same sign of $\delta$).
+* Krylov steps *are* allowed where S2 says they work, namely to remove high-$\omega$ junk from an auxiliary vector that already carries the low-$\omega$ information.
+
+**Generation Batch 9.**
+  - **Route 9.1: Krylov-cleaned response Ritz (RWR-K; Operation A on 8.1, aimed at its failure mechanism).**
+    * *Mechanism.* Ritz of $\hat H$ in $\mathrm{span}\{\psi,(\hat H-E_\psi)\psi,\tilde y_A,(\hat H-E_{\tilde y_A})\tilde y_A\}$ for $A\in\{$pair, spin, charge$\}$, where $\tilde y_A$ is the trained response of $\psi$, as in 8.1.
+    * *Why it targets the 8.1 kill.* RWR died through the denominator $\langle\tilde y,\tilde y\rangle_\omega=\lVert y\rVert_\omega^2+\eta_{\mathrm{low}}^2\lVert g\rVert_\omega^2+\eta_{\mathrm{high}}^2\lVert j\rVert_\omega^2$. Two noise terms enter it: in-window error $g$ and high-$\omega$ junk $j$. The junk carries $\omega$ weights up to $W$, so it can dominate the denominator even at $\eta_{\mathrm{high}}=0.5$. Whether it did was never measured: grade R mixed the two.
+    * *What the Krylov partner can and cannot do.* A Krylov partner per response is exactly the use S2 allows. It removes the high-$\omega$ part of $\tilde y$ and leaves its low-$\omega$ part, which carries the information. It cannot remove the in-window part of the noise.
+    * *The question at T1.* The verdict decides whether the 8.1 kill was junk-driven, and so curable, or window-driven, and so fundamental.
+    * Gate 0: PASS (marginal). Neural adjoints for dual-weighted-residual error estimation exist for PDEs (arXiv:2102.12450, arXiv:2112.11360), and correction vectors exist in DMRG (Kühner & White). Two quick searches found no Krylov-cleaned response vector used as an observable error bar for VMC or NQS. Why the PDE version is not standard: the adjoint must be accurate, and the estimate is unreliable otherwise. The new mechanism targets exactly that part of the adjoint error which a single Lanczos step can remove.
+    * Gate 1: PASS. The first-order lemma of 8.1 holds for any span that contains $y$, and the Krylov partner keeps the sector.
+    * Gate 2: PASS on paper (L1R is blind; the decision is by test).
+    * Gate 3: sign half only, as for every P3.1 route.
+    * Gate 4 claim: $m$ trainings plus $m$ Lanczos steps, independent of $K_{1/2}$. This holds only if the in-window term does not grow with $V$, which is the T1 question.
+    * S1/S2: not $\hat H$-generated from $\psi$. The information comes from $\tilde y$.
+  - **Route 9.2: excited-state-deflated response (EDR; Operation A on ESR0 × RWR-K).**
+    * *Mechanism.* Ritz in $\mathrm{span}\{\psi,(\hat H-E_\psi)\psi,\varphi_1,\varphi_2,\varphi_3,\tilde y_A,(\hat H-E)\tilde y_A\}$. The span has a fixed $K=3$ trained excited states (the pilot already has them) and the Krylov-cleaned responses.
+    * *Division of labour.* The response carries the many carriers at once, which is the 8.1 lemma. The three lowest states remove both the lowest-$\omega$ error of $\psi$ and the lowest-$\omega$ noise of $\tilde y$, where $y$ is concentrated and the S3 shrinkage is worst.
+    * Gate 0: PASS as a combination of two diagnostics that are not prior art as error bars (7.1, 8.1).
+    * Gates 1–3: as for 9.1.
+    * Gate 4 claim: $3+m$ trainings, fixed in $V$.
+    * Sharpest gap: whether deflating a fixed $K=3$ helps once the window is dense.
+  - **Route 9.3: Krylov-cleaned two-mode window over all modes (TMW-K; Operation A on 8.5, untrained).**
+    * *Mechanism.* Ritz in $\mathrm{span}\{\psi,(\hat H-E_\psi)\psi\}\cup\{v_m,(\hat H-E_{v_m})v_m\}$. Here $v_m=P_\chi(\hat O_m^\dagger\hat O_m-\langle\cdot\rangle_\psi)\psi$ runs over the density, spin and $d$-pair standing waves of **all** OBC modes $m\ne(0,0)$, so there are $3(V-1)$ vectors.
+    * *Why it targets the 8.5 kill.* TMW died because operator-generated vectors carry high-$\omega$ weight (the A-Ritz filter-ratio gap). Its mode set was also fixed at 8 modes, so it could not span a window that grows with $V$. The Krylov partners remove high-$\omega$ weight (S2-allowed), and the full mode set grows as $V$, which is polynomial.
+    * *Use of the 8.3/8.9 lesson.* The correction is a single state-level Ritz vector, and the tails are evaluated on that vector. No observable is summed over modes, so the cancellation ratio $\kappa$ does not enter.
+    * Gate 0: PASS (marginal). Quantum subspace expansion (McClean et al., PRA 95, 042308) and Lanczos-NQS (NeurIPS 2022) are known. The quick search found no two-mode Bijl–Feynman block plus a Krylov step used to correct or error-bar a correlation function. Why QSE is not standard: noisy, ill-conditioned generalized eigenproblems (arXiv:2110.07492). That barrier is not removed here; it is recorded as the sampled-cost gap.
+    * Gate 1: PASS (all vectors lie in the sector).
+    * Gate 2: L1R control.
+    * Gate 3: sign half.
+    * Gate 4 claim: $6(V-1)$ untrained vectors, with one $\hat H$ application each, so the cost is polynomial. It does not depend on $K_{1/2}$.
+    * Sharpest gap: whether two-mode operator vectors span the error's carriers at all once the window is dense.
+
+**T1 pre-registration for Round 9 (written before `t1_r9.py --mode main` was run).**
+* Script: `tests/P3.1_order_parameter_error_r9/t1_r9.py`, run on 4 threads with a hard CPU limit of 600 s, set before ED. It reuses the Round 8 instances, observables, error models (eight trial states per size), ORC3 and L1R unchanged. The junk draws of trial states 2–8 differ from Round 8, because the shared random stream is consumed differently. This note was added after the 3×2 smoke and before the main run.
+* Scored items are the real-space tails (pair, spin, charge) with $\lvert\delta\rvert\ge0.1\lvert a_0\rvert$. An item is tracked if its ratio lies in $[\tfrac12,2]$.
+* **Size comparison.** The trend sizes are 3×3, 6×2 and 4×3, and the rules compare 3×3 with 4×3. The 3×2 sector has only 12 levels, so any span of 12 or more vectors is trivially exact there. 3×2 is printed only. This is a change from Round 8, which compared 3×2 with 4×3, and it is made for that reason alone.
+* **Noise grades** (8.1 model, own random stream): R $=(0.3,0.5)$, L $=(0.3,0)$ (in-window only) and J $=(0,0.5)$ (junk only), applied to the response from $\psi$. The trained-quality excited states for 9.2 are $\varphi_k=\mathrm{unit}(\lvert k\rangle+0.2g_k+0.2j_k)$.
+* **Rule 9.1 (RWR-K, arm RWRK_R).**
+  * PASS if the arm tracks $\ge0.75$ overall, its 4×3 fraction is $\ge$ the 3×3 fraction minus 0.1, and its 4×3 fraction is $\ge$ ORC3(4×3)$+0.2$.
+  * KILL if it tracks $<0.5$ overall, or its 4×3 fraction is more than 0.25 below 3×3.
+  * UNCLEAR otherwise.
+  * Attribution (reported, not part of the verdict): RWR_R against RWRK_R, RWRK_L and RWRK_J.
+* **Rule 9.2 (EDR, arm EDR_R).** The same thresholds as 9.1. It must also beat RWRK_R at 4×3 by $\ge0.1$ to PASS; otherwise it is at most UNCLEAR, because it would add nothing over 9.1.
+* **Rule 9.3 (TMW-K, arm TMWK).** The same thresholds as 9.1, with ORC3 as the comparison arm. Reported: TMWall (all modes without Krylov partners) and the span size.
+* **Real-like subset (reported).** The tracked fraction is also printed over the items whose partner structure factor has a relative error below 5%, which is the pattern of the real states.
+
+**T1 result, Batch 9** (`t1_r9.py --mode main`, `tests/P3.1_order_parameter_error_r9/t1_main_output.txt`, `results/t1_r9.json`; 54 s wall, 191 CPU-s on 4 threads). The table gives the tracked fraction of scored real-space tail items.
+
+| arm | trend sizes | 3×2 | 3×3 | 6×2 | 4×3 | real-like (n=10) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| L1R | 0.02 | 0.48 | 0.04 | 0.00 | 0.00 | 0.00 |
+| ORC3 | 0.73 | 0.62 | 0.87 | 0.74 | 0.56 | 0.60 |
+| RWR_R (8.1 reproduced) | 0.47 | 0.62 | 0.65 | 0.35 | 0.39 | 0.70 |
+| RWRK_R (9.1) | 0.70 | 0.86 | 0.91 | 0.61 | 0.56 | 0.50 |
+| RWRK_L (in-window noise only) | 0.80 | 0.90 | 0.96 | 0.78 | 0.61 | 0.70 |
+| RWRK_J (junk only) | 0.75 | 0.81 | 0.96 | 0.65 | 0.61 | 0.70 |
+| EDR_R (9.2) | 0.72 | 0.95 | 0.91 | 0.65 | 0.56 | 0.60 |
+| TMWall (all modes, no Krylov) | 0.44 | 1.00 | 0.57 | 0.26 | 0.50 | 0.60 |
+| TMWK (9.3) | 0.66 | 1.00 | 0.96 | 0.43 | 0.56 | 0.70 |
+
+* **Verdicts (pre-registered rule).**
+  * 9.1 is **KILLED** (T1): the tracked fraction falls from 0.91 at 3×3 to 0.56 at 4×3.
+  * 9.2 is **KILLED** (T1): 0.91 to 0.56; it adds nothing over 9.1.
+  * 9.3 is **KILLED** (T1): 0.96 to 0.56.
+* **What was learned.**
+  * The Krylov partner is worth 0.2–0.25 in tracked fraction over the plain arms (RWR_R 0.47 to 0.70; TMWall 0.44 to 0.66).
+  * The 8.1 kill was therefore partly junk-driven. Even so, RWRK_L, which has no junk at all, still drops from 0.96 to 0.61, so the size trend is not caused by junk.
+  * The item list at 4×3 shows where the losses come from. RWRK_R tracks 6 of 7 pair items, but only 1 of 6 spin items, and those failures sit at ratios near 0 or below. TMWK fails on the same spin items.
+  * The failing spin items fail even at grade L. The suspect is the response itself: it is built from $\psi$ instead of $\psi_0$, so it is the response of the wrong state. Batch 10 tests that.
+
+**Generation Batch 10** (Operation A on the Batch 9 kills).
+  - **Route 9.4: response-ensemble averaging. KILLED at T0 (Gate 2).** The idea is to put $M$ independently trained responses into the span, so that the in-window noise averages down. The real width-6 seeds share the sign of $\delta$ in every channel on all three seeds. Independent trainings of the same architecture therefore carry a *coherent* bias, which averaging does not remove (Route 6.4's mechanism).
+  - **Route 10.1: self-consistent response Ritz (SCR; Operation A on 9.1).**
+    * *Mechanism.* RWR-K builds $y$ from $\psi$, i.e. it is the response of the wrong state. SCR iterates instead: $\phi_0=\psi$; at step $t$ it trains the responses $\tilde y_A(\phi_t)$ and the Krylov partners, and sets $\phi_{t+1}$ to the lowest Ritz vector of $\mathrm{span}\{\psi,(\hat H-E)\psi,\tilde y_A(\phi_t),(\hat H-E)\tilde y_A(\phi_t)\}$. It runs two iterations, with fresh grade-R noise each time. The fixed point uses $y(\psi_0)$, which is RWR*. That arm tracked 0.93 in Round 8.
+    * Gate 0: PASS (marginal). This is iterative goal-oriented refinement, i.e. the DWR adjoint is recomputed on the refined primal. The quick searches found no NQS use.
+    * Gate 1: PASS (consistency: $\phi=\psi_0$ is a fixed point).
+    * Gate 2: L1R control.
+    * Gate 3: sign half.
+    * Gate 4 claim: $2m$ trainings.
+    * S1/S2: the information comes from $\tilde y$.
+  - **Route 10.2: response seeded by the two-mode Ritz vector (TMW-SCR; Operation A on 9.3 × 9.1).**
+    * *Mechanism.* $\phi_1$ is the TMWK Ritz vector. The responses $\tilde y_A(\phi_1)$ (grade R) and their Krylov partners are then added to the TMWK span, and Ritz is solved once.
+    * *Why.* TMWK needs no training and improves the state globally; the responses then target the observables from a better reference.
+    * Gate 4 claim: $6(V-1)$ untrained vectors plus $m$ trainings.
+    * Gates 0–3: as for 9.3 and 10.1.
+  - **Route 10.3: depth-2 Krylov two-mode window (TMW-K2; Operation A on 9.3).**
+    * *Mechanism.* Each two-mode vector gets two Krylov partners, $(\hat H-E)v_m$ and $(\hat H-E)^2v_m$, orthogonalised. This attacks the residual high-$\omega$ weight that one step leaves (S2: a degree-2 filter is still blind below $\Omega$, so it helps only if the carriers are present in $v_m$).
+    * *Cost.* Two statistical Lanczos steps per vector, i.e. $N_{\mathrm{conn}}^2$ per sample. That is the practical ceiling named by Sorella–Becca, and it is recorded as the price.
+    * Gate 0: as for 9.3.
+    * Gate 4 claim: $9(V-1)$ vectors.
+
+**T1 pre-registration, Batch 10 (written before `t1_r10.py --mode main` was run).**
+* Same instances, trial states, scoring and size comparison as Batch 9, in a new script `tests/P3.1_order_parameter_error_r9/t1_r10.py` with the same CPU cap.
+* Arms: SCR2 (10.1), TMWSCR (10.2) and TMWK2 (10.3). Attribution arms, reported only: RWRK_0 (exact response from $\psi$ with a Krylov partner) and RWRstarK (response of $\psi_0$ with a Krylov partner).
+* **Rule for each of 10.1–10.3.** The thresholds are those of 9.1.
+  * PASS if the arm tracks $\ge0.75$ overall on 3×3, 6×2 and 4×3, its 4×3 fraction is $\ge$ the 3×3 fraction minus 0.1, and its 4×3 fraction is $\ge$ ORC3(4×3)$+0.2$.
+  * KILL if it tracks $<0.5$ overall, or its 4×3 fraction is more than 0.25 below 3×3.
+  * UNCLEAR otherwise.
+  * 10.2 must also beat both TMWK and RWRK_R at 4×3 by $\ge0.1$ to PASS; otherwise it is at most UNCLEAR.
+
+**T1 result, Batch 10** (`t1_r10.py --mode main`, `t1_r10_main_output.txt`, `results/t1_r10.json`; 126 s wall, 460 CPU-s). The trial states are identical to Batch 9, and the RWRK_R values reproduce Batch 9. The table gives the tracked fraction.
+
+| arm | trend sizes | 3×3 | 6×2 | 4×3 | verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| ORC3 | 0.73 | 0.87 | 0.74 | 0.56 | (comparison) |
+| RWRK_0 (exact response of $\psi$) | 0.83 | 1.00 | 0.78 | 0.67 | (attribution) |
+| RWRstarK (exact response of $\psi_0$) | 0.91 | 1.00 | 0.91 | 0.78 | (attribution ceiling) |
+| SCR2 (10.1) | 0.80 | 0.91 | 0.78 | 0.67 | **UNCLEAR** (drop 0.24) |
+| TMWSCR (10.2) | 0.86 | 1.00 | 0.87 | 0.67 | **KILLED** (drop 0.33) |
+| TMWK2 (10.3) | 0.80 | 1.00 | 0.74 | 0.61 | **KILLED** (drop 0.39) |
+
+* **Reading.**
+  * Even the oracle response of $\psi_0$ falls from 1.00 to 0.78. The first-order lemma behind every response route therefore loses accuracy at 4×3 on these toy states, before any training noise enters.
+  * SCR closes part of the gap between the response of $\psi$ (0.67 at 4×3, noise-free) and the oracle, and it does so *with* grade-R noise.
+* **Calibration defect found in the toy error model (Rounds 8–10).**
+  * The toy trial states are built to an overlap *amplitude* of 0.94, labelled "the seed-11 overlap", and then high-$\omega$ junk is added on top. Their squared overlap with $\psi_0$ is 0.80–0.88 (Round 8 JSON).
+  * The recorded seed-11 value is the *squared* overlap, 0.936. The real width-6 states have $\lvert\langle\psi_0\vert\psi\rangle\rvert^2=0.914$–0.936 before spin projection, and 0.947–0.957 after (`target_probe_all.json`).
+  * So the toys carry about twice the real error weight. That weight is exactly what limits every first-order route at 4×3, as the oracle-response ceiling of 0.78 shows.
+  * The Round 8 ESR0 Gate 4 trend was measured with the same toy model. It is not re-opened here, because its kill is also argued at T0.
+
+**T1b pre-registration (calibrated error weight; written before `t1_r10.py --overlap2 0.92` was run).**
+* **Change.** The same error models and arms are used, but $\lambda$ and $\mu$ are scaled so that the final state, junk included, has $\lvert\langle\psi_0\vert\psi\rangle\rvert^2=0.92$. That is the median of the real states before spin projection. The junk keeps carrying twice the energy error of $\lambda e$.
+* **Rule for 10.1 (it resolves the UNCLEAR).** The thresholds are those of Batch 10 on the trend sizes 3×3, 6×2 and 4×3: PASS if SCR2 tracks $\ge0.75$ overall, its 4×3 fraction is $\ge$ the 3×3 fraction minus 0.1, and its 4×3 fraction is $\ge$ ORC3(4×3)$+0.2$; KILL if it tracks $<0.5$ overall or its 4×3 fraction is more than 0.25 below 3×3; otherwise it stays UNCLEAR and goes to the T2 premise test on the real states only if the master approves.
+* **Re-opening rule for the killed arms (9.1, 9.3, 10.2, 10.3).** A killed arm whose T1b numbers would PASS the same rule is re-opened as **UNCLEAR, not PASS**. Its T1 kill was obtained under a mis-calibrated model, and it is promoted only through a T2 premise test on the real states. An arm that fails the rule again stays killed.
+* **Real-like subset.** It is reported as before.
+
+**T1b result** (`t1_r10.py --mode main --overlap2 0.92`, `t1b_r10_main_output.txt`, `results/t1b_r10.json`; 157 s wall, 492 CPU-s; 55 scored items on the trend sizes). The table gives the tracked fraction.
+
+| arm | trend sizes | 3×3 | 6×2 | 4×3 | verdict under the T1b rule |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| ORC3 | 0.73 | 0.82 | 0.70 | 0.67 | (comparison) |
+| RWRK_0 (exact response of $\psi$) | 0.85 | 1.00 | 0.78 | 0.80 | (attribution) |
+| RWRstarK (oracle ceiling) | 0.98 | 1.00 | 1.00 | 0.93 | (attribution) |
+| SCR2 (10.1) | 0.82 | 0.88 | 0.83 | 0.73 | **UNCLEAR** (drop 0.15; 4×3 not $\ge$ ORC3$+0.2$) |
+| TMWSCR (10.2) | 0.91 | 1.00 | 0.91 | 0.80 | **UNCLEAR → re-opened** (drop 0.20) |
+| TMWK2 (10.3) | 0.87 | 1.00 | 0.87 | 0.73 | KILL stays (drop 0.27) |
+| RWRK_R (9.1) | 0.75 | 0.94 | 0.65 | 0.67 | KILL stays (drop 0.27) |
+| TMWK (9.3) | 0.65 | 0.94 | 0.43 | 0.67 | KILL stays (drop 0.27) |
+
+* **Reading.**
+  * At the real error weight, the oracle response ceiling holds at 0.93 at 4×3, so the first-order lemma is sound there.
+  * The routes that rebuild the response on a *corrected* reference (SCR, TMW-SCR) keep 0.73–0.80 at 4×3 with grade-R training noise. The single-shot routes lose 0.27.
+  * No route PASSES T1: none beats ORC3 at 4×3 by 0.2, and the size drop is 0.15–0.20.
+  * Both live routes stand on one shared, untested premise: that the response class sees the *real* states' tail error, whose structure the toys failed to reproduce in Round 8. By Stage 3.5.1 (a shared premise is tested once, first), the next step for both is one noise-free premise test on the real states, before any response is trained.
+
+**T2 premise test for 10.1 and 10.2 (prepared, NOT submitted; it needs the master's approval because neither route has PASSED T1 and the run is above the cap).**
+* **Files.** Script `tests/P3.1_order_parameter_error_r9/t2_resp_premise.py`, sbatch `submit_t2_resp.sbatch` (array 0–2 = seeds 11, 22, 33; 8 CPUs, 64 GB, 3 h).
+* **Command.** `cd brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r9 && sbatch submit_t2_resp.sbatch`. Aggregate afterwards with `python3 t2_resp_premise.py --aggregate results/t2_resp_s11.json,results/t2_resp_s22.json,results/t2_resp_s33.json`.
+* **Instance and arms.** The 4×4 OBC 6+6 instance with the real width-6 states, all sums exact. The arms are L1R, RWRstarK (oracle ceiling), RWRK0, SCR0 (10.1 without noise), TMWK and TMWSCR0 (10.2 without noise), all using exact minres responses. ORC3 is taken from job 698163.
+* **Pre-registered rule** (also in the script docstring). Items are the 8 scored tails of job 698163. An item is tracked if its ratio lies in $[\tfrac12,2]$.
+  * KILL both routes if RWRstarK tracks fewer than 0.75 of the items, or if SCR0 and TMWSCR0 both track fewer than 0.5.
+  * PASS 10.1 if SCR0 tracks $\ge0.75$ of the items, including at least one spin item.
+  * PASS 10.2 if TMWSCR0 tracks $\ge0.75$, at least one spin item, and at least as many as SCR0.
+  * KILL either route separately if its arm tracks fewer than 0.5.
+  * AMBIGUOUS otherwise.
+  * Early stop per task: if the oracle ceiling tracks none of that seed's scored items, the other arms are skipped.
+  * Validity: $\delta$ must reproduce job 698163 within $10^{-3}$ relative, otherwise INVALID.
+* **Budget exception.** About 4–6 CPU-hours per task (ED plus about 12 minres solves at $D=1.68\times10^6$), above the 2 CPU-hour cap. The reason is the same as for the Route 8.3 T2: trained-NQS states with a measurable tail error exist only on this instance. The estimate is extrapolated from job 698163, not measured.
+* **Pre-flight dry run** (`dryrun_output.txt`; 4×4 OBC 2+2, $D=10920$).
+  * The verdict selftest returns all four branches (PASS/PASS, both KILL cases, AMBIGUOUS/KILL).
+  * Positive control: the target $\psi_0+0.05e$ with a first-order $e$. Every response arm tracks it at 1.00 (TMWK at 0.85–1.06), and the pipeline aggregates and prints a verdict.
+  * Negative control: on this sparse spectrum L1R is *not* blind (0.75 tracked). The negative control is therefore taken from the real instance, where L1R tracks 0 of 8 items in job 698163. This limitation is stated rather than hidden.
+  * The validity check against job 698163 is exercised only on the main instance.
+* **Decision tree.**
+  * **PASS (either route).** Write the T3 design: train $m=3$ response networks per seed with the Hylleraas functional at width 6 (realistic noise), using the 10.1 or 10.2 iteration, and score them as above. This needs a T3 exception, at about $3\times1.5$ ground-state trainings per seed.
+  * **KILL both.** The response class is closed on the real states. The leaf goes to the refined Saturation Diagnostic close-out (Round 8 PAIR-ONLY text), with one added sentence: "response-vector routes fail even without training noise on the real tail errors."
+  * **AMBIGUOUS.** Hold until job 618646, then decide with the master whether one realistic-noise seed is worth a T3 exception.
+  * **INVALID.** Debug the target loading against `t2_sf_premise.py`.
+
+### Route Portfolio & Sharpest Gaps (Round 9)
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 7.1 ESR0-K6 (diagnostic; pair + spin) | T2 (pilot GO at $K=3$); Gate 4 FAIL as a scalable method | IN-FLIGHT(618646) | — | GO-6 / PAIR-ONLY (Step 1.5b) | as Round 8 |
+| 10.1 SCR (self-consistent response Ritz) | T1b UNCLEAR (0.88 at 3×3, 0.73 at 4×3) | T2 READY (dry run done) | master approval (not passed T1; cap exception) | T2 premise rule above | PASS → T3 design with trained responses; KILL → close-out |
+| 10.2 TMW-SCR (two-mode Ritz + response) | T1b UNCLEAR (1.00 at 3×3, 0.80 at 4×3; re-opened) | T2 READY (same job) | same | same job, own arm | same |
+| 8.9 mode-resolved windows | T0 | KILLED(T0, cancellation amplification; 8.3 NO-TARGET) | — | — | — |
+| 9.1 RWR-K | T1, T1b | KILLED(T1, 4×3 drop 0.35; T1b 0.27) | — | — | — |
+| 9.2 EDR | T1 | KILLED(T1, 4×3 drop 0.35; no gain over 9.1) | — | — | — |
+| 9.3 TMW-K | T1, T1b | KILLED(T1, drop 0.40; T1b 0.27) | — | — | — |
+| 9.4 response-ensemble averaging | T0 | KILLED(T0, Gate 2: coherent bias across seeds) | — | — | — |
+| 10.3 TMW-K2 | T1, T1b | KILLED(T1, drop 0.39; T1b 0.27) | — | — | — |
+
+* **10.1 SCR.**
+  * *Mechanism:* recompute the per-observable response on the Ritz-corrected reference, then do Ritz again.
+  * *Sharpest gap:* whether the response class sees the real states' tail error. That is the shared T2 premise; the toys did not transfer in Round 8.
+  * *Gate 4 claim:* $2m$ trainings, independent of $K_{1/2}$. Toy trend: 0.88 to 0.73 between 3×3 and 4×3.
+* **10.2 TMW-SCR.**
+  * *Mechanism:* the untrained two-mode Krylov window over all $V-1$ modes supplies a corrected reference, and its responses finish the correction. The tails are read from a single state, so no mode sum enters.
+  * *Sharpest gap:* the same premise, plus noisy conditioning of a $6V$-vector generalized eigenproblem under sampling. That is the QSE adoption barrier, and it is not addressed.
+  * *Gate 4 claim:* $6(V-1)$ untrained vectors plus $m$ trainings.
+* **Tier log (Round 9).** Every T0 argument and T1 result is recorded above with its rule, which was written before the run. The outputs are in `tests/P3.1_order_parameter_error_r9/`: `smoke_output.txt`, `t1_main_output.txt`, `results/t1_r9.json`, `smoke_r10_output.txt`, `t1_r10_main_output.txt`, `results/t1_r10.json`, `smoke_t1b_output.txt`, `t1b_r10_main_output.txt`, `results/t1b_r10.json`, `dryrun_output.txt`, and `results/dry_small_s*.json`. Every run used 4 threads with a hard 600 CPU-second limit; the largest used 492 CPU-s.
+
+### Local Autopsy Log (Round 9 additions)
+* **The real-space targets are the longest-range tails.** The structure factors look accurate only because short-range classes dominate them (pair), or because the errors cancel (spin, charge). Any per-mode assembly of a tail inherits the cancellation ratio $\kappa$, which kills 8.9. New anti-pattern: *never assemble a tail from mode pieces; correct the state.*
+* **Krylov partners are the S2-allowed fix for auxiliary vectors.** They recover 0.2–0.25 of tracked fraction on toys. They do not fix the size trend of single-shot response or two-mode windows, because in-window noise alone (grade L) drops 0.96 to 0.61.
+* **The toy error model was mis-calibrated in Rounds 8–10.** Its squared overlap was 0.80–0.88, against 0.91–0.94 for the real states, because the squared seed-11 overlap had been read as an amplitude. Kills obtained under it were re-scored at the real error weight (T1b), and two routes were re-opened as UNCLEAR. The Round 8 ESR0 toy $K_{1/2}$ trend used the same model; its Gate 4 kill also rests on a T0 argument and is not re-opened, but its toy numbers overstate the growth by an unknown amount.
+* **Process note.** Batch 10 and the T1b calibration were generated after the Batch 9 output had been seen. Each rule was written into this log before its own run. The T1b change was motivated by a number recorded in Round 5, not by the T1 outcome.
+
+### Round 9 per-leaf critic (2026-11-16)
+**Verdict.** P3.1 stays open for one more round, narrowly. The fixed-base response routes (10.1 as coded, 10.2) are retired. One mutation, 10.1u (self-consistent response with the base updated each pass), is size-consistent on a critic toy and goes to T1. The prepared T2 is **not submitted as written**; a slimmed premise run under the cap replaces it, after the 10.1u T1. A conditional refined Saturation Diagnostic (below) applies if 10.1u fails.
+
+**Critic checks run** (login node, seconds each; files in `tests/P3.1_order_parameter_error_r9/`).
+* `critic_sc_toy.py` (output `critic_sc_toy_output.txt`). $M$ decoupled copies of one random $d$-level subsystem ($d=6$ or 8, $M=1..4$, $D\le4096$), each copy with the same error, so $1-F$ grows with $M$ at fixed per-copy quality, as for a fixed-width NQS. Arms, all in exact arithmetic: RWR\*K (oracle response of $\psi_0$), RWRK0, SCR as coded in `t1_r10.py` (base $\psi$ kept), SCRu (base updated each pass), SCRd (depth-free update, $\mathrm{span}\{\phi_t,y(\phi_t)\}$ after pass 1) and PROD (exact product correction, a reference).
+* `critic_shift_check.py` (output `critic_shift_check_output.txt`). On the T1b toys, with the same trial states, it prints $(s-E_0)/\omega_1$, $\lvert\langle\psi_0\vert y\rangle\rvert^2$, and noise-free RWRK0 and SCR0 (one self-consistent pass, base kept). Three shift variants: the default $s=2E_{L1R}-E_\phi$, a far shift $s=E_\phi-1t$, and the default with the $\psi_0$ component removed from $y$.
+
+| per-copy error, $d$ | $1-F$, $M=1\to4$ | RWR\*K | RWRK0 | SCR (fixed base) | SCRu, $T=4$ | SCRd, $T=4$ |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| $\varepsilon=0.3$, $d=6$ | 0.08 → 0.29 | 1.09 → 1.09 | 0.86 → 0.45 | 0.95 → 0.81 | 1.00 → 0.99 | 0.99 → 1.02 |
+| $\varepsilon=0.5$, $d=6$ | 0.20 → 0.59 | 1.16 → 1.20 | 0.79 → 0.81 (non-monotone) | 0.91 → 0.53 | 1.00 → 1.01 | 1.00 → 1.21 |
+| $\varepsilon=0.15$, $d=8$ | 0.02 → 0.09 | 1.06 → 1.05 | 0.58 → 0.73 | 0.88 → 0.91 | 1.00 → 0.99 | 0.85 → 0.84 |
+
+* **Shift check (55 scored T1b items).** With the default shift, SCR0 tracks 53 and RWRK0 47. With the far shift they track 35 and 35. With the $\psi_0$ component removed they track 50 and 42. The default shift lies 0.07–1.8 $\omega_1$ below $E_0$, and $\lvert\langle\psi_0\vert y\rangle\rvert^2\le0.05$.
+
+**Major objections.**
+1. **The 3×3 anchor of every Round 9 size rule is confounded.**
+   * The 3×3 sector has exactly 60 levels (Round 8 census), and the T1 scripts use $N_{\mathrm{low}}=60$. The "in-window" noise $U\xi$ is therefore a random vector over the *whole* 3×3 sector, partly high-$\omega$ and removable by the Krylov partner. At 6×2 and 4×3 the same 60 levels form the dense low band.
+   * The two-mode spans have $2+6(V-1)=50$ vectors (56 with the responses) in that 60-dimensional sector. TMWK, TMWK2 and TMWSCR at 3×3 are near-trivially exact, which is the defect for which 3×2 was dropped.
+   * The only clean pair, 6×2 and 4×3, has the same $V=12$ and the same $D=34650$. So neither T1 nor T1b contains a clean size trend for any arm. The kills stand on other grounds (objection 5), but the "drop from 3×3" numbers are not Gate 4 measurements.
+2. **Fixed-base SCR is not size-consistent (critic toy).**
+   * With the base $\psi$ kept, as coded in `t1_r10.py` and in the T2 arm SCR0, the recovered fraction falls as the total infidelity grows at fixed per-copy quality: 0.95 → 0.81 ($1-F$ from 0.08 to 0.29) and 0.91 → 0.53 (0.20 to 0.59). The same exact machinery with the base updated each pass (SCRu) stays at 0.99–1.01 after 4 passes for every $M$.
+   * This is the CI-versus-coupled-cluster defect. A linear correction of a fixed $\psi$ by $m$ global vectors recovers less per region as the number of erroneous regions grows.
+   * The T1b toys held $\lvert\langle\psi_0\vert\psi\rangle\rvert^2=0.92$ fixed at every size. That lowers the per-site error as $V$ grows and hides the defect. At the real per-site quality, $F(V)\approx0.92^{V/16}$, so $1-F\approx0.15$ at $V=32$ and $0.28$ at $V=64$. At those weights fixed-base SCR already loses 10–20% on the toy before any training noise.
+3. **Gate 4 for 10.1 and 10.2: yes, a signal, and a FAIL for the fixed-base forms.**
+   * A linear extrapolation of the grade-R SCR2 trend in $V$ (0.88 at $V=9$ to 0.73 at $V=12$, slope $-0.05$ per site) gives 0.53 at 4×4 and 0.33 at 5×4.
+   * The 6×2 to 4×3 step at equal $V$ (0.83 to 0.73 for SCR2; 0.91 to 0.80 for TMWSCR) follows the density of low levels ($\omega_1=0.23t$ against $0.16t$), and that density grows with $V$.
+   * Neither number is clean (objection 1), but both point the same way as the T0 mechanism of objection 2.
+4. **The response shift gives the noise-free arms a lever that a trained response does not have.**
+   * The convention $s=2E_{L1R}-E_\phi$ lies below $E_0$ by 0.07–1.8 $\omega_1$ on the toys. Estimated from the Round 6 seed-11 numbers ($\Delta E$ 0.052 → 0.023 after one step), it lies about $0.006t\approx0.03\,\omega_1$ below $E_0$ on the real state.
+   * There, $(Q(\hat H-s)Q)^{-1}$ amplifies the $\psi_0$ component of $Q(\hat A-a)\psi$ by about 35 relative to the lowest excited level. That is a shift-and-invert step toward the ground state, not observable information.
+   * On the toys the $\psi_0$ weight is small and removing it costs 3 of 55 items, but tracking depends strongly on the shift (53 → 35 with the far shift).
+   * A trained Hylleraas response at $s$ within $0.03\,\omega_1$ of $E_0$ is near-singular. With sampled $E$ and $E_{L1R}$, $s$ can cross $E_0$, where the functional is unbounded below. The T2 as written would read this lever as "premise holds".
+5. **Kill record restated: all kills stand, with corrected reasons.**
+   * 9.1 RWRK_R is dominated by 10.1 (the same span without self-consistency) and is not above ORC3$+0.2$ at 4×3 under T1b.
+   * 9.2 EDR adds nothing over 9.1.
+   * 9.3 TMWK and 10.3 TMWK2 have a trivial 3×3 anchor, 9.3 is at 0.43 on 6×2, and both meet the QSE adoption wall (objection 6).
+   * 9.4 (T0) and 8.9 (T0) stand.
+   * The "drop of more than 0.25 from 3×3" reasons are withdrawn.
+6. **10.2 TMW-SCR is KILLED at Gate 0 (rule 3) and Gate 4.**
+   * Its own Gate 0 entry concedes that the QSE adoption barrier "is not removed": a noisy, ill-conditioned generalized eigenproblem in $6(V-1)+8$ sampled vectors (arXiv:2110.07492). Rule 3 disqualifies a route that does not bypass the barrier it names.
+   * Its two-mode block is a linear doubles-on-$\psi$ span with a fixed base, the textbook non-size-consistent form (objection 2).
+   * Its only above-ORC point at a distinct $V$ is the trivial 3×3 span.
+7. **The prepared T2 breaks tier discipline, and its cap exception is not justified.**
+   * Neither route passed T1, and both deciding arms (SCR0 with a fixed base, TMWSCR0) are retired by objections 2 and 6.
+   * Stage 3.5.1 places a shared premise at the cheapest tier that decides it. The oracle-ceiling question (does RWRstarK track the *real* tails?) can only be decided on the real instance, so that part is a legitimate shared-premise test for the whole response class. The route-specific arms are decided more cheaply at T1.
+   * The cost estimate is extrapolated, and the sbatch allocates 8 CPUs × 3 h = 24 CPU-h per task, not 4–6. Job 698163 did the ED, 30 Lanczos levels and all three seeds in 732 s on 8 CPUs (about 1.6 CPU-h).
+   * Without the two-mode block (120 exchange vectors of 13 MB and a Ritz problem of about 95 vectors), one task over all three seeds should fit the 2 CPU-h cap. No exception is needed; the cost must be measured on seed 11 first.
+
+**Minor objections.**
+1. The T1b noise $\eta=(0.3,0.5)$ is relative to a unit-norm response at every size. A fixed-width network's response error is unlikely to be size-independent, so the toy is optimistic. Say so in the rule.
+2. The 8 T2 items come from 3 states with the same sign of $\delta$ in every channel, so the effective sample is about 3. That is acceptable for a premise test but not for a decisive one.
+3. The T2 validity check against job 698163 is not exercised by the dry run (stated in the leaf). Make it the first main-run output and stop before any minres solve on INVALID.
+4. The naive multiplicative form $\psi\,e^{c\,y/\psi}$ (arm MULT in `critic_sc_toy.py`) is ill-defined: it overflows where $\psi$ is small. Do not propose it as the size-consistent mutation.
+5. The status line and the master row still listed 10.2 as live and the T2 at "4–6 CPU-h per task". Both are fixed by this critic.
+
+**Per-route verdicts.**
+
+| Route | Critic verdict | Reason |
+| :--- | :--- | :--- |
+| 7.1 ESR0-K6 | unchanged: IN-FLIGHT(618646), diagnostic only | $\varphi_4$ at iteration 850: $\lvert\langle4\vert\varphi_4\rangle\rvert^2=0.952$, $\lvert\langle\psi_0\vert\varphi_4\rangle\rvert^2=0.002$ (10:54) |
+| 10.1 SCR (fixed base) | KILLED(critic, Gate 4: not size-consistent), mutated to 10.1u | objections 2 and 3 |
+| 10.1u SCR with updated base | GATED, T1 next | critic toy: SCRu at $T=4$ gives 0.99–1.01 for every $M$, noise-free |
+| 10.2 TMW-SCR | KILLED(critic, Gate 0 rule 3 and Gate 4) | objection 6 |
+| 8.9, 9.1, 9.2, 9.3, 9.4, 10.3 | KILLED, stands | objection 5 |
+
+**Route 10.1u: self-consistent response Ritz with an updated base (Operation A on 10.1, aimed at objection 2).**
+* *Mechanism.* Set $\phi_0=\psi$. At pass $t$, train the responses $\tilde y_A(\phi_t)$ of the $m=3$ tails and set $\phi_{t+1}$ to the lowest Ritz vector of $\mathrm{span}\{\phi_t,(\hat H-E)\phi_t,\tilde y_A(\phi_t),K\tilde y_A(\phi_t)\}$. The estimate is $\hat\delta=a(\phi_T)-a(\psi)$. The depth-free variant 10.1d uses $\mathrm{span}\{\phi_t,\tilde y_A(\phi_t)\}$ after pass 1.
+* *Sharpest gap 1 (cost depth).* $\phi_t$ is a linear combination of networks. With $(\hat H-E)\phi_t$ and the Krylov partners, each pass adds one $\hat H$ application, so the sampled cost is $N_{\mathrm{conn}}^T$ per sample. 10.1d avoids that but stalls at 0.84–1.2 on the toy.
+* *Sharpest gap 2.* Training noise accumulated over $T$ passes inside a dense window (the 8.1 mechanism) is untested.
+* *Gates.*
+  * Gate 0: marginal. It is iterated goal-oriented refinement, i.e. a Davidson-type subspace iteration with response directions.
+  * Gate 2: the matched-compute foil, one network trained with the same $T\cdot m$ ground-state-equivalent compute, is mandatory before any T3 (Round 7 fix i).
+  * Gate 3: sign half only.
+  * Gate 4 claim: $T\cdot m$ trainings with $T$ independent of $V$ (toy: $T=4$ for $M=1..4$).
+* **T1 rule (pre-registered by this critic, before any run).**
+  * *Toys.* As T1b, with three changes. (i) The error is set at fixed per-site infidelity, $\lvert\langle\psi_0\vert\psi\rangle\rvert^2=0.92^{V/16}$. (ii) The in-window noise is drawn over the levels with $\omega\le1t$, not over the 60 lowest levels, and the junk is unchanged. (iii) The deciding shift is $s=E_{L1R}(\phi)-0.1t$, which keeps the functional bounded under sampling noise; the default shift is reported only.
+  * *Extra check.* The decoupled-copy toy with grade-R noise on every response, at $\varepsilon=0.3$ and $\varepsilon=0.5$, for $M=1..4$.
+  * *Arms.* SCRu-R at $T=2$ and $T=4$ (fresh grade-R noise each pass), SCRd-R, SCR2 (comparison) and ORC3. 3×3 is reported only.
+  * **PASS** if SCRu-R ($T=4$) tracks $\ge0.75$ at 6×2 and at 4×3 separately, is $\ge$ ORC3(4×3)$+0.1$, and its decoupled-copy ratio stays in $[\tfrac12,2]$ for every $M\le4$.
+  * **KILL** if it tracks $<0.5$ at 4×3, or its decoupled-copy ratio leaves $[\tfrac12,2]$ at any $M\le4$.
+  * **UNCLEAR** otherwise.
+  * PASS or UNCLEAR leads to the T2-v2 premise run below. KILL leads to the conditional Saturation Diagnostic.
+
+**T2 decision: do not submit `submit_t2_resp.sbatch`.** It is replaced by a T2-v2 premise run under the cap (no exception), to be prepared after the 10.1u T1.
+* One task. The ED runs once, then seeds 11, 22 and 33 in sequence, seed 11 first with its timing printed. Stop and re-plan if seed 11 takes more than 40 CPU-minutes.
+* Arms: L1R, RWRstarK (oracle ceiling), RWRK0 (attribution), SCRu0 at $T=2$ and $T=4$, SCRd0 at $T=4$. The two-mode block is dropped.
+* Every response is computed at two shifts, the default and $s=E_{L1R}-0.1t$. The run prints $(s-E_0)/\omega_1$ and $\lvert\langle\psi_0\vert\hat y\rangle\rvert^2$ for each.
+* **Rule.**
+  * KILL the response class if RWRstarK tracks fewer than 6 of the 8 items.
+  * PASS 10.1u if SCRu0 ($T=4$, shift $E_{L1R}-0.1t$) tracks at least 6 of 8, including at least one spin item.
+  * KILL 10.1u if it tracks fewer than 4 of 8.
+  * AMBIGUOUS otherwise.
+  * The effective sample is about 3 states (minor objection 2).
+* **Pre-flight.** Re-run the small-instance dry run and the verdict self-test with the new arms. The validity check against job 698163 is the first main output (minor objection 3).
+* **Power sizing.** The arithmetic is exact, so no sampling noise enters. PASS and KILL are 2 items apart on 8 correlated items. That is adequate for a premise test, not for T3.
+
+**Close or continue: CONTINUE, with a conditional diagnostic and a stopping rule.**
+* **The candidate statement is rejected as worded.** It claims that every route that avoids training the $K_{1/2}(V)$ states "either loses the out-of-window error or degrades with size". Two results contradict it.
+  * The noise-free response class needs no $K_{1/2}$ eigenstates, and SCR0 tracks 53 of 55 T1b items. Its size loss comes from training noise in a dense window and from a fixed base, not from $K_{1/2}$.
+  * A base-updated iteration is size-consistent in exact arithmetic (critic toy).
+  * The statement would therefore be falsified by 10.1u if the noise can be controlled. It is a claim that does not hold in every case, which this project does not make.
+* **Refined Saturation Diagnostic (conditional; applies if 10.1u is killed at T1 or at T2-v2).**
+  * *Mechanism.* The tail error of a converged projected NQS lies in low-$\omega$ in-irrep directions that no $\hat H$-moment or Krylov filter of $\psi$ sees (S1, S2). Two carriers of information see it.
+    * The $K_{1/2}$ lowest in-irrep eigenstates (S3). $K_{1/2}$ grows with the level density (Round 8 Gate 4 FAIL).
+    * $m$ per-observable static responses. They need no $K_{1/2}$, but they must be applied as a size-consistent (iterated, base-updated) correction, and their in-window relative training error $\eta_{\mathrm{low}}$ must stay below the point where the $\langle\tilde y,\tilde y\rangle_\omega$ denominator dominates (8.1).
+  * *Evidence pattern.*
+    * Eigenstate windows fail Gate 4 (toy median $K_{1/2}$ 2 → 17.5 and 1 → 13; real $K_{1/2}$ = 2, 6 and 11).
+    * Fixed-base responses lose size-consistency (critic toy).
+    * Noisy responses lose 0.15–0.25 with the level density (T1b).
+    * Per-mode assembly is amplified by $\kappa\gtrsim100$ (8.9).
+    * Ladders and ensembles share their bias (6.4, 7.7, 9.4).
+  * *Minimal extra information.* $m=3$ response vectors of the current corrected state with $\eta_{\mathrm{low}}(V)$ below the threshold measured by the 10.1u T1, refreshed over about 4 passes.
+  * *Falsifier.* A trained response on the 4×4 instance with measured $\eta_{\mathrm{low}}\le0.3$ whose 10.1u estimate tracks at least 6 of the 8 real tail items. Or a toy family of growing $V$ at fixed per-site infidelity on which noisy SCRu-R keeps $\ge0.75$.
+* **Portfolio size.** The live routes are 7.1 (diagnostic, in flight) and 10.1u, with 10.1d as its variant. That is below 3. The worker refills with at most one Operation A route, aimed at the only mechanism no route attacks: the in-window training error $\eta_{\mathrm{low}}$ of the response.
+* **Stopping rule.** Round 10 is the last batch. If no route passes T1 there, the conditional diagnostic above is applied and P3.1 closes at ED size, as P2.2, P3.2 and P4.2 did.
+
+### Route Portfolio (after the Round 9 critic)
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 7.1 ESR0-K6 (diagnostic; pair + spin) | T2 (pilot GO at $K=3$); Gate 4 FAIL as a scalable method | IN-FLIGHT(618646) | — | GO-6 or PAIR-ONLY (Step 1.5b) | as Round 8 |
+| 10.1u SCR with updated base (and 10.1d, depth-free) | GATED (critic toy, noise-free) | T1 next | — | critic T1 rule above | PASS or UNCLEAR → T2-v2 premise run (under the cap); KILL → conditional Saturation Diagnostic |
+| refill (Operation A on $\eta_{\mathrm{low}}$) | — | to generate | — | to write before its T1 | at most one route; Round 10 is the last batch |
+| 10.1 SCR (fixed base) | T1b | KILLED(critic, Gate 4: not size-consistent) | — | — | mutated to 10.1u |
+| 10.2 TMW-SCR | T1b | KILLED(critic, Gate 0 rule 3: QSE wall; Gate 4) | — | — | — |
+| 8.9, 9.1, 9.2, 9.3, 9.4, 10.3 | T0 or T1 | KILLED (reasons restated in objection 5) | — | — | — |
+
+### Round 10 (2026-11-16): T1 of Route 10.1u
+**T1 pre-registration for 10.1u (written before any `--mode main` or `--mode copytoy` run).**
+* **Script.** `tests/P3.1_order_parameter_error_r10/t1_scru.py`. It implements the critic's T1 rule for 10.1u (Round 9 per-leaf critic) with the instances replaced as below. Every run sets a hard `RLIMIT_CPU` of 600 s before any ED and has a soft guard that starts a trial state only if its projected cost fits under the cap. The total budget is 30 CPU-minutes.
+* **Why the instances change.** The critic's rule names 6×2 and 4×3, but these share $V=12$ and $D=34650$, and 3×3 has a 60-level sector. The trend sizes are therefore three distinct $V$:
+  * 5×2, $3+3$, $V=10$, $n=0.60$, $D=4200$, ground state $S=1$, $\omega_1=0.33t$, 4 levels with $\omega\le1t$;
+  * 4×3, $4+4$, $V=12$, $n=0.67$, $D=34650$, $S=0$, $\omega_1=0.16t$, 11 window levels;
+  * 7×2, $5+5$, $V=14$, $n=0.71$, $D=252252$, $S=1$, $\omega_1=0.15t$, 49 window levels.
+  * The density cannot be held at 2/3 for three distinct $V$ below $D\approx3\times10^5$, so it varies from 0.60 to 0.71.
+  * Asserted per instance (census files `census_5x2_output.txt` and `census_7x2_output.txt`, and the 4×3 smoke): a non-degenerate $\psi_0$, an in-sector gap $\omega_1\ge0.02t$, all window levels found (the highest level found has $\omega>1t$), and at least 3 window levels.
+  * 6×2 and 3×3 are not run, to save budget.
+* **Toys (critic items i–iii).**
+  * Fixed per-site infidelity: $\lvert\langle\psi_0\vert\psi\rangle\rvert^2=0.92^{V/16}$, which is 0.949, 0.939 and 0.930.
+  * Grade-R response noise, drawn fresh each pass. The in-window part is spread over the levels with $\omega\le1t$; the junk is unchanged.
+  * Deciding shift $s=E_{L1R}(\phi)-0.1t$.
+  * The noise is relative to a unit-norm response at every size. That is optimistic, because a fixed-width network's response error is unlikely to be size-independent (critic minor objection 1).
+* **Arms.**
+  * Deciding: SCRu-R at $T=4$. Reported: SCRu-R at $T=2$, SCRd-R at $T=4$, SCR2-R (fixed base), ORC3 and L1R.
+  * **SD4, a Gate 2 foil added by this worker.** Four restarted passes of $\mathrm{span}\{\phi_t,(\hat H-E)\phi_t\}$ with no responses. It measures how much of SCRu comes from iterating Krylov steps of $\psi$ alone.
+  * Reported only at 5×2 and 4×3: SCRu-0 (exact responses) and SCRu-R at the default shift. At 7×2 they are dropped (`--no-extra`), and the run is split into two parts of 4 trial states.
+* **Decoupled-copy check.** This is the critic's model ($d=6$, $\varepsilon\in\{0.3,0.5\}$, $M=1..4$) with grade-R noise on every response at shift $E_{L1R}-0.1$. The deciding number per $(\varepsilon,M)$ is the median ratio over 5 noise draws.
+* **Rule.**
+  * **PASS** if all three hold:
+    * SCRu-R ($T=4$) tracks $\ge0.75$ at each trend size separately. This replaces "6×2 and 4×3 separately".
+    * It is $\ge$ ORC3$+0.1$ at 4×3 and at 7×2.
+    * Every decoupled-copy median lies in $[\tfrac12,2]$.
+  * **KILL** if SCRu-R ($T=4$) tracks $<0.5$ at 4×3 or at 7×2, or if any decoupled-copy median leaves $[\tfrac12,2]$.
+  * **UNCLEAR** otherwise.
+  * Two downgrades, added by this worker before the run:
+    * PASS becomes UNCLEAR if SD4 also meets the PASS tracking thresholds (Gate 2).
+    * PASS becomes UNCLEAR if the SCRu-R fraction falls by more than 0.15 from $V=10$ to $V=14$ (Gate 4).
+  * If the 7×2 parts cannot finish within the budget, the rule is applied to the 7×2 states that did finish, provided they give at least 10 scored items. Otherwise the verdict is INCOMPLETE.
+  * PASS or UNCLEAR leads to the T2-v2 premise run. KILL leads to the refill aimed at $\eta_{\mathrm{low}}$, then to the conditional Saturation Diagnostic.
+* **Process note.** Before this rule was written, one 4×3 trial state and two 5×2 trial states were run as smokes (`smoke_4x3_output.txt`, `smoke_5x2_output.txt`). The thresholds are the critic's; the two downgrades and the 7×2 fallback are additions that can only make a PASS harder.
+* **Amendment to the copy check (written after the first copy run and before its re-run).**
+  * In the first run the window $\omega\le1$ (in units of $h$) was empty. The single-copy gap is $\omega_1(h)=1.018$, so the run had no in-window noise at any $M$. It is void; its output is `copytoy_void_window_output.txt`, with all medians between 0.95 and 1.05.
+  * The window is redefined at the scale of the lattice toys, where $\omega\le1t$ spans 3–7 $\omega_1$. It is now $\omega\le2.9\,\omega_1(h)$, which contains the single excitations at 1.02 and 2.70 and the double excitation at 2.04. The number of window levels grows with $M$.
+  * The rule is unchanged.
+
+**T1 result, 10.1u** (`t1_scru.py`; outputs `main_5x2_output.txt`, `main_4x3_output.txt`, `main_7x2_p0_output.txt`, `main_7x2_p1_output.txt`, `copytoy_output.txt`, `verdict_output.txt`; JSON in `tests/P3.1_order_parameter_error_r10/results/`). The table gives the tracked fraction of scored real-space tail items.
+
+| arm | 5×2 ($V=10$, n=19) | 4×3 ($V=12$, n=15) | 7×2 ($V=14$, n=12) |
+| :--- | :--- | :--- | :--- |
+| L1R | 0.00 | 0.00 | 0.00 |
+| ORC3 | 0.47 | 0.67 | 0.83 |
+| **SCRu-R, $T=4$ (deciding)** | **0.89** | **0.93** | **1.00** |
+| SCRu-R, $T=2$ | 0.95 | 0.80 | 1.00 |
+| SCRd-R, $T=4$ (10.1d) | 0.89 | 0.80 | 1.00 |
+| SCR2-R (fixed base) | 0.68 | 0.73 | 1.00 |
+| SD4 (Gate 2 foil, no responses) | 0.32 | 0.20 | 0.00 |
+| SCRu-0, $T=4$ (exact responses) | 1.00 | 0.87 | not run |
+| SCRu-R, $T=4$, default shift | 0.95 | 0.93 | not run |
+
+* **Decoupled-copy check.** The SCRu-R ($T=4$) median ratios are 1.01, 0.97, 0.96 and 0.94 for $\varepsilon=0.3$ at $M=1..4$, and 1.00, 0.98, 0.96 and 1.04 for $\varepsilon=0.5$. The window holds 2, 5, 9 and 14 levels, and every draw lies in $[0.93,1.10]$.
+* **Verdict (pre-registered rule): PASS.**
+  * SCRu-R tracks $\ge0.75$ at every trend size.
+  * It exceeds ORC3$+0.1$ at 4×3 (0.93 against 0.67) and at 7×2 (1.00 against 0.83).
+  * Every copy median lies in $[\tfrac12,2]$.
+  * Neither downgrade fires. SD4 tracks only 0.00–0.32, and SCRu-R rises from $V=10$ to $V=14$ instead of falling.
+* **The 7×2 fallback was used.** The two CPU-capped parts finished 4 of the 8 trial states (tp, J, pair_s0, dens_s1), giving 12 scored items, which is at least the pre-registered 10. Part 0 was stopped by the hard limit during its third state; its first two rows had already been written.
+* **Caveats; none of them changes the verdict.**
+  * The margin over ORC3 shrinks with $V$: 0.42, 0.26, 0.17. ORC3 itself rises, because on these toys the error concentrates in the lowest levels at 7×2.
+  * At 7×2 the fixed-base SCR2-R also tracks 1.00. At $1-F\le0.07$ the lattice toys do not expose the fixed-base defect, so the size-consistency evidence for updating the base rests on the copy check ($1-F$ up to 0.59).
+  * The 5×2 and 7×2 ground states have $S=1$, while the real state has $S=0$.
+  * The noise model is size-independent, which is optimistic (critic minor objection 1).
+* **CPU log** (one thread each, hard limit 600 s per run): census 5×2 3 s, census 7×2 262 s, smokes 31 s, void copy run 8 s, copy check 8 s, 5×2 17 s, 4×3 165 s, 7×2 parts 600 s and 427 s. The total is 1521 CPU-s, i.e. 25.4 CPU-min of the 30 allowed.
+
+**Gate 4 at T0 for 10.1u (cost of the self-consistent loop versus system size).**
+* **Training count: PASS.** Each pass trains $m=3$ responses, so the loop costs $T\cdot m=12$ response trainings at $T=4$. Nothing in the toys asks for $T$ to grow with $V$. $T=2$ already tracks $\ge0.80$ at every trend size, and $T=4$ holds the copy ratios at every $M\le4$.
+* **Sampled cost of the $T=4$ form: FAIL as written.** Each pass puts $(\hat H-E)\phi_t$ and the Krylov partners into the span. One amplitude of $\phi_T$ therefore needs about $(2m+1)N_{\mathrm{conn}}^T$ network evaluations, where $N_{\mathrm{conn}}\propto V$ is the number of connected configurations.
+  * That is about $10^6$ per sample at $T=4$ on 4×4, and it grows like $V^4$, i.e. about $10^9$ on 8×8.
+  * Any update that keeps $\hat H$ inside the span has this depth problem; it is the critic's sharpest gap 1, now quantified.
+* **Scalable forms, ranked by the toy data.**
+  1. **10.1d (depth-free).** $\hat H$ enters only in pass 1, so the cost is $N_{\mathrm{conn}}(1+2m)+m(T-1)$ evaluations per amplitude, i.e. linear in $V$. It meets every PASS threshold of the rule on the same data: 0.89, 0.80 and 1.00, and 0.80 against ORC3 0.67$+0.1$ at 4×3. Unlike the critic's noise-free toy, it did not stall here.
+  2. **SCRu at $T=2$.** The cost is $N_{\mathrm{conn}}^2$, the two-Lanczos-step ceiling of Sorella and Becca. It tracks 0.95, 0.80 and 1.00.
+  3. **SCRu at $T=4$ with $\phi_t$ distilled into one network each pass.** This adds $T$ supervised fits per run. The distillation error is untested.
+* **Gate 4 verdict.** PASS for the training count. The scalable carrier of the route is 10.1d, with $T=2$ SCRu as the fallback. T3 must use one of them, not the $T=4$ SCRu form. The T2-v2 run below decides on SCRu0 at $T=4$, as the critic wrote. That run is exact, so depth costs nothing there, and it also reports SCRd0.
+
+**T2-v2 premise run (prepared, NOT submitted).**
+* **Files.** Script `tests/P3.1_order_parameter_error_r10/t2v2_scru_premise.py`, sbatch `submit_t2v2.sbatch`: 1 task, 2 CPUs, 1 h, 24 GB, i.e. 2 CPU-h with no exception. Job 698163 peaked at 6.8 GB.
+* **Command.** `cd brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r10 && sbatch submit_t2v2.sbatch`. The verdict afterwards is `python3 t2v2_scru_premise.py --aggregate results/t2v2_main.json`.
+* **Arms and rule.** These are the critic's, unchanged; they are copied into the script docstring.
+  * Arms: L1R, RWRstarK, RWRK0, SCRu0 at $T=2$ and $T=4$ (deciding shift), SCRd0 at $T=4$, and SCRu0 at the default shift.
+  * KILL the response class if RWRstarK tracks fewer than 6 of the 8 items.
+  * PASS 10.1u if SCRu0 ($T=4$, shift $E_{L1R}-0.1t$) tracks $\ge6$ of 8, including $\ge1$ spin item.
+  * KILL 10.1u if it tracks fewer than 4 of 8.
+  * AMBIGUOUS otherwise.
+* **Order and early stops.** Each step is placed before the decisions that depend on it.
+  1. Validity against job 698163 for all three seeds, before any minres solve; INVALID stops the run.
+  2. The oracle ceiling for all seeds. It costs 3 solves, because $y^*$ does not depend on the seed. Below 6 of 8 the class is KILLED and the run stops.
+  3. SCRu0 at the deciding shift for seed 11, then 22, then 33, at 12 solves per seed.
+     * Stop and re-plan if seed 11 takes more than 40 CPU-minutes.
+     * Futility KILL if 4 of 8 becomes unreachable.
+  4. The reported arms, only if both the CPU budget and the wall budget allow.
+* **Pre-flight** (`dryrun_t2v2_output.txt`, `selftest_t2v2_output.txt`; 4×4 OBC $2+2$, $D=10920$).
+  * The verdict self-test returns all five branches: PASS, AMBIGUOUS with no spin item, AMBIGUOUS at 5 of 8, KILL of 10.1u, and KILL of the class.
+  * Positive control $\psi_0+0.05e$: RWRstarK and every SCRu0 and SCRd0 arm track it at 1.00.
+  * The pipeline writes the JSON, aggregates it and prints a verdict.
+  * The small "negative control" (a random distortion) is tracked by the response arms and partly by L1R. As in Round 9, the working negative control is the real instance, where L1R tracks 0 of 8 (job 698163).
+  * The validity check is exercised only on the main instance.
+  * The printed $(s-E_0)/\omega_1$ uses the main instance's $\omega_1=0.2089t$, so on the small instance it is only a label.
+* **Cost estimate (not measured).** Each solve at the deciding shift has a condition number of a few hundred, so about $10^2$ s per solve is expected. The run needs 3 oracle solves plus 36 SCRu0 solves, plus ED and loading the targets, which comes to about 80–100 CPU-min. The seed-11 stop and the budget guards bound the run if the estimate is wrong.
+* **Decision tree.**
+  * **PASS:** write the T3 design for 10.1d, or for SCRu at $T=2$ if SCRd0 tracks fewer than 6 of 8. It trains $m=3$ Hylleraas response networks per pass at width 6 with the shift $E_{L1R}-0.1t$, and adds the mandatory matched-compute foil (Gate 2). It needs a T3 exception and goes to the critic first.
+  * **AMBIGUOUS:** hold until job 618646, then decide with the master whether one realistic-noise seed is worth a T3 exception.
+  * **KILL (10.1u or the class):** apply the conditional refined Saturation Diagnostic of the Round 9 critic, and mark the leaf ready to close.
+  * **INVALID:** debug the target loading against `t2_sf_premise.py`.
+  * **INCOMPLETE** (seed-11 cost or wall time): split into a 3-task array, one seed per task, each under 2 CPU-h.
+* **Refill.** None is generated. The critic allowed at most one refill, and the task brief makes it conditional on a 10.1u T1 failure. The portfolio stays below 3 live routes by the stopping rule (Round 10 is the last batch).
+
+### Route Portfolio (Round 10)
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 7.1 ESR0-K6 (diagnostic; pair + spin) | T2 (pilot GO at $K=3$); Gate 4 FAIL as a scalable method | IN-FLIGHT(618646) | — | GO-6 or PAIR-ONLY (Step 1.5b) | as Round 8 |
+| 10.1u SCR, base updated (scalable carrier 10.1d; fallback SCRu at $T=2$) | T1 PASS (0.89, 0.93, 1.00 at $V=10,12,14$; copy check in range); Gate 4 at T0: training count PASS, $T=4$ sampled depth FAIL | T2 READY (`submit_t2v2.sbatch`, 2 CPU-h, dry run done) | orchestrator submission | T2-v2 rule above | PASS → T3 design (10.1d) for the critic; AMBIGUOUS → hold for 618646; KILL → conditional Saturation Diagnostic, leaf ready to close |
+| 10.1 SCR (fixed base) | T1b | KILLED(critic, Gate 4: not size-consistent) | — | — | — |
+| 10.2 TMW-SCR | T1b | KILLED(critic, Gate 0 rule 3; Gate 4) | — | — | — |
+| 8.9, 9.1, 9.2, 9.3, 9.4, 10.3 | T0 or T1 | KILLED (Round 9 critic, objection 5) | — | — | — |
+
+* **Tier log (Round 10).**
+  * The T1 rule was pre-registered before any main run. The copy-check amendment was written before its re-run and after a void run whose window was empty.
+  * The outputs are `census_5x2_output.txt`, `census_7x2_output.txt`, `smoke_4x3_output.txt`, `smoke_5x2_output.txt`, `copytoy_void_window_output.txt`, `copytoy_output.txt`, `main_*_output.txt`, `verdict_output.txt`, `dryrun_t2v2_output.txt`, `selftest_t2v2_output.txt` and `results/*.json`, all in `tests/P3.1_order_parameter_error_r10/`.
+  * T1 used 25.4 CPU-min of the 30-minute cap; the T2 pre-flight used 20 CPU-s.
+
+#### T2-v2 Premise Run Result (job 699756, 2026-11-16): PASS
+
+Output: `tests/P3.1_order_parameter_error_r10/P3.1r10_t2v2_699756.out` (wall 2100 s, CPU 4142 s, about 1.15 CPU-hours, under the cap). Real 4×4 OBC width-6 states, seeds 11, 22 and 33; 8 scored items.
+
+* **Verdict (pre-registered): PASS.** The scored arm `SCRu0_T4` tracks **8 of 8** items; the oracle RWR*K also tracks 8 of 8. On the spin items, `SCRu0_T4` tracks 2.
+* **Recovered fractions on the real states** ($\hat\delta/\delta$ by seed):
+
+| arm | pair | spin | charge |
+| :--- | :--- | :--- | :--- |
+| `SCRu0_T4` (deciding shift $E_{L1R}-0.1t$; scored) | 0.92, 0.97, 0.99 | 1.12, 1.13, 1.14 (seed 33 not scored) | 0.74, 0.78, 0.80 |
+| `SCRu0def_T4` (default shift, $T=4$; reported) | 1.26, 1.19, 1.13 | 1.03, 1.02, 0.99 | 0.83, 0.85, 0.84 |
+| `SCRd0` (scalable form 10.1d, $T=4$; reported) | 0.90, 0.93, 0.97 | 1.20, 1.22, 1.27 | 0.59, 0.68, 0.68 |
+
+* **Reading.** A self-consistent response with an updated base recovers the real-space tail errors of trained NQS states on the 4×4 instance, without training $K_{1/2}$ excited states, where ESR0 needed $K_{1/2}$ = 6 to 11 for spin and charge. The scalable form 10.1d is also within $[\tfrac12,2]$ on every item, but it is weaker on charge (0.59–0.68).
+* **Next (pre-planned PASS branch):** the T3 design for 10.1d (or SCRu at $T=2$ if SCRd0 tracks fewer than 6 of 8 under the scoring rule), with $m=3$ Hylleraas response networks per pass at width 6, shift $E_{L1R}-0.1t$, and the mandatory matched-compute foil (Gate 2). It needs a T3 exception and goes to the per-leaf critic before submission.
+* **Correction (2026-11-16, T3 worker).** The first row of the table above was labelled as the scored arm but held the default-shift numbers. It now shows both rows from `results/t2v2_main.json`. The verdict does not change: both arms track 8 of 8.
+
+### T3 design for route 10.1 (2026-11-16)
+
+**Carrier, by the pre-planned PASS-branch rule.** The rule is: 10.1d, or SCRu at $T=2$ if SCRd0 tracks fewer than 6 of 8 items under the T2-v2 scoring rule. Recomputed from `results/t2v2_main.json` (`carrier_count_output.txt`): SCRd0 ($T=4$, shift $E_{L1R}-0.1t$) tracks **8 of 8** scored items, including both scored spin items (1.19 and 1.22). The carrier is therefore **10.1d**; the $T=2$ SCRu fallback is not used. The largest pass-2 to pass-4 change of any exact item in job 699756 is 0.12 (charge, seed 11); it sizes the early-stop margin below.
+
+**Instance: the real 4×4 states do not fit the compute limit; the T3 runs on the 4×3 OBC $4+4$ cluster.**
+* **Cost on 4×4.** One width-6 network costs about 68 CPU-h there (P2.1 r3: 12.7 s per step on 16 CPUs, 1200 steps); a penalty-trained excited state cost about 100 CPU-h (job 456094, 19–20 s per step). 10.1d at $T=4$ trains $3+3\cdot3=12$ response networks per seed. Three seeds are 36 networks, about 2400 CPU-h before any foil. Even 200-step trainings would cost about 400 CPU-h. Sampled (Metropolis) training would save at most about 20× per step and needs machinery that has never been tested here. The brainstorm forbids compute of that size.
+* **What the 4×3 cluster keeps.** It is a singlet ($S_0=0$) in the $(M_x,M_y)=(+1,+1)$ irrep at density 2/3, with $D=34650$. Its low band is dense ($\omega_1=0.16t$, 11 levels with $\omega\le1t$). The tails use the T1 cut-offs (0.82 × the largest distance): 10 bond pairs and 9 site pairs. A width-6 SR step costs 1.25–1.46 CPU-s here (4 threads, `timing_t3_4x3_output.txt`), against about 200 CPU-s on 4×4.
+* **What it loses.** The real states. The ground states are trained here at the same width with the same optimizer, so the state and the responses carry the same kind of training error. It is not known whether the 4×3 width-6 states carry scorable tail errors. A target probe therefore runs first, with a pre-registered width ladder.
+* **Scope.** The T3 tests the training-noise premise at one size. It is not a size trend; the size trend of the training count was measured at T1 ($V=10$, 12 and 14).
+
+**Design** (`tests/P3.1_order_parameter_error_r10/t3_scrd.py`; one Slurm task per ground-state seed; seeds 11, 22, 33, 44, 55 and 66).
+* **Phase A (ground state).** NNBF of width $W$ (default 6), 1200 SR steps with the P2.1 r3 settings: step 0.05, shift $10^{-3}$, 2000 samples, trust region 1, best-energy iterate kept. Items are the three tails with $\delta=a_0-a(\psi)$, scored if $\lvert\delta\rvert\ge0.1\lvert a_0\rvert$. The parameters are saved and reused.
+* **Phase B (exact references, no training).** L1R (negative control), ORC3 (reported), and SCRd0 at $T=4$ with exact minres responses. SCRd0 re-tests the T2-v2 premise on this instance. Every shift is $s=E_{L1R}(\phi)-0.1t$, with the validity assert $s<E_0$ (the functional is bounded below).
+* **Phase C (deciding arm SCRd-NN).** Each pass trains $m=3$ response networks $u_A$ of the ground state's architecture and width.
+  * The Hylleraas ratio $R(u)=\langle u\vert\hat H-s\vert u\rangle/\langle u\vert b\rangle^2$ is minimised, with $u=QP_\chi y_\theta$, $Q=P_\chi-\lvert\phi\rangle\langle\phi\rvert$ and $b=\mathrm{unit}(QP_\chi(\hat A-a_\phi)\phi)$. Its minimiser is $(Q(\hat H-s)Q)^{-1}b$ up to scale.
+  * The force is $\partial R/\partial\theta=2\sum_n g(n)\,\partial y_\theta(n)/\partial\theta$ with $g=Q[(\hat H-s)u-R\langle u\vert b\rangle b]/\langle u\vert b\rangle^2$. It is an exact sum, as for the real ground states; the SR metric is sampled from $\lvert P_\chi y_\theta\rvert^2$ with 2000 samples.
+  * Pass 1 starts each network from the ground-state parameters plus Gaussian noise (0.05 × the rms of each tensor) and trains 600 steps. Then $\phi_1$ is the lowest Ritz vector of $\mathrm{span}\{\phi_0,(\hat H-E)\phi_0,u_A,Ku_A\}$.
+  * Passes 2–4 warm-start each network from the previous pass and train 200 steps. Then $\phi_t$ is the lowest Ritz vector of $\mathrm{span}\{\phi_{t-1},u_A(\phi_{t-1})\}$; $\hat H$ enters only in pass 1.
+  * Reported per network: $R/R^*$ against the exact optimum, the response error $\eta=1-\cos^2(u,y_{\mathrm{exact}})$, and its in-window part $\eta_{\mathrm{low}}$ on the 11 levels with $\omega\le1t$. These are the numbers the Round 9 Saturation Diagnostic names as its falsifier.
+  * Scored arms: SCRd-NN at $T=4$ (deciding), $T=1$ and $T=2$ (reported).
+* **Phase D (matched-compute foils, Gate 2).** Each foil reports its own observable shift as an estimate of $\delta$.
+  * **F0 = NN0.** Pass 1 with the untrained initial networks. They are perturbed copies of the ground-state network, so NN0 is a Ritz step in random tangent directions of the ground-state manifold at zero training cost.
+  * **F1 (train the state further).** The ground-state SR continues for as many steps as phase C used in total (3600). The ratio is $(a(\psi')-a(\psi))/\delta$.
+  * **F2 (wider state).** A fresh NNBF of width $2W$ is trained until its CPU time equals that of phases A and C together.
+* Ritz matrices and observables are exact sums. Monte Carlo estimation of the 7×7 Ritz problem is not tested; that remains an open gap of the route (P2.2 territory).
+
+**Pre-registered rule** (copied into the script docstring; $n$ = scored items over the six tasks, at most 18; tracked = ratio in $[\tfrac12,2]$).
+* **NO-TARGET** if $n<9$. No route verdict; go down the width ladder.
+* **INCOMPLETE** if $n\ge9$ and some task has not finished.
+* **PREMISE-FAIL** if SCRd0 (exact) tracks fewer than $0.75n$. The T2-v2 premise does not transfer to this instance; no route verdict.
+* **KILL (10.1d)** if SCRd-NN ($T=4$) tracks fewer than $0.5n$.
+* **KILL (Gate 2)** if any foil (F0, F1 or F2) tracks at least as many items as SCRd-NN.
+* **PASS** if SCRd-NN tracks at least $0.75n$, including at least one spin item when spin is scored, and at least $\max(\mathrm{F0},\mathrm{F1},\mathrm{F2})+\lceil0.25n\rceil$.
+* **AMBIGUOUS** otherwise.
+* **Negative control.** A PASS or AMBIGUOUS stands only if L1R tracks at most $0.25n$; otherwise the verdict is INVALID (control). A failed validity assert ($s\ge E_0$, a non-finite objective) is INVALID.
+
+**Power sizing** (`--mode power`, `power_t3_output.txt`). Per item, the log-ratio is the job-699756 SCRd0 mean of its observable (pair 0.93, spin 1.23, charge 0.65), plus a part shared by all seeds (sd $\tau$; the real seeds share the sign of $\delta$), plus training noise (sd $\sigma$). Spin is scored on 2 of every 3 seeds, as on the real states. 3000 replicates per row.
+
+| world | $f$ mean (sd), 6 seeds | verdict mix, 6 seeds | verdict mix, 4 seeds |
+| :--- | :--- | :--- | :--- |
+| training noise $\sigma=0.15$, $\tau=0.10$ | 0.97 (0.05) | PASS 1.00 | PASS 0.99 |
+| $\sigma=0.30$, $\tau=0.15$ | 0.88 (0.09) | PASS 0.94, AMBIGUOUS 0.06 | PASS 0.87, AMBIGUOUS 0.13 |
+| $\sigma=0.50$, $\tau=0.20$ | 0.74 (0.12) | PASS 0.59, AMBIGUOUS 0.39 | PASS 0.45, AMBIGUOUS 0.51 |
+| charge information lost (mean 0.40) | 0.68 (0.10) | AMBIGUOUS 0.66, PASS 0.33 | AMBIGUOUS 0.75 |
+| information lost (ratio near 0.15) | 0.01 (0.02) | KILL 1.00 | KILL 1.00 |
+
+* The PASS and KILL thresholds of the tracked fraction $f$ (0.75 and 0.5) are $2.7\sigma_f$ apart in the $\sigma=0.30$ world at 6 seeds ($\sigma_f=0.093$), and $2.5\sigma_f$ at 4 seeds. Six seeds are used; they cut the AMBIGUOUS rate of that world from 0.13 to 0.06.
+* AMBIGUOUS stays likely only in the in-between worlds (heavy noise, or one channel lost). There it is the honest outcome, and it is not resolved by adding seeds.
+
+**Checkpointed early stop** (`--checkpoint pass2`, read when every task has written `SCRdNN_T2`, i.e. at 50% of the response budget). KILL early if fewer than $0.5n_{\mathrm{done}}$ items are still reachable. An item is reachable if its pass-2 ratio lies in $[0.5-0.30,\,2+0.60]$. The margin 0.30 is 2.5 × the largest exact pass-2 to pass-4 change (0.12). The check runs only after every network has spent its full cold-start budget, so a slow starter cannot fire it. Partial results may kill early, never promote.
+
+**Budget and the T3 exception.**
+
+| step | tasks | expected CPU-h per task | allocated per task |
+| :--- | :--- | :--- | :--- |
+| probe (phase A only) | 6 | 0.5 (1200 steps × 1.46 CPU-s) | 2 CPUs × 1 h = 2 |
+| full run (phases B–D; ground state reloaded) | 6 | 4.5 | 2 CPUs × 5 h = 10 |
+
+* Per full task: phase C is 3600 response steps × 1.25 CPU-s = 4500 CPU-s; F1 is 3600 steps × 1.46 CPU-s = 5260 CPU-s; F2 is capped at phases A and C, about 6250 CPU-s; the exact references and diagnostics are about 30 minres solves of 0.5 CPU-s.
+* **Total: about 30 CPU-h expected, 72 CPU-h allocation ceiling.** Each step of the width ladder adds one probe (about 3 CPU-h).
+* **Exception.** No task exceeds the 24 CPU-h T3 cap, and the instance has $3.5\times10^4$ states, so no cap exception is needed. The written exception is the change of instance: the PASS branch named the real 4×4 states, which would cost about 2400 CPU-h. The 4×3 cluster is the smallest one in this leaf's T1 set that is a singlet with a dense low band ($\omega_1=0.16t$, 11 window levels).
+* The per-step costs were measured on 4 threads; Slurm runs 2 threads per task, which costs about the same or less CPU per step and more wall time (estimated at most 2.5 h per full task).
+
+**Pre-flight dry run** (outputs in `tests/P3.1_order_parameter_error_r10/`; local total about 8 CPU-minutes on 4 threads).
+* `gradcheck_t3_output.txt`: the finite-difference check of the Hylleraas force and of the ground-state force agrees to $\le4\times10^{-8}$ relative in 4 random directions each. $R(y_{\mathrm{exact}})=1.434$ lies below $R$ of 5 random perturbations. GRADCHECK PASS.
+* `selftest_t3_output.txt`: synthetic records cover every branch: PASS, NO-TARGET, INCOMPLETE, PREMISE-FAIL, KILL (10.1d), KILL (Gate 2) by F1 and by NN0, three AMBIGUOUS cases (12 of 18; no spin item; foil within the margin), INVALID (control), and the checkpoint CONTINUE and EARLY KILL. SELFTEST PASS.
+* `dryrun_t3_output.txt` (3×3 $3+3$, $D=1680$; width 2, 60 ground-state steps, 40 cold and 15 warm response steps, 300 SR samples). It runs the full pipeline, writes three JSONs, and aggregates them (NO-TARGET at 5 items, as a toy should).
+  * **Positive control** ($\psi_0+0.05e$, first-order error): exact SCRd0 tracks both scored items (0.99 and 0.99), and the trained SCRd-NN also tracks both (0.92 and 0.80). The trained networks reach $R/R^*=1.07$–$1.33$ and $\eta=0.05$–$0.27$.
+  * **Negative control.** On this sparse 3×3 spectrum L1R tracks one of two positive-control items (pair 0.62), as in Rounds 9 and 10. The working negative control is the 4×3 instance: in the T1 L1R tracked 0 of 15 items at 4×3.
+  * **Change made from the dry run (toy only, before any 4×3 result).** NN0 tracked a positive-control item (0.72). Untrained copies of the ground-state network are not blind: they span tangent directions of the state's own manifold. NN0 was therefore moved from "negative control" to the Gate 2 foil F0.
+* `smoke_t3_4x3_output.txt` (4×3, positive-control target, 3 ground-state steps, 4 cold and 2 warm response steps). The whole pipeline runs on the T3 instance: the 15-level census covers the window, SCRd0 tracks the scored spin item (0.997), and L1R does not (0.18). With 4 cold and 2 warm steps per network SCRd-NN does not track (0.27), as expected for a machinery check.
+* A first 4×3 smoke with a 3-step trained ground state stopped at the validity assert $s<E_0$ (its $E_{L1R}$ was $0.8t$ above $E_0$). The task now writes `invalid` into its JSON before it exits.
+
+**Decision tree.**
+* **Probe TARGET-OK** ($n\ge9$ at width $W$): submit the full run at the same $W$.
+* **Probe NO-TARGET at $W=6$:** probe at $W=3$, then at $W=2$ (responses and foils follow the width). If all three fail, the trained-response step cannot be tested inside the compute limit on any instance in reach. P3.1 then closes with the refined Saturation Diagnostic plus one sentence: "10.1d tracks 8 of 8 real tail errors with exact responses (job 699756); the trained-response step is untested for cost reasons."
+* **PASS:** 10.1d survives T3 at ED scale with trained responses, at one size and with exact-sum Ritz matrices. Next: the per-leaf critic; the leaf records the result with that scope. Sampled Ritz matrices and a single-seed 4×4 confirmation are named as the next steps outside this brainstorm's compute limit.
+* **KILL (10.1d) or EARLY KILL:** apply the conditional refined Saturation Diagnostic, with the measured $\eta$ and $\eta_{\mathrm{low}}$ as its falsifier numbers. The leaf is ready to close.
+* **KILL (Gate 2):** the responses add nothing over spending the same compute on the state. Log this as an anti-pattern and close with the diagnostic.
+* **PREMISE-FAIL:** the exact-response premise holds on the real 4×4 states but not on 4×3. Report it; no route verdict. Close with the diagnostic, because the 4×4 trained-response test cannot be afforded.
+* **AMBIGUOUS:** no seeds are added (the test is power-sized). Record the $\eta$ values and close with the diagnostic, citing the verdict.
+* **INCOMPLETE:** resubmit the missing seeds only; the ground state reloads from its checkpoint.
+* **INVALID:** debug the shift or the failed control before any rerun.
+
+**Commands** (from `brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r10`; not submitted, per the brief; the PASS branch sends the design to the per-leaf critic first).
+1. Probe: `sbatch --export=ALL,W=6 submit_t3_probe.sbatch`.
+2. Gate: `python3 t3_scrd.py --checkpoint target --aggregate $(ls results/t3/t3_4x3_w6_s*_probe.json | paste -sd,)`.
+3. On TARGET-OK: `sbatch --export=ALL,W=6 submit_t3.sbatch`.
+4. Early-stop check when every task has passed pass 2: `python3 t3_scrd.py --checkpoint pass2 --aggregate $(ls results/t3/t3_4x3_w6_s??.json | paste -sd,)`.
+5. Verdict: `python3 t3_scrd.py --aggregate $(ls results/t3/t3_4x3_w6_s??.json | paste -sd,)`.
+
+### Route Portfolio (after the T3 design)
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 7.1 ESR0-K6 (diagnostic; pair + spin) | T2 (pilot GO at $K=3$); Gate 4 FAIL as a scalable method | IN-FLIGHT(618646) | — | GO-6 or PAIR-ONLY (Step 1.5b) | as Round 8 |
+| 10.1d (carrier of 10.1u: depth-free self-consistent response Ritz) | T2-v2 PASS (SCRd0 8 of 8 on the real states) | T3 READY: probe and full run on 4×3 $4+4$, 6 seeds, about 30 CPU-h; dry run, gradient check and self-test done | per-leaf critic, then orchestrator submission | T3 rule above (NO-TARGET, PREMISE-FAIL, KILL, KILL (Gate 2), PASS, AMBIGUOUS; early kill at pass 2) | PASS → critic and scoped claim; KILL, Gate 2 KILL, PREMISE-FAIL or AMBIGUOUS → refined Saturation Diagnostic, leaf ready to close; NO-TARGET → width ladder 3, then 2 |
+| SCRu at $T=2$ (fallback carrier) | T2-v2 (SCRu0_T2 8 of 8) | not used: the carrier rule chose 10.1d | — | — | used only if 10.1d training fails INVALID for a structural reason |
+| 10.1 SCR (fixed base) | T1b | KILLED(critic, Gate 4: not size-consistent) | — | — | — |
+| 10.2 TMW-SCR | T1b | KILLED(critic, Gate 0 rule 3; Gate 4) | — | — | — |
+| 8.9, 9.1, 9.2, 9.3, 9.4, 10.3 | T0 or T1 | KILLED (Round 9 critic, objection 5) | — | — | — |
+
+### T3 design critic (2026-11-16)
+**Verdict: SUBMIT WITH FIXES (applied).** The fixes below are in `t3_scrd.py` and `submit_t3.sbatch`; the dry run and the self-test were re-run. The target probe (702393) is unaffected: phase A is byte-identical (checked by diff), and the `--stop-after A` path was smoke-tested on the edited file.
+
+**Critic checks run** (login node; files in `tests/P3.1_order_parameter_error_r10/`).
+* `critic_t3_foil_check.py` (output `critic_t3_foil_check_output.txt`, 306 CPU-s). On the eight 4×3 T1 trial states, in exact arithmetic, 10.1d is run twice: with the observable sources (SCRd0), and with sources that carry no observable information, $b_p=\mathrm{unit}(Q(\hat H-E)^p\phi)$ for $p=1,2,3$ (SCRdE0, generalised Davidson). Of 14 scored items, SCRdE0 tracks **14** (every ratio 1.00), SCRd0 13, SD4 2 and L1R 0.
+* `dryrun_t3_critic_output.txt` (3×3, 247 CPU-s) and `selftest_t3_critic_output.txt`: DRY PASS and SELFTEST PASS with the new arms and branches.
+
+**Major objections.**
+1. **The foils do not separate "observable information" from "a better state"; a matched Davidson foil was missing.**
+   * An exact shift-invert of the residual is inverse iteration. It recovers $\psi_0$ on every 4×3 toy (SCRdE0 14 of 14, all at 1.00). The exact references SCRd0 in phase B and in job 699756 therefore show that the Ritz machinery works with an exact inverse. They do not show that the observable sources carry the information.
+   * F1 and F2 are single networks. 10.1d builds $\phi_4$ from a linear combination of 13 networks (several of them with $\hat H$ applied), so its capacity is larger than that of either foil.
+   * **Fix (applied).** Foil **F3**: the phase-C pipeline with the sources $b_p$ above, using the same initialisation, the same steps and the same passes. It enters Gate 2: KILL if F3 tracks at least as many items as SCRd-NN, and PASS needs SCRd-NN $\ge\max(\mathrm{F0},\mathrm{F1},\mathrm{F2},\mathrm{F3})+\lceil0.25n\rceil$. Its exact analogue SCRdE0 is reported in phase B. A Gate 2 KILL by F3 places 10.1d in the leaf's Anti-Solution Space ("Krylov/power steps in $\hat H$ alone", here shift-inverted). On the 3×3 positive control F3 already tracks as well as SCRd-NN (0.95, 1.01 and 1.03).
+2. **Exact sums are an unacknowledged advantage relative to the leaf's input definition** (samples and local estimators, section 1).
+   * The force is exact, as it was for the target states, so the training noise is of the same kind on both sides. The sampled Hylleraas force ($\langle u\vert b\rangle$, $R$ and $Q$ all estimated) is untested, and it is the step that decides whether trained responses work in VMC.
+   * The Ritz matrices and the readout $\hat\delta=a(\phi_T)-a(\psi)$ are also exact. They can be emulated almost for free on 4×3.
+   * **Fix (applied).** A reported arm **MC** replays the SCRd-NN chain with $S$, $H$ and $\langle\hat A\rangle$ estimated from $N_s$ exact draws ($10^4$ and $10^5$, 5 draws each; mixture guide for the Ritz matrices, correlated reweighting for $\hat\delta$). A PASS is labelled "sampled Ritz and readout" if MC100000 tracks $\ge0.75n$, and "exact-sum Ritz and readout only" otherwise. The sampled force stays named as the open gap in every PASS statement. On the 3×3 positive control the charge readout is still noisy at $10^5$ (draws 0.17 to 1.19).
+3. **Width ladder: a target at width 3 or 2 can be an artefact.** A small network has bulk errors, not tail errors. Its responses are weak, which biases toward KILL, and doubling a tiny width (F2) is cheap, which biases toward a Gate 2 KILL.
+   * **Fix (applied).** A probe at a width below 6 is valid only if the median $\lvert\langle\psi_0\vert\psi\rangle\rvert^2\ge0.85$. The real 4×4 states have 0.91–0.94 at $V=16$. If the probe fails this, the ladder stops and the trained step is recorded as untested. A KILL at a width below 6 is recorded as "KILL at width $W$" and does not count as the route kill. `--checkpoint target` prints the guard.
+
+**Minor objections.**
+1. **Instance.** 4×3 keeps a singlet, the doping and a dense band, but with fewer window levels (11) than 4×4. A KILL there is strong evidence. A PASS is one size only and does not meet the Round 9 falsifier (4×4, $\eta_{\mathrm{low}}\le0.3$). The PASS branch must say so.
+2. **Gate 4 cost statement.** "Linear in $V$" holds only for the amplitude of $\phi_t$. From pass 2 on, $\phi_{t-1}$ contains $\hat H\psi$, so the Ritz $H$ matrix and the Hylleraas local energy cost $N_{\mathrm{conn}}^2$ per sample, the same as one statistical Lanczos step ($\langle\hat H^3\rangle$). This does not depend on $T$, so $T=4$ is legitimate for 10.1d (the $T=4$ depth FAIL was for SCRu). The pass-1 Ritz problem is 8×8 ($2+2m$), not 7×7.
+3. **Power sizing.** It rests on assumed noise worlds, because no trained-response pilot exists. It also fixed every foil at a non-tracking value. If F3 tracks, the likely outcomes are a Gate 2 KILL or AMBIGUOUS. Both are informative and need no more seeds. Record the measured spread at the pass-2 checkpoint.
+4. **The early-stop check did not enforce "every task at pass 2".** Fixed: it prints WAIT until every task has passed pass 2 or finished with no scored item (self-test case added).
+5. **Budget.** F3 adds about 1.25 CPU-h per task, giving about 5.8 CPU-h expected per task. `--time` is raised to 7 h, i.e. 14 CPU-h allocated per task, under the 24 CPU-h cap. The total is about 35 CPU-h expected (plus the probe) and 84 CPU-h allocated. The instance-change exception stands; no cap exception is needed.
+6. **ESR0 with the same number of trained networks is not a foil.** It is an informative competitor whose Gate 4 failure ($K_{1/2}$ grows) is already recorded, and one size cannot test that. It is correctly left out.
+7. The validity assert $s<E_0$ uses the exact $E_0$. In a sampled deployment the 0.1$t$ margin is far above the energy noise, so this is acceptable. Say so.
+
+**Decision-tree additions.** KILL (Gate 2) by F3 logs the anti-pattern "observable-sourced responses add nothing over trained Davidson correction vectors" and closes the leaf with the diagnostic. A PASS carries its scope label (MC) and the untested sampled force.
+
+**Submit command** (after the probe gives TARGET-OK at $W=6$; from `brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r10`): `sbatch --export=ALL,W=6 submit_t3.sbatch`.
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 10.1d | T2-v2 PASS; T3 design passed the critic with fixes | probe IN-FLIGHT(702393); full run READY (`submit_t3.sbatch`, 7 h) | probe TARGET-OK | T3 rule with F3 in Gate 2, MC scope label, width guard | as the T3 decision tree plus the additions above |
+
+### Round 11 thinking work (2026-11-16)
+Two tasks run while the probe 702393 and job 618646 are in flight (Stage 3.5, submit-and-switch). No `sbatch`; every run is on the login node with one thread and a hard `RLIMIT_CPU` of 600 s. The whole task is capped at 40 CPU-minutes. Scripts and outputs are in `tests/P3.1_order_parameter_error_r11/`. `t3_scrd.py` and `submit_t3.sbatch` are not edited; the new modules import them.
+
+#### Task A: Route 10.4, observable-free generalised-Davidson error bars
+**Route.** From $\psi$, run the 10.1d chain with the observable-free sources $b_p=\mathrm{unit}(Q(\hat H-E)^p\phi)$, $p=1,2,3$. This is the critic's SCRdE0, or the T3 foil F3. Then report $\hat\delta_A=a_A(\phi_4)-a_A(\psi)$ for every observable $\hat A$ at once. The appeal is three trained vectors per pass for any number of observables, where 10.1d needs one per observable.
+
+**Gate 0 (quick search; Lanczos and Davidson for NQS, variance extrapolation).**
+* Known: improving the state and reading how the observables move. Examples are zero-variance extrapolation of correlation functions (Sorella, arXiv:cond-mat/0201388), variance extrapolation for NQS (arXiv:2308.02471), tracking correlations under variance reduction (Viteritti et al., arXiv:2604.21978), Lanczos steps on NQS (Chen et al., NeurIPS 2022, arXiv:2206.14307), and supervised NQS Lanczos vectors (arXiv:2502.01264). Inverse iteration for NQS also exists (arXiv:2606.07825), as does Davidson with NQS retraining in selected CI (arXiv:2606.26760).
+* Adoption wall: $p$ Lanczos steps cost $N_{\mathrm{conn}}^p$ per sample, and supervised Lanczos vectors underfit (arXiv:2502.01264).
+* Mechanism against the wall: a Hylleraas-trained shift-invert vector gives a rational filter of unbounded polynomial degree at a fixed sampling depth. With the split $\langle u\vert(\hat H-E)^3\vert\phi\rangle=\langle(\hat H-E)u\vert(\hat H-E)^2\phi\rangle$ the $p=3$ source costs $N_{\mathrm{conn}}^2$ per sample, i.e. one statistical Lanczos step.
+* Verdict: PASS, conditional. The novelty is only the error-bar use of trained Davidson vectors, and the leaf's Anti-Solution Space lists "Krylov/power steps in $\hat H$ alone". Gate 3 below decides whether the shift-invert escapes that entry.
+
+**Gate 1.** PASS. Ritz in the sector is variational, it keeps every symmetry of $\phi$, and $\hat\delta=0$ for an eigenstate.
+
+**Gate 2 (cheap foils).** Two foils are named and run at T1:
+* SD4: four restarted $\mathrm{span}\{\phi,(\hat H-E)\phi\}$ steps, i.e. Krylov without the shift-invert;
+* RND: the same chain with random in-sector sources $\mathrm{unit}(Qr_j)$, i.e. shift-invert without the residual.
+
+If either foil tracks as well as 10.4, the error bar is gameable.
+
+**Gate 3 (T0 analysis; the Hard Core).** Take $\phi=c_0\psi_0+c_1\psi_1+c_J\chi_J$ with $\psi_1$ at $\Delta$ and junk $\chi_J$ at $\omega_J\gg\Delta$, and write $\sigma=E_0-s\ge0.1t$.
+* Since $(\hat H-s)^{-1}(\hat H-E)\phi=\phi-(E-s)(\hat H-s)^{-1}\phi$, the span $\{\phi,y_1\}$ equals the inverse-iteration span $\{\phi,(\hat H-s)^{-1}\phi\}$.
+* The combination that removes $\psi_1$ is $\phi-(\sigma+\Delta)(\hat H-s)^{-1}\phi$. Its $\psi_0$ amplitude is $c_0\Delta/\sigma$ and its junk amplitude is still about $c_J$, so the junk fraction is amplified by $\sigma/\Delta$.
+* An observable source has an in-plane component $c_0a_{01}/(\sigma+\Delta)$ with no factor of $\Delta$ in the numerator.
+* So in exact arithmetic 10.4 is exact in the two-level plane for any $\Delta>0$ (the 14 of 14). With junk or noise, its resolving power scales as $\Delta/\sigma$.
+* $\sigma$ cannot go below the uncertainty of $E_0$, because the Hylleraas functional needs $s<E_0$. In the Hard Core that uncertainty is at least of order $\Delta$.
+* All T1 toys and the T3 instance have $\omega_1/\sigma\approx1.5$–$3$, which hides the effect. Verdict: open, decided by the stress arm below.
+
+**Gate 4 (T0).**
+* Cost per sample: $N_{\mathrm{conn}}^2$ with the split above, independent of $T$, the same as 10.1d.
+* The number of vectors is $3T=12$, fixed in $V$. It does not grow with the number of observables, which is the route's advantage over 10.1d.
+* By the Gate 3 algebra, the number of passes needed against a near-degenerate admixture grows like $\sigma/\Delta$. With $\Delta$ closing in $V$, $T$ must grow. The three-size trend and the stress arm test this.
+
+**T1 pre-registration for 10.4 (written before any `--mode main` run of `t1_davidson.py`).**
+* **Instances** (distinct $V$; `census_output.txt` and the Round 10 census):
+  * 4×2 $3+3$: $V=8$, $D=560$, sector 44, $S_0=0$, $\omega_1=0.155t$, 4 window levels;
+  * 5×2 $3+3$: $V=10$, $\omega_1=0.331t$, 4 window levels;
+  * 4×3 $4+4$: $V=12$, $\omega_1=0.161t$, 11 window levels.
+  * $\omega_1\ge0.02t$, window coverage and at least 3 window levels are asserted.
+* **Trial states.** The 8 trial states of `t1_scru.py`, at a fixed per-site infidelity.
+* **Noise.** Every generated vector carries grade-R noise, drawn fresh for each vector: 0.3 in-window and 0.5 junk. The same noise is used for every arm.
+* **Gate 3 stress.** Gap surgery $\hat H_\Delta=\hat H-(\omega_1-\Delta)\lvert1\rangle\langle1\rvert$ with $\Delta=0.02t$, the asserted minimum gap, at every size. The trial states are rebuilt with $\hat H_\Delta$.
+* **Arms.**
+  * Deciding: DAV-R, which is 10.4 with $T=4$ and shift $E_{L1R}-0.1t$.
+  * Foils: SD4 and RND-R.
+  * Reported: OBS-R (10.1d, same noise) and L1R.
+* **Rule.** Here $f$ is the tracked fraction of scored items, and a run needs at least 6 scored items, else INCOMPLETE.
+  * **KILL (tracking)** if $f_{\mathrm{DAV}}<0.5$ at 5×2 or at 4×3.
+  * **KILL (Gate 2)** if $\max(f_{\mathrm{SD4}},f_{\mathrm{RND}})\ge f_{\mathrm{DAV}}$ at both 5×2 and 4×3.
+  * **KILL (Gate 3 stress)** if $f_{\mathrm{DAV}}(\Delta=0.02t)<0.5$ at every size.
+  * **PASS** if $f_{\mathrm{DAV}}\ge0.75$ at every size, $f_{\mathrm{DAV}}\ge$ foil $+0.1$ at 5×2 and 4×3, and $f_{\mathrm{DAV}}(\Delta)\ge0.5$ at every size. PASS becomes UNCLEAR if $f_{\mathrm{DAV}}$ falls by more than 0.15 from $V=8$ to $V=12$ (Gate 4).
+  * **UNCLEAR** otherwise.
+* **T0 prediction**, recorded so the run can contradict it: DAV-R holds at the native gaps and falls at $\Delta=0.02t$, while OBS-R falls less.
+
+#### Task B: the sampled training force
+**Question.** The T3 trains responses with the exact-sum Hylleraas force and only the SR metric sampled. In VMC every global scalar of the force is sampled too. Does that change the tracked fraction?
+
+**Sampled force (VMC-faithful; `sampled_force.py`).** Draw $N_s$ configurations $x\sim\lvert y_P\rvert^2/Z$, the same draws as the SR metric, and $N_s$ draws from $\phi^2$. Local values $y_P(x)$, $(\hat Hy_P)(x)$, $\phi(x)$, $(\hat H\phi)(x)$ and $b(x)$ are evaluated exactly, as VMC local estimators are. Every global scalar is a sample mean:
+* the overlap $\langle\phi\vert y\rangle=Z\,\overline{\phi/y}$;
+* the norm $Z=\overline{y/\phi}^{\,\phi}/\overline{\phi/y}$, by the two-sample ratio estimator;
+* $\langle y\vert\hat H-s\vert y\rangle$, $\langle\phi\vert\hat H-s\vert y\rangle$ and $\langle u\vert b\rangle$, hence $R$ and the $Q$-projection of $g$.
+
+The force is $f=Z\,\overline{g(x)O_P(x)/y_P(x)}$. Only $E_\phi$ is taken exactly, because it is a property of the base state, not of the network. The comparison arm is the T3 force (exact sum) with the same metric samples, steps, initialisation and seeds.
+
+**T1 pre-registration for B (written before any `--mode main` run of `sampled_force.py`).**
+* **Instances.** 3×3 $3+3$ ($V=9$, $D=1680$) and 4×2 $3+3$ ($V=8$, $D=560$). The counted sizes are both.
+* **Targets.** The `t1_scru.py` trial states, 8 per size.
+* **Networks.** Response networks are perturbed copies of an NNBF of width 2, trained 60 SR steps on the ground state; the T3 recipe is scaled down.
+* **Chain.** 10.1d at $T=4$ with 60 cold and 20 warm SR steps per network, and $N_s=2000$ for metric and force.
+* **Metric.** $f$ = tracked fraction of SCRd-NN ($T=4$).
+* **Rule.**
+  * **GAP-CLOSED** if $\lvert f_{\mathrm{sampled}}-f_{\mathrm{exact}}\rvert\le0.1$ at every counted size.
+  * **GAP-BINDS** otherwise.
+  * **UNINFORMATIVE** if $f_{\mathrm{exact}}<0.5$ at a counted size, since there is then nothing to lose. Such a size does not count, and if no size counts there is no verdict.
+* **Reported.** The median $R/R^*$ and the response error $\eta$ per arm.
+* **Budget amendments (the thresholds are unchanged).**
+  * The timing run (`timing_sf_3x3_output.txt`) measured 0.35 CPU-s per SR step at $N_s=2000$ on 3×3 for either force. The pre-registered budget would cost about 250 CPU-s per trial state.
+  * Steps are cut to 30 cold and 10 warm per network, and the seed network to 40 steps. Each size runs under a 420–600 CPU-s cap with a soft guard that keeps every finished row; a size needs at least 6 scored items.
+  * Process note: this amendment was decided after the timing run and before the 4×2 main run. The tool refused the first attempt to write it into the leaf, so it was written after the 4×2 run and before the 3×3 run. It changes only the budget, not the rule or the arms.
+  * Task A ran 4×3 with 5 of the 8 trial states in both runs, for the same budget reason; each run took about 330 CPU-s.
+
+#### Round 11 results
+**Task A, 10.4 T1 result** (`t1_davidson.py`; outputs `main_<size>[_d0.02]_output.txt`, `exact_<size>_d0.02_output.txt`, `verdict_output.txt`, JSON in `results/dav_*.json`). The table gives the tracked fraction of scored items, with grade-R noise on every generated vector.
+
+| arm | 4×2 ($V=8$, n=24) | 5×2 ($V=10$, n=20) | 4×3 ($V=12$, n=10) | 4×2, $\Delta=0.02t$ (n=24) | 5×2, $\Delta=0.02t$ (n=24) | 4×3, $\Delta=0.02t$ (n=11) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **DAV-R (10.4, deciding)** | **1.00** | **1.00** | **0.80** | **0.00** | **0.12** | **0.18** |
+| OBS-R (10.1d, same noise) | 0.96 | 0.70 | 0.70 | 0.25 | 0.17 | 0.18 |
+| RND-R (foil) | 0.79 | 0.15 | 0.00 | 0.12 | 0.00 | 0.00 |
+| SD4 (foil) | 0.00 | 0.40 | 0.20 | 0.00 | 0.08 | 0.09 |
+| L1R | 0.00 | 0.05 | 0.00 | 0.00 | 0.04 | 0.00 |
+| DAV-0 (exact, reported) | — | — | — | 1.00 | 1.00 | — |
+| OBS-0 (exact, reported) | — | — | — | 1.00 | 0.25 | — |
+
+* **Verdict (pre-registered rule): KILL (Gate 3 stress).** With the lowest in-sector level moved to $\Delta=0.02t$, DAV-R tracks 0.00, 0.12 and 0.18, below 0.5 at every size.
+* At the native gaps ($\omega_1/\sigma\approx1.5$–$3$) 10.4 passes every other clause. It tracks 1.00, 1.00 and 0.80 and beats both foils by at least 0.21 at 5×2 and 4×3. The Gate 4 downgrade would also have fired: the fraction falls by 0.20 from $V=8$ to $V=12$.
+* **Attribution.** The noise kills it, not the algebra. Without noise, the same chain tracks 1.00 at $\Delta=0.02t$ on 4×2 and on 5×2.
+  * This is the T0 mechanism. When $\Delta\ll\sigma$, the Ritz step can reject random in-window components of the generated vectors only through their energy cost, which is about $\Delta$.
+  * So 10.4 needs an in-window response error $\eta_{\mathrm{low}}\ll\Delta/\sigma$, which a trained network will not deliver in the Hard Core.
+* **The T0 prediction was half wrong, and that matters for 10.1d.** The observable-sourced chain OBS-R also collapses under the stress (0.25, 0.17, 0.18). Without noise it reaches only 0.25 on 5×2.
+  * Every piece of 10.1d evidence so far is at $\omega_1/\sigma\ge1.5$: T1, T2-v2 and the planned T3 on 4×3 ($\omega_1=0.16t$).
+  * With grade-R noise and a competitor at $0.02t$, 10.1d loses its tracking at every size tested.
+  * This does not change the T3 rule or its verdict. But any PASS of 10.1d must be scoped "for in-sector gaps above the shift offset ($\omega_1\gtrsim\sigma=0.1t$)". It is evidence for the Round 9 refined Saturation Diagnostic ($\eta_{\mathrm{low}}$ is the binding quantity).
+* **How to read F3 in the T3 for 10.4.** 10.4 is killed at T1, so F3 cannot revive it.
+  * The T3 instance has $\omega_1/\sigma\approx1.6$, the regime where 10.4 already tracks (0.80 at 4×3 with grade-R noise).
+  * If F3 tracks as well as SCRd-NN, read it as 10.1d's Gate 2 KILL, as pre-registered. It also confirms that trained Davidson vectors work at large gap, which this T1 already shows.
+  * If F3 tracks worse than SCRd-NN, the observable sources are more robust to training noise at large gap. That supports 10.1d at large gap only and says nothing about 10.4's small-gap failure.
+* **CPU** (one BLAS thread, hard limit 600 s per run): census 3 s; 4×2 19 s and 22 s; 5×2 48 s and 55 s; 4×3 (5 of 8 states) 319 s and 331 s; exact attribution 33 s and 85 s. Total 915 CPU-s.
+
+**Task B result** (`sampled_force.py`; outputs `timing_sf_3x3_output.txt`, `sf_4x2_output.txt`, `sf_3x3_output.txt`, `verdict_sf_output.txt`, `check_force_output.txt`; JSON in `results/sf_*.json`).
+* **Estimator check** (`check_force.py`, 4×2): the sampled force converges to the exact-sum T3 force.
+  * At $N_s=5\times10^4$: $\cos(f_s,f_e)=0.990$–$0.999$, a norm ratio of 0.87–1.34, and $R$ within 13%.
+  * At $N_s=2000$: cosine 0.81–0.98, norm ratio 0.15–2.3, and $R$ off by up to a factor of 2 on the pair source.
+  * So the realistic force is unbiased in direction but noisy in scale.
+
+| size | items | SCRd0 (exact responses) | SCRd-NN, exact force | SCRd-NN, sampled force | median $R/R^*$, exact / sampled | median $\eta$, exact / sampled |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 3×3 ($V=9$, 4 states) | 8 | 1.00 | 1.00 | 1.00 | 1.118 / 1.113 | 0.130 / 0.144 |
+| 4×2 ($V=8$, 3 states) | 9 | 1.00 | 1.00 | 1.00 | 1.786 / 1.137 | 0.350 / 0.142 |
+
+* **Verdict (pre-registered rule): GAP-CLOSED** at both counted sizes ($\lvert f_{\mathrm{sampled}}-f_{\mathrm{exact}}\rvert=0$). L1R tracks 0 of 17.
+* **Scope; the verdict is weak.**
+  * Every arm sits at the ceiling (1.00), so the test could only detect a loss. With 8 and 9 items, a difference of 0.1 is about one item.
+  * On 4×2 the sampled arm trained better ($R/R^*$ 1.14 against 1.79). Its noisy step scale acts as a larger effective step in a 30-step budget, so the exact arm is under-trained there. This is a budget artefact, not an advantage of sampling.
+  * The draws are exact (no Markov chain), $E_\phi$ is exact, and the Ritz matrices and readout are exact sums (the T3's MC arm covers those).
+  * The test reads: at toy size and $N_s=2000$, the sampled force does not cost tracking. The open gap moves to the sampled Ritz and readout (the T3 MC arm) and to the noise level at 4×4, where $\eta_{\mathrm{low}}$ is what binds (Task A).
+* **CPU:** timing 47 s, force check 26 s, 4×2 309 s, 3×3 516 s. Total 898 CPU-s.
+
+**Total CPU for Round 11:** about 1813 CPU-s (30.2 CPU-min) of the 40 allowed. Every run stayed under its 600 s hard limit.
+
+### Route Portfolio (Round 11)
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 7.1 ESR0-K6 (diagnostic; pair + spin) | T2 (pilot GO at $K=3$); Gate 4 FAIL as a scalable method | IN-FLIGHT(618646) | — | GO-6 or PAIR-ONLY (Step 1.5b) | as Round 8 |
+| 10.1d | T2-v2 PASS; T3 design passed the critic with fixes; Round 11: sampled force GAP-CLOSED at toy size (3×3, 4×2; ceiling); Gate 3 stress: OBS-R 0.17–0.25 at $\Delta=0.02t$ with grade-R noise | probe IN-FLIGHT(702393); full run READY | probe TARGET-OK | T3 rule (unchanged) | as the T3 decision tree. A PASS must be scoped to $\omega_1\gtrsim\sigma$ (Round 11 Task A) and to "sampled force tested at toy size only" |
+| 10.4 observable-free generalised Davidson | T1 | KILLED(T1, Gate 3 stress: DAV-R 0.00, 0.12, 0.18 at $\Delta=0.02t$; noise-free 1.00) | — | — | anti-pattern below; F3 in the T3 is read as 10.1d's Gate 2 foil only |
+| SCRu at $T=2$ (fallback carrier) | T2-v2 | not used | — | — | as before |
+| 10.1, 10.2, 8.9, 9.1–9.4, 10.3 | — | KILLED (as before) | — | — | — |
+
+* **Anti-pattern (Round 11).** A shift-inverted correction with the shift held at least $\sigma$ below $E_0$ resolves a competitor at $\Delta\ll\sigma$ only if its in-window error is far below $\Delta/\sigma$. This holds whether the sources are $\hat H$-generated or observable-generated. Toys whose gap exceeds the shift offset cannot show this failure; a gap-surgery stress at $\Delta=0.02t$ can, cheaply.
+* **Portfolio size.** Two routes are live (7.1 as a diagnostic, and 10.1d). Round 10 was declared the last batch, so no refill is generated; the leaf is near closure, pending 702393, the T3 and 618646.
+
+* **Orchestrator scope amendment to the T3 rule (2026-11-16, before the T3 is submitted and before any T3 output exists).** Round 11 showed that both the observable-free chain (10.4) and the observable-sourced chain (10.1d) lose tracking under realistic noise when an in-sector level sits closer to $E_0$ than the shift offset (gap surgery to $\Delta=0.02t$: 0.17–0.25 for 10.1d). Any T3 PASS is therefore reported as *scoped to in-sector gaps of at least the shift offset* ($0.1t$). The T3 aggregate must print the instance gap beside the verdict, and the instance must satisfy $\omega_1\ge0.1t$, else the verdict is OUT-OF-SCOPE. No threshold changes.
+
+* **T3 target probe at width 6 (job 702393, 2026-11-16): NO-TARGET.** Only 3 scored tail errors over 6 seeds (need at least 9); the width-6 states on 4×3 4+4 are too accurate (overlap² 0.981–0.985, median 0.983). Per the pre-registered ladder, the probe was resubmitted at width 3 (job 705747); the critic’s guard (median overlap² at least 0.85) applies.
+
+* **T3 target probe at width 3 (job 705747, 2026-11-16): TARGET-OK.** 11 scored tail errors over 6 seeds (need at least 9); overlap² 0.926–0.952, median 0.942, which passes the critic’s guard (at least 0.85) and is close to the real 4×4 states (0.91–0.94). Per the decision tree, the full T3 was submitted at width 3 as job 705951 (`sbatch --export=ALL,W=3 submit_t3.sbatch`, 6 tasks of 2 CPUs for at most 7 hours each), with the critic’s fixes (foil F3, MC arm, width guard) and the gap-scope amendment. Any KILL at this reduced width is scoped to width 3.
+
+* **Queue review (2026-11-16): job 618646 cancelled.** The K=6 extension decided GO-6 against PAIR-ONLY for ESR0. ESR0 has since failed Gate 4 for real-space correlators ($K_{1/2}$ grows with $V$), the leaf's live route is 10.1, and the GO-6 step-2 follow-up (about 640 CPU-hours per task) would not pass the Compute Value Gate, so neither verdict could change a decision. The excited states already written ($\varphi_{4}$ in `tests/P3.1_order_parameter_error_r7/results_excpilot/`) stay on disk.
+
+### Round 12: refill independent of the T3 (2026-11-16)
+The portfolio has one live route (10.1d, IN-FLIGHT as 705951) and the ESR0 diagnostic (618646 cancelled). Stage 3.5.2 requires at least 3 live routes for an open leaf, so this round refills. The Round 9 critic's "last batch" cap is read as context, not as a stop rule. Nothing here depends on the T3 result, and `t3_scrd.py` and the files it imports are not edited. No `sbatch`. Every run is on the login node, one BLAS thread, hard `RLIMIT_CPU` of 600 s; the round is capped at 40 CPU-minutes. Files are in `tests/P3.1_order_parameter_error_r12/`.
+
+**The two weaknesses aimed at.**
+* **W1, small in-sector gaps.** With grade-R noise, every residual-driven chain (10.4 and 10.1d) loses tracking when the lowest in-sector level sits at $\Delta=0.02t$ (Round 11). The T3 scope amendment ("$\omega_1\ge0.1t$, else OUT-OF-SCOPE") uses the exact $\omega_1$, which a deployed method does not know.
+* **W2, observable targeting.** At the native gaps observable-free Davidson (10.4) tracked at least as well as 10.1d (1.00, 1.00 and 0.80 against 0.96, 0.70 and 0.70), and F3 tracked as well in exact arithmetic. Nothing so far shows what the observable sources add.
+
+**T0 lemma (noise floor of a Ritz correction; used by every route below).** Write a generated vector as $\tilde y_i=\alpha_i\psi_1+(\text{other signal})+\eta g_i$, with $\psi_1$ the competitor at $\Delta$, $g_i$ unit in-window noise of mean energy $\bar\omega_w$, independent across $i$. Removing the admixture $c_1\psi_1$ of $\phi$ with $\sum_i\beta_i\tilde y_i$ needs $\sum_i\beta_i\alpha_i=-c_1$; the cheapest such combination has $\sum_i\beta_i^2=c_1^2/\sum_i\alpha_i^2$, so it adds noise energy $\eta^2\bar\omega_w c_1^2/\sum_i\alpha_i^2$ and gains $\Delta c_1^2$. Hence the Ritz step removes the fraction
+$$r\approx\frac{\Delta}{\Delta+\Delta^*},\qquad \Delta^*=\frac{\eta^2\bar\omega_w}{\sum_i\alpha_i^2},$$
+of the competitor, and tracking (ratio at least $\tfrac12$) needs $\Delta\gtrsim\Delta^*$. With $\eta=0.3$, $\bar\omega_w\approx0.5t$ and three sources with $\sum\alpha^2\approx1.5$, $\Delta^*\approx0.03t$, which explains the Round 11 collapse at $0.02t$ and its absence at $0.16t$. Two consequences: the floor does not depend on the shift offset $\sigma$, so lowering the shift is no fix; and $\Delta^*$ falls as $1/\sum_i\alpha_i^2$, i.e. with more sources that carry the competitor and independent noise.
+
+**Generation Batch 12.**
+  - **Route 12.1: observable-sourced gap witness (OGW; Operation A on the 10.4 kill and on the T3 scope amendment).**
+    * *Mechanism.* After the 10.1d chain, run one witness pass: Ritz of $\hat H$ in $W=\mathrm{span}\{\phi_4,(\hat H-E)\phi_4,\tilde y_A(\phi_4),K\tilde y_A(\phi_4)\}$ and read the two lowest Ritz values $\theta_0<\theta_1$. Certify the 10.1d estimate only if $\hat g=\theta_1-\theta_0\ge g^*=0.1t$ (the shift offset, the scale of the scope amendment); otherwise abstain. The observable source has a competitor component $a_{01}/(\Delta+\sigma)$ with no factor $\Delta$, so $W$ contains the A-coupled competitor and $\theta_1$ sees it. A competitor that does not couple to $\hat A$ does not move $a$ at first order and need not be seen.
+    * *What it answers.* It turns the oracle condition $\omega_1\ge0.1t$ into a measured one (W1), and its Davidson-sourced twin answers W2 for detection: Davidson sources carry the competitor only as $c_1\Delta/\sigma$.
+    * Gate 0: PASS. A quick search (Ritz-value witness, abstention, near-degenerate VMC) found subspace VMC (arXiv:2507.08930), ensemble excited-state VMC and noisy-QSE excited-state work (arXiv:2503.09670, which warns of near-degenerate incompleteness), but no observable-sourced Ritz gap used to grant or refuse an observable error bar. Why Ritz-gap estimates are not standard: under noise $\theta_1$ is inflated by noise energy, so the gap is over-estimated, the dangerous direction. The mechanism against it is the Krylov partner $K\tilde y$ in $W$, which removes the high-$\omega$ part of that inflation (Round 9: worth 0.2–0.25 of tracking).
+    * Gate 1: PASS. $\theta_0\ge E_0$ and $\theta_1\ge E_1$ (Cauchy interlacing), all in the sector.
+    * Gate 2: foils are the Davidson-sourced witness (DAV sources $b_p$, same pass) and the L1R witness ($\mathrm{span}\{\psi,(\hat H-E)\psi\}$).
+    * Gate 3: PASS. It does not assume a gap; it measures one, and abstains in the Hard Core.
+    * Gate 4: cost is one pass ($m$ trainings, Ritz of size $2+2m$, $N_{\mathrm{conn}}^2$ per sample), fixed in $V$. The certificate rate falls as A-coupled levels below $g^*$ multiply with $V$. That is the honest outcome required by Solved (iii), and no extensive certification is claimed.
+  - **Route 12.2: shift-swept susceptibility pole (CPG; Operation B.2, active probing). KILLED at T0.**
+    * *Mechanism.* Read the Hylleraas value $\hat\chi(s)=\langle b\vert\tilde y\rangle^2/\langle\tilde y\vert\hat H-s\vert\tilde y\rangle$ at three offsets $\sigma\in\{0.05,0.1,0.2\}t$ and fit a pole $w/(\Delta+\sigma)$ to find the A-coupled gap.
+    * Gate 0: FAIL. Correction vectors at several frequencies are the dynamical-DMRG spectroscopy of Kühner and White (PRB 60, 335 (1999)); the adoption barrier in VMC is the noise of the trained vector, and the route has no mechanism against it.
+    * Gate 2 (T0): FAIL. With grade-R noise the Rayleigh denominator gains $0.25\,\omega_J\gtrsim0.25t$ of junk energy, against $\Delta+\sigma\approx0.12t$ for the pole term. The $s$-independent junk compresses the log-slope that separates a pole at $0.02t$ (ratio 3.2 between $\sigma=0.05$ and $0.2$) from a continuum above $0.16t$ (ratio 1.7) to about 1.3 against 1.15, inside the 10–80% Hylleraas scatter measured in Round 11 Task B. Cleaning the junk with Krylov partners turns it into a Ritz problem, i.e. Route 12.1.
+    * **KILLED (T0, Gate 0 and Gate 2; merged into 12.1).**
+  - **Route 12.3: cluster-block bracket (CBR; Operation A on the ESR0 window and 8.4, aimed at W1).**
+    * *Mechanism.* When 12.1 abstains, do not pick one Ritz vector. Take the two lowest Ritz vectors of $W$ and report the interval $[\lambda_{\min},\lambda_{\max}]$ of the $2\times2$ compression of $\hat A$ on them. If the block contains $\psi_0$, the interval contains $a_0$ (a diagonal element of a Hermitian matrix lies in its eigenvalue range). The block is separated from the rest by the *outer* gap $\omega_2$, not by $\Delta$, so by the T0 lemma its resolution needs $\omega_2\gtrsim\Delta^*$ instead of $\Delta\gtrsim\Delta^*$. Its width is the order contrast of the unresolved pair, which is the physically honest answer when two competing states are not separated.
+    * Gate 0: PASS (marginal). Block Davidson and degenerate perturbation theory are standard; the Wheeler, Kleiner and Wagner ensemble-VMC paper notes that any rotation inside a degenerate subspace is acceptable. A quick search found no interval readout of an observable over a near-degenerate Ritz block used as a VMC error bar. Why intervals are not reported: the width is not controlled. The route measures it against the exact plane contrast.
+    * Gate 1: PASS (Cauchy interlacing and the diagonal-in-range lemma).
+    * Gate 2: foils are the same bracket on the Davidson-sourced $W$, and the width control (a trivial bracket covers always but is wide).
+    * Gate 3: PASS. Built for $\Delta\to0$.
+    * Gate 4: cost as 12.1. The block size is the number of A-coupled levels below $g^*$; it is 2 at the tested sizes and grows in the Hard Core, where the bracket widens honestly. Claim: a fixed-cost honest interval, not an extensive gain.
+  - **Route 12.4: multi-source response (MSR; Operation A on 8.1 and 10.4, aimed at the noise floor).**
+    * *Mechanism.* Replace the three translation-averaged tail sources by $m=12$ local sources, the four longest distance classes of each correlator (pair, spin, charge pieces of `r5_core.Observables`), each with its own trained response and independent noise. By the T0 lemma $\Delta^*\propto1/\sum_i\alpha_i^2$, so more competitor-carrying sources lower the floor. The tails are still read from one corrected state (the 8.9 anti-pattern is respected).
+    * Gate 0: PASS (marginal). Larger subspace expansions are known to be more noise-robust (classical-shadow QSE, arXiv:2406.11533); the QSE adoption wall is the ill-conditioned noisy eigenproblem. The route keeps the span at $2+2m=26$ shift-inverted, Krylov-cleaned vectors and only claims exact-sum Ritz matrices; sampled Ritz matrices stay the open gap, as for 10.1d.
+    * Gate 1: PASS (as 10.1d). Gate 3: aimed at small $\Delta$.
+    * Gate 2: foil RND-12, the same chain with 12 random in-sector sources. Shift-invert amplifies the competitor in any source by $1/(\Delta+\sigma)$, so at small gap random sources may also carry it. If RND-12 does as well, observable targeting adds nothing (W2, negative).
+    * Gate 4: $mT$ trainings with $m\propto$ the number of distance classes, i.e. $\mathcal O(V)$, sampled cost $N_{\mathrm{conn}}^2$. The sharpest gap: local sources couple to many levels, so $\alpha_i$ may shrink as $m$ grows and $\sum\alpha_i^2$ may saturate. The T1 reports $\sum\alpha_i^2$.
+    * *T0 prediction.* At $\Delta=0.02t$, $m=12$ gives $\Delta^*\approx0.01t$, so MSR recovers tracking where OBS did not.
+
+**T1 pre-registration for Batch 12 (written before any run of `t1_r12.py`).**
+* **Instances and trial states.** As Round 11 Task A: 4×2 $3+3$ ($V=8$), 5×2 $3+3$ ($V=10$), 4×3 $4+4$ ($V=12$), each native and with gap surgery to $\Delta=0.02t$ (`t1_davidson.build`, trial states rebuilt with $\hat H_\Delta$). The 8 trial states of `t1_scru.trial_state`; at 4×3 as many as fit the CPU cap, with at least 6 scored items per run, else INCOMPLETE.
+* **Noise.** Grade R on every generated vector (0.3 in-window, 0.5 junk), fresh draws; shift $E_{L1R}(\phi)-0.1t$.
+* **Arms.** OBS (10.1d, $T=4$, plus the witness pass), DAV (the same with $b_p$ sources), L1R witness, MSR-12 and RND-12 (pass 1 as 10.1d with $m=12$, then one depth-free pass, $T=2$). RND-12 is run on the stress instances only (it is a stress foil).
+* **Scoring.** Scored item: $\lvert\delta\rvert\ge0.1\lvert a_0\rvert$; tracked: ratio in $[\tfrac12,2]$. Certified: $\hat g\ge0.1t$. Covered: $a_0\in[\lambda_{\min}-0.1\lvert\delta\rvert,\lambda_{\max}+0.1\lvert\delta\rvert]$. Width ratio: $(\lambda_{\max}-\lambda_{\min})/w_{\mathrm{ex}}$, with $w_{\mathrm{ex}}$ the eigenvalue range of $\hat A$ on the exact plane $\mathrm{span}\{\psi_0,\psi_1\}$.
+* **Rule 12.1 (OGW, OBS witness).**
+  * KILL if, on any stress instance, more than 0.25 of the scored items are certified and not tracked (false certificates, FC), or if on any native instance fewer than 0.5 are certified and tracked (CT).
+  * PASS if FC $\le0.1$ on every stress instance and CT $\ge0.6$ on every native instance.
+  * UNCLEAR otherwise.
+  * W2 label: "observable sourcing adds" if the DAV witness fails the PASS conditions; "adds nothing for detection" if it meets them.
+* **Rule 12.3 (CBR, OBS block, over the abstained scored items of each stress instance).**
+  * KILL if coverage $<0.5$ on any stress instance, or the median width ratio exceeds 3.
+  * PASS if coverage $\ge0.8$ and median width ratio $\le1.5$ on every stress instance, and the honest fraction (tracked if certified, covered if abstained) is $\ge0.8$ on every stress instance.
+  * UNCLEAR otherwise; INCOMPLETE if a stress instance has fewer than 4 abstained scored items.
+  * W2 label as for 12.1, with the DAV block.
+* **Rule 12.4 (MSR-12).**
+  * KILL (tracking) if MSR-12 tracks $<0.5$ on every stress instance.
+  * KILL (Gate 2) if RND-12 tracks at least MSR-12 $-0.1$ on every stress instance.
+  * PASS if MSR-12 tracks $\ge0.5$ on every stress instance and at least OBS $+0.25$ there, and $\ge0.75$ on every native instance. PASS becomes UNCLEAR if the native fraction falls by more than 0.15 from $V=8$ to $V=12$ (Gate 4).
+  * UNCLEAR otherwise.
+* **T0 predictions recorded so the run can contradict them.** 12.1: the OBS witness abstains on most stress items and the DAV witness does not. 12.3: coverage high, width ratio near 1. 12.4: recovery at the stress.
+* **Process note.** The CPU budget may force fewer 4×3 states; any budget change is written here before the run it affects.
+
+**Route 12.3u: unconditional block bracket (Operation A on 12.3; rule written after the Batch 12 verdicts were printed and before any bracket value of a certified item was looked at).**
+* *Why.* 12.3 is INCOMPLETE by its rule because its trigger (12.1) certified every stress item at 5×2 and 4×3, so no bracket was issued there. Its own mechanism (the block resolves at the outer gap $\omega_2$) does not need the trigger. 12.3u always reports the block interval of the OBS witness pass, at every gap, with no point estimate.
+* *Gates.* As 12.3. Gate 2 adds the obvious foil: an interval can be honest by being wide, so the width is scored against $w_{\mathrm{ex}}$ at every instance, native ones included.
+* *Rule (computed from the saved JSONs, no new run; `t1_r12_cbru.py`).* Over all scored items of each of the six instances: coverage as in 12.3 and the median width ratio.
+  * KILL if coverage $<0.5$ on any instance, or the median width ratio exceeds 3 on any instance.
+  * PASS if coverage $\ge0.8$ and the median width ratio is $\le1.5$ on every instance.
+  * UNCLEAR otherwise. W2 label: "observable sourcing adds" if the DAV block fails the PASS conditions, "adds nothing" otherwise.
+
+**Batch 12 T1 results** (`t1_r12.py`; outputs `main_<size>[_d0.02]_output.txt`, `verdict_output.txt`, `cbru_output.txt`; JSON in `results/r12_*.json`). Tracked fraction of scored items, grade-R noise on every generated vector. 4×3 ran 4 native and 3 stress trial states under the CPU guard (8 and 7 scored items, above the minimum of 6).
+
+| arm | 4×2 | 5×2 | 4×3 | 4×2, $\Delta=0.02t$ | 5×2, $\Delta=0.02t$ | 4×3, $\Delta=0.02t$ |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| OBS (10.1d, $T=4$) | 0.96 | 0.60 | 0.75 | 0.12 | 0.12 | 0.29 |
+| DAV (10.4, $T=4$) | 1.00 | 1.00 | 0.75 | 0.00 | 0.12 | 0.29 |
+| MSR-12 (12.4, $T=2$) | 1.00 | 0.65 | 0.75 | 1.00 | 0.21 | 0.29 |
+| RND-12 (foil, $T=2$) | — | — | — | 1.00 | 0.17 | 0.00 |
+| median $\sum\alpha^2$, OBS / MSR | 1.64 / 5.40 | 0.36 / 1.00 | 0.62 / 1.29 | 1.99 / 7.14 | 0.84 / 3.22 | 0.68 / 2.41 |
+| witness: median $\hat g$ OBS / DAV ($t$) | 0.21 / 0.24 | 0.94 / 0.78 | 0.41 / 0.43 | 0.06 / 0.10 | 0.41 / 0.20 | 0.47 / 0.22 |
+| false certificates OBS / DAV | 0.04 / 0.00 | 0.40 / 0.00 | 0.25 / 0.25 | 0.00 / 0.50 | 0.88 / 0.88 | 0.71 / 0.71 |
+
+* **12.1 OGW: KILLED (T1).** On the 5×2 and 4×3 stress instances the witness gap is 0.4–0.5$t$, twenty times the true $\Delta=0.02t$, so it certifies 88% and 71% of the scored items while they are not tracked. The competitor never becomes a Ritz vector of $W$: with $\sum\alpha^2\le0.9$ for three sources, the noise energy inflates $\theta_1$, the failure named in its Gate 0 entry, and the Krylov partner does not cure it. The DAV witness fails identically. It abstains correctly only on 4×2, whose 44-level sector is nearly spanned.
+* **12.3 CBR: INCOMPLETE** by rule (no abstained items at 5×2 and 4×3, because its trigger is 12.1). Mutated to 12.3u.
+* **12.4 MSR: UNCLEAR** by rule. Neither KILL clause fires, only because the 4×2 stress run tracks 1.00. That instance is near-trivial: the 26-vector span covers most of the 44-level sector, and RND-12 also tracks 1.00 there. On the two non-trivial stress instances MSR tracks 0.21 and 0.29, against 0.12 and 0.29 for OBS, although $\sum\alpha^2$ rose from 0.84 and 0.68 to 3.22 and 2.41. **The T0 lemma's prediction is contradicted.** Its $\alpha_i$ counts the competitor weight of the *noisy* vector, which includes the random in-window noise's own projection on $\psi_1$; that part is incoherent and cannot remove $c_1$. So the measured $\sum\alpha^2$ overstates the coherent signal, and more local sources do not lower the floor at these sizes. Route state: UNCLEAR, not promoted (see the portfolio).
+* **12.3u: UNCLEAR** (`cbru_output.txt`). The OBS block covers $a_0$ on every scored item of every instance (coverage 1.00 everywhere), but its median width is 1.8–2.9 $w_{\mathrm{ex}}$ at 5×2 and 4×3. **The DAV block passes the same rule**: coverage 1.00 on all six instances, median width 0.87–1.31 $w_{\mathrm{ex}}$ (4.0–7.9 $\lvert\delta\rvert$). W2 label: observable sourcing adds nothing; it makes the block wider.
+* **What W2 now says (three independent readings, none favouring the observable sources).** Tracking at the native gaps: DAV $\ge$ OBS on every instance (1.00, 1.00, 0.75 against 0.96, 0.60, 0.75), as in Round 11. Detection: both witnesses fail the same way. Bracketing: the Davidson block is narrower at equal coverage. The observable source's extra competitor component $a_{01}/(\Delta+\sigma)$ is real: the median $\sum\alpha^2$ is 1.4–3.4 times larger for OBS than for DAV on every instance (stress: 1.99 against 0.59, 0.84 against 0.49, 0.68 against 0.50), and only the OBS witness abstains at 4×2. Under grade-R noise it does not turn into a usable advantage at $V\ge10$.
+* **CPU:** 4×2 30 s and 43 s; 5×2 79 s and 110 s; 4×3 471 s and 521 s; 12.3u verdict under 2 s. Total 1254 CPU-s (20.9 CPU-min).
+
+**Route 12.3d: Davidson-block bracket (Operation A on 12.3u; the W2 label above suggests it, so it gets its own T1 on unseen instances).**
+* *Mechanism.* Run the 10.4 chain (observable-free sources $b_p$, $T=4$), then one witness pass $W_D=\mathrm{span}\{\phi_4,(\hat H-E)\phi_4,\tilde y_p,K\tilde y_p\}$. Report for every observable the interval $[\lambda_{\min},\lambda_{\max}]$ of $\hat A$ compressed onto the two lowest Ritz vectors of $W_D$. It is an interval, never a point, and needs 3 trained vectors per pass for any number of observables.
+* *Why the block survives where the point estimate dies.* By the T0 lemma the point estimate needs $\Delta\gtrsim\Delta^*$. The block needs only that $\psi_0$ lies in the two-dimensional lowest Ritz space, which is decided by the outer gap $\omega_2$. Inverse iteration of $\phi$ keeps the $\psi_0$ and $\psi_1$ content together, so the competitor's direction need not be resolved.
+* Gate 0: as 12.3 (block Davidson is standard; an interval readout as an NQS observable error bar was not found). Gate 1: diagonal-in-range lemma. Gate 3: built for $\Delta\to0$.
+* Gate 2: the L1R block foil, $\hat A$ compressed onto $\mathrm{span}\{\psi,(\hat H-E)\psi\}$, which uses no trained vector; and the width control against $w_{\mathrm{ex}}$.
+* Gate 4: cost as 10.4, 3 trainings per pass at $N_{\mathrm{conn}}^2$ per sample, fixed in $V$. The block size must grow when more than one A-coupled level lies below the outer-gap scale, so the width claim is for an isolated competitor pair only. The number of such levels grows with $V$ in the Hard Core: a finite-size scope that the T1 cannot test, stated rather than hidden.
+* **T1 pre-registration (written before `t1_r12d.py` was run).** Instances 4×2, 5×2 and 4×3 with gap surgery to $\Delta=0.03t$ and to $\Delta=0.05t$ (six instances, none seen before; the surgery helper asserts $\Delta\ge0.02t$, so $0.01t$ is not available), the same 8 trial states, at 4×3 as many as fit, at least 6 scored items per instance (else INCOMPLETE).
+  * KILL if coverage $<0.5$ on any instance, or the median width ratio exceeds 3 on any instance.
+  * KILL (Gate 2) if the L1R block has coverage $\ge0.8$ and median width ratio $\le1.5$ on every instance.
+  * PASS if the DAV block has coverage $\ge0.8$ and median width ratio $\le1.5$ on every instance.
+  * UNCLEAR otherwise. The OBS block is not run (cost).
+
+**Route 12.3d T1 result** (`t1_r12d.py`; outputs `r12d_<size>_d<gap>_output.txt`, `r12d_verdict_output.txt`; JSON `results/r12d_*.json`). All 8 trial states finished on every instance, 4×3 included. Coverage and median width ratio over the scored items.
+
+| instance | n | DAV block: coverage | DAV: width / $w_{\mathrm{ex}}$ | DAV: width / $\lvert\delta\rvert$ | L1R block: coverage | L1R: width / $w_{\mathrm{ex}}$ |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 4×2, $\Delta=0.03t$ | 24 | 1.00 | 1.00 | 5.1 | 0.75 | 0.69 |
+| 5×2, $\Delta=0.03t$ | 24 | 1.00 | 0.94 | 6.0 | 0.75 | 0.81 |
+| 4×3, $\Delta=0.03t$ | 18 | 1.00 | 1.06 | 5.9 | 0.83 | 0.68 |
+| 4×2, $\Delta=0.05t$ | 24 | 1.00 | 0.99 | 5.1 | 0.75 | 0.71 |
+| 5×2, $\Delta=0.05t$ | 23 | 1.00 | 1.06 | 6.2 | 0.78 | 0.82 |
+| 4×3, $\Delta=0.05t$ | 17 | 1.00 | 1.14 | 5.9 | 0.82 | 0.46 |
+
+* **Verdict (pre-registered rule): PASS.** The Davidson block covers $a_0$ on every scored item of all six unseen instances, with median width 0.94–1.14 times the exact plane contrast. The L1R foil does not meet the PASS conditions (coverage 0.75–0.83).
+* **Caveats; none changes the verdict.**
+  * The Gate 2 margin is thin. The untrained L1R interval already covers 75–83% of the items with a narrower width. What the trained block adds is the last 17–25% of coverage, i.e. the items the cheap interval misses.
+  * The interval is 5–6 times $\lvert\delta\rvert$ wide. It is honest, not sharp: it states the order contrast of the unresolved pair, and does not say where inside it $a_0$ sits. At gaps above the noise floor the 10.1d or 10.4 point estimate is the sharper output; the interval is its small-gap companion.
+  * Every instance has one isolated surgered competitor below an outer gap of at least $0.15t$. Several A-coupled levels below the noise floor, the Hard-Core situation at large $V$, would need a larger block, and the toys do not test that (Gate 4 scope in the route entry).
+  * Exact Ritz matrices, toy noise model (grade R), toy trial states.
+* **CPU:** 4×2 10 s and 8 s; 5×2 27 s and 26 s; 4×3 245 s and 241 s.
+
+**T2 premise run for 12.3d (PREPARED, NOT SUBMITTED; files `t2_block_premise.py`, `submit_t2_block.sbatch`).**
+* **Command.** `cd brainstorms/nqs-lattice-fermions/tests/P3.1_order_parameter_error_r12 && sbatch submit_t2_block.sbatch`; verdict afterwards `python3 t2_block_premise.py --aggregate results/t2_block_main.json`.
+* **Design.** The real width-6 states of seeds 11, 22 and 33 on the 4×4 OBC $6+6$ instance (the T2-v2 targets; machinery imported unchanged from `t2v2_scru_premise.py`), exact sums. ED, then 31 in-sector levels: $\psi_1$ gives $w_{\mathrm{ex}}$, and all 30 excited levels ($\omega\le0.84t$) carry the in-window noise, because the 1$t$ window would need about 45 levels. Arms: L1R block (Gate 2 foil), DAV-R block (10.4 chain at $T=4$ with grade-R noise on every vector, then the witness pass; deciding), DAV-0 block (noise-free; reported if the budget allows). Validity against job 698163 comes before any minres solve; a shift not below $E_0$ is INVALID.
+* **Pre-registered rule** (8 scored items of job 698163; covered and width ratio as at T1).
+  * INVALID if $\delta$ does not reproduce job 698163 within $10^{-3}$ relative.
+  * KILL (Gate 2) if the L1R block covers at least 7 of 8 with median width ratio $\le1.5$.
+  * PASS if DAV-R covers at least 7 of 8 with median width ratio $\le1.5$.
+  * KILL if DAV-R covers fewer than 5 of 8, or its median width ratio exceeds 3.
+  * AMBIGUOUS otherwise. Early stop: KILL as soon as 5 covered items become unreachable.
+* **Pre-flight** (`selftest_t2_block_output.txt`, `dryrun_t2_block_output.txt`; 4×4 OBC $2+2$, $D=10920$, 10 CPU-s).
+  * The verdict self-test returns all four branches (KILL (Gate 2), PASS, both KILL cases, two AMBIGUOUS cases): SELFTEST PASS.
+  * Positive control $\psi_0+0.05e$: the DAV-R block covers both scored items (spin and charge). On this sparse spectrum (one level below $1t$, $\omega_1=0.94t$) its width is 2.0 and 5.1 $w_{\mathrm{ex}}$, so the small instance checks the machinery, not the width.
+  * The random-distortion "seed" stops at the validity assert ($E_{L1R}-0.1t$ lies above $E_0$), which is now recorded as INVALID for that seed instead of crashing. On the main instance it stops the run as INVALID.
+  * The pipeline writes the JSON, aggregates it and prints a verdict. The validity check against job 698163 runs only on the main instance.
+* **Value-of-information note (Stage 3.5.6).**
+  1. *Decision.* PASS: 12.3d becomes the leaf's small-gap output beside 10.1d (an interval when the point estimate cannot be trusted), and the next step is to read the block from trained Davidson networks, which the running T3 already trains as foil F3; whether its parameters can be reused is checked when 705951 lands. KILL: 12.3d is killed and the W1 answer becomes "no cheap honest output at small gap", which feeds the conditional Saturation Diagnostic. KILL (Gate 2): the untrained L1R interval is enough, recorded as a cheap result and an anti-pattern for trained brackets. AMBIGUOUS: hold until 705951.
+  2. *Prediction.* PASS with probability about 0.6. The toys give coverage 1.00 at width about $w_{\mathrm{ex}}$. The risks are the dense real band (30 levels below $0.84t$, error spread over $K_{1/2}=6$–11 levels), which may push $\psi_0$ out of a two-dimensional block, and Gate 2 (the toy L1R coverage of 0.75–0.83 is close to 7 of 8), about 0.15. No outcome reaches 0.8, so the run is not replaced by its prediction.
+  3. *Cost.* 2 CPUs × 2 h = 4 CPU-h allocated, about 2.5 CPU-h expected: the 31-level eigensolve (job 698163 needed about 1.6 CPU-h for ED, 30 levels and three seeds) plus 45 minres solves at about 60 CPU-s (job 699756). Tier "at most 10 CPU-h": this note suffices. It exceeds the 2 CPU-h T2 default because the in-window noise needs the dense band resolved; the window is cut at 30 levels for that reason.
+  4. *Cheapest decisive version.* Trained states with scorable tail errors exist only on this instance (the 4×3 width-6 states were too accurate, probe 702393; the width-3 states belong to the running T3). One task, seeds in sequence, with an early KILL; DAV-0 runs only under the remaining budget and decides nothing.
+  5. *Power.* The arithmetic is exact apart from the noise draws. PASS (at least 7) and KILL (fewer than 5) are two items apart on 8 correlated items (about 3 effective states); the AMBIGUOUS probability is estimated at about 0.25, below 0.3.
+
+**Gate 4 for 12.3d at T0 (cost versus size).** 3 trained vectors per pass and one witness pass, $N_{\mathrm{conn}}^2$ per sample (the split of Round 11), independent of $V$ and of the number of observables. The block must hold every A-coupled level below the noise floor $\Delta^*$; that number grows with the level density, and the interval then widens to the contrast of a larger cluster. The claim is a fixed-cost honest interval for an isolated competitor, not an extensive gain.
+
+### Route Portfolio (Round 12)
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 10.1d (depth-free self-consistent response Ritz) | T2-v2 PASS; T3 at width 3 | IN-FLIGHT(705951) | — | T3 rule with F3 in Gate 2 and the gap-scope amendment | as the T3 decision tree. Round 12 predicts a Gate 2 risk from F3 (W2 below) |
+| 12.3d Davidson-block bracket (interval readout at small gaps) | T1 PASS (coverage 1.00 at $\Delta=0.03t$ and $0.05t$, three sizes; width 0.94–1.14 $w_{\mathrm{ex}}$) | T2 READY (`submit_t2_block.sbatch`, 4 CPU-h; dry run and self-test done) | orchestrator submission | T2 rule above | PASS → block readout from trained Davidson networks (F3 of 705951 if reusable); KILL → W1 closes negative, conditional diagnostic; KILL (Gate 2) → untrained interval suffices; AMBIGUOUS → hold for 705951 |
+| 12.4 MSR (12 local sources) | T1 UNCLEAR (stress 1.00, 0.21, 0.29; the 1.00 is the near-trivial 4×2 sector) | T1b to write | — | T1b at $\Delta=0.05t$ on 5×2 and 4×3: KILL if MSR-12 tracks at most OBS $+0.1$ on both; it must also report the coherent competitor weight (signal only) | KILL → the noise floor is not lowered by more sources; PASS → T2 on the real states with 12 exact responses |
+| 12.3u observable-sourced block | T1 UNCLEAR (coverage 1.00, width 1.8–2.9 $w_{\mathrm{ex}}$) | MERGED into 12.3d (dominated: the Davidson block is narrower at equal coverage) | — | — | — |
+| 12.1 OGW gap witness | T1 | KILLED(T1, false certificates 0.88 and 0.71 at $\Delta=0.02t$: the noisy witness gap is 20 times too large) | — | — | anti-pattern below |
+| 12.2 CPG susceptibility pole | T0 | KILLED(T0, Gate 0 correction-vector spectroscopy; Gate 2 junk-dominated Rayleigh denominator) | — | — | merged into 12.1 |
+| 12.3 CBR (witness-triggered) | T1 | INCOMPLETE by rule (trigger 12.1 never abstained at $V\ge10$); mutated to 12.3u and 12.3d | — | — | — |
+| 7.1 ESR0 | T2 | cancelled (618646); diagnostic only, states on disk | — | — | — |
+| 10.4, 10.1, 10.2, 8.9, 9.1–9.4, 10.3 | — | KILLED (as before) | — | — | — |
+
+* **Live routes: 3** (10.1d in flight, 12.3d at T2 READY, 12.4 at T1 UNCLEAR). None of the new routes depends on the T3 result.
+* **W1 (small gaps), answered at T1.** A point estimate cannot be rescued below the noise floor $\Delta^*$ by detection (12.1 killed: the noisy Ritz gap over-states $\Delta$ twenty-fold) nor, at these sizes, by more sources (12.4). An *interval* over the two-dimensional Davidson block is honest at every gap tested (12.3d), because it needs only the outer gap.
+* **W2 (observable targeting), answered at T1, negative at $V\ge10$.** The observable sources carry 1.4–3.4 times more competitor weight than Davidson sources, but under grade-R noise they give no better tracking (native: DAV 1.00, 1.00, 0.75 against OBS 0.96, 0.60, 0.75), no better detection (both witnesses fail identically), and a wider block. Prediction for the running T3 (not a result): F3 tracks at least as well as SCRd-NN, i.e. 10.1d's pre-registered Gate 2 KILL is the more likely T3 outcome. The decision tree for that branch is unchanged.
+* **Anti-patterns (Round 12).**
+  * A Ritz-gap witness built from noisy generated vectors over-estimates the gap, because the noise energy lifts $\theta_1$. It cannot turn an oracle scope condition ($\omega_1\ge\sigma$) into a measured one.
+  * In the noise-floor lemma, $\alpha_i$ must be the coherent competitor amplitude of the signal, not the overlap of the noisy vector, which includes the noise's own random projection on $\psi_1$. Counting the latter predicted a recovery that did not happen.
+  * A test instance whose sector is nearly spanned by the Ritz space (4×2: 26 vectors in 44 levels) passes any arm, random sources included; such instances must not decide a rule clause on their own.
+* **Tier log (Round 12).** Rules were written into this log before each run: Batch 12 before `t1_r12.py`, 12.3u after the Batch 12 verdict and before `t1_r12_cbru.py`, 12.3d before `t1_r12d.py` (its gaps were changed from $0.01t$ to $0.03t$ before any run, because the surgery helper asserts $\Delta\ge0.02t$). Outputs are in `tests/P3.1_order_parameter_error_r12/`. Every run used one BLAS thread under a hard 600 s limit (360 s for the 12.3d 4×3 runs). Total CPU: 1254 s (Batch 12) + 557 s (12.3d) + about 15 s (pre-flight) = about 1826 CPU-s, i.e. 30.4 CPU-minutes of the 40 allowed. No `sbatch`.
+
+* **12.3d T2 submitted as job 707298 (2026-11-16)** by the orchestrator (`tests/P3.1_order_parameter_error_r12/submit_t2_block.sbatch`, 2 CPUs for at most 2 hours). The T3 (705951) is left running: it is largely paid for and is the first test with trained responses; the Round 12 prediction (F3 matches SCRd-NN, so a Gate 2 KILL of 10.1d) is recorded here before its verdict.
+
+### Pause read-out (2026-11-17): what the cancelled jobs left on disk
+The brainstorm was paused on 2026-11-16 and jobs 705951 (the 10.1d T3) and 707298 (the 12.3d T2) were cancelled at 17:22. No new compute was run; the reads below are the aggregate modes of the existing scripts (under 1 CPU-minute).
+
+**T3 of route 10.1d (job 705951; `tests/P3.1_order_parameter_error_r10/results/t3/t3_4x3_w3_s*.json`).** Tasks for seeds 22, 33, 44, 55 and 66 completed (`sacct`: COMPLETED). The seed-11 task was cancelled after phase C, the MC replay and foil F3, so only its foils F1 and F2 are missing. `t3_scrd.py --aggregate` therefore prints `T3 VERDICT: INCOMPLETE | {'n_items': 11, 'incomplete_seeds': [11]}`.
+* **The verdict is nevertheless decided.** The scored set is fixed by phase A ($n=11$: spin on all six seeds, charge on seeds 22, 44, 66, pair on seeds 33, 44). Counting tracked items (ratio $\hat\delta/\delta$ in $[\tfrac12,2]$) with the pre-registered rule:
+
+| arm | tracked of 11 | role |
+| :--- | :--- | :--- |
+| SCRd0 (exact responses) | 11 | premise; PREMISE-FAIL needs fewer than 8.25 |
+| SCRdE0 (exact Davidson, reported) | 11 | reported |
+| SCRd-NN, $T=4$ (trained responses, deciding) | 9 | KILL needs fewer than 5.5; PASS needs at least 8.25 |
+| SCRd-NN, $T=1$ and $T=2$ | 8 and 9 | reported |
+| MC100000 (sampled Ritz and readout) | 9 | scope label |
+| F0 = NN0 (untrained copies) | 1 | Gate 2 foil |
+| F1 (train the state further) | 0 of 10 (seed 11 missing) | Gate 2 foil |
+| F2 (twice-wider state, matched CPU) | 7 of 10 (seed 11 missing) | Gate 2 foil |
+| F3 (trained Davidson vectors) | 5 | Gate 2 foil |
+| L1R (negative control) | 1 | must be at most 2.75 |
+| ORC3 (exact 3-level window, reported) | 8 | reported |
+
+* With seed 11's spin item, F2 ends at 7 or 8 and F1 at 0 or 1. KILL (Gate 2) needs a foil at 9 or more, which is impossible. PASS needs SCRd-NN $\ge\max(\text{foils})+\lceil0.25\cdot11\rceil=\max+3$, i.e. a foil at 6 or less, which F2 already exceeds. Every other clause is fixed. **The pre-registered rule gives AMBIGUOUS whatever the missing seed-11 foils are**, with the negative control holding (L1R 1 of 11) and the instance in scope ($\omega_1=0.161t\ge0.1t$). Scope: width 3, $4\times3$ OBC $4+4$, exact-sum force, one size.
+* **Response quality.** Trained observable-sourced responses (pass 4, 18 networks) have median in-window error $\eta_{\mathrm{low}}=0.08$ (range 0.02–0.31) and median total error $\eta=0.15$. The trained Davidson vectors of F3 have median $\eta_{\mathrm{low}}=0.90$ and $\eta=0.85$. This meets the Round 9 falsifier's noise level ($\eta_{\mathrm{low}}\le0.3$) on $4\times3$, not on the required $4\times4$.
+* **The Round 12 prediction failed.** Round 12 predicted from grade-R toys that F3 would track at least as well as SCRd-NN. With trained networks F3 tracks 5 against 9: the observable sources train far better than Davidson sources. The competitor that nearly matches 10.1d is instead F2, a twice-wider network trained with the same CPU (7 of 10).
+* **Seed 33 is the failure case.** The exact responses track both its items (0.97 and 0.88), but the trained chain gives 0.32 (pair) and $-0.12$ (spin) although its $\eta_{\mathrm{low}}$ is only 0.05–0.19.
+* **Decision tree (pre-registered AMBIGUOUS branch):** no seeds are added; record the $\eta$ values; close the 10.1d line with the refined Saturation Diagnostic, citing the verdict. Route card R10.1d is therefore SHELVED: its only discriminating next step (trained responses on the real $4\times4$ states, about 2400 CPU-h) exceeds the 300 CPU-h leaf budget.
+
+**T2 of route 12.3d (job 707298; `tests/P3.1_order_parameter_error_r12/results/t2_block_main.json`).** Partial: ED, the 30-level census and the validity check passed (relative deviation at most $1.3\times10^{-13}$ against job 698163), then seed 11 finished (724 CPU-s) before the cancellation. Seeds 22 and 33 did not run.
+* Seed 11, 3 scored items. DAV-R block covers $a_0$ on 3 of 3, with width ratios 0.64 (pair), 0.26 (spin) and 0.99 (charge) of the exact plane contrast $w_{\mathrm{ex}}$. The L1R block (Gate 2 foil) covers 2 of 3 (it misses spin: interval up to $0.0475$ against $a_0=0.0534$), with width ratios 0.74 and 2.54 on the covered items. The witness gap is $\hat g=0.48t$.
+* **No verdict.** The rule is over 8 items; 3 are known. `t2_block_premise.py --aggregate` prints `KILL` on this file, but only because its `verdict()` counts covered items out of the items present (3 is fewer than 5); that branch was written for a complete run and is not a verdict on partial data. With 5 items missing, PASS (DAV-R covers at least 4 of the 5 remaining), AMBIGUOUS and KILL (DAV-R covers at most 1 of the 5 remaining) are all still reachable, and so is KILL (Gate 2): L1R misses one item, but 7 of 8 is still possible if it covers all 5 remaining items with median width ratio at most 1.5. (Corrected by the per-leaf critic, 2026-11-17; the earlier text said Gate 2 KILL was unreachable.)
+* Next step (done 2026-11-17): the remaining seeds 22 and 33 were gated through `compute_gate.py` with seed 11 reused from disk (`--reuse`, dry-run checked) and submitted as job 731418 (`submit_t2_block_resume.sbatch`, `voi_t2_block_resume.md`; T2, cap 1.07 CPU-h; prediction PASS, $p=0.5$). The rule is the pre-registered Round 12 rule above, unchanged.
+* **AMBIGUOUS branch, decided before the result (orchestrator, 2026-11-17).** The Round 12 branch "hold until 705951" is obsolete (705951 is decided), and no further trained $4\times4$ states exist, so no seeds can be added. If 731418 returns AMBIGUOUS, R12.3d is SHELVED with the coverage reported as found, and the leaf proceeds as on KILL: R12.4's T1b (login node, at most 10 CPU-minutes), then the conditional Saturation Diagnostic.
+
+### T2 result of route 12.3d (job 731418, 2026-11-17)
+* **Job.** Seeds 22 and 33 on the real $4\times4$ OBC $t$–$t'$–$J$ $6+6$ width-6 states, seed 11 reused from job 707298 (`results/t2_block_main_resume.json`; log `logs/hpb-nqs-fermions-P3.1-R12.3d-001_731418.out`); 0.86 CPU-h of a 1.07 CPU-h cap. Validity against job 698163: relative deviation at most $1.3\times10^{-13}$ on all three seeds. Witness gaps $\hat g=0.465t$ and $0.454t$.
+* **Rule** (pre-registered Round 12 rule, unchanged): KILL (Gate 2) if the untrained L1R block covers at least 7 of 8 with median width ratio at most 1.5; PASS if DAV-R covers at least 7 of 8 with median width ratio at most 1.5; KILL if DAV-R covers fewer than 5 of 8 or its median width ratio exceeds 3; AMBIGUOUS otherwise.
+* **Result.** DAV-R (the Davidson-block interval, with grade-R noise of 30% random in-window error and 50% junk on every Davidson vector) covers $a_0$ on **8 of 8** items, median width ratio **0.994** of the exact two-state contrast $w_{\mathrm{ex}}$ (per item: seed 11 pair 0.64, spin 0.26, charge 0.99; seed 22 pair 1.11, spin 0.19, charge 1.00; seed 33 pair 1.66, charge 1.18). The untrained L1R block covers 6 of 8 (it misses the spin item on seeds 11 and 22), median width 1.83, so KILL (Gate 2) does not fire. **Verdict: PASS.** The VOI predicted PASS with $p=0.5$: HIT.
+* **Consequence (per the VOI decision line).** R12.3d becomes the leaf's honest small-gap output, the leaf moves to its scoped ANSWERED close at ED scale pending the per-leaf critic, and R12.4's T1b is no longer needed for the close (card R12.4, SHELVED).
+
+### Route Portfolio (at the pause, 2026-11-17)
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| R12.3d Davidson-block interval | T1 PASS; T2 partial (seed 11: 3 of 3 covered) | LIVE, IN-FLIGHT(731418, seeds 22 and 33) | job | T2 rule (Round 12) | PASS → scoped ANSWERED close; KILL → W1 closes negative, then R12.4 T1b; KILL (Gate 2) → untrained interval suffices; AMBIGUOUS → shelve R12.3d, then R12.4 T1b |
+| R12.4 multi-source response | T1 UNCLEAR | LIVE | none (login-node T1b) | T1b at $\Delta=0.05t$ (Round 12 portfolio) | KILL → noise floor not lowered by more sources; PASS → T2 on real states |
+| R10.1d self-consistent response Ritz | T3 AMBIGUOUS (9 of 11; F2 7 or 8, F3 5) | SHELVED (G5 budget) | 300 CPU-h leaf budget | — | unshelved only by a budget for the $4\times4$ trained-response test |
+| R7.1 ESR0 | T2 pilot GO, Gate 4 FAIL | KILLED at G4 (diagnostic kept) | — | — | — |
+
+### Per-leaf critic, second batch (2026-11-17): ANSWERED refused
+* **Verdict** (recorded as the critic's verdict, not a sign-off): "P3.1 per-leaf critic, 2026-11-17: REFUSE ANSWERED. The interval PASS rests on 0.3 synthetic noise against a measured 0.90 for trained Davidson vectors, at ED size with a conceded Gate-4 failure at larger V. State → OPEN. R12.4 unshelved by its own condition. Next: R12.4 T1b (≤0.2 CPU-h), then R12.3d T2 rerun at ETA = (0.9, 0.5) (~0.9 CPU-h). S1/S2 stand."
+* **Reasons.**
+    * The interval PASS rests on grade-R synthetic noise (0.3 random in-window error, 0.5 junk) on every Davidson vector, while the trained Davidson vectors of the T3 (job 705951, foil F3) were measured at 0.90 (median in-window error of the low-shift component) and 0.85 (the second component). That measurement existed before the R12.3d VOI was written and was not addressed in its cheapest-kill-tried.
+    * Scoping the claim to "grade-R noise" describes no vector a practitioner can produce, so the scope is a hedge, not a claim; library L40 records that isotropic synthetic noise already mis-ranked these methods on this leaf.
+    * The claim holds only at ED size, with a conceded Gate 4 failure at T0: the block must hold every $\hat A$-coupled level below the noise floor, and that number grows with the level density.
+* **What stands.** The S1 and S2 impossibility statements (no function of Hamiltonian moments, and no degree-$K$ polynomial filter in $\hat H$, determines an error that sits below the filter's resolution) are established sub-results of the leaf. R12.3d's T2 PASS stays recorded as PASS under its pre-registered rule, and the ledger row for job 731418 stays.
+* **Consequence.** State ANSWERED → OPEN. R12.4 is unshelved by its own card condition ("if a later critic rejects the interval as the leaf's small-gap answer"). Next: (1) the R12.4 T1b as written (login node, at most 10 CPU-minutes); (2) the R12.3d T2 rerun `t2_block_premise.py --reuse` with noise $\eta=(0.9,0.5)$ (the noise levels are hard-coded at line 63 of the script and need a flag), seeds 11, 22 and 33, the same rule, about 0.9 CPU-h through the compute gate. KILL → R12.3d is killed and the leaf writes its Saturation Diagnostic; PASS → the claim is re-scoped to synthetic noise at the measured trained level, the trained $4\times4$ vectors (about 2400 CPU-h or more, G5) become the refused step, and the leaf closes EXHAUSTED at this budget, not ANSWERED. Both steps are pending: a worker is running the T1b and preparing the rerun in `tests/P3.1_order_parameter_error_r13/`.
+
+### Route Portfolio (2026-11-17, after the closure refusal)
+
+| Route | Tier reached | State | Blocked on | Pending kill rule | Next action on each verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| R12.3d Davidson-block interval | T2 PASS at grade-R noise (job 731418) | LIVE; T2 rerun at $\eta=(0.9,0.5)$ PENDING (being prepared) | the rerun's noise flag and the compute gate | Round 12 T2 rule, unchanged | KILL → R12.3d KILLED, Saturation Diagnostic; PASS → claim re-scoped to the measured trained noise level, EXHAUSTED at this budget (trained $4\times4$ vectors G5-refused) |
+| R12.4 multi-source response | T1 UNCLEAR | LIVE (unshelved); T1b PENDING (running) | none (login-node T1b) | KILL if the 12-source chain tracks at most the 3-source chain plus 0.1 on both $5\times2$ and $4\times3$ at $\Delta=0.05t$ | KILL → R12.4 KILLED at T1; PASS → T2 on the real states |
+| R10.1d self-consistent response Ritz | T3 AMBIGUOUS (9 of 11; F2 7 or 8, F3 5) | SHELVED (G5 budget) | 300 CPU-h leaf budget | — | unshelved only by a budget for the $4\times4$ trained-response test |
+
+One card per route generated in this leaf (61 cards). Ids follow the leaf's labels: round-1 Routes 1–4 are R1.1–R1.4, and "Route $x.y$" is R$x.y$. Shared notation: $\psi$ is the trained (variational) state, $\psi_0$ the exact ground state of its symmetry sector, $\hat A$ a long-range correlation operator (pair, spin or charge tail), $a_\psi=\langle\hat A\rangle_\psi$, $a_0=\langle\hat A\rangle_{\psi_0}$, and the target is the error $\delta=a_0-a_\psi$ with estimate $\hat\delta$. An item is *tracked* if $\hat\delta/\delta\in[\tfrac12,2]$. $\omega_n=E_n-E_0$ are in-sector excitation energies. VMC is variational Monte Carlo, NQS a neural quantum state, NNBF a neural-network backflow state, ED exact diagonalization, SR stochastic reconfiguration. The *foil* is the Gutzwiller–Jastrow projected BCS state. "L1R" is Rayleigh–Ritz in $\mathrm{span}\{\psi,(\hat H-E)\psi\}$ (one Lanczos step), the standing negative control. Kill codes are those of the skill (G0–G4 gates, T0–T3 tiers, CRITIC).
+

@@ -1,3 +1,2 @@
-/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r23/tree_nqs.py:150: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
-  self.Hr_t = torch.sparse_coo_tensor(np.vstack([Hs.row, Hs.col]), Hs.data, Hs.shape).coalesce()
-[10:46:47] sector: dim 169884; (+,+) representatives 42756 (validate.json irrep dim 42756); Hr nnz 1864078; inputs 78; P 2672
+[13:27:26] sector: dim 169884; (+,+) representatives 42756 (validate.json irrep dim 42756); Hr nnz 1864078; inputs 78; P 2672
+[13:27:27] check: {'P': 2672, 'P_vs_che': 0.013272658323852937, 'grad_rel': 1.1166195320330085e-14, 'nrep': 42756, 'irrep_dim_validate': 42756, 'expand': 1.5330365056727775e-16, 'norm': 0.0, 'Hr': 4.440892098500626e-15, 'ok': True}

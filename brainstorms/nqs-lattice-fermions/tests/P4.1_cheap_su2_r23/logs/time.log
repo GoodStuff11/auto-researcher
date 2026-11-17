@@ -1,0 +1,2 @@
+[13:27:35] sector: dim 169884; (+,+) representatives 42756 (validate.json irrep dim 42756); Hr nnz 1864078; inputs 78; P 2672
+[13:28:29] time: {'adam_step_cpu_min': 0.015722253127499995, 'ladder_step_cpu_min': 0.5393364929, 'build': 0.38815663836666664, 'eig': 0.044185172633333436, 'threads': '1'}

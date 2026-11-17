@@ -44,14 +44,17 @@ Open 4x3 Hubbard strip, N_e = 10, S = 0, U = 8, t = 1, t' = -0.25 (H = -sum T_ij
   step's predicted gain is below 1e-3 g, with g = E(theta_A) - E0 the tree arm's own gap at the start of polish
   (as r22 used each arm's own pre-polish gap); STOP-CAP at 12 steps. Convergence guard: r22's geometric tail.
 
-## Denominator
+## Denominator (amended 2026-11-17 by the r23 continuation worker, before any tree-arm energy existed)
 
-eps_che = the r22 `che` arm endpoint (`../P4.1_cheap_su2_r22/results/state_che.json`), with its r22 guard tail
-(eps_che,inf). The card's 1.217e-3 is the r19 endpoint, which r21 showed was a frozen polish (FROZEN-ARTEFACT,
-probe_che.json); the card's intent is "polished `che`", so the r22 ladder endpoint replaces it. The ratio against
-1.217e-3 is also printed and decides nothing. If r22's `che` arm has no final stop, the verdict is INCOMPLETE.
+eps_ref = min(1.217e-3, eps_che,lad), where eps_che,lad is the endpoint of the ladder re-polish of `che` in job 742206
+(`../P4.1_cheap_su2_r22/results/state_che.json`, arm `che`). The card's 1.217e-3 is the r19 endpoint, which r21
+showed was partly frozen (FROZEN-ARTEFACT, probe_che.json); the ladder endpoint replaces it only if it is lower, so
+the reference can only get stricter. The same min is taken for the guard-extrapolated classification
+(min(1.217e-3, eps_che,lad,inf)). The ratio against 1.217e-3 is always printed as well. If 742206's `che` arm has no
+final stop, the verdict is INCOMPLETE. This amendment supersedes the earlier text of this section ("the r22 ladder
+endpoint replaces it" unconditionally), which no result had been compared against.
 
-## Verdict (rho = eps_tree / eps_che)
+## Verdict (rho = eps_tree / eps_ref)
 
 | verdict | condition |
 | :-- | :-- |
@@ -98,4 +101,8 @@ otherwise.
 
 ## Erratum / settings fixed after timing (before any stage-A energy was read)
 
-(filled in below if needed)
+* 2026-11-17 (continuation worker): N_A = 7000 Adam steps per seed, set by cost only (measured 0.94 CPU-s per
+  exact-sum Adam step, 1 thread, `logs/time.log`; 3 seeds in parallel then the ladder fit a 2.67 h, 3-CPU job,
+  8.0 CPU-h cap). No stage-A energy existed when this was fixed (only the 20-step timing run, energies unread).
+* The pre-run basis probe (`probe_basis_sign.py`, `results_probe/basis_sign.json`) is information for the VOI
+  prediction only and changes nothing in this rule.

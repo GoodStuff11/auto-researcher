@@ -21,11 +21,11 @@ Modes (--mode, required)
             exist), runs the r22 ladder (RULE.md) to STOP-RULE / STOP-NOGAIN / STOP-CAP (--steps), resuming from
             results/state_tree.json and results/theta_tree.npy; --cpu-cap stops before a step that would cross it.
   sign      Gate-2 sign diagnostic at the tree endpoint (RULE.md); writes results/sign.json.
-  verdict   rho = eps_tree / eps_che (r22 `che` state), convergence guard, classes; prints, writes results/verdict.json.
+  verdict   rho = eps_tree / min(1.217e-3, eps_che) (742206 `che` ladder state), convergence guard, classes; prints, writes results/verdict.json.
 Options
   --seed INT        pretrain only (default 0)
   --seeds INT       number of stage-A seeds that polish requires (default 3; seeds 0..seeds-1)
-  --nA INT          stage-A Adam steps (default: the value fixed in RULE.md's erratum, 3000)
+  --nA INT          stage-A Adam steps (default: the value fixed in RULE.md's erratum, 7000)
   --nt INT          time mode: Adam steps to average (default 20)
   --steps INT       stage-B step cap (default 12)
   --cpu-cap FLOAT   CPU-minutes for polish (default 150)
@@ -45,7 +45,7 @@ def parse_args():
     ap.add_argument("--mode", required=True, choices=["check", "time", "pretrain", "polish", "sign", "verdict"])
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--seeds", type=int, default=3)
-    ap.add_argument("--nA", type=int, default=3000)
+    ap.add_argument("--nA", type=int, default=7000)
     ap.add_argument("--nt", type=int, default=20)
     ap.add_argument("--steps", type=int, default=12)
     ap.add_argument("--cpu-cap", type=float, default=150.0)
@@ -74,6 +74,7 @@ E0 = -7.827899034271753
 TAU, MIN_GAIN, STOP_FRAC = 0.05, 1e-7, 1e-3
 LADDER = [1e-5, 1e-6, 1e-7, 1e-8, 1e-9]
 PASS, KILL = 0.60, 1.00
+EPS_R19 = 1.217e-3  # the card's polished-`che` value (r19)
 H_HID = 30
 RES = A.res or os.path.join(HERE, "results")
 os.makedirs(RES, exist_ok=True)
@@ -520,12 +521,14 @@ def verdict(_ctx=None):
         else:
             et, eti, nt = endpoint(st)
             ec, eci, nc = endpoint(sc)
-            rho = et / ec
-            rho_i = eti / eci if eci > 0 else float("inf")
+            # RULE.md (amended): reference = min(r19 card value, 742206 ladder endpoint); stricter only
+            er, eri = min(EPS_R19, ec), min(EPS_R19, eci)
+            rho = et / er
+            rho_i = eti / eri if eri > 0 else float("inf")
             c1, c2 = cls(rho), cls(rho_i)
             out.update(eps_tree=et, eps_tree_inf=eti, steps_tree=nt, stop_tree=st["stop"], eps_che=ec,
                        eps_che_inf=eci, steps_che=nc, stop_che=sc["stop"], rho=rho, rho_inf=rho_i, cls_end=c1,
-                       cls_inf=c2, rho_vs_r19_che=et / 1.217e-3, info_default_0p85=("KILL" if rho >= 0.85 else "-"),
+                       cls_inf=c2, eps_ref=er, eps_ref_inf=eri, rho_vs_r19_che=et / EPS_R19, info_default_0p85=("KILL" if rho >= 0.85 else "-"),
                        verdict=c1 if c1 == c2 else "UNSETTLED")
     sf = os.path.join(RES, "sign.json")
     if os.path.exists(sf):
