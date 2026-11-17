@@ -1,0 +1,26 @@
+[15:59:57] L=24 Ne=20 n_q= 6: che H=16 P=9711 t=8.210s [mcmc 0.45 eloc 6.61 grad 0.79] | pcg H=25 P=9788 t=20.003s [mcmc 0.97 eloc 17.56 grad 1.09] | ratio 2.44 (median of pairs 2.36) | wall 119s
+[15:59:57]     profile (2048 configs, no P_G): che_logpsi0 37.0 ms, pcg_fc 16.9 ms, pcg_X 51.2 ms, pcg_pf 27.7 ms, pcg_logpsi0 109.0 ms
+[15:59:57] wrote ../P4.1_cheap_su2_r34cost/retime_kim-compute-03.physics.cornell.edu_t1.json
+	Command being timed: "/home/jek354/.conda/envs/lit_env/bin/python retime.py --mode timing --sizes 8 --old-sizes  --repeats 3 --n-chains 1024 --threads 1 --outdir ../P4.1_cheap_su2_r34cost"
+	User time (seconds): 83.75
+	System time (seconds): 37.13
+	Percent of CPU this job got: 98%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:02.91
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1049844
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 842
+	Minor (reclaiming a frame) page faults: 24417382
+	Voluntary context switches: 8126
+	Involuntary context switches: 46290
+	Swaps: 0
+	File system inputs: 213224
+	File system outputs: 184
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

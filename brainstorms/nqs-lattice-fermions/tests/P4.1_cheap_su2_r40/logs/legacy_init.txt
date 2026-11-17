@@ -1,0 +1,4 @@
+nnbf_SG (-6.2824656105282575, -3.35e-19)
+che (-6.2804616069464805, 1.23e-17)
+drift (-7.825504891193659, 5.31e-18)
+# legacy fix_test.py at seed-0 init; che drift4000 theta. 451886 recorded E_init: che -6.277009865688369, nnbf_SG -6.282599213109587

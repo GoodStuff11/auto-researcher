@@ -29,3 +29,12 @@ Reported only: trunc (cutoff 1e-4) for V1 and V2; cosine to the exact direction 
   route; a PASS only promotes it to a multi-step staleness test. V10 (R33) must also reach a variance reduction of
   the force (metric norm (S_T,exact + 1e-3)^{-1}, 16 seeds, no energies) of at least K, the mean number of Hamiltonian
   connections per sampled row (its cost multiplier), or it is KILLED at equal cost.
+
+## Erratum (2026-11-17, per-leaf critic round 23, objection 10; appended, rule text above unchanged)
+
+The route numbers above are the round-22 working numbers, renumbered before the cards were written. Read them as:
+old R30 (V4, stale-metric reuse) = card R35 `rls-S`; old R29 (V5, fresh-sample reuse) = card R34 `reuse`;
+old R33 (V10, control variate) = card R37 `cv`; old R27-blocked (V9a/V9b) = card R32 `bsr`; old R31 (metric side,
+V6-V8 shrinkage) = card R36 `shrink` (by variant). Old R34 in the force-side class bound has no card mapping from
+the critic; read it by variant in log `leaves/P4.1/log/round-22.md`. The class bounds are no longer used as kill
+reasons: same-sample S and f errors partly cancel, so exact S with sampled f is not an upper bound (cards R32, R36).

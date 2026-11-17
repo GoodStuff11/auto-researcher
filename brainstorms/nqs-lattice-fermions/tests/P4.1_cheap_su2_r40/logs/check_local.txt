@@ -1,0 +1,1 @@
+[16:12:13] checks {'PS_vs_projS': 1.6486811915683575e-14, 'nnbf_init_vs_legacy': 8.881784197001252e-16, 'grad_fd_rel': 3.6482532954252597e-11, 'che_start_vs_record': 1.7763568394002505e-15, 'sum_block_d2': 20491416, 'valid': True, 'cpu_min': 0.5339067623333335}

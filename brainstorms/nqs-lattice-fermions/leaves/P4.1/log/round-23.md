@@ -45,6 +45,10 @@ Source of the job facts: orchestrator's gated-results digest for 2026-11-17 (job
 * Unledgered interactive spend in round 22 (R27–R38 probes): about 1.5 CPU-h, above the 10 CPU-min per-T1 allowance (includes a batch lost to a session interrupt and rerun).
 * R16/R17 `che` run: 18.8 CPU-min against a 10 CPU-min cap (numpy imported before the BLAS thread variables were set; BLAS used 20 cores). Fixed in `t1_polished.py`; the `pcg` run was single-threaded (4.5 CPU-min).
 * Leaf totals: gated jobs 8.0 CPU-h (731462, 742206, 748750, 748762, 752885); interactive since r21 about 2.2 CPU-h (r21 0.15, r22 1.5, R16/R17 0.39, R30 0.15).
+* Added 2026-11-17 (per-leaf critic, round 23, objection 16; the lines above are unchanged):
+  * The round-22 R27–R29 exact-optimiser batch (34.6 CPU-min) ran as one interactive session, above the 10 CPU-min interactive allowance; it should have been a gated quick-note job.
+  * The round-22 guided-sampling run (RULE_C, 15 steps, 12.0 CPU-min for 247 s wall) ran with unpinned BLAS threads (multi-threaded), also above the 10 CPU-min allowance, and was not listed above. This is a repeat of the BLAS-thread failure of the R16/R17 `che` run.
+  * No result is invalidated: the results resting on these runs (R27, R28, R29, R32, R35–R37, the R38 screen and RULE_C, the `che` half of R16) are exact sums or fixed-seed computations, so the thread count and session type change only the cost, not the numbers.
 
 ## 9. State decision
 

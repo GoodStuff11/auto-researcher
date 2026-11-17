@@ -1,0 +1,1 @@
+[16:15:16] timing {'setup_nnbf': 0.12738511021666668, 'energy_nnbf': 0.025141784483333346, 'energy_grad_nnbf': 0.06454290205000002, 'pipeline_rel': 3.6928452870426095e-15, 'logder_fd_rel': 1.428151329328306e-10, 'logder_rows_per_8192': 0.08098158873333328, 'PS_and_H_per_256_cols': 0.07986534919999996, 'build_extrapolated': 2.401967844199217, 'cpu_min_total': 0.8715033613000001}
