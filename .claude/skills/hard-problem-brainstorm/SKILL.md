@@ -31,7 +31,7 @@ Files in this skill's base directory:
    - **The budget is set once at Step 0.** Leaves draw from it, and a leaf whose spend stops changing decisions is closed as DORMANT, not funded further. Only jobs above 1000 CPU-hours, and changes to the budget, go to the user.
    - **When no job passes the gate, keep thinking, not computing.** Refill routes at T0 and T1, or close the leaf with a Saturation Diagnostic. "Not worth running" is a valid and valuable outcome; record the prediction instead of the job.
 1. **Anti-Drift Anchoring**: Step 0 (Invariants) is immutable once set. No subsequent phase, subagent worker, or critic pass may soften, redefine, or bypass the Hard Core or Unacceptable Outcome.
-2. **Persistence Mandate in Ideas, Not in Jobs (Zero Early Surrender)**: The agent is strictly forbidden from terminating with "no viable routes found" or giving up when a batch of candidate ideas is killed. Falsification is a diagnostic signal to trigger branching, mutation, or fresh generation, not a stopping condition. Persistence means more routes generated and gated at T0 and T1; it never justifies a job that fails the Compute Value Gate (rule 0). A leaf ends honestly in one of the states of the Leaf Status Summary (ANSWERED, PROVEN-IMPOSSIBLE, EXHAUSTED at this scale, DORMANT), never by surrender and never by spending past the point where results change decisions.
+2. **Persistence Mandate in Ideas, Not in Jobs (Zero Early Surrender)**: The agent is strictly forbidden from terminating with "no viable routes found" or giving up when a batch of candidate ideas is killed. Falsification is a diagnostic signal to trigger branching, mutation, or fresh generation, not a stopping condition. Persistence means more routes generated and gated at T0 and T1; it never justifies a job that fails the Compute Value Gate (rule 0). A leaf ends honestly in one of the states of the Leaf Status Summary (ANSWERED, PROVEN-IMPOSSIBLE, EXHAUSTED at this scale, EXHAUSTED at this budget, DORMANT; transitions in Mode B section 3b), never by surrender and never by spending past the point where results change decisions.
 3. **The Novelty & Adoption Mandate**: The goal is strictly novel directions. If a proposed idea already exists in the literature:
    - It cannot be presented as a novel solution.
    - You must answer: "Why is this not the universal standard in widespread use?"
@@ -147,7 +147,7 @@ Provide each worker with:
 #### 3. Leaf Artifact Schema (Written by Workers to `.subproblems/P{i}_{slug}.md`)
 ```markdown
 # Subproblem: [P{i} Title]
-**Parent Chain**: [P{parent} -> P{i}]  **Status**: OPEN | DORMANT | EXHAUSTED at this scale | ANSWERED | PROVEN-IMPOSSIBLE (must match the Leaf Status Summary)
+**Parent Chain**: [P{parent} -> P{i}]  **Status**: OPEN | DORMANT | EXHAUSTED at this scale | EXHAUSTED at this budget | ANSWERED | PROVEN-IMPOSSIBLE (must match the Leaf Status Summary)
 
 ### 1. Mathematical Abstraction & Barriers
 * **Formulation**: Explicit inputs, outputs, and what "solved" means.
@@ -177,7 +177,7 @@ Provide each worker with:
 * Log of all killed parent ideas and why they were mutated or discarded.
 
 ## Leaf Status Summary
-* **State**: OPEN | DORMANT | EXHAUSTED at this scale | ANSWERED | PROVEN-IMPOSSIBLE
+* **State**: OPEN | DORMANT | EXHAUSTED at this scale | EXHAUSTED at this budget | ANSWERED | PROVEN-IMPOSSIBLE
 * **Updated**: YYYY-MM-DD (after which result)
 * **Conclusion**: two or three sentences a reader can trust without reading the leaf.
 * (state-specific fields, see "Leaf Status Summary rules" below)
@@ -203,16 +203,50 @@ Write it so that each claim is traceable: cite the section or job id where the n
 * `Most promising direction`: the single best live route, with its mechanism, the strongest evidence for it so far and the evidence against it.
 * `Next step`: the concrete next test (tier, cost, pre-registered rule in one line), or the job in flight and what each verdict will trigger.
 * `What would close it`: the result that would move the leaf to EXHAUSTED, ANSWERED or PROVEN-IMPOSSIBLE.
+* DORMANT only: `Entered because` (which trigger of section 3b) and the `Reopening ledger` table of section 3b.
 
-**Leaf truly complete: `State: ANSWERED`, `PROVEN-IMPOSSIBLE` or `EXHAUSTED at this scale`.** These states are allowed only with a **closure certificate** containing all of:
+**Leaf truly complete: `State: ANSWERED`, `PROVEN-IMPOSSIBLE`, `EXHAUSTED at this scale` or `EXHAUSTED at this budget`.** These states are allowed only with a **closure certificate** containing all of:
 1. `Claim`: the exact statement that is now settled, with its scope.
 2. `Decisive evidence`: the results that settle it (job ids or derivations, verdicts under pre-registered rules, and the critic that reviewed them). For PROVEN-IMPOSSIBLE, the proof or its location and the model it holds in.
 3. `Why no doubt remains`: every critic objection and confound raised in the leaf, each with how it was resolved, plus the cross-node critic's objections that touch this leaf.
-4. `Falsifiers run`: every falsifier named by the leaf's diagnostics or critics, with its result. A named falsifier that has not run blocks these states.
-5. `Missing ingredients exhausted` (EXHAUSTED only): every ingredient named by the Saturation Diagnostic, the route generated from it, and the tier at which it was killed. An ingredient without a killed route blocks EXHAUSTED; the leaf stays DORMANT.
-6. `What would reopen it`: the specific new evidence, scale or method that would invalidate the claim.
+4. `Falsifiers run`: every falsifier named by the leaf's diagnostics or critics, with its result. A named falsifier that has not run blocks these states, except EXHAUSTED at this budget, where a falsifier refused by the compute gate is listed with its refusal (section 3b, exit 3).
+5. `Missing ingredients exhausted` (both EXHAUSTED states): every ingredient named by the Saturation Diagnostic, the route generated from it, and the tier at which it was killed, or, for EXHAUSTED at this budget only, the gate refusal that stopped it. An ingredient with neither blocks EXHAUSTED; the leaf stays DORMANT.
+6. `What would reopen it`: the specific new evidence, scale or method that would invalidate the claim. For EXHAUSTED at this budget, also each refused step's capped cost and the budget that would fund it.
 
 If any certificate item cannot be filled honestly, the leaf is DORMANT, not closed. The per-leaf critic signs off on every certificate before the state changes, and the master's "Current leaf state" table copies each leaf's `State` and `Conclusion` verbatim.
+
+#### 3b. The Leaf State Machine: Entering and Leaving DORMANT
+
+DORMANT means "no route is currently worth compute, but the leaf is not settled". It is a working state with a fixed to-do list, not a parking place: every DORMANT leaf eventually leaves by one of the exits below, and the exits are checked every time the leaf is touched.
+
+**Entering DORMANT.** A leaf becomes DORMANT when any of the following happens, and the Leaf Status Summary records which under `Entered because`:
+* a Saturation Diagnostic is adopted (Stage 3.3, Stage 3.5.3);
+* a closure certificate is attempted but one of its items cannot be filled honestly (3a);
+* the compute gate's no-change streak fires (G6, Stage 3.5.8);
+* the leaf reaches its CPU-hour budget (G5, Stage 3.5.8).
+
+**The reopening ledger.** The Leaf Status Summary of a DORMANT leaf carries one table that lists everything still owed, with one row per item. Every row ends in one of the outcomes shown:
+
+| Item | Source | Route or test | Outcome |
+| :--- | :--- | :--- | :--- |
+| each named missing ingredient or untried regime | the Saturation Diagnostic | at least one route, taken through the gates, T0 and T1 | `KILLED(tier)`, `SURVIVED-T1` or `GATE-REFUSED(reason)` |
+| each named falsifier | the diagnostic and the critics | the falsifying test | `DIAGNOSTIC-HOLDS`, `DIAGNOSTIC-FALSIFIED` or `GATE-REFUSED(reason)` |
+| the reopen justification (G6 dormancy only) | a new ingredient, a different question, or a cheaper decisive test | auditor review (3.5.7) | `APPROVED` or `REFUSED` |
+
+* Rows that fit T0 or T1 are thinking-queue work (Stage 3.5.3, step 3) and run while other leaves compute.
+* A falsifier or route step larger than T1 is an ordinary job: a value-of-information note whose `decision` line is "reopen the leaf or not", `compute_gate.py`, and the auditor above 10 CPU-hours. A refusal by the gate or the auditor is recorded as `GATE-REFUSED` with its reason; it is an outcome, not an open item.
+* A budget (G5) dormancy has no exit through the agent other than a cheaper version of the refused step. Raising a leaf's budget is the user's decision.
+
+**Exits.** Check them in this order whenever a row's outcome changes:
+1. **DORMANT → OPEN** when a falsifier returns `DIAGNOSTIC-FALSIFIED`; or a route returns `SURVIVED-T1` and its next step needs no compute or passes the gate (with the auditor's approval where required); or the auditor approves a G6 reopen justification. The leaf reopens with only those routes. The 3-route portfolio refill (3.5.2) resumes only after a reopened route passes T2, so a reopening does not restart the whole portfolio. In the same turn:
+   * rewrite the Leaf Status Summary (`State: OPEN`, `Updated` naming the result, and the diagnostic marked falsified or narrowed);
+   * update the master's "Current leaf state" row;
+   * add an entry to the Revision & Critic Log.
+2. **DORMANT → EXHAUSTED at this scale** when every row is `KILLED` or `DIAGNOSTIC-HOLDS`, with the closure certificate (3a).
+3. **DORMANT → EXHAUSTED at this budget** when every row is closed and at least one is `GATE-REFUSED`: a route survived T1, or a falsifier is named, but its next step was refused as unaffordable (G5) or not worth its cost (G2, or the auditor). The closure certificate lists each refused step: what it would test, its capped cost, why it was refused, and the budget or new evidence that would reopen it. This is terminal for the agent and is stated in the master Summary without asking the user. It reopens only if the user raises the budget, or if new evidence makes a refused step cheap or decisive.
+4. **DORMANT → ANSWERED or PROVEN-IMPOSSIBLE** with the full closure certificate (3a).
+
+**No silent dormancy.** A DORMANT leaf whose reopening ledger has no open row must take one of the exits in the same turn. Before any idle wait (Stage 3.5.3, step 5), each DORMANT leaf gets one line: its open rows, or the exit it just took.
 
 #### 4. The Fan-In Synthesis (Incremental Master Compilation)
 As each worker returns (not after all of them), the orchestrator lints that artifact with `python3 check_brainstorm.py .subproblems/P{i}_{slug}.md`. An artifact with Markdown errors is fixed, or sent back to its worker. The orchestrator then reads it and adds or updates its row in the **Master Leaf Synthesis Matrix** in `brainstorm-<slug>.md`, together with its pipeline state and `Blocked on` entry (step 0):
@@ -357,8 +391,8 @@ The orchestrator (and any worker that owns a leaf) follows this loop. It replace
    * **refill when every live route of a leaf is in flight.** For scheduling, a leaf whose live routes are all `IN-FLIGHT` has an empty portfolio: generate and gate at least one new route (Operation A on the latest kill, or Operation B), and take it through T0 and T1 while the jobs run;
    * **untested variants and merged routes** that a critic kept alive but nobody has run (e.g. a variant merged into another route);
    * **open gaps and caveats named by critics or results** that a cheap T0 or T1 check can settle (e.g. "the sampled force is untested", "the foil may be confounded", "the toy did not test X");
-   * **falsifiers of closed leaves.** Every Saturation Diagnostic names the experiment that would falsify it. Run the ones that fit T0 or T1 caps; a falsified diagnostic reopens its leaf with that route only;
-   * **routes from Saturation Diagnostics.** A Saturation Diagnostic is not a terminal state: it says which routes failed at this scale and names the missing ingredients. A leaf closed with a diagnostic is **DORMANT**, not finished. Each named missing ingredient and each untried regime is a route source: generate at least one route from each, and take it through the gates, T0 and T1. Only when every named ingredient has a route killed at T0 or T1 (with the kill recorded) is the leaf **EXHAUSTED at this scale**. Report leaves as ANSWERED (a diagnostic question with an answer), PROVEN-IMPOSSIBLE (within a stated model, with the proof), EXHAUSTED at this scale, or DORMANT — never just "closed";
+   * **falsifiers of closed leaves.** Every Saturation Diagnostic names the experiment that would falsify it. Run the ones that fit T0 or T1 caps; larger ones go through the compute gate as ordinary jobs. Record each outcome in the leaf's reopening ledger; a falsified diagnostic reopens its leaf with that route only (Mode B section 3b, exit 1);
+   * **routes from Saturation Diagnostics.** A Saturation Diagnostic is not a terminal state: it says which routes failed at this scale and names the missing ingredients. A leaf closed with a diagnostic is **DORMANT**, not finished. Each named missing ingredient and each untried regime is a route source: generate at least one route from each, and take it through the gates, T0 and T1, recording each in the reopening ledger. The leaf then leaves DORMANT by the exits of Mode B section 3b: back to OPEN if a route survives and its next step passes the gate, EXHAUSTED at this scale if every ingredient's route was killed, or EXHAUSTED at this budget if a surviving route's next step was refused by the gate. Report leaves as ANSWERED (a diagnostic question with an answer), PROVEN-IMPOSSIBLE (within a stated model, with the proof), EXHAUSTED at this scale, EXHAUSTED at this budget, or DORMANT — never just "closed";
    * **cross-node critic and master synthesis.** Run the cross-node critic whenever two or more leaves have changed status (closed, promoted, killed) since the last one, and keep the master Summary and Cross-Pollination current with every closure;
    * **cleanup of the compute queue.** Cancel any queued or running job whose verdict can no longer change a decision (e.g. a pre-registered rule that is already decided from data on disk), and record why (Stage 3.5.6 queue review; no confirmation needed).
 4. **On every job checkpoint or completion**, apply the early-stop rule (3.5.5) or the verdict rule, update the portfolio row, and launch the pre-planned next action.
@@ -432,7 +466,7 @@ On APPROVED, write `auditor: APPROVED <date>` into the note; the auditor's reaso
 
 ### 3.5.8 Diminishing Returns and Prediction Calibration
 
-* **No-change streak (G6).** When a leaf's last 3 finished jobs all changed no decision, the gate refuses further jobs for that leaf. The leaf moves to DORMANT with a Saturation Diagnostic unless a `reopen-justification` (a new ingredient, a different question, a cheaper decisive test) is approved by the auditor. Thinking-queue work on the leaf continues.
+* **No-change streak (G6).** When a leaf's last 3 finished jobs all changed no decision, the gate refuses further jobs for that leaf. The leaf moves to DORMANT with a Saturation Diagnostic unless a `reopen-justification` (a new ingredient, a different question, a cheaper decisive test) is approved by the auditor. Thinking-queue work on the leaf continues, and it leaves DORMANT only by the exits of Mode B section 3b. The streak resets once a reopened job changes a decision.
 * **Leaf budget (G5).** A leaf that reaches its budget is closed or made cheaper, not topped up; only the user moves budget between leaves or raises the total.
 * **Calibration.** Every job's prediction and probability go in the ledger, and `record --hit` scores them. When at least 5 predictions with $p\ge0.8$ are scored, the gate adjusts the skip threshold of G2: to 0.7 if at least 90% hit (the agent's confident predictions are reliable, so skip more jobs), and to 0.9 if fewer than 75% hit (they are not, so test more). `compute_gate.py report` prints the current calibration.
 * **Report.** With every synthesis, read the report's flags (streaks, wall-time misses, calibration, budget left) and act on each before the next submission.
