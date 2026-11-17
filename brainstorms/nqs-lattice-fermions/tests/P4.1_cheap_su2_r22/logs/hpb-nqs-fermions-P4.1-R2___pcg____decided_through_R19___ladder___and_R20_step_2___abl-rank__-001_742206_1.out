@@ -2,3 +2,16 @@ r22 ladder arm rank5 on kim-cpu-02.physics.cornell.edu, job 742206_1
 [10:31:46] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
 [10:32:22] rank5: P 2672; checks {'rank12_vs_pcg': 8.881784197001252e-16, 'start_vs_truncate': 1.7763568394002505e-15, 'chain_rule_rel': 0.0, 'nparam': 2672, 'valid': True} [0.63 CPU-min]
 [10:40:47] step 1: cut 1e-05 s 1.0 eps 5.08114e-03 -> 2.32038e-03 (drop 54.33%); predicted gain 2.26e+00 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:0.5 1e-08:0.25 1e-09:0.25 [9.0 CPU-min, step 8.07, wall 543 s]
+[10:49:08] step 2: cut 1e-05 s 1.0 eps 2.32038e-03 -> 1.49049e-03 (drop 35.77%); predicted gain 6.76e-01 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:None [17.3 CPU-min, step 8.33, wall 1044 s]
+[10:58:00] step 3: cut 1e-05 s 1.0 eps 1.49049e-03 -> 1.30647e-03 (drop 12.35%); predicted gain 1.63e-01 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:None [26.2 CPU-min, step 8.84, wall 1576 s]
+[11:06:03] step 4: cut 1e-06 s 0.5 eps 1.30647e-03 -> 1.19975e-03 (drop 8.17%); predicted gain 2.40e-01 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:None [34.2 CPU-min, step 8.01, wall 2059 s]
+[11:13:43] step 5: cut 1e-05 s 1.0 eps 1.19975e-03 -> 9.65996e-04 (drop 19.48%); predicted gain 1.88e-01 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:None [41.8 CPU-min, step 7.65, wall 2519 s]
+[11:21:47] step 6: cut 1e-06 s 0.5 eps 9.65996e-04 -> 9.04425e-04 (drop 6.37%); predicted gain 1.00e-01 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:None [49.9 CPU-min, step 8.04, wall 3003 s]
+[11:29:47] step 7: cut 1e-05 s 1.0 eps 9.04425e-04 -> 8.13843e-04 (drop 10.02%); predicted gain 6.93e-02 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:None [57.8 CPU-min, step 7.97, wall 3483 s]
+[11:38:00] step 8: cut 1e-06 s 0.5 eps 8.13843e-04 -> 7.69325e-04 (drop 5.47%); predicted gain 4.70e-02 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:None [66.0 CPU-min, step 8.20, wall 3976 s]
+[11:38:00] stop: next step would exceed the CPU cap (66.0 + 8.2 > 74.0); resumable
+[11:38:00] rank5: stop None; 8 steps; wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r22/results/state_rank5.json [66.0 CPU-min, 3976 s wall]
+pcg  : stop None; 8 accepted steps; eps 9.26189e-04 -> 4.50360e-04 (tail-extrapolated 4.50360e-04); checks valid True
+che  : stop STOP-CAP; 12 accepted steps; eps 1.21719e-03 -> 7.21736e-04 (tail-extrapolated 6.92996e-04); checks valid True
+rank5: stop None; 8 accepted steps; eps 5.08114e-03 -> 7.69325e-04 (tail-extrapolated 7.69325e-04); checks valid True
+VERDICT: INCOMPLETE

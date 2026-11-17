@@ -1,3 +1,13 @@
 [10:31:46] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
 [10:32:04] pcg: P 2696; checks {'start_vs_r19': 0.0, 'valid': True} [0.33 CPU-min]
 [10:41:48] step 1: cut 1e-06 s 0.5 eps 9.26189e-04 -> 8.05402e-04 (drop 13.04%); predicted gain 1.38e-01 g; rungs 1e-05:0.5 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:None [10.0 CPU-min, step 9.40, wall 604 s]
+[10:50:05] step 2: cut 1e-05 s 1.0 eps 8.05402e-04 -> 7.38372e-04 (drop 8.32%); predicted gain 5.27e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:0.25 1e-08:None 1e-09:None [18.3 CPU-min, step 8.24, wall 1101 s]
+[10:58:29] step 3: cut 1e-06 s 0.5 eps 7.38372e-04 -> 6.75218e-04 (drop 8.55%); predicted gain 5.10e-02 g; rungs 1e-05:1.0 1e-06:0.5 1e-07:0.25 1e-08:None 1e-09:None [26.6 CPU-min, step 8.37, wall 1605 s]
+[11:06:36] step 4: cut 1e-06 s 1.0 eps 6.75218e-04 -> 6.35493e-04 (drop 5.88%); predicted gain 3.33e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:0.25 1e-08:None 1e-09:None [34.7 CPU-min, step 8.10, wall 2093 s]
+[11:14:38] step 5: cut 1e-07 s 0.25 eps 6.35493e-04 -> 5.79814e-04 (drop 8.76%); predicted gain 5.98e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:0.25 1e-08:None 1e-09:None [42.7 CPU-min, step 8.00, wall 2574 s]
+[11:22:27] step 6: cut 1e-06 s 1.0 eps 5.79814e-04 -> 5.34229e-04 (drop 7.86%); predicted gain 3.31e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:0.5 1e-08:None 1e-09:None [50.5 CPU-min, step 7.79, wall 3043 s]
+[11:30:17] step 7: cut 1e-07 s 0.5 eps 5.34229e-04 -> 5.24011e-04 (drop 1.91%); predicted gain 5.66e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:0.5 1e-08:None 1e-09:None [58.3 CPU-min, step 7.81, wall 3513 s]
+[11:37:40] step 8: cut 1e-06 s 1.0 eps 5.24011e-04 -> 4.50360e-04 (drop 14.06%); predicted gain 5.75e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:0.25 1e-09:None [65.7 CPU-min, step 7.36, wall 3956 s]
+[11:45:17] step 9: cut 1e-07 s 0.5 eps 4.50360e-04 -> 4.23029e-04 (drop 6.07%); predicted gain 2.49e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:0.5 1e-08:0.25 1e-09:None [73.3 CPU-min, step 7.60, wall 4413 s]
+[11:45:17] stop: next step would exceed the CPU cap (73.3 + 7.6 > 74.0); resumable
+[11:45:17] pcg: stop None; 9 steps; wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r22/results/state_pcg.json [73.3 CPU-min, 4413 s wall]

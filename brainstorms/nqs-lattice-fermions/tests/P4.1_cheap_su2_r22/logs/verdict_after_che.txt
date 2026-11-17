@@ -1,0 +1,4 @@
+pcg  : stop None; 3 accepted steps; eps 9.26189e-04 -> 6.75218e-04 (tail-extrapolated 6.75218e-04); checks valid True
+che  : stop STOP-CAP; 12 accepted steps; eps 1.21719e-03 -> 7.21736e-04 (tail-extrapolated 6.92996e-04); checks valid True
+rank5: stop None; 3 accepted steps; eps 5.08114e-03 -> 1.30647e-03 (tail-extrapolated 1.30647e-03); checks valid True
+VERDICT: INCOMPLETE

@@ -1,0 +1,41 @@
+{
+ "arms": {
+  "pcg": {
+   "stop": null,
+   "steps": 9,
+   "eps_start": 0.0009261885507405632,
+   "eps": 0.00042302907402955907,
+   "eps_inf": 0.00042302907402955907,
+   "checks": {
+    "start_vs_r19": 0.0,
+    "valid": true
+   }
+  },
+  "che": {
+   "stop": "STOP-CAP",
+   "steps": 12,
+   "eps_start": 0.0012171894941872556,
+   "eps": 0.0007217364129368478,
+   "eps_inf": 0.0006929964799004943,
+   "checks": {
+    "start_vs_r19": 0.0,
+    "valid": true
+   }
+  },
+  "rank5": {
+   "stop": null,
+   "steps": 8,
+   "eps_start": 0.005081137429443648,
+   "eps": 0.0007693253369007404,
+   "eps_inf": 0.0007693253369007404,
+   "checks": {
+    "rank12_vs_pcg": 8.881784197001252e-16,
+    "start_vs_truncate": 1.7763568394002505e-15,
+    "chain_rule_rel": 0.0,
+    "nparam": 2672,
+    "valid": true
+   }
+  }
+ },
+ "verdict": "INCOMPLETE"
+}
