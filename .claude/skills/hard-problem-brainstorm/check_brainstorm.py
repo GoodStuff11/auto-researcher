@@ -14,34 +14,48 @@ Each <path> is either
     * a directory: every *.md file under it is linted, including hidden directories such as
       .subproblems/, skipping tests/, __pycache__/ and .git/.
 
-The document role is detected per file:
-    * master  : file name starts with "brainstorm-", or the file contains "## Invariants".
-                Full structural checks (required core sections, Mode A stages / Mode B matrix,
-                invariants completeness) plus all hygiene checks.
-                Mode B masters also need a "## Kill Index" section and a library.md next to them
-                (warnings K0, K1).
-    * leaf    : the first heading starts with "# Subproblem:".
-                Leaf schema checks ("**Parent Chain**" and "**Status**" present) plus all hygiene
-                checks. The master-only "missing core section" errors are not raised.
-                Route Register checks:
-                    R0 a "## Route Register" section exists (warning) and comes before the final
-                       "## Leaf Status Summary" (error);
-                    R1 every route card ("### R<id> ...") has **The idea**, **Lineage** and
-                       **Outcome**; a KILLED card also has **Kill rule**, **Evidence**, **Why this
-                       kills it**, **What the kill does not rule out**, **Strongest case against the
-                       kill**, **Checked by** and **Lesson**; a SHELVED card has **Why shelved** and
-                       **What would unshelve it** (errors);
-                    R2 a KILLED outcome names where it died: "KILLED at G0".."G4", "T0".."T3" or
-                       "CRITIC" (error);
-                    R3 **The idea** has at least 25 words (warning);
-                    R4 a card whose **Lineage** says "cross-field" or "translation repair" has a
-                       **Source analogy** field (error);
-                    A0 an "Analogy Map" heading exists (warning; also checked on a Mode A master).
-    * library : a file named library.md (the findings library). Every "### L<n>. ..." entry has
-                **Status** (ESTABLISHED, PROVISIONAL or REFUTED), **Applies to**, **The lesson**,
-                **Evidence**, **Scope and limits**, **Counter-evidence and open questions**,
-                **How to use it** and **Sources** (errors L1, L2; warning L0 if there are no entries).
-    * other   : any other Markdown file (briefs, notes). Hygiene checks only.
+The document role is detected per file, by path in the leaves/ layout (ref/records.md, "Documents and
+context") and by content for legacy files:
+    * master       : brainstorm-*.md (the front page), or a file with "## Invariants". Requires "## Summary",
+                     "## Invariants" and a "Final Tree" heading (legacy layout: also "## Revision & Critic
+                     Log"). Warns K0 if there is no kill_index.md (or legacy "## Kill Index"), K1 if there is
+                     no library.md, L9 if the directory has no leaves/ (legacy layout). No size cap: the front page
+                     grows with the leaves (ref/records.md, size policy).
+    * leaf-summary : leaves/<id>/summary.md. Errors: S0 it starts with "# Subproblem: <id> <title>", has
+                     **Parent Chain** and **Status**, and ends with "## Leaf Status Summary"; S1 the summary
+                     has **State**, **Question**, **Answer**, **What we showed** and **What it would take**;
+                     S2 the Status line matches State; S3 Question equals the leaf's Final Tree question in
+                     the front page word for word (warning if the bullet is not found); S4 a yes/no Question
+                     ("Can", "Is", "Does", ...) has an Answer opening with Yes, No, Partly or Not known.
+                     Warning C0 over 2500 tokens.
+    * leaf-problem : leaves/<id>/problem.md. Warning A0 without an "Analogy Map" heading. No size cap (it grows with the
+                     Analogy Map; ref/records.md, size policy).
+    * card         : leaves/<id>/cards/<R>.md. Starts with "# R<id> — <name> (<STATE>)"; route-card fields
+                     R1-R4 as below; warning C0 over 900 tokens.
+    * kill-index   : kill_index.md. Error K2 for a [[leaves/...]] link with no card file; warning K3 for a
+                     legacy [[.subproblems/...]] link.
+    * library      : library.md. Entry fields L0-L2 as below; warnings C1 for an entry over 700 tokens and
+                     C2 for an index line over 80 tokens.
+    * archive      : history.md and anything under a log/ directory. Hygiene checks only, no size cap.
+    * leaf         : legacy single-file leaf (first heading "# Subproblem:" outside leaves/). The legacy
+                     "## Route Register" checks below, plus warning L9 (run `bs.py migrate`).
+    * other        : any other Markdown file (briefs, notes). Hygiene checks only.
+
+Route-card fields (card files, and legacy Route Registers):
+    R0 (legacy only) a "## Route Register" section exists (warning) and comes before the final
+       "## Leaf Status Summary" (error);
+    R1 every card has **The idea**, **Lineage** and **Outcome**; a KILLED card also has **Kill rule**,
+       **Evidence**, **Why this kills it**, **What the kill does not rule out**, **Strongest case against
+       the kill**, **Checked by** and **Lesson**; a SHELVED card has **Why shelved** and **What would
+       unshelve it** (errors);
+    R2 a KILLED outcome names where it died: "KILLED at G0".."G4", "T0".."T3" or "CRITIC" (error);
+    R3 **The idea** has at least 25 words (warning);
+    R4 a card whose **Lineage** says "cross-field" or "translation repair" has **Source analogy** (error).
+Library entries ("### L<n>. ..."): L1 every field (**Status**, **Applies to**, **The lesson**, **Evidence**,
+    **Scope and limits**, **Counter-evidence and open questions**, **How to use it**, **Sources**); L2 Status
+    is ESTABLISHED, PROVISIONAL or REFUTED (errors); L0 no entries at all (warning).
+
+Approximate tokens are characters / 4.
 
 Hygiene checks (all roles):
     Markdown structure (errors, because they change how the document renders in Obsidian/GFM):
@@ -169,7 +183,7 @@ def check_route_register(lines):
     out = []
     sec = _section(lines, r"^##\s+Route Register")
     if sec is None:
-        return [("WARNING", 1, "R0 leaf has no '## Route Register' section: every route ever generated needs a route card (SKILL.md, Route Register).")]
+        return [("WARNING", 1, "R0 leaf has no '## Route Register' section: every route ever generated needs a route card (ref/records.md).")]
     summ = _section(lines, r"^##\s+Leaf Status Summary")
     if summ is not None and summ[0] < sec[0]:
         out.append(("ERROR", sec[0] + 1, "R0 '## Route Register' must come before '## Leaf Status Summary', which is always the last section."))
@@ -214,8 +228,184 @@ def check_library(lines):
     return out
 
 
+# Hard caps only for fixed-scope records (ref/records.md, "Size policy"); growing documents
+# (front page, problem.md, kill index) are uncapped and reported by `bs.py sizes` as advice.
+CAPS = {"leaf-summary": 2500, "card": 900}
+LIB_ENTRY_CAP, LIB_INDEX_LINE_CAP = 700, 80
+SUMMARY_FIELDS = ["State", "Question", "Answer", "What we showed", "What it would take"]
+YESNO_START = re.compile(r"^(Can|Is|Are|Does|Do|Did|Will|Would|Should|Could|Has|Have|May|Must)\b")
+ANSWER_OPEN = re.compile(r"^\**\s*(Yes|No|Partly|Not known)\b")
+
+
+def approx_tokens(text):
+    return len(text) // 4
+
+
+def _norm(s):
+    return " ".join(s.replace("**", "").split())
+
+
+def final_tree_question(master_text, leaf):
+    """Text of the leaf's Final Tree bullet after its bold title, or None."""
+    m = re.search(r"^\s*\*\s+\*\*" + re.escape(leaf) + r"\s+\[leaf\][^*]*\*\*\s*(.*)$", master_text, re.MULTILINE)
+    return m.group(1).strip() if m else None
+
+
+def _find_master(start_dir):
+    d = os.path.abspath(start_dir)
+    for _ in range(4):
+        for n in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+            if n.startswith("brainstorm-") and n.endswith(".md"):
+                return os.path.join(d, n)
+        d = os.path.dirname(d)
+    return None
+
+
 def detect_role(filepath, content):
-    """Classify a Markdown file as 'library', 'master', 'leaf' or 'other'."""
+    """Classify a Markdown file by its path (leaves/ layout) or, for legacy files, by its content."""
+    parts = os.path.abspath(filepath).split(os.sep)
+    name = parts[-1]
+    if "leaves" in parts:
+        rel = parts[parts.index("leaves") + 1:]
+        if len(rel) == 2 and rel[1] == "summary.md":
+            return "leaf-summary"
+        if len(rel) == 2 and rel[1] == "problem.md":
+            return "leaf-problem"
+        if len(rel) == 3 and rel[1] == "cards":
+            return "card"
+        return "archive"
+    if "log" in parts[:-1] or name == "history.md":
+        return "archive"
+    if name == "library.md":
+        return "library"
+    if name == "kill_index.md":
+        return "kill-index"
+    if name.startswith("brainstorm-") or re.search(r"^##\s+Invariants", content, re.MULTILINE):
+        return "master"
+    for line in content.splitlines():
+        if line.startswith("#"):
+            return "leaf" if re.match(r"^#\s+Subproblem:", line) else "other"
+    return "other"
+
+
+def check_card_file(lines):
+    """A card file: '# R<id> — name (STATE)' and the fields of a route card (R1-R4)."""
+    if not lines or not re.match(r"^#\s+R", lines[0]):
+        return [("ERROR", 1, "R1 a card file must start with '# R<id> — <name> (<STATE>)'.")]
+    return [x for x in check_route_register(["## Route Register\n", "### " + lines[0][2:]] + lines[1:])
+            if not x[2].startswith("R0")]
+
+
+def check_summary_file(filepath, lines, content):
+    out = []
+    if not lines or not re.match(r"^#\s+Subproblem:\s*(\S+)", lines[0]):
+        return [("ERROR", 1, "S0 summary.md must start with '# Subproblem: <id> <title>'.")]
+    leaf = re.match(r"^#\s+Subproblem:\s*(\S+)", lines[0]).group(1)
+    for pat in REQUIRED_LEAF_FIELDS:
+        if not re.search(pat, content):
+            out.append(("ERROR", 1, f"S0 missing the field matching '{pat}'."))
+    sec = _section(lines, r"^##\s+Leaf Status Summary")
+    if sec is None:
+        return out + [("ERROR", 1, "S0 no '## Leaf Status Summary' section.")]
+    later = [i for i, l in enumerate(lines) if re.match(r"^##\s", l) and i > sec[0]]
+    if later:
+        out.append(("ERROR", later[0] + 1, "S0 '## Leaf Status Summary' must be the last section of summary.md."))
+    block = "".join(lines[sec[0]:sec[1]])
+    for f in SUMMARY_FIELDS:
+        if not _field(block, f):
+            out.append(("ERROR", sec[0] + 1, f"S1 Leaf Status Summary is missing '**{f}**:'."))
+    state = _field(block, "State")
+    status_line = next((l for l in lines[:6] if "**Status**" in l), "")
+    if state and status_line and _norm(state).split("(")[0].strip().split(";")[0][:20] not in _norm(status_line):
+        out.append(("ERROR", sec[0] + 1, f"S2 the Status line does not match State '{state[:40]}'."))
+    q, ans = _field(block, "Question"), _field(block, "Answer")
+    master = _find_master(os.path.dirname(filepath))
+    if q and master:
+        ft = final_tree_question(open(master, encoding="utf-8").read(), leaf)
+        if ft is None:
+            out.append(("WARNING", sec[0] + 1, f"S3 no Final Tree bullet '**{leaf} [leaf] ...**' found in {os.path.basename(master)} to check the Question against."))
+        elif _norm(ft) != _norm(q):
+            out.append(("ERROR", sec[0] + 1, "S3 Question is not the leaf's Final Tree question word for word."))
+    if q and ans and YESNO_START.match(_norm(q)) and not ANSWER_OPEN.match(_norm(ans)):
+        out.append(("ERROR", sec[0] + 1, "S4 a yes/no Question needs an Answer that opens with Yes, No, Partly or Not known (the reply to the question as asked)."))
+    return out
+
+
+def check_kill_index(filepath, content):
+    out = []
+    base = os.path.dirname(os.path.abspath(filepath))
+    for i, line in enumerate(content.splitlines(), 1):
+        for m in re.finditer(r"\[\[(leaves/[^\]|#]+)\]\]", line):
+            if not os.path.exists(os.path.join(base, m.group(1) + ".md")):
+                out.append(("ERROR", i, f"K2 link [[{m.group(1)}]] has no card file."))
+        if re.search(r"\[\[\.subproblems/", line):
+            out.append(("WARNING", i, "K3 legacy link to .subproblems/: run `bs.py migrate`."))
+    return out
+
+
+def size_check(role, content, lines):
+    out = []
+    cap = CAPS.get(role)
+    if cap and approx_tokens(content) > cap:
+        out.append(("WARNING", 1, f"C0 about {approx_tokens(content)} tokens, over the {cap}-token cap for a {role}: compact it (briefs/compactor.md)."))
+    if role == "library":
+        for ln, title, text in _cards(lines, 0, len(lines), r"^###\s+L\d+"):
+            if approx_tokens(title + text) > LIB_ENTRY_CAP:
+                out.append(("WARNING", ln, f"C1 {title[:40]}...: about {approx_tokens(title + text)} tokens, over the {LIB_ENTRY_CAP}-token entry cap."))
+        idx = _section(lines, r"^##\s+Index")
+        if idx:
+            for i in range(idx[0] + 1, idx[1]):
+                if approx_tokens(lines[i]) > LIB_INDEX_LINE_CAP:
+                    out.append(("WARNING", i + 1, f"C2 index line over {LIB_INDEX_LINE_CAP} tokens: one plain sentence per entry."))
+    return out
+
+
+def role_checks(filepath, lines, content, role):
+    """Role-specific (level, line, message) findings."""
+    out = []
+    is_mode_b = "Master Leaf Synthesis Matrix" in content or "Stage 1.5" in content
+    base = os.path.dirname(os.path.abspath(filepath))
+    new_layout = os.path.isdir(os.path.join(base, "leaves"))
+    if role == "master":
+        req = [r"^##\s+Summary", r"^##\s+Invariants", r"^#{2,3}\s+Final Tree"]
+        if not new_layout:
+            req += [r"^##\s+Revision & Critic Log"]
+        for pattern in req:
+            if not re.search(pattern, content, re.MULTILINE):
+                out.append(("ERROR", 1, f"Missing required core section matching: '{pattern}'"))
+        if not re.search(r"^##\s+Kill Index", content, re.MULTILINE) and not os.path.exists(os.path.join(base, "kill_index.md")):
+            out.append(("WARNING", 1, "K0 no kill_index.md (one row per killed or shelved route, linking its card)."))
+        if not os.path.exists(os.path.join(base, "library.md")):
+            out.append(("WARNING", 1, "K1 no library.md next to the front page: the findings library is required."))
+        if not new_layout:
+            out.append(("WARNING", 1, "L9 legacy layout (no leaves/): run `bs.py migrate` so documents stay within context."))
+        elif not is_mode_b and not re.search(r"Analogy Map", content):
+            pass
+    elif role == "library":
+        out += check_library(lines)
+    elif role == "kill-index":
+        out += check_kill_index(filepath, content)
+    elif role == "leaf-summary":
+        out += check_summary_file(filepath, lines, content)
+    elif role == "leaf-problem":
+        if not re.search(r"^#{2,4}\s+(1b\.\s+)?Analogy Map", content, re.MULTILINE):
+            out.append(("WARNING", 1, "A0 no 'Analogy Map' heading: map the barrier to how other fields attacked the same structure before generating routes (ref/setup.md, Stage 2 item 3)."))
+    elif role == "card":
+        out += check_card_file(lines)
+    elif role == "leaf":
+        for pattern in REQUIRED_LEAF_FIELDS:
+            if not re.search(pattern, content):
+                out.append(("ERROR", 1, f"Leaf artifact is missing the field matching: '{pattern}'"))
+        out += check_route_register(lines)
+        if not re.search(r"^#{2,4}\s+(1b\.\s+)?Analogy Map", content, re.MULTILINE):
+            out.append(("WARNING", 1, "A0 no 'Analogy Map' heading (ref/setup.md, Stage 2 item 3)."))
+        out.append(("WARNING", 1, "L9 legacy single-file leaf: run `bs.py migrate` so documents stay within context."))
+    out += size_check(role, content, lines)
+    return out
+
+
+def detect_role_legacy(filepath, content):
+    """Legacy content-based role detection (kept for reference)."""
     if os.path.basename(filepath) == "library.md":
         return "library"
     if os.path.basename(filepath).startswith("brainstorm-") or re.search(r"^##\s+Invariants", content, re.MULTILINE):
@@ -330,44 +520,11 @@ def check_file(filepath):
     print(f"--- Linting: {filepath} (role: {role}) ---")
 
     # 1. Required structure per role
+    for level, ln, msg in role_checks(filepath, lines, content, role):
+        print(f"[{level}] Line {ln}: {msg}")
+        errors += level == "ERROR"
+        warnings += level == "WARNING"
     is_mode_b = "Master Leaf Synthesis Matrix" in content or "Stage 1.5" in content
-    if role == "master":
-        for pattern in REQUIRED_CORE_SECTIONS:
-            if not re.search(pattern, content, re.MULTILINE):
-                print(f"[ERROR] Missing required core section matching: '{pattern}'")
-                errors += 1
-        if not is_mode_b:
-            for stage in [r"^##\s+Stage 2", r"^##\s+Stage 3", r"^##\s+Stage 4"]:
-                if not re.search(stage, content, re.MULTILINE):
-                    print(f"[ERROR] Mode A active, but missing stage: '{stage}'")
-                    errors += 1
-        elif "Master Leaf Synthesis Matrix" not in content and "Leaf Comparison Matrix" not in content:
-            print("[WARNING] Mode B indicated, but no Master Leaf Matrix found in document.")
-            warnings += 1
-        if not re.search(r"^##\s+Kill Index", content, re.MULTILINE):
-            print("[WARNING] K0 master has no '## Kill Index' (one row per killed or shelved route, linking its route card).")
-            warnings += 1
-        if not os.path.exists(os.path.join(os.path.dirname(filepath) or ".", "library.md")):
-            print("[WARNING] K1 no library.md next to the master: the findings library is required (SKILL.md, Findings Library).")
-            warnings += 1
-    elif role == "library":
-        for level, ln, msg in check_library(lines):
-            print(f"[{level}] Line {ln}: {msg}")
-            errors += level == "ERROR"
-            warnings += level == "WARNING"
-    elif role == "leaf":
-        for pattern in REQUIRED_LEAF_FIELDS:
-            if not re.search(pattern, content):
-                print(f"[ERROR] Leaf artifact is missing the field matching: '{pattern}'")
-                errors += 1
-        for level, ln, msg in check_route_register(lines):
-            print(f"[{level}] Line {ln}: {msg}")
-            errors += level == "ERROR"
-            warnings += level == "WARNING"
-    if role == "leaf" or (role == "master" and not is_mode_b):
-        if not re.search(r"^#{2,4}\s+(1b\.\s+)?Analogy Map", content, re.MULTILINE):
-            print("[WARNING] A0 no 'Analogy Map' heading: map the barrier to how other fields attacked the same structure before generating routes (SKILL.md Stage 2, item 3).")
-            warnings += 1
 
     # 2. Zero Early Surrender
     for phrase in SURRENDER_PHRASES:
