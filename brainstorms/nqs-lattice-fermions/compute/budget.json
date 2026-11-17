@@ -1,0 +1,21 @@
+{
+  "slug": "nqs-fermions",
+  "total_cpuh": 2000.0,
+  "per_leaf_cpuh": 300.0,
+  "leaves": [
+    "P1.1",
+    "P1.1P",
+    "P1.2",
+    "P1.3",
+    "P2.1",
+    "P2.2",
+    "P3.1",
+    "P3.2",
+    "P4.1",
+    "P4.2"
+  ],
+  "leaf_overrides": {},
+  "skip_threshold": 0.8,
+  "gpu_weight": 20.0,
+  "created": "2026-11-17T01:38:57"
+}

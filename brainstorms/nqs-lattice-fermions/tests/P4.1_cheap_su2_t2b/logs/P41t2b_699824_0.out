@@ -14,3 +14,26 @@ task 0 on kim-compute-02.physics.cornell.edu: t2b.py --mode train --arm pcg --Lx
 [13:21:00] it 500 E -16.322171 std 1.396 acc 0.232 |upd| 2.39e-01 t(mcmc/eloc/grad/sr) 0.78/9.44/0.66/0.24s elapsed 1.495 h
 [13:30:19] it 550 E -16.372405 std 1.278 acc 0.237 |upd| 2.37e-01 t(mcmc/eloc/grad/sr) 0.81/9.75/0.66/0.24s elapsed 1.650 h
 [13:39:41] it 600 E -16.348953 std 1.458 acc 0.237 |upd| 2.23e-01 t(mcmc/eloc/grad/sr) 1.53/9.19/0.63/0.24s elapsed 1.806 h
+[13:49:01] it 650 E -16.311676 std 1.095 acc 0.232 |upd| 2.17e-01 t(mcmc/eloc/grad/sr) 0.75/9.46/0.67/0.24s elapsed 1.962 h
+[13:58:26] it 700 E -16.385376 std 1.094 acc 0.228 |upd| 2.11e-01 t(mcmc/eloc/grad/sr) 0.78/9.38/0.67/0.24s elapsed 2.119 h
+[14:07:56] it 750 E -16.453591 std 1.057 acc 0.238 |upd| 2.09e-01 t(mcmc/eloc/grad/sr) 0.87/9.84/0.67/0.24s elapsed 2.277 h
+[14:16:00] CHECKPOINT it 750: E -16.368620 +- 0.008809 (32768 samples); futility at 750 DISARMED (disarmed (no valid reference)) (484 s)
+[14:25:26] it 800 E -16.407684 std 1.166 acc 0.226 |upd| 2.19e-01 t(mcmc/eloc/grad/sr) 0.75/9.29/0.66/0.24s elapsed 2.569 h
+[14:34:41] it 850 E -16.332767 std 1.107 acc 0.236 |upd| 2.17e-01 t(mcmc/eloc/grad/sr) 0.85/9.42/0.63/0.24s elapsed 2.723 h
+[14:44:06] it 900 E -16.354827 std 1.195 acc 0.242 |upd| 2.21e-01 t(mcmc/eloc/grad/sr) 0.76/9.46/0.77/0.24s elapsed 2.880 h
+[14:53:41] it 950 E -16.359057 std 1.276 acc 0.230 |upd| 2.10e-01 t(mcmc/eloc/grad/sr) 0.77/9.16/0.65/0.24s elapsed 3.039 h
+[15:03:17] it 1000 E -16.404592 std 1.298 acc 0.246 |upd| 2.27e-01 t(mcmc/eloc/grad/sr) 1.42/9.84/0.66/0.24s elapsed 3.199 h
+[15:12:32] it 1050 E -16.428410 std 1.032 acc 0.231 |upd| 2.12e-01 t(mcmc/eloc/grad/sr) 1.18/9.36/0.66/0.24s elapsed 3.353 h
+[15:21:50] it 1100 E -16.402421 std 1.106 acc 0.234 |upd| 2.33e-01 t(mcmc/eloc/grad/sr) 0.80/9.67/0.68/0.24s elapsed 3.509 h
+[15:31:15] it 1150 E -16.475608 std 1.083 acc 0.226 |upd| 2.37e-01 t(mcmc/eloc/grad/sr) 0.79/9.51/0.64/0.24s elapsed 3.665 h
+[15:40:47] it 1200 E -16.452926 std 1.158 acc 0.225 |upd| 2.34e-01 t(mcmc/eloc/grad/sr) 0.79/9.52/0.67/0.24s elapsed 3.824 h
+[15:50:09] it 1250 E -16.416697 std 1.573 acc 0.235 |upd| 2.28e-01 t(mcmc/eloc/grad/sr) 0.85/9.81/0.66/0.24s elapsed 3.980 h
+[15:59:44] it 1300 E -16.497274 std 0.898 acc 0.234 |upd| 2.05e-01 t(mcmc/eloc/grad/sr) 0.86/9.55/0.68/0.24s elapsed 4.140 h
+[16:09:19] it 1350 E -16.452798 std 0.982 acc 0.235 |upd| 2.33e-01 t(mcmc/eloc/grad/sr) 0.77/9.63/0.68/0.24s elapsed 4.300 h
+[16:18:41] it 1400 E -16.477325 std 1.052 acc 0.233 |upd| 2.42e-01 t(mcmc/eloc/grad/sr) 0.78/9.43/0.66/0.24s elapsed 4.456 h
+[16:28:11] it 1450 E -16.482351 std 1.300 acc 0.237 |upd| 2.46e-01 t(mcmc/eloc/grad/sr) 1.11/9.31/0.66/0.24s elapsed 4.615 h
+[16:37:25] it 1500 E -16.428632 std 0.991 acc 0.224 |upd| 2.16e-01 t(mcmc/eloc/grad/sr) 0.81/9.33/0.69/0.24s elapsed 4.768 h
+[16:45:07] CHECKPOINT it 1500: E -16.423006 +- 0.007058 (32768 samples); futility at 1500 DISARMED (disarmed (no valid reference)) (462 s)
+[16:54:21] it 1550 E -16.429022 std 0.970 acc 0.235 |upd| 2.33e-01 t(mcmc/eloc/grad/sr) 0.78/9.42/0.68/0.24s elapsed 5.051 h
+[17:03:53] it 1600 E -16.462668 std 1.263 acc 0.232 |upd| 2.43e-01 t(mcmc/eloc/grad/sr) 0.85/9.67/0.71/0.24s elapsed 5.209 h
+[17:13:16] it 1650 E -16.433941 std 0.944 acc 0.230 |upd| 2.42e-01 t(mcmc/eloc/grad/sr) 0.80/9.73/0.68/0.24s elapsed 5.366 h

@@ -38,3 +38,32 @@ task 2 on kim-compute-03.physics.cornell.edu: t2b.py --mode train --arm r1 --Lx 
 [13:43:54] it 1600 E -16.397056 std 1.058 acc 0.233 |upd| 2.03e-01 t(mcmc/eloc/grad/sr) 0.16/1.22/0.21/0.10s elapsed 0.940 h
 [13:45:20] it 1650 E -16.434198 std 1.000 acc 0.230 |upd| 2.13e-01 t(mcmc/eloc/grad/sr) 0.17/1.24/0.22/0.10s elapsed 0.964 h
 [13:46:46] it 1700 E -16.398033 std 0.976 acc 0.226 |upd| 1.86e-01 t(mcmc/eloc/grad/sr) 0.16/1.22/0.21/0.10s elapsed 0.988 h
+[13:48:13] it 1750 E -16.467508 std 1.071 acc 0.230 |upd| 1.80e-01 t(mcmc/eloc/grad/sr) 0.17/1.21/0.22/0.10s elapsed 1.012 h
+[13:49:39] it 1800 E -16.425310 std 1.124 acc 0.226 |upd| 1.94e-01 t(mcmc/eloc/grad/sr) 0.16/1.25/0.22/0.10s elapsed 1.036 h
+[13:51:07] it 1850 E -16.460354 std 1.106 acc 0.232 |upd| 1.96e-01 t(mcmc/eloc/grad/sr) 0.18/1.25/0.21/0.10s elapsed 1.061 h
+[13:52:34] it 1900 E -16.456992 std 0.858 acc 0.240 |upd| 1.74e-01 t(mcmc/eloc/grad/sr) 0.16/1.24/0.22/0.10s elapsed 1.085 h
+[13:54:01] it 1950 E -16.453122 std 1.031 acc 0.225 |upd| 1.62e-01 t(mcmc/eloc/grad/sr) 0.16/1.25/0.22/0.10s elapsed 1.109 h
+[13:55:28] it 2000 E -16.454038 std 0.958 acc 0.233 |upd| 1.55e-01 t(mcmc/eloc/grad/sr) 0.16/1.22/0.21/0.10s elapsed 1.133 h
+[13:56:56] it 2050 E -16.410680 std 0.874 acc 0.235 |upd| 1.41e-01 t(mcmc/eloc/grad/sr) 0.16/1.26/0.22/0.10s elapsed 1.157 h
+[13:58:23] it 2100 E -16.485989 std 1.233 acc 0.246 |upd| 1.44e-01 t(mcmc/eloc/grad/sr) 0.16/1.23/0.22/0.10s elapsed 1.182 h
+[13:59:50] it 2150 E -16.428186 std 0.920 acc 0.226 |upd| 1.25e-01 t(mcmc/eloc/grad/sr) 0.16/1.24/0.22/0.10s elapsed 1.206 h
+[14:01:16] it 2200 E -16.466848 std 0.854 acc 0.230 |upd| 1.09e-01 t(mcmc/eloc/grad/sr) 0.16/1.23/0.22/0.10s elapsed 1.230 h
+[14:02:42] it 2250 E -16.413369 std 0.785 acc 0.234 |upd| 1.12e-01 t(mcmc/eloc/grad/sr) 0.16/1.21/0.21/0.10s elapsed 1.254 h
+[14:03:57] CHECKPOINT it 2250: E -16.434863 +- 0.007086 (32768 samples) (74 s)
+[14:05:23] it 2300 E -16.424164 std 1.165 acc 0.235 |upd| 1.04e-01 t(mcmc/eloc/grad/sr) 0.16/1.25/0.22/0.10s elapsed 1.299 h
+[14:07:16] it 2350 E -16.443579 std 0.866 acc 0.229 |upd| 9.44e-02 t(mcmc/eloc/grad/sr) 0.17/1.92/0.24/0.10s elapsed 1.330 h
+[14:09:14] it 2400 E -16.462843 std 0.843 acc 0.238 |upd| 8.74e-02 t(mcmc/eloc/grad/sr) 0.16/2.14/0.22/0.10s elapsed 1.363 h
+[14:11:11] it 2450 E -16.414132 std 0.792 acc 0.226 |upd| 7.68e-02 t(mcmc/eloc/grad/sr) 0.17/2.23/0.25/0.11s elapsed 1.395 h
+[14:12:57] it 2500 E -16.389485 std 1.020 acc 0.224 |upd| 6.29e-02 t(mcmc/eloc/grad/sr) 0.17/1.25/0.24/0.10s elapsed 1.424 h
+[14:14:53] it 2550 E -16.470025 std 0.965 acc 0.236 |upd| 5.78e-02 t(mcmc/eloc/grad/sr) 0.17/1.25/0.22/0.10s elapsed 1.457 h
+[14:16:48] it 2600 E -16.392072 std 1.282 acc 0.229 |upd| 5.17e-02 t(mcmc/eloc/grad/sr) 0.17/2.16/0.24/0.10s elapsed 1.489 h
+[14:18:52] it 2650 E -16.441097 std 0.865 acc 0.231 |upd| 4.53e-02 t(mcmc/eloc/grad/sr) 0.16/2.10/0.23/0.11s elapsed 1.523 h
+[14:20:41] it 2700 E -16.437827 std 0.889 acc 0.227 |upd| 3.75e-02 t(mcmc/eloc/grad/sr) 0.17/2.21/0.24/0.11s elapsed 1.553 h
+[14:22:46] it 2750 E -16.462269 std 0.835 acc 0.220 |upd| 3.25e-02 t(mcmc/eloc/grad/sr) 0.17/1.24/0.22/0.10s elapsed 1.588 h
+[14:24:37] it 2800 E -16.503281 std 0.844 acc 0.235 |upd| 2.80e-02 t(mcmc/eloc/grad/sr) 0.16/1.22/0.23/0.10s elapsed 1.619 h
+[14:26:37] it 2850 E -16.455066 std 0.873 acc 0.234 |upd| 2.47e-02 t(mcmc/eloc/grad/sr) 0.17/2.02/0.23/0.10s elapsed 1.652 h
+[14:28:29] it 2900 E -16.491625 std 0.918 acc 0.241 |upd| 2.21e-02 t(mcmc/eloc/grad/sr) 0.16/1.26/0.23/0.10s elapsed 1.683 h
+[14:30:20] it 2950 E -16.451154 std 0.798 acc 0.222 |upd| 2.09e-02 t(mcmc/eloc/grad/sr) 0.17/2.11/0.23/0.11s elapsed 1.714 h
+[14:32:05] it 3000 E -16.461377 std 0.800 acc 0.236 |upd| 1.95e-02 t(mcmc/eloc/grad/sr) 0.17/2.15/0.23/0.11s elapsed 1.743 h
+[14:43:58] final E (average of last 750 steps) -16.4653048 +- 0.0020179 (262144 samples, 713 s)
+[14:43:58] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results/t2b/S8x3_N20_U8_tp-0.25_pg11_r1_H44_seed0.json

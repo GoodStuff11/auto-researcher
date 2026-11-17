@@ -1,0 +1,29 @@
+ (written before any polish output existed; mode 'rule' prints it)
+  Protocol (identical for every arm, the Round 11 `che` variant): block full (all parameters); relative cutoff 1e-5
+  of the tangent metric (tangents orthogonalised against Psi); mode lm with trust radius tau = 0.05 in the metric
+  norm; line search s in {1, 1/2, 1/4} on the exact energy, first lowering s taken, otherwise the sequence stops
+  (an early stop is the arm's final value; it is not re-tried).  S and H rebuilt exactly after every accepted step.
+  N4 = after at most 4 steps (the `che` budget of Round 11).  N6 = after at most 6 steps, run for ALL four arms or
+  for none (che continues from its Round 11 step-4 parameters).
+  R2 (pcg against che, both polished):  rho_pol = eps_pcg / eps_che.
+    SURVIVES  if rho_pol <= 0.75 and eps_pcg < eps_r1 (polished r1);
+    KILLED    if rho_pol >= 0.90 or eps_pcg >= eps_r1;
+    AMBIGUOUS otherwise.
+  The verdict is computed at N4 and, if run, at N6.  If the two differ, the verdict is AMBIGUOUS (both reported).
+  R1 (reported, no verdict): rho_8 = eps_che_k8 / eps_che, both polished, at N4 and N6.
+  Sampled polish (che only, from the SR-trained theta0): every step draws N i.i.d. representatives r with
+  probability p(r) = |orbit(r)| Psi(r)^2 (exact sampling, no Markov chain; fresh samples per step, seed = step),
+  estimates S_kl = mean Y_rk Y_rl / p(r) and H_kl = mean Y_rk (H Y)_rl / p(r) (symmetrised; normalised by S_00;
+  this is the standard sampled LM estimator including the local-energy-derivative term), and builds the step with
+  the same cutoff, tau and lm mode.  The line search uses the sampled energy only: correlated reweighting of the
+  same samples, E_s = sum w E_loc,new / sum w with w = Psi_new(r)^2 / Psi_old(r)^2, against the sampled E_old.
+  Exact energies are computed for scoring only.  f_N = R_sampled(4 steps) / R_exact(4 steps) with R_exact = 0.5392.
+    SAMPLED-KEEPS  if f_N >= 0.5 at N = 1e5;   SAMPLED-LOSES if f_N < 0.5 at N = 1e5.
+    N = 2e4 is reported (no verdict) if the CPU cap allows.
+  Budget clause: 40 CPU-minutes for the whole round (sum of process CPU times, 8 threads).  Order of execution:
+  sampled che N = 1e5, pcg, r1, che_k8, sampled N = 2e4, then the N6 extension.  A sequence cut by the cap is
+  reported as truncated; if the pcg or r1 N4 sequence is cut, the R2 verdict is INCOMPLETE, not a pass or a kill.
+  INVALID if: an arm's E(theta0) differs from its stored exact energy by > 1e-8; or the generic (autograd) S and H
+  at the `che` theta0 differ from Round 11's hand-assembled S_H_theta0.npz by more than 1e-8 relative (max-norm).
+
+

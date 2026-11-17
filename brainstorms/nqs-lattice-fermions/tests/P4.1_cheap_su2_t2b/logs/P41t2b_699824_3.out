@@ -52,3 +52,18 @@ task 3 on kim-compute-02.physics.cornell.edu: t2b.py --mode train --arm pcg --Lx
 [13:43:47] CHECKPOINT it 2250: E -7.819665 +- 0.000000 (627264 exact) (17 s)
 [13:44:45] it 2300 E -7.808197 std 0.394 acc 0.233 |upd| 3.78e-02 t(mcmc/eloc/grad/sr) 0.15/0.71/0.20/0.07s elapsed 0.756 h
 [13:45:43] it 2350 E -7.821647 std 0.206 acc 0.232 |upd| 2.94e-02 t(mcmc/eloc/grad/sr) 0.14/0.72/0.20/0.07s elapsed 0.772 h
+[13:46:40] it 2400 E -7.822859 std 0.295 acc 0.227 |upd| 2.92e-02 t(mcmc/eloc/grad/sr) 0.14/0.73/0.21/0.07s elapsed 0.788 h
+[13:47:38] it 2450 E -7.816463 std 0.259 acc 0.243 |upd| 2.93e-02 t(mcmc/eloc/grad/sr) 0.14/0.72/0.20/0.07s elapsed 0.804 h
+[13:48:35] it 2500 E -7.817142 std 0.232 acc 0.242 |upd| 2.45e-02 t(mcmc/eloc/grad/sr) 0.15/0.74/0.20/0.07s elapsed 0.820 h
+[13:49:33] it 2550 E -7.820176 std 0.224 acc 0.231 |upd| 1.81e-02 t(mcmc/eloc/grad/sr) 0.15/0.73/0.21/0.07s elapsed 0.836 h
+[13:50:31] it 2600 E -7.828233 std 0.584 acc 0.239 |upd| 1.95e-02 t(mcmc/eloc/grad/sr) 0.14/0.73/0.20/0.07s elapsed 0.852 h
+[13:51:29] it 2650 E -7.813221 std 0.292 acc 0.230 |upd| 1.48e-02 t(mcmc/eloc/grad/sr) 0.14/0.73/0.21/0.07s elapsed 0.868 h
+[13:52:27] it 2700 E -7.818698 std 0.172 acc 0.250 |upd| 1.07e-02 t(mcmc/eloc/grad/sr) 0.14/0.72/0.20/0.07s elapsed 0.884 h
+[13:53:25] it 2750 E -7.820281 std 0.288 acc 0.236 |upd| 1.14e-02 t(mcmc/eloc/grad/sr) 0.15/0.76/0.20/0.07s elapsed 0.900 h
+[13:54:22] it 2800 E -7.812884 std 0.246 acc 0.246 |upd| 9.85e-03 t(mcmc/eloc/grad/sr) 0.15/0.70/0.20/0.07s elapsed 0.916 h
+[13:55:20] it 2850 E -7.826591 std 0.193 acc 0.236 |upd| 7.48e-03 t(mcmc/eloc/grad/sr) 0.14/0.72/0.21/0.07s elapsed 0.932 h
+[13:56:17] it 2900 E -7.808028 std 0.224 acc 0.231 |upd| 7.47e-03 t(mcmc/eloc/grad/sr) 0.15/0.75/0.21/0.07s elapsed 0.948 h
+[13:57:15] it 2950 E -7.811731 std 0.278 acc 0.223 |upd| 6.82e-03 t(mcmc/eloc/grad/sr) 0.14/0.71/0.20/0.07s elapsed 0.964 h
+[13:58:12] it 3000 E -7.823188 std 0.296 acc 0.238 |upd| 7.68e-03 t(mcmc/eloc/grad/sr) 0.14/0.72/0.21/0.07s elapsed 0.980 h
+[13:58:29] final E (average of last 750 steps) -7.8211569 +- 0.0000000 (627264 samples, 17 s), <S^2> 4.0e-18
+[13:58:29] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results/t2b/S4x3_N10_U8_tp-0.25_pg11_pcg_H15_seed0.json

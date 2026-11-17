@@ -1,0 +1,5 @@
+[17:22:08] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[17:22:08] che: P 2637; logderiv 0.71 CPU-s per 2048 (full space ~3.64 CPU-min); forward 0.05 CPU-s per 2048 (~0.24 CPU-min)
+[17:22:09] pcg: P 2696; logderiv 0.66 CPU-s per 2048 (full space ~3.36 CPU-min); forward 0.09 CPU-s per 2048 (~0.46 CPU-min)
+[17:22:09] r1: P 2596; logderiv 0.34 CPU-s per 2048 (full space ~1.76 CPU-min); forward 0.03 CPU-s per 2048 (~0.16 CPU-min)
+[17:22:09] che_k8: P 2614; logderiv 0.67 CPU-s per 2048 (full space ~3.41 CPU-min); forward 0.09 CPU-s per 2048 (~0.45 CPU-min)

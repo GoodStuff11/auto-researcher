@@ -38,3 +38,32 @@ task 1 on kim-compute-03.physics.cornell.edu: t2b.py --mode train --arm che --Lx
 [13:37:34] it 1600 E -16.381947 std 1.196 acc 0.233 |upd| 2.77e-01 t(mcmc/eloc/grad/sr) 0.28/3.04/0.31/0.11s elapsed 1.729 h
 [13:40:48] it 1650 E -16.398722 std 1.024 acc 0.236 |upd| 2.46e-01 t(mcmc/eloc/grad/sr) 0.28/3.22/0.33/0.11s elapsed 1.784 h
 [13:44:07] it 1700 E -16.408438 std 1.132 acc 0.234 |upd| 2.22e-01 t(mcmc/eloc/grad/sr) 0.29/3.28/0.32/0.11s elapsed 1.839 h
+[13:47:20] it 1750 E -16.430266 std 0.948 acc 0.238 |upd| 2.40e-01 t(mcmc/eloc/grad/sr) 0.28/3.25/0.32/0.11s elapsed 1.892 h
+[13:50:38] it 1800 E -16.401764 std 1.004 acc 0.236 |upd| 2.31e-01 t(mcmc/eloc/grad/sr) 0.28/3.17/0.31/0.11s elapsed 1.947 h
+[13:53:57] it 1850 E -16.436350 std 1.120 acc 0.214 |upd| 2.00e-01 t(mcmc/eloc/grad/sr) 0.29/3.37/0.33/0.11s elapsed 2.003 h
+[13:57:12] it 1900 E -16.394443 std 0.900 acc 0.237 |upd| 2.22e-01 t(mcmc/eloc/grad/sr) 0.28/3.16/0.31/0.11s elapsed 2.057 h
+[14:00:30] it 1950 E -16.451105 std 0.976 acc 0.237 |upd| 2.11e-01 t(mcmc/eloc/grad/sr) 0.28/3.28/0.31/0.10s elapsed 2.112 h
+[14:03:41] it 2000 E -16.455487 std 0.987 acc 0.231 |upd| 1.89e-01 t(mcmc/eloc/grad/sr) 0.26/3.15/0.31/0.10s elapsed 2.165 h
+[14:06:53] it 2050 E -16.400420 std 1.710 acc 0.231 |upd| 1.76e-01 t(mcmc/eloc/grad/sr) 0.28/3.20/0.30/0.11s elapsed 2.218 h
+[14:10:07] it 2100 E -16.420219 std 0.966 acc 0.233 |upd| 1.75e-01 t(mcmc/eloc/grad/sr) 0.27/3.28/0.31/0.10s elapsed 2.272 h
+[14:13:28] it 2150 E -16.434211 std 0.994 acc 0.232 |upd| 1.71e-01 t(mcmc/eloc/grad/sr) 0.28/3.28/0.31/0.11s elapsed 2.328 h
+[14:16:45] it 2200 E -16.442038 std 1.002 acc 0.242 |upd| 1.46e-01 t(mcmc/eloc/grad/sr) 0.28/3.28/0.31/0.11s elapsed 2.383 h
+[14:20:07] it 2250 E -16.433485 std 0.951 acc 0.233 |upd| 1.32e-01 t(mcmc/eloc/grad/sr) 0.28/3.38/0.31/0.11s elapsed 2.439 h
+[14:22:50] CHECKPOINT it 2250: E -16.412169 +- 0.007465 (32768 samples) (163 s)
+[14:26:01] it 2300 E -16.398401 std 1.049 acc 0.234 |upd| 1.35e-01 t(mcmc/eloc/grad/sr) 0.27/3.14/0.31/0.10s elapsed 2.537 h
+[14:29:14] it 2350 E -16.413761 std 1.101 acc 0.239 |upd| 1.03e-01 t(mcmc/eloc/grad/sr) 0.28/3.06/0.32/0.11s elapsed 2.591 h
+[14:32:27] it 2400 E -16.420465 std 1.137 acc 0.229 |upd| 1.01e-01 t(mcmc/eloc/grad/sr) 0.27/3.15/0.30/0.11s elapsed 2.644 h
+[14:35:40] it 2450 E -16.491735 std 0.889 acc 0.233 |upd| 8.95e-02 t(mcmc/eloc/grad/sr) 0.27/3.29/0.31/0.11s elapsed 2.698 h
+[14:38:59] it 2500 E -16.505945 std 1.326 acc 0.235 |upd| 8.20e-02 t(mcmc/eloc/grad/sr) 0.26/3.32/0.31/0.11s elapsed 2.753 h
+[14:42:19] it 2550 E -16.467515 std 1.684 acc 0.233 |upd| 7.36e-02 t(mcmc/eloc/grad/sr) 0.27/3.26/0.31/0.11s elapsed 2.809 h
+[14:45:36] it 2600 E -16.465472 std 1.140 acc 0.228 |upd| 6.33e-02 t(mcmc/eloc/grad/sr) 0.27/3.32/0.31/0.11s elapsed 2.863 h
+[14:48:53] it 2650 E -16.449741 std 1.054 acc 0.238 |upd| 4.95e-02 t(mcmc/eloc/grad/sr) 0.27/3.15/0.30/0.10s elapsed 2.918 h
+[14:52:05] it 2700 E -16.478703 std 0.985 acc 0.238 |upd| 4.75e-02 t(mcmc/eloc/grad/sr) 0.27/3.10/0.31/0.11s elapsed 2.971 h
+[14:55:21] it 2750 E -16.462861 std 0.789 acc 0.223 |upd| 3.83e-02 t(mcmc/eloc/grad/sr) 0.29/3.21/0.30/0.10s elapsed 3.026 h
+[14:58:37] it 2800 E -16.457841 std 0.948 acc 0.233 |upd| 3.34e-02 t(mcmc/eloc/grad/sr) 0.28/3.23/0.31/0.11s elapsed 3.080 h
+[15:01:49] it 2850 E -16.458788 std 0.965 acc 0.228 |upd| 2.93e-02 t(mcmc/eloc/grad/sr) 0.28/3.16/0.30/0.11s elapsed 3.134 h
+[15:05:04] it 2900 E -16.461704 std 1.115 acc 0.232 |upd| 2.56e-02 t(mcmc/eloc/grad/sr) 0.27/3.26/0.31/0.11s elapsed 3.188 h
+[15:08:17] it 2950 E -16.412770 std 1.099 acc 0.221 |upd| 2.49e-02 t(mcmc/eloc/grad/sr) 0.27/3.12/0.30/0.10s elapsed 3.242 h
+[15:11:29] it 3000 E -16.433509 std 1.064 acc 0.230 |upd| 2.29e-02 t(mcmc/eloc/grad/sr) 0.27/3.14/0.29/0.10s elapsed 3.295 h
+[15:31:39] final E (average of last 750 steps) -16.4559259 +- 0.0021267 (262144 samples, 1211 s)
+[15:31:39] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_t2b/results/t2b/S8x3_N20_U8_tp-0.25_pg11_che_H16_seed0.json

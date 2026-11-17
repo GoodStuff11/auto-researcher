@@ -1,0 +1,33 @@
+[16:36:58] instance 23 {'Lx': 4, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 5, 'ndn': 5, 'tp': -0.25, 'J': 0.4} D=16632 E0=-7.2330203724 gap=0.0847 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=724 arm=half seed=11 threads=1
+[16:36:59] arm half: F=16 Ha=0 n_eff=1622 P/dim_S_chi=2.24 calib=2.40e-14
+[16:36:59] half: it     0 E-E0 = 0.884660 best = 0.884660 (0.364 CPU-s/step)
+[16:37:16] half: it    50 E-E0 = 0.130410 best = 0.128900 (0.332 CPU-s/step)
+[16:37:32] half: it   100 E-E0 = 0.095169 best = 0.085389 (0.335 CPU-s/step)
+[16:37:48] half: it   150 E-E0 = 0.069839 best = 0.069839 (0.329 CPU-s/step)
+[16:38:05] half: it   200 E-E0 = 0.067384 best = 0.066880 (0.328 CPU-s/step)
+[16:38:21] half: it   250 E-E0 = 0.067676 best = 0.064939 (0.327 CPU-s/step)
+[16:38:37] half: it   300 E-E0 = 0.061912 best = 0.061912 (0.326 CPU-s/step)
+[16:38:53] half: it   350 E-E0 = 0.081006 best = 0.060311 (0.326 CPU-s/step)
+[16:39:10] half: it   400 E-E0 = 0.084320 best = 0.060311 (0.325 CPU-s/step)
+[16:39:26] half: it   450 E-E0 = 0.064008 best = 0.056689 (0.325 CPU-s/step)
+[16:39:42] half: it   500 E-E0 = 0.068889 best = 0.056689 (0.325 CPU-s/step)
+[16:39:58] half: it   550 E-E0 = 0.056707 best = 0.056689 (0.325 CPU-s/step)
+[16:40:14] half: it   600 E-E0 = 0.061238 best = 0.055283 (0.325 CPU-s/step)
+[16:40:31] half: it   650 E-E0 = 0.060624 best = 0.054156 (0.324 CPU-s/step)
+[16:40:47] half: it   700 E-E0 = 0.060388 best = 0.054156 (0.324 CPU-s/step)
+[16:41:03] half: it   750 E-E0 = 0.064859 best = 0.054156 (0.324 CPU-s/step)
+[16:41:19] half: it   800 E-E0 = 0.069956 best = 0.053676 (0.324 CPU-s/step)
+[16:41:35] half: it   850 E-E0 = 0.068547 best = 0.053676 (0.324 CPU-s/step)
+[16:41:52] half: it   900 E-E0 = 0.056534 best = 0.053322 (0.324 CPU-s/step)
+[16:42:08] half: it   950 E-E0 = 0.054055 best = 0.053322 (0.324 CPU-s/step)
+[16:42:24] half: it  1000 E-E0 = 0.058369 best = 0.053080 (0.324 CPU-s/step)
+[16:42:40] half: it  1050 E-E0 = 0.064780 best = 0.051912 (0.324 CPU-s/step)
+[16:42:56] half: it  1100 E-E0 = 0.054735 best = 0.051912 (0.323 CPU-s/step)
+[16:43:12] half: it  1150 E-E0 = 0.064981 best = 0.051912 (0.323 CPU-s/step)
+[16:43:28] half: it  1200 E-E0 = 0.054139 best = 0.051130 (0.323 CPU-s/step)
+[16:43:45] half: it  1250 E-E0 = 0.071274 best = 0.051130 (0.323 CPU-s/step)
+[16:44:01] half: it  1300 E-E0 = 0.065744 best = 0.051130 (0.323 CPU-s/step)
+[16:44:17] half: it  1350 E-E0 = 0.053179 best = 0.051130 (0.323 CPU-s/step)
+[16:44:33] half: stop = plateau at it 1400; best E - E0 = 0.051130; SR CPU 453 s
+[16:44:36] half [P]: dE_tot=0.051130 dE_sign=0.007041 f_E=0.138 spread=1.6e-13; max |masked entry| proposed by SR = 0.0e+00
+[16:44:36] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r12d/results/half_F16/t1_half_inst23_s11.json

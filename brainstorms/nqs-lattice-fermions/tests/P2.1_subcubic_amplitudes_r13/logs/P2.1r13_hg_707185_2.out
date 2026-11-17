@@ -1,0 +1,27 @@
+[16:56:07] instance 25 {'Lx': 5, 'Ly': 3, 'bcx': 'obc', 'bcy': 'obc', 'nup': 7, 'ndn': 7, 'tp': -0.25, 'J': 0.4} D=51480 E0=-7.2718171320 gap=0.1963 |G|=4 chi={'My': 1, 'Mx': 1} dim_S_chi=1615 arm=hg seed=11 threads=1
+[16:56:08] arm hg: F=4 Ha=0 n_eff=1514 P/dim_S_chi=0.94 calib=2.13e-14
+[16:56:09] hg: it     0 E-E0 = 1.648593 best = 1.648593 (0.912 CPU-s/step)
+[16:56:53] hg: it    50 E-E0 = 0.050932 best = 0.050932 (0.878 CPU-s/step)
+[16:57:38] hg: it   100 E-E0 = 0.044816 best = 0.036651 (0.879 CPU-s/step)
+[16:58:22] hg: it   150 E-E0 = 0.031789 best = 0.031789 (0.879 CPU-s/step)
+[16:59:06] hg: it   200 E-E0 = 0.035331 best = 0.030767 (0.880 CPU-s/step)
+[16:59:52] hg: it   250 E-E0 = 0.040982 best = 0.030767 (0.885 CPU-s/step)
+[17:00:38] hg: it   300 E-E0 = 0.031914 best = 0.030767 (0.893 CPU-s/step)
+[17:01:26] hg: it   350 E-E0 = 0.031115 best = 0.030454 (0.899 CPU-s/step)
+[17:02:12] hg: it   400 E-E0 = 0.034200 best = 0.029591 (0.902 CPU-s/step)
+[17:02:57] hg: it   450 E-E0 = 0.033980 best = 0.029591 (0.902 CPU-s/step)
+[17:03:43] hg: it   500 E-E0 = 0.030192 best = 0.029327 (0.903 CPU-s/step)
+[17:04:29] hg: it   550 E-E0 = 0.029511 best = 0.029250 (0.903 CPU-s/step)
+[17:05:14] hg: it   600 E-E0 = 0.031659 best = 0.029250 (0.903 CPU-s/step)
+[17:06:00] hg: it   650 E-E0 = 0.035968 best = 0.028979 (0.904 CPU-s/step)
+[17:06:45] hg: it   700 E-E0 = 0.029707 best = 0.028502 (0.904 CPU-s/step)
+[17:07:30] hg: it   750 E-E0 = 0.029686 best = 0.028060 (0.903 CPU-s/step)
+[17:08:16] hg: it   800 E-E0 = 0.028644 best = 0.027493 (0.903 CPU-s/step)
+[17:09:01] hg: it   850 E-E0 = 0.028388 best = 0.027493 (0.904 CPU-s/step)
+[17:09:47] hg: it   900 E-E0 = 0.038621 best = 0.027134 (0.904 CPU-s/step)
+[17:10:33] hg: it   950 E-E0 = 0.035433 best = 0.027134 (0.904 CPU-s/step)
+[17:11:19] hg: it  1000 E-E0 = 0.031785 best = 0.027134 (0.905 CPU-s/step)
+[17:12:05] hg: it  1050 E-E0 = 0.031000 best = 0.027027 (0.906 CPU-s/step)
+[17:12:51] hg: stop = plateau at it 1100; best E - E0 = 0.027027; SR CPU 998 s
+[17:12:59] hg [P]: dE_tot=0.027027 dE_sign=0.003021 f_E=0.112 spread=8.9e-13; max |masked entry| proposed by SR = 0.0e+00
+[17:12:59] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r13/results_ladder/t1_hg_inst25_s11.json

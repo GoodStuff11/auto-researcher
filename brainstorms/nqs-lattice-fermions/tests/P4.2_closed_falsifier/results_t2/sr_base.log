@@ -1,0 +1,14 @@
+[     0.5s] target 4x3o 4x3:5 irrep={'Mx': 1, 'My': 1} dim=16632 n_irrep=4152 E0=-7.2330203724 gap/V=1.2985e-02 (sign half only) npar=426
+[     0.5s] train 4x3:5 free_f=False spin_feat=False jas2=none bnd_f=0 npar=426 lr=0.05 shift=0.01
+[   278.8s]   [train] step 300/3000 eps=1.15039e-02 lr=0.19
+[   553.1s]   [train] step 600/3000 eps=9.25987e-03 lr=0.161
+[   832.3s]   [train] step 900/3000 eps=8.98351e-03 lr=0.177
+[  1122.6s]   [train] step 1200/3000 eps=8.77699e-03 lr=0.146
+[  1389.1s]   [train] step 1500/3000 eps=8.53741e-03 lr=0.168
+[  1642.7s]   [train] step 1800/3000 eps=8.29359e-03 lr=0.133
+[  1890.2s]   [train] step 2100/3000 eps=8.10803e-03 lr=0.112
+[  2144.1s]   [train] step 2400/3000 eps=7.97948e-03 lr=0.149
+[  2399.6s]   [train] step 2700/3000 eps=7.88110e-03 lr=0.0991
+[  2651.1s]   [train] step 3000/3000 eps=7.79924e-03 lr=0.143
+[  2651.6s] RESULT 4x3:5 free_f=False spin_feat=False jas2=none bnd_f=0 npar=426: E=-7.13942949 relerr=1.2939% A=0.0106 sign share=0.113 irrep weight=1.000 eps(150)=1.2407e-02 eps(end)=7.7992e-03
+[  2651.6s] done (/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.2_closed_falsifier/results_t2/sr_base.json)

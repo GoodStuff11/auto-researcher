@@ -52,3 +52,6 @@
 [09:02:38] sk1_U: it  1150  E = -12.26564922  |f| = 5.82e-01  (35.79 s/step)
 [09:30:20] sk1_U: it  1199  E = -12.29876547  |f| = 1.79e-01  (35.72 s/step)
 [09:43:53] sk1_U [U]: dE_tot=0.19781 dE_sign=0.04739 f_E=0.240 eC=6.82e-03 spread=2.0e-13 S2=1.412 ov0=0.304 (795 s)
+[09:55:38] sk1_U [UP]: dE_tot=0.17191 dE_sign=0.05027 f_E=0.292 eC=5.72e-03 spread=7.4e-13 S2=0.787 ov0=0.600 (705 s)
+[10:07:26] sk1_U [UP_S]: dE_tot=0.11901 dE_sign=0.03471 f_E=0.292 eC=5.75e-03 spread=2.7e-13 S2=0.000 ov0=0.691 (708 s)
+[10:07:26] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P2.1_subcubic_amplitudes_r5/results/inst3_sk1_U_s22.json
