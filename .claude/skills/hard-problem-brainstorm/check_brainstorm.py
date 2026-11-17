@@ -33,7 +33,10 @@ The document role is detected per file:
                        **What would unshelve it** (errors);
                     R2 a KILLED outcome names where it died: "KILLED at G0".."G4", "T0".."T3" or
                        "CRITIC" (error);
-                    R3 **The idea** has at least 25 words (warning).
+                    R3 **The idea** has at least 25 words (warning);
+                    R4 a card whose **Lineage** says "cross-field" or "translation repair" has a
+                       **Source analogy** field (error);
+                    A0 an "Analogy Map" heading exists (warning; also checked on a Mode A master).
     * library : a file named library.md (the findings library). Every "### L<n>. ..." entry has
                 **Status** (ESTABLISHED, PROVISIONAL or REFUTED), **Applies to**, **The lesson**,
                 **Evidence**, **Scope and limits**, **Counter-evidence and open questions**,
@@ -186,6 +189,9 @@ def check_route_register(lines):
             v = _field(text, f)
             if v is None or v == "":
                 out.append(("ERROR", ln, f"R1 {title}: route card is missing '**{f}**:'."))
+        lineage = (_field(text, "Lineage") or "").lower()
+        if ("cross-field" in lineage or "translation repair" in lineage) and not _field(text, "Source analogy"):
+            out.append(("ERROR", ln, f"R4 {title}: a cross-field translation (or its repair) needs '**Source analogy**:' (source field and problem, correspondence, why it worked there, translation gap, citation)."))
         idea = _field(text, "The idea") or ""
         if idea and len(idea.split()) < MIN_IDEA_WORDS:
             out.append(("WARNING", ln, f"R3 {title}: 'The idea' has {len(idea.split())} words; explain the mechanism and why it should work in plain terms (at least {MIN_IDEA_WORDS} words)."))
@@ -358,6 +364,10 @@ def check_file(filepath):
             print(f"[{level}] Line {ln}: {msg}")
             errors += level == "ERROR"
             warnings += level == "WARNING"
+    if role == "leaf" or (role == "master" and not is_mode_b):
+        if not re.search(r"^#{2,4}\s+(1b\.\s+)?Analogy Map", content, re.MULTILINE):
+            print("[WARNING] A0 no 'Analogy Map' heading: map the barrier to how other fields attacked the same structure before generating routes (SKILL.md Stage 2, item 3).")
+            warnings += 1
 
     # 2. Zero Early Surrender
     for phrase in SURRENDER_PHRASES:

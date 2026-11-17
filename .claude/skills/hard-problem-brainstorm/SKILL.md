@@ -72,7 +72,8 @@ Every route ever generated gets a card, including routes killed at a gate within
 ```markdown
 ### R<id> — <short descriptive name, not just a code> (<LIVE | KILLED | SHELVED | MERGED>)
 * **The idea**: what the route does, in plain terms; what it changes relative to the Minimal Contrast Foil; and why it was expected to work (the mechanism, not the name). At least 25 words.
-* **Lineage**: how it arose (initial batch, Operation A from R<x> after its kill at <code>, Operation B, a reopening-ledger ingredient) and what it later became (mutated into R<y>, merged into R<z>).
+* **Lineage**: how it arose (initial batch, Operation A from R<x> after its kill at <code>, Operation B, cross-field translation from <field>, translation repair of R<x>, a reopening-ledger ingredient) and what it later became (mutated into R<y>, merged into R<z>).
+* **Source analogy** (cross-field translations and their repairs only): the source field and problem, what corresponds to what, why the technique worked there, the translation gap, and a citation.
 * **Outcome**: LIVE (tier reached) | KILLED at <code> (date) | SHELVED (<compute-gate reason>) | MERGED into R<z>.
 * **Kill rule**: the gate's question, or the pre-registered rule, quoted as written before the test.
 * **Evidence**: the argument or the measurement — instance, size, arm against foil, the numbers side by side with their uncertainties, and the job id or derivation.
@@ -83,7 +84,7 @@ Every route ever generated gets a card, including routes killed at a gate within
 * **Lesson**: the library entry this kill supports (L<n>), or "route-specific", with one sentence on why it does not generalise.
 ```
 
-The last seven fields are required for a KILLED card. A SHELVED card instead has **Why shelved** (which compute-gate rule refused the next step, its capped cost, and the prediction that made it not worth running) and **What would unshelve it**. A LIVE or MERGED card needs only the first three fields. The linter enforces this (R0–R3).
+**Source analogy** is required whenever the Lineage says "cross-field" or "translation repair". The last seven fields are required for a KILLED card. A SHELVED card instead has **Why shelved** (which compute-gate rule refused the next step, its capped cost, and the prediction that made it not worth running) and **What would unshelve it**. A LIVE or MERGED card needs only the first three fields. The linter enforces this (R0–R3).
 
 **Where a route died: kill codes.** The `KILLED at <code>` in the Outcome uses the procedure's own vocabulary, so a reader knows at once what kind of evidence ended it:
 
@@ -115,7 +116,7 @@ A kill whose reason applies only to that route stays on its card ("route-specifi
 
 **Organisation.** The file starts with an **index**: one line per entry, giving its number, status and lesson sentence. Entries are grouped under four headings:
 1. `## About the problem itself`: properties of the target (for example, where the error of a method actually sits).
-2. `## About methods`: what works or fails, and why. This is also where the general anti-patterns live, the failure mechanisms that killed routes in more than one place, so new routes are generated against them.
+2. `## About methods`: what works or fails, and why. This is also where the general anti-patterns live, the failure mechanisms that killed routes in more than one place, so new routes are generated against them. It also holds what was learned about analogies with other fields: which ones carried over, which did not, and the translation gap that decided it.
 3. `## About testing and measurement`: confounds, fair comparisons, controls, metrics.
 4. `## About process and compute`: what wasted or saved compute and agent effort.
 
@@ -222,7 +223,7 @@ Provide each worker with:
 - The prompt mandate:
   > "You are an expert computational and theoretical researcher analyzing subproblem $P_i$. 
   > Execute Stage 2 (Barrier Isolation), Stage 3 (Candidate Routes with Gates 0–4, Mutation Loops, and Persistence Rules) and Stage 3.5 (Evidence Tiers) strictly for this node.
-  > Persist in ideas, not in jobs (rule 0). If candidate routes fail, apply the Stage 3.3 Mutation and Replenishment protocols at T0 and T1. Try the cheapest argument that could kill each route before proposing any computation.
+  > Persist in ideas, not in jobs (rule 0). Build the Analogy Map (Stage 2, item 3) before generating routes, and include cross-field translations in every batch. If candidate routes fail, apply the Stage 3.3 Mutation and Replenishment protocols at T0 and T1, including translation repair for killed cross-field routes. Try the cheapest argument that could kill each route before proposing any computation.
   > Do not submit Slurm jobs yourself. For each test you propose, write its script with a measured wall time and a value-of-information note `tests/<dir>/voi.md` in the format of `compute_gate.py --help`, and run `python3 <skill-dir>/compute_gate.py check <working-dir> <script> --voi <voi.md> --pre-audit` (a job above 10 CPU-hours then shows PASS PENDING AUDIT; that is expected, not a refusal). Report the check output; the orchestrator handles auditing and submission. A job the gate refuses is replaced by its recorded prediction or a cheaper version, not argued past the gate.
   > Output your result to `.subproblems/P{i}_{slug}.md` matching the standard Leaf Artifact Schema. Do not soften the frozen invariants.
   > Write a complete, self-contained route card in the `## Route Register` for every route you generate, including routes killed at a gate, so the user can judge each decision (SKILL.md, "Ideas, Kills and Lessons"). When a kill's reason generalises beyond the route, propose a findings-library entry in the same format in your return message; the orchestrator owns `library.md`.
@@ -236,6 +237,9 @@ Provide each worker with:
 ### 1. Mathematical Abstraction & Barriers
 * **Formulation**: Explicit inputs, outputs, and what "solved" means.
 * **The Node Barrier**: Where existing methods halt against the Hard Core.
+
+### 1b. Analogy Map
+* Each barrier restated in field-neutral terms; for each, at least three source fields with their problem, correspondence table, technique, why it worked there, translation gap and citation (Stage 2, item 3). Mark each entry untried, tried (R<id>) or repaired (R<id>).
 
 ### 2. Candidate Routes, Gates & Mutation Cycles
 * **Generation Batch 1** (one line per route; the full explanation is its card in the Route Register):
@@ -308,7 +312,7 @@ DORMANT means "no route is currently worth compute, but the leaf is not settled"
 
 **Entering DORMANT.** A leaf becomes DORMANT when any of the following happens, and the Leaf Status Summary records which under `Entered because`:
 * a Saturation Diagnostic is adopted (Stage 3.3, Stage 3.5.3);
-* **idea saturation**: the leaf's last two refill batches (at least 3 routes each, from Operation A or B) were all killed at the gates, T0 or T1. Write the Saturation Diagnostic from their kill reasons (the shared mechanism they hit, and the ingredients they lacked) instead of generating a third batch;
+* **idea saturation**: the leaf's last two refill batches (at least 3 routes each, from Operation A or B, including at least one cross-field translation that also went through translation repair) were all killed at the gates, T0 or T1. Write the Saturation Diagnostic from their kill reasons (the shared mechanism they hit, and the ingredients they lacked) instead of generating a third batch;
 * a closure certificate is attempted but one of its items cannot be filled honestly (3a);
 * the compute gate's no-change streak fires (G6, Stage 3.5.8);
 * the leaf reaches its CPU-hour budget (G5, Stage 3.5.8).
@@ -362,6 +366,16 @@ Each time a leaf returns or a result lands, the orchestrator checks it against e
    - For every major existing approach, identify the exact point where it halts against the Hard Core.
    - Separate **fundamental barriers** (theorems, complexity limits, symmetries) from **practical barriers** (representation bottlenecks, optimization landscapes).
    - Formulate the **Anti-Solution Space**: Explicitly list what an acceptable solution cannot look like based on established no-go results.
+3. **Analogy Map (how other fields attacked the same structure).** Many barriers have been met before in another field under another name. Before generating routes, look there on purpose:
+   - **Restate each barrier in field-neutral terms**: the structure, not the physics. Examples: "estimate a sum of $N$ terms of both signs whose magnitudes span orders of magnitude, from few evaluations"; "learn a function with exponentially many sign changes from samples of its magnitude"; "choose between two near-degenerate hypotheses when each estimate is biased toward its own starting point".
+   - **For each restated barrier, find at least three fields that faced it**: numerical analysis, statistics, signal processing, machine-learning theory, combinatorial optimisation, control, cryptography and coding theory, other branches of physics or chemistry. Use a few quick targeted literature searches per barrier, not an exhaustive review.
+   - **For each source, record:**
+     - the source problem;
+     - a correspondence table (what in their problem plays the role of each object here);
+     - the technique, and *why it worked there*: which property of their problem it exploited;
+     - the **translation gap**: which of those properties may fail here, checked against the Hard Core and the Anti-Solution Space;
+     - a citation.
+   - The map is T0 work. It lives in the leaf's section 1b (Mode B) or in this stage's section of the single document (Mode A), and it is the main source of cross-field routes (3.1, Operation A item 5, Operation B item 3).
 
 ---
 
@@ -370,7 +384,7 @@ Each time a leaf returns or a result lands, the orchestrator checks it against e
 **Core Objective**: Identify and refine candidate routes until at least 1–2 robust proposals pass all elimination gates. You must not surrender if initial ideas fail.
 
 ### 3.1 Initial Generation Batch
-Generate an initial pool of 3–4 candidate routes. Read the findings library (`library.md`, especially "About methods") and the master's Kill Index first, so no new route repeats a mechanism that already failed. Write a route card for each route as it is generated.
+Generate an initial pool of 3–4 candidate routes. Read the findings library (`library.md`, especially "About methods") and the master's Kill Index first, so no new route repeats a mechanism that already failed. At least one route in the initial pool, and at least one in every later refill batch while the Analogy Map has untried entries, is a **cross-field translation** taken from the Analogy Map (Stage 2, item 3). Ideas from the field's own playbook tend to share its blind spots, and a borrowed technique that dies quickly is still worth a targeted repair (Operation A, item 5). Write a route card for each route as it is generated.
 
 ### 3.2 Binary Falsification Gates
 Subject each candidate route to five binary elimination gates:
@@ -381,6 +395,7 @@ Subject each candidate route to five binary elimination gates:
     - If the field tried it and moved on, what was the fatal flaw (e.g., sample complexity, sign instability, optimization traps)?
     - Does the proposal present a concrete, novel mechanism to fix that exact flaw?
     - If no novel mechanism is proposed to fix the known adoption barrier, the route is FAIL (Not Novel / Stale Baseline).
+  - For a cross-field translation, check both literatures. If the technique has already been ported to this field, the questions above apply as usual. If it has not, the port itself is the novelty, and the question becomes why nobody here has used it; the answer is usually the translation gap, which the route must address.
 
 * **Gate 1: Conservation & Asymptotic Consistency**
   - Does the route violate known conservation laws, gauge symmetries, or asymptotic complexity bounds?
@@ -419,14 +434,21 @@ Do not throw away the whole idea if only one part triggered a gate failure. Muta
    - Branch Route $X \to X'$: Identify what non-trivial higher-order correlation, non-local entanglement, or non-linear response separates the true solution from the foil. Retarget the route's objective specifically to that higher-order witness.
 4. **If killed by Gate 3 (Evaded the Hard Core)**:
    - Branch Route $X \to X'$: Introduce a perturbation parameter $\lambda \in [0, 1]$ connecting the tractable simplified regime to the full Hard Core. Formulate the route as an analytical continuation or controlled adiabatic deformation starting from the known limit.
+5. **If a cross-field translation is killed (any gate, T0 or T1): translation repair.** Borrowed techniques often die because one property of the source problem does not carry over, while the rest of the idea is sound. Before abandoning the route, mutate it once:
+   - Read from the kill which property of the source problem it exposed as missing here: the translation gap that mattered, which may differ from the one predicted in the Analogy Map.
+   - Branch Route $X \to X'$ in one of two ways:
+     - **restore the property**, through a change of variables, basis, representation or instance class that recreates it here;
+     - **replace the component** of the technique that relied on it with one that does not.
+   - The repaired route goes through the gates like any other and gets its own card, with lineage "translation repair of R<x>".
+   - If the repair also dies, both cards record why the analogy fails. If the analogy is natural enough that others would try it, add a findings-library entry under "About methods", so the next project knows the gap without paying for it.
 
 #### Operation B: Orthogonal Replenishment (New Seed Generation)
 If an idea is completely irrecoverable (e.g., fundamentally violates a no-go theorem), complete its route card (KILLED, with the gate code, the evidence and the strongest case against the kill), add its Kill Index row and, if the reason generalises, a library entry, and generate a fresh replacement route using one of three forced orthogonal directions:
 1. **Duality / Frame Transformation**: If current ideas operate in real space, formulate the candidate in dual momentum, graph, or phase space.
 2. **Active / Interactive Probing**: If passive representations hit complexity walls, formulate a route based on active, adaptive query algorithms or localized projective measurements.
-3. **Cross-Field Translation**: Port a concrete mathematical technique from an adjacent field that conquered an analogous barrier, modifying it to respect the Hard Core.
+3. **Cross-Field Translation**: Port a concrete technique from another field that conquered an analogous barrier, modifying it to respect the Hard Core. Take it from an untried entry of the Analogy Map; if the map has no untried entry, extend the map first (Stage 2, item 3).
 
-**Termination Condition for Stage 3**: Continue the generate $\to$ gate $\to$ mutate loop until **at least 3 distinct candidate routes survive all 5 gates** (the starting Route Portfolio of Stage 3.5). Generation does not stop when the first route survives: the portfolio is refilled whenever it drops below 3 live routes. The loop is bounded: when two consecutive refill batches are killed in full at the gates, T0 or T1, the leaf stops generating blind and goes DORMANT with a Saturation Diagnostic built from those kills (idea saturation, section 3b). Its named missing ingredients then become targeted route sources (Stage 3.5.3, step 3), which is cheaper than a third untargeted batch.
+**Termination Condition for Stage 3**: Continue the generate $\to$ gate $\to$ mutate loop until **at least 3 distinct candidate routes survive all 5 gates** (the starting Route Portfolio of Stage 3.5). Generation does not stop when the first route survives: the portfolio is refilled whenever it drops below 3 live routes. The loop is bounded: when two consecutive refill batches are killed in full at the gates, T0 or T1, the leaf stops generating blind and goes DORMANT with a Saturation Diagnostic built from those kills (idea saturation, section 3b). Saturation counts only if the batches included at least one cross-field translation that also went through translation repair; otherwise the next batch is drawn from the Analogy Map first. Its named missing ingredients then become targeted route sources (Stage 3.5.3, step 3), which is cheaper than a third untargeted batch.
 
 For each surviving route, state the **Sharpest Gap**: the missing lemma, unproven scaling behavior, or unverified physical assumption required for the route to function.
 
@@ -645,7 +667,7 @@ Resolve all syntax and formatting failures flagged by the linter until the summa
 
 Spawn a fresh adversarial critic agent with this mandate:
 > "Act as a hostile referee whose sole objective is to break the surviving routes in this document. 
-> 1. Verify Persistence in ideas: Check if the generator attempted only one round of ideas and stopped. If all ideas were dismissed without mutation or replacement at T0 and T1, flag this as a critical failure. Do not demand more compute as a remedy: persistence is about routes, not jobs.
+> 1. Verify Persistence in ideas: Check if the generator attempted only one round of ideas and stopped. If all ideas were dismissed without mutation or replacement at T0 and T1, flag this as a critical failure. Do not demand more compute as a remedy: persistence is about routes, not jobs. Check that the Analogy Map draws on real sources from at least three other fields, with a correspondence table and translation gap for each; that every batch contained a cross-field translation; and that every killed cross-field route got its translation repair.
 > 2. Challenge Novelty: Identify if this route is an existing published method under new terminology. If it exists, why is it not standard practice? Name the unstated adoption barrier.
 > 3. Find the implicit assumption that sweeps the Hard Core under the rug.
 > 4. Determine whether the decisive test can be trivially satisfied by the Minimal Contrast Foil.

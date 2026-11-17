@@ -36,6 +36,9 @@ KILLED_CARD = f"""### R1.0 — Local hop-ratio sign factors (KILLED)
 LEAF_HEAD = """# Subproblem: P1.2 Test leaf
 **Parent Chain**: P1 -> P1.2  **Status**: DORMANT
 
+### 1b. Analogy Map
+* Barrier restated: estimate a signed sum from few evaluations. Sources: control variates in statistics, multilevel Monte Carlo, sketching.
+
 """
 
 SUMMARY = """## Leaf Status Summary
@@ -117,6 +120,21 @@ class RouteCards(unittest.TestCase):
         self.write(LEAF_HEAD + SUMMARY + "\n## Route Register\n\n" + KILLED_CARD)
         rc, out = lint(self.p)
         self.assertIn("must come before '## Leaf Status Summary'", out)
+
+    def test_cross_field_needs_source_analogy(self):
+        card = KILLED_CARD.replace("* **Lineage**: initial batch.", "* **Lineage**: cross-field translation from multilevel Monte Carlo.")
+        self.write(LEAF_HEAD + "## Route Register\n\n" + card + "\n" + SUMMARY)
+        rc, out = lint(self.p)
+        self.assertIn("R4", out)
+        card = card.replace("* **Outcome**:", "* **Source analogy**: multilevel Monte Carlo (Giles 2008) telescopes a costly estimator over coarse levels; here levels are lattice sizes; it worked because level differences have small variance; gap: no small-variance coupling between sizes.\n* **Outcome**:")
+        self.write(LEAF_HEAD + "## Route Register\n\n" + card + "\n" + SUMMARY)
+        rc, out = lint(self.p)
+        self.assertEqual(rc, 0, out)
+
+    def test_missing_analogy_map_warns(self):
+        self.write(LEAF_HEAD.replace("### 1b. Analogy Map", "### 1b. Something else") + "## Route Register\n\n" + KILLED_CARD + "\n" + SUMMARY)
+        rc, out = lint(self.p)
+        self.assertIn("A0", out)
 
     def test_missing_register_warns(self):
         self.write(LEAF_HEAD + SUMMARY)
