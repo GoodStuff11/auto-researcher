@@ -1,0 +1,13 @@
+[15:33:17] sector: dim 169884; (+,+) representatives 42756 (validate.json irrep dim 42756); Hr nnz 1864078; inputs 78; P 2672
+[15:33:18] sign: E_ground = -7.827899034271742
+[15:33:18] sign: ground_vs_E0 = 1.0658141036401503e-14
+[15:33:18] sign: overlap = 0.6052676052794896
+[15:33:18] sign: eps_tree = 0.03800132517796639
+[15:33:18] sign: eps_signfix = 0.14896764674457189
+[15:33:18] sign: eps_ampfix = 0.3205754617276658
+[15:33:18] sign: w_wrong = 0.09357828850562915
+[15:33:18] sign: eps_allplus = 0.9559609436457753
+[15:33:18] sign: eps_chargesign = 0.582869981029543
+[15:33:18] sign: w_wrong_chargesign = 0.3539890969578113
+[15:33:18] sign: signfix_over_tree = 3.920064525300951
+[15:33:18] sign: class = NOT-SIGN-LIMITED

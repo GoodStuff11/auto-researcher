@@ -334,12 +334,21 @@ One row per KILLED or SHELVED route, grouped by leaf. **Code** is where the rout
 | R26 | P4.1 | charge variables in a dimer-orbital basis (`bond-basis`) | G2 | the site Gutzwiller factor becomes non-diagonal, so the leading strong-coupling correlator is lost or exponential | [[leaves/P4.1/cards/R26]] | route-specific |
 | R27 | P4.1 | full-sum L-BFGS with exact gradients (`lbfgs`) | T1 | 0.13-0.17x the ladder LM's gain per CPU-min at the polished endpoints | [[leaves/P4.1/cards/R27]] | route-specific (proposed entry, round 22) |
 | R29 | P4.1 | truncated-Newton trust region with exact-gradient Hessian-vector products (`ncg`) | T1 | 0.05x the ladder LM's rate on `che` | [[leaves/P4.1/cards/R29]] | route-specific (as R27) |
+| R30 | P4.1 | Anderson/DIIS mixing over ladder-LM iterates (`anderson`) | T1 | 0.80x the ladder LM rate on `che`; every Anderson candidate lost to the plain step (non-smooth map: line-search factor jumps 1/4 to 1) | [[leaves/P4.1/cards/R30]] | route-specific (as R27) |
 | R31 | P4.1 | Krylov-subspace or larger-block linear method (`krylov-lm`) | G2 | the build, not the solve, sets the step cost, and the model solved is the same | [[leaves/P4.1/cards/R31]] | route-specific |
 | R32 | P4.1 | two-stage blocked SR step (`bsr`) | T1 | metric-side: the exact metric does not help the sampled step; blocked Rbar -0.007 vs 0.016 | [[leaves/P4.1/cards/R32]] | proposed entry (force noise limits sampled SR) |
 | R33 | P4.1 | minSR / kernel-trick SR (`minsr`) | G2 | push-through identity: same samples, same step; only the solve cost changes | [[leaves/P4.1/cards/R33]] | route-specific |
 | R35 | P4.1 | RLS/Kalman running metric (`rls-S`) | T1 | a fourfold staleness-free metric average gave Rbar 0.003 vs 0.016 | [[leaves/P4.1/cards/R35]] | as R32 |
 | R36 | P4.1 | Ledoit-Wolf / NERCOME / factor-model metric (`shrink`) | T1 | no metric estimator can help when the exact metric does not | [[leaves/P4.1/cards/R36]] | as R32 |
 | R37 | P4.1 | Hamiltonian-symmetry control variate for the force (`cv`) | T1 | variance down 3.9-6.7x against a 32.6x cost; steps worse at equal samples | [[leaves/P4.1/cards/R37]] | as R32 |
+| R2 | P4.1 | exactly projected charge-backflowed pairing Gaussian (`pcg`) | SHELVED | provisional 12-site lead 0.586 of the control's error, both arms unconverged; 13 CPU-h convergence resume G2-refused (predicted AMBIGUOUS p 0.55); no 24-site optimiser | [[leaves/P4.1/cards/R2]] | L33 |
+| R16 | P4.1 | squeezed (spin–charge separated) frame term (`sq`) | T1 | at both polished parents the squeezed directions gain no more than matched generic ones (0.0064 vs 0.0067, 0.0097 vs 0.0127 of the gap) | [[leaves/P4.1/cards/R16]] | route-specific |
+| R17 | P4.1 | plaquette charge-pattern Jastrow (`nj`) | SHELVED | three AMBIGUOUS tangent reads, at most 1.3% of the gap; next tier G2-refused (p 0.9 stays below 0.05 of the gap) | [[leaves/P4.1/cards/R17]] | route-specific |
+| R19 | P4.1 | cutoff-ladder re-polish of both arms (`ladder`) | SHELVED | unfroze both arms but did not converge them (tails 22-100% of error); resume G2-refused | [[leaves/P4.1/cards/R19]] | L29 |
+| R20 | P4.1 | rank-5 truncation of `pcg`'s pairing as a same-code ablation (`abl-rank`) | SHELVED | provisional ratio 0.550 on unconverged arms; completion is the refused resume | [[leaves/P4.1/cards/R20]] | L38 |
+| R21 | P4.1 | sampled SR with truncated metric and held-out step length (`trSR`) | SHELVED | MARGINAL R(15) 0.195, truncation no better than shift; superseded by R38, which plateaus anyway | [[leaves/P4.1/cards/R21]] | proposed entry (force noise limits sampled SR) |
+| R22 | P4.1 | balanced coupling-tree spin basis with a charge determinant (`spin-tree`) | SHELVED | seed 0 at 52.6x the polished control's error; seeds 1-2 G2-refused (predicted KILL p 0.99); sign head did not learn the 48%-negative tree-basis sign | [[leaves/P4.1/cards/R22]] | route-specific |
+| R38 | P4.1 | guided (flattened) sampling for the SR step (`guided`) | T1 | median R(60) 0.512 < 0.60 against 0.7475 for the exact polish; flat last steps (noise floor) | [[leaves/P4.1/cards/R38]] | proposed entry (guided sampling plateaus at half the gap) |
 
 ### P4.2 — Size-transferable fermionic NQS
 

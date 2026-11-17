@@ -1,1 +1,124 @@
 r25 R38 guided T1b seed0 6000 on kim-cpu-02.physics.cornell.edu, job 752886
+[14:09:50] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[14:10:11] INVALID check: sampled E -7.808657 +- 4.1e-03 vs exact -7.805526 (0.8 se)
+[14:10:35] shift step 1: tau 0.02; exact R +0.1178 (step dR +0.1178); |dtheta| 0.240; sampled E -7.80866+-4.1e-03; w_max 8.19e+00 [0.8 CPU-min, step 0.66, wall 47 s]
+    tau 5e-03: val dE -1.42e-03+-5.6e-04 exact R +0.0474; tau 1e-02: val dE -2.47e-03+-9.9e-04 exact R +0.0830; tau 2e-02: val dE -3.46e-03+-1.5e-03 exact R +0.1178; tau 5e-02: val dE +2.97e-03+-4.2e-03 exact R -0.1112
+[14:11:14] shift step 2: tau 0.005; exact R +0.1517 (step dR +0.0339); |dtheta| 0.061; sampled E -7.80592+-3.0e-03; w_max 7.99e+00 [1.5 CPU-min, step 0.65, wall 86 s]
+    tau 5e-03: val dE -4.29e-05+-3.9e-04 exact R +0.1517; tau 1e-02: val dE +1.63e-04+-8.2e-04 exact R +0.1751; tau 2e-02: val dE +1.33e-03+-1.8e-03 exact R +0.1888; tau 5e-02: val dE +1.14e-02+-5.6e-03 exact R -0.0784
+[14:11:54] shift step 3: tau 0.005; exact R +0.1860 (step dR +0.0343); |dtheta| 0.069; sampled E -7.81157+-3.2e-03; w_max 7.84e+00 [2.1 CPU-min, step 0.67, wall 126 s]
+    tau 5e-03: val dE -1.29e-04+-3.4e-04 exact R +0.1860; tau 1e-02: val dE +1.21e-05+-6.9e-04 exact R +0.2078; tau 2e-02: val dE +1.18e-03+-1.5e-03 exact R +0.2105; tau 5e-02: val dE +1.44e-02+-7.2e-03 exact R -0.2233
+[14:12:35] shift step 4: tau 0.005; exact R +0.2052 (step dR +0.0192); |dtheta| 0.081; sampled E -7.81114+-3.6e-03; w_max 7.87e+00 [2.8 CPU-min, step 0.68, wall 167 s]
+    tau 5e-03: val dE -3.70e-04+-4.8e-04 exact R +0.2052; tau 1e-02: val dE -3.09e-04+-9.7e-04 exact R +0.2049; tau 2e-02: val dE +1.29e-03+-2.0e-03 exact R +0.1400; tau 5e-02: val dE +2.31e-02+-6.7e-03 exact R -0.7818
+[14:13:16] shift step 5: tau 0.01; exact R +0.2360 (step dR +0.0308); |dtheta| 0.167; sampled E -7.80699+-3.4e-03; w_max 7.99e+00 [3.5 CPU-min, step 0.68, wall 208 s]
+    tau 5e-03: val dE -6.77e-04+-4.7e-04 exact R +0.2304; tau 1e-02: val dE -8.97e-04+-9.1e-04 exact R +0.2360; tau 2e-02: val dE +2.65e-05+-1.7e-03 exact R +0.1859; tau 5e-02: val dE +1.54e-02+-4.5e-03 exact R -0.5923
+[14:13:57] shift step 6: tau 0.02; exact R +0.2114 (step dR -0.0246); |dtheta| 0.360; sampled E -7.81203+-3.1e-03; w_max 7.84e+00 [4.2 CPU-min, step 0.68, wall 248 s]
+    tau 5e-03: val dE -1.19e-03+-5.6e-04 exact R +0.2609; tau 1e-02: val dE -2.09e-03+-1.1e-03 exact R +0.2659; tau 2e-02: val dE -2.98e-03+-2.0e-03 exact R +0.2114; tau 5e-02: val dE +4.02e-03+-4.9e-03 exact R -0.6568
+[14:14:38] shift step 7: tau 0.01; exact R +0.2780 (step dR +0.0666); |dtheta| 0.155; sampled E -7.81305+-3.1e-03; w_max 7.98e+00 [4.8 CPU-min, step 0.68, wall 289 s]
+    tau 5e-03: val dE -3.96e-04+-3.9e-04 exact R +0.2546; tau 1e-02: val dE -4.12e-04+-7.7e-04 exact R +0.2780; tau 2e-02: val dE +7.15e-04+-1.5e-03 exact R +0.2640; tau 5e-02: val dE +1.52e-02+-4.3e-03 exact R -0.3512
+[14:15:18] shift step 8: tau 0.02; exact R +0.2696 (step dR -0.0084); |dtheta| 0.295; sampled E -7.81396+-2.9e-03; w_max 7.77e+00 [5.5 CPU-min, step 0.67, wall 330 s]
+    tau 5e-03: val dE -1.03e-03+-3.5e-04 exact R +0.2996; tau 1e-02: val dE -1.78e-03+-7.2e-04 exact R +0.3056; tau 2e-02: val dE -2.40e-03+-1.5e-03 exact R +0.2696; tau 5e-02: val dE +5.75e-03+-5.2e-03 exact R -0.2934
+[14:15:58] shift step 9: tau 0.02; exact R +0.2749 (step dR +0.0053); |dtheta| 0.331; sampled E -7.81287+-3.8e-03; w_max 7.56e+00 [6.2 CPU-min, step 0.66, wall 370 s]
+    tau 5e-03: val dE -1.77e-03+-1.1e-03 exact R +0.3057; tau 1e-02: val dE -3.11e-03+-2.2e-03 exact R +0.3188; tau 2e-02: val dE -3.97e-03+-4.0e-03 exact R +0.2749; tau 5e-02: val dE +2.41e-02+-9.8e-03 exact R -0.5489
+[14:16:38] shift step 10: tau 0.02; exact R +0.3125 (step dR +0.0375); |dtheta| 0.294; sampled E -7.80633+-4.3e-03; w_max 7.96e+00 [6.8 CPU-min, step 0.67, wall 410 s]
+    tau 5e-03: val dE -1.06e-03+-3.8e-04 exact R +0.3104; tau 1e-02: val dE -1.79e-03+-7.7e-04 exact R +0.3288; tau 2e-02: val dE -2.17e-03+-1.6e-03 exact R +0.3125; tau 5e-02: val dE +8.37e-03+-4.7e-03 exact R -0.2587
+[14:17:18] shift step 11: tau 0.01; exact R +0.3485 (step dR +0.0360); |dtheta| 0.160; sampled E -7.81573+-3.0e-03; w_max 8.12e+00 [7.5 CPU-min, step 0.66, wall 450 s]
+    tau 5e-03: val dE -6.05e-04+-4.1e-04 exact R +0.3405; tau 1e-02: val dE -8.74e-04+-8.3e-04 exact R +0.3485; tau 2e-02: val dE -3.85e-04+-1.7e-03 exact R +0.3027; tau 5e-02: val dE +1.10e-02+-4.9e-03 exact R -0.4048
+[14:17:59] shift step 12: tau 0.01; exact R +0.3745 (step dR +0.0260); |dtheta| 0.146; sampled E -7.81456+-3.0e-03; w_max 7.86e+00 [8.2 CPU-min, step 0.68, wall 491 s]
+    tau 5e-03: val dE -7.72e-04+-4.0e-04 exact R +0.3705; tau 1e-02: val dE -1.20e-03+-8.0e-04 exact R +0.3745; tau 2e-02: val dE -1.04e-03+-1.6e-03 exact R +0.3281; tau 5e-02: val dE +8.29e-03+-4.5e-03 exact R -0.3041
+[14:18:40] shift step 13: tau 0.01; exact R +0.3912 (step dR +0.0168); |dtheta| 0.160; sampled E -7.81345+-2.8e-03; w_max 8.03e+00 [8.9 CPU-min, step 0.68, wall 532 s]
+    tau 5e-03: val dE -6.06e-04+-4.0e-04 exact R +0.3922; tau 1e-02: val dE -8.93e-04+-7.8e-04 exact R +0.3912; tau 2e-02: val dE -5.18e-04+-1.5e-03 exact R +0.3338; tau 5e-02: val dE +9.18e-03+-3.8e-03 exact R -0.3381
+[14:19:21] shift step 14: tau None; exact R +0.3912 (step dR +0.0000); |dtheta| 0.000; sampled E -7.81653+-2.9e-03; w_max 8.03e+00 [9.6 CPU-min, step 0.68, wall 573 s]
+    tau 5e-03: val dE +1.28e-04+-4.4e-04 exact R +0.4045; tau 1e-02: val dE +7.54e-04+-9.3e-04 exact R +0.3983; tau 2e-02: val dE +3.66e-03+-2.1e-03 exact R +0.3243; tau 5e-02: val dE +2.96e-02+-8.8e-03 exact R -0.5204
+[14:20:02] shift step 15: tau None; exact R +0.3912 (step dR +0.0000); |dtheta| 0.000; sampled E -7.81596+-3.4e-03; w_max 8.11e+00 [10.2 CPU-min, step 0.67, wall 614 s]
+    tau 5e-03: val dE +2.44e-04+-4.7e-04 exact R +0.4038; tau 1e-02: val dE +1.06e-03+-9.1e-04 exact R +0.3933; tau 2e-02: val dE +4.52e-03+-1.8e-03 exact R +0.2986; tau 5e-02: val dE +3.32e-02+-5.5e-03 exact R -0.7706
+[14:20:42] shift step 16: tau 0.005; exact R +0.4049 (step dR +0.0136); |dtheta| 0.083; sampled E -7.81494+-3.0e-03; w_max 7.93e+00 [10.9 CPU-min, step 0.66, wall 654 s]
+    tau 5e-03: val dE -6.32e-05+-3.8e-04 exact R +0.4049; tau 1e-02: val dE +2.32e-04+-7.7e-04 exact R +0.3977; tau 2e-02: val dE +2.00e-03+-1.6e-03 exact R +0.3151; tau 5e-02: val dE +2.10e-02+-4.8e-03 exact R -0.7051
+[14:21:22] shift step 17: tau None; exact R +0.4049 (step dR +0.0000); |dtheta| 0.000; sampled E -7.81728+-2.9e-03; w_max 7.99e+00 [11.6 CPU-min, step 0.67, wall 694 s]
+    tau 5e-03: val dE +5.06e-04+-3.9e-04 exact R +0.4135; tau 1e-02: val dE +1.33e-03+-7.9e-04 exact R +0.4024; tau 2e-02: val dE +3.95e-03+-1.6e-03 exact R +0.3196; tau 5e-02: val dE +2.10e-02+-4.9e-03 exact R -0.5002
+[14:22:03] shift step 18: tau None; exact R +0.4049 (step dR +0.0000); |dtheta| 0.000; sampled E -7.81284+-2.8e-03; w_max 7.99e+00 [12.2 CPU-min, step 0.68, wall 735 s]
+    tau 5e-03: val dE +2.17e-04+-4.5e-04 exact R +0.4144; tau 1e-02: val dE +8.84e-04+-8.9e-04 exact R +0.4042; tau 2e-02: val dE +3.63e-03+-1.8e-03 exact R +0.3220; tau 5e-02: val dE +2.62e-02+-5.7e-03 exact R -0.5559
+[14:22:44] shift step 19: tau 0.01; exact R +0.4000 (step dR -0.0048); |dtheta| 0.169; sampled E -7.81313+-2.7e-03; w_max 8.17e+00 [12.9 CPU-min, step 0.68, wall 776 s]
+    tau 5e-03: val dE -4.99e-04+-4.6e-04 exact R +0.4129; tau 1e-02: val dE -5.61e-04+-9.4e-04 exact R +0.4000; tau 2e-02: val dE +6.87e-04+-1.9e-03 exact R +0.3081; tau 5e-02: val dE +1.79e-02+-5.9e-03 exact R -0.6453
+[14:23:25] shift step 20: tau None; exact R +0.4000 (step dR +0.0000); |dtheta| 0.000; sampled E -7.81530+-2.9e-03; w_max 8.07e+00 [13.6 CPU-min, step 0.68, wall 817 s]
+    tau 5e-03: val dE +6.39e-04+-4.4e-04 exact R +0.4127; tau 1e-02: val dE +1.74e-03+-8.8e-04 exact R +0.4016; tau 2e-02: val dE +5.35e-03+-1.8e-03 exact R +0.3049; tau 5e-02: val dE +3.04e-02+-5.5e-03 exact R -0.7187
+[14:24:06] shift step 21: tau 0.005; exact R +0.4134 (step dR +0.0134); |dtheta| 0.088; sampled E -7.81069+-3.1e-03; w_max 8.03e+00 [14.3 CPU-min, step 0.68, wall 858 s]
+    tau 5e-03: val dE -2.25e-04+-4.6e-04 exact R +0.4134; tau 1e-02: val dE +3.00e-05+-9.4e-04 exact R +0.4019; tau 2e-02: val dE +2.17e-03+-2.0e-03 exact R +0.2969; tau 5e-02: val dE +2.89e-02+-6.6e-03 exact R -0.9902
+[14:24:46] shift step 22: tau 0.01; exact R +0.4165 (step dR +0.0031); |dtheta| 0.156; sampled E -7.81566+-2.8e-03; w_max 8.31e+00 [14.9 CPU-min, step 0.67, wall 898 s]
+    tau 5e-03: val dE -6.70e-04+-3.9e-04 exact R +0.4237; tau 1e-02: val dE -9.71e-04+-7.8e-04 exact R +0.4165; tau 2e-02: val dE -4.36e-04+-1.6e-03 exact R +0.3479; tau 5e-02: val dE +1.23e-02+-5.0e-03 exact R -0.3754
+[14:25:26] shift step 23: tau 0.005; exact R +0.4274 (step dR +0.0108); |dtheta| 0.081; sampled E -7.80942+-3.1e-03; w_max 8.19e+00 [15.6 CPU-min, step 0.65, wall 937 s]
+    tau 5e-03: val dE -7.75e-05+-3.8e-04 exact R +0.4274; tau 1e-02: val dE +2.06e-04+-7.8e-04 exact R +0.4177; tau 2e-02: val dE +1.92e-03+-1.6e-03 exact R +0.3350; tau 5e-02: val dE +1.84e-02+-5.2e-03 exact R -0.5220
+[14:26:06] shift step 24: tau 0.005; exact R +0.4346 (step dR +0.0072); |dtheta| 0.073; sampled E -7.81615+-3.0e-03; w_max 8.16e+00 [16.3 CPU-min, step 0.67, wall 978 s]
+    tau 5e-03: val dE -8.97e-05+-4.1e-04 exact R +0.4346; tau 1e-02: val dE +1.23e-04+-8.2e-04 exact R +0.4242; tau 2e-02: val dE +1.47e-03+-1.6e-03 exact R +0.3495; tau 5e-02: val dE +1.39e-02+-4.1e-03 exact R -0.3729
+[14:26:47] shift step 25: tau 0.005; exact R +0.4414 (step dR +0.0068); |dtheta| 0.076; sampled E -7.81063+-2.7e-03; w_max 8.07e+00 [17.0 CPU-min, step 0.68, wall 1019 s]
+    tau 5e-03: val dE -1.97e-04+-4.6e-04 exact R +0.4414; tau 1e-02: val dE +8.82e-05+-9.3e-04 exact R +0.4306; tau 2e-02: val dE +2.16e-03+-1.9e-03 exact R +0.3540; tau 5e-02: val dE +2.27e-02+-6.5e-03 exact R -0.4155
+[14:27:28] shift step 26: tau 0.01; exact R +0.4321 (step dR -0.0093); |dtheta| 0.171; sampled E -7.81586+-2.6e-03; w_max 8.02e+00 [17.6 CPU-min, step 0.68, wall 1060 s]
+    tau 5e-03: val dE -4.11e-04+-3.7e-04 exact R +0.4472; tau 1e-02: val dE -5.08e-04+-7.4e-04 exact R +0.4321; tau 2e-02: val dE +3.16e-04+-1.5e-03 exact R +0.3332; tau 5e-02: val dE +1.44e-02+-4.8e-03 exact R -0.7086
+[14:28:09] shift step 27: tau 0.01; exact R +0.4288 (step dR -0.0033); |dtheta| 0.172; sampled E -7.81838+-4.2e-03; w_max 8.13e+00 [18.3 CPU-min, step 0.68, wall 1101 s]
+    tau 5e-03: val dE -9.27e-04+-5.5e-04 exact R +0.4414; tau 1e-02: val dE -1.42e-03+-1.0e-03 exact R +0.4288; tau 2e-02: val dE -9.91e-04+-1.9e-03 exact R +0.3357; tau 5e-02: val dE +1.51e-02+-4.8e-03 exact R -0.6227
+[14:28:50] shift step 28: tau 0.02; exact R +0.3823 (step dR -0.0465); |dtheta| 0.316; sampled E -7.81473+-2.7e-03; w_max 8.14e+00 [19.0 CPU-min, step 0.68, wall 1142 s]
+    tau 5e-03: val dE -9.31e-04+-3.6e-04 exact R +0.4466; tau 1e-02: val dE -1.50e-03+-7.1e-04 exact R +0.4451; tau 2e-02: val dE -1.53e-03+-1.4e-03 exact R +0.3823; tau 5e-02: val dE +9.11e-03+-3.9e-03 exact R -0.3892
+[14:29:30] shift step 29: tau 0.02; exact R +0.3842 (step dR +0.0020); |dtheta| 0.323; sampled E -7.81064+-3.0e-03; w_max 8.22e+00 [19.7 CPU-min, step 0.66, wall 1182 s]
+    tau 5e-03: val dE -1.53e-03+-4.4e-04 exact R +0.4165; tau 1e-02: val dE -2.65e-03+-8.5e-04 exact R +0.4282; tau 2e-02: val dE -3.63e-03+-1.6e-03 exact R +0.3842; tau 5e-02: val dE +5.12e-03+-4.0e-03 exact R -0.3531
+[14:30:10] shift step 30: tau 0.01; exact R +0.4204 (step dR +0.0362); |dtheta| 0.100; sampled E -7.80858+-6.2e-03; w_max 8.04e+00 [20.3 CPU-min, step 0.66, wall 1222 s]
+    tau 5e-03: val dE -3.06e-04+-4.0e-04 exact R +0.4064; tau 1e-02: val dE -3.62e-04+-7.7e-04 exact R +0.4204; tau 2e-02: val dE +2.87e-04+-1.4e-03 exact R +0.4240; tau 5e-02: val dE +8.79e-03+-3.8e-03 exact R +0.2201
+[14:30:51] shift step 31: tau 0.02; exact R +0.3729 (step dR -0.0476); |dtheta| 0.306; sampled E -7.81662+-2.8e-03; w_max 8.22e+00 [21.0 CPU-min, step 0.68, wall 1262 s]
+    tau 5e-03: val dE -1.49e-03+-5.0e-04 exact R +0.4410; tau 1e-02: val dE -2.55e-03+-9.6e-04 exact R +0.4404; tau 2e-02: val dE -3.34e-03+-1.8e-03 exact R +0.3729; tau 5e-02: val dE +7.76e-03+-4.5e-03 exact R -0.5128
+[14:31:31] shift step 32: tau 0.02; exact R +0.3963 (step dR +0.0235); |dtheta| 0.307; sampled E -7.81170+-2.8e-03; w_max 7.99e+00 [21.7 CPU-min, step 0.68, wall 1303 s]
+    tau 5e-03: val dE -1.31e-03+-5.4e-04 exact R +0.4105; tau 1e-02: val dE -2.09e-03+-1.0e-03 exact R +0.4270; tau 2e-02: val dE -2.13e-03+-1.8e-03 exact R +0.3963; tau 5e-02: val dE +1.11e-02+-4.4e-03 exact R -0.2693
+[14:32:13] shift step 33: tau 0.005; exact R +0.4214 (step dR +0.0251); |dtheta| 0.053; sampled E -7.81447+-2.9e-03; w_max 7.86e+00 [22.4 CPU-min, step 0.68, wall 1344 s]
+    tau 5e-03: val dE -1.67e-04+-4.7e-04 exact R +0.4214; tau 1e-02: val dE -5.75e-05+-1.0e-03 exact R +0.4365; tau 2e-02: val dE +9.61e-04+-2.3e-03 exact R +0.4365; tau 5e-02: val dE +1.04e-02+-7.2e-03 exact R +0.1638
+[14:32:54] shift step 34: tau 0.01; exact R +0.4558 (step dR +0.0344); |dtheta| 0.111; sampled E -7.81489+-2.7e-03; w_max 7.98e+00 [23.0 CPU-min, step 0.68, wall 1385 s]
+    tau 5e-03: val dE -3.33e-04+-3.0e-04 exact R +0.4439; tau 1e-02: val dE -4.57e-04+-6.0e-04 exact R +0.4558; tau 2e-02: val dE -6.28e-05+-1.2e-03 exact R +0.4467; tau 5e-02: val dE +6.81e-03+-3.1e-03 exact R +0.1250
+[14:33:34] shift step 35: tau 0.01; exact R +0.4673 (step dR +0.0115); |dtheta| 0.156; sampled E -7.81817+-2.7e-03; w_max 7.94e+00 [23.7 CPU-min, step 0.67, wall 1426 s]
+    tau 5e-03: val dE -5.36e-04+-4.0e-04 exact R +0.4708; tau 1e-02: val dE -6.99e-04+-8.0e-04 exact R +0.4673; tau 2e-02: val dE +1.77e-04+-1.6e-03 exact R +0.4022; tau 5e-02: val dE +1.59e-02+-4.9e-03 exact R -0.3964
+[14:34:14] shift step 36: tau 0.005; exact R +0.4815 (step dR +0.0143); |dtheta| 0.086; sampled E -7.81194+-2.9e-03; w_max 8.10e+00 [24.4 CPU-min, step 0.67, wall 1466 s]
+    tau 5e-03: val dE -2.96e-04+-4.1e-04 exact R +0.4815; tau 1e-02: val dE -2.40e-04+-8.4e-04 exact R +0.4750; tau 2e-02: val dE +9.92e-04+-1.8e-03 exact R +0.3957; tau 5e-02: val dE +1.71e-02+-5.2e-03 exact R -0.5487
+[14:34:54] shift step 37: tau 0.01; exact R +0.4790 (step dR -0.0025); |dtheta| 0.174; sampled E -7.81834+-2.8e-03; w_max 7.95e+00 [25.0 CPU-min, step 0.66, wall 1506 s]
+    tau 5e-03: val dE -1.04e-03+-4.5e-04 exact R +0.4911; tau 1e-02: val dE -1.64e-03+-8.9e-04 exact R +0.4790; tau 2e-02: val dE -1.51e-03+-1.8e-03 exact R +0.3903; tau 5e-02: val dE +1.10e-02+-4.8e-03 exact R -0.4788
+[14:35:34] shift step 38: tau 0.01; exact R +0.4823 (step dR +0.0032); |dtheta| 0.148; sampled E -7.80983+-2.8e-03; w_max 7.81e+00 [25.7 CPU-min, step 0.66, wall 1546 s]
+    tau 5e-03: val dE -3.90e-04+-3.8e-04 exact R +0.4894; tau 1e-02: val dE -4.68e-04+-7.7e-04 exact R +0.4823; tau 2e-02: val dE +3.52e-04+-1.6e-03 exact R +0.4135; tau 5e-02: val dE +1.27e-02+-4.4e-03 exact R -0.3385
+[14:36:15] shift step 39: tau 0.005; exact R +0.4936 (step dR +0.0113); |dtheta| 0.076; sampled E -7.82340+-2.6e-03; w_max 7.95e+00 [26.4 CPU-min, step 0.68, wall 1587 s]
+    tau 5e-03: val dE -2.66e-04+-4.2e-04 exact R +0.4936; tau 1e-02: val dE -1.62e-04+-8.3e-04 exact R +0.4881; tau 2e-02: val dE +1.16e-03+-1.6e-03 exact R +0.4263; tau 5e-02: val dE +1.54e-02+-4.6e-03 exact R -0.2313
+[14:36:56] shift step 40: tau None; exact R +0.4936 (step dR +0.0000); |dtheta| 0.000; sampled E -7.81635+-2.5e-03; w_max 8.05e+00 [27.1 CPU-min, step 0.68, wall 1628 s]
+    tau 5e-03: val dE +1.96e-06+-1.6e-04 exact R +0.5001; tau 1e-02: val dE +5.26e-05+-3.1e-04 exact R +0.5031; tau 2e-02: val dE +3.06e-04+-6.3e-04 exact R +0.4983; tau 5e-02: val dE +2.43e-03+-1.6e-03 exact R +0.3938
+[14:37:36] shift step 41: tau 0.005; exact R +0.5020 (step dR +0.0084); |dtheta| 0.083; sampled E -7.81820+-2.6e-03; w_max 7.80e+00 [27.7 CPU-min, step 0.67, wall 1668 s]
+    tau 5e-03: val dE -6.48e-05+-4.1e-04 exact R +0.5020; tau 1e-02: val dE +2.69e-04+-8.1e-04 exact R +0.4905; tau 2e-02: val dE +2.11e-03+-1.6e-03 exact R +0.4055; tau 5e-02: val dE +1.85e-02+-4.4e-03 exact R -0.4620
+[14:38:17] shift step 42: tau 0.005; exact R +0.5097 (step dR +0.0076); |dtheta| 0.073; sampled E -7.81670+-2.8e-03; w_max 8.10e+00 [28.4 CPU-min, step 0.68, wall 1709 s]
+    tau 5e-03: val dE -2.43e-04+-3.7e-04 exact R +0.5097; tau 1e-02: val dE +3.85e-05+-7.3e-04 exact R +0.5016; tau 2e-02: val dE +2.20e-03+-1.8e-03 exact R +0.4352; tau 5e-02: val dE +2.29e-02+-9.9e-03 exact R -0.2793
+[14:38:57] shift step 43: tau 0.005; exact R +0.5140 (step dR +0.0044); |dtheta| 0.072; sampled E -7.81519+-2.8e-03; w_max 8.00e+00 [29.1 CPU-min, step 0.66, wall 1749 s]
+    tau 5e-03: val dE -8.12e-05+-3.5e-04 exact R +0.5140; tau 1e-02: val dE +1.47e-04+-7.1e-04 exact R +0.5040; tau 2e-02: val dE +1.58e-03+-1.5e-03 exact R +0.4383; tau 5e-02: val dE +1.55e-02+-4.7e-03 exact R -0.2036
+[14:39:37] shift step 44: tau 0.01; exact R +0.5058 (step dR -0.0082); |dtheta| 0.163; sampled E -7.81708+-2.5e-03; w_max 7.93e+00 [29.7 CPU-min, step 0.65, wall 1788 s]
+    tau 5e-03: val dE -4.07e-04+-3.9e-04 exact R +0.5198; tau 1e-02: val dE -4.97e-04+-7.8e-04 exact R +0.5058; tau 2e-02: val dE +3.18e-04+-1.6e-03 exact R +0.4152; tau 5e-02: val dE +1.31e-02+-4.8e-03 exact R -0.5078
+[14:40:17] shift step 45: tau 0.01; exact R +0.5022 (step dR -0.0036); |dtheta| 0.174; sampled E -7.81717+-2.9e-03; w_max 7.90e+00 [30.4 CPU-min, step 0.67, wall 1829 s]
+    tau 5e-03: val dE -6.63e-04+-4.3e-04 exact R +0.5152; tau 1e-02: val dE -9.66e-04+-8.5e-04 exact R +0.5022; tau 2e-02: val dE -4.24e-04+-1.7e-03 exact R +0.4049; tau 5e-02: val dE +1.38e-02+-4.4e-03 exact R -0.6408
+[14:40:58] shift step 46: tau 0.005; exact R +0.5111 (step dR +0.0089); |dtheta| 0.079; sampled E -7.82070+-3.7e-03; w_max 8.00e+00 [31.1 CPU-min, step 0.68, wall 1870 s]
+    tau 5e-03: val dE -2.83e-04+-3.9e-04 exact R +0.5111; tau 1e-02: val dE -1.62e-04+-7.8e-04 exact R +0.4991; tau 2e-02: val dE +1.32e-03+-1.6e-03 exact R +0.4099; tau 5e-02: val dE +1.75e-02+-4.4e-03 exact R -0.5022
+[14:41:38] shift step 47: tau 0.005; exact R +0.5210 (step dR +0.0099); |dtheta| 0.080; sampled E -7.81862+-2.7e-03; w_max 1.00e+01 [31.7 CPU-min, step 0.67, wall 1910 s]
+    tau 5e-03: val dE -6.20e-05+-3.9e-04 exact R +0.5210; tau 1e-02: val dE +1.99e-04+-8.0e-04 exact R +0.5105; tau 2e-02: val dE +1.80e-03+-1.7e-03 exact R +0.4248; tau 5e-02: val dE +1.88e-02+-4.9e-03 exact R -0.4810
+[14:42:19] shift step 48: tau None; exact R +0.5210 (step dR +0.0000); |dtheta| 0.000; sampled E -7.81824+-2.5e-03; w_max 8.06e+00 [32.4 CPU-min, step 0.68, wall 1951 s]
+    tau 5e-03: val dE +2.70e-04+-3.9e-04 exact R +0.5267; tau 1e-02: val dE +9.57e-04+-7.9e-04 exact R +0.5142; tau 2e-02: val dE +3.57e-03+-1.6e-03 exact R +0.4335; tau 5e-02: val dE +2.24e-02+-4.5e-03 exact R -0.3413
+[14:43:00] shift step 49: tau None; exact R +0.5210 (step dR +0.0000); |dtheta| 0.000; sampled E -7.81690+-2.5e-03; w_max 7.95e+00 [33.1 CPU-min, step 0.68, wall 1992 s]
+    tau 5e-03: val dE +4.98e-04+-4.6e-04 exact R +0.5214; tau 1e-02: val dE +1.56e-03+-9.1e-04 exact R +0.4980; tau 2e-02: val dE +5.52e-03+-2.0e-03 exact R +0.3740; tau 5e-02: val dE +3.83e-02+-9.5e-03 exact R -0.8441
+[14:43:42] shift step 50: tau 0.005; exact R +0.5239 (step dR +0.0029); |dtheta| 0.081; sampled E -7.82128+-2.6e-03; w_max 8.13e+00 [33.8 CPU-min, step 0.66, wall 2033 s]
+    tau 5e-03: val dE -1.38e-04+-7.0e-04 exact R +0.5239; tau 1e-02: val dE +4.41e-04+-1.4e-03 exact R +0.5048; tau 2e-02: val dE +3.86e-03+-3.0e-03 exact R +0.3982; tau 5e-02: val dE +3.57e-02+-1.5e-02 exact R -0.6040
+[14:44:22] shift step 51: tau None; exact R +0.5239 (step dR +0.0000); |dtheta| 0.000; sampled E -7.82099+-2.9e-03; w_max 8.19e+00 [34.4 CPU-min, step 0.66, wall 2073 s]
+    tau 5e-03: val dE +7.08e-04+-3.9e-04 exact R +0.5289; tau 1e-02: val dE +1.84e-03+-8.6e-04 exact R +0.5171; tau 2e-02: val dE +5.48e-03+-2.1e-03 exact R +0.4415; tau 5e-02: val dE +2.93e-02+-1.0e-02 exact R -0.2817
+[14:45:02] shift step 52: tau 0.01; exact R +0.5090 (step dR -0.0149); |dtheta| 0.171; sampled E -7.81880+-2.6e-03; w_max 7.96e+00 [35.1 CPU-min, step 0.67, wall 2114 s]
+    tau 5e-03: val dE -8.60e-04+-4.8e-04 exact R +0.5272; tau 1e-02: val dE -1.19e-03+-9.6e-04 exact R +0.5090; tau 2e-02: val dE -9.28e-05+-1.9e-03 exact R +0.4031; tau 5e-02: val dE +2.26e-02+-7.1e-03 exact R -0.6517
+[14:45:43] shift step 53: tau 0.01; exact R +0.5137 (step dR +0.0047); |dtheta| 0.151; sampled E -7.81415+-3.0e-03; w_max 8.15e+00 [35.8 CPU-min, step 0.68, wall 2155 s]
+    tau 5e-03: val dE -6.62e-04+-3.8e-04 exact R +0.5209; tau 1e-02: val dE -9.77e-04+-7.6e-04 exact R +0.5137; tau 2e-02: val dE -4.57e-04+-1.6e-03 exact R +0.4388; tau 5e-02: val dE +1.44e-02+-5.0e-03 exact R -0.4160
+[14:46:24] shift step 54: tau 0.01; exact R +0.5149 (step dR +0.0013); |dtheta| 0.164; sampled E -7.81712+-2.5e-03; w_max 1.07e+01 [36.5 CPU-min, step 0.68, wall 2196 s]
+    tau 5e-03: val dE -1.45e-03+-8.2e-04 exact R +0.5252; tau 1e-02: val dE -2.29e-03+-1.5e-03 exact R +0.5149; tau 2e-02: val dE -2.09e-03+-2.5e-03 exact R +0.4245; tau 5e-02: val dE +1.70e-02+-4.5e-03 exact R -0.5811
+[14:47:05] shift step 55: tau 0.01; exact R +0.5236 (step dR +0.0086); |dtheta| 0.130; sampled E -7.81776+-2.6e-03; w_max 1.46e+01 [37.1 CPU-min, step 0.68, wall 2236 s]
+    tau 5e-03: val dE -5.13e-04+-4.9e-04 exact R +0.5264; tau 1e-02: val dE -5.72e-04+-9.1e-04 exact R +0.5236; tau 2e-02: val dE +6.07e-04+-1.6e-03 exact R +0.4746; tau 5e-02: val dE +1.42e-02+-4.3e-03 exact R -0.0546
+[14:47:46] shift step 56: tau 0.01; exact R +0.5272 (step dR +0.0036); |dtheta| 0.160; sampled E -7.81765+-2.8e-03; w_max 1.69e+01 [37.8 CPU-min, step 0.68, wall 2278 s]
+    tau 5e-03: val dE -6.31e-04+-4.0e-04 exact R +0.5349; tau 1e-02: val dE -8.14e-04+-8.0e-04 exact R +0.5272; tau 2e-02: val dE +3.11e-04+-1.7e-03 exact R +0.4510; tau 5e-02: val dE +2.06e-02+-5.3e-03 exact R -0.4234
+[14:48:26] shift step 57: tau 0.005; exact R +0.5369 (step dR +0.0097); |dtheta| 0.080; sampled E -7.81676+-2.8e-03; w_max 8.09e+00 [38.5 CPU-min, step 0.67, wall 2318 s]
+    tau 5e-03: val dE -4.16e-04+-3.9e-04 exact R +0.5369; tau 1e-02: val dE -3.79e-04+-7.8e-04 exact R +0.5256; tau 2e-02: val dE +1.07e-03+-1.5e-03 exact R +0.4375; tau 5e-02: val dE +1.88e-02+-4.1e-03 exact R -0.4808
+[14:49:05] shift step 58: tau 0.005; exact R +0.5442 (step dR +0.0072); |dtheta| 0.081; sampled E -7.81635+-2.2e-03; w_max 8.17e+00 [39.1 CPU-min, step 0.65, wall 2357 s]
+    tau 5e-03: val dE -2.74e-04+-4.0e-04 exact R +0.5442; tau 1e-02: val dE -1.84e-04+-7.8e-04 exact R +0.5332; tau 2e-02: val dE +1.11e-03+-1.5e-03 exact R +0.4550; tau 5e-02: val dE +1.58e-02+-4.6e-03 exact R -0.3239
+[14:49:46] shift step 59: tau 0.01; exact R +0.5355 (step dR -0.0087); |dtheta| 0.157; sampled E -7.81811+-2.6e-03; w_max 8.19e+00 [39.8 CPU-min, step 0.67, wall 2397 s]
+    tau 5e-03: val dE -3.67e-04+-3.5e-04 exact R +0.5486; tau 1e-02: val dE -3.88e-04+-6.9e-04 exact R +0.5355; tau 2e-02: val dE +6.62e-04+-1.5e-03 exact R +0.4541; tau 5e-02: val dE +1.56e-02+-6.4e-03 exact R -0.3722
+[14:50:27] shift step 60: tau None; exact R +0.5355 (step dR +0.0000); |dtheta| 0.000; sampled E -7.81564+-2.4e-03; w_max 8.22e+00 [40.5 CPU-min, step 0.68, wall 2438 s]
+    tau 5e-03: val dE +5.47e-04+-5.1e-04 exact R +0.5429; tau 1e-02: val dE +1.49e-03+-1.0e-03 exact R +0.5325; tau 2e-02: val dE +4.47e-03+-2.2e-03 exact R +0.4582; tau 5e-02: val dE +2.24e-02+-6.0e-03 exact R -0.2636
+[14:50:27] wrote shift.json (2438 s, 40.5 CPU-min)

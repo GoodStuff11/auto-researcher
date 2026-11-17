@@ -1,0 +1,37 @@
+[15:36:03] che: P=2637, dim=627264, threads=1
+[15:36:09] phi0 and orbital gradients done (6 s)
+[15:36:20] validation: P_G overlap 1.000000000000000, E(Psi) -7.8222493545 (stored -7.8222493545), <S^2> 1.7e-17
+[15:36:32] families built (29 s): C1 77, C3 120, SQ 120, W 120, NJ 81, RF 81
+[15:36:48] max relative <S^2> of sampled tangents 5.3e-15
+[15:37:50] Gram and H matrices over 600 vectors (108 s)
+[15:37:50] Delta(C1) = 6.380420e-06 (= 0.0011 of gap; rank 74 of 78)
+[15:37:50] Delta(C1+C3) = 1.273170e-05 (= 0.0023 of gap; rank 194 of 198)
+[15:37:51] Delta(C1+C3+SQ) = 4.909961e-05 (= 0.0087 of gap; rank 284 of 318)
+[15:37:51] Delta(C1+C3+W) = 5.059497e-05 (= 0.0090 of gap; rank 314 of 318)
+[15:37:51] Delta(C1+NJ) = 4.745546e-05 (= 0.0084 of gap; rank 144 of 159)
+[15:37:51] Delta(C1+RF) = 2.942510e-05 (= 0.0052 of gap; rank 155 of 159)
+[15:37:55] controls: positive Delta/g = 1.0000000000; negative (81 random S=0 vectors) G = 0.0033
+[15:37:55] wrote results/tangent_che.json (112 s)
+	Command being timed: "/home/jek354/.conda/envs/lit_env/bin/python t1_polished.py --mode run --parent che --threads 1"
+	User time (seconds): 1128.13
+	System time (seconds): 7.22
+	Percent of CPU this job got: 988%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:54.81
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 9540768
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 16
+	Minor (reclaiming a frame) page faults: 3569519
+	Voluntary context switches: 2511
+	Involuntary context switches: 464332
+	Swaps: 0
+	File system inputs: 19216
+	File system outputs: 40
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

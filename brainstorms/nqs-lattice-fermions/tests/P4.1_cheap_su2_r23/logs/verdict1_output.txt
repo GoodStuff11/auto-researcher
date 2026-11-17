@@ -1,0 +1,11 @@
+seed: 0
+eps_tree: 0.03800132517796639
+eps_tree_inf: 0.0
+steps: 12
+stop: STOP-CAP
+eps_ref: 0.0007217364129368478
+eps_ref_inf: 0.0006929964799004943
+factor: 2.5
+rho: 52.65263674772014
+rho_inf: 0.0
+verdict1: RELEASE seeds 1-2 (original 3-seed rule)

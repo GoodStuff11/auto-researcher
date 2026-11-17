@@ -1,0 +1,14 @@
+{
+ "E_ground": -7.827899034271742,
+ "ground_vs_E0": 1.0658141036401503e-14,
+ "overlap": 0.6052676052794896,
+ "eps_tree": 0.03800132517796639,
+ "eps_signfix": 0.14896764674457189,
+ "eps_ampfix": 0.3205754617276658,
+ "w_wrong": 0.09357828850562915,
+ "eps_allplus": 0.9559609436457753,
+ "eps_chargesign": 0.582869981029543,
+ "w_wrong_chargesign": 0.3539890969578113,
+ "signfix_over_tree": 3.920064525300951,
+ "class": "NOT-SIGN-LIMITED"
+}

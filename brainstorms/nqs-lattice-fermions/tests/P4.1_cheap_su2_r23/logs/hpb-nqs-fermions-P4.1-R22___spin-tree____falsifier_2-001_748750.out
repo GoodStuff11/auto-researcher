@@ -5,3 +5,52 @@ r23 tree arm seed 0 on kim-compute-03.physics.cornell.edu, job 748750
 [13:48:34] seed 0 it 1000: E -6.86786012 lr 2.85e-03 [15.99 CPU-min]
 [13:56:36] seed 0 it 1500: E -6.66394453 lr 2.67e-03 [24.01 CPU-min]
 [14:04:56] seed 0 it 2000: E -6.86419672 lr 2.44e-03 [32.32 CPU-min]
+[14:13:10] seed 0 it 2500: E -7.02938223 lr 2.15e-03 [40.54 CPU-min]
+[14:21:22] seed 0 it 3000: E -7.27514634 lr 1.84e-03 [48.72 CPU-min]
+[14:29:33] seed 0 it 3500: E -7.39453432 lr 1.50e-03 [56.88 CPU-min]
+[14:37:46] seed 0 it 4000: E -7.43313728 lr 1.17e-03 [65.07 CPU-min]
+[14:45:57] seed 0 it 4500: E -7.45320119 lr 8.56e-04 [73.24 CPU-min]
+[14:54:05] seed 0 it 5000: E -7.46655163 lr 5.73e-04 [81.36 CPU-min]
+[15:02:14] seed 0 it 5500: E -7.47534827 lr 3.36e-04 [89.48 CPU-min]
+[15:10:23] seed 0 it 6000: E -7.48032800 lr 1.58e-04 [97.60 CPU-min]
+[15:18:22] seed 0 it 6500: E -7.48256905 lr 4.73e-05 [105.57 CPU-min]
+[15:26:18] stage A seed 0: E -7.4831920881 eps 4.40357e-02 [113.5 CPU-min]
+[15:26:23] sector: dim 169884; (+,+) representatives 42756 (validate.json irrep dim 42756); Hr nnz 1864078; inputs 78; P 2672
+[15:26:24] tree polish from seed 0: eps 4.40357e-02, g 3.44707e-01 [0.03 CPU-min]
+[15:26:58] step 1: cut 1e-08 s 0.25 eps 4.40357e-02 -> 4.32931e-02 (drop 1.69%); predicted gain 1.82e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:0.25 1e-09:0.25 [0.6 CPU-min, step 0.56, wall 34 s]
+[15:27:32] step 2: cut 1e-09 s 0.25 eps 4.32931e-02 -> 4.26515e-02 (drop 1.48%); predicted gain 2.27e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:0.5 1e-09:0.25 [1.2 CPU-min, step 0.58, wall 69 s]
+[15:28:07] step 3: cut 1e-08 s 0.5 eps 4.26515e-02 -> 4.17875e-02 (drop 2.03%); predicted gain 2.51e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:0.5 1e-09:0.5 [1.7 CPU-min, step 0.57, wall 103 s]
+[15:28:42] step 4: cut 1e-08 s 0.5 eps 4.17875e-02 -> 4.10011e-02 (drop 1.88%); predicted gain 1.89e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:0.5 1e-09:0.5 [2.3 CPU-min, step 0.58, wall 138 s]
+[15:29:15] step 5: cut 1e-07 s 1.0 eps 4.10011e-02 -> 4.05784e-02 (drop 1.03%); predicted gain 9.36e-03 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:1.0 1e-09:0.5 [2.9 CPU-min, step 0.56, wall 172 s]
+[15:29:49] step 6: cut 1e-08 s 0.5 eps 4.05784e-02 -> 4.02907e-02 (drop 0.71%); predicted gain 6.65e-03 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:0.5 1e-09:0.5 [3.4 CPU-min, step 0.56, wall 206 s]
+[15:30:23] step 7: cut 1e-09 s 0.5 eps 4.02907e-02 -> 4.00094e-02 (drop 0.70%); predicted gain 1.59e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:1.0 1e-09:0.5 [4.0 CPU-min, step 0.57, wall 240 s]
+[15:30:57] step 8: cut 1e-09 s 0.5 eps 4.00094e-02 -> 3.93481e-02 (drop 1.65%); predicted gain 1.62e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:1.0 1e-09:0.5 [4.6 CPU-min, step 0.56, wall 274 s]
+[15:31:31] step 9: cut 1e-09 s 0.5 eps 3.93481e-02 -> 3.89461e-02 (drop 1.02%); predicted gain 1.05e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:1.0 1e-09:0.5 [5.1 CPU-min, step 0.56, wall 308 s]
+[15:32:04] step 10: cut 1e-08 s 1.0 eps 3.89461e-02 -> 3.86769e-02 (drop 0.69%); predicted gain 8.76e-03 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:1.0 1e-09:1.0 [5.7 CPU-min, step 0.56, wall 341 s]
+[15:32:38] step 11: cut 1e-09 s 0.5 eps 3.86769e-02 -> 3.83774e-02 (drop 0.77%); predicted gain 1.02e-02 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:1.0 1e-09:0.5 [6.2 CPU-min, step 0.56, wall 375 s]
+[15:33:12] step 12: cut 1e-09 s 0.5 eps 3.83774e-02 -> 3.80013e-02 (drop 0.98%); predicted gain 9.75e-03 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:1.0 1e-09:0.5 [6.8 CPU-min, step 0.56, wall 409 s]
+[15:33:12] tree: stop STOP-CAP; 12 steps [6.8 CPU-min, 409 s wall]
+[15:33:17] sector: dim 169884; (+,+) representatives 42756 (validate.json irrep dim 42756); Hr nnz 1864078; inputs 78; P 2672
+[15:33:18] sign: E_ground = -7.827899034271742
+[15:33:18] sign: ground_vs_E0 = 1.0658141036401503e-14
+[15:33:18] sign: overlap = 0.6052676052794896
+[15:33:18] sign: eps_tree = 0.03800132517796639
+[15:33:18] sign: eps_signfix = 0.14896764674457189
+[15:33:18] sign: eps_ampfix = 0.3205754617276658
+[15:33:18] sign: w_wrong = 0.09357828850562915
+[15:33:18] sign: eps_allplus = 0.9559609436457753
+[15:33:18] sign: eps_chargesign = 0.582869981029543
+[15:33:18] sign: w_wrong_chargesign = 0.3539890969578113
+[15:33:18] sign: signfix_over_tree = 3.920064525300951
+[15:33:18] sign: class = NOT-SIGN-LIMITED
+seed: 0
+eps_tree: 0.03800132517796639
+eps_tree_inf: 0.0
+steps: 12
+stop: STOP-CAP
+eps_ref: 0.0007217364129368478
+eps_ref_inf: 0.0006929964799004943
+factor: 2.5
+rho: 52.65263674772014
+rho_inf: 0.0
+verdict1: RELEASE seeds 1-2 (original 3-seed rule)
