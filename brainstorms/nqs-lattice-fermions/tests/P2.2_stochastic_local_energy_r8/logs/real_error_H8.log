@@ -1,0 +1,2 @@
+H8 n=4900 E0=-3.94474801 |psi0| quantiles 1/10/50%: [7.23621502e-09 1.02005736e-05 9.91389533e-04] cpu=2s
+ seed=0 nit=1500 dE=0.001 mHa infid=3.96e-07 | eps_S: excess=3.087e-06 (0.02 tau) screen-bias=1.27e-04 d_eff=6.29e-04 pred_rel=2.81e-09 pred_add=7.83e-05 top1%: |r| med 2.44e+01 max 7.46e+02 share 0.97 | end: excess=3.773e-07 (0.00 tau) | snaps dE<=2.0:it80 exc=9.40e-04 d_eff=3.7e-02 rel=9.9e-06 add=2.8e-01 dE<=0.74:it90 exc=1.86e-03 d_eff=2.8e-02 rel=5.6e-06 add=1.6e-01 dE<=0.2:it120 exc=6.25e-04 d_eff=1.3e-02 rel=1.3e-06 add=3.5e-02 | train cpu 58s total cpu 87s

@@ -1,0 +1,6 @@
+[09:51:37] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[09:53:21] INVALID check: sampled E -7.807212 +- 2.5e-03 vs exact -7.805526 (0.7 se)
+[09:54:02] step 1: REJECT; exact R 0.0000; oracle a 0.001; rank 1544 [2.5 CPU-min, step 2.4, wall 146 s]
+    a 0e+00: val dE +2.27e-03+-1.5e-03 exact R -0.136 |z| 0.050 |z|true 0.032; a 1e-06: val dE +2.22e-03+-1.5e-03 exact R -0.134 |z| 0.050 |z|true 0.032; a 1e-05: val dE +1.87e-03+-1.5e-03 exact R -0.117 |z| 0.050 |z|true 0.032; a 1e-04: val dE -7.92e-05+-1.3e-03 exact R -0.020 |z| 0.050 |z|true 0.031; a 1e-03: val dE -1.81e-03+-1.0e-03 exact R +0.080 |z| 0.050 |z|true 0.030; a 1e-02: val dE -1.22e-03+-9.5e-04 exact R +0.055 |z| 0.050 |z|true 0.032; a 1e-01: no root; a 1e+00: val dE -8.36e-04+-2.9e-04 exact R +0.041 |z| 0.016 |z|true 0.012
+[09:54:02] wrote tu_N65536.json (146 s, 2.5 CPU-min)
+wall 149.75 s user 108.31 sys 40.15 maxrss 11753344 KB

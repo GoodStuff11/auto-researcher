@@ -1,0 +1,8 @@
+H6 eps=2.24e-03 delta=0.001: additive mean excess = 1.508e-06 Ha (relative-noise formula 4.583e-09); max Y_ii=4.520e+02
+H6 eps=2.24e-03 delta=0.01: additive mean excess = 1.508e-04 Ha (relative-noise formula 4.583e-07); max Y_ii=4.520e+02
+H6 eps=1.00e-01 delta=0.001: additive mean excess = 1.314e-06 Ha (relative-noise formula 6.597e-08); max Y_ii=1.260e+02
+H6 eps=1.00e-01 delta=0.01: additive mean excess = 1.314e-04 Ha (relative-noise formula 6.597e-06); max Y_ii=1.260e+02
+H8 eps=2.24e-03 delta=0.001: additive mean excess = 2.538e-04 Ha (relative-noise formula 7.115e-09); max Y_ii=4.633e+05
+H8 eps=2.24e-03 delta=0.01: additive mean excess = 2.538e-02 Ha (relative-noise formula 7.115e-07); max Y_ii=4.633e+05
+H8 eps=1.00e-01 delta=0.001: additive mean excess = 4.669e-05 Ha (relative-noise formula 9.890e-08); max Y_ii=7.024e+04
+H8 eps=1.00e-01 delta=0.01: additive mean excess = 4.669e-03 Ha (relative-noise formula 9.890e-06); max Y_ii=7.024e+04

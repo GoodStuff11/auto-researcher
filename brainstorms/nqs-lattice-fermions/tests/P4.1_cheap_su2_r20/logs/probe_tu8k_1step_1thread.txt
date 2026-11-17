@@ -1,0 +1,7 @@
+[09:49:14] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[09:50:47] INVALID check: non-symmetric solver vs r19 exact-LM step-1 dtheta: rel 1.1e-13
+[09:50:48] INVALID check: sampled E -7.799470 +- 4.7e-03 vs exact -7.805526 (1.3 se)
+[09:51:18] step 1: REJECT; exact R 0.0000; oracle a 0.01; rank 1228 [9.2 CPU-min, step 9.0, wall 125 s]
+    a 0e+00: val dE +2.20e-02+-7.6e-03 exact R -0.778 |z| 0.044 |z|true 0.047; a 1e-06: val dE +2.19e-02+-7.6e-03 exact R -0.774 |z| 0.044 |z|true 0.047; a 1e-05: val dE +2.11e-02+-7.5e-03 exact R -0.740 |z| 0.044 |z|true 0.046; a 1e-04: val dE +1.66e-02+-6.7e-03 exact R -0.568 |z| 0.042 |z|true 0.043; a 1e-03: val dE +1.02e-02+-4.6e-03 exact R -0.337 |z| 0.038 |z|true 0.036; a 1e-02: val dE +4.11e-03+-2.4e-03 exact R -0.155 |z| 0.033 |z|true 0.029
+[09:51:18] wrote tu_N8192.json (125 s, 9.2 CPU-min)
+wall 127.96 s user 512.89 sys 40.43 maxrss 8957092 KB
