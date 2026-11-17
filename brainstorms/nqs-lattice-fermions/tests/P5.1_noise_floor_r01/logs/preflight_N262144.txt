@@ -1,0 +1,7 @@
+[18:31:19] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[18:32:37] N 262144 tau 0.005 step 1: R +0.5654 (dR +0.0299); unique 31847; |dtheta| 0.094 [1.36 CPU-min, step 1.221]
+[18:33:50] N 262144 tau 0.005 step 2: R +0.5797 (dR +0.0143); unique 31575; |dtheta| 0.103 [2.57 CPU-min, step 1.210]
+[18:33:50] done: 2 steps, 2.57 CPU-min, 153 s
+	Command being timed: "/home/jek354/.conda/envs/lit_env/bin/python -u nf_run.py --nsamp 262144 --tau 0.005 --steps 2 --start guided60 --res results/preflight_N262144"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:35.50
+	Maximum resident set size (kbytes): 17596704

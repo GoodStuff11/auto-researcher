@@ -1,0 +1,4 @@
+[18:34:35] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+N 65536 seed 9001: unique 14854; max rel diff S_T 3.58e-16, f 9.27e-15, E_samp 6.22e-15, step d 5.71e-13
+CPU-min for stats+eigh: plain 0.363, dedup 0.196
+PASS

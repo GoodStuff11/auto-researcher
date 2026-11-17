@@ -25,6 +25,8 @@ Options
                              pre-flight timing.
   --cpu-cap FLOAT  CPU-minutes; stop before a step that would exceed it (default 600).
   --res DIR        results directory (default results/N<nsamp>_tau<tau>_s<seed0>).
+  --dedup          sum the weights of repeated draws before forming S_T and f (exact; round 3, for arm C's memory
+                   and time); A, B and D run without it.
 Output: <res>/run.json (per step: exact E, R, dR, sampled E, |dtheta|, CPU-min) and <res>/theta.npy.
 Reuses read only: ../P4.1_cheap_su2_r24/trsr.py (orows, SHIFT), ../P4.1_cheap_su2_r19/polish.py (ctx, E0).
 """
@@ -48,7 +50,7 @@ P = T.P
 R25 = os.path.join(TESTS, "P4.1_cheap_su2_r25")
 
 
-def guided_stats(ctx, th, phi0, pr, N, seed):
+def guided_stats(ctx, th, phi0, pr, N, seed, dedup=False):
     p = ctx.size * pr * pr
     p = p / p.sum()
     pf = ctx.size * np.abs(pr)
@@ -56,6 +58,20 @@ def guided_stats(ctx, th, phi0, pr, N, seed):
     q = 0.8 * p + 0.2 * pf
     rg = np.random.default_rng(seed).choice(len(q), size=N, p=q)
     uq, inv = np.unique(rg, return_inverse=True)
+    if dedup:
+        # Exact rewrite (added round 3 for arm C): every weighted sum over the N draws equals the same sum over the
+        # unique configurations with each weight multiplied by its draw count, so S_T and f are unchanged up to
+        # rounding while the N x P arrays shrink to n_unique x P.  Verified against dedup=False in
+        # logs/dedup_check.txt.
+        cnt = np.bincount(inv, minlength=len(uq)).astype(float)
+        O = T.orows(ctx, th, phi0, pr, uq)
+        w = cnt * p[uq] / q[uq]
+        w = w / w.sum()
+        elg = (ctx.Hr @ pr)[uq] / pr[uq]
+        Oc = O - w @ O
+        ST = (Oc * w[:, None]).T @ Oc
+        f = (Oc * w[:, None]).T @ (elg - w @ elg)
+        return 0.5 * (ST + ST.T), f, float(w @ elg), len(uq)
     O = T.orows(ctx, th, phi0, pr, uq)[inv]
     w = p[rg] / q[rg]
     w = w / w.sum()
@@ -75,6 +91,8 @@ def parse():
     pa.add_argument("--start", default="sr", choices=["sr", "guided60"])
     pa.add_argument("--cpu-cap", type=float, default=600.0)
     pa.add_argument("--res", default=None)
+    pa.add_argument("--dedup", action="store_true",
+                    help="aggregate repeated draws (exact rewrite; same S_T and f up to rounding); arm C only")
     a = pa.parse_args()
     if a.res is None:
         a.res = os.path.join(HERE, "results", f"N{a.nsamp}_tau{a.tau}_s{a.seed0}")
@@ -105,7 +123,7 @@ def main():
             break
         n = len(hist) + 1
         _, pr, phi0 = ctx.energy(th)
-        ST, f, Es, nu = guided_stats(ctx, th, phi0, pr, a.nsamp, a.seed0 + n)
+        ST, f, Es, nu = guided_stats(ctx, th, phi0, pr, a.nsamp, a.seed0 + n, a.dedup)
         w, U = np.linalg.eigh(ST)
         d = T.d_shift(w, U, f, a.tau)[0]
         th = th + torch.tensor(d)

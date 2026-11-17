@@ -1,0 +1,6 @@
+[18:35:52] N 262144 tau 0.005 step 1: R +0.5654 (dR +0.0299); unique 31847; |dtheta| 0.094 [0.60 CPU-min, step 0.461]
+[18:36:20] N 262144 tau 0.005 step 2: R +0.5797 (dR +0.0143); unique 31575; |dtheta| 0.103 [1.06 CPU-min, step 0.459]
+[18:36:20] done: 2 steps, 1.06 CPU-min, 62 s
+	Command being timed: "/home/jek354/.conda/envs/lit_env/bin/python -u nf_run.py --nsamp 262144 --tau 0.005 --steps 2 --start guided60 --dedup --res results/preflight_N262144_dedup"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:04.03
+	Maximum resident set size (kbytes): 3330016
