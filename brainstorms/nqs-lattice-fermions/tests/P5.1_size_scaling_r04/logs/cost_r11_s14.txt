@@ -1,0 +1,15 @@
+6x2 in-job fit: a = 0.145 CPU-min/step, b = 1.753e-05 per unique (5 arms)
+7x2: a7 4.57, b7 2.41e-05; exact step fit 58.9, kappa-based 68.6 CPU-min (6x2 exact-step/kappa-pass 0.89)
+  exact (fit)   :  117.8 CPU-h expected,  153.1 cap; wall 4.9 days on 1 CPU
+  exact (kappa) :  137.2 CPU-h expected,  178.3 cap; wall 5.7 days on 1 CPU
+  guided    16384: unique   10273,  4.82 CPU-min/step,   9.6 CPU-h, cap  12.5
+  born      16384: unique    8714,  4.78 CPU-min/step,   9.6 CPU-h, cap  12.4
+  guided    65536: unique   29399,  5.28 CPU-min/step,  10.6 CPU-h, cap  13.7
+  born      65536: unique   22918,  5.12 CPU-min/step,  10.2 CPU-h, cap  13.3
+  guided   262144: unique   76790,  6.42 CPU-min/step,  12.8 CPU-h, cap  16.7
+  born     262144: unique   53128,  5.85 CPU-min/step,  11.7 CPU-h, cap  15.2
+  guided  1048576: unique  183592,  8.99 CPU-min/step,  18.0 CPU-h, cap  23.4
+  born    1048576: unique  109799,  7.21 CPU-min/step,  14.4 CPU-h, cap  18.8
+minimal decisive ladder (exact + guided 262k + 1M): 158 CPU-h expected, cap 206
+with guided 65k + Born 262k/1M (comparator): 195 expected, cap 253
+thresholds: SUPPORT vs S10 needs N(7x2) >= 22.2 x 31284 = 695906; vs S12' >= 6.32 x 118626 = 749347; POLY-3 needs <= 2.744 x 31284 = 85842; a need 3-4x 6x2's = 355879-474505
