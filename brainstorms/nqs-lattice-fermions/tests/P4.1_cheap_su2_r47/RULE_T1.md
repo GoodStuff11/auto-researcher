@@ -80,3 +80,22 @@ existed. Where this section and the text above differ, this section governs.
 * (3c) **KILL's action**: KILL concerns the 24-site test's power only; the 12-site result and R45 are unchanged.
 * Prediction re-derived (voi.md): PASS 0.30, KILL 0.25, UNSETTLED 0.35, INVALID 0.10 (UNSETTLED raised: two plateau
   conditions and a half-budget agreement now gate both verdicts).
+
+## Amendment 2 (orchestrator, 2026-11-18, before any T1 data; motivated by a pre-flight overfitting defect, not by any result)
+
+The fixed-data fit (32,768 samples) overfits within 100 evaluations on every arm (train/held-out 1-F_hat 0.31-0.49 at
+100, 0.17-0.20 by 300-400; exact 1-F improves with more data), so the INVALID clause would fire by construction.
+Changes; every other clause stands (lagging-arm PLATEAUED, half-budget agreement, fourth arm `nnbf_p`, KILL concerns
+the 24-site power only, `che` PLATEAUED for PASS, margins, maxfun 4000).
+* **Online distillation, fresh batch per L-BFGS restart**: each L-BFGS-B run (maxcor 30) is 50 evaluations on a fresh
+  batch of N_tr = 32,768 exact-teacher samples (batch k: seed 101 + 7919 k; batch 0 = seed 101), then restarts from the
+  carried theta (best batch loss of that run) on the next batch. Chosen by a pre-flight on `nnbf_u`, 400 evaluations
+  (logs/pf_*.txt): per-evaluation resampling inside one L-BFGS run is unstable (exact 1-F jumped 0.031 -> 0.64 at
+  evaluation 400) and slower (0.031 at 350); restart every 20 reached 1.15e-2, restart every 50 reached 9.9e-3 (fixed
+  data 1.21e-2 at 300). Held-out vs exact stays within 0.92-1.02 throughout.
+* **N_ho = 131,072** (seed 202), scored through the full vector.
+* **Overfitting clause, re-expressed for online data**: "train 1-F_hat" is the logged theta's 1-F_hat on the next,
+  not-yet-seen batch (`infid_fresh`); INVALID if it is < 0.8 x held-out 1-F_hat at the final state. The in-batch
+  1-F_hat is biased low by construction within a 50-evaluation run (0.35-0.49 x held-out in the pre-flight) and is
+  reported, not scored. The held-out-vs-exact 20% clause is unchanged.
+* Prediction re-derived from the pre-flight (voi.md): KILL 0.40, UNSETTLED 0.30, INVALID 0.25, PASS 0.05.

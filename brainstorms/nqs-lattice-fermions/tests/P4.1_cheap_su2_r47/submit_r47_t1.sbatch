@@ -5,11 +5,12 @@
 # rehearsal (r47_dmrg.jl) and its check.  Each task runs verdict at its end (the later one writes the full verdict).
 # Wall time (measured 2026-11-18 interactively, 1 thread, logs/check_local.txt): CPU-min per evaluation che 0.00554,
 # nnbf_u 0.00309, nnbf_even 0.00434, nnbf_p 0.0204; exact-metrics log 0.026-0.039 per call (80 calls); setup 0.3.
-# 4000 evaluations -> che 25.6, nnbf_u 14.8, nnbf_even 19.7, nnbf_p 84.1 CPU-min interactive; x in-job slowdown
+# Online distillation (Amendment 2): a fresh batch per 50-evaluation L-BFGS run (80 batches; nnbf_p batch build 0.033).
+# 4000 evaluations -> che 25.6, nnbf_u 14.8, nnbf_even 19.7, nnbf_p 86.7 CPU-min interactive; x in-job slowdown
 # (brief's R45 in-job rates 0.19/0.117 = 1.62 for che, 0.12/0.065 = 1.85 for nnbf-type) x 1.3 margin
-# -> CPU caps che 54, nnbf_u 36, nnbf_even 47, nnbf_p 202.  DMRG rehearsal: smoke (maxdim 200) 3.4 min incl. Julia
-# compile; full schedule (maxdim 1000) estimated 20 min at 1 thread -> 30.  Task 1 total 168 min; time limit 03:40:00.
-# Cap 2 x 3.67 = 7.3 CPU-h; expected about 4.7 CPU-h.  Memory: peak RSS 2.8 GB (check, all arms), 3.0 GB (Julia smoke).
+# -> CPU caps che 54, nnbf_u 36, nnbf_even 47, nnbf_p 208.  DMRG rehearsal: smoke (maxdim 200) 3.4 min incl. Julia
+# compile; full schedule (maxdim 1000) estimated 20 min at 1 thread -> 30.  Task 1 total 168 min; time limit 03:50:00.
+# Cap 2 x 3.83 = 7.7 CPU-h; expected about 4.8 CPU-h.  Memory: peak RSS 2.8 GB (check, all arms), 3.0 GB (Julia smoke).
 # SIGUSR1 600 s before the limit: the batch shell traps it and forwards it to the running child (python checkpoints,
 # exits 4; resubmitting resumes from the best theta; finished arms and an existing DMRG output are skipped).
 #SBATCH --job-name=P41r47t1
