@@ -73,3 +73,7 @@ start is 5 times closer to the lowest (+,+) level in relative terms (eps 5.5e-4 
 representatives) is 0.165 against 0.017, so S10 is the easier landscape; a SUPPORT-LIKE verdict could partly reflect
 that, which the S12' start's own eps (probe start, not yet trained: 3.5e-2) will show. Measured growth references:
 exp(H[p]) 781 (S10) and 3035 (S12), gH = 3.89 >= 1.5 g3 = 2.59, so the 10 -> 12 comparison is resolvable.
+
+## Revision 2 (auditor, 2026-11-17, adopted before any unit 1c data)
+
+Primary statistic (replaces the 5% / last-20 rule): E_win(arm) = mean exact energy over steps 61-120; G_ref(V) = E_start - E_win(exact); s = (E_win(arm) - E_win(exact)) / G_ref; N_needed(V) = the N at which guided s = 0.10, by ln s vs ln N interpolation between the bracketing rungs; censored if no bracket exists. Where two seeds exist, s is the seed mean. Conditioning: N_needed(V) is scored only if s(lower rung) - s(upper rung) > 2 sd_w, where sd_w = max(sd of the upper rung's three 20-step window means over steps 61-80, 81-100, 101-120; |seed difference| / sqrt(2)). Otherwise V is UNRESOLVABLE and any ratio using it is UNRESOLVABLE (not AMBIGUOUS); next action: redesign the step (decaying or line-searched tau) before buying another size. Verdict references (g3 = 1.728, gH1 = 3.52), the Born T_tot comparator and the INCOMPLETE rule are unchanged. The 5% / last-20 N_needed is reported, not scored. Each size's exact-arm slope over steps 61-120 is reported; above 2 sigma it is flagged "exact still descending" (not scored).

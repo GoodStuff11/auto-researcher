@@ -47,6 +47,8 @@ def main():
     pa.add_argument("--seed0", type=int, default=9000)
     pa.add_argument("--mode", default="x", choices=["x", "sf"],
                     help="x: recursion on the solved direction (R51.13); sf: recursion on S and f, then solve (R51.18)")
+    pa.add_argument("--qmix", type=float, default=0.2,
+                    help="sampler q = (1 - qmix) p + qmix p_flat; 0.2 = guided (R38), 1.0 = |psi| (R51.11 T1b)")
     a = pa.parse_args()
     c0 = NS.cpu_min()
     ctx = NS.GCtx(5, 2, 8, START10)
@@ -56,13 +58,14 @@ def main():
     prev = None
     v = None
     hist = []
-    res = os.path.join(HERE, "results", f"storm_N{a.nsamp}_a{a.a}" + ("_sf" if a.mode == "sf" else ""))
+    res = os.path.join(HERE, "results", f"storm_N{a.nsamp}_a{a.a}" + ("_sf" if a.mode == "sf" else "")
+                       + ("" if a.qmix == 0.2 else f"_q{a.qmix}"))
     os.makedirs(res, exist_ok=True)
     for n in range(1, a.steps + 1):
         p = ctx.size * pr * pr
         p = p / p.sum()
         pf = ctx.size * np.abs(pr)
-        q = 0.8 * p + 0.2 * pf / pf.sum()
+        q = (1 - a.qmix) * p + a.qmix * pf / pf.sum()
         rg = np.random.default_rng(a.seed0 + n).choice(len(q), size=a.nsamp, p=q)
         uq, inv = np.unique(rg, return_inverse=True)
         cnt = np.bincount(inv, minlength=len(uq)).astype(float)
@@ -96,7 +99,7 @@ def main():
         if n % 10 == 0:
             NS.log(f"step {n}: R {hist[-1]['R']:.4f} [{NS.cpu_min() - c0:.2f} CPU-min]")
     R = np.array([h["R"] for h in hist])
-    out = dict(mode=a.mode, nsamp=a.nsamp, a=a.a, tau=a.tau, seed0=a.seed0, E_start=E00, E0=E0, steps=hist,
+    out = dict(qmix=a.qmix, mode=a.mode, nsamp=a.nsamp, a=a.a, tau=a.tau, seed0=a.seed0, E_start=E00, E0=E0, steps=hist,
                R_plat=float(R[-20:].mean()), cpu_min=NS.cpu_min() - c0)
     json.dump(out, open(os.path.join(res, "run.json"), "w"), indent=1)
     NS.log(f"done: R_plat {out['R_plat']:.4f}, {out['cpu_min']:.2f} CPU-min")

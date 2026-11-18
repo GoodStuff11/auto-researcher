@@ -1,2 +1,3 @@
 [22:36:03] 4x3 N_e 10: sector 627264, 157216 representatives, P 2637, Hr nnz 4970832
 [22:37:52] pass 1 done, 156967 reps (1.84 CPU-min)
+[22:40:50] uq differ (156967 vs 156955); recomputing both on 156914 common reps

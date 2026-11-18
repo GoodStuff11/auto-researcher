@@ -1,0 +1,2 @@
+[22:41:23] 5x2 N_e 8: sector 44100, 11100 representatives, P 1832, Hr nnz 255770
+[22:41:23] setup 0.01 CPU-min
