@@ -1,1 +1,7 @@
 [22:41:22] 5x2 N_e 8: sector 44100, 11100 representatives, P 1832, Hr nnz 255770
+[22:41:40] step 10: R 0.1677 [0.31 CPU-min]
+[22:41:58] step 20: R 0.2244 [0.61 CPU-min]
+[22:42:16] step 30: R 0.2813 [0.91 CPU-min]
+[22:42:33] step 40: R 0.2837 [1.20 CPU-min]
+[22:42:51] step 50: R 0.3412 [1.49 CPU-min]
+[22:43:09] step 60: R 0.3510 [1.79 CPU-min]
