@@ -1,0 +1,26 @@
+synthetic m6 0.0100 g1_6 0.0200 -> N5* 219671, rungs [327680, 880640]
+synthetic (0.08, 0.04): POLY-CONSISTENT r_mm=[0.000,1.492] same-tau None owed [327680] -> ok
+synthetic (0.05, 0.03): POLY-CONSISTENT r_mm=[0.000,1.492] same-tau None owed [] -> ok
+synthetic (0.2, 0.12): SUPPORT-LIKE r_mm=[4.009,inf] same-tau SUPPORT-LIKE owed [880640] -> ok
+synthetic (0.3, 0.2): SUPPORT-LIKE r_mm=[4.009,inf] same-tau SUPPORT-LIKE owed [] -> ok
+synthetic (0.12, 0.08): AMBIGUOUS r_mm=[2.327,2.327] same-tau SUPPORT-LIKE owed [327680, 880640] -> ok
+synthetic (0.105, 0.0999): UNRESOLVABLE r_mm=[0.000,0.000] same-tau SUPPORT-LIKE owed [327680, 880640] -> ok
+synthetic near 3.52 (0.97 x line): provisional AMBIGUOUS (REGIME-SENSITIVE: g1-matched ratio [3.96, 3.96]) r_mm=[3.414,3.414] same-tau SUPPORT-LIKE owed [327680, 880640] -> ok
+synthetic regime-sensitive: AMBIGUOUS (REGIME-SENSITIVE: g1-matched ratio [4.10, 4.10]) -> ok
+synthetic seed 19000 at the lower rung: POLY-CONSISTENT r_mm=[0.000,1.492] same-tau None owed [] -> ok
+synthetic m6 outside curve: NOT-MATCHED -> ok
+synthetic missing rung: INCOMPLETE -> ok
+SELFTEST PASS
+identity: N5(tau 0.0025) 98387.30 (gap/sd_w 29.4), N6(tau 0.005) 118626.20 (gap/sd_w 26.5), ratio 1.2057, m6 0.0485 -> PASS
+{'tau': 0.0013, 'm': 0.0121, 'g1': 0.0179, 'G_ref': 0.0017, 'N': 219118.2634, 'N_lo': 219118.2634, 'N_hi': 219118.2634, 'kind': 'interpolated', 'conditioning': 'RESOLVABLE', 'defining_seeds': {65536: [9000], 262144: [9000]}, 'rows': [(4096, 0.6240817584549342), (16384, 0.3751159472062853), (65536, 0.1972014802692721), (262144, 0.09040569721958938)]}
+{'tau': 0.0025, 'm': 0.051, 'g1': 0.0703, 'G_ref': 0.0017, 'N': 98387.2974, 'N_lo': 98387.2974, 'N_hi': 98387.2974, 'kind': 'interpolated', 'conditioning': 'RESOLVABLE', 'defining_seeds': {65536: [9000, 19000], 262144: [9000, 19000]}, 'rows': [(4096, 0.5514467170900684), (16384, 0.2625189027671484), (65536, 0.12079140839348407), (262144, 0.0634070635343684)]}
+{'tau': 0.0037, 'm': 0.1149, 'g1': 0.1631, 'G_ref': 0.0017, 'N': 39079.7496, 'N_lo': 39079.7496, 'N_hi': 39079.7496, 'kind': 'interpolated', 'conditioning': 'RESOLVABLE', 'defining_seeds': {16384: [9000], 65536: [9000]}, 'rows': [(4096, 0.47603090487085886), (16384, 0.18889971709474276), (65536, 0.06850431719673777), (262144, 0.04713197219532436)]}
+{'tau': 0.005, 'm': 0.1533, 'g1': 0.301, 'N': 31283.6728, 'N_lo': 31283.6728, 'N_hi': 31283.6728, 'seeds': '[9000, 19000] at 16k/65k/262k (R51.8)'}
+problems: {'0.000625': '5x2 exact tau 0.000625: missing'}
+m 6x2 tau0.005 0.0485 N5 101173 between (0.00125, 0.0025) r' 1.173
+g1 target 0.0689 N5 99573 between (0.00125, 0.0025) r' 1.191
+g1 band top 0.1157 N5 56934 between (0.0025, 0.00375) r' 2.084
+g1 band bottom 0.022 N5 194004 between (0.00125, 0.0025) r' 0.611
+5x2 tau-halving factor 0.0025->0.00125 2.227 m ratio 0.236 G ratio 0.9876
+5x2 0.005->0.0025 3.145 0.00375->0.0025 2.518
+analog N6(0.0025) 264192 m6 pred 0.0115 same-tau r2 2.685
