@@ -1,0 +1,14 @@
+{
+ "sign_convention": "updn_up_first",
+ "overlap_g": 0.9936578235906331,
+ "S2_mpo": 0.0068365378532747,
+ "S2_dense": 0.006836537853273479,
+ "dS2": 1.2212453270876722e-15,
+ "wT_bound": 0.00341826892663735,
+ "sample_rel_max": 0.0,
+ "nsamples": 1024,
+ "E_mps": -7.817086160452,
+ "maxdims": "50,100,200",
+ "dmrg_seconds": 36.9,
+ "valid": true
+}

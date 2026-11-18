@@ -94,3 +94,84 @@ Appended, not replacing anything above. Written while job 769376 (S12' ladder) i
 * Censored Born (critic Minor 4). A Born T_tot that no rung reaches within 120 steps counts as T_tot(born) >= (largest Born rung's N) x 120, as RULE_cmp.md counts censoring (at S12': >= 262,144 x 120 = 31.46M). The size counts toward GUIDED-FEWER only if that lower bound is >= 2 T_tot(guided); a censored Born result cannot satisfy NO-GAIN at that size. If the guided T_tot is also censored, the size is not scored on the comparator.
 * MinSR (critic Minor 5). Every arm, including the Born arms, uses the SR solve in parameter space; no arm runs MinSR. MinSR equals SR at N >= P, so the Born arms are also MinSR there; the phrase "at N < P MinSR's regime" above names a regime, not a test. The MinSR half of the comparator (N < P) is untested by this rule.
 * e^H convention (critic Minor 7). exp(H[p]) here is the Shannon entropy of p over orbit representatives, each carrying its orbit's total weight (`ns_run.py --info`): 781 at S10, 3,035 at S12. Counting each configuration of an orbit separately (as in R51.11's T0 log, `tests/P5.1_r05_gen/t0_weightvar_R51.11.py`) gives 3,053 at S10, about 3.9 times larger (point group of order 4). gH uses the representative convention at every size.
+
+## Addendum (2026-11-18, before any 7×2 data)
+
+Appended by the round-13 worker, not replacing anything above. Zero compute. Written before any S14 ladder arm or the
+S12' seed0 19000 arm has run. The only S14 numbers that exist are the trained start, `results/info_S7x2_N12.json`
+(exp H 17,370; E0_pg not computed) and the exact kappa (job 763903). The two earlier sizes are scored:
+N_needed(S10) = 31,284 (`score_r07.json`, two seeds at both bracketing rungs) and N_needed(S12') = 118,626
+(`score_r08.json`, one seed, r' 3.79, SUPPORT-LIKE, margin 1.08x). Round 12's force variance-reduction batch is
+spent: all seven routes were killed or merged. So the rev-1 SUPPORT-LIKE action ("variance-reduction batch first")
+is done, and the S14 ladder is the next spend.
+
+* **Step-2 reference: S10.** The second step is scored as r'' = N_needed(S14) / N_needed(S10). It is compared with
+  g3'' = (14/10)^3 = 2.744 and gH'' = exp H(S14) / exp H(S10) = 17,370 / 781 = 22.24 (representative convention, as
+  gH1). In absolute terms, SUPPORT-LIKE at step 2 needs N_needed(S14) >= 695,900, and the POLY line is <= 85,840.
+  There are three reasons for this choice.
+  (a) The verdict table above states exactly one three-size ratio, "N_needed(S14)/N_needed(S10) <= 1.4^3 = 2.744".
+  Scoring the SUPPORT side on that same ratio, against the gH of that same ratio, scores one number against both
+  lines. The table never defines an S12'-based step-2 ratio.
+  (b) The S10 denominator rests on two seeds at both bracketing rungs. The S12' denominator rests on one seed (two
+  at 65k after this job) with a 1.08x margin. Dividing by S12' would carry step 1's noise into step 2 with the
+  opposite sign, so a low draw at 6×2 would help step 1 fail and step 2 pass.
+  (c) The two thresholds differ by only 7.7% (695,900 against S10, 749,300 against S12' with gH 6.32 and
+  g3 1.588). The S12'-based ratio is reported, not scored. A result in [695,900, 749,300) is labelled
+  "SUPPORT-LIKE vs S10 only".
+* **Minimal rungs at S14:** exact, guided 262,144, and guided 1,048,576. All use seed0 9000, tau 0.005, 120 steps,
+  the rev-2 statistic (steps 61–120, s = 0.10) and the rev-2-addendum conditioning (a gap of more than 2 detrended
+  sd_w of the upper rung).
+  * If s(262k) <= 0.10, N_needed(S14) <= 262,144 (censored below). r'' is then at most 8.38, which is below gH'',
+    so step 2 is not SUPPORT-LIKE.
+  * If s(1M) > 0.10, N_needed(S14) > 1,048,576 (censored above). r'' is then at least 33.5, so step 2 is
+    SUPPORT-LIKE.
+  * Otherwise the two rungs bracket 0.10 and the rule interpolates as in rev 2.
+  * The two-rung gap s(262k) − s(1M) must exceed 2 sd_w(1M) in every case, or S14 is UNRESOLVABLE.
+  * There is no guided 65k and no Born arm at S14. The comparator is not scored at S14; GUIDED-FEWER rests on
+    S10 and S12' only, and the Answer must say so.
+* **Second seed of step 1, folded in:** the S12' guided 65,536 rung with seed0 9000 → 19000 is run first in the
+  same job, at about 1% of the cost. It is the rung the seed clause names (0.28 ln-units from 0.10).
+  * s(65k) becomes the two-seed mean. The 262k rung stays at one seed.
+  * The seed term |seed difference at 65k| / sqrt(2) enters sd_w for step 1's conditioning (max with the
+    detrended window sd). It is the only measured seed term at S12'.
+  * r' is re-scored against 1.728 and 3.52 by `score_r13_step1.py`.
+  * If r' is no longer SUPPORT-LIKE (AMBIGUOUS or UNRESOLVABLE), SUPPORT-LIKE-3 is unreachable, because it needs
+    both steps. POLY-CONSISTENT-3 was already unreachable, so the S14 arms cannot change the three-size class. The
+    job then writes `results/STOP_r13` and stops before any S14 arm. The class is reported as "AMBIGUOUS (step 1,
+    two seeds); S14 not bought". Buying S14 after that needs a new VOI note.
+* **Reported-only check: reference shifted by its own slope.** For each size (S10, S12', S14), fit the exact arm's
+  61–120 slope c, which is already reported. Then:
+  * E_win'(exact) = E_win(exact) + 60c (one more window of descent);
+  * G_ref' = E_start − E_win';
+  * s' = (E_win(arm) − E_win') / G_ref';
+  * N'_needed, r'_shifted and r''_shifted.
+  These are reported next to the scored values and decide nothing.
+* **Still-descending flag at S14:** the flag (slope beyond 2 sigma) is expected at S14 and is not scored. A lower
+  true late-time reference raises every guided s, so the flag biases N_needed(S14) low, that is, toward POLY.
+  * A step-2 result on the SUPPORT side (r'' >= 22.24) stands as scored.
+  * A result on the POLY side of the SUPPORT line (r'' < 22.24, scored AMBIGUOUS-3) is marked
+    "provisional: exact still descending". If r''_shifted >= 22.24, the marking also says that the 120-step
+    horizon leaves the SUPPORT/AMBIGUOUS split unresolved.
+  * The flag never changes a class by itself.
+* **What each outcome does to the leaf's Answer** (the editor applies it; this rule only registers it):
+  * SUPPORT-LIKE-3 (step 1 still SUPPORT-LIKE with two seeds at 65k, and r'' >= 22.24). This meets the R51.8
+    clause of "What would close it" (SUPPORT-LIKE at two size steps). Of the "none removes it" list, guided draws
+    (the sampler measured), R51.5 (killed) and zero-variance force control variates (R51.19 and R51.25, killed in
+    round 12) are settled. The Answer becomes "No, for SR-type optimisers with these samplers at this scale",
+    with the three needs and both ratios. The leaf is marked ANSWERED (no) only once R51.7 (shelved) and R51.11
+    (shape unresolved) are also resolved. Until then the Answer carries "pending R51.7, R51.11".
+  * AMBIGUOUS-3 (step 1 SUPPORT-LIKE, r'' in (2.744, 22.24)). The Answer reports numbers only: N_needed at 10, 12
+    and 14 sites, r', r'', and r'' against both lines. It makes no trend or growth-law claim and stays "Not
+    known". It is provisional if S14's exact arm is flagged.
+  * POLY-3 is **unreachable** under this rule. POLY-CONSISTENT-3 requires r' POLY-CONSISTENT. r' is 3.79, and with
+    the second seed it can fall to 1.728 only if the 65k two-seed s drops to about 0.086 (bracket [16k, 65k]). That
+    needs a seed-2 value of about 0.040, a shift of about 24 pooled seed-sd (0.0039). A POLY-side step 2 (r'' <= 2.744, N_needed(S14) <= 85,840; impossible to score below 262k
+    with these rungs except as "<= 262,144") is therefore scored AMBIGUOUS-3. It is reported as "need grew 3.8x
+    from 10 to 12 sites but no faster than V^3 from 10 to 14 (one seed)". It is provisional if the exact arm is
+    flagged, and the Answer makes no polynomial claim.
+  * UNRESOLVABLE at S14 (the two-rung gap is at most 2 sd_w(1M)). r'' is UNRESOLVABLE. The Answer reports
+    numbers only. Next action: the rev-2 addendum's zero-compute rescore (i).
+  * INCOMPLETE (a scored S14 arm stops before step 120). This is not scored. It is resumable from state.npz under
+    a new gated submission.
+  * Step 1 leaves SUPPORT-LIKE with the second seed: the job stops before S14 (above). The Answer's 10→12 sentence
+    is updated to the two-seed r', and the size question stays "Not known".

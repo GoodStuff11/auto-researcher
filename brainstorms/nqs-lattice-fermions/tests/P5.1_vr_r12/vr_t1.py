@@ -112,18 +112,29 @@ def main():
     out.update(E=E, P=int(ctx.m.nparam), reps=n, xSx=xSx, kappa_guided=kg, kappa_born=float(pu @ hu) / xSx,
                expH=float(np.exp(-np.sum(pu * np.log(pu)))))
     NS.log(f"kappa_guided {kg:.4g} ({NS.cpu_min() - c0:.2f} CPU-min)")
-    # ---- ZV: D_k = (H d_k psi)/psi - E_loc O_k at reps (d_k psi = pr O_k, zero outside uq)
-    dpsi = np.zeros((len(pr), O.shape[1]))
-    dpsi[uq] = pr[uq][:, None] * O
-    HD = ctx.Hr @ dpsi
-    del dpsi
-    D = HD[uq] / pr[uq][:, None] - el[:, None] * O
-    del HD, O
-    Dm = pu @ D
-    out["zv_mean_rel"] = float(np.abs(Dm).max() / np.sqrt((pu @ (D * D)).max()))
-    D -= Dm
-    zv = D @ Mh
-    del D
+    # ---- Stein regression numerator first (needs G), then free G
+    F = features(ctx, a.Lx, a.Ly)
+    pv = pr[:, None] * F
+    Z = (ctx.Hr @ pv)[uq] / pr[uq][:, None] - el[:, None] * F[uq]
+    Zm = pu @ Z
+    out["stein_mean_rel"] = float(np.abs(Zm).max() / np.sqrt((pu @ (Z * Z)).max()))
+    Z -= Zm
+    Zw = Z * ww[:, None]
+    ZwG = Zw.T @ G
+    del G
+    # ---- ZV: D_k = (H d_k psi)/psi - E_loc O_k at reps (d_k psi = pr O_k, zero outside uq), column blocks
+    zv = np.zeros_like(zu)
+    mrel = 0.0
+    for c0_ in range(0, O.shape[1], 256):
+        cs = slice(c0_, min(c0_ + 256, O.shape[1]))
+        dpsi = np.zeros((len(pr), cs.stop - cs.start))
+        dpsi[uq] = pr[uq][:, None] * O[:, cs]
+        D = (ctx.Hr @ dpsi)[uq] / pr[uq][:, None] - el[:, None] * O[:, cs]
+        Dm = pu @ D
+        mrel = max(mrel, float(np.abs(Dm).max() / np.sqrt((pu @ (D * D)).max())))
+        zv += (D - Dm) @ Mh[cs]
+    del dpsi, D, O
+    out["zv_mean_rel"] = mrel
     A_ = float(ww @ hu)
     B_ = float(ww @ np.einsum("ij,ij->i", zu, zv))
     C_ = float(ww @ np.einsum("ij,ij->i", zv, zv))
@@ -140,15 +151,7 @@ def main():
     del zv, hz
     NS.log(f"ZV {zvk} ({NS.cpu_min() - c0:.2f} CPU-min)")
     # ---- Stein: Z_j = (H(psi v_j))/psi - E_loc v_j
-    F = features(ctx, a.Lx, a.Ly)
-    pv = np.zeros_like(F)
-    pv[:] = pr[:, None] * F
-    Z = (ctx.Hr @ pv)[uq] / pr[uq][:, None] - el[:, None] * F[uq]
-    Zm = pu @ Z
-    out["stein_mean_rel"] = float(np.abs(Zm).max() / np.sqrt((pu @ (Z * Z)).max()))
-    Z -= Zm
-    Zw = Z * ww[:, None]
-    C = np.linalg.lstsq(Zw.T @ Z, Zw.T @ G, rcond=1e-10)[0]  # J x P, metric-independent optimum
+    C = np.linalg.lstsq(Zw.T @ Z, ZwG, rcond=1e-10)[0]  # J x P, metric-independent optimum
     zs = zu - Z @ (C @ Mh)
     hs = np.einsum("ij,ij->i", zs, zs)
     out["stein"] = dict(J=int(F.shape[1]), rho=float(ww @ hs) / A_)

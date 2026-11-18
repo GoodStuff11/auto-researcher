@@ -1,0 +1,1 @@
+VERDICT INVALID {"kappa_u_full": 0.692461124851732, "kappa_u_half": 0.9126903780529397, "kappa_u_2000": 0.692461124851732, "kappa_p_full": 1.82213151862111, "kappa_p_half": 1.9326482538175185}

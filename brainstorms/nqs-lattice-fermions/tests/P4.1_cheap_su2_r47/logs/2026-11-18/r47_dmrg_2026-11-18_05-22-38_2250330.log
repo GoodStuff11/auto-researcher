@@ -1,0 +1,10 @@
+================================================================================
+Timestamp: 2026-11-18T05:22:38.614
+Command run: julia r47_dmrg.jl --maxdims=50,100,200 --outdir=/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r47/dmrg_smoke
+================================================================================
+maxdim    50  E = -7.5857046349  maxlinkdim 50  (25 s)
+maxdim   100  E = -7.7521193839  maxlinkdim 100  (30 s)
+maxdim   200  E = -7.8170861605  maxlinkdim 200  (37 s)
+<S^2> (MPO) = 6.837e-03   w_T <= 3.418e-03
+sector entries 627264, sector norm^2 1.000000000000
+wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r47/dmrg_smoke
