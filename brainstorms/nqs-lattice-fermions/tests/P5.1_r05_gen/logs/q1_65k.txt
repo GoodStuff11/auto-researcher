@@ -23,3 +23,6 @@
 [01:22:26] S4x3 guided N 65536 tau 0.005 step 21: E -7.817632 (E-E_start -1.211e-02); unique 29736 [13.39 CPU-min, step 0.641]
 [01:23:04] S4x3 guided N 65536 tau 0.005 step 22: E -7.817766 (E-E_start -1.224e-02); unique 29778 [14.02 CPU-min, step 0.629]
 [01:23:42] S4x3 guided N 65536 tau 0.005 step 23: E -7.817920 (E-E_start -1.239e-02); unique 29743 [14.65 CPU-min, step 0.632]
+[01:24:20] S4x3 guided N 65536 tau 0.005 step 24: E -7.818033 (E-E_start -1.251e-02); unique 29851 [15.29 CPU-min, step 0.633]
+[01:24:58] S4x3 guided N 65536 tau 0.005 step 25: E -7.818164 (E-E_start -1.264e-02); unique 29595 [15.91 CPU-min, step 0.624]
+[01:25:36] S4x3 guided N 65536 tau 0.005 step 26: E -7.818295 (E-E_start -1.277e-02); unique 29894 [16.54 CPU-min, step 0.632]

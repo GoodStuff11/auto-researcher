@@ -43,3 +43,4 @@
 [01:16:03] S6x2 exact tau 0.005 step 41: E -7.612231 (E-E_start -6.340e-03); unique 156816 [121.40 CPU-min, step 2.890]
 [01:18:56] S6x2 exact tau 0.005 step 42: E -7.612673 (E-E_start -6.782e-03); unique 156816 [124.26 CPU-min, step 2.865]
 [01:21:49] S6x2 exact tau 0.005 step 43: E -7.612328 (E-E_start -6.437e-03); unique 156816 [127.14 CPU-min, step 2.879]
+[01:24:41] S6x2 exact tau 0.005 step 44: E -7.612724 (E-E_start -6.833e-03); unique 156816 [130.00 CPU-min, step 2.855]

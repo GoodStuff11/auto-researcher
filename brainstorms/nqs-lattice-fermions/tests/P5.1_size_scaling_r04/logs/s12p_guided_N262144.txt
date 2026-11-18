@@ -67,3 +67,5 @@
 [01:22:42] S6x2 guided N 262144 tau 0.005 step 65: E -7.612189 (E-E_start -6.298e-03); unique 30393 [42.85 CPU-min, step 0.641]
 [01:23:22] S6x2 guided N 262144 tau 0.005 step 66: E -7.612210 (E-E_start -6.319e-03); unique 30830 [43.51 CPU-min, step 0.660]
 [01:24:01] S6x2 guided N 262144 tau 0.005 step 67: E -7.612239 (E-E_start -6.348e-03); unique 30546 [44.16 CPU-min, step 0.648]
+[01:24:40] S6x2 guided N 262144 tau 0.005 step 68: E -7.612243 (E-E_start -6.352e-03); unique 30709 [44.81 CPU-min, step 0.644]
+[01:25:20] S6x2 guided N 262144 tau 0.005 step 69: E -7.612217 (E-E_start -6.325e-03); unique 30660 [45.46 CPU-min, step 0.658]
