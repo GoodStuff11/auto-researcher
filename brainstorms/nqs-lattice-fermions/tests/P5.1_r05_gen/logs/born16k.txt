@@ -60,3 +60,5 @@
 [23:12:49] S4x3 born N 16384 tau 0.005 step 58: E -7.813149 (E-E_start -7.623e-03); unique 4796 [15.24 CPU-min, step 0.257]
 [23:13:05] S4x3 born N 16384 tau 0.005 step 59: E -7.813122 (E-E_start -7.596e-03); unique 4755 [15.50 CPU-min, step 0.257]
 [23:13:20] S4x3 born N 16384 tau 0.005 step 60: E -7.813311 (E-E_start -7.785e-03); unique 4853 [15.76 CPU-min, step 0.258]
+[23:13:36] S4x3 born N 16384 tau 0.005 step 61: E -7.813327 (E-E_start -7.801e-03); unique 4897 [16.02 CPU-min, step 0.260]
+[23:13:51] S4x3 born N 16384 tau 0.005 step 62: E -7.813460 (E-E_start -7.934e-03); unique 4806 [16.28 CPU-min, step 0.259]
