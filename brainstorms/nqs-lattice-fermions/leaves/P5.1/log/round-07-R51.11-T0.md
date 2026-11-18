@@ -38,3 +38,8 @@ ground = exact (+,+) ground state (E₀ −6.5507 / −7.8286 / −7.6146).
 * What would settle it: a third volume. Two options: exact at 7x2 N_e 12 (info file exists; check the sector size
   first), or sampled at 8x2 / 10x2, since E_q[w²] = E_p[|ψ|] / E_q[|ψ|] (unnormalised amplitudes, scale cancels),
   which can be estimated from Born draws and |ψ| draws of a trained state.
+
+## Notes (per-leaf critic re-check, 2026-11-17)
+* The scratch script was restored by the orchestrator to `tests/P5.1_r05_gen/t0_weightvar_R51.11.py`; the numbers above come from it.
+* e^H convention: the e^H column here is the entropy of p over individual configurations (each orbit member counted separately), 3,053 at 5x2. RULE.md's 781 (`ns_run.py --info`) is over orbit representatives, each carrying its orbit's total weight; the two differ by about 3.9 (point group of order 4).
+* Not killed despite the FAIL (card, "Why not killed"): two volumes fit V² as well as an exponential, and κ_guided/κ_|ψ| is flat (4.76 at 10 sites, 4.71 at 12). Q-FEWER's next action (size ladder) now waits on a third-volume test.

@@ -2,7 +2,8 @@
 Scored 2026-11-17 by `tests/P5.1_size_scaling_r04/score_r07.py` -> `results/score_r07.json`. Data: job 763968
 (seed0 9000: exact arm, guided and born, 5 rungs each) and job 769098 (seed0 19000: guided 16,384, 65,536, 262,144).
 All 14 arms are DONE at 120 steps, so INCOMPLETE does not apply. No rule was amended. The critic's rev-2 addendum
-(RULE.md section "Rev 2 addendum") was appended during this scoring. It was written before 769098 was scored. Its
+(RULE.md section "Rev 2 addendum") was appended before this scoring, while 769098 was running and before any of its
+output was scored, as RULE.md states (wording corrected 2026-11-17, per-leaf critic re-check Minor 6). Its
 quantities are reported separately below.
 
 ## Rev-2 primary statistic (E_win over steps 61-120, threshold s = 0.10, seed means)
