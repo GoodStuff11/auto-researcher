@@ -1,1 +1,7 @@
 P5.1 T1 S14 start + kappa on kim-cpu-04.physics.cornell.edu, job 763903
+[21:08:49] S7x2_N12_U8_tp-0.25_pg11_che_seed0: L=14 Ne=12 H=16 P=3590 (nnbf P=3590) K=1 threads=1 host=kim-cpu-04.physics.cornell.edu
+[21:09:08] thermalised: acceptance 0.323
+[21:09:11] it 1 E -7.056511 std 2.597 acc 0.307 |upd| 3.29e-01 t(mcmc/eloc/grad/sr) 0.25/1.94/0.38/0.30s elapsed 0.00 h
+[21:10:56] it 50 E -8.524576 std 0.559 acc 0.244 |upd| 1.69e-01 t(mcmc/eloc/grad/sr) 0.19/1.32/0.36/0.29s elapsed 0.03 h
+[21:12:44] it 100 E -8.558060 std 0.656 acc 0.236 |upd| 1.46e-01 t(mcmc/eloc/grad/sr) 0.20/1.31/0.36/0.29s elapsed 0.06 h
+[21:14:31] it 150 E -8.511752 std 0.837 acc 0.258 |upd| 1.57e-01 t(mcmc/eloc/grad/sr) 0.19/1.31/0.36/0.29s elapsed 0.09 h

@@ -1,1 +1,9 @@
 P5.1 quick T1 S12' on kim-cpu-04.physics.cornell.edu, job 763902
+[21:08:49] S6x2_N10_U8_tp-0.25_pg11_che_seed0: L=12 Ne=10 H=16 P=2637 (nnbf P=2637) K=1 threads=1 host=kim-cpu-04.physics.cornell.edu
+[21:08:58] thermalised: acceptance 0.355
+[21:09:00] it 1 E -6.249345 std 2.414 acc 0.340 |upd| 2.93e-01 t(mcmc/eloc/grad/sr) 0.13/1.01/0.26/0.27s elapsed 0.00 h
+[21:10:09] it 50 E -7.427152 std 0.385 acc 0.267 |upd| 1.08e-01 t(mcmc/eloc/grad/sr) 0.14/0.78/0.27/0.22s elapsed 0.02 h
+[21:11:20] it 100 E -7.502478 std 0.433 acc 0.263 |upd| 1.16e-01 t(mcmc/eloc/grad/sr) 0.13/0.79/0.28/0.22s elapsed 0.04 h
+[21:12:31] it 150 E -7.566865 std 0.421 acc 0.262 |upd| 1.07e-01 t(mcmc/eloc/grad/sr) 0.13/0.80/0.26/0.22s elapsed 0.06 h
+[21:13:41] it 200 E -7.604589 std 0.473 acc 0.252 |upd| 1.03e-01 t(mcmc/eloc/grad/sr) 0.13/0.80/0.26/0.22s elapsed 0.08 h
+[21:14:52] it 250 E -7.611913 std 0.297 acc 0.247 |upd| 9.60e-02 t(mcmc/eloc/grad/sr) 0.13/0.82/0.27/0.22s elapsed 0.10 h
