@@ -1,0 +1,6 @@
+[20:32:37] 4x3 N_e 10: sector 627264, 157216 representatives, P 2637, Hr nnz 4970832
+[20:32:37] setup 0.02 CPU-min
+[20:34:22] S4x3 exact tau 0.005 step 1: E -7.808025 (E-E_start -2.499e-03); unique 156967 [1.80 CPU-min, step 1.665]
+[20:36:02] S4x3 exact tau 0.005 step 2: E -7.810071 (E-E_start -4.545e-03); unique 156971 [3.47 CPU-min, step 1.669]
+[20:36:02] done: 2 steps, 3.47 CPU-min, 205 s
+138.17 user 209.77 wall 11089224 KB

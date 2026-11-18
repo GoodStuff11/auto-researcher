@@ -1,0 +1,32 @@
+{
+ "Lx": 4,
+ "Ly": 3,
+ "Ne": 10,
+ "nsamp": 262144,
+ "exact": false,
+ "sampler": "born",
+ "tau": 0.005,
+ "seed0": 9000,
+ "start": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_scaling/logs/pilot/pg_che/S4x3_N10_U8_tp-0.25_pg11_che_seed0_theta.npy",
+ "E_start": -7.805526273788163,
+ "steps": [
+  {
+   "E": -7.80723913572805,
+   "dE": 0.001712861939886956,
+   "E_minus_start": -0.001712861939886956,
+   "n_unique": 18859,
+   "dth": 0.08638531298880889,
+   "cpu_step": 0.27686594801666664
+  },
+  {
+   "E": -7.808324332115719,
+   "dE": 0.0010851963876685744,
+   "E_minus_start": -0.0027980583275555304,
+   "n_unique": 18973,
+   "dth": 0.06385852389953771,
+   "cpu_step": 0.27810709486666657
+  }
+ ],
+ "cpu_min": 0.7001132045666666,
+ "wall": 38.53066372871399
+}

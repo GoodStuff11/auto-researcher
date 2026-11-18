@@ -1,0 +1,17 @@
+{
+ "Lx": 4,
+ "Ly": 3,
+ "Ne": 10,
+ "P": 2637,
+ "reps": 157216,
+ "theta": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_scaling/logs/pilot/pg_che/S4x3_N10_U8_tp-0.25_pg11_che_seed0_theta.npy",
+ "E": -7.805526273788163,
+ "xSx": 0.04339927065910457,
+ "d_eff": 999.177841327336,
+ "expH": 3034.58412036952,
+ "kappa_born": 1478476696.9217176,
+ "N_eps0.3_born": 16427518854.685753,
+ "kappa_guided": 124253.83841557617,
+ "N_eps0.3_guided": 1380598.204617513,
+ "cpu_min": 2.689790612166667
+}

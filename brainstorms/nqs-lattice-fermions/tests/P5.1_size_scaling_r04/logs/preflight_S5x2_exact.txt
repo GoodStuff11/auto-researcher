@@ -1,0 +1,7 @@
+[20:41:43] 5x2 N_e 8: sector 44100, 11100 representatives, P 1832, Hr nnz 255770
+[20:41:43] setup 0.01 CPU-min
+[20:41:48] S5x2 exact tau 0.005 step 1: E -6.547639 (E-E_start -5.233e-04); unique 11076 [0.13 CPU-min, step 0.081]
+[20:41:53] S5x2 exact tau 0.005 step 2: E -6.547889 (E-E_start -7.729e-04); unique 11076 [0.21 CPU-min, step 0.075]
+[20:41:57] S5x2 exact tau 0.005 step 3: E -6.547941 (E-E_start -8.251e-04); unique 11076 [0.28 CPU-min, step 0.072]
+[20:41:57] done: 3 steps, 0.28 CPU-min, 14 s
+14.16 user 16.86 wall 1224464 KB

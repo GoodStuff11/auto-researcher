@@ -10,7 +10,7 @@ Both tasks on kim-cpu-04. R_pol = 0.7475. R_plat = mean R over the arm's last 20
 | arm | N | steps done | CPU-min (in-job per step) | R(last) | R_plat | tail slope | rises | Delta |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | A | 16,384 | 120 / 120 | 43.3 (0.359) | 0.5865 | 0.5762 (steps 101-120) | 0.0012 | 18/120 (max 0.0018) | 0.1713 |
-| B | 65,536 | 83 / 120, TRUNCATED by `--cpu-cap 66` | 65.9 (0.790) | 0.6499 | 0.6334 (steps 64-83) | 0.0018 | 2/83 | <= 0.1141 |
+| B | 65,536 | 83 / 120, TRUNCATED by `--cpu-cap 66` | 65.9 (0.790) | 0.6499 | 0.6334 (steps 64-83) | 0.0018 | 2/83 | ≤ 0.1141 |
 
 Trajectory (R at step 20/40/60/80/83/100/120): A 0.364/0.444/0.494/0.534/0.536/0.563/0.587; B 0.463/0.555/0.608/
 0.645/0.650/-/-. Mean dR per 20-step block: A 0.0182, 0.0040, 0.0025, 0.0020, 0.0014, 0.0012; B 0.0231, 0.0046,
@@ -24,8 +24,8 @@ step must be measured on the partition's nodes, not the interactive node (propos
 * REACHES: no. R_plat(A) = 0.5762 < 0.7475.
 * B is INCOMPLETE (stopped at 83 of 120). Its tail slope 0.0018 is below the rule's 0.002 "not yet plateaued" flag,
   but it was rising when cut (dR 0.0016 at step 83), so the truncation clause is applied as the orchestrator directs:
-  R_plat(B) = 0.6334 is a lower bound, Delta(B) <= 0.1141 an upper bound, and NOT-NOISE is not declared from it.
-* Delta(B)/Delta(A) <= 0.1141 / 0.1713 = 0.666: above NOISE-FLOOR's 0.62, below NOT-NOISE's 0.85. NOT-NOISE is
+  R_plat(B) = 0.6334 is a lower bound, Delta(B) ≤ 0.1141 an upper bound, and NOT-NOISE is not declared from it.
+* Delta(B)/Delta(A) ≤ 0.1141 / 0.1713 = 0.666: above NOISE-FLOOR's 0.62, below NOT-NOISE's 0.85. NOT-NOISE is
   excluded (ratio < 0.85 even at its upper bound); NOISE-FLOOR's first condition is not met by the scored numbers
   but could be once B completes (the bound can only fall).
 * **Unit 1 verdict: undecided (neither REACHES nor NOT-NOISE) -> unit 2 released per the release order.**
