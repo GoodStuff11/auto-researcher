@@ -14,4 +14,4 @@
 * convergence: not guaranteed; the half-budget agreement clause and the NOT-PLATEAUED flag report it. A 2000-evaluation fit from the init recipe is half the 4000 energy iterations of the 1.66 datum, but on the T1 evidence the fidelity loss moves faster per evaluation.
 * wall-time-basis: measured 2026-11-17 interactively, 1 thread (logs/check_local.txt): che 0.117, nnbf 0.065 CPU-min per evaluation; setup 0.3 min; x 1.8 in-job slowdown (R42/R43) and x 1.15 safety -> caps 485 / 270 CPU-min; time limit 09:00:00. Peak RSS 1.66 GB (nnbf, logs/rss_local.txt) -> 5G.
 * power: deterministic exact-sum fits; the only spread is init seed and path (the 1.66 datum's seed spread was about +-15% at 2000 iterations), so single-seed margins are 1.0 / 1.65 (as the R40 audit asked).
-* auditor: CHANGES REQUIRED 2026-11-17 on 08d370f1663e (lagging-arm plateau clause; from-init pilot); amended, re-audit after the pilot
+* auditor: APPROVED 2026-11-17 decbc3e60d64
