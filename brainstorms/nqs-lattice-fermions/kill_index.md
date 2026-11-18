@@ -410,6 +410,7 @@ One row per KILLED or SHELVED route, grouped by leaf. **Code** is where the rout
 | R51.14 | P5.1 | importance-reweighted reuse of high-leverage configurations (`levreuse`) | T0 | weights of old near-node draws explode ($\chi^2$ 1.7e4 at 20 steps); reuse over 1-5 steps under slow Markov chains stays open | [[leaves/P5.1/cards/R51.14]] | route-specific |
 | R51.17 | P5.1 | without-replacement pool reshuffling across steps (`reshuffle`) | T0 | accumulated error equals fresh draws at first order (no finite-sum target); weights add variance | [[leaves/P5.1/cards/R51.17]] | proposed entry (reshuffling gains only relative to a finite pool) |
 | R51.15 | P5.1 | samples-per-step schedule grown on the measured noise scale (`adaptN`) | T1 | censoring artefact (rule on the card and portfolio row, written before 769213): fixed 16,384 continued 332 steps reached 0.90 / 0.95 R_pol at 4.26M / 6.67M draws, below the oracle schedule envelope (4.8M / 12.1M) built from 120-step arms | [[leaves/P5.1/cards/R51.15]] | proposed entry (continue the smallest-N arm before crediting a schedule) |
+| R51.10 | P5.1 | exact one-state ridge-regression noise-to-signal ratio $\kappa$ as predictor of the sample need's size growth (`kappa`) | T2 | predicted polynomial growth ($\kappa$ ×0.70 from 10 to 12 ladder sites); the measured need grew 31,280 → 118,600 (×3.79, support-like, one seed), 5.4× the $\kappa$-tracking value | [[leaves/P5.1/cards/R51.10]] | proposed L67 extension (one-state proxies miss the multi-step need's size trend) |
 
 ---
 
