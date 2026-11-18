@@ -1,0 +1,40 @@
+{
+ "0.9": {
+  "arms": {
+   "born16k": {
+    "T": Infinity,
+    "steps": 904,
+    "R_end": 0.6359388128429514
+   },
+   "born65k_tau0.01": {
+    "T": Infinity,
+    "steps": 226,
+    "R_end": 0.6603609432757809
+   }
+  },
+  "T_B": 7405568.0,
+  "T_guided": 5849088.0,
+  "T_born": Infinity,
+  "ratio_lower_bound": 2.53030899859944,
+  "verdict": "GUIDED-FEWER"
+ },
+ "0.8": {
+  "arms": {
+   "born16k": {
+    "T": 9502720.0,
+    "steps": 904,
+    "R_end": 0.6359388128429514
+   },
+   "born65k_tau0.01": {
+    "T": 7995392.0,
+    "steps": 226,
+    "R_end": 0.6603609432757809
+   }
+  },
+  "T_B": 4325376.0,
+  "T_guided": 2670592.0,
+  "T_born": 7995392.0,
+  "ratio_lower_bound": 2.9938650306748467,
+  "verdict": "GUIDED-FEWER"
+ }
+}
