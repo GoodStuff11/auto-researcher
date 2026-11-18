@@ -12,7 +12,7 @@
 | R51.33 two-sided matched ratio (`match2`) | T0 | gated, not submitted: 6×2 at τ 0.0025 vs 5×2 at equal $m$ (τ curve to 0.000625); jobs cap 9.5 + 6.0, gate PASS; p POLY 0.55 | — | `tests/P5.1_r18_match2/RULE.md` | POLY → 1.2 two-sided, third size next; AMBIGUOUS → regime-dependent; SUPPORT → 1.21 one-sided only |
 | R51.31 MinSR $N<P$ (`minsr`) | T1 | GUIDED-AHEAD (5×2): best of four τ $R_{20}$ 0.18 (τ 0.0025) vs Born SR 0.38, guided 0.69 at 819k draws; 0.005 diverged | — | `RULE_minsr.md` + addendum | done; 12 sites not proposed |
 
-Killed (rounds 1–16): R51.2, R51.4–R51.6, R51.9, R51.10, R51.12–R51.15, R51.17–R51.20, R51.22–R51.28, R51.30; tiers and rounds in `kill_index.md`. Merged: R51.21 into R51.11; R51.29 into R51.7's running test. Shelved: R51.7 (trigger met at 10 sites only; test `RULE_r14_decay.md`, job 773528, cap 6; only DECAY-HELPS changes its state); R51.8 (round 14, 7×2 rejected by the auditor; 10 → 12 result kept). R51.1 decided: NOISE-FLOOR.
+Killed (rounds 1–16): R51.2, R51.4–R51.6, R51.9, R51.10, R51.12–R51.15, R51.17–R51.20, R51.22–R51.28, R51.30; tiers and rounds in `kill_index.md`. Merged: R51.21 into R51.11; R51.29 into R51.7's running test. Shelved: R51.7 (job 773528 UNRESOLVABLE, decay-helps excluded: no gain at 12 sites, ratio 0.95; stays shelved per Addendum 1; only DECAY-HELPS changes its state); R51.8 (round 14, 7×2 rejected by the auditor; 10 → 12 result kept). R51.1 decided: NOISE-FLOOR.
 
 ## Leaf Status Summary
 * **State**: OPEN

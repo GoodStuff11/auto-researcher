@@ -1,2 +1,20 @@
 P5.1 R51.7 decay test on kim-cpu-01.physics.cornell.edu, job 773528, Wed Nov 18 05:58:54 EST 2026
 Wed Nov 18 05:58:54 EST 2026 results/r14_decay/S5x2_N8_exact_tau0.005_s9000_cont: start/resume with --cpu-cap 348
+Wed Nov 18 06:05:52 EST 2026 results/r14_decay/S5x2_N8_exact_tau0.005_s9000_dec: start/resume with --cpu-cap 342
+Wed Nov 18 06:13:00 EST 2026 results/r14_decay/S5x2_N8_guided_N4096_tau0.005_s9000_cont: start/resume with --cpu-cap 334
+Wed Nov 18 06:15:08 EST 2026 results/r14_decay/S5x2_N8_guided_N4096_tau0.005_s9000_dec: start/resume with --cpu-cap 332
+Wed Nov 18 06:17:25 EST 2026 results/r14_decay/S5x2_N8_guided_N16384_tau0.005_s9000_cont: start/resume with --cpu-cap 330
+Wed Nov 18 06:20:20 EST 2026 results/r14_decay/S5x2_N8_guided_N16384_tau0.005_s9000_dec: start/resume with --cpu-cap 327
+Wed Nov 18 06:23:23 EST 2026 results/r14_decay/S5x2_N8_guided_N16384_tau0.005_s19000_cont: start/resume with --cpu-cap 324
+Wed Nov 18 06:26:20 EST 2026 results/r14_decay/S5x2_N8_guided_N16384_tau0.005_s19000_dec: start/resume with --cpu-cap 321
+Wed Nov 18 06:29:25 EST 2026 results/r14_decay/S5x2_N8_guided_N65536_tau0.005_s9000_cont: start/resume with --cpu-cap 318
+Wed Nov 18 06:33:29 EST 2026 results/r14_decay/S5x2_N8_guided_N65536_tau0.005_s9000_dec: start/resume with --cpu-cap 314
+Wed Nov 18 06:37:47 EST 2026 results/r14_decay/S5x2_N8_guided_N65536_tau0.005_s19000_cont: start/resume with --cpu-cap 310
+Wed Nov 18 06:41:50 EST 2026 results/r14_decay/S5x2_N8_guided_N65536_tau0.005_s19000_dec: start/resume with --cpu-cap 306
+Wed Nov 18 06:46:06 EST 2026 results/r14_decay/S6x2_N10_guided_N16384_tau0.005_s9000_cont: start/resume with --cpu-cap 301
+Wed Nov 18 06:59:34 EST 2026 results/r14_decay/S6x2_N10_guided_N16384_tau0.005_s9000_dec: start/resume with --cpu-cap 288
+Wed Nov 18 07:16:45 EST 2026 results/r14_decay/S6x2_N10_guided_N65536_tau0.005_s9000_cont: start/resume with --cpu-cap 271
+Wed Nov 18 07:39:18 EST 2026 results/r14_decay/S6x2_N10_guided_N65536_tau0.005_s9000_dec: start/resume with --cpu-cap 248
+Wed Nov 18 08:05:05 EST 2026 results/r14_decay/S6x2_N10_guided_N262144_tau0.005_s9000_cont: start/resume with --cpu-cap 222
+Wed Nov 18 08:44:08 EST 2026 results/r14_decay/S6x2_N10_guided_N262144_tau0.005_s9000_dec: start/resume with --cpu-cap 183
+Wed Nov 18 09:24:51 EST 2026 all 18 items processed (FAIL=0, STOP=0)
