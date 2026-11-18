@@ -1,0 +1,19 @@
+# Round 7 — per-leaf critic (round 5 re-check) applied, 2026-11-17
+
+Editor pass; no jobs run, no commits. Running jobs untouched: 769098, 763903, 769211, 769213. State stays OPEN; per-leaf critic re-check owed for Majors 1–4. The critic's report is at `/home/jek354/.claude/jobs/91298e5c/tmp/critics/p51_r5.md` (orchestrator decisions in brackets); its substance is restated item by item below.
+
+## Critic objections and edits applied
+1. (Major) R51.18's kill was a code artefact: in `storm.py --mode sf` the length $\tau/\sqrt{\max(v^{\mathsf T}S_{\rm rec}v,10^{-300})}$ becomes $\tau/10^{-150}$ when $S_{\rm rec}$ is indefinite. Indefiniteness is structural, the blow-up is not. Applied: R51.18 KILLED → LIVE; pre-registered rerun rule on the card (length in the fresh $S_n$; same arm $N$=2048, $a$=0.1, 5x2, guided, 120 steps, seeds 9000+n; KILL if $R_{\rm plat}\le0.2740$ or divergence, PASS if $\ge0.3383$, MARGINAL between). Kill_index row removed; portfolio row added. The orchestrator runs it.
+2. (Major) Comparator foil: guided SR is a published sampler (arXiv:2507.05352), not standard SR; R51.11's $q\propto|\psi|$ is $\alpha=1$ of the same family; R51.16 has no $N<P$ arm. Applied: "SR" defined as Born-sampled SR (MinSR papers' sense) in problem.md (novelty bullet rewritten) and summary (What would close it, argument); "reference to beat", "standard sampled SR", "plain SR" wording replaced; a Yes on guided or $|\psi|$ draws credits a published sampler; MinSR half stated untested with no route (orchestrator choice; R51.16's "larger-P instance" removed). Stale sentences corrected: summary Strongest objection 1, What it would take, problem.md's "$N<P$ rungs" sentence.
+3. (Major) Job states: R51.11 RUNNING 769211 (5.75 CPU-h cap), R51.16 RUNNING 769213 (14.33); R51.15 blocked on 769213 task 0; portfolio, Next step and Compute spent updated.
+4. (Major) R51.8 rev 2 upheld as a conditioning fix, but the 10-site denominator (~29,530) was known at registration; UNRESOLVABLE action and sd_w revised. Applied: appended "Rev 2 addendum (per-leaf critic, 2026-11-17, before any unit 1c data)" to `tests/P5.1_size_scaling_r04/RULE.md` (disclosure; detrended sd_w; UNRESOLVABLE → (i) zero-compute rescore to a sustained 90% of each size's own exact gain, (ii) R51.7's unshelve test, then the 10-site ladder under the new step with rev 3 registered before data), written while 769098 runs and before its scoring. R51.7 card and kill_index row: trigger met at 10 sites (exact arm last-40 slope about $-1.7\times10^{-4}$).
+5. R51.13 scoped to $a$=0.1; $a$=0.5 named as strongest case (linear theory, $\rho(1)$=0.044: about $0.24\sigma^2$ vs $0.5\sigma^2$ for $2N$ fresh draws); lesson route-specific until $a$=0.5 or R51.18's rerun is scored; kill_index row rescoped.
+6. R51.14 rewritten: the round-5 rebuttal worked against itself; kill rests on weight growth; reuse over 1–5 steps ($\chi^2\le0.074$) under long-autocorrelation samplers stays open.
+7. R51.12, R51.17 translation repair lines added. Analogy Map: SVRG → tried (R51.13, R51.18); critical batch size → R51.15; added optimal subsampling (Wang, Zhu & Ma; R51.11), dynamic sample size (Byrd et al.; R51.15), reshuffling (R51.17), sketched leverage (R51.12).
+8. R51.11 Gate 4 restated as unverified ($E_q[w^2]=Z_1\sum|\psi|^3/Z_2^2$ grows exponentially in $V$); exact T0 at 5x2, 4x3, 6x2 listed as next step, not computed.
+9. "$N<P$" replaced by unique draws (about 920) $<P$ on R51.13 and R51.18 (the kill_index row was removed with item 1).
+10. R51.15 now says R51.7 is shelved; R51.8's idea line no longer says 5% only.
+11. What we showed: the reference is exact noise-free optimisation by a different method; MinSR defined in the Answer.
+12. R51.13: the 4x3 one-step arm never finished (600 s CPU limit, `logs/kq_S4x3_k1.txt`).
+
+Checked-by lines set per the critic on R51.1, R51.5, R51.6, R51.7, R51.8, R51.11, R51.12, R51.13, R51.14, R51.15, R51.16, R51.17, R51.18.
