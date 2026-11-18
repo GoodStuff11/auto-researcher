@@ -1,0 +1,13 @@
+P5.1 R51.32 regime-matched ladder on kim-cpu-01.physics.cornell.edu, job 773759, Wed Nov 18 07:01:39 EST 2026
+Wed Nov 18 07:01:39 EST 2026 results/S5x2_N8_exact_tau0.00375_s9000: start/resume with --cpu-cap 142
+Wed Nov 18 07:15:55 EST 2026 results/S5x2_N8_exact_tau0.0025_s9000: start/resume with --cpu-cap 128
+Wed Nov 18 07:30:10 EST 2026 results/S5x2_N8_exact_tau0.00125_s9000: start/resume with --cpu-cap 114
+Wed Nov 18 07:44:22 EST 2026 selection: 0.0025
+Wed Nov 18 07:44:22 EST 2026 results/S5x2_N8_guided_N4096_tau0.0025_s9000: start/resume with --cpu-cap 100
+Wed Nov 18 07:48:37 EST 2026 results/S5x2_N8_guided_N16384_tau0.0025_s9000: start/resume with --cpu-cap 96
+Wed Nov 18 07:54:28 EST 2026 results/S5x2_N8_guided_N65536_tau0.0025_s9000: start/resume with --cpu-cap 90
+Wed Nov 18 08:02:44 EST 2026 results/S5x2_N8_guided_N262144_tau0.0025_s9000: start/resume with --cpu-cap 81
+Wed Nov 18 08:13:31 EST 2026 second seed owed at: 65536 262144
+Wed Nov 18 08:13:31 EST 2026 results/S5x2_N8_guided_N65536_tau0.0025_s19000: start/resume with --cpu-cap 71
+Wed Nov 18 08:21:48 EST 2026 results/S5x2_N8_guided_N262144_tau0.0025_s19000: start/resume with --cpu-cap 62
+Wed Nov 18 08:32:31 EST 2026 all stages done; score with: python3 score_r17_regime.py score (orchestrator)
