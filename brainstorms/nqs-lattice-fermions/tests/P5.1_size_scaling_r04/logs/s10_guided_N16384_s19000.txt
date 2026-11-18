@@ -1,0 +1,15 @@
+[23:02:25] 5x2 N_e 8: sector 44100, 11100 representatives, P 1832, Hr nnz 255770
+[23:02:25] setup 0.01 CPU-min
+[23:02:29] S5x2 guided N 16384 tau 0.005 step 1: E -6.547259 (E-E_start -1.432e-04); unique 2902 [0.11 CPU-min, step 0.057]
+[23:02:33] S5x2 guided N 16384 tau 0.005 step 2: E -6.547376 (E-E_start -2.597e-04); unique 2906 [0.17 CPU-min, step 0.056]
+[23:02:36] S5x2 guided N 16384 tau 0.005 step 3: E -6.547482 (E-E_start -3.663e-04); unique 2893 [0.22 CPU-min, step 0.055]
+[23:02:39] S5x2 guided N 16384 tau 0.005 step 4: E -6.547509 (E-E_start -3.935e-04); unique 2859 [0.27 CPU-min, step 0.053]
+[23:02:43] S5x2 guided N 16384 tau 0.005 step 5: E -6.547584 (E-E_start -4.684e-04); unique 2863 [0.33 CPU-min, step 0.055]
+[23:02:46] S5x2 guided N 16384 tau 0.005 step 6: E -6.547562 (E-E_start -4.465e-04); unique 2942 [0.38 CPU-min, step 0.054]
+[23:02:49] S5x2 guided N 16384 tau 0.005 step 7: E -6.547653 (E-E_start -5.373e-04); unique 2892 [0.43 CPU-min, step 0.052]
+[23:02:52] S5x2 guided N 16384 tau 0.005 step 8: E -6.547677 (E-E_start -5.614e-04); unique 2946 [0.49 CPU-min, step 0.053]
+[23:02:55] S5x2 guided N 16384 tau 0.005 step 9: E -6.547679 (E-E_start -5.626e-04); unique 2853 [0.54 CPU-min, step 0.051]
+[23:02:59] S5x2 guided N 16384 tau 0.005 step 10: E -6.547660 (E-E_start -5.443e-04); unique 2849 [0.59 CPU-min, step 0.052]
+[23:03:02] S5x2 guided N 16384 tau 0.005 step 11: E -6.547746 (E-E_start -6.301e-04); unique 2958 [0.65 CPU-min, step 0.054]
+[23:03:05] S5x2 guided N 16384 tau 0.005 step 12: E -6.547747 (E-E_start -6.309e-04); unique 2917 [0.70 CPU-min, step 0.052]
+[23:03:08] S5x2 guided N 16384 tau 0.005 step 13: E -6.547790 (E-E_start -6.742e-04); unique 2920 [0.75 CPU-min, step 0.055]

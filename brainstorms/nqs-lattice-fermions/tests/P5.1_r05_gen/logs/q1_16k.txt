@@ -1,0 +1,18 @@
+[22:56:53] 4x3 N_e 10: sector 627264, 157216 representatives, P 2637, Hr nnz 4970832
+[22:56:53] setup 0.03 CPU-min
+[22:57:24] S4x3 guided N 16384 tau 0.005 step 1: E -7.807488 (E-E_start -1.962e-03); unique 11446 [0.58 CPU-min, step 0.370]
+[22:57:47] S4x3 guided N 16384 tau 0.005 step 2: E -7.808731 (E-E_start -3.205e-03); unique 11464 [0.96 CPU-min, step 0.378]
+[22:58:10] S4x3 guided N 16384 tau 0.005 step 3: E -7.809936 (E-E_start -4.410e-03); unique 11486 [1.34 CPU-min, step 0.383]
+[22:58:33] S4x3 guided N 16384 tau 0.005 step 4: E -7.810993 (E-E_start -5.467e-03); unique 11505 [1.72 CPU-min, step 0.381]
+[22:58:56] S4x3 guided N 16384 tau 0.005 step 5: E -7.811648 (E-E_start -6.122e-03); unique 11506 [2.10 CPU-min, step 0.380]
+[22:59:19] S4x3 guided N 16384 tau 0.005 step 6: E -7.812165 (E-E_start -6.639e-03); unique 11578 [2.49 CPU-min, step 0.385]
+[22:59:42] S4x3 guided N 16384 tau 0.005 step 7: E -7.812748 (E-E_start -7.221e-03); unique 11503 [2.87 CPU-min, step 0.382]
+[23:00:05] S4x3 guided N 16384 tau 0.005 step 8: E -7.813197 (E-E_start -7.671e-03); unique 11583 [3.25 CPU-min, step 0.383]
+[23:00:28] S4x3 guided N 16384 tau 0.005 step 9: E -7.813539 (E-E_start -8.013e-03); unique 11371 [3.63 CPU-min, step 0.379]
+[23:00:51] S4x3 guided N 16384 tau 0.005 step 10: E -7.813806 (E-E_start -8.280e-03); unique 11481 [4.01 CPU-min, step 0.382]
+[23:01:14] S4x3 guided N 16384 tau 0.005 step 11: E -7.814051 (E-E_start -8.525e-03); unique 11499 [4.39 CPU-min, step 0.381]
+[23:01:37] S4x3 guided N 16384 tau 0.005 step 12: E -7.814284 (E-E_start -8.757e-03); unique 11478 [4.77 CPU-min, step 0.380]
+[23:02:00] S4x3 guided N 16384 tau 0.005 step 13: E -7.814539 (E-E_start -9.013e-03); unique 11523 [5.16 CPU-min, step 0.382]
+[23:02:23] S4x3 guided N 16384 tau 0.005 step 14: E -7.814766 (E-E_start -9.240e-03); unique 11502 [5.54 CPU-min, step 0.379]
+[23:02:46] S4x3 guided N 16384 tau 0.005 step 15: E -7.814959 (E-E_start -9.433e-03); unique 11534 [5.92 CPU-min, step 0.382]
+[23:03:09] S4x3 guided N 16384 tau 0.005 step 16: E -7.815138 (E-E_start -9.612e-03); unique 11402 [6.30 CPU-min, step 0.385]
