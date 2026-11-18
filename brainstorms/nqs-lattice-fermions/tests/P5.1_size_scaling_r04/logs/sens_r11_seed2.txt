@@ -1,0 +1,14 @@
+N_needed(6x2) 118626; SUPPORT threshold 110119; margin 0.0744 ln-units
+dlnN/dln s(65k) 1.202; dlnN/dln s(262k) 0.899
+S10 N 16384: seed diff 0.0078, s 0.1445
+S10 N 65536: seed diff 0.0052, s 0.0656
+S10 N 262144: seed diff 0.0020, s 0.0524
+pooled single-seed sd: relative 0.0419 (ln s), absolute 0.0039 (s)
+relative noise x1 65k only : sd(lnN) 0.0356 z 2.09 P(flip) t3 0.064 normal 0.018
+relative noise x1 65k+262k : sd(lnN) 0.0444 z 1.68 P(flip) t3 0.096 normal 0.047
+relative noise x2 65k only : sd(lnN) 0.0711 z 1.05 P(flip) t3 0.186 normal 0.148
+relative noise x2 65k+262k : sd(lnN) 0.0888 z 0.84 P(flip) t3 0.232 normal 0.201
+absolute noise x1 65k only : sd(lnN) 0.0250 z 2.98 P(flip) t3 0.029 normal 0.001
+absolute noise x1 65k+262k : sd(lnN) 0.0439 z 1.69 P(flip) t3 0.094 normal 0.045
+absolute noise x2 65k only : sd(lnN) 0.0499 z 1.49 P(flip) t3 0.116 normal 0.068
+absolute noise x2 65k+262k : sd(lnN) 0.0878 z 0.85 P(flip) t3 0.230 normal 0.198
