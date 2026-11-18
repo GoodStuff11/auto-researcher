@@ -35,3 +35,6 @@ V ≈ 12 (V² has local slope 2/V ≈ 0.15 per site), so the shape is read separ
 the Gate 4 claim restated as polynomial. FAIL with EXP-OR-FASTER → R51.11 is KILLED at G4 (diagnostic only, as the
 portfolio row says). FAIL with SHAPE-UNRESOLVED → stays LIVE with the Gate 4 FAIL standing; the size ladder is not
 released until a fourth volume (sampled 8x2) is built.
+
+## Hold released (orchestrator, 2026-11-18, before any ladder data)
+The size-ladder hold above is released by the reopen trigger recorded in leaves/P5.1/log/round-10.md ("reopen if R51.8 shows guided SR's sample need growing faster than polynomially"), which R51.8's 6x2 verdict (SUPPORT-LIKE, r' 3.79) meets. The ladder runs under RULE_r14_qladder.md.

@@ -1,0 +1,15 @@
+# RULE: R51.7 unshelve test, step decay with Polyak–Ruppert averaging at 10 and 12 sites (round 14, written before any arm)
+Written 2026-11-18 by the round-14 worker, before any arm of this rule has run. Pre-audit draft; nothing submitted. Needs a new driver `ns_decay.py` (not yet written; identity test required: with the schedule off and no averaging it must reproduce `ns_run.py` resumed with `--steps 180` to machine precision for 3 steps).
+**Premise.** R51.7's trigger (a fixed-step run with last-20 slope below 2e-4 in $R$) is met at 10 sites: R51.8's 5×2 exact arm is a fixed-step limit cycle (period-2 bounce). The rev-2 addendum's UNRESOLVABLE action (ii) names this test. Here it is run at both sizes R51.8 scored, so it also asks whether the step, not the sampling, set part of the 10 → 12 growth.
+**Arms.** From the step-120 state (`state.npz`) of each listed R51.8 arm, two continuations of 60 steps with the same draws (step $n$ seeded seed0 + $n$, $n$ = 121–180; common random numbers):
+* CONT: metric length 0.005 (fixed), scored energy $E(\theta_n)$.
+* DEC: length $\tau_k=0.005\,(1+k/10)^{-0.75}$, $k=n-120$; Polyak–Ruppert average $\bar\theta_k$ = mean of $\theta_{121..120+k}$; scored energy $E(\bar\theta_k)$ (one extra exact energy per step).
+Starts: S10 exact; S10 guided 4,096 (seed 9000), 16,384 and 65,536 (seeds 9000, 19000); S12' guided 16,384, 65,536, 262,144 (seed 9000). 18 arms.
+**Statistic.** $E_{\rm tail}$ = mean scored exact energy over $k$ = 31–60. $s=(E_{\rm tail}-E_{\rm win}({\rm exact, fixed, 61–120}))/G_{\rm ref}(V)$, R51.8's registered references. $N^{\rm mode}(V)$ at $s=0.10$ by $\ln s$–$\ln N$ interpolation (seed means where two exist), censored otherwise; conditioning as rev 2 with three 10-step detrended windows over $k$ 31–60. $\rho(V)=N^{\rm DEC}(V)/N^{\rm CONT}(V)$.
+**Verdict.** DECAY-HELPS if $\rho\le0.5$ at both sizes; DECAY-NO-GAIN if $\rho\ge0.8$ at both; MIXED otherwise; UNRESOLVABLE if a size fails conditioning; INCOMPLETE if a bracketing arm stops early. Censored bounds count where they decide. Reported only: bounce amplitude at S10 exact, $A$ = rms over $k$ = 32–59 of $E_k-(E_{k-1}+E_{k+1})/2$ (BOUNCE-REMOVED if $A_{\rm DEC}\le0.5A_{\rm CONT}$); size ratios $r'_{\rm DEC}$, $r'_{\rm CONT}$ against 1.728 and 3.52, labelled "180-step continuation, not the registered statistic".
+**What each verdict does.**
+* DECAY-HELPS with $r'_{\rm DEC}<3.52$: the Answer's growth sentence adds that with a decaying, averaged step the need grew less than the occupied configurations over the same step; R51.7 LIVE at T2, next a 120-step rev-3 ladder.
+* DECAY-HELPS with $r'_{\rm DEC}\ge3.52$, or MIXED: a constant-factor saving at most; numbers in What we showed; R51.7 settled on the "none removes it" list.
+* DECAY-NO-GAIN: R51.7 KILLED at T2 in its premise (10 and 12 sites); only R51.11 remains on that list.
+* UNRESOLVABLE or INCOMPLETE: no class.
+**Scope.** The same two sizes (10, 12 sites), one seed at 12; it says nothing beyond small clusters, only whether the fixed step inflated the measured step.
