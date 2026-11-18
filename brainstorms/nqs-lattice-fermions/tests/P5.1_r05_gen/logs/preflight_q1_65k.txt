@@ -1,0 +1,5 @@
+[22:46:14] 4x3 N_e 10: sector 627264, 157216 representatives, P 2637, Hr nnz 4970832
+[22:46:14] setup 0.02 CPU-min
+[22:46:42] S4x3 guided N 65536 tau 0.005 step 1: E -7.807720 (E-E_start -2.194e-03); unique 29692 [0.53 CPU-min, step 0.387]
+[22:47:05] S4x3 guided N 65536 tau 0.005 step 2: E -7.809470 (E-E_start -3.944e-03); unique 29662 [0.92 CPU-min, step 0.388]
+[22:47:05] DONE: 2 of 2 steps, 0.92 CPU-min in all, 52 s

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Score RULE_cmp.md (R51.16) from the arms' run.json files and R51.1's arm B."""
+"""Score RULE_cmp.md (R51.16) and RULE_qopt_T2.md (R51.11, task 2) from the arms' run.json files and R51.1's B."""
 import json
 import os
 
@@ -12,7 +12,9 @@ ARMS = {"born16k": ("results/born_N16384_tau0.005", 16384, 0, 13.5e6),
         "born65k": ("results/born_N65536_tau0.005", 65536, 0, 13.5e6),
         "born65k_tau0.01": ("results/born_N65536_tau0.01", 65536, 0, 13.5e6),
         "born262k": ("results/born_N262144_tau0.005", 262144, 0, 13.5e6),
-        "guided16k_cont": ("results/guided_N16384_tau0.005_cont", 16384, 120, 6.75e6)}
+        "guided16k_cont": ("results/guided_N16384_tau0.005_cont", 16384, 120, 6.75e6),
+        "q1_16k": ("results/q1_N16384_tau0.005", 16384, 0, 6.75e6),
+        "q1_65k": ("results/q1_N65536_tau0.005", 65536, 0, 6.75e6)}
 
 
 def first(path, N, off, frac):
@@ -31,6 +33,10 @@ for frac in (0.90, 0.80):
     tg = min(6.75e6 if frac == 0.90 else 3.67e6, t["guided16k_cont"][0])
     ratio = tb_eff / tg
     v = "GUIDED-FEWER" if ratio >= 2 else ("NO-GAIN" if ratio <= 1.25 else "MIXED")
+    tq = min(t["q1_16k"][0], t["q1_65k"][0])
+    rq = tq / tg
+    vq = "Q-FEWER" if rq <= 0.5 else ("NO-GAIN" if rq >= 0.8 else "MIXED")
+    out[f"qopt_{frac}"] = dict(T_q=tq, T_guided=tg, ratio=rq, verdict=vq)
     out[frac] = dict(arms={k: dict(T=x[0], R_end=x[1], steps=x[2]) for k, x in t.items()}, T_born=tb, T_guided=tg,
                      ratio_lower_bound=ratio, verdict=v)
     print(frac, json.dumps(out[frac]))

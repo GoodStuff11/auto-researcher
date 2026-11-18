@@ -2,3 +2,5 @@
 [22:45:28] setup 0.02 CPU-min
 [22:45:45] S4x3 guided N 16384 tau 0.005 step 1: E -7.807488 (E-E_start -1.962e-03); unique 11446 [0.35 CPU-min, step 0.203]
 [22:45:58] S4x3 guided N 16384 tau 0.005 step 2: E -7.808731 (E-E_start -3.205e-03); unique 11464 [0.55 CPU-min, step 0.204]
+[22:46:10] S4x3 guided N 16384 tau 0.005 step 3: E -7.809936 (E-E_start -4.410e-03); unique 11486 [0.75 CPU-min, step 0.200]
+[22:46:10] DONE: 3 of 3 steps, 0.75 CPU-min in all, 42 s
