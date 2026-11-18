@@ -24,3 +24,4 @@ fitting the same target from the same init recipe for the same number of exact-g
   replaces the 1.66 in the Answer. UNSETTLED (including progress-limited) -> numbers only, capacity clause unchanged; seed 1 (a second gated job, cap 18 CPU-h) only if the
   orchestrator judges the Answer needs it. Every outcome: the leaf stays on exit 3 unless R47 runs.
 * Prediction: LOSS 0.40, INTERMEDIATE 0.25, NO-LOSS 0.15, UNSETTLED 0.20; NOT-PLATEAUED likely (0.6) on at least one arm.
+* Amendment (per-leaf critic, before T2 data), 2026-11-17: INTERMEDIATE → keep the expressivity question open; R47's T1 still runs.

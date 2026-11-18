@@ -2,3 +2,4 @@ r45 pilot task 1: arm nnbf seed 0 on kim-cpu-04.physics.cornell.edu, job 769112
 [22:45:59] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
 {"nfev": 50, "infid": 0.00292041547829347, "eps": 0.004135499668830784, "cpu": 6.0656937056333335}
 {"nfev": 100, "infid": 0.0013608969764012935, "eps": 0.0020607022712188228, "cpu": 11.975088394}
+{"nfev": 150, "infid": 0.000896818630915841, "eps": 0.0014826793818504451, "cpu": 18.242460181000002}
