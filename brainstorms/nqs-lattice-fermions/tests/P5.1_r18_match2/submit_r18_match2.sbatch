@@ -17,13 +17,14 @@
 #   tau 0.005 probe's 1.69) -> 348. Stage A2 worst 2 x (262k + 1M) = 48. Setups ~4. Total <= 457 min = 7.6 h;
 #   x 1.25 -> 09:30:00.
 # Each item runs with --cpu-cap = remaining wall minus 8 min; DONE items are skipped, so resubmitting resumes.
+# Resubmission 2026-11-18: job 775641 finished stage A0 (all 5x2 arms DONE) and was OOM-killed 2 min into stage A at 8G (6x2 exact needs about 11 GB, measured in R51.8). Memory raised to 24G; time cut to 08:30 so the two submissions stay within the audited 9.5 CPU-h.
 #SBATCH --job-name=hpb-nqs-fermions-P5.1-R51.33-001
 #SBATCH --partition=kim
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=8G
-#SBATCH --time=09:30:00
+#SBATCH --mem=24G
+#SBATCH --time=08:30:00
 #SBATCH --signal=B:USR1@300
 #SBATCH --open-mode=append
 #SBATCH --output=/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P5.1_r18_match2/logs/%x_%j.out
