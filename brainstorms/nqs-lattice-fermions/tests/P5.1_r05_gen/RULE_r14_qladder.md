@@ -10,3 +10,10 @@ Written 2026-11-18 by the round-14 worker, before any arm of this rule has run. 
 * POLY-CONSISTENT: the Answer's growth sentence changes: sampling in proportion to the wavefunction's magnitude needed samples growing no faster than the cube of the size over the same step (one seed at 12 sites), so the support-like growth is specific to the flattened sampler. R51.11 becomes the most promising direction; its next test is a second seed at 12 sites.
 * UNRESOLVABLE or INCOMPLETE: no class; resume or redesign under a new gated note.
 **Scope.** One size step (10 → 12 sites, factor 1.2), two-leg ladders, one network family. It cannot say anything beyond small clusters; it says whether the measured growth belongs to the sampler.
+
+**Addendum 1 (orchestrator, 2026-11-18, after submission of job 773500 and before any of its output was read; per-leaf critic round 15, Major 2).** Status: the vol3 hold (`RULE_R51.11_vol3.md`) was released by the orchestrator in round 14 on R51.8's SUPPORT-LIKE step 1, and the ladder was submitted as job 773500 (the "pre-audit draft; nothing submitted" line above is stale). Near-line clauses (L72), added to the verdict:
+* Margin clause: if $|\ln r'_q-\ln3.52|\le0.1$ or $|\ln r'_q-\ln1.728|\le0.1$, the class is PROVISIONAL. It is reported as "provisional <class>", the Answer is not changed, and a second seed at S12' (the bracketing rungs only, capped, separately gated) is owed.
+* Rung clause: R51.8's RULE.md clause also applies. If a bracketing S12' rung's $s$ lies within 0.3 ln-units of 0.10, a second seed at that rung is owed under the same gating.
+* The scorer `score_r16_qladder.py` follows `score_r15_decay.py`'s pre-data interpretations (a)–(c). A censored $N$ is an interval, and an $r'_q$ interval straddling a line gives no class.
+* The seed mean at S10 4,096 averages the reused `storm.py` rung (seed 9000) and the new seed-19000 rung. Each enters as its own seed.
+* sd_w is the maximum of two terms: the sd of the upper rung's three 20-step window means over steps 61–120, detrended as in R51.8's adopted addendum (`score_r07.py` `sd_win_detr`, raw reported alongside), and |seed difference|/√2.

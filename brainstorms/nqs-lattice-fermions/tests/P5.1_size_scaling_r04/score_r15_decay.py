@@ -228,6 +228,11 @@ def main():
                         allowed.add('DECAY-HELPS' if x == y == 'HELPS' else 'DECAY-NO-GAIN' if x == y == 'NO-GAIN'
                                     else 'MIXED')
                 out['censoring_undecided'] = dict(per_size=cl, classes_allowed=sorted(allowed))
+                # Addendum 1 (RULE_r14_decay.md): an undecided size gets no class; the verdict stands only if the
+                # bounds allow a single class, else UNRESOLVABLE (CENSORED-UNDECIDED)
+                out['verdict'] = allowed.pop() if len(allowed) == 1 else 'UNRESOLVABLE'
+                if out['verdict'] == 'UNRESOLVABLE':
+                    out['unresolvable_reason'] = 'CENSORED-UNDECIDED'
         # reported only: size ratios over the 180-step continuation
         rr = {}
         for m in MODES:

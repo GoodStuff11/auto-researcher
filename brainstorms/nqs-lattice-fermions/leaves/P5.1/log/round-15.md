@@ -21,3 +21,14 @@ Nothing submitted; no commits. R51.8 results dirs read only (no writes); job 773
 * Interpretations the rule leaves open (fixed now, before data): (a) censored N is an interval: (0, N_min] if the lowest rung has s ≤ 0.10, (N_max, ∞) if none does, (N_lo, N_up] if the upper bracketing rung has s ≤ 0 (likely for DEC, whose averaged energy can sit below the fixed-step exact window); (b) conditioning only where a bracket exists (as score_r07/r08), and a size fails if either mode fails; (c) a not-DONE arm makes the size INCOMPLETE unless a complete lower rung already has s ≤ 0.10 (then it cannot bracket); (d) if censoring leaves a size's rho straddling 0.5 or 0.8 the verdict is MIXED with `censoring_undecided` listing the classes the bounds still allow; (e) bounce A uses E_score (E(thbar) in DEC).
 * Tests, synthetic run.json files only (scratch outside the repo, deleted): hand-computed interpolation and rho reproduced to 1e-9; DECAY-HELPS, DECAY-NO-GAIN, MIXED (incl. upper-rung s ≤ 0 interval), HELPS from a one-sided bound, censoring-undecided MIXED, UNRESOLVABLE from per-step noise and from the seed term alone (0.05/√2), INCOMPLETE for a missing bracketing arm and a TRUNCATED arm, non-bracketing missing arm ignored, pure ±0.02 G bounce gives A = 0.04 G and BOUNCE-REMOVED. All pass. Not run on real data.
 * voi_r14_decay.md "DRAFT" tag: the title line is digested (6ba5a3fb0bcd → f0cdc5bae32c with the tag removed), so the edit was reverted; digest back to 6ba5a3fb0bcd, file unchanged. The stale tag stays.
+
+## Orchestrator notes (2026-11-18, after the round-15 critic)
+* "Nothing submitted" above was true when the worker wrote it. The orchestrator then submitted job 773528 (R51.7 decay; commit dcc7066); job 773500 (R51.11 ladder) had been submitted earlier, after the orchestrator released the vol3 hold of `RULE_R51.11_vol3.md` on R51.8's SUPPORT-LIKE step 1.
+* Critic round 15 (`round-15-critic.md`) applied:
+  * Major 1: Addendum 1 to `RULE_r14_decay.md`. NO-GAIN and MIXED no longer kill or settle R51.7. A censored size that is undecided gives no class. `score_r15_decay.py` was patched to match.
+  * Major 2: Addendum 1 to `RULE_r14_qladder.md` (margin clause, rung clause, scorer interpretations). The scorer `score_r16_qladder.py` is commissioned.
+  * Major 3 and Minors 10–14: summary.
+  * Major 4 and Minor 7: passed to the round-16 generation worker.
+  * Minor 8: R51.20 card.
+  * Minor 9 is owed: an exact-sum regression check of R51.19's per-component $c_k$ case in `vr_t1`, under 10 CPU-min.
+* Both amendments were made before any output of either job was read.

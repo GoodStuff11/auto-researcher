@@ -13,3 +13,10 @@ Starts: S10 exact; S10 guided 4,096 (seed 9000), 16,384 and 65,536 (seeds 9000, 
 * DECAY-NO-GAIN: R51.7 KILLED at T2 in its premise (10 and 12 sites); only R51.11 remains on that list.
 * UNRESOLVABLE or INCOMPLETE: no class.
 **Scope.** The same two sizes (10, 12 sites), one seed at 12; it says nothing beyond small clusters, only whether the fixed step inflated the measured step.
+
+**Addendum 1 (orchestrator, 2026-11-18, after submission of job 773528 and before any of its output was read; per-leaf critic round 15, Major 1 and Minor 5).** Status: submitted as job 773528 (the "pre-audit draft; nothing submitted" line above is stale). Only the S10 exact arm meets R51.7's trigger (last-20 slope below 2e-4 in $R$); every arm that brackets the 0.10 line is still descending (S10 guided −0.9 to −4.3e-3 and S12' guided −0.8 to −1.5e-3 $G_{\rm ref}$ per step). A descending-phase decay run cannot test R51.7's premise (L33). So what each verdict does is amended, the statistic and classes unchanged:
+* DECAY-HELPS: as above.
+* DECAY-NO-GAIN and MIXED: numbers in What we showed only; R51.7 is neither killed nor settled (it stays SHELVED, its premise untested on bracketing arms).
+* Censoring (scorer interpretation (d)): if censored bounds leave a size's $\rho$ interval straddling 0.5 or 0.8, that size gets no class (CENSORED-UNDECIDED); the job's verdict stands only if every class the bounds still allow gives the same verdict, and is otherwise UNRESOLVABLE (not MIXED).
+* Value after this amendment: only DECAY-HELPS (p about 0.20) changes a decision. The job is kept: about 5.7 CPU-h remain, and the in-premise bounce datum (S10 exact, reported only) comes with it.
+* The scorer `score_r15_decay.py` was saved two minutes after the job started (05:58:51 vs 06:00:45), before any output was read but not before output existed.
