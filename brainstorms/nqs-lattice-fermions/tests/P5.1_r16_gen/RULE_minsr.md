@@ -11,3 +11,6 @@
 **Prediction.** GUIDED-AHEAD 0.8 (Born's $\kappa$ is $1.9\times10^3$ times guided's at this start; linear scaling of the noise ball, $\propto\tau/N$, makes the $N$/$\tau$ split matter little), TIE 0.15, MINSR-AHEAD 0.05.
 
 **Cost.** about 0.5 CPU-s per step, 800 steps ≈ 6–8 CPU-min, interactive, `ulimit -t 600`.
+
+**Addendum (2026-11-18, round 17, before the τ 0.0025 arm ran).** The Prediction's "noise ball ∝ τ/N, so the N/τ split matters little" is withdrawn: the round-16 critic's arms (same start, Born, N=1024, seeds 9000+n, 800 steps; `results/critic_tau/`) give trailing-20 R 0.046 at τ 0.0003125 and 0.081 at τ 0.000625, against 0.124 at 0.00125, so τ/N scaling fails at N<P.
+One further arm, τ 0.0025 (same start, Born, N=1024, 800 steps, seeds 9000+n), same statistic and verdict lines; the card reports the best of all step lengths tried (0.005 diverged in R51.8). Prediction: R between 0.08 and 0.20, GUIDED-AHEAD 0.9.
