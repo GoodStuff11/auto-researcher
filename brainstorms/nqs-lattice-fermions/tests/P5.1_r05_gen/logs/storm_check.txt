@@ -1,0 +1,2 @@
+[22:37:12] 5x2 N_e 8: sector 44100, 11100 representatives, P 1832, Hr nnz 255770
+[22:37:16] done: R_plat -0.0085, 0.07 CPU-min

@@ -230,9 +230,11 @@ def verdict(a):
         S[(st["arm"], st["seed"])] = dict(done=st["done"], T=T, full=full, half=half, late_drop=late)
     out = dict(arms={f"{k[0]}_s{k[1]}": v for k, v in S.items()})
 
-    def cls(k):
-        return "NO-LOSS" if k <= NO_LOSS else ("LOSS" if k >= LOSS else "INTERMEDIATE")
     seeds = sorted({s for (_, s) in S if ("che", s) in S and ("nnbf", s) in S})
+    lo, hi = (NO_LOSS, LOSS) if len(seeds) > 1 else (1.0, 1.65)  # RULE_T2: single-seed margins
+
+    def cls(k):
+        return "NO-LOSS" if k <= lo else ("LOSS" if k >= hi else "INTERMEDIATE")
     for when in ("full", "half"):
         ks = [S[("che", s)][when]["infid"] / S[("nnbf", s)][when]["infid"] for s in seeds]
         ke = [(S[("che", s)][when]["eps"]) / (S[("nnbf", s)][when]["eps"]) for s in seeds]

@@ -1,0 +1,15 @@
+[22:39:52] 5x2 N_e 8: sector 44100, 11100 representatives, P 1832, Hr nnz 255770
+/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P5.1_r05_gen/storm.py:80: RuntimeWarning: invalid value encountered in divide
+  wp = wp / wp.sum()
+/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r24/trsr.py:82: RuntimeWarning: invalid value encountered in divide
+  out[c0:c0 + CH] = acc / pr[qq][:, None]
+/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P5.1_r05_gen/storm.py:32: RuntimeWarning: invalid value encountered in divide
+  el = (ctx.Hr @ pr)[uq] / pr[uq]
+Traceback (most recent call last):
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P5.1_r05_gen/storm.py", line 106, in <module>
+    main()
+  File "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P5.1_r05_gen/storm.py", line 66, in main
+    rg = np.random.default_rng(a.seed0 + n).choice(len(q), size=a.nsamp, p=q)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "numpy/random/_generator.pyx", line 890, in numpy.random._generator.Generator.choice
+ValueError: Probabilities contain NaN

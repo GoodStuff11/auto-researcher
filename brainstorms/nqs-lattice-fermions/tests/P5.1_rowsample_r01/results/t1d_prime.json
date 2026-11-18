@@ -1,0 +1,55 @@
+{
+ "rule": "RULE_T1d.md (T1d prime: same-machine rerun, R51.3 card)",
+ "host": "kim-compute-03.physics.cornell.edu",
+ "eps_start": 0.0006111149201177902,
+ "eps_L": 0.0005847938512382185,
+ "gamma_L": 3.22545422725094e-06,
+ "steps": [
+  {
+   "k": 11,
+   "accepted": true,
+   "cut": 1e-07,
+   "tau": 0.001,
+   "eps_new": 0.000605520451155648,
+   "cpu_min": 0.46820148558333335
+  },
+  {
+   "k": 12,
+   "accepted": true,
+   "cut": 1e-06,
+   "tau": 0.002,
+   "eps_new": 0.0005984893298844646,
+   "cpu_min": 0.4895426317166667
+  },
+  {
+   "k": 13,
+   "accepted": true,
+   "cut": 1e-07,
+   "tau": 0.001,
+   "eps_new": 0.0005920171346693699,
+   "cpu_min": 0.48375321685000006
+  },
+  {
+   "k": 14,
+   "accepted": true,
+   "cut": 1e-07,
+   "tau": 0.001,
+   "eps_new": 0.0005867372740225342,
+   "cpu_min": 0.4714419875999998
+  },
+  {
+   "k": 15,
+   "accepted": true,
+   "cut": 1e-06,
+   "tau": 0.002,
+   "eps_new": 0.0005804172140763741,
+   "cpu_min": 0.46947866125000015
+  }
+ ],
+ "reached": true,
+ "gamma_R": 1.1376186430275537e-05,
+ "gamma_R_fullscore": 7.175013325811389e-06,
+ "rho": 3.52700290525328,
+ "rho_fullscore": 2.2244970228353433,
+ "verdict": "PASS"
+}
