@@ -117,3 +117,7 @@
 [00:38:27] S6x2 guided N 16384 tau 0.005 step 115: E -7.611407 (E-E_start -5.516e-03); unique 6018 [30.71 CPU-min, step 0.242]
 [00:38:41] S6x2 guided N 16384 tau 0.005 step 116: E -7.611434 (E-E_start -5.543e-03); unique 6049 [30.96 CPU-min, step 0.247]
 [00:38:56] S6x2 guided N 16384 tau 0.005 step 117: E -7.611429 (E-E_start -5.538e-03); unique 6093 [31.20 CPU-min, step 0.246]
+[00:39:11] S6x2 guided N 16384 tau 0.005 step 118: E -7.611427 (E-E_start -5.535e-03); unique 6021 [31.45 CPU-min, step 0.243]
+[00:39:26] S6x2 guided N 16384 tau 0.005 step 119: E -7.611459 (E-E_start -5.567e-03); unique 6066 [31.69 CPU-min, step 0.243]
+[00:39:40] S6x2 guided N 16384 tau 0.005 step 120: E -7.611447 (E-E_start -5.556e-03); unique 5996 [31.93 CPU-min, step 0.244]
+[00:39:40] DONE: 120 of 120 steps, 31.93 CPU-min in all, 1920 s
