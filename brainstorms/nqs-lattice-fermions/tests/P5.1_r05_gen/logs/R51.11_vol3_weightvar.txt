@@ -1,0 +1,29 @@
+RESULT S5x2 {"D": 44052.0, "expH": 3052.738595354896, "Ew2_q1": 2.2438652625650986, "Ew2_guided": 1.0480974234171696, "Ew2_q1_kqconv": 2.1952083784362784, "V": 10, "dim": 44100, "start": "starts/S5x2_N8_U8_tp-0.25_pg11_che_seed0_theta.npy", "cpu_s": 0.6435624390000001}
+CHECK S5x2: Ew2_q1 2.244 vs round-7 2.244
+RESULT S6x2 {"D": 627264.0, "expH": 10999.38889240317, "Ew2_q1": 3.212067678537683, "Ew2_guided": 1.069837030705573, "Ew2_q1_kqconv": 3.2120676785376827, "V": 12, "dim": 627264, "start": "starts/S6x2_N10_U8_tp-0.25_pg11_che_seed0_theta.npy", "cpu_s": 2.9310120310000003}
+CHECK S6x2: Ew2_q1 3.212 vs round-7 3.212
+RESULT S7x2 {"D": 9017409.0, "expH": 68944.90678530963, "Ew2_q1": 4.448370065820462, "Ew2_guided": 1.0802814842294608, "Ew2_q1_kqconv": 4.387180782831759, "V": 14, "dim": 9018009, "start": "starts/S7x2_N12_U8_tp-0.25_pg11_che_seed0_theta.npy", "cpu_s": 50.864666128}
+FIT {"slope_lnEw2": 0.17108445232522948, "factor": 1.1865909551555909, "slope_lnexpH": 0.7793171613532608, "factor_expH": 2.179983180388819, "slope_12_14": 0.16281144267371156, "loglog_exp_12_14": 2.112367494663773, "E14": 4.448370065820462, "verdict": "FAIL", "shape": "SHAPE-UNRESOLVED"}
+	Command being timed: "/home/jek354/.conda/envs/lit_env/bin/python t0_weightvar_vol3_R51.11.py"
+	User time (seconds): 53.72
+	System time (seconds): 3.11
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:57.31
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 5823952
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 1622629
+	Voluntary context switches: 5786
+	Involuntary context switches: 21454
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 8
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
