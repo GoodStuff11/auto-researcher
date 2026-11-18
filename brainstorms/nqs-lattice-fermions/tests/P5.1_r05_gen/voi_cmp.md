@@ -1,0 +1,16 @@
+# VOI note: P5.1 R51.16 `cmp` (`submit_cmp.sbatch`; rule RULE_cmp.md)
+
+* leaf: P5.1
+* route: R51.16
+* tier: T2
+* decision: the leaf question's comparator ("fewer total samples than SR or MinSR"), which no arm has measured (per-leaf critic, round 5: every arm so far is SR with guided draws; MinSR = SR at N >= P). GUIDED-FEWER meets the comparator leg of "What would close it" at 12 sites; NO-GAIN removes guided fixed-step SR as an answer and moves the leaf to sampler design (R51.11) / variance reduction; MIXED defers to R51.8's 5x2 born/guided arms.
+* prediction: GUIDED-FEWER. Basis: R38's one-step screen (guided at N matched plain SR at 4N: Rbar 0.086 vs 0.095), and exact kappa_born / kappa_guided = 1.2e4 at this start (R51.10), so Born arms at 16k-65k should stall well below R* within 13.5M; against it, kappa is tail-dominated (Born's top 0.1% of configurations carry most of it) and Born steps at 262k gain about 70% of the exact step (R51.10 Sharpest Gap), and a larger Born step (tau 0.01) may compensate.
+  * Probabilities: GUIDED-FEWER 0.6, MIXED 0.25, NO-GAIN 0.15.
+* p: 0.6
+* prediction-changes-decision: yes. NO-GAIN or MIXED (0.4 together) change what the leaf builds next; GUIDED-FEWER is the evidence the Question needs and nothing cheaper supplies it (the 5x2 born arms of R51.8 are at a different size and use only tau 0.005 and 120 steps, so they do not test the small-N many-step regime).
+* cheapest-kill-tried: (i) T0 from stored data: no Born arm with a fixed step exists at 4x3 (R21 used held-out step selection, R38's critic note: held-out selection was not the cause of its plateau, so R21 is not a valid fixed-step foil). (ii) One-step proxies were rejected for multi-step needs (R51.9: off 2-4x both ways). (iii) kappa alone cannot decide (tail-dominated, see prediction). (iv) Reduced design: the 1024/4096 rungs are omitted (at 4x3 guided A at 16k already needs > 120 steps; smaller N cannot reach R* within the budget's step count at tau 0.005 without many hundreds more steps), and only one larger step length is tried.
+* cost-cpuh: 10.7 (2 tasks x 5.33 h x 1 CPU; expected use 7.3)
+* cheapest-version: one seed; 4x3 only; four Born arms covering N = 16k (MinSR-like many steps), 65k (two step lengths), 262k; the guided small-N arm is a continuation of R51.1's A, not a fresh run; budgets stop each arm at 13.5M draws (the GUIDED-FEWER threshold), so no arm runs past what can change the verdict.
+* convergence: same step code as R51.1/R51.8 (ns_run.py), resumable each step; the statistic is first passage to R*, censored at budget, which needs no plateau.
+* wall-time-basis: interactive pre-flight born 16k 0.135 CPU-min/step (logs/preflight_born16k.txt), R51.8 pre-flight born 262k 0.28; x 1.8 in-job factor x 1.3 margin (see sbatch header).
+* power: R at fixed N varies by 0.015 run to run at 16k (R38 replicas), less at larger N; near R* the guided arms climb about 0.001-0.002 per step, so a 0.015 shift moves first passage by up to ~10 steps (about 0.65M draws at 65k, under 10% of 6.75M); the verdict thresholds (2x and 1.25x) are far wider. A born arm near the 2x line (13.5M) gets a second seed only if within 10% of it.

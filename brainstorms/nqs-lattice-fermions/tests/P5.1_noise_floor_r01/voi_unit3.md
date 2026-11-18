@@ -13,3 +13,8 @@
 * convergence: the seed-9000 arms ran their full step counts in unit 2 within these caps (A 43, C 95.5, D 97.9 CPU-min).
 * wall-time-basis: in-job rates of job 761860 (kim partition): C 95.5 CPU-min for 120 steps, D 97.9 for 240, A 43.3 for 120 (job 759974); longest 98 x 1.3 = 127 min -> --time 02:15:00, --cpu-cap 130.
 * power: P(any verdict change) about 0.05 from the spreads above; the margins are 0.9-1.8 replica spreads, which is why the clause fires, but the predicted outcome is not in doubt at the skip threshold.
+
+## Correction (per-leaf critic, 2026-11-17; the refusal stands)
+* The p 0.93 above is overstated. (ii) used the observed d = +0.018 as the true value; the predictive sd of the second seed's d is sqrt(2) x 0.019 = 0.027, which gives P(STEP-NOISE flip) about 0.09, not 0.03. (i) used C's within-run step-to-step spread (0.0012) as a stand-in for the between-seed spread, which accumulates along the run, so P(C flip) is larger than 0.01.
+* corrected p: about 0.88-0.90 (verdict unchanged), still >= 0.8, so the G2 refusal of unit 3 is procedurally valid.
+* Recorded on R51.1's card: the pre-registered release order of RULE_B (second seeds of A, C, D) was overridden by the compute gate, not run.

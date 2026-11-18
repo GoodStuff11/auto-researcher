@@ -396,9 +396,8 @@ One row per KILLED or SHELVED route, grouped by leaf. **Code** is where the rout
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | R51.2 | P5.1 | randomised Nystrom / sketched low-rank metric for exact-sum polishing (`sketch`) | T1 | Jacobian rows alone cost 1.14 CPU-min against the 0.33 needed; needed rank over 1200 of 2637 saves nothing on the Gram | [[leaves/P5.1/cards/R51.2]] | proposed entry (metric cost is the Jacobian) |
 | R51.4 | P5.1 | semistochastic metric: exact top-weight rows plus sampled tail (`semistoch`) | G4 | top-weight share vanishes exponentially with volume; finite-size bonus | [[leaves/P5.1/cards/R51.4]] | route-specific |
-| R51.5 | P5.1 | median of per-block SR steps (`mom`) | T0 | blocks at 2 or fewer samples per parameter give noise-only steps; median of noise is noise | [[leaves/P5.1/cards/R51.5]] | route-specific |
-| R51.6 | P5.1 | stochastic-trust-region acceptance of held-out steps (`storm`) | T1 | held-out error (4.6e-4) exceeds one step's gain (2.3e-4): the 2-sigma test never fires | [[leaves/P5.1/cards/R51.6]] | proposed entry (selection makes the floor) |
-| R51.7 | P5.1 | Robbins-Monro step decay with Polyak-Ruppert averaging (`rmavg`) | T2 | halving the step removed 14% of the shortfall (needed 25%); noise slows the path rather than forming a ball | [[leaves/P5.1/cards/R51.7]] | route-specific |
+| R51.6 | P5.1 | stochastic-trust-region acceptance of held-out steps (`storm`) | T1 | held-out error (4.6e-4) exceeds one step's gain (2.3e-4): the 2-sigma test never fires | [[leaves/P5.1/cards/R51.6]] | route-specific (proposed entry "selection makes the floor" withdrawn by the per-leaf critic, 2026-11-17) |
+| R51.7 | P5.1 | Robbins-Monro step decay with Polyak-Ruppert averaging (`rmavg`) | SHELVED | its T2 kill (halving the step removed 14% of the shortfall, 25% needed) tested it while every run was still descending, outside its premise; unshelve when a fixed-step run levels off (last-20 slope below 2e-4) | [[leaves/P5.1/cards/R51.7]] | — |
 | R51.9 | P5.1 | one-step direction-fidelity proxy for the size scaling of the sample need (`phiscale`) | T0 | one-step quantities miss the multi-step need by 2-4x in both directions at the one size calibrated | [[leaves/P5.1/cards/R51.9]] | proposed entry (one-step rates overstate sustained rates) |
 
 ---

@@ -1,0 +1,31 @@
+# P5.1 round 5: per-leaf critic review of rounds 1–4, and the edits applied
+
+Critic: per-leaf critic, 2026-11-17 (report `critics/p51.md` in the orchestrator's job tmp). Verdict: NOT SIGNED (Majors 1–4 open). `compute_gate.py reconcile`: 0 unledgered jobs; every cited job id is in `compute/ledger.tsv`; RULE_A, RULE.md, RULE_B, RULE_T1c and RULE_T1d were written before their data. Edits below applied by the orchestrator's editor with the orchestrator's decisions; no jobs, no commits. State stays OPEN; a per-leaf critic re-check is owed for Majors 1–4.
+
+## Major objections and what was done
+
+1. **Step-selection-stall claim contradicted by the leaf's own data.** RULE_A's pre-registered verdict A1 was MIXED (0.00202 against a 0.002 bound), not SELECTION-FLOOR. At equal step counts, N = 16,384 and guided draws, R38 (job 752885, 3 replicas) was ahead of fixed-step arm A at every point: R(20) 0.40–0.43 vs 0.364, R(40) 0.44–0.50 vs 0.444, R(60) 0.508–0.536 vs 0.494. R38 realised 0.0020 of the gap per step over steps 41–60, as A did (0.0020–0.0025) at similar R. The 0.0078 "shortest length" rate is a one-step counterfactual, which R51.9's kill says overstates sustained rates 3–4×. R38 was stopped at 60 steps, not stalled.
+   *Done*: claim deleted from What we showed, the argument, problem.md B3 (and B2's "plateau"), R51.1's T1a line (and its idea line); replaced by "fixed-step and held-out-step SR progress at the same rate at equal samples through 60 steps; the fixed step simply keeps going." R51.6's proposed lesson ("selection makes the floor") withdrawn on the card and in `kill_index.md`; the R51.6 kill stands. R51.6's lineage notes the withdrawn reading.
+2. **No comparison with SR or MinSR at equal total samples.** Every R51.1 arm is SR; MinSR equals SR at N ≥ P and every run had N ≥ P; the optimiser is standard practice (fixed-step SR as in NetKet and the MinSR papers, overdispersed sampling arXiv:2507.05352); the only cross-protocol point (R(15) 0.364 vs 0.195) is a short fixed-horizon ratio (L33).
+   *Done*: Answer sentence 2 replaced by the critic's text ("Not known." opening kept). Standard-practice line added to problem.md's novelty audit, stating that the SR/MinSR comparison rests on R51.8's Born arms including N < P. The summary's argument and objections say so.
+3. **R51.5 kill premise superseded.** The T0 kill used L59's one-step Born held-out probe, P4.1 R15 (0.1 samples/parameter) and L55 (a different method); R51.1 arm A descended steadily at 6.2 samples/parameter (18 rises in 120 steps); smaller N won at every equal-sample budget (0.98M: 0.494 > 0.426 > 0.290); near-node forces are infinite-variance (Trail, PRE 77, 016703, 2008).
+   *Done*: R51.5 back to LIVE with the objection; new two-part kill rule written on the card, marked pre-registered 2026-11-17, before any data: premise = fixed-step guided arm at N/4 = 4096 (KILLED if R at 0.98M draws is below 0.247 or more than a third of its steps raise the energy); decisive = K = 4 median-of-means vs arm A at equal samples (PASS if Delta at most 0.128, KILLED if at least 0.171). Row removed from `kill_index.md`.
+4. **R51.7 killed outside its premise.** Decay with averaging targets the levelled-off noise ball; no arm levelled off (tail slopes 0.0005–0.0012); L33; D cost 2× A; a step-proportional ball implies about 28% of A's shortfall; D matched the 4× arm at equal samples.
+   *Done*: SHELVED, unshelve trigger "a fixed-step run with last-20 slope < 2e-4"; the critic's objection is the card's Strongest case; `kill_index.md` row changed to SHELVED.
+
+## Minor objections
+
+5. Unit-3 G2 refusal: p 0.93 overstated; corrected $p\approx0.88$–0.90 (STEP-NOISE flip $\approx0.09$ from predictive sd $\sqrt{2}\times0.019=0.027$; C's within-run spread is not a between-seed spread). Refusal stands. *Done*: correction appended to `tests/P5.1_noise_floor_r01/voi_unit3.md`; R51.1 notes the corrected p and that the pre-registered release order (second seeds) was overridden by the gate.
+6. R51.3 T1d MARGINAL likely a timing artefact (T1c interactive 0.44 CPU-min/step vs 0.71–0.76 on kim-cpu-02; $\rho\approx3.7$ at the interactive rate). *Done*: confound stated wherever "short of 3×" appeared (card, Conclusion, portfolio); R51.3 moved out of What we showed as off-question (exact-sum cost); T1d′ (same machine, about 2.5 CPU-min) pre-registered on the card as its next step.
+7. R51.1 shortfalls measured against R_pol, a different optimiser; two-point ball fit puts the deterministic part at 0.033, above 0.0155; R_pol is an energy upper bound, so in R a lower bound on R*. *Done*: R51.1 Sharpest Gap, problem.md Formulation, Conclusion.
+8. "Fewer samples per step always did better" holds only within 120 steps. *Done*: "but only the larger batches reached 90% of the polished value" (A never; B at 6.75M) in What we showed and R51.1.
+9. Stale Status Summary. *Done*: Updated and Next step refreshed (jobs 763902/763903/763968 running, not to be resubmitted). Ledger row 15 (job 759974) labels the route "R1", not R51.1; noted here, `compute/ledger.tsv` not edited.
+10. Missing translation repairs. *Done*: R51.5 (LIVE) records its round-1 repair candidate (force-only median) as dismissed at T0 (S–f cancellation, L59); R51.7 records its repair (decay triggered by a levelled-off detector) as dismissed at T0 because it is the unshelve test; R51.4's card says its repair is R51.3.
+11. "No variance reduction removes it" was unfalsifiable. *Done*: What would close it names a finite set: guided draws (tested), median-of-means blocks (R51.5), step decay with averaging (R51.7), zero-variance control variates on the force (Assaraf & Caffarel, PRL 83, 4682, 1999).
+12. Jargon. *Done*: "polishing", "parameter metric", "standard training" removed from the four lead fields (exact optimisation / exact-sum noise-free run / plain SR and MinSR).
+
+## Checked by lines set
+R51.1 (verdict upheld; objections 1, 5), R51.2 upheld, R51.3 (objection 6), R51.4 upheld, R51.5 (objection 3), R51.6 (kill upheld; Lesson objection 1), R51.7 (objection 4), R51.9 upheld. The critic proposed none for R51.8 or R51.10.
+
+## Note for the orchestrator
+During this edit `log/round-06-scoring.md` appeared (another worker scored jobs 763968 and 763902). Per instruction, the summary still lists those jobs as running and does not include those results.

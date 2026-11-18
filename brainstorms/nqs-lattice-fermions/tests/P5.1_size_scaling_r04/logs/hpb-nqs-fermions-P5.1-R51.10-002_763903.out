@@ -11,3 +11,20 @@ P5.1 T1 S14 start + kappa on kim-cpu-04.physics.cornell.edu, job 763903
 [21:21:43] it 350 E -8.525126 std 0.446 acc 0.241 |upd| 1.38e-01 t(mcmc/eloc/grad/sr) 0.19/1.30/0.36/0.29s elapsed 0.21 h
 [21:23:30] it 400 E -8.520674 std 0.541 acc 0.238 |upd| 1.24e-01 t(mcmc/eloc/grad/sr) 0.20/1.30/0.34/0.28s elapsed 0.24 h
 [21:25:19] it 450 E -8.534660 std 0.440 acc 0.247 |upd| 1.23e-01 t(mcmc/eloc/grad/sr) 0.20/1.32/0.37/0.29s elapsed 0.27 h
+[21:27:08] it 500 E -8.548736 std 0.457 acc 0.241 |upd| 1.18e-01 t(mcmc/eloc/grad/sr) 0.19/1.32/0.37/0.28s elapsed 0.30 h
+[21:28:58] it 550 E -8.549502 std 0.297 acc 0.250 |upd| 9.44e-02 t(mcmc/eloc/grad/sr) 0.20/1.36/0.39/0.30s elapsed 0.33 h
+[21:30:53] it 600 E -8.518657 std 0.445 acc 0.245 |upd| 1.09e-01 t(mcmc/eloc/grad/sr) 0.21/1.38/0.40/0.29s elapsed 0.36 h
+[21:32:47] it 650 E -8.549323 std 0.417 acc 0.255 |upd| 8.83e-02 t(mcmc/eloc/grad/sr) 0.22/1.38/0.42/0.29s elapsed 0.39 h
+[21:34:41] it 700 E -8.543385 std 0.344 acc 0.247 |upd| 6.90e-02 t(mcmc/eloc/grad/sr) 0.20/1.37/0.39/0.30s elapsed 0.43 h
+[21:36:34] it 750 E -8.533458 std 0.276 acc 0.258 |upd| 5.21e-02 t(mcmc/eloc/grad/sr) 0.20/1.39/0.44/0.30s elapsed 0.46 h
+[21:38:27] it 800 E -8.528095 std 0.249 acc 0.234 |upd| 3.61e-02 t(mcmc/eloc/grad/sr) 0.21/1.39/0.41/0.30s elapsed 0.49 h
+[21:40:20] it 850 E -8.528827 std 0.532 acc 0.245 |upd| 2.85e-02 t(mcmc/eloc/grad/sr) 0.21/1.33/0.42/0.29s elapsed 0.52 h
+[21:42:11] it 900 E -8.575105 std 0.381 acc 0.242 |upd| 1.85e-02 t(mcmc/eloc/grad/sr) 0.20/1.34/0.36/0.30s elapsed 0.55 h
+[21:44:02] it 950 E -8.534827 std 0.458 acc 0.243 |upd| 1.20e-02 t(mcmc/eloc/grad/sr) 0.20/1.33/0.41/0.29s elapsed 0.58 h
+[21:45:52] it 1000 E -8.542333 std 0.353 acc 0.225 |upd| 9.42e-03 t(mcmc/eloc/grad/sr) 0.20/1.34/0.36/0.29s elapsed 0.61 h
+[21:48:05] final E (average of last 250 steps) -8.546149 +- 0.001998 (65536 samples, 132 s)
+[21:48:05] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P5.1_size_scaling_r04/starts/S7x2_N12_U8_tp-0.25_pg11_che_seed0.json
+[21:48:26] 7x2 N_e 12: sector 9018009, 2255421 representatives, P 3590, Hr nnz 75929447
+[21:48:26] setup 0.30 CPU-min
+[21:50:24] {"Lx": 7, "Ly": 2, "Ne": 12, "dim": 9018009, "reps": 2255421, "P": 3590, "E_start": -8.54770119821297, "E0_pg": NaN, "eps_start": NaN, "expH": 17370.451692743914, "uniq_guided_born": {"16384": [10273, 8714], "65536": [29399, 22918], "262144": [76790, 53128], "1048576": [183592, 109799]}, "cpu_min_energy": 1.8707730230333333, "cpu_min_per_row": 1.3637345332845048e-05, "cpu_min_exact_rows": 30.75795504795071}
+[21:50:48] 7x2 N_e 12: sector 9018009, 2255421 representatives, P 3590, Hr nnz 75929447

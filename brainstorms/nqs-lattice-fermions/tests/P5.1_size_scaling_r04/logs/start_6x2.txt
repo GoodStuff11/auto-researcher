@@ -15,3 +15,12 @@
 [21:23:12] it 600 E -7.616592 std 0.238 acc 0.233 |upd| 5.92e-02 t(mcmc/eloc/grad/sr) 0.14/0.80/0.26/0.22s elapsed 0.24 h
 [21:24:23] it 650 E -7.587230 std 0.472 acc 0.261 |upd| 6.61e-02 t(mcmc/eloc/grad/sr) 0.14/0.81/0.27/0.22s elapsed 0.26 h
 [21:25:36] it 700 E -7.599927 std 0.248 acc 0.255 |upd| 4.22e-02 t(mcmc/eloc/grad/sr) 0.13/0.81/0.27/0.22s elapsed 0.28 h
+[21:26:48] it 750 E -7.608896 std 0.206 acc 0.236 |upd| 3.48e-02 t(mcmc/eloc/grad/sr) 0.13/0.81/0.27/0.22s elapsed 0.30 h
+[21:28:00] it 800 E -7.597549 std 0.247 acc 0.241 |upd| 2.72e-02 t(mcmc/eloc/grad/sr) 0.13/0.82/0.27/0.23s elapsed 0.32 h
+[21:29:15] it 850 E -7.611797 std 0.353 acc 0.251 |upd| 1.88e-02 t(mcmc/eloc/grad/sr) 0.14/0.84/0.32/0.22s elapsed 0.34 h
+[21:30:31] it 900 E -7.606794 std 0.341 acc 0.253 |upd| 9.22e-03 t(mcmc/eloc/grad/sr) 0.15/0.85/0.28/0.23s elapsed 0.36 h
+[21:31:46] it 950 E -7.603004 std 0.283 acc 0.240 |upd| 7.34e-03 t(mcmc/eloc/grad/sr) 0.14/0.84/0.29/0.23s elapsed 0.38 h
+[21:33:01] it 1000 E -7.607644 std 0.219 acc 0.246 |upd| 6.64e-03 t(mcmc/eloc/grad/sr) 0.15/0.83/0.28/0.23s elapsed 0.40 h
+[21:33:18] final E (average of last 250 steps) -7.605891 +- 0.000000 (627264 samples, 17 s)
+[21:33:35] last-step parameters: exact E -7.605943 (reported only)
+[21:33:35] wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P5.1_size_scaling_r04/starts/S6x2_N10_U8_tp-0.25_pg11_che_seed0.json

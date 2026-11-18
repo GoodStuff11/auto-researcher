@@ -1,0 +1,42 @@
+{
+ "Lx": 4,
+ "Ly": 3,
+ "Ne": 10,
+ "nsamp": 16384,
+ "exact": false,
+ "sampler": "born",
+ "tau": 0.005,
+ "seed0": 9000,
+ "start": "/home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_scaling/logs/pilot/pg_che/S4x3_N10_U8_tp-0.25_pg11_che_seed0_theta.npy",
+ "E_start": -7.805526273788163,
+ "steps": [
+  {
+   "E": -7.805807498169947,
+   "dE": 0.00028122438178357356,
+   "E_minus_start": -0.00028122438178357356,
+   "n_unique": 4863,
+   "dth": 0.06792017926178663,
+   "cpu_step": 0.13586051629999998
+  },
+  {
+   "E": -7.8062559814511285,
+   "dE": 0.0004484832811817441,
+   "E_minus_start": -0.0007297076629653176,
+   "n_unique": 4761,
+   "dth": 0.06428581186808381,
+   "cpu_step": 0.13858183860000006
+  },
+  {
+   "E": -7.806464154272391,
+   "dE": 0.00020817282126284198,
+   "E_minus_start": -0.0009378804842281596,
+   "n_unique": 4798,
+   "dth": 0.05987982669360191,
+   "cpu_step": 0.13128539861666666
+  }
+ ],
+ "status": "DONE",
+ "steps_target": 3,
+ "cpu_min": 0.5627450434333333,
+ "wall": 30.14845085144043
+}
