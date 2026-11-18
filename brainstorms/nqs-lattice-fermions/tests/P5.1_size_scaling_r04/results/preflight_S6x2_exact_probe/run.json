@@ -1,0 +1,26 @@
+{
+ "Lx": 6,
+ "Ly": 2,
+ "Ne": 10,
+ "nsamp": null,
+ "exact": true,
+ "sampler": "guided",
+ "tau": 0.005,
+ "seed0": 9000,
+ "start": "starts/probe/S6x2_N10_U8_tp-0.25_pg11_che_seed0_theta.npy",
+ "E_start": -7.35142219705808,
+ "steps": [
+  {
+   "E": -7.355449203908234,
+   "dE": 0.004027006850154002,
+   "E_minus_start": -0.004027006850154002,
+   "n_unique": 156816,
+   "dth": 0.07340073180924502,
+   "cpu_step": 1.6877644003166665
+  }
+ ],
+ "status": "RUNNING",
+ "steps_target": 2,
+ "cpu_min": 1.8305032585666665,
+ "wall": 106.7196397781372
+}

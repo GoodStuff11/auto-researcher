@@ -18,3 +18,19 @@ r over the predicted growth kappa(12)/kappa(10)).
 * VOID if either N_needed is censored (no calibration possible).
 Reported only: kappa_born (its value is dominated by rare near-node configurations: 1.2e4 times kappa_guided at
 12 sites, the heavy-tail barrier B2 in one number), d_eff, exp(H[p]).
+
+## REVISION 1 (2026-11-17, compute auditor; before kappa ran at S12' or S14 and before any R51.8 arm ran)
+Why: as written above, m = r / 1.15 is a function of R51.8's own ratio r, so R51.10 was not an independent check of
+R51.8, only a restatement of it against a fixed number. The test above is withdrawn as a verdict and kept only as a
+reported comparison.
+
+Recast test (same-geometry 2-leg series, exact kappa_guided at each trained start; `submit_quick_s12p.sbatch`,
+`submit_kappa_s14.sbatch`, chunked two-pass `kappa.py`): k1 = kappa(S12') / kappa(S10), k2 = kappa(S14) / kappa(S10),
+against g3 = 1.728, 2.744 and the measured support growths gH1, gH2 (exp(H[p]) at the same starts).
+* KAPPA-POLY if k1 <= 1.728 and k2 <= 2.744: the exact one-state noise-to-signal ratio grows no faster than V^3.
+* KAPPA-SUPPORT if k1 >= gH1 and k2 >= gH2.
+* KAPPA-AMBIGUOUS otherwise.
+* Geometry flag (feeds RULE.md's geometry check): kappa(S12', 6x2) / kappa(S12, 4x3) outside [1/1.5, 1.5].
+Use: a prediction for R51.8's ladders, recorded before they run. Afterwards, per size step, the kappa class is
+compared with R51.8's measured class: a disagreement at a step where R51.8 is not AMBIGUOUS KILLS R51.10 as a
+predictor; agreement at both steps PASSES it for use at 24 sites (sampled kappa). Reported: kappa_born, d_eff, exp(H).

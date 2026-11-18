@@ -26,13 +26,18 @@ Options
   --res DIR          results dir (default results/S<Lx>x<Ly>_N<Ne>_<sampler_N<nsamp>|exact>_tau<tau>_s<seed0>).
   --info             print sector size, orbit representatives, P, lowest (+,+) energy, E(start), the effective
                      support exp(H[p]) of |psi|^2 over representatives, unique-draw counts and timings; then exit.
-Output: <res>/run.json (per step E, E - E_start, n_unique, CPU) and <res>/theta.npy.  Resumes from run.json.
+Output: <res>/run.json (per step E, E - E_start, n_unique, CPU; status DONE | TRUNCATED | RUNNING) and
+<res>/theta.npy.  Theta and history are also saved together, atomically, in <res>/state.npz after every step;
+rerunning the same command resumes from it (same seeds: step n always draws with seed0 + n).  The run stops
+cleanly, saving, before a step that would exceed --cpu-cap, or after the current step on SIGUSR1 / SIGTERM
+(sbatch scripts use `#SBATCH --signal=B:USR1@600` and run python in the foreground via `exec` or a trap).
 Reuses read only: ../P4.1_cheap_su2_scaling/vmc.py (Model, exact_sector), ../P4.1_cheap_su2_r10/tangent.py
 (pg_maps), ../P4.1_cheap_su2_r19/polish.py (logder), ../P4.1_cheap_su2_r24/trsr.py (orows, d_shift).
 """
 import argparse
 import json
 import os
+import signal
 import sys
 import time
 
@@ -179,7 +184,7 @@ def info(a, ctx):
     c0 = cpu_min()
     T.orows(ctx, ctx.th0, phi0, pr, np.arange(nr))
     t_row = (cpu_min() - c0) / nr
-    E0 = ctx.e0()
+    E0 = ctx.e0() if len(p) <= 400_000 else float('nan')  # eigsh skipped above 4e5 representatives
     out = dict(Lx=a.Lx, Ly=a.Ly, Ne=a.Ne, dim=int(ctx.sec.dim), reps=int(len(p)), P=int(ctx.m.nparam), E_start=E,
                E0_pg=E0, eps_start=(E - E0) / abs(E0), expH=float(np.exp(H)), uniq_guided_born=uniq,
                cpu_min_energy=t_e, cpu_min_per_row=t_row, cpu_min_exact_rows=t_row * len(p))
@@ -200,17 +205,42 @@ def main():
     t0 = time.time()
     E00, pr, phi0 = ctx.energy(ctx.th0)
     th = ctx.th0.clone()
-    fn, fth = os.path.join(a.res, "run.json"), os.path.join(a.res, "theta.npy")
-    hist = []
-    if os.path.exists(fn):
-        hist = json.load(open(fn))["steps"]
-        th = torch.tensor(np.load(fth))
+    fn, fst = os.path.join(a.res, "run.json"), os.path.join(a.res, "state.npz")
+    hist, cpu_prev = [], 0.0
+    if os.path.exists(fst):  # resume (round 4 audit fix): theta and history saved together, atomically
+        z = np.load(fst, allow_pickle=False)
+        th = torch.tensor(z["theta"])
+        hist = json.loads(str(z["hist"]))
+        cpu_prev = float(z["cpu_prev"])
+        log(f"resumed from {fst} at step {len(hist)} (previous runs {cpu_prev:.2f} CPU-min)")
+    stop = {"why": None}
+
+    def on_signal(signum, frame):  # sbatch --signal=B:USR1@<s> or SIGTERM: finish the current step, save, exit
+        stop["why"] = f"signal {signum}"
+    signal.signal(signal.SIGUSR1, on_signal)
+    signal.signal(signal.SIGTERM, on_signal)
+
+    def save(status):
+        rec = dict(Lx=a.Lx, Ly=a.Ly, Ne=a.Ne, nsamp=None if a.exact else a.nsamp, exact=a.exact,
+                   sampler=a.sampler, tau=a.tau, seed0=a.seed0, start=a.start, E_start=E00, steps=hist,
+                   status=status, steps_target=a.steps, cpu_min=cpu_prev + cpu_min(), wall=time.time() - t0)
+        tmp = fst[:-4] + ".tmp.npz"
+        np.savez(tmp, theta=th.numpy(), hist=json.dumps(hist), cpu_prev=cpu_prev + cpu_min())
+        os.replace(tmp, fst)
+        np.save(os.path.join(a.res, "theta.npy"), th.numpy())
+        json.dump(rec, open(fn + ".tmp", "w"), indent=1)
+        os.replace(fn + ".tmp", fn)
+
     E, pr, phi0 = ctx.energy(th)
     per = None
+    status = "RUNNING"
     while len(hist) < a.steps:
         c0 = cpu_min()
         if per is not None and c0 + per > a.cpu_cap:
-            log(f"stop: next step would exceed the CPU cap ({c0:.1f} + {per:.2f} > {a.cpu_cap}); TRUNCATED")
+            stop["why"] = f"CPU cap ({c0:.1f} + {per:.2f} > {a.cpu_cap})"
+        if stop["why"]:
+            status = "TRUNCATED"
+            log(f"stop before step {len(hist) + 1}: {stop['why']}; state saved, resume by rerunning the same command")
             break
         n = len(hist) + 1
         ST, f, nu = stats(ctx, th, phi0, pr, a.nsamp, a.seed0 + n, a.sampler, a.exact)
@@ -225,12 +255,12 @@ def main():
         rec["cpu_step"] = per
         log(f"S{a.Lx}x{a.Ly} {'exact' if a.exact else a.sampler + ' N ' + str(a.nsamp)} tau {a.tau} step {n}: "
             f"E {En:.6f} (E-E_start {En - E00:+.3e}); unique {nu} [{cpu_min():.2f} CPU-min, step {per:.3f}]")
-        np.save(fth, th.numpy())
-        json.dump(dict(Lx=a.Lx, Ly=a.Ly, Ne=a.Ne, nsamp=None if a.exact else a.nsamp, exact=a.exact,
-                       sampler=a.sampler, tau=a.tau, seed0=a.seed0, start=a.start, E_start=E00, steps=hist,
-                       cpu_min=cpu_min(), wall=time.time() - t0), open(fn, "w"), indent=1)
-    log(f"done: {len(hist)} steps, {cpu_min():.2f} CPU-min, {time.time() - t0:.0f} s")
-
+        save("RUNNING")
+    if len(hist) >= a.steps:
+        status = "DONE"
+    save(status)
+    log(f"{status}: {len(hist)} of {a.steps} steps, {cpu_prev + cpu_min():.2f} CPU-min in all, "
+        f"{time.time() - t0:.0f} s")
 
 if __name__ == "__main__":
     main()

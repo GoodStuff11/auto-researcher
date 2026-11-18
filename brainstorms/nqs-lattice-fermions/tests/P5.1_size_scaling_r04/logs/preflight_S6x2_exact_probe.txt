@@ -1,0 +1,5 @@
+[20:58:01] 6x2 N_e 10: sector 627264, 156816 representatives, P 2637, Hr nnz 4472578
+[20:58:01] setup 0.02 CPU-min
+[20:59:48] S6x2 exact tau 0.005 step 1: E -7.355449 (E-E_start -4.027e-03); unique 156816 [1.83 CPU-min, step 1.688]
+Command terminated by signal 9
+120.90 user 11046160 KB

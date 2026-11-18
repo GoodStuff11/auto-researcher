@@ -137,3 +137,47 @@ seconds: about 0.33 CPU-h. No job submitted.
 * (new) Aggregating duplicate draws is an exact rewrite that cut a 12-site sampled step 2.7x in time and 5x in
   memory, but its saving is bounded by the effective support exp(H[|ψ|²]) (3035 at 12 sites, 781 at 10) and
   vanishes once exp(H) >> N; small-cluster per-step costs measured with it do not extrapolate.
+
+## 3. Compute auditor: CHANGES REQUIRED for R51.8 unit 1 (applied, nothing submitted)
+Auditor items (summarised by the orchestrator): (1) same-geometry primary ratio S10 (5x2) vs S12' (6x2), series with
+S14 (7x2); 4x3 demoted to a geometry check; (2) cheap T1s first (exact kappa at S12' and S14, measured pre-flights,
+trained S12' start), and R51.10 as written is not independent of R51.8 (m = r / 1.15) - recast as a 3-size kappa
+trend; (3) stage spending using R51.1's bound on the 4x3 need, optionally drop the 1M rung; (4) 1b refused until
+ns_run.py saves a resumable state on --cpu-cap.
+
+What was done:
+* RULE.md revision 1 (before any arm ran): primary r' = N_needed(S12') / N_needed(S10), three-size series with S14
+  (POLY-CONSISTENT-3 if N_needed(S14)/N_needed(S10) ≤ 2.744); 4x3 is a geometry check bought only if kappa or the
+  ladders show geometry matters. The 4x3 bound is stated as conditional: (65,536, 262,144] holds if the 4x3 exact
+  arm's R_plat lies in [0.732, 0.770] (B's s ≥ 0.071, C's s ≤ 0.05); an exact-limit fit through A, B, C gives
+  Delta_inf = -0.038 (R_ref about 0.785), in which case C's s = 0.067 and the bound moves up. Staged thresholds:
+  N_needed(S10) ≥ 151,700 or censored above 262,144 -> r ≤ 1.728; ≤ 16,850 -> r ≥ 3.89. The 1M rung is dropped.
+* RULE_kappa.md revision 1: old test withdrawn as a verdict (not independent); recast as KAPPA-POLY / SUPPORT /
+  AMBIGUOUS on kappa(6x2)/kappa(5x2) and kappa(7x2)/kappa(5x2), a prediction recorded before R51.8's ladders, killed
+  as a predictor by a class disagreement where R51.8 is decided; geometry flag kappa(6x2)/kappa(4x3) outside 1.5x.
+* ns_run.py: theta and history saved together atomically (state.npz, os.replace) after every step; clean stop before
+  a step that would pass --cpu-cap, or after the current step on SIGUSR1/SIGTERM; status DONE / TRUNCATED in
+  run.json; cumulative CPU across resumes. Test at S10 (guided 16k): capped at step 2, resumed to step 4; energies
+  at steps 1-4 identical to an uninterrupted run (-6.547307, -6.547400, -6.547471, -6.547500). Sbatch scripts use
+  `--signal=USR1@600` (not B:) and append output with >> (tee would die on the signal).
+* kappa.py: chunked two-pass version (S14 cannot hold 2.25e6 x 3590 rows); reproduces the one-pass S10 values to
+  1e-11 (kappa_born 204426537.6348 vs .6353; kappa_guided 108115.48360).
+* Interactive probes (threads = 1 exported, ulimit -t 600 each): vmc.py 20-iteration training at 6x2 48 CPU-s
+  (1.2 s/iteration), at 7x2 48 CPU-s (1.7 s/iteration): 1000-iteration starts cost 20 and 29 CPU-min, so both are
+  gated jobs. 6x2 (probe start): 156,816 representatives, P 2637, exp(H) 3864, eps 3.5e-2 against the lowest (+,+)
+  level (untrained probe); exact step 1.69 CPU-min (11 GB), guided 262,144 0.425 CPU-min/step (32.9k unique).
+  7x2 (probe start): sector 9,018,009, 2,255,421 representatives, P 3590, Hr nnz 7.6e7, exp(H) 19,360, one exact
+  energy 1.24 CPU-min, rows 1.02e-5 CPU-min each (23.0 min per exact pass), peak 16.3 GB. A first 7x2 probe was
+  killed by this session's 20 GB cgroup limit while a 6x2 pre-flight ran in parallel (that 6x2 exact pre-flight lost
+  its second step to the same kill); rerun alone it completed.
+* Jobs prepared (not submitted) and gate outputs (`compute_gate.py check ... --pre-audit`):
+  - `submit_unit1_s10.sbatch` + `voi_unit1a.md` (staged decision stated): cap 2.2 CPU-h; GATE: PASS; digest
+    26e826d7d689 (the auditor re-reviews 1a).
+  - `submit_quick_s12p.sbatch` + `voi_quick_s12p.md` (6x2 start + info + exact kappa): cap 1.0 CPU-h [quick note];
+    GATE: PASS; digest 2397cf0b3dfc.
+  - `submit_kappa_s14.sbatch` + `voi_kappa_s14.md` (7x2 start + info + exact kappa, 32G): cap 3.2 CPU-h; GATE: PASS;
+    digest d17f0257df99.
+  - `submit_unit1_ref12.sbatch`: demoted to the geometry check, resumable/signal fix applied, not re-gated
+    (voi_unit1b.md must be rewritten for the geometry-check decision before any submission).
+* Cards R51.8, R51.10 and the summary's portfolio and Next step updated. Interactive compute for this part: about
+  0.15 CPU-h (probes and tests).

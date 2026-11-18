@@ -62,3 +62,13 @@
 [20:37:04] pcg: reopening STOP-CAP at 21 steps under --steps 22 (RULE_amend1.md)
 [20:43:57] step 22: cut 1e-08 s 1.0 eps 2.81984e-04 -> 2.79822e-04 (drop 0.77%); predicted gain 2.02e-03 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:1.0 1e-09:None [7.2 CPU-min, step 6.60, wall 431 s]
 [20:43:57] pcg: stop STOP-CAP; 22 steps; wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r22/results/state_pcg.json [7.2 CPU-min, 431 s wall]
+[20:44:02] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[20:44:18] pcg: P 2696; checks {'start_vs_r19': 0.0, 'valid': True} [0.29 CPU-min]
+[20:44:18] pcg: reopening STOP-CAP at 22 steps under --steps 23 (RULE_amend1.md)
+[20:51:16] step 23: cut 1e-08 s 1.0 eps 2.79822e-04 -> 2.77366e-04 (drop 0.88%); predicted gain 1.68e-03 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:1.0 1e-09:None [7.2 CPU-min, step 6.68, wall 436 s]
+[20:51:17] pcg: stop STOP-CAP; 23 steps; wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r22/results/state_pcg.json [7.2 CPU-min, 436 s wall]
+[20:51:21] orbit reduction: 157216 representatives of 627264; Hr nnz 4970832
+[20:51:37] pcg: P 2696; checks {'start_vs_r19': 0.0, 'valid': True} [0.28 CPU-min]
+[20:51:37] pcg: reopening STOP-CAP at 23 steps under --steps 24 (RULE_amend1.md)
+[20:58:34] step 24: cut 1e-08 s 1.0 eps 2.77366e-04 -> 2.76693e-04 (drop 0.24%); predicted gain 3.70e-04 g; rungs 1e-05:1.0 1e-06:1.0 1e-07:1.0 1e-08:1.0 1e-09:None [7.2 CPU-min, step 6.67, wall 434 s] STOP-RULE
+[20:58:34] pcg: stop STOP-RULE; 24 steps; wrote /home/jek354/research/.claude/worktrees/nqs-brainstorm/brainstorms/nqs-lattice-fermions/tests/P4.1_cheap_su2_r22/results/state_pcg.json [7.2 CPU-min, 434 s wall]

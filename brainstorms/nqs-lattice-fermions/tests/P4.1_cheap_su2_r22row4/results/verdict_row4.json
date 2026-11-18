@@ -1,0 +1,24 @@
+{
+ "rule": "RULE_amend3.md",
+ "phases": [],
+ "rank5": {
+  "stop": "STOP-RULE",
+  "steps": 29,
+  "eps": 0.00044438112791187265,
+  "eps_inf": 0.00044438112791187265,
+  "fit": null
+ },
+ "target_eps_pcg": 0.0002666286767471236,
+ "pcg": {
+  "stop": "STOP-RULE",
+  "steps": 24,
+  "eps": 0.00027669256809715465
+ },
+ "rho_abl": 0.6226469818763926,
+ "rho_abl_inf": 0.6226469818763926,
+ "cls_end": "ABL-CONFOUNDED",
+ "cls_inf": "ABL-CONFOUNDED",
+ "pcg_fit": null,
+ "verdict": "ABL-CONFOUNDED",
+ "wall_min": 276.2127873380979
+}

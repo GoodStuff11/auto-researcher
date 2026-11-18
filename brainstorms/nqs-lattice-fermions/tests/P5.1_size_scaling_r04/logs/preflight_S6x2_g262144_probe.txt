@@ -1,0 +1,6 @@
+[21:01:21] 6x2 N_e 10: sector 627264, 156816 representatives, P 2637, Hr nnz 4472578
+[21:01:21] setup 0.02 CPU-min
+[21:01:52] S6x2 guided N 262144 tau 0.005 step 1: E -7.355308 (E-E_start -3.885e-03); unique 32925 [0.59 CPU-min, step 0.425]
+[21:02:17] S6x2 guided N 262144 tau 0.005 step 2: E -7.358964 (E-E_start -7.542e-03); unique 33035 [1.01 CPU-min, step 0.425]
+[21:02:17] DONE: 2 of 2 steps, 1.01 CPU-min in all, 57 s
+44.18 user 3397640 KB
