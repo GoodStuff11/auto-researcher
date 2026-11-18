@@ -1,0 +1,7 @@
+[06:20:24] 5x2 N_e 8: sector 44100, 11100 representatives, P 1832, Hr nnz 255770
+[06:20:52] snrW_guided_N4096_rho1.0_tau0.005_s9000 step 20: E -6.5474101 (E-E_start -2.941e-04) unique 1365 kept 295 [0.46 CPU-min]
+[06:21:19] snrW_guided_N4096_rho1.0_tau0.005_s9000 step 40: E -6.5476356 (E-E_start -5.196e-04) unique 1431 kept 313 [0.92 CPU-min]
+[06:21:46] snrW_guided_N4096_rho1.0_tau0.005_s9000 step 60: E -6.5477512 (E-E_start -6.352e-04) unique 1412 kept 364 [1.37 CPU-min]
+[06:22:13] snrW_guided_N4096_rho1.0_tau0.005_s9000 step 80: E -6.5478591 (E-E_start -7.431e-04) unique 1393 kept 472 [1.82 CPU-min]
+[06:22:40] snrW_guided_N4096_rho1.0_tau0.005_s9000 step 100: E -6.5479102 (E-E_start -7.942e-04) unique 1420 kept 382 [2.27 CPU-min]
+[06:23:07] snrW_guided_N4096_rho1.0_tau0.005_s9000 step 120: E -6.5480801 (E-E_start -9.641e-04) unique 1377 kept 296 [2.72 CPU-min]

@@ -419,6 +419,10 @@ One row per KILLED or SHELVED route, grouped by leaf. **Code** is where the rout
 | R51.23 | P5.1 | Rao–Blackwellised force over one Metropolis move (`rbmove`) | T1 | $\rho$ 0.11–0.14 but cost 1+degree = 24–31 → eff 2.6–4.3; degree grows with $V$, $\rho$ does not fall | [[leaves/P5.1/cards/R51.23]] | route-specific |
 | R51.24 | P5.1 | multilevel Monte Carlo across cluster sizes or widths (`mlmc`) | T0 | no coupled estimator of the same force across sizes; across widths it is a surrogate control variate (L25, ≤4%) | [[leaves/P5.1/cards/R51.24]] | L25 |
 | R51.25 | P5.1 | discrete Stein control functionals from free hop ratios, 46–56 occupation features (`stein`) | T1 | oracle regression removes <0.01% of step-error variance at both sizes ($\rho$ 0.99991–0.99996) | [[leaves/P5.1/cards/R51.25]] | proposed entry (with R51.19) |
+| R51.26 | P5.1 | noise-level spectral filter (SNR cut, Wiener repair) of the SR step (`snrcut`) | T1 | 5×2, guided, vs R51.8's plain curve: $g=N_{\rm eq}/N$ 0.75 / 0.76 at 4096 / 16,384 ($\rho_c$=1), 0.44 ($\rho_c$=2), Wiener 0.85: the late gain lies in low-SNR modes | [[leaves/P5.1/cards/R51.26]] | proposed entry (noise-level filters raise the need) |
+| R51.27 | P5.1 | size-transfer warm start of the larger cluster (`tilewarm`) | T0 | all counted draws are spent after an SR-trained start; `che` does not tile (P4.1 R15c); transferred heads are used up early (P4.2 R9.6) | [[leaves/P5.1/cards/R51.27]] | L43 |
+| R51.28 | P5.1 | blocked / Kronecker-factored metric to cut effective rank (`blockrank`) | T0 | need tracks neither start $\kappa$ (×0.70) nor end $\kappa$ (×180) against ×3.79; blocking lost at one step (P4.1 R32), force noise dominates (L59) | [[leaves/P5.1/cards/R51.28]] | L59 |
+| R51.30 | P5.1 | TRPO/PPO-style held-out metric step length (`kltrust`) | T0 | sampled length is a near-uniform 0.71–0.88 rescaling of $\tau$ (R51.18 replay), i.e. a step-length change (R51.1, R51.7); PPO reuse repair = R51.14/R51.17 | [[leaves/P5.1/cards/R51.30]] | proposed entry (trust-region length reduces to $\tau$) |
 
 ---
 

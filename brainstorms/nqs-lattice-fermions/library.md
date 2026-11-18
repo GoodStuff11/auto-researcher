@@ -64,7 +64,7 @@ This library collects what the brainstorm `brainstorm-nqs-fermions.md` learned t
 * L58 (PROVISIONAL): In patch-local hidden-row (hidden-fermion) families, a hop changes every hidden row whose receptive field contains a touched site, so thinning the rows while widening their receptive fields restores the update rank of the all-rows family and saves only the matrix dimension.
 * L59 (PROVISIONAL): In one sampled SR step at about 6 samples per parameter (one start point, 16,384 samples), force noise dominates: the exact force recovers 60% of the exact step, the exact metric none.
 * L60 (PROVISIONAL): At linear-method-polished 12-site endpoints, exact-gradient L-BFGS, truncated Newton and Anderson schemes (on the ladder iterates or the raw direction) were not faster per CPU-minute than the cutoff-ladder linear method; only exact-metric whitening reached its rate.
-* L61 (PROVISIONAL): Guided draws ($0.8\lvert\psi\rvert^2+0.2\lvert\psi\rvert$, reweighted) reached a sustained 90% of the polished gain with 3.26× fewer total draws than Born-sampled SR at 12 sites (9.3–9.4× at 10; one seed per arm); MinSR at $N<P$ untested.
+* L61 (PROVISIONAL): Guided draws ($0.8\lvert\psi\rvert^2+0.2\lvert\psi\rvert$, reweighted) reached a sustained 90% of the polished gain with 3.26× fewer total draws than Born-sampled SR at 12 sites (9.3–9.4× at 10; one seed per arm); MinSR at $N<P$ tested once at 10 sites (L79).
 * L62 (PROVISIONAL): Before a sampled test with a pre-registered SR or natural-gradient step length, check that length's exact-sum first step, because a length that overshoots with exact sums turns the sampled verdict into a step-length verdict.
 * L63 (PROVISIONAL): In drivers that import a frozen analysis script, set the OMP, OpenBLAS and MKL thread variables before the first numpy import, because BLAS reads them once at import and otherwise uses every core, overrunning CPU caps.
 * L64 (PROVISIONAL): At 24 sites, equal CPU and the same guided SR, an exactly projected charge-only backflow reached about half the energy gap of a spin-reading one, unprojected (0.51–0.56) or flip-even (0.49–0.55), and led per step too.
@@ -79,6 +79,10 @@ This library collects what the brainstorm `brainstorm-nqs-fermions.md` learned t
 * L73 (PROVISIONAL): Sampling $\propto\lvert\psi\rvert$, reweighted, needed 0.43× guided's draws to 90% of the polished gain at 12 sites and beat the ladder polish (so it is not the minimum), but its weight variance grows with size.
 * L74 (PROVISIONAL): An oracle-envelope gain built from runs capped at one step count can be a censoring artefact; continue the small-batch arm to the target before crediting a schedule.
 * L75 (PROVISIONAL): A rule must state its reference energy $E_0$ (or gap) as a number, not only derived thresholds; two scorers here used different gaps under one threshold.
+* L76 (PROVISIONAL): Noise-level spectral filters of the SR step (hard SNR cut or Wiener shrinkage) raised the sample need 1.2–2.3× at 10 sites: the late gain sits in modes whose per-step force SNR is below 1.
+* L77 (PROVISIONAL): At small fixed steps the sampled metric length of the SR step is a near-uniform 0.7–0.9 rescaling of $\tau$, so trust-region or held-out length checks reduce to a change of $\tau$.
+* L78 (PROVISIONAL): Neither start nor end one-state $\kappa$ tracked the sample need's growth from 10 to 12 sites (×0.70, ×180 vs ×3.79), and the two sizes were measured at different optimisation stages; a size ratio of needs must compare like stages.
+* L79 (PROVISIONAL): MinSR with a Tikhonov shift equals SR with that shift at every $N$ (push-through identity); at 10 sites Born MinSR at $N<P$ (one $\tau$, one seed) was behind guided SR at equal draws ($R$ 0.12 vs 0.69).
 
 ## About the problem itself
 
@@ -465,11 +469,11 @@ This library collects what the brainstorm `brainstorm-nqs-fermions.md` learned t
 * **Sources**: P4.1 R27, R29, R30, R41 (KILLED, T1), R28 (KILLED, T0); `RULE` files in `tests/P4.1_cheap_su2_r25/`, `_r27/`, `_r41/`; logs `round-22.md`, `round-23-R30.md`, `round-24-R28`, `round-26-R41`; L29.
 
 ### L61. Drawing sampled SR steps from $0.8\lvert\psi\rvert^2+0.2\lvert\psi\rvert$ with reweighting reached a sustained 90% of the exactly polished gain on a 12-site state with 3.26× fewer total draws than Born-sampled SR (9.3–9.4× at 10 sites; one seed per arm).
-* **Status**: PROVISIONAL (one state per size, one seed per arm; MinSR at $N<P$ untested)
+* **Status**: PROVISIONAL (one state per size, one seed per arm; MinSR at $N<P$: one 10-site test, L79)
 * **Applies to**: sampled SR or natural gradient on determinant NQS (log-derivatives diverge at nodes); overdispersed sampling for VMC forces.
 * **The lesson**: Under $\lvert\psi\rvert^2$ (Born) sampling the force has heavy tails from near-node configurations, the noise that limits sampled SR (L59). A flatter mixture $q$ puts more samples there at the same cost per sample with bounded weights $p/q\le1.25$, and it changes the draws for $S$ and $f$ together, so their error cancellation is kept. Born SR needs smaller steps or bigger batches, so several times the draws to a target. Fixed 60–120-step runs at about 6 samples per parameter still stop short of the polished state. The sampler is published (arXiv:2507.05352); this credits it, not a new optimiser.
 * **Evidence**: P4.1, SR-trained `che` (2637 parameters, open $4\times3$ Hubbard), 16,384 samples per step, exact scoring; $R$ = fraction of the start-to-$E_0$ gap removed (gap 0.022373), exact ladder polish $R_{\rm pol}=0.7475$. Fifteen steps (job 748762): 0.364 against 0.195 Born. Sixty steps, three replicas (job 752885): 0.51–0.54, still gaining about 0.002 per step (0.587 at 120 steps, R51.1). Equal total draws (P5.1 R51.16, job 769213), draws until the trailing 20-step mean first reached $0.90R_{\rm pol}$: guided ($N$=16,384, step 0.005) 4.51M; Born ($N$=65,536, step 0.010) 14.68M, 2 steps before its 14.8M budget; Born ($N$=16,384, step 0.005) never (best 0.652 against 0.673) → ratio 3.26 (≥2.53 on the alternative gap 0.023111; 2.78 at $0.80R_{\rm pol}$). At $5\times2$ (R51.8 arms) Born needed 9.3–9.4× guided's draws.
-* **Scope and limits**: Against Born-sampled SR (equal to MinSR at $N\ge P$); MinSR at $N<P$ untested. Two Born step lengths; exact i.i.d. draws (chain mixing may differ); mixture not tuned.
+* **Scope and limits**: Against Born-sampled SR (equal to MinSR at $N\ge P$); MinSR at $N<P$ tested once at 10 sites (L79). Two Born step lengths; exact i.i.d. draws (chain mixing may differ); mixture not tuned.
 * **Counter-evidence and open questions**: $R_{\rm pol}$ is not the minimum, and $q\propto\lvert\psi\rvert$ needed 0.43× guided's draws (L73). Untested: 24 sites, step decay.
 * **How to use it**: Use guided (or flatter, L73) draws by default for sampled SR on determinant NQS, and compare samplers by total draws to a stated target, not at a fixed step count (L74).
 * **Sources**: P4.1 R38 (route KILLED, kept as a tool), R21; P5.1 R51.1, R51.8, R51.16; jobs 748762, 752885, 769213; `RULE_cmp.md`; log `round-09-scoring.md`; Attaccalite & Sorella, PRL 100, 114501 (2008); Pathak & Wagner, AIP Adv. 10, 085213 (2020); arXiv:2507.05352.
@@ -538,6 +542,41 @@ This library collects what the brainstorm `brainstorm-nqs-fermions.md` learned t
 * **Counter-evidence and open questions**: If $E_q[w^2]$ grows exponentially the gain vanishes with size; a third volume (exact $7\times2$, or sampled $8\times2$ or $10\times2$) decides.
 * **How to use it**: Prefer $\lvert\psi\rvert$ draws to guided ones up to 12 sites; measure $E_q[w^2]$ at the target size before relying on them; report the best energy any arm reached rather than treating a ladder polish as the minimum.
 * **Sources**: P5.1 R51.11 (T1, T1b, T2), R51.16; jobs 769211, 769213; `tests/P5.1_r05_gen/RULE_qopt*.md`, `t0_weightvar_R51.11.py`; logs `round-07-R51.11-T0.md`, `round-09-scoring.md`; Wang, Zhu & Ma, JASA 113, 829 (2018); arXiv:2507.05352; L61.
+
+### L76. Noise-level spectral filters of the SR step, a hard cut of modes whose force SNR is below a threshold or Wiener shrinkage of every mode, raised the samples needed per step 1.2–2.3× on one 10-site state, because the noise-free path's late gain sits in modes whose per-step SNR is below 1.
+* **Status**: PROVISIONAL (one 10-site state, one seed per arm, one step length; 2026-11-18)
+* **Applies to**: SR or natural-gradient steps regularised in the eigenbasis of the sampled metric by a per-mode signal-to-noise estimate (spectral cut-off, Wiener or SNR regularisation, as in tVMC), used to lower the samples per step.
+* **The lesson**: In statistical inverse problems a noise-level cut pays when the signal decays faster than the noise over the spectrum (a source condition). Late in an SR run on these states that condition fails: the gain of the noise-free path is carried by modes whose per-step force SNR is below 1, so filtering their noise removes the gain with it. The loss grows with the filter's strength, and shrinkage that keeps every mode still loses.
+* **Evidence**: P5.1 R51.26 (`tests/P5.1_r16_gen/RULE_snrcut.md`, `results/score_r16.json`): open $5	imes2$ Hubbard, guided draws, $	au$ 0.005, shift $10^{-3}$, 120 steps, per-mode sd from 16 batches, against R51.8's exact arm. Sample efficiency $g=N_{
+m eq}/N$ against plain SR's $s(N)$ curve: SNR cut $
+ho_c$=1 $g$ 0.75 at 4096 and 0.76 at 16,384 (median 327 and 621 of 1832 modes kept); $
+ho_c$=2 $g$ 0.44 at 4096; Wiener $
+ho^2/(1+
+ho^2)$ (repair addendum written after the KILL) $g$ 0.85. Plain seed spread 0.008 in $s$; margins 0.15–0.56 below 1.
+* **Scope and limits**: 10 sites only, fixed-length SR, one seed per arm; the SNR spectrum at larger sizes is untested.
+* **Counter-evidence and open questions**: SNR filtering for stability (its tVMC use) is a different aim and not tested; force-side shrinkage failed similarly at 12 sites (P4.1 R39, L59).
+* **How to use it**: Do not expect a per-mode noise filter to save samples in late sampled SR; before trying one, check on an exact instance which modes carry the noise-free step's gain.
+* **Sources**: P5.1 R51.26 (KILLED, T1); log `leaves/P5.1/log/round-16.md`; Schmitt & Heyl, PRL 125, 100503 (2020); L59, L61.
+
+### L77. With small fixed SR steps the length of the sampled step in the exact metric is a near-uniform 0.7–0.9 of the intended $\tau$, so trust-region or held-out length checks (TRPO/PPO-style) amount to a change of $\tau$.
+* **Status**: PROVISIONAL (one size, one $N$; T0 from stored data, 2026-11-18)
+* **Applies to**: step-length control of fixed-length SR or natural-gradient VMC by an estimate of the step's length (KL) in the true metric, from held-out draws or a trust region.
+* **The lesson**: The sampled metric under-estimates curvature in directions the draws miss, so a step of length $\tau$ in $S_N$ is shorter or longer in the exact metric. At small steps this error is nearly the same factor at every step; a per-step correction then acts as a fixed rescaling of $\tau$ and costs half the draws to estimate. Such checks matter only where steps leave the quadratic regime.
+* **Evidence**: P5.1 R51.30 (KILLED, T0) from R51.18's critic replay (`tests/P5.1_r05_gen/results/storm_N2048_a0.1_sf_v2/lenratio.json`): $5	imes2$, 2048 guided draws (about 920 unique), 40 steps, $\hat x^{\mathsf T}S_{\rm exact}\hat x/\hat x^{\mathsf T}S_N\hat x$ median 0.67, 10–90% 0.50–0.77, so true length 0.71–0.88 of $\tau$. Halving $\tau$ moved R51.1's 120-step shortfall by 14%.
+* **Scope and limits**: One 10-site state, one $N$ below $P$; at larger $N/P$ the ratio is nearer 1.
+* **Counter-evidence and open questions**: Early training or $N\ll P$, where steps are large, untested. PPO-style multi-epoch reuse of one batch is importance-reweighted reuse, already killed (R51.14, R51.17; L70).
+* **How to use it**: Measure the exact-to-sampled length ratio over a few steps on an exact instance; if it is nearly constant, tune $\tau$ instead of adding a trust region.
+* **Sources**: P5.1 R51.30, R51.18, R51.1; log `leaves/P5.1/log/round-16.md`; Schulman et al., ICML 2015, arXiv:1707.06347; L70.
+
+### L79. MinSR with a Tikhonov shift is SR with the same shift at every sample count (push-through identity), so it differs from SR only in cost or with a pseudo-inverse cutoff; at 10 sites Born MinSR at $N<P$ was behind guided SR at equal draws.
+* **Status**: PROVISIONAL (identity exact; run one 10-site state, one $\tau$, one seed; 2026-11-18)
+* **Applies to**: comparisons of SR and MinSR (the step solved in sample space) on sample cost, in particular at fewer draws per step than parameters.
+* **The lesson**: $A^{\mathsf T}(AA^{\mathsf T}+\lambda)^{-1}b=(A^{\mathsf T}A+\lambda)^{-1}A^{\mathsf T}b$, so shifted MinSR at $N<P$ is SR at $N<P$ solved cheaply; only a pseudo-inverse-cutoff variant (Chen & Heyl) is a different step. At $N<P$ the step must be shortened to stay stable, and many short noisy steps lost to fewer guided steps at the same total draws.
+* **Evidence**: P5.1 R51.31 (`tests/P5.1_r16_gen/RULE_minsr.md`, `results/score_r16.json`): `snr_run.py --mode check` reproduced the SR step to $3\times10^{-13}$. Open $5\times2$, Born draws, $N$=1024 ($P$=1832, about 510 unique per step), $\tau$ 0.00125 (R51.8's Born 1024 arm at 0.005 rose above its start), 800 steps = 819,200 draws: trailing-20 $R$ 0.124 of the noise-free gain, against 0.691 for guided SR and 0.383 for Born SR at $N$=16,384 at the same draws; no sustained 90%. Verdict GUIDED-AHEAD.
+* **Scope and limits**: 10 sites, one $\tau$ (0.0025 untried), one seed, exact i.i.d. draws; the pseudo-inverse variant is untested. A 12-site repeat (about 3.7 CPU-h) was not proposed, its likely result changing no decision.
+* **Counter-evidence and open questions**: Whether a tuned $\tau$ or the cutoff variant closes the gap.
+* **How to use it**: Treat shifted MinSR as SR in sample-cost comparisons; compare at equal total draws, and test the cutoff variant separately if MinSR's regime matters.
+* **Sources**: P5.1 R51.31 (LIVE, T1), R51.16, R51.8; log `leaves/P5.1/log/round-16.md`; L61.
 
 ## About testing and measurement
 
@@ -737,7 +776,7 @@ This library collects what the brainstorm `brainstorm-nqs-fermions.md` learned t
 * **The lesson**: A one-step quantity is measured at one state and does not see the noise that accumulates along the path, nor how the optimiser's own states differ from the reference states. It can err either way: a one-step gain at good states overstates the rate the optimiser sustains, while a one-step fidelity at the start can demand more samples than the multi-step run actually needs. Neither error has a known sign in advance, so a one-step screen ranks or kills only after calibration against multi-step data.
 * **Evidence**: P5.1 R51.9 (12-site `che`, guided SR, step 0.005): the one-step counterfactual rate at R38's states was $0.0078\pm0.0006$ of the gap per step, against 0.0020–0.0025 sustained by the fixed-length optimiser at states of similar $R$ (R51.1, arm A): 3–4× high. From R51.1's start, step 1 kept $\phi$ = 0.45, 0.57, 0.82 of the exact step's gain at 16k, 66k and 262k samples, so $\phi\ge0.9$ needs more than 262k, while the multi-step run reached 98% of the polished value at 262k and 95% at about 115k: more than 2× in the opposite direction. A stationary noise-ball model was off by 2.7× at 262k (L65).
 * **Scope and limits**: One 12-site state, one optimiser and step length; the cross-size ratio of a one-step quantity is untested.
-* **Counter-evidence and open questions**: A ratio across sizes might be right even if each value is off; R51.10 tests a calibrated one-state predictor against R51.8's measured ratio.
+* **Counter-evidence and open questions**: A ratio across sizes might be right even if each value is off; R51.10's calibrated one-state predictor failed that test (killed; start and end $\kappa$ ratios in L78).
 * **How to use it**: Do not replace a multi-step measurement with a one-step proxy; if a proxy is needed, calibrate it against multi-step data at two sizes first.
 * **Sources**: P5.1 R51.9 (KILLED, T0), R51.1 (T1a, T2); jobs 752885, 759974, 761860; `logs/preflight_S4x3_exact.txt`; L59, L65.
 
@@ -780,6 +819,16 @@ This library collects what the brainstorm `brainstorm-nqs-fermions.md` learned t
 * **Counter-evidence and open questions**: None.
 * **How to use it**: Write $E_{\rm start}$, $E_0$ and the gap as numbers with their source file in the rule; compute $R$ from absolute energies on that gap only; re-score one stored arm as a check.
 * **Sources**: P5.1 R51.16, R51.11; log `round-09-scoring.md` §1; `tests/P5.1_r05_gen/score_scales.py`, `score_common.py`; L62, L72.
+
+### L78. Neither the start nor the end one-state $\kappa$ tracked the growth of the multi-step sample need from 10 to 12 sites, and the two sizes' needs were measured at different optimisation stages, so a size ratio of sample needs must compare like stages.
+* **Status**: PROVISIONAL (one size step, one seed; T0 from stored data, 2026-11-18)
+* **Applies to**: size-scaling tests of the samples per step a sampled optimiser needs (against each size's noise-free run), and one-state predictors of that need; extends L67.
+* **The lesson**: The ridge noise-to-signal ratio $\kappa$ (effective dimension × residual variance / signal) taken at one state does not predict the need's growth, whether taken at the start or at the end of the run, and the two disagree with each other by orders of magnitude. Separately, a fixed step count can leave one size on a plateau and another still descending; needs measured there differ for reasons unrelated to size, so the ratio confounds stage with size.
+* **Evidence**: P5.1 R51.28, R51.29 on R51.8 (open $5\times2$ and $6\times2$, guided, $\tau$ 0.005, steps 61–120): need 31,280 → 118,600, ×3.79; $\kappa$ at the starts ×0.70 (R51.10), $\kappa_{\rm guided}$ at the exact arms' ends 10.5k → 1.89M, ×180 (`tests/P5.1_vr_r12/results/vr_S*_end.json`). Stage: the $5\times2$ noise-free arm is a limit cycle (slope z −1.1) that removed 45% of the gap to $E_0$; the $6\times2$ one still descends (z −3.7), removing 81%; endpoint exact step $x^{\mathsf T}Sx$ 3.7e-3 against 2.4e-4.
+* **Scope and limits**: One size step, one seed per arm; whether matched stages change the ratio is untested (R51.7's CONT continuation, job 773528, reports it).
+* **Counter-evidence and open questions**: A ratio near the support growth (×3.52) at matched later stages would remove the confound.
+* **How to use it**: Report each size's noise-free stage (slope, fraction of gap removed) beside a need ratio; continue or truncate arms so that both sizes are on a plateau, or both descending, before reading a scaling exponent.
+* **Sources**: P5.1 R51.28 (KILLED, T0), R51.29 (MERGED), R51.10, R51.8; log `leaves/P5.1/log/round-16.md`; L67.
 
 ## About process and compute
 
