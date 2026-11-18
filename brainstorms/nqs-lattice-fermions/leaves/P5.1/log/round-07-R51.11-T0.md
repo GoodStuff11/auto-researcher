@@ -25,7 +25,7 @@ ground = exact (+,+) ground state (E₀ −6.5507 / −7.8286 / −7.6146).
 `kq.py`'s per-representative convention (√size·|pr|) gives 2.195 / 3.102 / 3.212, i.e. the same.
 * Slope of ln E_q[w²] per site: 0.180 for the 5x2 → 6x2 ladder, 0.161 for 5x2 → 4x3. That is a factor of 1.20 per site,
   against 1.90 per site for e^H on the ladder (2.0 for 5x2 → 4x3). Guided: 0.010 per site, bounded by construction (w ≤ 1.25).
-* The size sets the value, not the state: start, trained and ground state agree to 1%, and 4x3 ≈ 6x2 at equal V.
+* The size sets the value, not the state: start, trained and ground state agree to 1%, and 4x3 $\approx$ 6x2 at equal V.
 
 ## Verdict under the pre-registered rule: **Gate 4 FAIL** (weak evidence)
 * The slope clause fires (0.18 > 0.1 per site); the e^H clause does not (1.20 < 1.90 per site), so the FAIL rests on the
