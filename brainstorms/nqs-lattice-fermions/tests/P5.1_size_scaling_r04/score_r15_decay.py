@@ -221,7 +221,11 @@ def main():
         else:
             out['verdict'] = 'MIXED'
             if 'UNDECIDED' in cl:  # the bounds do not fix the class; list what they still allow
-                opts = [{'HELPS', 'MID', 'NO-GAIN'} if c == 'UNDECIDED' else {c} for c in cl]
+                def allow(o):  # per-size classes the rho interval still allows (round 16 fix: not all three)
+                    lo, hi = o['rho_lo'], o['rho_hi']
+                    return {c for c, ok in (('HELPS', lo <= RHO_HELP), ('NO-GAIN', hi >= RHO_NOGAIN),
+                                            ('MID', hi > RHO_HELP and lo < RHO_NOGAIN)) if ok}
+                opts = [allow(o) if o['rho_class'] == 'UNDECIDED' else {o['rho_class']} for o in out['sizes'].values()]
                 allowed = set()
                 for x in opts[0]:
                     for y in opts[1]:
