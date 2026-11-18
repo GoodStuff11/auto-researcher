@@ -19,3 +19,15 @@ forwards USR1, resumable), `score_premise.py`, `voi.md` (full set; cap 1.6 CPU-h
   fe2575b37e39).
 * Prediction SURVIVES, p 0.65: R criterion safe (5x2 4096 matched 16k at equal draws); rises the risk (arm A 18/120,
   5x2 about 0.39 at every N; expected 55-75 against 80, binomial sd about 7).
+
+## Scoring of 769669 (2026-11-18)
+`score_premise.py` -> `results/score_premise.json`: 240 steps, 983,040 draws; R(240) 0.4948 (line 0.247, passes;
+16k arm A 0.494 at equal draws); R last-20 mean 0.4844; rises 83/240 = 0.346 (line: > 80) -> kill_rises true ->
+KILLED at T1 (rise clause). Binomial sd at p = 1/3, n = 240: 7.3; margin 3 rises, about 0.4 sd. Prediction
+(SURVIVES, p 0.65; expected 55-75 rises) missed: rises above the predicted range. Arm A (16k) rose 18/120 (0.15);
+5x2 fixed-step SR about 0.39 at every N, so rises may be generic to fixed-step SR rather than small-block specific
+(recorded as the strongest case against). T2 (K = 4 median) not prepared, not run. Card R51.5 rewritten to KILLED;
+kill_index row added; summary updated. Per-leaf critic review owed.
+
+Former-kill paragraph moved off card R51.5 (cap), verbatim:
+* **Former kill (T0, round 1)** and why it no longer holds: it rested on a one-step, Born-sampled, held-out probe (L59: 6.2 samples per parameter recovered $0.016\pm0.022$ of an exact 0.288 gain), on P4.1 R15 (0.1 samples per parameter) and on L55 (a different method). R51.1 later showed fixed-step guided SR at 6.2 samples per parameter descends steadily (arm A: 18 energy rises in 120 steps), and at equal total samples smaller batches won at every budget (0.98M draws: 16,384 per step 0.494 > 65,536 0.426 > 262,144 0.290), which points to blocks of about 2 samples per parameter still carrying signal. Near-node forces have infinite variance (Trail, Phys. Rev. E 77, 016703, 2008), so heavy tails persist at block level, median-of-means' best case.

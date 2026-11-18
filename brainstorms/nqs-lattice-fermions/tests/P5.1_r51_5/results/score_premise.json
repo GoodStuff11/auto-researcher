@@ -1,0 +1,14 @@
+{
+ "rule": "card R51.5 premise (T1)",
+ "res": "results/guided_N4096_tau0.005_s9000",
+ "nsamp": 4096,
+ "steps_done": 240,
+ "draws": 983040,
+ "R_240": 0.4948186077595033,
+ "rises_240": 83,
+ "rise_frac": 0.3458333333333333,
+ "R_last20_mean": 0.4843937129351854,
+ "kill_R": false,
+ "kill_rises": true,
+ "verdict": "KILLED"
+}

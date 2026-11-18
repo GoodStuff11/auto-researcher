@@ -199,3 +199,59 @@
 [00:27:17] S4x3 guided N 4096 tau 0.005 step 197: E -7.815718 (E-E_start -1.019e-02); unique 2346 [41.84 CPU-min, step 0.206]
 [00:27:29] S4x3 guided N 4096 tau 0.005 step 198: E -7.815737 (E-E_start -1.021e-02); unique 2340 [42.04 CPU-min, step 0.201]
 [00:27:42] S4x3 guided N 4096 tau 0.005 step 199: E -7.815694 (E-E_start -1.017e-02); unique 2316 [42.24 CPU-min, step 0.202]
+[00:27:54] S4x3 guided N 4096 tau 0.005 step 200: E -7.815725 (E-E_start -1.020e-02); unique 2365 [42.45 CPU-min, step 0.205]
+[00:28:06] S4x3 guided N 4096 tau 0.005 step 201: E -7.815795 (E-E_start -1.027e-02); unique 2345 [42.65 CPU-min, step 0.205]
+[00:28:19] S4x3 guided N 4096 tau 0.005 step 202: E -7.815814 (E-E_start -1.029e-02); unique 2322 [42.86 CPU-min, step 0.204]
+[00:28:31] S4x3 guided N 4096 tau 0.005 step 203: E -7.815838 (E-E_start -1.031e-02); unique 2350 [43.06 CPU-min, step 0.205]
+[00:28:43] S4x3 guided N 4096 tau 0.005 step 204: E -7.815874 (E-E_start -1.035e-02); unique 2277 [43.27 CPU-min, step 0.205]
+[00:28:56] S4x3 guided N 4096 tau 0.005 step 205: E -7.815876 (E-E_start -1.035e-02); unique 2289 [43.47 CPU-min, step 0.205]
+[00:29:08] S4x3 guided N 4096 tau 0.005 step 206: E -7.815820 (E-E_start -1.029e-02); unique 2320 [43.68 CPU-min, step 0.204]
+[00:29:20] S4x3 guided N 4096 tau 0.005 step 207: E -7.815996 (E-E_start -1.047e-02); unique 2372 [43.88 CPU-min, step 0.206]
+[00:29:33] S4x3 guided N 4096 tau 0.005 step 208: E -7.815979 (E-E_start -1.045e-02); unique 2313 [44.09 CPU-min, step 0.204]
+[00:29:45] S4x3 guided N 4096 tau 0.005 step 209: E -7.815965 (E-E_start -1.044e-02); unique 2328 [44.29 CPU-min, step 0.205]
+[00:29:58] S4x3 guided N 4096 tau 0.005 step 210: E -7.815876 (E-E_start -1.035e-02); unique 2365 [44.50 CPU-min, step 0.205]
+[00:30:10] S4x3 guided N 4096 tau 0.005 step 211: E -7.815969 (E-E_start -1.044e-02); unique 2299 [44.70 CPU-min, step 0.200]
+[00:30:22] S4x3 guided N 4096 tau 0.005 step 212: E -7.815932 (E-E_start -1.041e-02); unique 2315 [44.90 CPU-min, step 0.202]
+[00:30:34] S4x3 guided N 4096 tau 0.005 step 213: E -7.815983 (E-E_start -1.046e-02); unique 2367 [45.10 CPU-min, step 0.204]
+[00:30:46] S4x3 guided N 4096 tau 0.005 step 214: E -7.816040 (E-E_start -1.051e-02); unique 2318 [45.31 CPU-min, step 0.204]
+[00:30:59] S4x3 guided N 4096 tau 0.005 step 215: E -7.816075 (E-E_start -1.055e-02); unique 2320 [45.51 CPU-min, step 0.204]
+[00:31:11] S4x3 guided N 4096 tau 0.005 step 216: E -7.816158 (E-E_start -1.063e-02); unique 2342 [45.72 CPU-min, step 0.206]
+[00:31:23] S4x3 guided N 4096 tau 0.005 step 217: E -7.816198 (E-E_start -1.067e-02); unique 2333 [45.92 CPU-min, step 0.205]
+[00:31:36] S4x3 guided N 4096 tau 0.005 step 218: E -7.816244 (E-E_start -1.072e-02); unique 2343 [46.13 CPU-min, step 0.205]
+[00:31:48] S4x3 guided N 4096 tau 0.005 step 219: E -7.816238 (E-E_start -1.071e-02); unique 2346 [46.33 CPU-min, step 0.205]
+[00:32:01] S4x3 guided N 4096 tau 0.005 step 220: E -7.816278 (E-E_start -1.075e-02); unique 2345 [46.54 CPU-min, step 0.205]
+[00:32:13] S4x3 guided N 4096 tau 0.005 step 221: E -7.816209 (E-E_start -1.068e-02); unique 2308 [46.74 CPU-min, step 0.204]
+[00:32:25] S4x3 guided N 4096 tau 0.005 step 222: E -7.816248 (E-E_start -1.072e-02); unique 2344 [46.95 CPU-min, step 0.205]
+[00:32:38] S4x3 guided N 4096 tau 0.005 step 223: E -7.816232 (E-E_start -1.071e-02); unique 2302 [47.15 CPU-min, step 0.204]
+[00:32:50] S4x3 guided N 4096 tau 0.005 step 224: E -7.816308 (E-E_start -1.078e-02); unique 2343 [47.35 CPU-min, step 0.202]
+[00:33:02] S4x3 guided N 4096 tau 0.005 step 225: E -7.816321 (E-E_start -1.079e-02); unique 2335 [47.56 CPU-min, step 0.203]
+[00:33:14] S4x3 guided N 4096 tau 0.005 step 226: E -7.816247 (E-E_start -1.072e-02); unique 2329 [47.76 CPU-min, step 0.204]
+[00:33:26] S4x3 guided N 4096 tau 0.005 step 227: E -7.816247 (E-E_start -1.072e-02); unique 2287 [47.97 CPU-min, step 0.203]
+[00:33:39] S4x3 guided N 4096 tau 0.005 step 228: E -7.816195 (E-E_start -1.067e-02); unique 2338 [48.17 CPU-min, step 0.205]
+[00:33:51] S4x3 guided N 4096 tau 0.005 step 229: E -7.816294 (E-E_start -1.077e-02); unique 2372 [48.38 CPU-min, step 0.205]
+[00:34:04] S4x3 guided N 4096 tau 0.005 step 230: E -7.816308 (E-E_start -1.078e-02); unique 2315 [48.58 CPU-min, step 0.205]
+[00:34:16] S4x3 guided N 4096 tau 0.005 step 231: E -7.816355 (E-E_start -1.083e-02); unique 2341 [48.78 CPU-min, step 0.204]
+[00:34:28] S4x3 guided N 4096 tau 0.005 step 232: E -7.816351 (E-E_start -1.083e-02); unique 2395 [48.99 CPU-min, step 0.206]
+[00:34:41] S4x3 guided N 4096 tau 0.005 step 233: E -7.816444 (E-E_start -1.092e-02); unique 2328 [49.19 CPU-min, step 0.204]
+[00:34:53] S4x3 guided N 4096 tau 0.005 step 234: E -7.816461 (E-E_start -1.093e-02); unique 2339 [49.40 CPU-min, step 0.205]
+[00:35:05] S4x3 guided N 4096 tau 0.005 step 235: E -7.816461 (E-E_start -1.093e-02); unique 2308 [49.60 CPU-min, step 0.203]
+[00:35:17] S4x3 guided N 4096 tau 0.005 step 236: E -7.816453 (E-E_start -1.093e-02); unique 2324 [49.81 CPU-min, step 0.204]
+[00:35:30] S4x3 guided N 4096 tau 0.005 step 237: E -7.816484 (E-E_start -1.096e-02); unique 2342 [50.01 CPU-min, step 0.204]
+[00:35:42] S4x3 guided N 4096 tau 0.005 step 238: E -7.816514 (E-E_start -1.099e-02); unique 2316 [50.21 CPU-min, step 0.195]
+[00:35:53] S4x3 guided N 4096 tau 0.005 step 239: E -7.816541 (E-E_start -1.101e-02); unique 2335 [50.40 CPU-min, step 0.198]
+[00:36:05] S4x3 guided N 4096 tau 0.005 step 240: E -7.816597 (E-E_start -1.107e-02); unique 2348 [50.60 CPU-min, step 0.199]
+[00:36:05] DONE: 240 of 240 steps, 50.60 CPU-min in all, 3045 s
+{
+ "rule": "card R51.5 premise (T1)",
+ "res": "results/guided_N4096_tau0.005_s9000",
+ "nsamp": 4096,
+ "steps_done": 240,
+ "draws": 983040,
+ "R_240": 0.4948186077595033,
+ "rises_240": 83,
+ "rise_frac": 0.3458333333333333,
+ "R_last20_mean": 0.4843937129351854,
+ "kill_R": false,
+ "kill_rises": true,
+ "verdict": "KILLED"
+}
