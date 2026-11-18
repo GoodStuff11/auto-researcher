@@ -16,3 +16,4 @@
 * convergence: Fixed 120 steps, window 61–120, as R51.8. The 6×2 exact arm from job 1 is the reference.
 * wall-time-basis: Round-18 interactive 6×2 guided rates were 0.315, 0.469 and 0.665 CPU-min per step at 147k, 393k and 1M, times 1.54 in-job (6×2 262k: 0.653/0.425). At the predicted rungs that is 82 + 119 = 201 min. The worst case, with $N_S$ at the 2,097,152 cap, is 281 min; × 1.25 gives 6 h.
 * power: R51.8's 6×2 $sd_w$ was 0.0022–0.0024 and its conditioning 26.5 sd_w. The placed rungs keep censored outcomes outside the near-line band, and the predicted margin of about 0.36 ln-units allows one seed.
+* auditor: APPROVED 2026-11-18 556530334848

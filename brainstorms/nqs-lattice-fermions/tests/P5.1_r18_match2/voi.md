@@ -47,3 +47,4 @@
   - The rung placement keeps censored outcomes 0.13–0.14 ln-units outside the lines.
   - The predicted $r'_{mm}$ ≈ 1.2 is 0.36 ln-units below 1.728, about 5 seed sd, so one 12-site seed suffices unless the result lands near a line (L72 clause → job 3).
   - P(UNRESOLVABLE or INCOMPLETE) about 0.05 (conditioning gaps at 5×2 and 6×2 have been 25–29 sd_w).
+* auditor: APPROVED 2026-11-18 e23cc90c5418
