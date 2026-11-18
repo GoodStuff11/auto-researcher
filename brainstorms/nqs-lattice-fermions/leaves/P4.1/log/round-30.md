@@ -39,3 +39,8 @@ P5.1: the infidelity fit is a cheap exact-sum way to get a near-capacity start (
 
 ## 9. Compute
 Interactive: T1 5.9 CPU-min, check 1.6, smoke about 2.5, RSS probe about 0.4: about 10.4 CPU-min across four separate runs, each under `ulimit -t` 600 or 300.
+
+## 10. Auditor CHANGES REQUIRED on the R45 T2 (digest 08d370f1663e), applied (not submitted)
+1. `RULE_T2.md` amended before any training: if the lagging arm (`che` for LOSS, `nnbf` for NO-LOSS) is NOT-PLATEAUED (1-F fell more than 10% over its last quarter), the verdict is UNSETTLED (progress-limited) and the Answer's capacity clause is not rewritten; for INTERMEDIATE the flag is appended. `r45.py` verdict mode was changed to match (compiles; `not_plateaued` reported per arm).
+2. From-init pilot: `RULE_pilot.md` (written first), `submit_pilot.sbatch` (both arms, seed 0, 150 evaluations from the T2's V.Model init, 00:45:00 x 2), `pilot_score.py`, `voi_pilot.md`. Rule: power-law fit of best-so-far 1-F over evaluations 50-150, extrapolated to 2000; PASS if both arms reach <= 3e-4; FAIL means maxfun is raised to n* (if <= 6000) or the arms are warm-started; INVALID if b <= 0 or fewer than 150 evaluations. Prediction FAIL p 0.6. Gate: cap 1.5 CPU-h, **PASS, digest 7868b8ee5770** (the first check was refused on the voi's tier field, which had text after "T1"; fixed).
+3. R45 card and `voi.md` updated. T2 re-checked: **PASS PENDING AUDIT, digest decbc3e60d64**; it is re-audited after the pilot, with maxfun possibly changed by it.

@@ -247,8 +247,14 @@ def verdict(a):
         v = "UNSETTLED"
     else:
         v = c["cls_mean"]
-    if v in ("NO-LOSS", "LOSS", "INTERMEDIATE") and any(S[k]["late_drop"] is not None and S[k]["late_drop"] > 0.10
-                                                       for k in S):
+    def unplat(arm):
+        return any(S[k]["late_drop"] is not None and S[k]["late_drop"] > 0.10 for k in S if k[0] == arm)
+    out["not_plateaued"] = {arm: unplat(arm) for arm in ("che", "nnbf")}
+    # RULE_T2 (auditor amendment): the lagging arm must have plateaued, else progress-limited
+    lag = {"LOSS": "che", "NO-LOSS": "nnbf"}.get(v)
+    if lag is not None and unplat(lag):
+        v = f"UNSETTLED (progress-limited: {lag} NOT-PLATEAUED; nominal {v})"
+    elif v == "INTERMEDIATE" and (unplat("che") or unplat("nnbf")):
         v += " (NOT-PLATEAUED)"
     out["verdict"] = v
     json.dump(out, open(os.path.join(RES, "verdict.json"), "w"), indent=1)
