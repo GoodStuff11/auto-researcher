@@ -1,0 +1,6 @@
+[06:55:23] 5x2 N_e 8: sector 44100, 11100 representatives, P 1832, Hr nnz 255770
+[06:55:23] setup 0.01 CPU-min
+[06:55:27] S5x2 guided N 262144 tau 0.0025 step 1: E -6.547406 (E-E_start -2.898e-04); unique 7400 [0.11 CPU-min, step 0.059]
+[06:55:30] S5x2 guided N 262144 tau 0.0025 step 2: E -6.547594 (E-E_start -4.777e-04); unique 7461 [0.16 CPU-min, step 0.053]
+[06:55:33] S5x2 guided N 262144 tau 0.0025 step 3: E -6.547719 (E-E_start -6.035e-04); unique 7438 [0.21 CPU-min, step 0.052]
+[06:55:33] DONE: 3 of 3 steps, 0.21 CPU-min in all, 10 s
