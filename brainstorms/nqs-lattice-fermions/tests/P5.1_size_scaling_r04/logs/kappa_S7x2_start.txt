@@ -1,1 +1,2 @@
 [21:50:48] 7x2 N_e 12: sector 9018009, 2255421 representatives, P 3590, Hr nnz 75929447
+[22:54:14] pass 1 done (63.55 CPU-min)

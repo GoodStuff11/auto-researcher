@@ -101,3 +101,22 @@ Interactive about 22 CPU-min: kq 5x2 0.9; kq 4x3 crashed run about 4, κ rerun a
 
 ## For the summary (not edited this round; coordinator's instruction)
 Portfolio rows and Next step are in the worker's return to the orchestrator.
+
+## Audit revision (compute auditor CHANGES REQUIRED on digest da2f6097605b; applied 2026-11-17, before any data)
+1. Split: R51.16 keeps `submit_cmp.sbatch` + `voi_cmp.md`; R51.11 T2 has its own `submit_qopt.sbatch` + `voi_qopt.md`
+   and `score_qopt.py` (needs cmp task 0 for T_guided); shared statistic in `score_common.py`.
+2. MinSR at N < P: scoped out (RULE_cmp.md rev. 1 (a)); every arm has N at least P, where MinSR = SR. An arm with
+   N up to 2048 at 4x3 would need about 7,000 steps to spend the budget; moved to a larger-P instance, later unit.
+3. Dropped Born 262k and Born 65k tau 0.005; p(GUIDED-FEWER) raised to 0.75 (κ ratio 1.2e4 at 4x3 vs 1.9e3 at 5x2,
+   where Born needed about 9.4x guided's samples by the auditor's reading).
+4. Sustained crossing (trailing 20-step mean of R reaches R*) in both rules. R51.1 re-scored (`score_common.py`,
+   `results/rescore_R51.1_sustained.json`): at 0.80/0.90/0.95 R_pol, A never/never/never; B 4.33M/7.41M/never;
+   C 11.0M/17.3M/24.6M; D 3.85M/never/never. Budgets re-sized: Born 14.8M (= 2 T_B), guided continuation 332 steps
+   (A + continuation = 7.41M), q arms 5.93M (= 0.8 T_B).
+5. Wall times from R51.1's in-job rates (0.36 at 16k, 0.27 at 65k; q ~ |ψ| scaled by 2.4 from interactive);
+   guided continuation first in task 0; per-run --cpu-cap = each run's share, summing to the task's bound.
+6. Signal: `--signal=B:USR1@600`, python in the background, trap forwards USR1, later runs skipped; tested with
+   `tests/P5.1_r05_gen/sigtest.sh` (child saved on USR1, next run skipped).
+7. Card R51.16 now states the 14.3 CPU-h cap and digest.
+Gate checks (`--pre-audit`): cmp cap 2 x 7.17 h = 14.3 CPU-h, PASS PENDING AUDIT, digest 21b01ca1b458;
+qopt cap 5.8 CPU-h, PASS, digest f2e46c43f548.

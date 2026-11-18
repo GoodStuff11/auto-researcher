@@ -1,43 +1,24 @@
 #!/usr/bin/env python3
-"""Score RULE_cmp.md (R51.16) and RULE_qopt_T2.md (R51.11, task 2) from the arms' run.json files and R51.1's B."""
+"""Score RULE_cmp.md revision 1 (R51.16): sustained first passage (score_common.py)."""
 import json
 import os
 
-H = os.path.dirname(os.path.abspath(__file__))
-E0 = -7.828637164695285  # lowest (+,+) level, results/info_S4x3_N10.json of R51.8
-ES = -7.805526273788163  # R51.1's 4x3 start energy
-RP = 0.7475
-R = lambda E: (ES - E) / (ES - E0)  # noqa: E731
-ARMS = {"born16k": ("results/born_N16384_tau0.005", 16384, 0, 13.5e6),
-        "born65k": ("results/born_N65536_tau0.005", 65536, 0, 13.5e6),
-        "born65k_tau0.01": ("results/born_N65536_tau0.01", 65536, 0, 13.5e6),
-        "born262k": ("results/born_N262144_tau0.005", 262144, 0, 13.5e6),
-        "guided16k_cont": ("results/guided_N16384_tau0.005_cont", 16384, 120, 6.75e6),
-        "q1_16k": ("results/q1_N16384_tau0.005", 16384, 0, 6.75e6),
-        "q1_65k": ("results/q1_N65536_tau0.005", 65536, 0, 6.75e6)}
+import score_common as C
 
-
-def first(path, N, off, frac):
-    st = json.load(open(os.path.join(H, path, "run.json")))["steps"]
-    for i, s in enumerate(st):
-        if R(s["E"]) >= frac * RP:
-            return (off + i + 1) * N, R(st[-1]["E"]), st and len(st)
-    return float("inf"), R(st[-1]["E"]), len(st)
-
-
+assert os.path.exists(os.path.join(C.H, "results", "guided_N16384_tau0.005_cont", "run.json")), "task 0 first"
+BUDGET = 14.8e6
+ARMS = {"born16k": ("results/born_N16384_tau0.005", 16384), "born65k_tau0.01": ("results/born_N65536_tau0.01", 65536)}
 out = {}
 for frac in (0.90, 0.80):
-    t = {k: first(*v[:3], frac) for k, v in ARMS.items()}
-    tb = min(v[0] for k, v in t.items() if k.startswith("born"))
-    tb_eff = tb if tb < float("inf") else 13.5e6
-    tg = min(6.75e6 if frac == 0.90 else 3.67e6, t["guided16k_cont"][0])
-    ratio = tb_eff / tg
+    rs = frac * C.RP
+    tg, tb_guided = C.guided_T(rs)
+    arms = {}
+    for k, (p, n) in ARMS.items():
+        R = C.rseries(p)
+        arms[k] = dict(T=C.T(R, n, rs), steps=len(R), R_end=float(R[-1]))
+    tb = min(a["T"] for a in arms.values())
+    ratio = min(tb, BUDGET) / tg
     v = "GUIDED-FEWER" if ratio >= 2 else ("NO-GAIN" if ratio <= 1.25 else "MIXED")
-    tq = min(t["q1_16k"][0], t["q1_65k"][0])
-    rq = tq / tg
-    vq = "Q-FEWER" if rq <= 0.5 else ("NO-GAIN" if rq >= 0.8 else "MIXED")
-    out[f"qopt_{frac}"] = dict(T_q=tq, T_guided=tg, ratio=rq, verdict=vq)
-    out[frac] = dict(arms={k: dict(T=x[0], R_end=x[1], steps=x[2]) for k, x in t.items()}, T_born=tb, T_guided=tg,
-                     ratio_lower_bound=ratio, verdict=v)
+    out[frac] = dict(arms=arms, T_B=tb_guided, T_guided=tg, T_born=tb, ratio_lower_bound=ratio, verdict=v)
     print(frac, json.dumps(out[frac]))
-json.dump(out, open(os.path.join(H, "results", "score_cmp.json"), "w"), indent=1)
+json.dump(out, open(os.path.join(C.H, "results", "score_cmp.json"), "w"), indent=1)
