@@ -1,0 +1,1 @@
+[05:19:50] 6x2 N_e 10: sector 627264, 156816 representatives, P 2637, Hr nnz 4472578

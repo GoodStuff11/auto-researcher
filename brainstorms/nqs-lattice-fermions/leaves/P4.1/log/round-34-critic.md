@@ -1,0 +1,9 @@
+# Round 34 — per-leaf critic on R45 (2026-11-18) applied
+
+Editor pass; no jobs, no commits; `tests/P4.1_cheap_su2_r47/` and card R47 untouched (another worker). Critic verdict: R45's T2 LOSS upheld under `RULE_T2.md`; NOT SIGNED until objections 1–3 applied (done below).
+
+1. Answer: the 12-site expressivity sentence replaced by "On 12 sites, from one random start and at equal fitting effort (one seed; its spread is unmeasured), the charge-only network ended 2.2 times further from the exact ground state than the exactly projected spin-reading network, and the gap widened with effort (1.6 to 2.2 between 500 and 2000 steps); neither had converged." "Partly.", the cheap-cost and 24-site sentences and R42's mandated phrase "at 3 CPU-h per run, one core" kept. Copied verbatim to the front page's P4.1 Summary bullet. Conclusion: "costs capacity, not only optimiser progress" → "costs fit accuracy at equal effort, with a gap that widens with budget (κ 1.64 → 2.23 from 500 to 2000 evaluations; 2.62 at equal CPU)".
+2. Chain item 7 and card R45 T2 evidence (round-33 log via appended correction): "che, plateaued" → "che 9.0%, under the pre-registered 10% line (12% over the last third, 21% over the last half; still falling)"; κ trajectory added (1.55/1.64/1.95/2.13/2.23 at 250/500/1000/1500/2000 evaluations; 2.62 at equal CPU, `che` at 1204) as the defence of LOSS; "nnbf's further progress could only raise κ" → "raises κ only if che does not improve faster, which the trajectory shows". Card Reading: "representational capacity" → "fit accuracy at equal effort"; limits say neither arm converged.
+3. (objection 5) What we showed: "1.85 times at half the effort" → "1.85 times at half of each network's fitting time".
+
+R45 Checked by: "per-leaf critic, 2026-11-18 (T2 LOSS verdict upheld under the rule; objections 1, 2, 4, 5 on how it was written up — applied)". Summary Updated line cites this log.

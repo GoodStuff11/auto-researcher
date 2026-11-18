@@ -53,3 +53,11 @@ plateaued; KILL if < 1.65 (no power for the one-sided 24-site test); requirement
 Ledger rows 1-10 closed; row 11 (R47) open. R47 released, so the EXHAUSTED-at-this-budget certificate is not adopted.
 State stays DORMANT. Not edited (orchestrator's files): front page P4.1 row, history.md, library (proposal: L33/L39
 entries can cite R45's kappa 2.23 as the 12-site capacity datum).
+
+## Correction (2026-11-18, per-leaf critic, log `round-34-critic`)
+
+§1's "che ... PLATEAUED" and "its further progress could only raise kappa" are corrected: `che` 9.0% is under the
+pre-registered 10% line (12% over the last third, 21% over the last half; still falling), not plateaued in the plain
+sense; `nnbf`'s further progress raises kappa only if `che` does not improve faster, which the trajectory shows: kappa
+1.55, 1.64, 1.95, 2.13, 2.23 at 250, 500, 1000, 1500, 2000 evaluations; 2.62 at equal CPU (`che` at 1204 evaluations).
+That trajectory, not the plateau label, is the defence of LOSS. Verdict LOSS unchanged.

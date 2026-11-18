@@ -58,3 +58,25 @@ PASS 0.35, KILL 0.40, UNSETTLED 0.15, INVALID 0.10. For KILL: unprojected `nnbf`
 spin-flip symmetrisation bought no energy (R43), and unprojected weight outside S = 0 enters 1-F directly
 (1-F(psi) >= 1-<P_S>), so a 1.3e-4 projected infidelity can be swamped. For PASS: the fit target is exactly S = 0, so
 the fidelity loss itself suppresses contamination, and the projected margin (2.23) leaves room.
+
+## Amendment (per-leaf critic, 2026-11-18, before any T1 data)
+
+Objections 3 and 6 of the per-leaf critic (R45/R47 design review), binding; written before any R47 code ran or any T1 data
+existed. Where this section and the text above differ, this section governs.
+* (3b) **Fourth arm `nnbf_p`**: `nnbf` with P_G **and exact P_S**, fitted to the same sampled data set (same N_tr,
+  seeds, estimator, optimiser, maxfun). P_S is block diagonal in the charge configuration (r45.py SpinProj), so psi(x) at a
+  sample needs phi on the charge blocks of its 4 point-group images only. It separates "the missing projection" from
+  "sampling": KILL with `nnbf_p` still beating `che` by >= 1.65 attributes the lost power to the absent projection;
+  KILL with `nnbf_p` also < 1.65 attributes it to the sampled fit itself. `nnbf_p` does not enter kappa_u (best stays the
+  better of `nnbf_u`, `nnbf_even`: the 24-site test cannot project); kappa_p = (1-F)_che / (1-F)_nnbf_p is reported beside it.
+* (3a) **KILL** additionally requires the best spin-reading student (the arm that defines kappa_u at full budget) to be
+  PLATEAUED (last-quarter drop of exact 1-F <= 10%, as for `che`) and the half-budget class of kappa_u to agree (also
+  < 1.65). Otherwise UNSETTLED (progress-limited).
+* (6) **PASS** requires `che` PLATEAUED as written above; R45's `che` cleared the 10% line by about one point at 2000
+  evaluations and was still falling (12% over the last third, 21% over the last half). Therefore **maxfun is raised from
+  2000 to 4000** for all four arms (the sampled evaluation is about 4-5x cheaper than R45's exact one, so the budget stays
+  in tier 1-10). The full/half classes are read at 4000/2000 evaluations (CPU-time halves, as R45). kappa_u at 2000
+  evaluations is reported (unscored) for comparison with R45's 2.23.
+* (3c) **KILL's action**: KILL concerns the 24-site test's power only; the 12-site result and R45 are unchanged.
+* Prediction re-derived (voi.md): PASS 0.30, KILL 0.25, UNSETTLED 0.35, INVALID 0.10 (UNSETTLED raised: two plateau
+  conditions and a half-budget agreement now gate both verdicts).
