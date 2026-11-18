@@ -1,2 +1,4 @@
 [23:14:10] 6x2 N_e 10: sector 627264, 156816 representatives, P 2637, Hr nnz 4472578
 [23:14:10] setup 0.02 CPU-min
+[23:17:15] S6x2 exact tau 0.005 step 1: E -7.607417 (E-E_start -1.526e-03); unique 156816 [3.14 CPU-min, step 2.949]
+[23:20:13] S6x2 exact tau 0.005 step 2: E -7.608514 (E-E_start -2.623e-03); unique 156816 [6.09 CPU-min, step 2.946]

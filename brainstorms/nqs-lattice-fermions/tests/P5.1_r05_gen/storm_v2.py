@@ -52,7 +52,11 @@ def main():
                     help="x: recursion on the solved direction (R51.13); sf: recursion on S and f, then solve (R51.18)")
     pa.add_argument("--qmix", type=float, default=0.2,
                     help="sampler q = (1 - qmix) p + qmix p_flat; 0.2 = guided (R38), 1.0 = |psi| (R51.11 T1b)")
+    pa.add_argument("--diag", action="store_true",
+                    help="diagnostic only (does not change the arm): log cos(f_n, v), v.f_n sign and min eig(S_rec+lam) each step; "
+                         "writes run_diag.json instead of run.json")
     a = pa.parse_args()
+    diag = []
     c0 = NS.cpu_min()
     ctx = NS.GCtx(5, 2, 8, START10)
     th = ctx.th0.clone()
@@ -93,6 +97,10 @@ def main():
                 Sr = 0.5 * (Sr + Sr.T)
                 v = np.linalg.solve(Sr + LAM * np.eye(len(fr)), fr)
                 # R51.18 rerun (card pre-registered rule): metric length in the fresh sample metric S_n, not S_rec
+        if a.diag:
+            Sd = (Sr if prev is not None and a.mode == "sf" else S) + LAM * np.eye(len(v))
+            diag.append(dict(cos_fv=float(fh @ v / (np.linalg.norm(fh) * np.linalg.norm(v))),
+                             eigmin=float(np.linalg.eigvalsh(Sd)[0]), vSv=float(v @ S @ v)))
         ml = np.sqrt(max(float(v @ S @ v), 1e-300))
         d = -a.tau * v / ml
         prev = (th, pr, phi0)
@@ -104,7 +112,9 @@ def main():
     R = np.array([h["R"] for h in hist])
     out = dict(qmix=a.qmix, mode=a.mode, nsamp=a.nsamp, a=a.a, tau=a.tau, seed0=a.seed0, E_start=E00, E0=E0, steps=hist,
                R_plat=float(R[-20:].mean()), cpu_min=NS.cpu_min() - c0)
-    json.dump(out, open(os.path.join(res, "run.json"), "w"), indent=1)
+    if a.diag:
+        out["diag"] = diag
+    json.dump(out, open(os.path.join(res, "run_diag.json" if a.diag else "run.json"), "w"), indent=1)
     NS.log(f"done: R_plat {out['R_plat']:.4f}, {out['cpu_min']:.2f} CPU-min")
 
 

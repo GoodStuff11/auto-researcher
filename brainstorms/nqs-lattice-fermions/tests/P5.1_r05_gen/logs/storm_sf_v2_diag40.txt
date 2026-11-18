@@ -1,0 +1,5 @@
+[23:18:20] step 40: R -2.9550 [0.94 CPU-min]
+[23:18:20] done: R_plat -2.2591, 0.94 CPU-min
+R match first 40: True
+cos(f_n,v) steps1-5 [ 0.226  0.088  0.032 -0.018 -0.004] median 2-40 0.003 frac<0 0.308
+eigmin(Srec+lam) median -0.03655932036994512 min -0.14588278430279297 frac<0 1.0

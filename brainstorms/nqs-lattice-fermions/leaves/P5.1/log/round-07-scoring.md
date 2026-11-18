@@ -23,7 +23,7 @@ Exact arm: E_start -6.547116, E_win -6.548717, G_ref 1.6011e-3.
   sd mostly measures the downward trend: the window means are 0.089, 0.060 and 0.048, not scatter.
 * Consequence (rev 2): N_needed(5x2) = 31,280 becomes the denominator of the 6x2 ladder. The auditor's thresholds
   (51,030 and 103,900) are 1.728 and 3.52 times a provisional 29,530, so they must be recomputed. From the scored
-  value they are POLY-CONSISTENT if N_needed(6x2) <= 54,050, SUPPORT-LIKE if >= 110,100, and AMBIGUOUS in between.
+  value they are POLY-CONSISTENT if $N_{\rm needed}(6\times2)\le54{,}050$, SUPPORT-LIKE if $\ge110{,}100$, and AMBIGUOUS in between.
 
 ## Reported, not scored
 * The 5% / last-20 statistic with seed means at the bracketing rungs gives s(65,536) = 0.0558 and s(262,144) =
@@ -35,7 +35,7 @@ Exact arm: E_start -6.547116, E_win -6.548717, G_ref 1.6011e-3.
   - Born, seed 9000: 262,144 x 90 = 23.59M. No other Born rung reaches 90%.
   - Guided, seed 9000: 16,384 x 120 = 1.97M. It crosses at the last step, so this result is marginal.
   - Guided, seed 19000: 16,384 never crosses, so the minimum is 65,536 x 76 = 4.98M.
-  - Ratio Born/guided: 12.0 with seed 9000 and 4.7 with seed 19000. Both are >= 2.
+  - Ratio Born/guided: 12.0 with seed 9000 and 4.7 with seed 19000. Both are $\ge2$.
   - Against the last-20 gain (rev-1 G_ref) the ratios are 5.0 and 4.85.
 
 ## Rev-2 addendum quantities (reported separately from the rev-2 verdict)
