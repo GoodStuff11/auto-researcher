@@ -7,3 +7,12 @@ P5.1 quick T1 S12' on kim-cpu-04.physics.cornell.edu, job 763902
 [21:12:31] it 150 E -7.566865 std 0.421 acc 0.262 |upd| 1.07e-01 t(mcmc/eloc/grad/sr) 0.13/0.80/0.26/0.22s elapsed 0.06 h
 [21:13:41] it 200 E -7.604589 std 0.473 acc 0.252 |upd| 1.03e-01 t(mcmc/eloc/grad/sr) 0.13/0.80/0.26/0.22s elapsed 0.08 h
 [21:14:52] it 250 E -7.611913 std 0.297 acc 0.247 |upd| 9.60e-02 t(mcmc/eloc/grad/sr) 0.13/0.82/0.27/0.22s elapsed 0.10 h
+[21:16:04] it 300 E -7.574895 std 0.315 acc 0.252 |upd| 8.77e-02 t(mcmc/eloc/grad/sr) 0.13/0.79/0.26/0.23s elapsed 0.12 h
+[21:17:15] it 350 E -7.594844 std 0.342 acc 0.246 |upd| 9.83e-02 t(mcmc/eloc/grad/sr) 0.13/0.78/0.25/0.22s elapsed 0.14 h
+[21:18:27] it 400 E -7.589291 std 0.206 acc 0.243 |upd| 6.12e-02 t(mcmc/eloc/grad/sr) 0.13/0.80/0.25/0.22s elapsed 0.16 h
+[21:19:38] it 450 E -7.600567 std 0.193 acc 0.242 |upd| 6.82e-02 t(mcmc/eloc/grad/sr) 0.14/0.80/0.27/0.22s elapsed 0.18 h
+[21:20:49] it 500 E -7.590376 std 0.480 acc 0.246 |upd| 8.04e-02 t(mcmc/eloc/grad/sr) 0.14/0.79/0.27/0.22s elapsed 0.20 h
+[21:22:00] it 550 E -7.611139 std 0.191 acc 0.247 |upd| 5.80e-02 t(mcmc/eloc/grad/sr) 0.14/0.81/0.25/0.22s elapsed 0.22 h
+[21:23:12] it 600 E -7.616592 std 0.238 acc 0.233 |upd| 5.92e-02 t(mcmc/eloc/grad/sr) 0.14/0.80/0.26/0.22s elapsed 0.24 h
+[21:24:23] it 650 E -7.587230 std 0.472 acc 0.261 |upd| 6.61e-02 t(mcmc/eloc/grad/sr) 0.14/0.81/0.27/0.22s elapsed 0.26 h
+[21:25:36] it 700 E -7.599927 std 0.248 acc 0.255 |upd| 4.22e-02 t(mcmc/eloc/grad/sr) 0.13/0.81/0.27/0.22s elapsed 0.28 h

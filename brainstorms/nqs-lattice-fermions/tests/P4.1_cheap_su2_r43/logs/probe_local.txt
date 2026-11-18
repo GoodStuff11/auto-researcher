@@ -1,0 +1,25 @@
+nnbf 1 {"start_cpu": 0.4939194084666666, "step_cpu": [0.08601244563333343, 0.0839112036666666, 0.08459234321666664, 0.08479293603333327], "step_cpu_med": 0.08469263962499995, "last": {"E": -14.7513174360725, "acc": 0.34675872650556194, "upd": 0.23777699780294007, "F": 0.6495669295997568, "ess": 832.252527811777}, "s2_plus_eloc_128": 0.01604605901666667, "s2_mean_128": 0.010588947151587407, "el_mean_128": -14.604656484348858}
+nnbf_even 1 {"start_cpu": 0.6878796044666666, "step_cpu": [0.16762752663333313, 0.1677119089833332, 0.16766200936666675, 0.16748214083333357], "step_cpu_med": 0.16764476799999994, "last": {"E": -14.986536865043709, "acc": 0.35516969218626676, "upd": 0.304140310839444, "F": 0.6314690092695979, "ess": 815.8580217678588}, "s2_plus_eloc_128": 0.024611431833333697, "s2_mean_128": -0.2806028440679527, "el_mean_128": -13.75544242991667}
+	Command being timed: "/home/jek354/.conda/envs/lit_env/bin/python -u r43.py --mode probe --probe-steps 4 --probe-arms nnbf,nnbf_even"
+	User time (seconds): 109.67
+	System time (seconds): 26.62
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:17.04
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 862380
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 14
+	Minor (reclaiming a frame) page faults: 17281979
+	Voluntary context switches: 3699
+	Involuntary context switches: 51571
+	Swaps: 0
+	File system inputs: 3568
+	File system outputs: 32
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
